@@ -1,0 +1,58 @@
+<!doctype html>
+<html ng-app="myApp">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>jQuery: Using as a AngularJS Directive</title>
+    <link rel="stylesheet" href="http://yelotofu.com/labs/jquery/master.css" media="screen">
+    <style type="text/css">
+        .ui-state-hover { background-color: #ffC }
+        .inlineEdit-placeholder { font-style: italic; color: #555; }
+    </style>
+</head>
+<body>
+<div id="page">
+    <div id="header">
+        <h1>jQuery: Using as a AngularJS Directive</h1>
+    </div>
+    <div id="content">
+        <p>A demonstration of the inline edit plugin.</p>
+        <table>
+            <tr><td><span inline-edit>Joe Blogg</span></td></tr>
+            <tr><td><span inline-edit>John Doe</span></td></tr>
+            <tr><td><span inline-edit>Paul White</span></td></tr>
+            <tr><td><span inline-edit></span></td></tr>
+        </table>
+        <br /><br />
+        <p><a href="http://yelotofu.com/2009/08/jquery-inline-edit-tutorial/">Read original blog post</a></p>
+    </div>
+</div>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
+<script type="text/javascript" src="../jquery.inlineedit.js"></script>
+<script type="text/javascript">
+
+    var myApp = angular.module('myApp', ['inlineEditControl']);
+
+    angular.module('inlineEditControl', [])
+        .directive('inlineEdit', function() {
+            return {
+                require: '?ngModel',
+                link: function(scope, elm, attrs, model) {
+                    elm.inlineEdit({
+                        save: function(event, hash) {
+                            if (model) {
+                                scope.$apply(function() {
+                                    model.$setViewValue(hash.value);
+                                });
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+</script>
+
+</body>
+</html>

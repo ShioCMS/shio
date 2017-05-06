@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>jQuery: Inline Edit Plugin Demo</title>
+<link rel="stylesheet" href="http://yelotofu.com/labs/jquery/master.css" media="screen">
+<style type="text/css">
+    .ui-state-hover { background-color: #ffC }
+    .inlineEdit-placeholder { font-style: italic; color: #555; }
+</style>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript" src="../jquery.inlineedit.js"></script>
+<script type="text/javascript">
+
+$(function(){
+    // setup common ajax setting
+    $.ajaxSetup({
+        url: 'save.php',
+        type: 'POST',
+        async: false,
+        timeout: 500
+    });
+
+    // call inlineEdit
+    $('.editable').inlineEdit({
+        value: $.ajax({ data: { 'action': 'get' } }).responseText,
+        save: function(event, data) {
+            var html = $.ajax({
+                data: { 'action': 'save', 'value': data.value }
+            }).responseText;
+            
+            alert("id: " + this.id );
+            
+            return html === 'OK' ? true : false;
+        }
+    });
+});
+
+</script>
+</head>
+<body>
+    <div id="page">
+        <div id="header">
+            <h1>jQuery: Inline Edit Plugin with save script</h1>
+        </div>
+        <div id="content">
+            <table>
+                <tr><td><span id="editable_01" class="editable"></span></td></tr>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>jQuery: Inline Edit Plugin Demo: canelOnBlur</title>
+<link rel="stylesheet" href="http://yelotofu.com/labs/jquery/master.css" media="screen">
+<style type="text/css">
+    .ui-state-hover { background-color: #ffC }
+    .inlineEdit-placeholder { font-style: italic; color: #555; }
+</style>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+<script type="text/javascript" src="../jquery.inlineedit.js"></script>
+<script type="text/javascript">
+
+$(function(){
+    $('.editable').inlineEdit({ 
+      buttons: '<button class="save">save</button>',
+      cancelOnBlur: true
+    });
+});
+
+</script>
+</head>
+<body>
+    <div id="page">
+        <div id="header">
+            <h1>jQuery: Inline Edit Plugin Demo</h1>
+        </div>
+        <div id="content">
+            <p>A demonstration of the inline edit plugin with cancelOnBlur active.</p>
+            <table>
+                <tr><td><span class="editable">Joe Blogg</span></td></tr>
+                <tr><td><span class="editable">John Doe</span></td></tr>
+                <tr><td><span class="editable">Paul White</span></td></tr>
+                <tr><td><span class="editable"></span></td></tr>
+            </table>
+            <br /><br />
+            <p><a href="http://yelotofu.com/2009/08/jquery-inline-edit-tutorial/">Read original blog post</a></p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>jQuery: Inline Edit Plugin Demo - Delegation</title>
+<link rel="stylesheet" href="http://yelotofu.com/labs/jquery/master.css" media="screen">
+<style type="text/css">
+    .ui-state-hover { background-color: #ffC }
+    .inlineEdit-placeholder { font-style: italic; color: #555; }
+</style>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script type="text/javascript" src="../jquery.inlineedit.js"></script>
+<script type="text/javascript">
+
+$(function(){
+
+  $('.editable').inlineEdit();
+
+  var $person = $('#person');
+  $('button.addrow').click(function(){
+    if ( $person.val().length ) {
+      $('table').append('<tr><td><span class="editable">'+ $person.val() +'</span></td></tr>');
+      $person.val('');
+    } else {
+      alert('please enter a name first');
+    }
+    return false;
+  });
+
+});
+
+</script>
+</head>
+<body>
+    <div id="page">
+        <div id="header">
+            <h1>jQuery: Inline Edit Plugin Demo</h1>
+        </div>
+        <div id="content">
+            <p>A demonstration of the inline edit plugin with event delegation.</p>
+            <p>Person: <input type="text" id="person"> <button class="addrow">add</button></p>
+
+            <table>
+                <tr><td><span class="editable">Joe Blogg</span></td></tr>
+            </table>
+            <br /><br />
+
+            <p><a href="http://yelotofu.com/2009/08/jquery-inline-edit-tutorial/">Read original blog post</a></p>
+        </div>
+    </div>
+</body>
+</html>

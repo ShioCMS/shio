@@ -1,0 +1,18 @@
+[
+    {
+        "hash": 0, 
+        "title": "Site01" 
+    }, 
+        {
+        "hash": 1, 
+        "title": "Site02" 
+    }, 
+    {
+        "hash": 2, 
+        "title": "HR" 
+    }, 
+    {
+        "hash": 3, 
+        "title": "Finance" 
+    } 
+]
