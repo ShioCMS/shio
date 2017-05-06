@@ -1,4 +1,4 @@
-![banner_ocean.jpg](https://openviglet.github.io/ocean/WebContent/img/banner_ocean.jpg)
+![banner_ocean.jpg](https://openviglet.github.io/ocean/img/banner_ocean.jpg)
 # Contributing guidelines
 
 ## How to become a contributor and submit your own code

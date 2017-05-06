@@ -1,4 +1,4 @@
-![banner_ocean.jpg](https://openviglet.github.io/ocean/WebContent/img/banner_ocean.jpg)
+![banner_ocean.jpg](https://openviglet.github.io/ocean/img/banner_ocean.jpg)
 ------
 **Viglet Ocean** is a simple and intuitive Web Content Management.
 
