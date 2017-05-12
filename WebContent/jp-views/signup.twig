@@ -1,0 +1,34 @@
+{% extends "login.twig" %}
+{% block baseContent %}
+    {% include 'regionHeaderSimple.twig' %}
+<div class="row">
+    <div class="col-md-4 col-md-offset-4 panel panel-default">
+        <div class="panel-body">
+            <form class="form-signin" action="/signup/process/" method="post">
+                <h2 class="form-signin-heading">Sign Up</h2>
+                <div class="form-group">
+                    <input name="username" id="username" type="text" class="input-block-level form-control" placeholder="Pick a username">
+                </div>
+
+                <div class="row form-group">
+                    <div class='col-md-6'>
+                        <input name="firstname" id="firstname" type="text" class="form-control" placeholder="First name">
+                    </div>
+                    <div class='col-md-6'>
+
+                        <input name="lastname" id="lastname" type="text" class="form-control" placeholder="Last name">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input name="email" id="email" type="text" class="input-block-level form-control" placeholder="Your email address">
+                </div>
+                <div class="form-group">
+                    <input name="password" id="password" type="password" class="input-block-level form-control" placeholder="Create a password">
+                </div>
+                <button class="btn btn-lg btn-primary" type="submit">Create My Account</button>
+                <a href="/login" class="btn btn-lg btn-success">Login</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

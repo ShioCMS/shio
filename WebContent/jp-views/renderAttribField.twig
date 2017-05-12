@@ -1,0 +1,40 @@
+<div class="form-group">
+    <label>{{ attribRender.getLabel() }}</label>
+       {% if attribs != NULL %}
+        {{ postTypeAttrService.getRender(attribRender,attribs[attribRender.getId()]) | raw }}
+       {% else %}
+        {{ postTypeAttrService.getRender(attribRender) | raw }}
+       {% endif %}
+</div>
+    {% if attribRender.getMany() == 1 %}
+<div id="extraAttributes"></div>
+
+<div id="modelAttribute" class="form-group" style="display: none;" >
+    <div class="row">
+        <div class="col-md-1">
+            <button class="btn btn-danger"><i class="fa fa-trash-o" ></i> </button>
+        </div>
+
+        <div class="col-md-11">
+            {{ postTypeAttrService.getRender(attribRender) | raw }}
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <a href="javascript:addMany();" class="btn btn-primary">
+        <i class="fa fa-plus"></i>  Add other {{ attribRender.getLabel() }}
+    </a>
+</div> 
+
+<script>
+    var i = 0;
+
+    function addMany() {
+        var extraAttib = document.getElementById('extraAttributes');
+        var original = document.getElementById('modelAttribute');
+        var clone = original.cloneNode(true); // "deep" clone
+        clone.style.display = "block";
+        extraAttib.appendChild(clone);
+    }
+</script>
+    {% endif %}

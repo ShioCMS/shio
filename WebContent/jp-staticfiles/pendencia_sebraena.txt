@@ -1,0 +1,4 @@
+enviar stopword para o charlley
+enviar  as regras de firewall para uso do charlley na vpn.
+
+verificar se é possível pesquisar pelo nome do CTD e possivelmente adicionar maior relevância.

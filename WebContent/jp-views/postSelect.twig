@@ -1,0 +1,40 @@
+{% extends "homeBase.twig" %}
+{% block extracover %}
+    <a href="/post/type/editor/" class="btn btn-default">Or model a new Post Type</a>
+{% endblock %}
+{% block homeContent %}
+
+
+
+<div class="row">
+    <div class="col-md-2">
+        <div class="well"><a href="/post/editor/"><h3>Text</h3></a></div>
+
+        </p>
+    </div>
+    <div class="col-md-2">
+        <div class="well"><a href="newcontent.php"><h3>Photo</h3></div>
+    </div>
+    <div class="col-md-2">
+        <div class="well"><a href="newcontent.php"><h3>Video</h3></div>
+    </div>
+    <div class="col-md-2">
+        <div class="well"><a href="newcontent.php"><h3>Quote</h3></a></div>
+    </div>
+    <div class="col-md-2">
+        <div class="well"><a href="newcontent.php"><h3>Link</h3></a></div>
+    </div>
+    <div class="col-md-2">
+        <div class="well"><a href="newcontent.php"><h3>File</h3></a></div>
+    </div>    
+</div>
+<div class="row" ng-controller="PostTypeListCtrl">
+    <div class="col-md-4" ng-repeat="posttype in posttypes | filter:query | orderBy:orderProp">
+        <div class="well">
+            <a href="#"><span class="glyphicon glyphicon-star-empty close"></span></a>
+            <a href="/post/type/attributes/{% verbatim %}{{posttype.id}}{% endverbatim %}/"><span class="glyphicon glyphicon-pencil close"></span></a>
+            <a href="/post/editor/{% verbatim %}{{posttype.id}}{% endverbatim %}/"><h1>{% verbatim %} {{posttype.title}} {% endverbatim %}<br/><small>{% verbatim %} {{posttype.description}} {% endverbatim %}</small></h1></a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{
+    "require": {
+        "twig/twig": "1.*",
+        "bshaffer/oauth2-server-php": "v1.3",
+        "fortawesome/font-awesome": "dev-master",
+        "silex/silex": "*",
+	"symfony/framework-standard-edition" : "*",
+        "symfony/twig-bridge": "2.1.*",
+	"symfony/security": "~2.3",
+	"symfony/yaml": "*",
+        "bshaffer/oauth2-server-php": "v1.0",
+        "bshaffer/oauth2-server-httpfoundation-bridge": "v1.0",
+        "guzzle/guzzle": "~3.7",
+	"doctrine/dbal": "*",
+        "doctrine/orm": "*",
+ 	"doctrine/doctrine-fixtures-bundle": "*",
+ 	"swiftmailer/swiftmailer": "*"
+    },
+    "autoload": {
+        "psr-0": {
+            "OAuth2Demo": "src/",
+            "Japode": "src/"
+        }
+    }
+}

@@ -1,0 +1,39 @@
+<form method="post" action="/site/process/basic/" role="form">
+    
+        <div class="row">
+            
+            <div class="col-xs-3 form-group">
+                <fieldset disabled>
+                <label for="field1">App ID</label>
+                <input type="text" id="name" class="form-control" name="name" value="536233886484089">
+                </fieldset>
+            </div>
+            <div class="col-xs-4 form-group">
+                <fieldset disabled>
+                <label for="field1">App Secret</label>
+                <input type="text" id="name" class="form-control" name="name" value="84dbf875058142baac5e9f55251cecc8" >
+                </fieldset>
+            </div>
+        </div>
+
+    <div class="form-group">
+        <label for="field1">Name</label>
+        <input type="text" id="name" class="form-control" name="name" value="{{ site.getName() }}" placeholder="Site Name">
+    </div>
+
+    <div class="form-group">
+        <label for="field1">Description</label>
+        <input type="text" id="description" class="form-control" name="description" value="{{ site.getDescription() }}" placeholder="Description">
+    </div>
+    <div class="form-group">
+        <label for="field1">Site URL</label>
+        <input type="text" id="url" class="form-control" name="url" value="{{ site.getURL() }}" placeholder="URL Address">
+    </div>
+    <div class="btn-group"> <button type="submit" class="btn btn-primary">Save changes</button> <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
+        <ul class="dropdown-menu">
+            <li><a href="#"><i class="icon-trash"></i> Delete</a></li>
+            <li><a href="duplicatecontent.php"><i class="icon-plus-sign"></i> Duplicate</a></li>
+        </ul>
+    </div>
+    <button type="button" class="btn btn-default">Cancel</button>
+</form>

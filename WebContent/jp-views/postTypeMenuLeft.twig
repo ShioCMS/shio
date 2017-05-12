@@ -1,0 +1,21 @@
+<ul class="nav nav-pills nav-stacked">
+    <li class="nav-header">{{ postType.getTitle() }} Post Type</li>
+
+    <li {% if (jpType == 'attribute') %}class="active"{% endif %}>
+        <a href="/post/type/attributes/{{ id }}">Model</a>
+    </li>
+    
+    <li class="nav-header">Attributes</li>
+     {% for jpAttrib in attribs %}
+    <li{% if (jpAttrib.getID() == attrib.getID()) %} class="active" {% endif %} ><a href="/post/type/attribute/{{ id }}/{{ jpAttrib.getID() }}">{{ jpAttrib.getLabel() }}</a></li>
+    {% endfor %}
+
+    <li class="nav-header">Look & Feel</li>
+    <li><a href="#">Style</a></li>
+    <li><a href="#">Templates</a></li>
+
+    <li class="nav-header">Developer</li>
+    <li><a href="#">API</a></li>
+    <li><a href="#">Documentation</a></li>
+
+</ul>

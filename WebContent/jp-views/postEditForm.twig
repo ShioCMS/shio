@@ -1,0 +1,27 @@
+<style>
+  div.affix{
+        top: 55px; /* Set the top position of pinned element */
+        left: 0px;
+        z-index: 1000;
+    }   
+</style>    
+
+<form method="post" action="/post/process/">
+    <div  style="background-color: rgba(100, 149, 237, 0.2); height:55px ; width: 100%;padding:10px; margin-bottom:10px" class="affix-top" data-spy="affix" data-offset-top="147">
+    <div class="form-actions" >
+        <div class="btn-group pull-right"> 
+            <button type="submit" class="btn btn-primary">Save Draft</button> <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
+            <ul class="dropdown-menu">
+                <li><a href="#">Publish Now</a></li>
+            </ul>
+        </div>
+        </div>
+    </div>
+   
+                {% for attribRender in attribsRender %}
+                    {% include 'renderAttribField.twig' %}
+                {% endfor %}
+    <input type="hidden" id="jpid" name="jpid" value ="{{ id }}"> 
+    <input type="hidden" id="idposttype" name="idposttype" value ="{{ idposttype }}"> 
+    
+</form>

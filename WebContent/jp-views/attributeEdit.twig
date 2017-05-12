@@ -1,0 +1,56 @@
+{% extends "postTypeModel.twig" %}
+{% block pullright %}
+    <a href="/post/type/attributes/{{ id }}" class="btn btn-default">Or model this Post Type</a>
+{% endblock %}
+
+{% block content %}
+<form method="post" action="/post/type/process/attribute/" role="form">    
+    <input type="hidden" id="posttypeid" name="posttypeid" value="{{ id }}">      
+    <input type="hidden" id="attribid" name="attribid" value="{{ attrib.getId() }}">  
+    <div class="form-group">
+        <label for="field1">Name</label>
+        <input type="text" id="label" name="label" class="form-control" placeholder="Attribute Name" value="{{ attrib.getLabel() }}">
+    </div>
+    <div class="form-group">
+        <label for="field2">Description</label>
+        <textarea id="description" name="description" class="form-control" placeholder="About this Attribute">{{ attrib.getDescription() }}</textarea>
+    </div>
+     <div class="form-group">
+         <label>Identifier</label>
+        <input type="text" id="name" name="name" class="form-control" placeholder="Identfier" value="{{ attrib.getName() }}">
+    </div>
+    
+    <div class="form-group">
+        <label for="field2">Many</label>
+        <div class="checkbox">
+            <input type="checkbox"  id="many" name="many" value="1" {% if attrib.getMany() == '1'  %}checked{% endif %}>
+        </div>
+
+    </div>
+    <div class="form-group">
+        <label for="field2">Required</label>
+        <div class="checkbox">
+            <input type="checkbox"  id="req" name="req" value="1" {% if attrib.getRequired() == '1'  %}checked{% endif %}>
+        </div>
+
+    </div>
+    <div class="form-group">
+        <label for="field2">Widget</label>
+        <select id="wdg_{{ attrib.getId() }}"  name="wdg_{{ attrib.getId() }}" class="form-control">
+            <option value="{{ attrib.getWidget().getId() }}">{{ attrib.getWidget().getId() }}</option>
+        </select>
+    </div>
+    <div class="form-group">
+    {{ widgetProperties |raw }}
+    </div>
+    <div class="btn-group"> <button type="submit" class="btn btn-primary">Save changes</button> <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
+        <ul class="dropdown-menu">
+            <li><a href="#"><i class="icon-trash"></i> Delete</a></li>
+            <li><a href="duplicatecontent.php"><i class="icon-plus-sign"></i> Duplicate</a></li>
+        </ul>
+    </div>
+    <button type="button" class="btn btn-default">Cancel</button>
+</form>
+
+
+{% endblock %}

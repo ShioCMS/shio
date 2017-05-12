@@ -1,0 +1,14 @@
+<script type="text/javascript" src="/js/markdown/jquery.pagedown-bootstrap.combined.js"></script>
+<link href="/css/markdown/jquery.pagedown-bootstrap.css" rel="stylesheet">
+
+<script type="text/javascript">
+    (function() {
+
+        $("textarea.pagedownMe").pagedownBootstrap();
+
+    })();
+    
+</script>    
+
+
+<textarea  id="" id='{{ attributeName }}' name='{{ attributeName }}' class="pagedownMe col-md-6">{{ postAttributeObject.getStrValue() }}</textarea>

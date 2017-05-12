@@ -1,0 +1,31 @@
+<script type="text/javascript" src="/js/upclick-min.js"></script>
+<img src="{{ postAttributeObject.getStrValue() }}" id="img_{{ attributeName }}" name="img_{{ attributeName }}" >
+<input type="hidden" id="{{ attributeName }}" name="{{ attributeName }}" 
+       value="{{ postAttributeObject.getStrValue() }}" />
+<!--<button class='btn' id="uploader" value="Upload"><img src='/img/upload_image.png' height='50%' width='50%'></img></button> -->
+
+<input type="button" id="uploader" value="Upload">
+
+<script type="text/javascript">
+
+   var uploader = document.getElementById('uploader');
+
+   upclick(
+     {
+      element: uploader,
+      action: '/widget/process/{{ postTypeAttributeObject.getIDCTD() }}/{{ postTypeAttributeObject.getID() }}/', 
+      onstart:
+        function(filename)
+        {
+          //alert('Start upload: '+filename);
+        },
+      oncomplete:
+        function(response_data) 
+        {
+          document.getElementById('{{ attributeName }}').value = response_data;
+          document.getElementById('img_{{ attributeName }}').src = response_data;
+          //alert(response_data);
+        }
+     });
+
+   </script>

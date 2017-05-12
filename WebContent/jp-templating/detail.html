@@ -1,0 +1,20 @@
+<div class='row'>
+    <div class="col-lg-2" >    
+        <ul class="nav nav-pills nav-stacked " jp-region jp-list='true' jp-posttype="JP_DESTAQUE" jp-rgname="RegiaoDestaque1" jp-template="menuDetail">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#">Profile</a></li>
+            <li><a href="#">Messages</a></li>
+        </ul>
+    </div>
+    <div class="col-lg-10">
+        <div class="jumbotron">
+            <h1>{{post.JP_TITLE}}</h1>
+            <p>{{post.JP_TEXT}}</p>
+            <p>{{checkURL}}</p>
+        </div>
+    </div>
+</div>
+<script type="text/ng-template" id="menuDetail">
+
+            <li><a href="#">Home</a></li>
+</script>

@@ -1,0 +1,33 @@
+{% extends "homeBase.twig" %}
+{% block extracover %}
+                {% if id == null %}
+    <a href="/post/select/" class="btn btn-default">Or create other kind of Post</a>
+                 {% else %}
+    <a href="/post/editor/{{idposttype}}/" class="btn btn-default">Or create a new {{ posttype_name }} Post</a>
+                {% endif %}
+  {% endblock %}  
+
+{% block homeContent %}      
+<div id="postEditForm"></div>   
+<div id="error"></div>   
+{% endblock %}
+
+{% block baseJSFooter %}        
+{{ parent() }}
+<script type="text/javascript">
+
+    {% if id != null %}
+    $("#postEditForm").load("/post/editorform/{{idposttype}}/{{id}}", function(response, status, xhr) {
+        tinymce.init({
+            selector: "textarea.editme"
+        });
+    });
+    {% else %}
+    $("#postEditForm").load("/post/editorform/{{idposttype}}", function(response, status, xhr) {
+        tinymce.init({
+            selector: "textarea.editme"
+        });
+    });
+    {% endif %}
+</script>
+{% endblock %}  

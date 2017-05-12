@@ -1,0 +1,41 @@
+{% extends "base.twig" %}
+{% block baseHead %}
+{{ parent() }}
+{% endblock %}
+{% block baseContent %}
+     {% include 'regionHeaderSimple.twig' %}
+<div class="row">
+    <div class="col-md-4 col-md-offset-4 panel panel-default">
+        <div class="panel-body">
+            <form class="form-signin" action="/signin/default/" method="post" id="contact-form" role="form">
+                <h2 class="form-signin-heading">Please sign in</h2>
+                <div class="form-group">
+                    <input name="username" id="username" type="email" class="input-block-level form-control" placeholder="Email address">
+                </div>
+                <div class="form-group">
+                    <input name="password" id="password" type="password" class="input-block-level form-control" placeholder="Password">
+                </div>
+                <label class="checkbox">
+                    <input type="checkbox" value="remember-me"> Remember me
+                </label>       
+                <div class="form-group">
+                    <a href="/login/recover/">Forgotten Your Password?</a>
+                </div>
+
+                <button class="btn btn-lg btn-primary" type="submit">Sign in</button>
+                <a href="/signup" class="btn btn-lg btn-success">Sign up</a>
+                <style>
+                    .fbbutton {
+                        background: url('/img/connect-button-sprite-283x55.png') no-repeat -315px 10px;
+                        float:left;
+                        display:block;
+                        width:315px;
+                        height:65px;
+                    }
+                </style>
+                <a class="fbbutton" href="https://www.facebook.com/dialog/oauth?client_id={{ facebook_appid }}&redirect_uri={{ facebook_redirect }}&scope=email"></a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

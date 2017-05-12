@@ -1,0 +1,172 @@
+{% extends "homeBase.twig" %}
+{% block baseHead %}
+{{ parent() }}
+<style>
+    /* Make an input blend into its parent */
+    input.inline-edit{
+        /* Eliminate borders and padding */
+        border: none;
+        padding: 0;
+        margin: 0;
+
+        /* Inherit the parent element's typography */
+        font: inherit;
+        /* color: inherit; */
+        line-height: inherit;
+        font-size: inherit;
+        text-align: inherit;
+
+        /* Seems to help alignment in headers */
+        vertical-align: top;
+    }
+
+    /* Add interaction cues on hover and focus */
+    input.inline-edit:hover,
+    input.inline-edit:focus{
+        /* Change the background to a light yellow */
+        background-color: #FFD;
+
+        /* A subtle transition never hurts */
+        -webkit-transition: background-color 0.5s;
+        -moz-transition: background-color 0.5s;
+        -ie-transition: background-color 0.5s;
+        transition: background-color 0.5s;
+    }
+</style>
+
+<style type="text/css">
+    body {
+        padding-top: 0px;
+        padding-bottom: 40px;
+    }
+    .jpcontent:hover { 
+        border-style:dashed;
+        border-color: red; }
+
+    #jpeditcontent {
+        display: none;
+    }
+
+    .jpcontent:hover #jpeditcontent {
+        display: block;
+
+    }
+</style>
+{% endblock %} 
+{% block homeContent %}
+<div>
+    <div class="row">
+       <div class="col-md-2">
+            <div id="content_popover">
+                <!--   <div id="content_popover" style="display: none">                        -->
+                <div ng-controller="PostTypeListCtrl">
+                    <ul class="nav nav-pills nav-stacked">
+                        <li class="nav-header">Post Types</li>
+                        <li ng-repeat="posttype in posttypes | filter:query | orderBy:orderProp"><a href="#" ng-click="changePostType(posttype.id)">{% verbatim %} {{posttype.title}} {% endverbatim %}</a></li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-10">     
+            <div class="row">&nbsp;</div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <div id="postEditForm"></div>  
+                        <div id="error"></div>  
+                    </div>
+                </div>
+                <div class="row">&nbsp;</div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div ng-controller="PostListCtrl">
+
+                            <div class="row" ng-repeat="post in posts | filter:query" ng-init="action = jpTemplate">
+                                <div class="span8">
+
+
+                                    <div id="jpcontent_{% verbatim %}{{post.id}}{% endverbatim %}" class="jpcontent well" >
+                                        <div id="jpeditcontent">
+                                            <a href="#" ng-click="action = editPost(post.posttype, post.id)"><i class="glyphicon glyphicon-pencil close"></i></a>
+
+                                        </div>
+                                        <div ng-include="action">
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /span9 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>            
+
+</div>
+
+{% endblock %} 
+{% block baseJSFooter %} 
+{{ parent() }}
+<script type="text/ng-template" id="postView">
+ {% include 'postEditView.twig' %}
+</script>
+<script>
+    /*
+     $(function() {
+     var links = $('a').click(function() {
+     $('#jpformcontent').css('display', 'block');
+     });
+     });
+     */
+
+    function myFunc()
+
+    {
+        $('#jpformcontent').css('display', 'block');
+        $('#jpcontent').css('display', 'none');
+    }
+
+    function finishEdit()
+    {
+        $('#jpcontent').css('display', 'block');
+        $('#jpformcontent').css('display', 'none');
+    }
+
+    $(function()
+    {
+        $("#ret").popover();
+    });
+
+    $(function() {
+        $('[rel=popover]').popover({
+            html: true,
+            content: function() {
+                return $('#content_popover').html();
+            }
+        });
+    });
+
+
+    $("#postEditForm").load("/post/editorform/{{user.getLastPostType()}}", function(response, status, xhr) {
+        if (status == "error") {
+            var msg = "Sorry but there was an error: ";
+            $("#error").html(msg + xhr.status + " " + xhr.statusText);
+        }
+    });
+
+</script> 
+
+<script type="text/javascript">
+    /* <![CDATA[ */
+    (function($) {
+        $('a[href="#"]').click(function(e) {
+            e.preventDefault();
+        });
+    })(jQuery);
+    /* ]]> */
+</script>
+{% endblock %}             

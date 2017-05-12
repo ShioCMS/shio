@@ -1,0 +1,21 @@
+<form role="form">
+    <div class="form-group">
+        <label for="field1">First Name</label>
+        <input type="text" id="field1" class="form-control" name="field1" value="{{ firstname }}" placeholder="First Name">
+    </div>
+    <div class="form-group">
+        <label for="field1">Last Name</label>
+        <input type="text" id="field1" class="form-control" name="field1" value="{{ lastname }}" placeholder="Last Name">
+    </div>
+    <div class="form-group">
+        <label for="field1">email</label>
+        <input type="email" id="email" class="form-control" name="field1" value="{{ email }}" placeholder="Email address">
+</div>
+    <div class="btn-group"> <a href="newcontent.php" class="btn btn-primary">Save changes</a> <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
+        <ul class="dropdown-menu">
+            <li><a href="#"><i class="icon-trash"></i> Delete</a></li>
+            <li><a href="duplicatecontent.php"><i class="icon-plus-sign"></i> Duplicate</a></li>
+        </ul>
+    </div>
+    <button type="button" class="btn btn-default">Cancel</button>
+</form>

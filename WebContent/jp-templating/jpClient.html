@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en-gb" dir="ltr" ng-app="japodeApp"> 
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Japode</title>
+        <link href="/intro1/favicon.ico" rel="shortcut icon" type="image/x-icon">
+        <link rel="stylesheet" href="/css/uikit.min.css">
+        <link rel="stylesheet" href="/css/uikit_cust.min.css">
+        <link rel="stylesheet" href="http://japode.prj.viglet.co/thirdparty/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="http://japode.prj.viglet.co/thirdparty/bootstrap/dist/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="http://japode.prj.viglet.co/vendor/fortawesome/font-awesome/css/font-awesome.min.css">
+<!-- Usado pelo JPRegion -->
+        <style>
+            .jpcontent:hover { 
+                border-style:dashed;
+                border-width: thin;
+                border-color: blue;
+            }
+
+            .jpcontent {
+
+                //display: none;
+            }
+
+
+            #jpeditcontent {
+                display: none;
+            }
+
+            .jpcontent:hover #jpeditcontent {
+                display: block;
+
+            }
+
+        </style>
+
+        <style>
+            /* Make an input blend into its parent */
+            input.inline-edit{
+                /* Eliminate borders and padding */
+                border: none;
+                padding: 0;
+                margin: 0;
+
+                /* Inherit the parent element's typography */
+                font: inherit;
+                /* color: inherit; */
+                line-height: inherit;
+                font-size: inherit;
+                text-align: inherit;
+
+                /* Seems to help alignment in headers */
+                vertical-align: top;
+            }
+
+            /* Add interaction cues on hover and focus */
+            input.inline-edit:hover,
+            input.inline-edit:focus{
+                /* Change the background to a light yellow */
+                background-color: #FFD;
+
+                /* A subtle transition never hurts */
+                -webkit-transition: background-color 0.5s;
+                -moz-transition: background-color 0.5s;
+                -ie-transition: background-color 0.5s;
+                transition: background-color 0.5s;
+            }
+        </style>        
+        <style>
+            .jpcontent { margin-bottom: 10px; }
+            [contenteditable="true"] { padding: 10px;}
+            [contenteditable=true]:empty:before {
+                content: attr(placeholder);
+            }
+            [contenteditable="true"]:hover { background-color: #FFD;
+
+                                             /* A subtle transition never hurts */
+                                             -webkit-transition: background-color 0.5s;
+                                             -moz-transition: background-color 0.5s;
+                                             -ie-transition: background-color 0.5s;
+                                             transition: background-color 0.5s; }
+            </style>
+
+        </head>
+
+        <!-- define angular controller -->
+        <body ng-controller="DemoCtrl" >
+            <nav class="navbar navbar-default navbar-fixed-top" role="navigation" ng-show="accessToken" style="ng-hide">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="http://japode.prj.viglet.co/">Japode</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <form class="navbar-form navbar-left" role="search">
+                                <div class="input-group">
+                                        <input type="text" class="states form-control" style="width:540px" placeholder="Search for people, posts and things">
+                                        <span class="input-group-btn"><button type="submit" style="top:-2px;" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button></span>
+                                    </div>
+                                </form>
+                            </div>
+                            <ul class="nav navbar-nav navbar-right">
+                            <li>
+                                <a href="#"><i class="fa fa-user fa-lg"></i> <span class="badge">+1</span></a>
+                            </li>
+                            <li>
+                                <a href="#" class="disabled"><i class="fa fa-globe fa-lg"></i></a>
+                            </li>
+                            <li>
+                                <a href="http://japode.prj.viglet.co/">Alexandre</a>
+                            </li>
+                            <li>
+                                <a href="#content">Content</a>
+                            </li>
+
+                            <li class="dropdown">
+                                <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-cog"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#profile">Profile</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="#signout">Sign out</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                            </li>
+                        </ul>
+                    </div>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+        <div ng-view>
+
+        </div>
+<div ng-app="angularOauth" ng-controller="CallbackCtrl">
+</div>
+        <script>
+                var jp_domain = 'japode.prj.viglet.co';
+        </script>       
+        <script src="http://japode.prj.viglet.co/thirdparty/jquery/dist/jquery.min.js"></script>
+        <script src="http://japode.prj.viglet.co/thirdparty/angular/angular.min.js"></script>
+        <script src="http://japode.prj.viglet.co/thirdparty/moment/min/moment-with-langs.min.js"></script>
+        <script src="http://japode.prj.viglet.co/thirdparty/angular-moment/angular-moment.min.js"></script>
+        <script src="http://japode.prj.viglet.co/thirdparty/angular-sanitize/angular-sanitize.min.js"></script>
+        <script src="http://japode.prj.viglet.co/thirdparty/angular-route/angular-route.min.js"></script>        
+        <script src="http://japode.prj.viglet.co/js/jp_client.js"></script>
+        <script src="http://japode.prj.viglet.co/js/tinymce/tinymce.min.js"></script>
+        <script src="http://japode.prj.viglet.co/thirdparty/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="http://japode.prj.viglet.co/js/japodeOauth.js"></script>
+        <script src="http://japode.prj.viglet.co/js/angularOauth.js"></script>
+    </body>
+
+</html>

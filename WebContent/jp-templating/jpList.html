@@ -1,0 +1,14 @@
+<div  ng-controller="PostListCtrl" ng-init="init(jpPosttype, jpRgname, jpTemplate)">
+    <div class="row well well-lg" ng-repeat="post in posts| filter:query" >
+        <div class="pull-right">
+            <em><span am-time-ago="post.date"></span></em>      
+        </div>
+        <div>
+            <h3><a href='#{{postURL(post.content)}}'>{{post.content}}</a></h3>
+        </div>
+        <div>
+
+            <p>{{post.description}}</p>   
+        </div>
+    </div>
+</div>

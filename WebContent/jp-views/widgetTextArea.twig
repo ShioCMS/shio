@@ -1,0 +1,19 @@
+{# 
+<script>
+      function countChar(val) {
+        var len = val.value.length;
+        if (len >= 140) {
+          val.value = val.value.substring(0, 140);
+        } else {
+          $('#charNum').text(140 - len);
+        }
+      };
+    </script>
+#}
+
+<textarea id='{{ attributeName }}' name='{{ attributeName }}' class="form-control" >{{ postAttributeObject.getStrValue() }}</textarea>
+{# 
+<textarea onkeyup="countChar(this)" id='{{ attributeName }}' name='{{ attributeName }}' class="form-control" >{{ postAttributeObject.getStrValue() }}</textarea>
+<div id="charNum"></div>
+
+#}

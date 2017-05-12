@@ -1,0 +1,10 @@
+{% extends "login.twig" %}
+{% block baseContent %}
+<form class="form-signin" action="/login/recover/process/" method="post">
+    <h2 class="form-signin-heading">Reset Your Password</h2>
+     <div class="form-group">
+        <input name="email" id="email" type="email" class="input-block-level form-control" placeholder="Your Email Address">
+    </div>
+    <button class="btn btn-lg btn-primary" type="submit">Submit</button>
+</form>
+{% endblock %}

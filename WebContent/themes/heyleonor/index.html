@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="pt-br" data-ng-app="leonor" xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Leonor</title>
+        <link rel="stylesheet" href="css/messi.min.css" />
+        <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+        <link rel="author" href="https://plus.google.com/115308099937527702094" />
+        <meta name="description" content="Monte seu skate ou mude o visual de sua casa ou escrit&oacute;rio com Leonor Knob na sua parede. E use a camiseta Leonor UYNG, 100% algod&atilde;o.">
+
+        <meta property="og:title" content="Deck Leonor Knob 8.25 x 31.5"/>
+        <meta property="og:image" content="http://www.heyleonor.com/images/leonor_logo.png"/>
+        <meta property="og:site_name" content="Leonor"/>
+        <meta property="og:description" content="Monte seu skate ou mude o visual de sua casa ou escrit&oacute;rio com Leonor Knob na sua parede. E use a camiseta Leonor UYNG, 100% algod&atilde;o."/>
+	    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+            <script src="/themes/heyleonor/js/angular.min.js"></script>
+            <script src="/themes/heyleonor/js/controllers.js"></script>
+            <script src='/themes/heyleonor/galleria/js/galleria-1.3.1.min.js'></script>
+            <script src="/themes/heyleonor/js/messi.min.js"></script>
+            <script>
+                $(function() {
+                    $('a[href*=#]:not([href=#])').click(function() {
+                        if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
+
+                            var target = $(this.hash);
+                            target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+                            if (target.length) {
+                                $('html,body').animate({
+                                    scrollTop: target.offset().top
+                                }, 1000);
+                                return false;
+                            }
+                        }
+                    });
+                });
+            </script>
+            <script type="text/javascript">
+		document.write(unescape("%3Cscript src='" + document.location.protocol + '//capture.pclicks.com/js?pcid=PC-001184-A' + "' type='text/javascript'%3E%3C/script%3E"));
+            </script>
+            <script type="text/javascript">
+            Â (function() {
+                var pc = new predicta.PClick();
+               Â pc.start();
+             })();
+            </script>
+            <script>
+                (function(i, s, o, g, r, a, m) {
+                    i['GoogleAnalyticsObject'] = r;
+                    i[r] = i[r] || function() {
+                        (i[r].q = i[r].q || []).push(arguments)
+                    }, i[r].l = 1 * new Date();
+                    a = s.createElement(o),
+                            m = s.getElementsByTagName(o)[0];
+                    a.async = 1;
+                    a.src = g;
+                    m.parentNode.insertBefore(a, m)
+                })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+                ga('create', 'UA-43270406-1', 'heyleonor.com');
+                ga('send', 'pageview');
+
+            </script>
+
+            <style>
+                body {
+                    width: 945px;
+                    margin:0;
+                } 
+
+                a {
+                    text-decoration: none;
+                }
+		a:link {
+		    color:black;
+		}
+ 		a:visited {
+		    color:black;
+		}
+                #homepage {
+                    display: table;
+                    padding-top: 45px;
+                }
+                .row  {
+                    display: table-row;
+                }
+                .cell {
+                    display: table-cell;
+                }
+                .cellMenuTop {
+                    padding-left: 5px;
+                }
+
+                #menutop {
+                    padding-top: 5px;
+                    padding-bottom: 5px;
+
+                    /*
+                     
+                                    left: 0px;
+                               
+                                  width: 945px;
+                                   
+                    */
+                    position:fixed; 
+                    float: right;
+
+                    z-index: 88888;
+
+
+                    width: 945px;
+
+                    /*          top: 50%; 
+                     position: absolute;
+                    */
+                    left: 50%;
+                    margin-left: -478px;
+                }
+
+                #logo {
+                    float:left;
+                    z-index: 99999;
+
+                    /*                left:360px;
+                    position:fixed;
+                    
+                    */
+                    position:fixed; 
+                    top: 0px;
+                    left: 50%;
+
+                    margin-left: -100px;
+                    /*   margin-top: -472px;             
+                                     position: absolute;
+                    */
+
+                }
+                #homepage {
+                    height: 580px;
+                }
+
+                #tshirtDiv {
+                    height: 900px;
+                }
+                #deckDiv {
+                    height: 800px;
+                }
+                .Ubuntu-bold {
+                }
+
+                #productTshirt{
+                    background-image: url('/themes/heyleonor/images/top_tshirt.png');
+                    float: left;
+                    width: 445px;
+                    height: 575px;
+                    margin-right: 5px;
+                }
+
+                #productDeck{
+                    background-image: url('/themes/heyleonor/images/top_deck.png');
+                    float: left;
+                    width: 490px;
+                    height: 300px;
+                }
+                .productCaption {
+                    margin-top: 10px;
+                    margin-bottom: 10px;
+                    color: black;
+                }
+
+
+                #blog{
+                    background-image: url('/themes/heyleonor/images/top_blog.png');
+                    float: left;
+                    width: 490px;
+                    height: 275px;
+                }
+
+                #textboxTshirt {
+                    float: right;
+                    margin-top: 220px; 
+                    margin-right: 25px;
+                    display:  block;
+                    text-align: right;
+                    color: white;
+                }
+                #textboxDeck {
+                    text-align: center;
+                    margin-top: 60px; 
+                    display:  block;
+                    color: white;
+                }
+
+                #textboxBlog {
+                    text-align: center;
+                    margin-top: 120px; 
+                    color: white;
+                }
+                #labelBuyTshirt {
+                    margin-top: 540px; 
+                    text-align: center;
+                    color:white;
+                }
+
+                #labelBuyDeck {
+                    margin-top: 20px;
+                    text-align: center;
+                    color:white;
+                }
+                #menubuttons {
+                    float: right;
+                }
+
+                /* This rule is read by Galleria to define the gallery height: */
+                #galleriaTshirt {
+                    height:482px;
+                    width: 637px;
+                }
+                #galleriaDeck {
+                    height:452px;
+                    width: 637px;
+                }
+
+                #detailTshirt {
+                    vertical-align: top;
+                    padding-left: 10px;
+                }
+
+                #detailDeck {
+                    vertical-align: top;
+                    padding-left: 10px;
+                }
+
+                .panelShared {
+                    background-image: url('/themes/heyleonor/images/panelShared.png');
+                    width: 293px;
+                    height: 196px;
+                    margin-top: 10px;
+                }
+
+                .panelSharedInner {
+                    position: relative;
+                    top:80px;
+                    left:60px;
+                }
+
+                #footer {
+                    background: black;
+                    height: 80px;
+                    margin-top: 5px;
+                    color: white;
+                }
+
+                .Ubuntu-bold {
+                    font-family: 'Ubuntu', sans-serif;
+                    font-style: normal;
+                    font-weight: 700;
+                }
+                .Ubuntu-light {
+                    font-family: 'Ubuntu', sans-serif;
+                    font-style: normal;
+                    font-weight: 300;
+                }
+                .btnNewsLetter {
+                    background-image: url('/themes/heyleonor/images/btnNewsletter.png');
+                    background-position:  0px 0px;
+                    background-repeat: no-repeat;
+                    width: 81px;
+                    height: 31px;
+                    border: 0px;
+                }
+                .arrowBuy {
+                    background-image: url('/themes/heyleonor/images/arrowBuy.png');
+
+                    background-repeat: no-repeat;
+                }
+
+                div.divClick a {
+
+                    position:absolute;
+                    width:100%;
+                    height:100%;
+                    top:0;
+                    left:0;
+                    text-decoration:none; /* Makes sure the link   doesn't get underlined */
+                    z-index:10; /* raises anchor tag above everything else in div */
+                    background-color:white; /*workaround to make clickable in IE */
+                    opacity: 0; /*workaround to make clickable in IE */
+                    filter: alpha(opacity=1); /*workaround to make clickable in IE */
+                }
+
+                #contentbox {
+                    margin-left: -473px;
+                    width: 945px;
+                    position: absolute;
+
+                    left: 50%;
+                    /*      margin-top: -472px; 
+                                    top: 50%;
+                    height: 100%;
+                    */
+
+                }
+
+            </style>
+            <link href='http://fonts.googleapis.com/css?family=Ubuntu:700' rel='stylesheet' type='text/css'>
+
+                </head>
+                <body>
+                    <div id="fb-root"></div>
+                    <script>(function(d, s, id) {
+                            var js, fjs = d.getElementsByTagName(s)[0];
+                            if (d.getElementById(id))
+                                return;
+                            js = d.createElement(s);
+                            js.id = id;
+                            js.src = "//connect.facebook.net/pt_BR/all.js#xfbml=1&appId=420904751358916";
+                            fjs.parentNode.insertBefore(js, fjs);
+                        }(document, 'script', 'facebook-jssdk'));</script>
+                    <div itemprop="brand" itemscope itemtype="http://schema.org/Brand" id="logo"><a href="/"><img itemprop="logo" src="images/leonor_logo.png"/></a></div>
+                    <div id="menutop" class="row">
+                        <div id='menubuttons'>
+                            <div id="menuFacebook" class="cell cellMenuTop"><a href="http://www.facebook.com/heyleonor" target="_blank"><img src="images/btnFacebook.png" onmouseover="this.src = 'images/btnFacebook-2.png'" onmouseout="this.src = 'images/btnFacebook.png'"/></a></div>
+                            <div id="menuInstagram" class="cell cellMenuTop"><a href="http://instagram.com/heyleonor" target="_blank"><img src="images/btnInstagram-2.png" onmouseover="this.src = 'images/btnInstagram.png'" onmouseout="this.src = 'images/btnInstagram-2.png'"/></a></div>
+                            <div id="menuTwitter" class="cell cellMenuTop"><a href="http://twitter.com/heyleonor" target="_blank"><img src="images/btnTwitter.png" onmouseover="this.src = 'images/btnTwitter-2.png'" onmouseout="this.src = 'images/btnTwitter.png'"/></a></div>
+                            <div id="menuYoutube" class="cell cellMenuTop"><a href="http://www.youtube.com/heyleonortv" target="_blank"><img src="images/btnYoutube.png" onmouseover="this.src = 'images/btnYoutube-2.png'" onmouseout="this.src = 'images/btnYoutube.png'"/></a></div>
+                            <div id="menuVimeo" class="cell cellMenuTop"><a href="http://vimeo.com/leonor" target="_blank"><img src="images/btnVimeo.png" onmouseover="this.src = 'images/btnVimeo-2.png'" onmouseout="this.src = 'images/btnVimeo.png'"></a></div>
+                        </div>
+                    </div>
+                    <div id="contentbox">
+                        <div id="homepage">
+                            <div class="row">
+                                <a href="#tshirt">
+                                    <div id="productTshirt" class="cell divClick">                 
+                                        <div id="textboxTshirt">
+                                            <div class="Ubuntu-bold" style="font-size: 18px">CAMISETA</div>
+                                            <div class="Ubuntu-bold" style="font-size: 48px">UYNG</div>
+                                            <div class="Ubuntu-bold" style="font-size: 18px">REGALAN BRANCA / PRETA</div>
+                                            <div class="Ubuntu-bold" style="font-size: 24px">13x de R$ <span style="font-size: 45px; color: rgb(123,233,235)">5,00</span></div>
+                                            <div class="Ubuntu-bold" style="font-size: 24px">R$ <span style="font-size: 45px">65,00</span></div>
+                                        </div>
+                                        <div id="labelBuyTshirt" class="Ubuntu-bold" style="font-size: 18px"><img src="images/arrowBuy.png"/>COMPRAR<img src="images/arrowBuy.png"/></div>
+
+                                    </div>
+                                </a>
+
+                                <div class="cell" style="vertical-align: top;cursor: pointer;" onclick="window.location = '#deck';">
+                                    <a href="#deck">
+                                        <div id="productDeck">  
+
+                                            <div id="textboxDeck">
+                                                <div class="Ubuntu-bold" style="font-size: 18px">DECK</div>
+                                                <div class="Ubuntu-bold" style="font-size: 36px">LEONOR KNOB</div>
+                                                <div class="Ubuntu-bold" style="font-size: 18px">8.25X31.5'</div>
+                                                <div class="Ubuntu-bold" style="font-size: 24px">18x de R$ <span style="font-size: 45px; color: rgb(123,233,235)">5,00</span></div>
+                                                <div class="Ubuntu-bold" style="font-size: 24px">R$ <span style="font-size: 45px">89,90</span></div>
+                                            </div>
+                                            <div id="labelBuyDeck" class="Ubuntu-bold" style="font-size: 18px"><img src="images/arrowBuy.png"/>COMPRAR<img src="images/arrowBuy.png"/></div>                        
+
+
+                                        </div>
+                                    </a>
+
+                                    <a href="http://blog.heyleonor.com/">
+                                        <div id="blog">
+                                            <div id="textboxBlog" class='divClick'>
+
+                                                <div class="Ubuntu-bold" style="font-size: 54px">BLOG</div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+
+                        <div class="row">
+                            <div id="video" class="cell" style="height:320px;" onclick="window.open('https://vimeo.com/71069117', '_blank');">
+                                <div id="myvideo"></div>
+                                <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
+                                <script type="text/javascript">
+                        function vimeo_player_loaded() {
+                            moogaloop3 = document.getElementById('myvideo');
+                            moogaloop3.api_setVolume(0);
+                        }
+                        var flashvars = {
+                            'clip_id': '71069117',
+                            'server': 'vimeo.com',
+                            'show_title': 0,
+                            'show_byline': 0,
+                            'show_portrait': 0,
+                            'fullscreen': 1,
+                            'autoplay': 1,
+                            'js_api': 1,
+                            'loop': 1,
+                            'title': 0,
+                            'byline': 0,
+                            'portrait': 0,
+                            'js_onload': 'vimeo_player_loaded'
+                        }
+                        var parObj = {
+                            'swliveconnect': true,
+                            'fullscreen': 1,
+                            'allowscriptaccess': 'always',
+                            'allowfullscreen': true
+                        };
+                        var attObj = {}
+                        attObj.id = "myvideo";
+                        swfobject.embedSWF("http://www.vimeo.com/moogaloop.swf", "myvideo", "435", "245", "9.0.28", '', flashvars, parObj, attObj);
+                                </script>
+                            </div>
+			    <div class="cell" style="padding-left: 5px" >	
+			    <div class="g-page" data-width="220" data-href="//plus.google.com/115308099937527702094" data-showtagline="false" data-showcoverphoto="false" data-rel="publisher"></div>
+</div>
+                            <div class="fb-like-box cell" style="padding-left: 5px;top:-6px" data-href="http://www.facebook.com/heyleonor" data-width="275" data-height="240" data-colorscheme="light" data-show-faces="true" data-header="false" data-stream="false" data-show-border="true"></div>
+			</div>
+                        <a id="tshirt"/>
+			
+                        <div itemscope itemtype="http://schema.org/Product" itemref="logo" id="tshirtDiv">
+                            <div class='productCaption'>
+<meta itemprop="name" content="Camiseta UYNG">
+				<a href="/tshirt/uyng">
+                                <div class="Ubuntu-bold" style="font-size: 18px">CAMISETA</div>
+                                <div class="row">
+                                    <div class="Ubuntu-bold cell" style="font-size: 48px;padding-right: 20px;">UYNG</div></a>
+                                    <div class="cell" style="width: 100%"><div style="width: 100%;height:20px;background-image: url('images/rowBlack.png');background-repeat: repeat-x"></div></div>
+
+                                </div>
+                            </div>
+                            <div class='row'>
+                                <div id="galleriaTshirt" class="cell">
+                                    <a href="http://24.media.tumblr.com/bae2852373d48c1f9d13c4576cca6ab0/tumblr_mvaxxdBIQV1sby5pco1_1280.jpg">
+                                        <img title="Camiseta UYNG"
+                                             alt="Camiseta UYNG"
+                                             src="http://24.media.tumblr.com/bae2852373d48c1f9d13c4576cca6ab0/tumblr_mvaxxdBIQV1sby5pco1_1280.jpg">
+                                    </a>
+                                    <a href="http://25.media.tumblr.com/6f62d1da9c13ae22739c25944d1fac57/tumblr_mvfzcegLnm1sby5pco1_1280.png">
+                                        <img title="Camiseta UYNG"
+                                             alt="Camiseta UYNG"
+                                             src="http://25.media.tumblr.com/6f62d1da9c13ae22739c25944d1fac57/tumblr_mvfzcegLnm1sby5pco1_1280.png">
+                                    </a>
+                                </div>
+                                <div itemscope id="detailTshirt" class='cell' itemtype="http://schema.org/Offer">
+                                    <div class="Ubuntu-bold" style="font-size: 36px"><span itemprop="price">R$65,00</span></div>
+                                    <div class="Ubuntu-bold" style="font-size: 24px">13x de R$5,00</div>
+                                    <div class="Ubuntu-bold" style="font-size: 18px">REGALAN BRANCA / PRETA</div>
+                                    <div class="Ubuntu-light" style="font-size: 14px;padding-top: 10px;padding-bottom: 10px;height: 100px">100% algod&atilde;o</div>
+                                    <div style="margin-top: 5px; margin-bottom: 5px;">
+                                        <a href="javascript:selectTShirt('P')"><img id='btnTshirtP' src="images/btnTshirtP.png"/></a>
+                                        <img id='btnTshirtM' src="images/btnTshirtMDisabled.png" title="Esgotado"/>
+                                        <a href="javascript:selectTShirt('G')"><img id='btnTshirtG' src="images/btnTshirtG.png"/></a>
+                                    </div>
+                                    <form target="pagseguro" action="https://pagseguro.uol.com.br/checkout/v2/cart.html?action=add" method="post">
+                                        <input type="hidden" name="itemCode" id="itemCodeTshirt" />
+                                        <input type="image" src="images/btnBuyOff.png" name="submit" id="submitTshirt" disabled alt="Compre Agora" />
+                                    </form>                  
+                                    <div class="panelShared">
+                                        <div class="panelSharedInner">
+                                            <div class="fb-like" data-href="http://www.heyleonor.com/tshirt/uyng/" data-width="The pixel width of the plugin" data-height="The pixel height of the plugin" data-colorscheme="light" data-layout="box_count" data-action="like" data-show-faces="false" data-send="false"></div>
+                                            <!-- Posicione esta tag onde vocÃª deseja que o botÃ£o +1 apareÃ§a. -->
+                                            <div class="g-plusone" data-size="tall" data-href="http://www.heyleonor.com/tshirt/uyng/"></div>
+                                            <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://www.heyleonor.com/tshirt/uyng/" data-count="vertical" data-via="heyleonor" data-lang="pt">Tweetar</a>
+                                            <script>!function(d, s, id) {
+                                                    var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+                                                    if (!d.getElementById(id)) {
+                                                        js = d.createElement(s);
+                                                        js.id = id;
+                                                        js.src = p + '://platform.twitter.com/widgets.js';
+                                                        fjs.parentNode.insertBefore(js, fjs);
+                                                    }
+                                                }(document, 'script', 'twitter-wjs');</script>                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <a id="deck"/>
+                        <div itemscope itemtype="http://schema.org/Product" itemref="logo" id="deckDiv">
+                            <div class='productCaption'>
+<meta itemprop="name" content="Deck Leonor Knob">
+				<a href="/deck/knob">
+                                <div class="Ubuntu-bold" style="font-size: 18px">DECK</div>
+                                <div class='row'>
+                                    <div class="Ubuntu-bold cell" style="font-size: 48px;padding-right: 20px;">LEONOR&nbsp;KNOB</div></a>
+                                    <div class="cell" style="width: 100%"><div style="width: 100%;height:20px;background-image: url('images/rowBlack.png');background-repeat: repeat-x"></div></div>
+                                </div>
+                            </div>
+                            <div class='row'>
+                                <div id="galleriaDeck" class="cell">
+                                    <a href="http://31.media.tumblr.com/450594a2c53f1c77a35e260a66dc233c/tumblr_msma1eyD3k1sby5pco1_1280.jpg">
+                                        <img title="Deck Leonor Knob"
+                                             alt="Deck Leonor Knob"
+                                             src="http://31.media.tumblr.com/450594a2c53f1c77a35e260a66dc233c/tumblr_msma1eyD3k1sby5pco1_1280.jpg">
+                                    </a>
+                                    <a href="http://25.media.tumblr.com/fde40f29cf479350d52515935d32bfe7/tumblr_mq72bgZF5i1sby5pco3_1280.jpg">
+                                        <img title="Deck Leonor Knob"
+                                             alt="Deck Leonor Knob"
+                                             src="http://25.media.tumblr.com/fde40f29cf479350d52515935d32bfe7/tumblr_mq72bgZF5i1sby5pco3_1280.jpg">
+                                    </a>
+                                    <a href="http://25.media.tumblr.com/30b7b0dd5bc6c1fd080ca6722cc4ad7f/tumblr_mq72bgZF5i1sby5pco2_1280.jpg">
+                                        <img title="Deck Leonor Knob"
+                                             alt="Deck Leonor Knob"
+                                             src="http://25.media.tumblr.com/30b7b0dd5bc6c1fd080ca6722cc4ad7f/tumblr_mq72bgZF5i1sby5pco2_1280.jpg">
+                                    </a>
+                                    <a href="http://31.media.tumblr.com/23220631ee9fee314e2d555490a244e8/tumblr_mqbgd0qd1f1sby5pco3_1280.jpg">
+                                        <img title="Deck Leonor Knob"
+                                             alt="Deck Leonor Knob"
+                                             src="http://31.media.tumblr.com/23220631ee9fee314e2d555490a244e8/tumblr_mqbgd0qd1f1sby5pco3_1280.jpg">
+                                    </a>
+                                    <a href="http://24.media.tumblr.com/ab47c331b4d06fa31b6d04816ba79612/tumblr_mqbgd0qd1f1sby5pco1_1280.jpg">
+                                        <img title="Deck Leonor Knob"
+                                             alt="Deck Leonor Knob"
+                                             src="http://24.media.tumblr.com/ab47c331b4d06fa31b6d04816ba79612/tumblr_mqbgd0qd1f1sby5pco1_1280.jpg">
+                                    </a>
+
+                                </div>
+                                <div itemscope id="detailDeck" class='cell' itemtype="http://schema.org/Offer">
+                                    <div class="Ubuntu-bold" style="font-size: 36px"><span itemprop="price">R$89,90</span></div>
+                                    <div class="Ubuntu-bold" style="font-size: 24px">18x de R$5,00</div>
+                                    <div class="Ubuntu-bold" style="font-size: 18px">8.25x31.5'</div>
+                                    <div class="Ubuntu-light" style="font-size: 14px;padding-top: 10px;padding-bottom: 10px; height: 100px"></div>                 
+                                    <form target="pagseguro" action="https://pagseguro.uol.com.br/checkout/v2/cart.html?action=add" method="post">
+                                        <input type="hidden" name="itemCode" value="45ECE7733D3DC18114F6AFB9CC697FEE" />
+                                        <input type="image" src="images/btnBuy.png" name="submit" alt="Compre Agora" />
+                                    </form>                 
+                                    <div class="panelShared">
+                                        <div class="panelSharedInner">
+                                            <div class="fb-like" data-href="http://www.heyleonor.com/deck/knob/" data-width="The pixel width of the plugin" data-height="The pixel height of the plugin" data-colorscheme="light" data-layout="box_count" data-action="like" data-show-faces="false" data-send="false"></div>
+                                            <!-- Posicione esta tag onde vocÃª deseja que o botÃ£o +1 apareÃ§a. -->
+                                            <div class="g-plusone" data-size="tall" data-href="http://www.heyleonor.com/deck/knob/"></div>
+                                            <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://www.heyleonor.com/deck/knob/" data-count="vertical" data-via="heyleonor" data-lang="pt">Tweetar</a>
+                                            <script>!function(d, s, id) {
+                                                    var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+                                                    if (!d.getElementById(id)) {
+                                                        js = d.createElement(s);
+                                                        js.id = id;
+                                                        js.src = p + '://platform.twitter.com/widgets.js';
+                                                        fjs.parentNode.insertBefore(js, fjs);
+                                                    }
+                                                }(document, 'script', 'twitter-wjs');</script>                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>     
+                        <div id='footer' style="padding:20px;" ng-controller="NewsletterCtrl">
+                            <div class="row" style="float:left; width: 500px;" >
+                                <div id='footerLogo' class="cell"><img src="/themes/heyleonor/images/logo_footer.png"/></div>
+                                <div id='footerNewsletter' class="cell" style="vertical-align: top;padding-left: 20px;">
+                                    <div class="Ubuntu-bold" style="font-size: 24px">SAIBA DE TUDO</div>
+                                    <div class="Ubuntu-light" style="font-size: 18px">Promo&ccedil;&otilde;es, Eventos e Festas</div>
+                                    <div style="height:31px;background-color: white;">
+                                        <input type="text" ng-model="lrEmail" ng-enter="saveEmail()" oninput="javascript:cleanMessage();" onchange="javascript:cleanMessage();" id="email" name="email" style="top:0;background-color:transparent; border: 0px solid;width: 260px;height:30px;vertical-align: top;"/>
+                                        <input type="button" value="" ng-click="saveEmail()" class="btnNewsLetter"  />
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div id='footerShared' style='display: block'>
+                                <div id='footerFacebook' style=" float:right; width: 300px;margin-top: 5px;">   
+                                    <div class="fb-like" data-href="https://www.facebook.com/heyleonor" data-width="300px" data-height="The pixel height of the plugin" data-colorscheme="dark" data-layout="standard" data-action="like" data-show-faces="false" data-send="false"></div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    </div>
+                    <!-- Posicione esta tag depois da Ãºltima tag do botÃ£o +1. -->
+                    <script type="text/javascript">
+                                                window.___gcfg = {lang: 'pt-BR'};
+
+                                                (function() {
+                                                    var po = document.createElement('script');
+                                                    po.type = 'text/javascript';
+                                                    po.async = true;
+                                                    po.src = 'https://apis.google.com/js/plusone.js';
+                                                    var s = document.getElementsByTagName('script')[0];
+                                                    s.parentNode.insertBefore(po, s);
+                                                })();
+
+
+                                                // Load the classic theme
+                                                Galleria.loadTheme('/themes/heyleonor/galleria/themes/classic/galleria.classic.min.js');
+
+                                                // Initialize Galleria
+                                                Galleria.run('#galleriaTshirt');
+                                                Galleria.run('#galleriaDeck');
+
+                    </script>
+
+                    <script>
+                        function selectTShirt(size) {
+                            var btnTshirtP = document.getElementById("btnTshirtP");
+                            var btnTshirtM = document.getElementById("btnTshirtM");
+                            var btnTshirtG = document.getElementById("btnTshirtG");
+                            var submitTshirt = document.getElementById("submitTshirt");
+                            var itemCodeTshirt = document.getElementById('itemCodeTshirt');
+
+                            if (size === 'P') {
+                                btnTshirtP.src = '/themes/heyleonor/images/btnTshirtPOn.png';
+                                /*  btnTshirtM.src = 'images/btnTshirtM.png'; */
+                                btnTshirtG.src = '/themes/heyleonor/images/btnTshirtG.png';
+                                itemCodeTshirt.value = "69A4A75DB2B2AD4224C34F8C9DE4EDC9";
+                                submitTshirt.disabled = false;
+                                submitTshirt.src = "/themes/heyleonor/images/btnBuy.png"
+                            }
+                            ;
+                            /*            if (size === 'M') {
+                             btnTshirtP.src = '/themes/heyleonor/images/btnTshirtP.png';
+                             btnTshirtM.src = '/themes/heyleonor/images/btnTshirtMOn.png';
+                             btnTshirtG.src = '/themes/heyleonor/images/btnTshirtG.png';
+                             itemCodeTshirt.value = "D77BE530525278E994F39F9B0708A447";
+                             submitTshirt.disabled = false;
+                             submitTshirt.src = "images/btnBuy.png"
+                             }
+                             ; */
+                            if (size === 'G') {
+                                btnTshirtP.src = '/themes/heyleonor/images/btnTshirtP.png';
+                                /*   btnTshirtM.src = '/themes/heyleonor/images/btnTshirtM.png'; */
+                                btnTshirtG.src = '/themes/heyleonor/images/btnTshirtGOn.png';
+                                itemCodeTshirt.value = "484BCA57C9C946EDD4146FAA314104BB";
+                                submitTshirt.disabled = false;
+                                submitTshirt.src = "/themes/heyleonor/images/btnBuy.png";
+                            }
+                            ;
+                        }
+
+                        function validateEmail()
+                        {
+                            if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(document.formNewsletter.email.value))
+                            {
+                                return (true);
+                            }
+                            var messageNewsletter = document.getElementById('messageNewsletter');
+                            messageNewsletter.innerHTML = "Email incorreto. Digite novamente";
+
+                            return (false);
+                        }
+
+                        function cleanMessage()
+                        {
+                            var messageNewsletter = document.getElementById('messageNewsletter');
+                            messageNewsletter.innerHTML = "";
+
+                            return (false);
+                        }
+                    </script>
+
+                </body>
+                </html>

@@ -1,0 +1,11 @@
+<div class="jumbotron" ng-hide="accessToken" style="ng-hide">
+    <h1> Seu primeiro acesso?</>
+        <p>Conecte no Japode para começar a criar seu site</p>
+        <a href="javascript:void(0);" class="btn btn-primary" ng-click="authenticate()" ng-hide="accessToken" style="ng-hide">Connect with Japode</a>
+
+        <a href="#" class="btn btn-danger" ng-click="signoff()"  ng-show="accessToken" style="ng-hide">Sign off</a>
+</div>
+<div class="jumbotron" ng-show="accessToken" style="ng-hide">
+    <h1>Parabéns!</h1>
+    <p>Você está logado, use o a barra de menu para começar a construir seu site</p>
+</div>

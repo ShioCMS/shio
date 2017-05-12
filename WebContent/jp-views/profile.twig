@@ -1,0 +1,11 @@
+{% extends "homeBase.twig" %}
+{% block homeContent %}
+<div class="row">
+    <div class="col-lg-2">
+	 {% include 'profileMenuLeft.twig' %}
+    </div>
+    <div class="col-lg-10">
+	{% include 'profileBasic.twig' %}
+    </div>
+
+{% endblock %}

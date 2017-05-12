@@ -1,0 +1,29 @@
+<tr {% if attrib.getPosition() == '1'  %}class="info"{% endif %} {% if attrib.getPosition() == '2'  %}class="success"{% endif %}>
+    <td>{% if attrib.getPosition() == '1'  %}Title{% endif %} {% if attrib.getPosition() == '2'  %}Summary{% endif %}</td>    
+    <td>
+        <div class="checkbox">
+            <input type="checkbox"  id="many_{{ attrib.getId() }}" name="many_{{ attrib.getId() }}" value="1" {% if attrib.getMany() == '1'  %}checked{% endif %}>
+        </div>
+    </td>
+    <td>
+        <div class="checkbox">
+            <input type="checkbox"  id="req_{{ attrib.getId() }}" name="req_{{ attrib.getId() }}" value="1" {% if attrib.getRequired() == '1'  %}checked{% endif %}>
+        </div>
+    </td>
+
+    <td><input type="text" class="form-control" id="lbl_{{ attrib.getId() }}"  name="lbl_{{ attrib.getId() }}" value = "{{ attrib.getLabel() }}" /> </td>
+    <td>
+        <select id="wdg_{{ attrib.getId() }}"  name="wdg_{{ attrib.getId() }}" class="form-control">
+            <option value="{{ attrib.getWidget().getId() }}">{{ attrib.getWidget().getId() }}</option>
+        </select>
+    </td>
+    <td>
+
+        <div class="btn-group"> <a href="/widget/edit/{{ id }}/{{ attrib.getId() }}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span> Edit</a> <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
+            <ul class="dropdown-menu">
+                <li><a href="/widget/remove/{{ id }}/{{ attrib.getId() }}" ><span class="glyphicon glyphicon-minus-sign"></span> Remove</a></li>
+            </ul>
+        </div>       
+    </td>
+
+</tr>

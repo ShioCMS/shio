@@ -1,0 +1,27 @@
+<div class="pull-right">
+    <em><span am-time-ago="post.date"></span>      
+</div>
+<table>
+    <tr>
+        <td>
+            <img src="{{ user.getImageProfile('small') }}" class="img-circle"/>&nbsp;&nbsp;&nbsp;
+        </td>
+        <td>
+            <h3><input class='inline-edit' value='{% verbatim %} {{post.content}} {% endverbatim %}'></h3>
+        </td>
+    </tr>
+</table>
+<div id="example-one" contenteditable="true">
+    <style scoped>
+        #example-one { margin-bottom: 10px; }
+        [contenteditable="true"] { padding: 10px;}
+        [contenteditable="true"]:hover { background-color: #FFD;
+
+                                         /* A subtle transition never hurts */
+                                         -webkit-transition: background-color 0.5s;
+                                         -moz-transition: background-color 0.5s;
+                                         -ie-transition: background-color 0.5s;
+                                         transition: background-color 0.5s; }
+    </style>
+    <p>{% verbatim %} {{post.description}} {% endverbatim %}</b></p>   
+</div>

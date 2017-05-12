@@ -1,0 +1,12 @@
+/* line 10, /Applications/MAMP/htdocs/japode/less/japode.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Applications\/MAMP\/htdocs\/japode\/less\/japode\.less}line{font-family:\0000310}}
+.box {
+  color: #fe33ac;
+  border-color: #fdcdea;
+}
+/* line 13, /Applications/MAMP/htdocs/japode/less/japode.less */
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Applications\/MAMP\/htdocs\/japode\/less\/japode\.less}line{font-family:\0000313}}
+.box div {
+  -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}

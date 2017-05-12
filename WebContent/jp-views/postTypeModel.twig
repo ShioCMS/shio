@@ -1,0 +1,18 @@
+{% extends "homeBase.twig" %}
+{% block extracover %}
+    {% block pullright %}
+    <a href="/post/select/" class="btn btn-default">Or select other Post Type</a>
+   {% endblock %}
+{% endblock %}
+{% block homeContent %}
+<div class="row">
+    <div class="col-md-2">
+        {% include 'postTypeMenuLeft.twig' %}
+    </div>
+    <div class="col-md-10">
+        {% block content %}
+            {% include 'postTypeBasic.twig' %}
+        {% endblock %}
+    </div>
+</div>
+{% endblock %}

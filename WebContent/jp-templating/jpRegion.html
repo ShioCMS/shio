@@ -1,0 +1,53 @@
+<div ng-controller="PostCtrl" ng-init="init(jpPosttype, jpRgname, jpTemplate)">
+    <div class="jpcontent" ng-show="accessToken" style="ng-hide">
+        <div id="jpeditcontent">
+            <a href="javascript:void(0)" ng-click="editPost(jpPosttype, post.id)"><i class="glyphicon glyphicon-pencil close"></i></a>
+        </div>
+        <div ng-include="postTemplate">
+
+        </div>
+    </div>
+    <div ng-include="postTemplate" ng-hide="accessToken" style="ng-hide">
+
+    </div>
+
+</div>
+
+<script type="text/ng-template" id="postView">
+    <div ng-show="accessToken" style="ng-hide">
+    <h2 contenteditable="true" placeholder="Empty...">{{post.JP_TITLE}}</h2>
+    <p contenteditable="true" placeholder="Empty...">{{post.JP_TEXT}}</p>
+    </div>
+
+    <div ng-hide="accessToken" style="ng-hide">
+    <h2>{{post.JP_TITLE}}</h2>
+    <p>{{post.JP_TEXT}}</p>
+    </div>
+
+
+</script>
+
+<script type="text/ng-template" id="postViewH1">
+    <div ng-show="accessToken" style="ng-hide">
+    <h1 contenteditable="true" placeholder="Empty...">{{post.JP_TITLE}}</h1>
+    <p contenteditable="true" placeholder="Empty...">{{post.JP_TEXT}}</p>
+    </div>
+
+    <div ng-hide="accessToken" style="ng-hide">
+    <h1>{{post.JP_TITLE}}</h1>
+    <p>{{post.JP_TEXT}}</p>
+    </div>
+</script>
+<script type="text/ng-template" id="postViewH2Image">
+    <div ng-show="accessToken" style="ng-hide">
+    <h2 contenteditable="true" placeholder="Empty...">{{post.JP_TITLE}}</h2>
+    <p contenteditable="true" placeholder="Empty...">{{post.JP_TEXT}}</p>
+    <img class="tm-image-border" src="{{post.JP_IMAGE}}" width="420" height="240">
+    </div>
+
+    <div ng-hide="accessToken" style="ng-hide">
+    <h2>{{post.JP_TITLE}}</h2>
+    <p>{{post.JP_TEXT}}</p>
+    <img class="tm-image-border" src="{{post.JP_IMAGE}}" width="420" height="240">
+    </div>
+</script>

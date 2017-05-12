@@ -1,0 +1,115 @@
+{% extends "homeBase.twig" %}
+{% block baseHead %}
+{{ parent() }}
+<link href="/css/chat/chat.css" rel="stylesheet" media="screen">
+{% endblock %}
+{% block homeContent %}     
+<div onLoad="inicia()" bgcolor="#FFFFFF">
+
+
+    <div id="wrap">        
+        <div class="container">
+            <?php include 'vcMenuheader.php'; ?>
+            <div id="load" style="position:absolute; width:100%; height:100%; z-index:auto; left: 0px; top: 0px; visibility: visible;"> 
+                <table width="100%" border="0" cellspacing="0" cellpadding="0" height="570" bgcolor="#FFFFFF" class="texto11">
+                    <tr>
+                        <td align="center" id="textoload"><strong>Carregando, aguarde...</strong><br><br>
+                            <img src="icones/load.gif" width="100" height="22"><br><br>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="row columncontainer">
+                <div id="fonline" class="col-lg-2 columncontainer" name="fonline">
+                    <ul class="nav nav-pills nav-stacked" ng-controller="UsersListCtrl">                        
+                        <li ng-repeat="user in users | filter:query | orderBy:orderProp" ng-class="{ active: isActive(user.name)}" > 
+                            <a href="#" ng-click="setUser(user.name)"><span am-time-ago="new Date()"></span><i class="glyphicon " ng-class="(user.name === 'Todos') ? 'glyphicon-th' : 'glyphicon-user'"></i>{% verbatim %} {{user.name}} {% endverbatim %}<i ng-if="user.name != 'Todos'" class="glyphicon glyphicon-picture"></i></a>
+                        </li>
+                    </ul>
+                </div>
+                <div id="mostrar" class="col-lg-9 chat columncontainer" ng-controller="MessagesLatestListCtrl">                       
+                </div>                   
+            </div>
+        </div>
+    </div>
+    <div id="footer">
+        <div class="container" ng-controller="MessageCtrl">
+            <div class="row">
+                <div class="col-lg-2">
+                    <div class="row">
+                        <div class="col-lg-2">
+                            <p class="lead"><?= $nick; ?></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-2">
+                            <label class="checkbox">
+                                <input type="checkbox" id="reservado" value="1" ng-model="sgReserved">
+                                Reservadamente
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <span class="col-lg-10">
+                    <div class="tabbable tabs-below"  >
+                        <ul id="usersTalking" class="nav nav-tabs">
+                            <li class="active"><a href="#" >Alexandre</a></li>
+                            <li><a href="#">Henrique</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <br>
+                            <div class="input-group">
+                                <input type="text" ng-model="sgMessage" ng-enter="sendMessage()" class="form-control formbranco" id="mensagem" placeholder="Type your message...">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-primary" type="button" ng-click="sendMessage()" >Enviar</button>
+                                </span>
+                            </div><!-- /input-group -->
+
+                        </div>
+
+                    </div>
+                </span>
+            </div>
+            <input type="hidden" name="select2"  class="form" id="estado" value="1"/>
+            <input type="hidden" id="nick" value="<?= $nick; ?>">
+            <input name="hidden" type="hidden" id="cor" value="#006699">
+            <input type="hidden" id="rolagem" value="1">
+            <input type="hidden" id="falacom" value="Todos">   
+
+        </div>
+    </div>
+</div>    
+{% endblock %}  
+
+{% block baseJSFooter %}        
+{{ parent() }}
+<script src="/js/chat/ajax.js" language="javascript" type="text/javascript"></script>
+<script src="/js/chat/chat.js" language="javascript" type="text/javascript"></script>
+<script src="/js/chat/controllers.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('ul.nav > li').click(function(e) {
+            e.preventDefault();
+            $('ul.nav > li').removeClass('active');
+            $(this).addClass('active');
+        });
+    });
+
+
+
+    $(function() {
+        setColumnSize();
+
+        $(window).resize(function() {
+            setColumnSize();
+        });
+    });
+
+    function setColumnSize() {
+        $('.columncontainer').css('height', $('#footer').position().top - 70);
+    }
+
+</script>
+
+{% endblock %}  

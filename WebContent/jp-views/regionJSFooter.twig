@@ -1,0 +1,42 @@
+<script>
+    var jp_domain = '{{ jp_domain }}';
+</script>            
+<script src="/thirdparty/jquery/dist/jquery.min.js"></script>
+<script src="/thirdparty/angular/angular.min.js"></script>
+<script src="/thirdparty/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="/thirdparty/bootstrap/js/tooltip.js"></script>
+<script src="/thirdparty/bootstrap/js/popover.js"></script>
+<script src="/thirdparty/typeahead.js/dist/typeahead.bundle.min.js"></script>
+<script src="/js/handlebars-v1.3.0.js"></script>
+<script src="/thirdparty/moment/min/moment-with-langs.min.js"></script>
+<script src="/thirdparty/angular-moment/angular-moment.min.js"></script>
+<script src="/thirdparty/angular-sanitize/angular-sanitize.js"></script>   
+<script src="/thirdparty/angular-route/angular-route.min.js"></script>
+<script src="/js/controllers.js"></script>
+<script src="/thirdparty/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js"></script>
+<script src="/thirdparty/bootstrap-tagsinput/dist/bootstrap-tagsinput-angular.js"></script>
+<script src="/js/tinymce/tinymce.min.js"></script>
+<!-- <script src="/js/jpasset.js"></script> -->
+
+<script>
+      var repos = new Bloodhound({
+  datumTokenizer: function(d) { return d.tokens; },
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  prefetch: '/services/repos.json'
+});
+ 
+repos.initialize();
+ 
+$('.states').typeahead(null, {
+  name: 'twitter-oss',
+  displayKey: 'name',
+  source: repos.ttAdapter(),
+  templates: {
+    suggestion: Handlebars.compile([
+      '<p class="repo-language">{% verbatim %}{{language}}{% endverbatim %}</p>',
+      '<p class="repo-name">{% verbatim %}{{name}}{% endverbatim %}</p>',
+      '<p class="repo-description">{% verbatim %}{{description}}{% endverbatim %}</p>'
+    ].join(''))
+  }
+});
+</script>
