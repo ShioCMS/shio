@@ -29,20 +29,20 @@ public class ShPostType implements Serializable {
 	private String title;
 
 	//bi-directional many-to-one association to ShPost
-	@OneToMany(mappedBy="shpostType")
-	private List<ShPost> shposts;
+	@OneToMany(mappedBy="shPostType")
+	private List<ShPost> shPosts;
 
 	//bi-directional many-to-one association to ShPostAttr
-	@OneToMany(mappedBy="shpostType")
-	private List<ShPostAttr> shpostAttrs;
+	@OneToMany(mappedBy="shPostType")
+	private List<ShPostAttr> shPostAttrs;
 
 	//bi-directional many-to-one association to ShPostTypeAttr
-	@OneToMany(mappedBy="shpostType")
-	private List<ShPostTypeAttr> shpostTypeAttrs;
+	@OneToMany(mappedBy="shPostType")
+	private List<ShPostTypeAttr> shPostTypeAttrs;
 
 	//bi-directional many-to-one association to ShRegion
-	@OneToMany(mappedBy="shpostType")
-	private List<ShRegion> shregions;
+	@OneToMany(mappedBy="shPostType")
+	private List<ShRegion> shRegions;
 
 	public ShPostType() {
 	}
@@ -87,92 +87,92 @@ public class ShPostType implements Serializable {
 		this.title = title;
 	}
 
-	public List<ShPost> getShposts() {
-		return this.shposts;
+	public List<ShPost> getShPosts() {
+		return this.shPosts;
 	}
 
-	public void setShposts(List<ShPost> shposts) {
-		this.shposts = shposts;
+	public void setShPosts(List<ShPost> shPosts) {
+		this.shPosts = shPosts;
 	}
 
-	public ShPost addShpost(ShPost shpost) {
-		getShposts().add(shpost);
-		shpost.setShpostType(this);
+	public ShPost addShpost(ShPost shPost) {
+		getShPosts().add(shPost);
+		shPost.setShPostType(this);
 
-		return shpost;
+		return shPost;
 	}
 
-	public ShPost removeShpost(ShPost shpost) {
-		getShposts().remove(shpost);
-		shpost.setShpostType(null);
+	public ShPost removeShpost(ShPost shPost) {
+		getShPosts().remove(shPost);
+		shPost.setShPostType(null);
 
-		return shpost;
+		return shPost;
 	}
 
-	public List<ShPostAttr> getShpostAttrs() {
-		return this.shpostAttrs;
+	public List<ShPostAttr> getShPostAttrs() {
+		return this.shPostAttrs;
 	}
 
-	public void setShpostAttrs(List<ShPostAttr> shpostAttrs) {
-		this.shpostAttrs = shpostAttrs;
+	public void setShPostAttrs(List<ShPostAttr> shPostAttrs) {
+		this.shPostAttrs = shPostAttrs;
 	}
 
-	public ShPostAttr addShpostAttr(ShPostAttr shpostAttr) {
-		getShpostAttrs().add(shpostAttr);
-		shpostAttr.setShpostType(this);
+	public ShPostAttr addShPostAttr(ShPostAttr shPostAttr) {
+		getShPostAttrs().add(shPostAttr);
+		shPostAttr.setShPostType(this);
 
-		return shpostAttr;
+		return shPostAttr;
 	}
 
-	public ShPostAttr removeShpostAttr(ShPostAttr shpostAttr) {
-		getShpostAttrs().remove(shpostAttr);
-		shpostAttr.setShpostType(null);
+	public ShPostAttr removeShPostAttr(ShPostAttr shPostAttr) {
+		getShPostAttrs().remove(shPostAttr);
+		shPostAttr.setShPostType(null);
 
-		return shpostAttr;
+		return shPostAttr;
 	}
 
-	public List<ShPostTypeAttr> getShpostTypeAttrs() {
-		return this.shpostTypeAttrs;
+	public List<ShPostTypeAttr> getShPostTypeAttrs() {
+		return this.shPostTypeAttrs;
 	}
 
-	public void setShpostTypeAttrs(List<ShPostTypeAttr> shpostTypeAttrs) {
-		this.shpostTypeAttrs = shpostTypeAttrs;
+	public void setShPostTypeAttrs(List<ShPostTypeAttr> shPostTypeAttrs) {
+		this.shPostTypeAttrs = shPostTypeAttrs;
 	}
 
-	public ShPostTypeAttr addShpostTypeAttr(ShPostTypeAttr shpostTypeAttr) {
-		getShpostTypeAttrs().add(shpostTypeAttr);
-		shpostTypeAttr.setShpostType(this);
+	public ShPostTypeAttr addShPostTypeAttr(ShPostTypeAttr shPostTypeAttr) {
+		getShPostTypeAttrs().add(shPostTypeAttr);
+		shPostTypeAttr.setShPostType(this);
 
-		return shpostTypeAttr;
+		return shPostTypeAttr;
 	}
 
-	public ShPostTypeAttr removeShpostTypeAttr(ShPostTypeAttr shpostTypeAttr) {
-		getShpostTypeAttrs().remove(shpostTypeAttr);
-		shpostTypeAttr.setShpostType(null);
+	public ShPostTypeAttr removeShPostTypeAttr(ShPostTypeAttr shPostTypeAttr) {
+		getShPostTypeAttrs().remove(shPostTypeAttr);
+		shPostTypeAttr.setShPostType(null);
 
-		return shpostTypeAttr;
+		return shPostTypeAttr;
 	}
 
-	public List<ShRegion> getShregions() {
-		return this.shregions;
+	public List<ShRegion> getShRegions() {
+		return this.shRegions;
 	}
 
-	public void setShregions(List<ShRegion> shregions) {
-		this.shregions = shregions;
+	public void setShRegions(List<ShRegion> shRegions) {
+		this.shRegions = shRegions;
 	}
 
-	public ShRegion addShregion(ShRegion shregion) {
-		getShregions().add(shregion);
-		shregion.setShpostType(this);
+	public ShRegion addShregion(ShRegion shRegion) {
+		getShRegions().add(shRegion);
+		shRegion.setShpostType(this);
 
-		return shregion;
+		return shRegion;
 	}
 
-	public ShRegion removeShregion(ShRegion shregion) {
-		getShregions().remove(shregion);
-		shregion.setShpostType(null);
+	public ShRegion removeShregion(ShRegion shRegion) {
+		getShRegions().remove(shRegion);
+		shRegion.setShpostType(null);
 
-		return shregion;
+		return shRegion;
 	}
 
 }

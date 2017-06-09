@@ -34,17 +34,17 @@ public class ShPostAttr implements Serializable {
 	//bi-directional many-to-one association to ShPost
 	@ManyToOne
 	@JoinColumn(name="post_id")
-	private ShPost shpost;
+	private ShPost shPost;
 
 	//bi-directional many-to-one association to ShPostType
 	@ManyToOne
 	@JoinColumn(name="post_type_id")
-	private ShPostType shpostType;
+	private ShPostType shPostType;
 
 	//bi-directional many-to-one association to ShPostTypeAttr
 	@ManyToOne
 	@JoinColumn(name="post_type_attr_id")
-	private ShPostTypeAttr shpostTypeAttr;
+	private ShPostTypeAttr shPostTypeAttr;
 
 	public ShPostAttr() {
 	}
@@ -89,28 +89,28 @@ public class ShPostAttr implements Serializable {
 		this.type = type;
 	}
 
-	public ShPost getShpost() {
-		return this.shpost;
+	public ShPost getShPost() {
+		return this.shPost;
 	}
 
-	public void setShpost(ShPost shpost) {
-		this.shpost = shpost;
+	public void setShPost(ShPost shPost) {
+		this.shPost = shPost;
 	}
 
-	public ShPostType getShpostType() {
-		return this.shpostType;
+	public ShPostType getShPostType() {
+		return this.shPostType;
 	}
 
-	public void setShpostType(ShPostType shpostType) {
-		this.shpostType = shpostType;
+	public void setShPostType(ShPostType shPostType) {
+		this.shPostType = shPostType;
 	}
 
-	public ShPostTypeAttr getShpostTypeAttr() {
-		return this.shpostTypeAttr;
+	public ShPostTypeAttr getShPostTypeAttr() {
+		return this.shPostTypeAttr;
 	}
 
-	public void setShpostTypeAttr(ShPostTypeAttr shpostTypeAttr) {
-		this.shpostTypeAttr = shpostTypeAttr;
+	public void setShPostTypeAttr(ShPostTypeAttr shPostTypeAttr) {
+		this.shPostTypeAttr = shPostTypeAttr;
 	}
 
 }

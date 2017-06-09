@@ -35,18 +35,18 @@ public class ShPostTypeAttr implements Serializable {
 	private byte required;
 
 	//bi-directional many-to-one association to ShPostAttr
-	@OneToMany(mappedBy="shpostTypeAttr")
-	private List<ShPostAttr> shpostAttrs;
+	@OneToMany(mappedBy="shPostTypeAttr")
+	private List<ShPostAttr> shPostAttrs;
 
 	//bi-directional many-to-one association to ShPostType
 	@ManyToOne
 	@JoinColumn(name="postType_id")
-	private ShPostType shpostType;
+	private ShPostType shPostType;
 
 	//bi-directional many-to-one association to ShWidget
 	@ManyToOne
 	@JoinColumn(name="widget_id")
-	private ShWidget shwidget;
+	private ShWidget shWidget;
 
 	public ShPostTypeAttr() {
 	}
@@ -123,42 +123,42 @@ public class ShPostTypeAttr implements Serializable {
 		this.required = required;
 	}
 
-	public List<ShPostAttr> getShpostAttrs() {
-		return this.shpostAttrs;
+	public List<ShPostAttr> getShPostAttrs() {
+		return this.shPostAttrs;
 	}
 
-	public void setShpostAttrs(List<ShPostAttr> shpostAttrs) {
-		this.shpostAttrs = shpostAttrs;
+	public void setShPostAttrs(List<ShPostAttr> shPostAttrs) {
+		this.shPostAttrs = shPostAttrs;
 	}
 
-	public ShPostAttr addShpostAttr(ShPostAttr shpostAttr) {
-		getShpostAttrs().add(shpostAttr);
-		shpostAttr.setShpostTypeAttr(this);
+	public ShPostAttr addShPostAttr(ShPostAttr shPostAttr) {
+		getShPostAttrs().add(shPostAttr);
+		shPostAttr.setShPostTypeAttr(this);
 
-		return shpostAttr;
+		return shPostAttr;
 	}
 
-	public ShPostAttr removeShpostAttr(ShPostAttr shpostAttr) {
-		getShpostAttrs().remove(shpostAttr);
-		shpostAttr.setShpostTypeAttr(null);
+	public ShPostAttr removeShPostAttr(ShPostAttr shPostAttr) {
+		getShPostAttrs().remove(shPostAttr);
+		shPostAttr.setShPostTypeAttr(null);
 
-		return shpostAttr;
+		return shPostAttr;
 	}
 
-	public ShPostType getShpostType() {
-		return this.shpostType;
+	public ShPostType getShPostType() {
+		return this.shPostType;
 	}
 
-	public void setShpostType(ShPostType shpostType) {
-		this.shpostType = shpostType;
+	public void setShPostType(ShPostType shPostType) {
+		this.shPostType = shPostType;
 	}
 
-	public ShWidget getShwidget() {
-		return this.shwidget;
+	public ShWidget getShWidget() {
+		return this.shWidget;
 	}
 
-	public void setShwidget(ShWidget shwidget) {
-		this.shwidget = shwidget;
+	public void setShwidget(ShWidget shWidget) {
+		this.shWidget = shWidget;
 	}
 
 }

@@ -22,12 +22,12 @@ public class ShRegion implements Serializable {
 	//bi-directional many-to-one association to ShPost
 	@ManyToOne
 	@JoinColumn(name="post_id")
-	private ShPost shpost;
+	private ShPost shPost;
 
 	//bi-directional many-to-one association to ShPostType
 	@ManyToOne
 	@JoinColumn(name="post_type_id")
-	private ShPostType shpostType;
+	private ShPostType shPostType;
 
 	public ShRegion() {
 	}
@@ -48,20 +48,20 @@ public class ShRegion implements Serializable {
 		this.name = name;
 	}
 
-	public ShPost getShpost() {
-		return this.shpost;
+	public ShPost getShPost() {
+		return this.shPost;
 	}
 
-	public void setShpost(ShPost shpost) {
-		this.shpost = shpost;
+	public void setShPost(ShPost shPost) {
+		this.shPost = shPost;
 	}
 
-	public ShPostType getShpostType() {
-		return this.shpostType;
+	public ShPostType getShPostType() {
+		return this.shPostType;
 	}
 
-	public void setShpostType(ShPostType shpostType) {
-		this.shpostType = shpostType;
+	public void setShpostType(ShPostType shPostType) {
+		this.shPostType = shPostType;
 	}
 
 }

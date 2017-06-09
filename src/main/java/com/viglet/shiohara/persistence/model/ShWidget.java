@@ -31,8 +31,8 @@ public class ShWidget implements Serializable {
 	private String type;
 
 	//bi-directional many-to-one association to ShPostTypeAttr
-	@OneToMany(mappedBy="shwidget")
-	private List<ShPostTypeAttr> shpostTypeAttrs;
+	@OneToMany(mappedBy="shWidget")
+	private List<ShPostTypeAttr> shPostTypeAttrs;
 
 	public ShWidget() {
 	}
@@ -85,26 +85,26 @@ public class ShWidget implements Serializable {
 		this.type = type;
 	}
 
-	public List<ShPostTypeAttr> getShpostTypeAttrs() {
-		return this.shpostTypeAttrs;
+	public List<ShPostTypeAttr> getShPostTypeAttrs() {
+		return this.shPostTypeAttrs;
 	}
 
-	public void setShpostTypeAttrs(List<ShPostTypeAttr> shpostTypeAttrs) {
-		this.shpostTypeAttrs = shpostTypeAttrs;
+	public void setShPostTypeAttrs(List<ShPostTypeAttr> shPostTypeAttrs) {
+		this.shPostTypeAttrs = shPostTypeAttrs;
 	}
 
-	public ShPostTypeAttr addShpostTypeAttr(ShPostTypeAttr shpostTypeAttr) {
-		getShpostTypeAttrs().add(shpostTypeAttr);
-		shpostTypeAttr.setShwidget(this);
+	public ShPostTypeAttr addShPostTypeAttr(ShPostTypeAttr shPostTypeAttr) {
+		getShPostTypeAttrs().add(shPostTypeAttr);
+		shPostTypeAttr.setShwidget(this);
 
-		return shpostTypeAttr;
+		return shPostTypeAttr;
 	}
 
-	public ShPostTypeAttr removeShpostTypeAttr(ShPostTypeAttr shpostTypeAttr) {
-		getShpostTypeAttrs().remove(shpostTypeAttr);
-		shpostTypeAttr.setShwidget(null);
+	public ShPostTypeAttr removeShPostTypeAttr(ShPostTypeAttr shPostTypeAttr) {
+		getShPostTypeAttrs().remove(shPostTypeAttr);
+		shPostTypeAttr.setShwidget(null);
 
-		return shpostTypeAttr;
+		return shPostTypeAttr;
 	}
 
 }
