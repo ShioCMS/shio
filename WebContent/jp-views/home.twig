@@ -23,7 +23,9 @@
     <div class="row">
         <div class="col-md-2">
             <div class="btn-group">
+                {% if lastPostType is not null %}
                 <a href="/post/editor/{{ lastPostType.getId() }}/" class="btn btn-danger">New {{ lastPostType.getTitle() }} </a> <a class="btn btn-danger" href="/post/select"><span class="glyphicon glyphicon-th"></span></a>
+                {% endif %}
             </div>
             <ul class="nav nav-pills nav-stacked">
                        <li><a href="#">Home</a></li>

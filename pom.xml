@@ -1,11 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.viglet.ocean</groupId>
-	<artifactId>ocean</artifactId>
+	<groupId>com.viglet.shiohara</groupId>
 	<packaging>war</packaging>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>ocean</name>
+	<name>shiohara</name>
 	<url>http://maven.apache.org</url>
 	<dependencies>
 		<dependency>
@@ -146,7 +145,6 @@
 				</configuration>
 			</plugin>
 		</plugins>
-		<finalName>vecchio</finalName>
 	</build>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -154,4 +152,5 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<version.openjpa>2.4.0</version.openjpa>
 	</properties>
+	<artifactId>shiohara</artifactId>
 </project>

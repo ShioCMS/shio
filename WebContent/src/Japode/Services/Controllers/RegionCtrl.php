@@ -9,39 +9,41 @@ use Japode\Region\Entity\JPRegion;
 use Japode\Util\Util;
 
 class RegionCtrl {
+
     static public function addRoutes($routing) {
         $routing->get('/region/{regionName}/{postTypeName}/', array(new self(), 'region'))->bind('region');
     }
+
     public function region(Application $app, $regionName, $postTypeName) {
         $region = $app['db.orm']->getRepository('Japode\Region\Entity\JPRegion')->findByName($regionName);
         $postType = $app['db.orm']->getRepository('Japode\PostType\Entity\JPPostType')->findByName($postTypeName);
         if ($region == NULL) {
-            $region = new JPRegion();
-            $postService = new PostService($app);
-            $post = $postService->newEmpty($postType->getId());
-            $region->setId(Util::getGUID());
-            $region->setPost($post);
-            $region->setPostType($postType);
-            $region->setName($regionName);
-            
-            $app['db.orm']->merge($region);
-            $app['db.orm']->flush();
-        }
-        else {
+            if ($postType != NULL) {
+                $region = new JPRegion();
+                $postService = new PostService($app);
+                $post = $postService->newEmpty($postType->getId());
+                $region->setId(Util::getGUID());
+                $region->setPost($post);
+                $region->setPostType($postType);
+                $region->setName($regionName);
+
+                $app['db.orm']->merge($region);
+                $app['db.orm']->flush();
+            }
+        } else {
             $post = $region->getPost();
         }
-        
+
         $postAttrs = $post->getPostAttrs();
-                
+
         $json = array();
         $json['id'] = $post->getId();
         foreach ($postAttrs as $postAttr) {
             $postTypeAttr = $postAttr->getPostTypeAttr();
             $widget = $postTypeAttr->getWidget();
-            if ($widget->getId() == 'file'){
+            if ($widget->getId() == 'file') {
                 $json[$postTypeAttr->getName()] = 'http://' . $GLOBALS['japode_domain'] . $postAttr->getStrValue();
-            }
-            else {
+            } else {
                 $json[$postTypeAttr->getName()] = $postAttr->getStrValue();
             }
         }

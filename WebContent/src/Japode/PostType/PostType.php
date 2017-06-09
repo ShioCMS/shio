@@ -29,9 +29,10 @@ class PostType extends Base implements ControllerProviderInterface {
         $this->postTypeID = $_postTypeID;
         $sql = "SELECT * from jp_ctd where id = '" .
                 $this->postTypeID . "'";
-        if (!($this->pdo->query($sql)->fetch())) {
-            $this->postTypeID = $this->getIDByName($this->postTypeID);
-        }
+//Comment to test       
+// if (!($this->pdo->query($sql)->fetch())) {
+       //     $this->postTypeID = $this->getIDByName($this->postTypeID);
+       // }
     }
 
     public function newEmptyInstance() {

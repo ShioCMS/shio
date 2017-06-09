@@ -15,8 +15,9 @@ class Content {
 
     public function content(Application $app) {
         $user = $app['db.orm']->getRepository('Japode\User\Entity\JPUser')->getCurrentUser();
-        $lastPostType = $app['db.orm']->getRepository('Japode\PostType\Entity\JPPostType')->find($user->getLastPostType());
-
+        if ($user->getLastPostType() != null) {
+            $lastPostType = $app['db.orm']->getRepository('Japode\PostType\Entity\JPPostType')->find($user->getLastPostType());
+        }
         return $app['twig']->render('home.twig', array(
                     'user' => $user,
                     'lastPostType' => $lastPostType,
