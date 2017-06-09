@@ -1,0 +1,29 @@
+{
+  "name": "ocean.viglet.com",
+  "version": "0.4",
+  "description": "Viglet Ocean",
+  "authors": [
+    "Alexandre Oliveira"
+  ],
+  "license": "MIT",
+  "homepage": "http://www.viglet.ai",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "thirdparty",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.1.1",
+    "angular": ">= 1.1.4",
+    "angular-moment": "~0.6.2",
+    "bootstrap-tagsinput": "~0.3.9",
+    "jquery": ">= 1.9.0",
+    "moment": "~2.5.1",
+    "typeahead.js": "~0.10.1",
+    "angular-sanitize": "*",
+    "angular-route": "*"
+  }
+}

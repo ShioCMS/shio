@@ -1,9 +1,8 @@
 {
     "require": {
         "twig/twig": "1.*",
-        "bshaffer/oauth2-server-php": "v1.3",
         "fortawesome/font-awesome": "dev-master",
-        "silex/silex": "*",
+        "silex/silex": "1.3",
 	"symfony/framework-standard-edition" : "*",
         "symfony/twig-bridge": "2.1.*",
 	"symfony/security": "~2.3",
