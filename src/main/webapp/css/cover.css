@@ -1,0 +1,136 @@
+.settings .settings-content .content {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    padding: 40px;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+.settings .user-profile-header {
+    position: relative;
+}
+
+.settings .user-profile-header:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 110px;
+    background-color: rgba(0,0,0,0);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(0,0,0,0)),color-stop(100%, rgba(0,0,0,0.3)));
+    background-image: -webkit-linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0.3));
+    background-image: linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0.3));
+}
+
+.settings .settings-content img {
+    max-width: 100%;
+}
+
+.settings .cover-image {
+    display: block;
+    line-height: 0;
+    width: 100%; 
+    height: 100px; //alterado era auto
+    min-height: 180px;
+}
+
+img {
+    border: 0;
+}
+.settings .edit-cover-image {
+    position: absolute;
+    right: 40px;
+    bottom: 38px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 0;
+    color: rgba(255,255,255,0.8);
+    z-index: 2;
+    border-radius: 2px;
+    -webkit-transition: color 0.3s ease,background 0.3s ease;
+    -moz-transition: color 0.3s ease,background 0.3s ease;
+    transition: color 0.3s ease,background 0.3s ease;
+}
+
+.settings .user-profile {
+    position: relative;
+    top: -100px;
+    z-index: 1;
+}
+
+.settings fieldset.user-details-top {
+    margin-bottom: 0;
+    padding: 10px 0 0 0;
+}
+.settings .user-image {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    display: block;
+    position: relative;
+    width: 120px;
+    height: 120px;
+    float: left;
+    margin-left: 40px;
+    margin-right: 20px;
+    text-align: center;
+    border-radius: 100%;
+    overflow: hidden;
+    border: 5px solid #fff;
+    background: #fff;
+    z-index: 2;
+}
+
+.settings .user-image .img {
+    display: block;
+    width: 110px;
+    height: 110px;
+    background-size: cover;
+    background-position: center center;
+    border-radius: 100%;
+}
+
+.settings .edit-user-image {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    border-radius: 100%;
+    background: rgba(0,0,0,0.5);
+    opacity: 0;
+    color: #fff;
+    line-height: 105px;
+    text-transform: uppercase;
+    text-decoration: none;
+    -webkit-transition: opacity 0.3s ease;
+    -moz-transition: opacity 0.3s ease;
+    transition: opacity 0.3s ease;
+}
+.settings fieldset.user-details-top h3 {
+    padding: 75px 0 0 0;
+}
+
+.settings #user-name {
+    border-color: #fff;
+}
+.settings .edit-cover-image:hover {
+    color: #fff;
+    background: rgba(0,0,0,0.5);
+}
+
+.settings .edit-cover-image {
+    position: absolute;
+    right: 40px;
+    bottom: 38px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 0;
+    color: rgba(255,255,255,0.8);
+    z-index: 2;
+    border-radius: 2px;
+    -webkit-transition: color 0.3s ease,background 0.3s ease;
+    -moz-transition: color 0.3s ease,background 0.3s ease;
+    transition: color 0.3s ease,background 0.3s ease;
+}

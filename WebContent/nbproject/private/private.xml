@@ -3,8 +3,18 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Applications/MAMP/htdocs/ocean/WebContent/jp-load.php</file>
-            <file>file:/Applications/MAMP/htdocs/ocean/WebContent/composer.json</file>
+            <file>file:/Applications/MAMP/htdocs/viglet-shiohara/WebContent/jp-load.php</file>
+            <file>file:/Applications/MAMP/htdocs/viglet-shiohara/WebContent/src/Japode/Base/Base.php</file>
+            <file>file:/Applications/MAMP/htdocs/viglet-shiohara/WebContent/jp-views/base.twig</file>
+            <file>file:/Applications/MAMP/htdocs/viglet-shiohara/WebContent/src/Japode/Content/Controllers/Content.php</file>
+            <file>file:/Applications/MAMP/htdocs/viglet-shiohara/WebContent/src/Japode/PostType/PostType.php</file>
+            <file>file:/Applications/MAMP/htdocs/viglet-shiohara/WebContent/jp-views/home.twig</file>
+            <file>file:/Applications/MAMP/htdocs/viglet-shiohara/WebContent/src/Japode/Services/Controllers/RegionCtrl.php</file>
+            <file>file:/Applications/MAMP/htdocs/viglet-shiohara/WebContent/.bowerrc</file>
+            <file>file:/Applications/MAMP/htdocs/viglet-shiohara/WebContent/src/Japode/PostType/Controllers/PostTypeCtrl.php</file>
+            <file>file:/Applications/MAMP/htdocs/viglet-shiohara/WebContent/src/Japode/Post/Controllers/PostCtrl.php</file>
+            <file>file:/Applications/MAMP/htdocs/viglet-shiohara/WebContent/bower.json</file>
+            <file>file:/Applications/MAMP/htdocs/viglet-shiohara/WebContent/jp-views/regionJSFooter.twig</file>
         </group>
     </open-files>
 </project-private>

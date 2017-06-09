@@ -1,0 +1,245 @@
+
+<!DOCTYPE html>
+<html lang="en" ng-app="japodeApp">
+<head>
+<meta charset="utf-8">
+<title>Japode</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="stylesheet"
+	href="/thirdparty/bootstrap/dist/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="/thirdparty/bootstrap/dist/css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="/css/cover.css">
+<link rel="stylesheet"
+	href="/vendor/fortawesome/font-awesome/css/font-awesome.min.css">
+<link
+	href="/thirdparty/bootstrap-tagsinput/dist/bootstrap-tagsinput.css"
+	rel="stylesheet" media="screen">
+<link href="http://twitter.github.io/typeahead.js/css/examples.css">
+<style type="text/css">
+body {
+	padding-top: 00px;
+	padding-bottom: 40px;
+	background-color: #f5f5f5;
+}
+</style>
+
+</head>
+<body>
+	<div class="container">
+		<style>
+.tt-dropdown-menu {
+	width: 540px;
+	padding: 10px;
+	background-color: #fff;
+	border: 1px solid #000;
+}
+
+.tt-suggestion.tt-cursor {
+	background-color: #ccc;
+}
+</style>
+		<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+			<div class="container-fluid">
+				<!-- Brand and toggle get grouped for better mobile display -->
+				<div class="navbar-header">
+					<a class="navbar-brand" href="/">Japode</a>
+				</div>
+
+				<!-- Collect the nav links, forms, and other content for toggling -->
+				<div class="collapse navbar-collapse"
+					id="bs-example-navbar-collapse-1">
+					<div class="row">
+						<div class="col-md-6">
+							<form class="navbar-form navbar-left" role="search">
+								<div class="input-group">
+									<input type="text" class="states form-control"
+										style="width: 540px"
+										placeholder="Search for people, posts and things"> <span
+										class="input-group-btn"><button type="submit"
+											style="top: -2px;" class="btn btn-default">
+											<span class="glyphicon glyphicon-search"></span>
+										</button></span>
+								</div>
+							</form>
+						</div>
+						<ul class="nav navbar-nav navbar-right">
+							<li><a href="http://other.prj.viglet.co">Come back to
+									Intro Site</a></li>
+							<li><a href="#"><i class="fa fa-user fa-lg"></i> <span
+									class="badge">+1</span></a></li>
+							<li><a href="#" class="disabled"><i
+									class="fa fa-globe fa-lg"></i></a></li>
+							<li><a href="/">Alexandre</a></li>
+							<li><a href="/content">Content</a></li>
+
+							<li class="dropdown"><a href="#" class="dropdown-toggle"
+								data-toggle="dropdown"><span class="glyphicon glyphicon-cog"></span></a>
+								<ul class="dropdown-menu">
+									<li><a href="/profile">Profile</a></li>
+									<li class="divider"></li>
+									<li><a href="/signout">Sign out</a></li>
+								</ul></li>
+							<li>&nbsp;&nbsp;&nbsp;</li>
+						</ul>
+					</div>
+				</div>
+				<!-- /.navbar-collapse -->
+			</div>
+			<!-- /.container-fluid -->
+		</nav>
+		<div style="height: 60px"></div>
+		<div class="settings">
+			<section class="content no-padding" style="height: 170px;">
+
+				<header class="user-profile-header">
+					<img id="user-cover" class="cover-image" src="/img/user-cover.png"
+						title="Alexandre Oliveira's Cover Image">
+
+					<!--  <a class="edit-cover-image js-modal-cover button" href="#">Change Cover</a> -->
+				</header>
+
+				<form class="user-profile" novalidate="novalidate">
+
+					<fieldset class="user-details-top">
+
+						<figure class="user-image">
+							<div id="user-image" class="img"
+								style="background-image: url(http://www.gravatar.com/avatar/169ed50aa94be9aadfc771bc5d9f9255.php);"
+								href="#">
+								<span class="hidden">Alexandre Oliveira's Picture</span>
+							</div>
+							<!--   <a href="#" class="edit-user-image js-modal-image">Edit Picture</a> -->
+						</figure>
+
+						<div class="form-group">
+							<h3>
+								Alexandre, <small>your content</small>
+							</h3>
+						</div>
+						<div class="pull-right" style="margin: -40px 0 0;">
+							<div class="input-group">
+								0-{{(posts|filter:query).length}} of
+								{{(posts|filter:query).length}} posts&nbsp;&nbsp;
+								<button type="button" class="btn btn-default">
+									<i class="fa fa-angle-left"></i>
+								</button>
+								<button type="button" class="btn btn-default">
+									<i class="fa fa-angle-right"></i>
+								</button>
+							</div>
+
+						</div>
+					</fieldset>
+				</form>
+			</section>
+		</div>
+
+		<div ng-controller="PostListCtrl">
+			<div class="row">
+				<div class="col-md-2">
+					<div class="btn-group">
+						<a href="/post/editor/04A8B013D5ECED5EF8F93A29FB53DF43/"
+							class="btn btn-danger">New CTD01 </a> <a class="btn btn-danger"
+							href="/post/select"><span class="glyphicon glyphicon-th"></span></a>
+					</div>
+					<ul class="nav nav-pills nav-stacked">
+						<li><a href="#">Home</a></li>
+						<li><a href="#">Starred <i
+								class="glyphicon glyphicon-star"></i></a></li>
+						<li><a href="#">All Posts</a></li>
+						<li><a href="#">Trash <i
+								class="glyphicon glyphicon-trash"></i></a></li>
+					</ul>
+					<ul class="nav nav-pills nav-stacked" ng-controller="LabelListCtrl">
+						<li class="nav-header">Tag</li>
+						<li ng-repeat="label in labels | filter:query | orderBy:orderProp">
+							<a href="#"> {{label.title}} </a>
+						</li>
+					</ul>
+				</div>
+				<div class="col-md-10">
+					<ul class="nav nav-tabs" ng-controller="SiteListCtrl">
+						<li class="active"><a href="#"><i
+								class="fa fa-user fa-lg"></i> Only Me</a></li>
+						<li><a href="#"><i class="fa fa-users fa-lg"></i> Team</a></li>
+						<li ng-repeat="site in sites | filter:query | orderBy:orderProp">
+							<a href="#"><i class="fa fa-tags fa-lg"></i> {{site.name}} </a>
+						</li>
+						<li><a href="/site/editor/"><i class="fa fa-plus fa-lg"></i></a></li>
+					</ul>
+
+
+					<table class="table table-hover">
+						<tr ng-repeat="post in posts | filter:query">
+							<td><input type="checkbox" /></td>
+							<td><i class="icon-star-empty"></i></td>
+							<td><a href="/post/editor/{{post.posttype}}/{{post.id}}/">
+									{{post.content}} </a></td>
+							<td><span class="label label-info">
+									{{post.posttypename}} </span> <span class="label label-warning">
+									{{post.label}} </span></td>
+							<td>{{post.description}}</td>
+							<td><span am-time-ago="post.date"></span></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	<script>
+		var jp_domain = 'localhost:8000';
+	</script>
+	<script src="/thirdparty/jquery/dist/jquery.min.js"></script>
+	<script src="/thirdparty/angular/angular.min.js"></script>
+	<script src="/thirdparty/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script src="/thirdparty/bootstrap/js/tooltip.js"></script>
+	<script src="/thirdparty/bootstrap/js/popover.js"></script>
+	<script src="/thirdparty/typeahead.js/dist/typeahead.bundle.min.js"></script>
+	<script src="/js/handlebars-v1.3.0.js"></script>
+	<script src="/thirdparty/moment/min/moment-with-langs.min.js"></script>
+	<script src="/thirdparty/angular-moment/angular-moment.min.js"></script>
+	<script src="/thirdparty/angular-sanitize/angular-sanitize.js"></script>
+	<script src="/thirdparty/angular-route/angular-route.min.js"></script>
+	<script src="/js/controllers.js"></script>
+	<script
+		src="/thirdparty/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js"></script>
+	<script
+		src="/thirdparty/bootstrap-tagsinput/dist/bootstrap-tagsinput-angular.js"></script>
+	<script src="/js/tinymce/tinymce.min.js"></script>
+	<!-- <script src="/js/jpasset.js"></script> -->
+
+	<script>
+		var repos = new Bloodhound({
+			datumTokenizer : function(d) {
+				return d.tokens;
+			},
+			queryTokenizer : Bloodhound.tokenizers.whitespace,
+			prefetch : '/services/repos.json'
+		});
+
+		repos.initialize();
+
+		$('.states')
+				.typeahead(
+						null,
+						{
+							name : 'twitter-oss',
+							displayKey : 'name',
+							source : repos.ttAdapter(),
+							templates : {
+								suggestion : Handlebars
+										.compile([
+												'<p class="repo-language">{{language}}</p>',
+												'<p class="repo-name">{{name}}</p>',
+												'<p class="repo-description">{{description}}</p>' ]
+												.join(''))
+							}
+						});
+	</script>
+</body>
+</html>
