@@ -2,6 +2,23 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/Applications/MAMP/htdocs/viglet-shiohara/WebContent/src/Japode/User/Entity/JPUserRepository.php</file>
+            <file>file:/Applications/MAMP/htdocs/viglet-shiohara/WebContent/jp-templating/welcome.html</file>
+            <file>file:/Applications/MAMP/htdocs/viglet-shiohara/WebContent/jp-templating/jpRegion.html</file>
+            <file>file:/Applications/MAMP/htdocs/viglet-shiohara/WebContent/jp-views/postEditForm.twig</file>
+            <file>file:/Applications/MAMP/htdocs/viglet-shiohara/WebContent/src/Japode/Login/LogIn.php</file>
+            <file>file:/Applications/MAMP/htdocs/viglet-shiohara/WebContent/src/Japode/Content/Controllers/Content.php</file>
+            <file>file:/Applications/MAMP/htdocs/viglet-shiohara/WebContent/jp-templating/detail.html</file>
+            <file>file:/Applications/MAMP/htdocs/viglet-shiohara/WebContent/src/Japode/Login/Controllers/SignInCtrl.php</file>
+            <file>file:/Applications/MAMP/htdocs/viglet-shiohara/WebContent/jp-views/home.twig</file>
+            <file>file:/Applications/MAMP/htdocs/viglet-shiohara/WebContent/src/Japode/Services/Controllers/PostsCtrl.php</file>
+            <file>file:/Applications/MAMP/htdocs/viglet-shiohara/WebContent/src/Japode/Content/Content.php</file>
+            <file>file:/Applications/MAMP/htdocs/viglet-shiohara/WebContent/src/Japode/Post/Entity/JPPost.php</file>
+            <file>file:/Applications/MAMP/htdocs/viglet-shiohara/WebContent/src/Japode/Post/Controllers/PostCtrl.php</file>
+            <file>file:/Applications/MAMP/htdocs/viglet-shiohara/WebContent/jp-templating/jpClient.html</file>
+            <file>file:/Applications/MAMP/htdocs/viglet-shiohara/WebContent/jp-views/fullscreen.twig</file>
+            <file>file:/Applications/MAMP/htdocs/viglet-shiohara/WebContent/js/jp_client.js</file>
+        </group>
     </open-files>
 </project-private>
