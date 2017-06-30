@@ -11,7 +11,8 @@ angular.module('demo', ['japodeOauth']).
 
             TokenProvider.extendConfig({
                 clientId: 'demoapp',
-                redirectUri: '/intro/oauth2callback.html', // allow lunching demo from a mirror
+               // redirectUri: '/intro/oauth2callback.html', // allow lunching demo from a mirror
+                redirectUri: 'http://other.prj.viglet.co/oauth2callback.html',
                 state: ["8eb162ee707d7dcb1ac0940d05316110"]
             });
         }).

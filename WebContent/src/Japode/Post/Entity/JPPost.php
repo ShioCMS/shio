@@ -54,9 +54,9 @@ class JPPost implements JsonSerializable {
     protected $date;
 
     /**
-     * @var JPPostAttr[]
+     * @var \Japode\Post\Entity\JPPostAttr[]
      *
-     * @OneToMany(targetEntity="JPPostAttr", mappedBy="post")
+     * @OneToMany(targetEntity="\Japode\Post\Entity\JPPostAttr", mappedBy="post")
      */
     protected $post_attrs;
 

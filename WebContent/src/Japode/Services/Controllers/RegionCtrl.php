@@ -42,9 +42,9 @@ class RegionCtrl {
             $postTypeAttr = $postAttr->getPostTypeAttr();
             $widget = $postTypeAttr->getWidget();
             if ($widget->getId() == 'file') {
-                $json[$postTypeAttr->getName()] = 'http://' . $GLOBALS['japode_domain'] . $postAttr->getStrValue();
+                $json[$postTypeAttr->getLabel()] = 'http://' . $GLOBALS['japode_domain'] . $postAttr->getStrValue();
             } else {
-                $json[$postTypeAttr->getName()] = $postAttr->getStrValue();
+                $json[$postTypeAttr->getLabel()] = $postAttr->getStrValue();
             }
         }
 

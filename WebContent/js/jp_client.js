@@ -63,7 +63,7 @@ japodeApp.config(function($sceDelegateProvider) {
 japodeApp.config(function(TokenProvider) {
     TokenProvider.extendConfig({
         clientId: 'demoapp',
-        redirectUri: 'http://other.prj.viglet.co/index.html', // allow lunching demo from a mirror
+        redirectUri: 'http://other.prj.viglet.co/demo.html', // allow lunching demo from a mirror
         state: ["8eb162ee707d7dcb1ac0940d05316110"]
     });
 });
@@ -249,8 +249,8 @@ japodeApp.directive('jpRegion', function() {
         },
         templateUrl: function(element, attr) { 
             if (attr.jpList === 'true') {
-              //  return 'http://' + jp_domain + '/template/jpList.html';
-              return attr.jpTemplate;
+              return 'http://' + jp_domain + '/template/jpList.html';
+              //return attr.jpTemplate;
             }
             else {
                 return 'http://' + jp_domain + '/template/jpRegion.html';

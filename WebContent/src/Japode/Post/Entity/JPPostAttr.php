@@ -38,9 +38,9 @@ class JPPostAttr {
     protected $post_type_attr;
 
     /**
-     * @var JPPost
+     * @var \Japode\Post\Entity\JPPost
      *
-     * @ManyToOne(targetEntity="JPPost", inversedBy="post_attrs")
+     * @ManyToOne(targetEntity="\Japode\Post\Entity\JPPost", inversedBy="post_attrs")
      */
     protected $post;
 
@@ -192,7 +192,7 @@ class JPPostAttr {
      * Set post_type
      *
      * @param \Japode\PostType\Entity\JPPostType $postType
-     * @return JPPostAttr
+     * @return \Japode\Post\Entity\JPPostAttr
      */
     public function setPostType(\Japode\PostType\Entity\JPPostType $postType = null)
     {
@@ -215,7 +215,7 @@ class JPPostAttr {
      * Set post_type_attr
      *
      * @param \Japode\PostType\Entity\JPPostTypeAttr $postTypeAttr
-     * @return JPPostAttr
+     * @return \Japode\Post\Entity\JPPostAttr
      */
     public function setPostTypeAttr(\Japode\PostType\Entity\JPPostTypeAttr $postTypeAttr = null)
     {
@@ -238,7 +238,7 @@ class JPPostAttr {
      * Set post
      *
      * @param \Japode\Post\Entity\JPPost $post
-     * @return JPPostAttr
+     * @return \Japode\Post\Entity\JPPostAttr
      */
     public function setPost(\Japode\Post\Entity\JPPost $post = null)
     {
