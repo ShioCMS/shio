@@ -6,7 +6,7 @@
     }   
 </style>    
 
-<form method="post" action="/post/process/">
+<form method="post" action="http://japode.prj.viglet.co/post/process/">
     <div  style="background-color: rgba(100, 149, 237, 0.2); height:55px ; width: 100%;padding:10px; margin-bottom:10px" class="affix-top" data-spy="affix" data-offset-top="147">
     <div class="form-actions" >
         <div class="btn-group pull-right"> 
@@ -21,6 +21,7 @@
                 {% for attribRender in attribsRender %}
                     {% include 'renderAttribField.twig' %}
                 {% endfor %}
+   <input type="hidden" id="redirect_url" name="redirect_url" value ="http://other.prj.viglet.co/intro">              
     <input type="hidden" id="jpid" name="jpid" value ="{{ id }}"> 
     <input type="hidden" id="idposttype" name="idposttype" value ="{{ idposttype }}"> 
     

@@ -52,7 +52,7 @@
                          <tr ng-repeat="post in posts | filter:query">
                              <td><input type="checkbox"/></td>
                              <td><i class="icon-star-empty"></i></td>
-                             <td><a href="/post/editor/{% verbatim %}{{post.posttype}}{% endverbatim %}/{% verbatim %}{{post.id}}{% endverbatim %}/">{% verbatim %} {{post.content}} {% endverbatim %}</a></td>
+                             <td><a href="/post/editor/{% verbatim %}{{post.posttypeidentifier}}{% endverbatim %}/{% verbatim %}{{post.id}}{% endverbatim %}/">{% verbatim %} {{post.content}} {% endverbatim %}</a></td>
                              <td><span class="label label-info">{% verbatim %} {{post.posttypename}} {% endverbatim %}</span>
                                  <span class="label label-warning">{% verbatim %} {{post.label}} {% endverbatim %}</span></td>
                              <td>{% verbatim %} {{post.description}} {% endverbatim %} </td>

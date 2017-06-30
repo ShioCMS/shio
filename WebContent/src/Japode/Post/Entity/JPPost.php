@@ -246,6 +246,7 @@ class JPPost implements JsonSerializable {
         return array(
             'id' => $this->getID(),
             'posttype' => $postType->getId(),
+            'posttypeidentifier' => $postType->getName(),
             'posttypename' => $postType->getTitle(),
             'content' => (strlen($this->getTitle()) > 0) ? $this->getTitle() : "...",
             'description' => (strlen($this->getSummary()) > 0) ? html_entity_decode(strip_tags($this->getSummary())) : "...",

@@ -102,7 +102,7 @@ class JPUserRepository extends EntityRepository {
                 ->setParameter('email', $email)
                 ->setParameter('password', md5($password))
                 ->getQuery()
-           ->getOneOrNullResult();
+                ->getOneOrNullResult();
 
         return isset($q);
     }
@@ -123,18 +123,27 @@ class JPUserRepository extends EntityRepository {
     }
 
     public function getCurrentUser() {
-        $id = $_SESSION['userid'];
-        $realm = $_SESSION['realm'];
+        if (isset($_SESSION ['userid']) && isset($_SESSION ['realm'])) {
 
-        $qb = $this->createQueryBuilder('u');
+            $id = $_SESSION ['userid'];
+            $realm = $_SESSION ['realm'];
+            error_log("id" . $id);
+            error_log("realm" . $realm);
+            $qb = $this->createQueryBuilder('u');
 
-        return $qb
-                        ->where($qb->expr()->andx(
-                                        $qb->expr()->eq('u.id', ':id'), $qb->expr()->eq('u.realm', ':realm')))
-                        ->setParameter('id', $id)
-                        ->setParameter('realm', $realm)
-                        ->getQuery()
-                        ->getOneOrNullResult();
+            return $qb
+                            ->where($qb->expr()
+                                    ->andx($qb->expr()
+                                            ->eq('u.id', ':id'), $qb->expr()
+                                            ->eq('u.realm', ':realm')))
+                            ->setParameter('id', $id)
+                            ->setParameter('realm', $realm)
+                            ->getQuery()
+                            ->getOneOrNullResult();
+        } else {
+            error_log("session empty");
+            return NULL;
+        }
     }
 
 }

@@ -65,8 +65,12 @@ class PostCtrl {
     public function postProcess(Application $app, Request $request) {
         $this->silexApp = $app;
         $isNew = false;
+        $redirect_url = $request->get('redirect_url');       
         $postType = $this->silexApp['db.orm']->getRepository('Japode\PostType\Entity\JPPostType')->find($request->get('idposttype'));
-        
+        if (is_null($postType)) {
+            $postType = $this->silexApp['db.orm']->getRepository('Japode\PostType\Entity\JPPostType')->findOneBy(array('name' => $request->get('idposttype')));
+        }        
+
 
         if ($request->get('jpid') != null) {
             $isNew = false;
@@ -83,7 +87,7 @@ class PostCtrl {
         $post->setSummary("...");
 
         $this->silexApp['db.orm']->merge($post);
-        
+
         if ($isNew) {
             $postTypeAttrs = $postType->getPostTypeAttrs();
             foreach ($postTypeAttrs as $postTypeAttr) {
@@ -135,16 +139,19 @@ class PostCtrl {
         }
 
         $this->silexApp['db.orm']->merge($post);
-        
-        $user = $this->silexApp['db.orm']->getRepository('Japode\User\Entity\JPUser')->getCurrentUser();
-        
-        $user->setLastPostType($postType->getId());
-        
-        $this->silexApp['db.orm']->merge($user);
-        
-        $this->silexApp['db.orm']->flush();
 
-        return $app->redirect('/content/');
+        $user = $this->silexApp['db.orm']->getRepository('Japode\User\Entity\JPUser')->getCurrentUser();
+
+        $user->setLastPostType($postType->getId());
+
+        $this->silexApp['db.orm']->merge($user);
+
+        $this->silexApp['db.orm']->flush();
+        if (is_null($redirect_url)) {
+            return $app->redirect('/content/');
+        } else {
+            return $app->redirect($redirect_url);
+        }
     }
 
     public function selectPost() {
@@ -174,7 +181,7 @@ class PostCtrl {
         ));
     }
 
-    public function editPost($_id_posttype, $_id_post) {        
+    public function editPost($_id_posttype, $_id_post) {
         $user = $this->silexApp['db.orm']->getRepository('Japode\User\Entity\JPUser')->getCurrentUser();
         $postType = $this->silexApp['db.orm']->getRepository('Japode\PostType\Entity\JPPostType')->findOneBy(array('name' => $_id_posttype));
         $post = $this->silexApp['db.orm']->getRepository('Japode\Post\Entity\JPPost')->find($_id_post);
@@ -198,7 +205,11 @@ class PostCtrl {
 
     public function newPostForm($_id_posttype) {
         $user = $this->silexApp['db.orm']->getRepository('Japode\User\Entity\JPUser')->getCurrentUser();
-        $postType = $this->silexApp['db.orm']->getRepository('Japode\PostType\Entity\JPPostType')->findOneBy(array('name' => $_id_posttype));
+        
+        $postType = $this->silexApp['db.orm']->getRepository('Japode\PostType\Entity\JPPostType')->find($_id_posttype);
+        if (is_null($postType)) {
+            $postType = $this->silexApp['db.orm']->getRepository('Japode\PostType\Entity\JPPostType')->findOneBy(array('name' => $_id_posttype));
+        }
         $portTypeAttrService = new PostTypeAttrService($this->silexApp);
         return $this->silexApp['twig']->render('postEditForm.twig', array(
                     'user' => $user,
@@ -214,7 +225,10 @@ class PostCtrl {
 
     public function editPostForm($_id_posttype, $_id_post) {
         $user = $this->silexApp['db.orm']->getRepository('Japode\User\Entity\JPUser')->getCurrentUser();
-        $postType = $this->silexApp['db.orm']->getRepository('Japode\PostType\Entity\JPPostType')->findOneBy(array('name' => $_id_posttype));
+        $postType = $this->silexApp['db.orm']->getRepository('Japode\PostType\Entity\JPPostType')->find($_id_posttype);
+        if (is_null($postType)) {
+            $postType = $this->silexApp['db.orm']->getRepository('Japode\PostType\Entity\JPPostType')->findOneBy(array('name' => $_id_posttype));
+        }
         $post = $this->silexApp['db.orm']->getRepository('Japode\Post\Entity\JPPost')->find($_id_post);
         $portTypeAttrService = new PostTypeAttrService($this->silexApp);
 
@@ -225,8 +239,8 @@ class PostCtrl {
         }
 
         return $this->silexApp['twig']->render('postEditForm.twig', array(
-                    'user' => $user,
-                    'firstname' => $user->getFirstName(),
+                    //           'user' => $user,
+                    //          'firstname' => $user->getFirstName(),
                     'id' => $_id_post,
                     'idposttype' => $_id_posttype,
                     'attribsRender' => $postType->getPostTypeAttrs(),
