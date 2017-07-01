@@ -45,6 +45,7 @@ public class ShPostTypeAttrAPI {
 		shPostTypeAttrEdit.setName(shPostTypeAttr.getName());
 		shPostTypeAttrEdit.setOrdinal(shPostTypeAttr.getOrdinal());
 		shPostTypeAttrEdit.setRequired(shPostTypeAttr.getRequired());
+		
 		shPostTypeAttrService.save(shPostTypeAttrEdit);
 		return shPostTypeAttrEdit;
 	}

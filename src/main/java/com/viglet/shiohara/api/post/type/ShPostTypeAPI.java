@@ -14,6 +14,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.viglet.shiohara.persistence.model.ShPostType;
+import com.viglet.shiohara.persistence.model.ShPostTypeAttr;
+import com.viglet.shiohara.persistence.service.ShPostTypeAttrService;
 import com.viglet.shiohara.persistence.service.ShPostTypeService;
 
 @Path("/post/type")
@@ -59,6 +61,23 @@ public class ShPostTypeAPI {
 		shPostTypeService.save(shPostType);
 		String result = "PostType saved : " + shPostType;
 		return Response.status(200).entity(result).build();
+
+	}
+
+	@POST
+	@Path("/{postTypeId}/attr")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response add(@PathParam("postTypeId") int id, ShPostTypeAttr shPostTypeAttr) throws Exception {
+		ShPostType shPostType = shPostTypeService.get(id);
+		if (shPostType != null) {
+			ShPostTypeAttrService shPostTypeAttrService = new ShPostTypeAttrService();
+			shPostTypeAttr.setShPostType(shPostType);
+			shPostTypeAttrService.save(shPostTypeAttr);
+			String result = "Post Attrib saved: " + shPostTypeAttr;
+			return Response.status(200).entity(result).build();
+		} else {
+			return Response.status(500).entity("invalid Post Type Id").build();
+		}
 
 	}
 

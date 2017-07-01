@@ -2,6 +2,11 @@ package com.viglet.shiohara.persistence.model;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import org.apache.openjpa.persistence.jdbc.ForeignKey;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
 import java.util.List;
 
 
@@ -11,6 +16,7 @@ import java.util.List;
  */
 @Entity
 @NamedQuery(name="ShPostTypeAttr.findAll", query="SELECT s FROM ShPostTypeAttr s")
+@JsonIgnoreProperties( { "shPostType" })
 public class ShPostTypeAttr implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -41,6 +47,7 @@ public class ShPostTypeAttr implements Serializable {
 	//bi-directional many-to-one association to ShPostType
 	@ManyToOne
 	@JoinColumn(name="postType_id")
+	@ForeignKey
 	private ShPostType shPostType;
 
 	//bi-directional many-to-one association to ShWidget
