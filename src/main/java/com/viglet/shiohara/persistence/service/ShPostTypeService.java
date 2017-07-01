@@ -18,8 +18,8 @@ public class ShPostTypeService extends ShBaseService {
 		return q.getResultList();
 	}
 
-	public ShPostType getUser(int userId) {
-		return em.find(ShPostType.class, userId);
+	public ShPostType get(int postTypeId) {
+		return em.find(ShPostType.class, postTypeId);
 	}
 
 	public boolean delete(int postTypeId) {
