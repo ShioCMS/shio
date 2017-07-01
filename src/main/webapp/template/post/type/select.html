@@ -15,8 +15,7 @@
 				<figure class="user-image">
 					<div id="user-image" class="img"
 						ng-style="{'background-image':'url(' + shUser.gravatar +')'}"
-						href="#">
-						<span class="hidden">Alexandre Oliveira's Picture</span>
+						href="#">					
 					</div>
 					<!--   <a href="#" class="edit-user-image js-modal-image">Edit Picture</a> -->
 				</figure>
@@ -27,8 +26,8 @@
 					</h3>
 				</div>
 				<div class="pull-right" style="margin: -40px 0 0;">
-					<a href="/post/type/editor/" class="btn btn-default">Or model a
-						new Post Type</a>
+					<a ui-sref="content.post-type-editor" class="btn btn-default">Or
+						model a new Post Type</a>
 
 				</div>
 			</fieldset>
@@ -78,7 +77,7 @@
 		ng-repeat="shPostType in shPostTypes | filter:query | orderBy:orderProp">
 		<div class="well">
 			<a href="#"><span class="glyphicon glyphicon-star-empty close"></span></a>
-			<a href="/post/type/attributes/{{shPostType.id}}/"><span
+			<a ui-sref="content.post-type-attributes"><span
 				class="glyphicon glyphicon-pencil close"></span></a> <a
 				href="/post/editor/{{shPostType.id}}/"><h1>
 					{{shPostType.title}} <br /> <small>

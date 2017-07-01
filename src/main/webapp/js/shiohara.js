@@ -13,12 +13,28 @@ shioharaApp.config(function($stateProvider, $urlRouterProvider) {
 	})
 	.state('content.post-type-select', {
 		url : '/post/type/select',
-		templateUrl : 'template/post-type-select.html',
+		templateUrl : 'template/post/type/select.html',
 		controller : 'VecPostTypeSelectCtrl',
 		data : {
 			pageTitle : 'Post Type Select | Viglet Shiohara'
 		}
-	});
+	})
+	.state('content.post-type-editor', {
+		url : '/post/type/select',
+		templateUrl : 'template/post/type/editor.html',
+		controller : 'VecPostTypeSelectCtrl',
+		data : {
+			pageTitle : 'Post Type Editor | Viglet Shiohara'
+		}
+	})
+	.state('content.post-type-attributes', {
+		url : '/post/type/attributes',
+		templateUrl : 'template/post/type/attributes.html',
+		controller : 'VecPostTypeAttrCtrl',
+		data : {
+			pageTitle : 'Post Type Editor | Viglet Shiohara'
+		}
+	});;
 
 });
 
@@ -50,6 +66,7 @@ shioharaApp.controller('VecSiteListCtrl', [
 					$scope.shSites = response.data;
 				}));
 	} ]);
+
 shioharaApp.controller('VecPostTypeSelectCtrl', [
 	"$scope",
 	"$http",
@@ -63,4 +80,13 @@ shioharaApp.controller('VecPostTypeSelectCtrl', [
 				function(response) {
 					$scope.shPostTypes = response.data;
 				}));
+	} ]);
+
+shioharaApp.controller('VecPostTypeAttrCtrl', [
+	"$scope",
+	"$http",
+	"$window",
+	"$state",
+	"$rootScope",
+	function($scope, $http, $window, $state, $rootScope) {		
 	} ]);
