@@ -59,7 +59,7 @@ public class ShWidgetAPI {
 	public Response add(ShWidget shWidget) throws Exception {
 		shWidgetService.save(shWidget);
 		String result = "Widget saved: " + shWidget;
-		return Response.status(201).entity(result).build();
+		return Response.status(200).entity(result).build();
 
 	}
 

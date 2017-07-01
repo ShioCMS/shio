@@ -57,7 +57,7 @@ public class ShPostAPI {
 	public Response add(ShPost shPost) throws Exception {
 		shPostService.save(shPost);
 		String result = "Post saved : " + shPost;
-		return Response.status(201).entity(result).build();
+		return Response.status(200).entity(result).build();
 
 	}
 

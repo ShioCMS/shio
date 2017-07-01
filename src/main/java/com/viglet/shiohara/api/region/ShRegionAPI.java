@@ -57,7 +57,7 @@ public class ShRegionAPI {
 	public Response add(ShRegion shRegion) throws Exception {
 		shRegionService.save(shRegion);
 		String result = "Region saved: " + shRegion;
-		return Response.status(201).entity(result).build();
+		return Response.status(200).entity(result).build();
 
 	}
 

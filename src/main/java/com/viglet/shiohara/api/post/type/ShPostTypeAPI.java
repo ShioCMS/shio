@@ -58,7 +58,7 @@ public class ShPostTypeAPI {
 	public Response add(ShPostType shPostType) throws Exception {
 		shPostTypeService.save(shPostType);
 		String result = "PostType saved : " + shPostType;
-		return Response.status(201).entity(result).build();
+		return Response.status(200).entity(result).build();
 
 	}
 
