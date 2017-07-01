@@ -16,7 +16,7 @@ public class ShWidget implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private String id;
+	private int id;
 
 	@Column(name="class_name")
 	private String className;
@@ -37,11 +37,11 @@ public class ShWidget implements Serializable {
 	public ShWidget() {
 	}
 
-	public String getId() {
+	public int getId() {
 		return this.id;
 	}
 
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 

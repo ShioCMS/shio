@@ -15,7 +15,7 @@ public class ShRegion implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private String id;
+	private int id;
 
 	private String name;
 
@@ -32,11 +32,11 @@ public class ShRegion implements Serializable {
 	public ShRegion() {
 	}
 
-	public String getId() {
+	public int getId() {
 		return this.id;
 	}
 
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 

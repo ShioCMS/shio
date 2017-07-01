@@ -17,7 +17,7 @@ public class ShPostType implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private String id;
+	private int id;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date date;
@@ -47,11 +47,11 @@ public class ShPostType implements Serializable {
 	public ShPostType() {
 	}
 
-	public String getId() {
+	public int getId() {
 		return this.id;
 	}
 
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 

@@ -16,7 +16,7 @@ public class ShPostTypeAttr implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private String id;
+	private int id;
 
 	private String description;
 
@@ -30,7 +30,7 @@ public class ShPostTypeAttr implements Serializable {
 
 	private String name;
 
-	private int position;
+	private int ordinal;
 
 	private byte required;
 
@@ -51,11 +51,11 @@ public class ShPostTypeAttr implements Serializable {
 	public ShPostTypeAttr() {
 	}
 
-	public String getId() {
+	public int getId() {
 		return this.id;
 	}
 
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
@@ -107,12 +107,12 @@ public class ShPostTypeAttr implements Serializable {
 		this.name = name;
 	}
 
-	public int getPosition() {
-		return this.position;
+	public int getOrdinal() {
+		return this.ordinal;
 	}
 
-	public void setPosition(int position) {
-		this.position = position;
+	public void setOrdinal(int ordinal) {
+		this.ordinal = ordinal;
 	}
 
 	public byte getRequired() {

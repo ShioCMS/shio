@@ -55,7 +55,7 @@ public class ShSiteAPI {
 	public Response add(ShSite shSite) throws Exception {
 		shSiteService.save(shSite);
 		String result = "Site saved: " + shSite;
-		return Response.status(201).entity(result).build();
+		return Response.status(200).entity(result).build();
 
 	}
 

@@ -32,9 +32,8 @@
 		</init-param>
 		<init-param>
 			<param-name>com.sun.jersey.spi.container.ContainerResponseFilters</param-name>
-			<param-value>com.viglet.vecchio.api.filter.CORSFilter</param-value>
+			<param-value>com.viglet.shiohara.api.filter.CORSFilter</param-value>
 		</init-param>
-
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
