@@ -57,6 +57,7 @@ public class ShPostTypeAttrAPI {
 		return shPostTypeAttrService.delete(id);
 	}
 
+	@Deprecated
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response add(ShPostTypeAttr shPostTypeAttr) throws Exception {
