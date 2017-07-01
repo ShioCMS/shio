@@ -31,9 +31,9 @@ shioharaApp.controller('VecContentCtrl', [
 		function($scope, $http, $window, $state, $rootScope) {
 			$scope.shUser = null;
 			$rootScope.$state = $state;
-			$scope.$evalAsync($http.get(jp_domain + "/api/user/1").then(
+			$scope.$evalAsync($http.get(jp_domain + "/api/user/2").then(
 					function(response) {
-						$scope.shUser = response.data;
+						$scope.shUser = response.data;				
 					}));
 		} ]);
 shioharaApp.controller('VecSiteListCtrl', [

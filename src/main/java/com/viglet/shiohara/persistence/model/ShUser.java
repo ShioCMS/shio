@@ -1,21 +1,27 @@
 package com.viglet.shiohara.persistence.model;
 
 import java.io.Serializable;
-import javax.persistence.*;
-import java.util.Date;
+import java.security.MessageDigest;
 
+import javax.persistence.*;
+
+import org.codehaus.jackson.annotate.JsonProperty;
+
+import com.viglet.shiohara.utils.MD5Util;
+
+import java.util.Date;
 
 /**
  * The persistent class for the ShUser database table.
  * 
  */
 @Entity
-@NamedQuery(name="ShUser.findAll", query="SELECT s FROM ShUser s")
+@NamedQuery(name = "ShUser.findAll", query = "SELECT s FROM ShUser s")
 public class ShUser implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
 	private String confirmEmail;
@@ -138,6 +144,12 @@ public class ShUser implements Serializable {
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	@JsonProperty("gravatar")
+	private String getGravatar() {
+		String imageUrl = "https://www.gravatar.com/avatar/" + MD5Util.md5Hex(email);
+		return imageUrl;
 	}
 
 }
