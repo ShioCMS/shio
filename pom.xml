@@ -157,5 +157,4 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<version.openjpa>2.4.0</version.openjpa>
 	</properties>
-	<artifactId>shiohara</artifactId>
 </project>
