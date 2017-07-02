@@ -21,7 +21,8 @@ import com.viglet.shiohara.persistence.service.ShPostTypeService;
 @Path("/post/type")
 public class ShPostTypeAPI {
 	ShPostTypeService shPostTypeService = new ShPostTypeService();
-
+	ShPostTypeAttrService shPostTypeAttrService = new ShPostTypeAttrService();
+	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<ShPostType> list() throws Exception {
@@ -44,6 +45,10 @@ public class ShPostTypeAPI {
 		shPostTypeEdit.setTitle(shPostType.getTitle());
 		shPostTypeEdit.setDescription(shPostType.getDescription());
 		shPostTypeEdit.setName(shPostType.getName());
+		
+		for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs()) {
+			shPostTypeAttrService.save(shPostTypeAttr);
+		}
 		shPostTypeService.save(shPostTypeEdit);
 		return shPostTypeEdit;
 	}
@@ -70,7 +75,7 @@ public class ShPostTypeAPI {
 	public Response add(@PathParam("postTypeId") int id, ShPostTypeAttr shPostTypeAttr) throws Exception {
 		ShPostType shPostType = shPostTypeService.get(id);
 		if (shPostType != null) {
-			ShPostTypeAttrService shPostTypeAttrService = new ShPostTypeAttrService();
+			
 			shPostTypeAttr.setShPostType(shPostType);
 			shPostTypeAttrService.save(shPostTypeAttr);
 			String result = "Post Attrib saved: " + shPostTypeAttr;

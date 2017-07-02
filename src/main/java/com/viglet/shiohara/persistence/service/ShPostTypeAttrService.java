@@ -9,9 +9,16 @@ import com.viglet.shiohara.persistence.model.ShPostTypeAttr;
 public class ShPostTypeAttrService extends ShBaseService {
 	public void save(ShPostTypeAttr shPostTypeAttr) {
 		// Transform ShPostType unmanaged to managed
-		shPostTypeAttr.setShPostType(em.merge(shPostTypeAttr.getShPostType()));
+		if (shPostTypeAttr.getShPostType() != null) {
+			shPostTypeAttr.setShPostType(em.merge(shPostTypeAttr.getShPostType()));
+		}
+		
 		em.getTransaction().begin();
-		em.persist(shPostTypeAttr);
+		if (shPostTypeAttr.getId() > 0) {
+			em.merge(shPostTypeAttr);
+		} else {
+			em.persist(shPostTypeAttr);
+		}
 		em.getTransaction().commit();
 	}
 

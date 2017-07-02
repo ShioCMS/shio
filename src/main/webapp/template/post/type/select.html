@@ -15,8 +15,7 @@
 				<figure class="user-image">
 					<div id="user-image" class="img"
 						ng-style="{'background-image':'url(' + shUser.gravatar +')'}"
-						href="#">					
-					</div>
+						href="#"></div>
 					<!--   <a href="#" class="edit-user-image js-modal-image">Edit Picture</a> -->
 				</figure>
 
@@ -77,7 +76,8 @@
 		ng-repeat="shPostType in shPostTypes | filter:query | orderBy:orderProp">
 		<div class="well">
 			<a href="#"><span class="glyphicon glyphicon-star-empty close"></span></a>
-			<a ui-sref="content.post-type-attributes"><span
+			<a
+				ui-sref="content.post-type-attributes({postTypeId: shPostType.id})"><span
 				class="glyphicon glyphicon-pencil close"></span></a> <a
 				href="/post/editor/{{shPostType.id}}/"><h1>
 					{{shPostType.title}} <br /> <small>

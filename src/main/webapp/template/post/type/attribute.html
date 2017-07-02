@@ -1,0 +1,122 @@
+<div class="settings">
+	<section class="content no-padding" style="height: 170px;">
+
+		<header class="user-profile-header">
+			<img id="user-cover" class="cover-image" src="/img/user-cover.png">
+
+			<!--  <a class="edit-cover-image js-modal-cover button" href="#">Change Cover</a> -->
+		</header>
+
+		<form class="user-profile" novalidate="novalidate">
+
+			<fieldset class="user-details-top">
+
+				<figure class="user-image">
+					<div id="user-image" class="img"
+						ng-style="{'background-image':'url(' + shUser.gravatar +')'}"
+						href="#">
+					</div>
+					<!--   <a href="#" class="edit-user-image js-modal-image">Edit Picture</a> -->
+				</figure>
+
+				<div class="form-group">
+					<h3>
+						{{shUser.firstName}}, <small>edit your {{shPostType.title}};s Attribute</small>
+					</h3>
+				</div>
+				<div class="pull-right" style="margin: -40px 0 0;">
+					<a ui-sref="content.post-type-select"
+						class="btn btn-default">Or model this Post Type</a>
+
+				</div>
+			</fieldset>
+		</form>
+	</section>
+</div>
+
+<div class="row">
+	<div class="col-md-2">
+		<ul class="nav nav-pills nav-stacked">
+			<li class="nav-header">CTD01 Post Type</li>
+
+			<li><a
+				href="/post/type/attributes/04A8B013D5ECED5EF8F93A29FB53DF43">Model</a>
+			</li>
+
+			<li class="nav-header">Attributes</li>
+			<li class="active"><a
+				href="/post/type/attribute/04A8B013D5ECED5EF8F93A29FB53DF43/D8FCD6C7209A157C4E86921E30446F17">Primeiro
+					campo</a></li>
+			<li><a
+				href="/post/type/attribute/04A8B013D5ECED5EF8F93A29FB53DF43/B9350949F3406910FB898AF1AE0D020D">Description</a></li>
+			<li><a
+				href="/post/type/attribute/04A8B013D5ECED5EF8F93A29FB53DF43/621D7E83431405223FE50BFE441BF0F0">Outro</a></li>
+
+			<li class="nav-header">Look & Feel</li>
+			<li><a href="#">Style</a></li>
+			<li><a href="#">Templates</a></li>
+
+			<li class="nav-header">Developer</li>
+			<li><a href="#">API</a></li>
+			<li><a href="#">Documentation</a></li>
+
+		</ul>
+	</div>
+	<div class="col-md-10">
+		<form method="post" action="/post/type/process/attribute/" role="form">
+			<input type="hidden" id="posttypeid" name="posttypeid"
+				value="04A8B013D5ECED5EF8F93A29FB53DF43"> <input
+				type="hidden" id="attribid" name="attribid"
+				value="D8FCD6C7209A157C4E86921E30446F17">
+			<div class="form-group">
+				<label for="field1">Name</label> <input type="text" id="label"
+					name="label" class="form-control" placeholder="Attribute Name" ng-model="shPostTypeAttr.label">
+			</div>
+			<div class="form-group">
+				<label for="field2">Description</label>
+				<textarea id="description" name="description" class="form-control"
+					placeholder="About this Attribute" ng-model="shPostTypeAttr.description"></textarea>
+			</div>
+			<div class="form-group">
+				<label>Identifier</label> <input type="text" id="name" name="name"
+					class="form-control" placeholder="Identfier" ng-model="shPostTypeAttr.name">
+			</div>
+
+			<div class="form-group">
+				<label for="field2">Many</label>
+				<div class="checkbox">
+					<input type="checkbox" id="many" name="many" ng-model="shPostTypeAttr.many">
+				</div>
+
+			</div>
+			<div class="form-group">
+				<label for="field2">Required</label>
+				<div class="checkbox">
+					<input type="checkbox" id="req" name="req" ng-model="shPostTypeAttr.required">
+				</div>
+
+			</div>
+			<div class="form-group">
+				<label for="field2">Widget</label> <select
+					id="wdg_D8FCD6C7209A157C4E86921E30446F17"
+					name="wdg_D8FCD6C7209A157C4E86921E30446F17" class="form-control">
+					<option value="01">01</option>
+				</select>
+			</div>
+			<div class="form-group"></div>
+			<div class="btn-group">
+				<button type="submit" class="btn btn-primary">Save changes</button>
+				<a class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
+					href="#"><span class="caret"></span></a>
+				<ul class="dropdown-menu">
+					<li><a href="#"><i class="icon-trash"></i> Delete</a></li>
+					<li><a href="duplicatecontent.php"><i
+							class="icon-plus-sign"></i> Duplicate</a></li>
+				</ul>
+			</div>
+			<button type="button" class="btn btn-default">Cancel</button>
+		</form>
+
+
+	</div>
+</div>
