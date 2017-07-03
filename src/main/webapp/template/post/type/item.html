@@ -1,74 +1,76 @@
+<div ui-view>
+	<div class="settings">
+		<section class="content no-padding" style="height: 170px;">
 
-<div class="settings">
-	<section class="content no-padding" style="height: 170px;">
+			<header class="user-profile-header">
+				<img id="user-cover" class="cover-image" src="/img/user-cover.png">
 
-		<header class="user-profile-header">
-			<img id="user-cover" class="cover-image" src="/img/user-cover.png">
+				<!--  <a class="edit-cover-image js-modal-cover button" href="#">Change Cover</a> -->
+			</header>
 
-			<!--  <a class="edit-cover-image js-modal-cover button" href="#">Change Cover</a> -->
-		</header>
+			<form class="user-profile" novalidate="novalidate">
 
-		<form class="user-profile" novalidate="novalidate">
+				<fieldset class="user-details-top">
 
-			<fieldset class="user-details-top">
+					<figure class="user-image">
+						<div id="user-image" class="img"
+							ng-style="{'background-image':'url(' + shUser.gravatar +')'}"
+							href="#"></div>
+						<!--   <a href="#" class="edit-user-image js-modal-image">Edit Picture</a> -->
+					</figure>
 
-				<figure class="user-image">
-					<div id="user-image" class="img"
-						ng-style="{'background-image':'url(' + shUser.gravatar +')'}"
-						href="#">						
+					<div class="form-group">
+						<h3>
+							{{shUser.firstName}}, <small>model your
+								{{shPostType.title}} Post Type</small>
+						</h3>
 					</div>
-					<!--   <a href="#" class="edit-user-image js-modal-image">Edit Picture</a> -->
-				</figure>
+					<div class="pull-right" style="margin: -40px 0 0;">
+						<a ui-sref="content.post-type-select" class="btn btn-default">Or
+							select other Post Type</a>
 
-				<div class="form-group">
-					<h3>
-						{{shUser.firstName}}, <small>model your {{shPostType.title}} Post Type</small>
-					</h3>
-				</div>
-				<div class="pull-right" style="margin: -40px 0 0;">
-					<a ui-sref="content.post-type-select" class="btn btn-default">Or select other
-						Post Type</a>
-
-				</div>
-			</fieldset>
-		</form>
-	</section>
-</div>
-
-<div class="row">
-	<div class="col-md-2">
-		<ul class="nav nav-pills nav-stacked">
-			<li class="nav-header">{{shPostType.name}}</li>
-
-			<li class="active"><a
-				href="/post/type/attributes/04A8B013D5ECED5EF8F93A29FB53DF43">Model</a>
-			</li>
-
-			<li class="nav-header">Attributes</li>
-			<li ng-repeat="shPostTypeAttr in shPostType.shPostTypeAttrs"><a
-				ui-sref="content.post-type-attribute({postTypeAttrId:shPostTypeAttr.id})">{{shPostTypeAttr.label}}</a></li>		
-			<li class="nav-header">Look & Feel</li>
-			<li><a href="#">Style</a></li>
-			<li><a href="#">Templates</a></li>
-
-			<li class="nav-header">Developer</li>
-			<li><a href="#">API</a></li>
-			<li><a href="#">Documentation</a></li>
-
-		</ul>
+					</div>
+				</fieldset>
+			</form>
+		</section>
 	</div>
-	<div class="col-md-10">	
+
+	<div class="row">
+		<div class="col-md-2">
+			<ul class="nav nav-pills nav-stacked">
+				<li class="nav-header">{{shPostType.name}}</li>
+
+				<li class="active"><a
+					ui-sref="content.post-type-item({postTypeId: shPostType.id})">Model</a>
+				</li>
+
+				<li class="nav-header">Attributes</li>
+				<li ng-repeat="shPostTypeAttr in shPostType.shPostTypeAttrs"><a
+					ui-sref="content.post-type-item.attribute({postTypeId:shPostType.id, postTypeAttrId:shPostTypeAttr.id})">{{shPostTypeAttr.label}}</a></li>
+				<li class="nav-header">Look & Feel</li>
+				<li><a href="#">Style</a></li>
+				<li><a href="#">Templates</a></li>
+
+				<li class="nav-header">Developer</li>
+				<li><a href="#">API</a></li>
+				<li><a href="#">Documentation</a></li>
+
+			</ul>
+		</div>
+		<div class="col-md-10">
 			<div class="form-group">
 				<input type="text" id="title" name="title" class="form-control"
 					placeholder="Post Type Title" ng-model="shPostType.title">
 			</div>
 			<div class="form-group">
 				<textarea id="description" name="description" class="form-control"
-					placeholder="About this Post Type" ng-model="shPostType.description"></textarea>
+					placeholder="About this Post Type"
+					ng-model="shPostType.description"></textarea>
 			</div>
 			<div class="form-group">
 				<label>Identifier</label> <input type="text" id="name" name="name"
-					class="form-control" placeholder="Identfier" ng-model="shPostType.name">
+					class="form-control" placeholder="Identfier"
+					ng-model="shPostType.name">
 			</div>
 
 			<input type="hidden" id="posttypeid" name="posttypeid"
@@ -83,29 +85,26 @@
 					<th></th>
 				</thead>
 				<tbody>
-					<tr class="info" ng-repeat="shPostTypeAttr in shPostType.shPostTypeAttrs">
+					<tr class="info"
+						ng-repeat="shPostTypeAttr in shPostType.shPostTypeAttrs">
 						<td>{{shPostTypeAttr.label}}</td>
 						<td>
 							<div class="checkbox">
-								<input type="checkbox"
-									id="many_D8FCD6C7209A157C4E86921E30446F17"
-									name="many_D8FCD6C7209A157C4E86921E30446F17" ng-model="shPostTypeAttr.many">
+								<input type="checkbox"								
+									ng-model="shPostTypeAttr.many">
 							</div>
 						</td>
 						<td>
 							<div class="checkbox">
-								<input type="checkbox" id="req_D8FCD6C7209A157C4E86921E30446F17"
-									name="req_D8FCD6C7209A157C4E86921E30446F17" ng-model="shPostTypeAttr.required">
+								<input type="checkbox"
+									ng-model="shPostTypeAttr.required">
 							</div>
 						</td>
 
-						<td><input type="text" class="form-control"
-							id="lbl_D8FCD6C7209A157C4E86921E30446F17"
-							name="lbl_D8FCD6C7209A157C4E86921E30446F17" ng-model="shPostTypeAttr.description"/>
-						</td>
-						<td><select id="wdg_D8FCD6C7209A157C4E86921E30446F17"
-							name="wdg_D8FCD6C7209A157C4E86921E30446F17" class="form-control">
-								<option value="01">01</option>
+						<td><input type="text" class="form-control"						
+							ng-model="shPostTypeAttr.description" /></td>
+						<td><select class="form-control">
+								<option ng-repeat="shWidget in shWidgets"value="{{shWidget.id}}">{{shWidget.name}}</option>
 						</select></td>
 						<td>
 
@@ -125,7 +124,7 @@
 						</td>
 
 					</tr>
-					<tr class="success" >
+					<tr class="success">
 						<td>Summary</td>
 						<td>
 							<div class="checkbox">
@@ -170,7 +169,7 @@
 				</tbody>
 			</table>
 
-			<div class="row"> 
+			<div class="row">
 				<div class="col-md-2"
 					ng-repeat="widget in widgets | filter:query | orderBy:orderProp">
 					<div class="well">
@@ -182,7 +181,8 @@
 				</div>
 			</div>
 			<div class="btn-group">
-				<button ng-click="postTypeSave()" class="btn btn-primary">Save changes</button>
+				<button ng-click="postTypeSave()" class="btn btn-primary">Save
+					changes</button>
 				<a class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
 					href="#"><span class="caret"></span></a>
 				<ul class="dropdown-menu">
@@ -191,5 +191,6 @@
 				</ul>
 			</div>
 			<button type="button" class="btn btn-default">Cancel</button>
+		</div>
 	</div>
 </div>
