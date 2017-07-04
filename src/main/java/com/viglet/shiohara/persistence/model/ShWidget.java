@@ -99,14 +99,14 @@ public class ShWidget implements Serializable {
 
 	public ShPostTypeAttr addShPostTypeAttr(ShPostTypeAttr shPostTypeAttr) {
 		getShPostTypeAttrs().add(shPostTypeAttr);
-		shPostTypeAttr.setShwidget(this);
+		shPostTypeAttr.setShWidget(this);
 
 		return shPostTypeAttr;
 	}
 
 	public ShPostTypeAttr removeShPostTypeAttr(ShPostTypeAttr shPostTypeAttr) {
 		getShPostTypeAttrs().remove(shPostTypeAttr);
-		shPostTypeAttr.setShwidget(null);
+		shPostTypeAttr.setShWidget(null);
 
 		return shPostTypeAttr;
 	}

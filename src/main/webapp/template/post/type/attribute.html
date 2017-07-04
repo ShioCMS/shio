@@ -92,9 +92,10 @@
 
 		</div>
 		<div class="form-group">
-			<label for="field2">Widget</label> <select
-			 class="form-control" ng-model="shPostTypeAttr.shWidget" >
-				<option ng-repeat="shWidget in shWidgets" value="{{shWidget}}">{{shWidget.name}}</option>
+			<label for="field2">Widget</label> <select class="form-control"
+				ng-model="shPostTypeAttr.shWidget"
+				ng-options="shWidget as shWidget.name for shWidget in shWidgets track by shWidget.id">
+				<option value="">- Pick One -</option>
 			</select>
 		</div>
 		<div class="form-group"></div>

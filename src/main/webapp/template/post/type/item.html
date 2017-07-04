@@ -100,9 +100,10 @@
 
 						<td><input type="text" class="form-control"
 							ng-model="shPostTypeAttr.description" /></td>
-						<td><select class="form-control">
-								<option ng-repeat="shWidget in shWidgets"
-									value="{{shWidget.id}}">{{shWidget.name}}</option>
+						<td><select class="form-control"
+							ng-model="shPostTypeAttr.shWidget"
+							ng-options="shWidget as shWidget.name for shWidget in shWidgets track by shWidget.id">
+							<option value="">- Pick One -</option>
 						</select></td>
 						<td>
 
@@ -126,9 +127,10 @@
 			</table>
 
 			<div class="row">
-				<div class="col-md-2" ng-repeat="shWidget in shWidgets">				
+				<div class="col-md-2" ng-repeat="shWidget in shWidgets">
 					<div class="well">
-						<a href="/widget/add/{{shWidget.id}}/04A8B013D5ECED5EF8F93A29FB53DF43">
+						<a
+							href="/widget/add/{{shWidget.id}}/04A8B013D5ECED5EF8F93A29FB53DF43">
 							<h4>{{shWidget.name}}</h4>
 						</a>
 					</div>

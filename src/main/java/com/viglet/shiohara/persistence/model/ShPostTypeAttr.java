@@ -163,7 +163,7 @@ public class ShPostTypeAttr implements Serializable {
 		return this.shWidget;
 	}
 
-	public void setShwidget(ShWidget shWidget) {
+	public void setShWidget(ShWidget shWidget) {
 		this.shWidget = shWidget;
 	}
 
