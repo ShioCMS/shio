@@ -1,0 +1,42 @@
+<div class="settings">
+	<section class="content no-padding" style="height: 170px;">
+
+		<header class="user-profile-header">
+			<img id="user-cover" class="cover-image" src="/img/user-cover.png"
+				title="Alexandre Oliveira's Cover Image">
+
+			<!--  <a class="edit-cover-image js-modal-cover button" href="#">Change Cover</a> -->
+		</header>
+
+		<form class="user-profile" novalidate="novalidate">
+
+			<fieldset class="user-details-top">
+
+				<figure class="user-image">
+					<div id="user-image" class="img"
+						style="background-image: url(http://www.gravatar.com/avatar/169ed50aa94be9aadfc771bc5d9f9255.php);"
+						href="#">
+						<span class="hidden">Alexandre Oliveira's Picture</span>
+					</div>
+					<!--   <a href="#" class="edit-user-image js-modal-image">Edit Picture</a> -->
+				</figure>
+
+				<div class="form-group">
+					<h3>
+						Alexandre, <small>create your new Destaque Post</small>
+					</h3>
+				</div>
+				<div class="pull-right" style="margin: -40px 0 0;">
+					<a href="/post/select/" class="btn btn-default">Or create other
+						kind of Post</a>
+
+				</div>
+			</fieldset>
+		</form>
+	</section>
+</div>
+
+
+<div ng-include="postEditForm"></div>
+<div id="error"></div>
+

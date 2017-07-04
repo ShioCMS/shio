@@ -38,8 +38,18 @@ shioharaApp.config(function($stateProvider, $urlRouterProvider) {
 		data : {
 			pageTitle : 'Post Type Editor | Viglet Shiohara'
 		}
+	}).state('content.post-type-item.post-item-new', {
+		url : '/post/new',
+		templateUrl : 'template/post/item.html',
+		controller : 'VecPostNewCtrl',
+		data : {
+			pageTitle : 'Post New | Viglet Shiohara'
+		}
+	}).state('post-item-form', {
+		url : '/post/type/:postTypeId/post/form',
+		templateUrl : 'template/post/form.html',
+		controller : 'VecPostFormCtrl'
 	});
-	;
 
 });
 
@@ -149,3 +159,17 @@ shioharaApp.controller('VecPostTypeAttrCtrl', [
 			}
 
 		} ]);
+
+shioharaApp.controller('VecPostNewCtrl', [ "$scope", "$http", "$window",
+		"$stateParams", "$state", "$rootScope",
+		function($scope, $http, $window, $stateParams, $state, $rootScope) {
+			$scope.postTypeAttrId = $stateParams.postTypeAttrId;
+			$scope.postEditForm = "template/post/form.html";		
+		} ]);
+
+shioharaApp.controller('VecPostFormCtrl', [ "$scope", "$http", "$window",
+	"$stateParams", "$state", "$rootScope",
+	function($scope, $http, $window, $stateParams, $state, $rootScope) {
+		$scope.postTypeAttrId = $stateParams.postTypeAttrId;
+		
+	} ]);
