@@ -24,7 +24,7 @@ div.affix {
 	</div>
 
 	<div class="form-group" ng-repeat="shPostTypeAttr in shPostType.shPostTypeAttrs">
-		<label>{{shPostTypeAttr.label}} {{shPostTypeAttr.implementationCode}}</label> <div ng-include="shPostTypeAttr.implementationCode"></div>
+		<label>{{shPostTypeAttr.label}}</label> <div ng-include="shPostTypeAttr.shWidget.implementationCode"></div>
 	</div>
 </form>
 
