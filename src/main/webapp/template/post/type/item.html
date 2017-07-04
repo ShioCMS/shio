@@ -85,26 +85,24 @@
 					<th></th>
 				</thead>
 				<tbody>
-					<tr
-						ng-repeat="shPostTypeAttr in shPostType.shPostTypeAttrs">
+					<tr ng-repeat="shPostTypeAttr in shPostType.shPostTypeAttrs">
 						<td>{{shPostTypeAttr.label}}</td>
 						<td>
 							<div class="checkbox">
-								<input type="checkbox"								
-									ng-model="shPostTypeAttr.many">
+								<input type="checkbox" ng-model="shPostTypeAttr.many">
 							</div>
 						</td>
 						<td>
 							<div class="checkbox">
-								<input type="checkbox"
-									ng-model="shPostTypeAttr.required">
+								<input type="checkbox" ng-model="shPostTypeAttr.required">
 							</div>
 						</td>
 
-						<td><input type="text" class="form-control"						
+						<td><input type="text" class="form-control"
 							ng-model="shPostTypeAttr.description" /></td>
 						<td><select class="form-control">
-								<option ng-repeat="shWidget in shWidgets"value="{{shWidget.id}}">{{shWidget.name}}</option>
+								<option ng-repeat="shWidget in shWidgets"
+									value="{{shWidget.id}}">{{shWidget.name}}</option>
 						</select></td>
 						<td>
 
@@ -128,12 +126,10 @@
 			</table>
 
 			<div class="row">
-				<div class="col-md-2"
-					ng-repeat="widget in widgets | filter:query | orderBy:orderProp">
+				<div class="col-md-2" ng-repeat="shWidget in shWidgets">				
 					<div class="well">
-						<a
-							href="/widget/add/{{widget.id}}/04A8B013D5ECED5EF8F93A29FB53DF43">
-							<h4>{{widget.name}}</h4>
+						<a href="/widget/add/{{shWidget.id}}/04A8B013D5ECED5EF8F93A29FB53DF43">
+							<h4>{{shWidget.name}}</h4>
 						</a>
 					</div>
 				</div>

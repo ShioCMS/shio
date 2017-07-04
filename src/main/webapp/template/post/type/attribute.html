@@ -93,9 +93,8 @@
 		</div>
 		<div class="form-group">
 			<label for="field2">Widget</label> <select
-				id="wdg_D8FCD6C7209A157C4E86921E30446F17"
-				name="wdg_D8FCD6C7209A157C4E86921E30446F17" class="form-control">
-				<option ng-repeat="shWidget in shWidgets" value="{{shWidget.id}}">{{shWidget.name}}</option>
+			 class="form-control" ng-model="shPostTypeAttr.shWidget" >
+				<option ng-repeat="shWidget in shWidgets" value="{{shWidget}}">{{shWidget.name}}</option>
 			</select>
 		</div>
 		<div class="form-group"></div>

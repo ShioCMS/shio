@@ -9,19 +9,18 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 import java.util.List;
 
-
 /**
  * The persistent class for the ShPostTypeAttr database table.
  * 
  */
 @Entity
-@NamedQuery(name="ShPostTypeAttr.findAll", query="SELECT s FROM ShPostTypeAttr s")
-@JsonIgnoreProperties( { "shPostType" })
+@NamedQuery(name = "ShPostTypeAttr.findAll", query = "SELECT s FROM ShPostTypeAttr s")
+@JsonIgnoreProperties({ "shPostType", "shPostAttrs" })
 public class ShPostTypeAttr implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
 	private String description;
@@ -40,19 +39,19 @@ public class ShPostTypeAttr implements Serializable {
 
 	private byte required;
 
-	//bi-directional many-to-one association to ShPostAttr
-	@OneToMany(mappedBy="shPostTypeAttr")
+	// bi-directional many-to-one association to ShPostAttr
+	@OneToMany(mappedBy = "shPostTypeAttr")
 	private List<ShPostAttr> shPostAttrs;
 
-	//bi-directional many-to-one association to ShPostType
+	// bi-directional many-to-one association to ShPostType
 	@ManyToOne
-	@JoinColumn(name="postType_id")
+	@JoinColumn(name = "postType_id")
 	@ForeignKey
 	private ShPostType shPostType;
 
-	//bi-directional many-to-one association to ShWidget
+	// bi-directional many-to-one association to ShWidget
 	@ManyToOne
-	@JoinColumn(name="widget_id")
+	@JoinColumn(name = "widget_id")
 	private ShWidget shWidget;
 
 	public ShPostTypeAttr() {
