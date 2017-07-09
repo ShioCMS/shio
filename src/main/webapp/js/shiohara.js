@@ -113,6 +113,11 @@ shioharaApp.controller('VecPostTypeItemCtrl', [
 					jp_domain + "/api/post/type/" + $scope.postTypeId).then(
 					function(response) {
 						$scope.shPostType = response.data;
+						$scope.shPostNewItem = angular.copy($scope.shPostType);
+						for(var i=0; i < $scope.shPostNewItem.shPostTypeAttrs.length; i++) {
+							$scope.shPostNewItem.shPostTypeAttrs[i]['value'] = 'Novo Valor' + i;
+						}
+						
 					}));
 			$scope.$evalAsync($http.get(jp_domain + "/api/widget").then(
 					function(response) {
@@ -164,6 +169,7 @@ shioharaApp.controller('VecPostNewCtrl', [ "$scope", "$http", "$window",
 		"$stateParams", "$state", "$rootScope",
 		function($scope, $http, $window, $stateParams, $state, $rootScope) {
 			$scope.postTypeAttrId = $stateParams.postTypeAttrId;
+			
 			$scope.postEditForm = "template/post/form.html";		
 		} ]);
 
@@ -171,5 +177,7 @@ shioharaApp.controller('VecPostFormCtrl', [ "$scope", "$http", "$window",
 	"$stateParams", "$state", "$rootScope",
 	function($scope, $http, $window, $stateParams, $state, $rootScope) {
 		$scope.postTypeAttrId = $stateParams.postTypeAttrId;
+		 $scope.shPostTypeItem = angular.copy($scope.shPostType);
+		
 		
 	} ]);

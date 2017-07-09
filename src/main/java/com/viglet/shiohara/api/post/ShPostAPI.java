@@ -14,12 +14,18 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.viglet.shiohara.persistence.model.ShPost;
+import com.viglet.shiohara.persistence.model.ShPostAttr;
+import com.viglet.shiohara.persistence.model.ShPostType;
+import com.viglet.shiohara.persistence.service.ShPostAttrService;
 import com.viglet.shiohara.persistence.service.ShPostService;
+import com.viglet.shiohara.persistence.service.ShPostTypeService;
 
 @Path("/post")
 public class ShPostAPI {
 	ShPostService shPostService = new ShPostService();
-
+	ShPostTypeService shPostTypeService = new ShPostTypeService();
+	ShPostAttrService shPostAttrService = new ShPostAttrService();
+	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<ShPost> list() throws Exception {
@@ -52,10 +58,18 @@ public class ShPostAPI {
 		return shPostService.delete(id);
 	}
 
+	@Path("/{postTypeId}/")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response add(ShPost shPost) throws Exception {
-		shPostService.save(shPost);
+	public Response add(@PathParam("postTypeId") int postTypeId, ShPost shPost) throws Exception {
+		
+		ShPostType shPostType = shPostTypeService.get(postTypeId);
+		
+		//for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
+		//	shPostAttrService.saveByPostType(shPostType, shPostAttr);			
+		//}
+		shPostService.saveByPostType(shPostType, shPost);
+	
 		String result = "Post saved : " + shPost;
 		return Response.status(200).entity(result).build();
 

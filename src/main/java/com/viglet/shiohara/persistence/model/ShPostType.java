@@ -2,6 +2,9 @@ package com.viglet.shiohara.persistence.model;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
 import java.util.Date;
 import java.util.List;
 
@@ -12,6 +15,7 @@ import java.util.List;
  */
 @Entity
 @NamedQuery(name="ShPostType.findAll", query="SELECT s FROM ShPostType s")
+@JsonIgnoreProperties({ "shPosts", "shPostAttrs" })
 public class ShPostType implements Serializable {
 	private static final long serialVersionUID = 1L;
 

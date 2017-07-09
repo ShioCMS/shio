@@ -2,6 +2,9 @@ package com.viglet.shiohara.persistence.model;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import org.apache.openjpa.persistence.jdbc.ForeignKey;
+
 import java.util.Date;
 import java.util.List;
 
@@ -29,6 +32,7 @@ public class ShPost implements Serializable {
 	//bi-directional many-to-one association to ShPostType
 	@ManyToOne
 	@JoinColumn(name="post_type_id")
+	@ForeignKey
 	private ShPostType shPostType;
 
 	//bi-directional many-to-one association to ShPostAttr

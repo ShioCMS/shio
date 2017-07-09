@@ -2,49 +2,70 @@ package com.viglet.shiohara.persistence.model;
 
 import java.io.Serializable;
 import javax.persistence.*;
-import java.util.Date;
 
+import org.apache.openjpa.persistence.jdbc.ForeignKey;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.annotate.JsonProperty;
+
+import com.viglet.shiohara.utils.MD5Util;
+
+import java.util.Date;
 
 /**
  * The persistent class for the ShPostAttr database table.
  * 
  */
 @Entity
-@NamedQuery(name="ShPostAttr.findAll", query="SELECT s FROM ShPostAttr s")
+@NamedQuery(name = "ShPostAttr.findAll", query = "SELECT s FROM ShPostAttr s")
+@JsonIgnoreProperties({ "shPostType", "shPost" })
 public class ShPostAttr implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="date_value")
+	@Column(name = "date_value")
 	private Date dateValue;
 
-	@Column(name="int_value")
+	@Column(name = "int_value")
 	private int intValue;
 
 	@Lob
-	@Column(name="str_value")
+	@Column(name = "str_value")
 	private String strValue;
 
 	private int type;
 
-	//bi-directional many-to-one association to ShPost
+	// bi-directional many-to-one association to ShPost
 	@ManyToOne
-	@JoinColumn(name="post_id")
+	@JoinColumn(name = "post_id")
+	@ForeignKey
 	private ShPost shPost;
 
-	//bi-directional many-to-one association to ShPostType
+	// bi-directional many-to-one association to ShPostType
 	@ManyToOne
-	@JoinColumn(name="post_type_id")
+	@JoinColumn(name = "post_type_id")
+	@ForeignKey
 	private ShPostType shPostType;
 
-	//bi-directional many-to-one association to ShPostTypeAttr
+	// bi-directional many-to-one association to ShPostTypeAttr
 	@ManyToOne
-	@JoinColumn(name="post_type_attr_id")
+	@JoinColumn(name = "post_type_attr_id")
+	@ForeignKey
 	private ShPostTypeAttr shPostTypeAttr;
+
+	@Transient
+	private int shPostTypeAttrId;
+
+	public int getShPostTypeAttrId() {
+		return shPostTypeAttrId;
+	}
+
+	public void setShPostTypeAttrId(int shPostTypeAttrId) {
+		this.shPostTypeAttrId = shPostTypeAttrId;
+	}
 
 	public ShPostAttr() {
 	}
