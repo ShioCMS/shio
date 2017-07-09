@@ -12,20 +12,32 @@ import com.viglet.shiohara.persistence.model.ShPostTypeAttr;
 
 public class ShPostService extends ShBaseService {
 	public void save(ShPost shPost) {
+		ShPostTypeAttrService shPostTypeAttrService = new ShPostTypeAttrService();
 		List<ShPostAttr> shPostAttrs = new ArrayList<ShPostAttr>();
 
 		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
+			
 			shPostAttr.setShPostType(em.merge(shPostAttr.getShPostType()));
-			ShPostTypeAttr shPostTypeAttr = shPostAttr.getShPostTypeAttr();
+
+			ShPostTypeAttr shPostTypeAttr = shPostTypeAttrService.get(shPostAttr.getShPostTypeAttrId());
 			shPostTypeAttr.setShPostType(em.merge(shPostTypeAttr.getShPostType()));
 			shPostTypeAttr.setShWidget(em.merge(shPostTypeAttr.getShWidget()));
+
 			shPostAttr.setShPostTypeAttr(em.merge(shPostTypeAttr));
-			shPostAttrs.add(em.merge(shPostAttr));
+			shPostAttrs.add(shPostAttr);	
 		}
-		shPost.setShPostAttrs(shPostAttrs);
+		shPost.setShPostAttrs(null);
+		shPost.setShPostType(em.merge(shPost.getShPostType()));
 		em.getTransaction().begin();
-		em.persist(shPost);
+		em.merge(shPost);
 		em.getTransaction().commit();
+		
+		for (ShPostAttr shPostAttr : shPostAttrs) {				
+			em.getTransaction().begin();			
+			em.merge(shPostAttr);
+			em.getTransaction().commit();
+		}
+		
 	}
 
 	public void saveByPostType(ShPostType shPostType, ShPost shPost) {
@@ -33,6 +45,7 @@ public class ShPostService extends ShBaseService {
 		List<ShPostAttr> shPostAttrs = new ArrayList<ShPostAttr>();
 
 		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
+			
 			shPostAttr.setShPostType(em.merge(shPostType));
 
 			ShPostTypeAttr shPostTypeAttr = shPostTypeAttrService.get(shPostAttr.getShPostTypeAttrId());
@@ -40,20 +53,28 @@ public class ShPostService extends ShBaseService {
 			shPostTypeAttr.setShWidget(em.merge(shPostTypeAttr.getShWidget()));
 
 			shPostAttr.setShPostTypeAttr(em.merge(shPostTypeAttr));
-			shPostAttrs.add(em.merge(shPostAttr));
+			shPostAttrs.add(shPostAttr);			
 		}
+		shPost.setShPostAttrs(null);
 		shPost.setShPostType(em.merge(shPostType));
-		shPost.setShPostAttrs(shPostAttrs);
 		em.getTransaction().begin();
 		em.persist(shPost);
 		em.getTransaction().commit();
 
 		
-		for (ShPostAttr shPostAttr : shPostAttrs) {
-			System.out.println("PostAttr");
-			em.getTransaction().begin();
-			shPostAttr.setShPost(em.merge(shPost));
-			em.persist(shPostAttr);
+		
+		for (ShPostAttr shPostAttr : shPostAttrs) {	
+			ShPostAttr shPostAttrNew = new ShPostAttr(); 
+			shPostAttrNew.setDateValue(shPostAttr.getDateValue());
+			shPostAttrNew.setIntValue(shPostAttr.getIntValue());
+			shPostAttrNew.setShPost(em.merge(shPost));
+			shPostAttrNew.setShPostType(shPostAttr.getShPostType());
+			shPostAttrNew.setShPostTypeAttr(shPostAttr.getShPostTypeAttr());
+			shPostAttrNew.setShPostTypeAttrId(shPostAttr.getShPostTypeAttrId());
+			shPostAttrNew.setStrValue(shPostAttr.getStrValue());
+			shPostAttrNew.setType(shPostAttr.getType());		
+			em.getTransaction().begin();			
+			em.persist(shPostAttrNew);
 			em.getTransaction().commit();
 		}
 		

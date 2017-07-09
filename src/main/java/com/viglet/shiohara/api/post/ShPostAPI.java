@@ -47,7 +47,7 @@ public class ShPostAPI {
 		shPostEdit.setDate(shPost.getDate());
 		shPostEdit.setTitle(shPost.getTitle());
 		shPostEdit.setSummary(shPost.getSummary());
-		shPostService.save(shPostEdit);
+		shPostService.save(shPost);
 		return shPostEdit;
 	}
 

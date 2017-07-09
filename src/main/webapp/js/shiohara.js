@@ -45,11 +45,18 @@ shioharaApp.config(function($stateProvider, $urlRouterProvider) {
 		data : {
 			pageTitle : 'Post New | Viglet Shiohara'
 		}
+	}).state('content.post-type-item.post-item', {
+		url : '/post/:postId',
+		templateUrl : 'template/post/item_edit.html',
+		controller : 'VecPostEditCtrl',
+		data : {
+			pageTitle : 'Post New | Viglet Shiohara'
+		}
 	}).state('post-item-form', {
 		url : '/post/type/:postTypeId/post/form',
 		templateUrl : 'template/post/form.html',
 		controller : 'VecPostFormCtrl'
-	});
+	})
 
 });
 
@@ -61,10 +68,15 @@ shioharaApp.controller('VecContentCtrl', [
 		"$rootScope",
 		function($scope, $http, $window, $state, $rootScope) {
 			$scope.shUser = null;
+			$scope.shPosts = null;
 			$rootScope.$state = $state;
 			$scope.$evalAsync($http.get(jp_domain + "/api/user/2").then(
 					function(response) {
 						$scope.shUser = response.data;
+					}));
+			$scope.$evalAsync($http.get(jp_domain + "/api/post").then(
+					function(response) {
+						$scope.shPosts = response.data;
 					}));
 		} ]);
 shioharaApp.controller('VecSiteListCtrl', [
@@ -172,6 +184,29 @@ shioharaApp.controller('VecPostNewCtrl', [ "$scope", "$http", "$window",
 			
 			$scope.postEditForm = "template/post/form.html";		
 		} ]);
+
+shioharaApp.controller('VecPostEditCtrl', [ "$scope", "$http", "$window",
+	"$stateParams", "$state", "$rootScope",
+	function($scope, $http, $window, $stateParams, $state, $rootScope) {
+		$scope.postId = $stateParams.postId;
+		$scope.shPost = null;
+		$scope.$evalAsync($http.get(
+				jp_domain + "/api/post/" + $scope.postId)
+				.then(function(response) {
+					$scope.shPost = response.data;
+				}));
+		$scope.postEditForm = "template/post/form.html";		
+		$scope.posteSave = function() {
+			var parameter = angular.toJson($scope.shPostType);
+			$http.put(jp_domain + "/api/post/" + $scope.postId,
+					parameter).then(
+					function(data, status, headers, config) {
+						$state.go('content');
+					}, function(data, status, headers, config) {
+						$state.go('content');
+					});
+		}
+	} ]);
 
 shioharaApp.controller('VecPostFormCtrl', [ "$scope", "$http", "$window",
 	"$stateParams", "$state", "$rootScope",
