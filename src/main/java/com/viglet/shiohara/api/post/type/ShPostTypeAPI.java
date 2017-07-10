@@ -1,5 +1,6 @@
 package com.viglet.shiohara.api.post.type;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -13,6 +14,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.viglet.shiohara.persistence.model.ShPost;
+import com.viglet.shiohara.persistence.model.ShPostAttr;
 import com.viglet.shiohara.persistence.model.ShPostType;
 import com.viglet.shiohara.persistence.model.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.service.ShPostTypeAttrService;
@@ -34,6 +37,25 @@ public class ShPostTypeAPI {
 	@Produces(MediaType.APPLICATION_JSON)
 	public ShPostType edit(@PathParam("postTypeId") int id) throws Exception {
 		return shPostTypeService.get(id);
+	}
+	
+	@Path("/{postTypeId}/post/model")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public ShPost postStructure(@PathParam("postTypeId") int id) throws Exception {
+		ShPost shPost = new ShPost();
+		shPost.setShPostType(shPostTypeService.get(id));
+		List<ShPostAttr> shPostAttrs = new ArrayList<ShPostAttr>();
+		for (ShPostTypeAttr shPostTypeAttr : shPost.getShPostType().getShPostTypeAttrs()) {
+			ShPostAttr shPostAttr = new ShPostAttr();
+			shPostAttr.setShPostType(shPost.getShPostType());
+			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+			shPostAttr.setShPostTypeAttrId(shPostTypeAttr.getId());
+			shPostAttrs.add(shPostAttr);
+		}
+		shPost.setShPostAttrs(shPostAttrs);
+		return shPost;
+		
 	}
 
 	@Path("/{postTypeId}")

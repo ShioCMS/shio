@@ -60,6 +60,9 @@ public class ShPostAttr implements Serializable {
 	private int shPostTypeAttrId;
 
 	public int getShPostTypeAttrId() {
+		if (shPostTypeAttr.getId() >= 0) {
+			shPostTypeAttrId = shPostTypeAttr.getId();
+		}
 		return shPostTypeAttrId;
 	}
 

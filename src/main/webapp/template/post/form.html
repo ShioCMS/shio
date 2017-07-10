@@ -7,24 +7,25 @@ div.affix {
 }
 </style>
 
-<form method="post" action="http://japode.prj.viglet.co/post/process/">
-	<div
-		style="background-color: rgba(100, 149, 237, 0.2); height: 55px; width: 100%; padding: 10px; margin-bottom: 10px"
-		class="affix-top" data-spy="affix" data-offset-top="147">
-		<div class="form-actions">
-			<div class="btn-group pull-right">
-				<button type="submit" class="btn btn-primary">Save Draft</button>
-				<a class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
-					href="#"><span class="caret"></span></a>
-				<ul class="dropdown-menu">
-					<li><a href="#">Publish Now</a></li>
-				</ul>
-			</div>
+
+<div
+	style="background-color: rgba(100, 149, 237, 0.2); height: 55px; width: 100%; padding: 10px; margin-bottom: 10px"
+	class="affix-top" data-spy="affix" data-offset-top="147">
+	<div class="form-actions">
+		<div class="btn-group pull-right">
+			<button ng-click="postSave()" class="btn btn-primary">Save
+				Draft</button>
+			<a class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
+				href="#"><span class="caret"></span></a>
+			<ul class="dropdown-menu">
+				<li><a href="#">Publish Now</a></li>
+			</ul>
 		</div>
 	</div>
-	{{shPost.title}}
-	<div class="form-group" ng-repeat="shPostAttr in shPost.shPostAttrs">
-		<label>{{shPostAttr.shPostTypeAttr.label}}</label> <div ng-include="shPostAttr.shPostTypeAttr.shWidget.implementationCode"></div>
-	</div>
-</form>
+</div>
+
+<div class="form-group" ng-repeat="shPostAttr in shPost.shPostAttrs">
+	<label>{{shPostAttr.shPostTypeAttr.label}}</label>
+	<div ng-include="shPostAttr.shPostTypeAttr.shWidget.implementationCode"></div>
+</div>
 

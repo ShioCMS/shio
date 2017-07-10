@@ -31,7 +31,7 @@ public class ShPostAPI {
 	public List<ShPost> list() throws Exception {
 		return shPostService.listAll();
 	}
-
+	
 	@Path("/{postId}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -65,9 +65,6 @@ public class ShPostAPI {
 		
 		ShPostType shPostType = shPostTypeService.get(postTypeId);
 		
-		//for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
-		//	shPostAttrService.saveByPostType(shPostType, shPostAttr);			
-		//}
 		shPostService.saveByPostType(shPostType, shPost);
 	
 		String result = "Post saved : " + shPost;

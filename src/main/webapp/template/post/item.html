@@ -14,16 +14,15 @@
 
 				<figure class="user-image">
 					<div id="user-image" class="img"
-						style="background-image: url(http://www.gravatar.com/avatar/169ed50aa94be9aadfc771bc5d9f9255.php);"
-						href="#">
-						<span class="hidden">Alexandre Oliveira's Picture</span>
-					</div>
-					<!--   <a href="#" class="edit-user-image js-modal-image">Edit Picture</a> -->
+						ng-style="{'background-image':'url(' + shUser.gravatar +')'}"
+						href="#">						
+					</div>				
 				</figure>
 
 				<div class="form-group">
 					<h3>
-						Alexandre, <small>create your new Destaque Post</small>
+						{{shUser.firstName}}, <small ng-if="shPost.id == 0">create your new {{shPostType.title}} Post</small>
+						<small ng-if="shPost.id > 0">edit your {{shPostType.title}} Post</small>
 					</h3>
 				</div>
 				<div class="pull-right" style="margin: -40px 0 0;">

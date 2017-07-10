@@ -16,7 +16,13 @@ public class ShPostService extends ShBaseService {
 		List<ShPostAttr> shPostAttrs = new ArrayList<ShPostAttr>();
 
 		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
-			
+			if (shPostAttr.getShPostTypeAttr().getIsTitle() == 1) {
+				shPost.setTitle(shPostAttr.getStrValue());
+			}
+			if (shPostAttr.getShPostTypeAttr().getIsSummary() == 1) {
+				shPost.setSummary(shPostAttr.getStrValue());
+			}
+
 			shPostAttr.setShPostType(em.merge(shPostAttr.getShPostType()));
 
 			ShPostTypeAttr shPostTypeAttr = shPostTypeAttrService.get(shPostAttr.getShPostTypeAttrId());
@@ -45,6 +51,12 @@ public class ShPostService extends ShBaseService {
 		List<ShPostAttr> shPostAttrs = new ArrayList<ShPostAttr>();
 
 		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
+			if (shPostAttr.getShPostTypeAttr().getIsTitle() == 1) {
+				shPost.setTitle(shPostAttr.getStrValue());
+			}
+			if (shPostAttr.getShPostTypeAttr().getIsSummary() == 1) {
+				shPost.setSummary(shPostAttr.getStrValue());
+			}
 			
 			shPostAttr.setShPostType(em.merge(shPostType));
 
