@@ -1,0 +1,2178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright (C) 2014 OpenText Corporation All rights reserved.
+-->
+<xs:schema targetNamespace="http://www.vignette.com/xmlschemas/importexport"
+           xmlns="http://www.vignette.com/xmlschemas/importexport"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+	<xs:annotation>
+		<xs:documentation xml:lang="en"><![CDATA[
+  ***************************************************************************
+  * Name:  packageBody.xsd
+  *
+  * Desc:  Package files, exported by 'vgnexport' and consumed by
+  *        'vgnimport', contain a package body entry (packageBody.xml)
+  *        that conforms to this XML schema.  'vgnimport' can also consume
+  *        user-created package files with package bodies that conform
+  *        to this schema.  Be aware that value checking is also performed
+  *        during import--valid package bodies may not necessarily
+  *        guarantee a successful import.
+  *
+  *        A package body entry within a package file must be encoded
+  *        in UTF-8, and have the following XML declaration and root
+  *        element attributes:
+  *
+  *          <?xml version="1.0" encoding="UTF-8"?>
+  *          <packageBody xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  *              xmlns="http://www.vignette.com/xmlschemas/importexport"
+  *              xsi:schemaLocation="http://www.vignette.com/xmlschemas/importexport 8510/packageBody.xsd">
+  *
+  *        Note:  There is a space in the last attribute between
+  *        "importexport" and "8510".
+  *
+  *        Validation through the 'vgnimport' command-line utility is
+  *        always enabled.  Therefore, any package files passed as an
+  *        argument into 'vgnimport' must have the root element attributes
+  *        described above.
+  *
+  *        Package files exported through the 'vgnexport' command-line
+  *        utility always have the described header in its package body
+  *        entry.
+  *
+  * Vers:  8510
+  *
+  * Diff:  [7201->7202] 'CT_attribute' definition edited to use
+  *        'ST_xxxOrEmpty' types, whose elements contain either appropriate
+  *        built-in type values or are empty.  Removed 'flagSetType';
+  *        restriction syntax removed from 'configVariableFlagSetType'.
+  *        Removed 'ST_decimalOrEmpty' simple type.
+  *        [7202->7310]
+  *        - Added publishDate attribute to channel definition.
+  *        - Added publishDate and unpublishDate attributes to contentInstance
+  *          and staticFile definitions.
+  *        - Added appInstanceName element to site definition.
+  *        [7310->7311]
+  *        - Changed 'CT_capability' attribute 'application' to 'required'.
+  *        [7311->7400]
+  *        - Added 'importPreferences' and 'preferences' elements and their
+  *          supporting types.
+  *        - Added 'eligibilitiesClassName' element to 'contentType'
+  *          and 'objectType'.
+  *        [7400->7500] Added 'ttl' and 'stalePagePolicy' elements
+  *          to 'site' definition.
+  *        [7500->7600]
+  *        - Reordered objects, moving object types, sites, channels up,
+  *          and static files down.
+  *        - Moved 'CT_siteContentType' block from site to contentType
+  *          definition; renamed related elements to 'siteAssociation' and
+  *          'siteId'.
+  *        - Removed 'CT_channelAssociation' from channel definition.
+  *        - Added 'description', 'fileSourceName', 'AG_appSvcsAttributes',
+  *          removed 'modCount' from staticFile definition.
+  *        - Removed 'AG_appSvcsAttributes' from contentInstance definition.
+  *        - Added 'defaultTemplate', 'defaultTheme', 'thumbnail' to site.
+  *        [7600->8000]
+  *        - Added 'beanClassName' to contentType definition.
+  *        - Added 'beanPropertyName' and 'suppressBeanProperty' to
+  *          CT_attributeDefinitionData definition.
+  *        - Added 'editorStyle' to objectType definition.
+  *        - Added 'underConstruction' and 'templateSpec' to site definition.
+  *        - Added 'defaultTemplate', 'defaultTheme', 'thumbnail' to site.
+  *        - Added 'smallIconPath', 'largeIconPath' to object type definition.
+  *        - Added 'editorStyle' to WfDefintion.
+  *        - Added 'beanPropertyName' and 'suppressBeanProperty' to
+  *          CT_relation definition.
+  *        - Added 'groupSplit' and 'groupName' to CT_attributeDefinitionData
+  *          definition.
+  *        - Added 'defaultLayout' to site.
+  *        - Added 'inclusionType' to configNodeType, configChildNodeType
+  *        - Added 'toolTip' to CT_attributeDefinitionData definition.
+  *        [8000->8100]
+  *        - Removed 'deploymentGroupName' from CT_siteStageAssociation.
+  *        - Added 'filterable' to CT_attributeDefinitionData definition.
+  *        - Added 'wrapperSpec' to objectType, site and channel definitions.
+  *        - Added 'defaultThumbnailPath' to object type definition.
+  *        - Added 'addhocReferences' to all ManagedObject definitions.
+  *        [8100->8500]
+  *        - Added 'isNull' attribute to valueXXX elements.
+  *        - Added 'localizedDataEntries' to Sites and Channels.
+  *        - Added 'siteFormatAssociations' to Sites.
+  *        - Added 'multilingual', 'mlInstanceDefault', 'mlCustomFolderClassName', 'mlSetFolder', 'mlShareCategories',
+  *                'mlShareChannels', 'mlShareSchedules' to ObjectType and ContentType definition.
+  *        - Added 'locale', 'translationGroupId', and 'sharableTranslation' attributes to ContentInstance and StaticFile definitions.
+  *        - Added 'sharable', 'translatable' to CT_attributeDefinitionData definition.
+  *        - Added 'assetExternalIdentifier', 'assetExternalModDate' attributes to ContentInstance and StaticFile definitions.
+  *        - Added 'furlName' to Site, Channel, ContentInstance and StaticFile definitions.
+  *        - Added 'workflowTranslateId' to ContentType and ObjectType definitions.
+  *        - Added 'mgmtUrlScheme', 'deliveryUrlScheme' to Sites.
+  *        - Added importAsLocale and asLocale definitions.
+  *        - Added 'hideMissingLocales' and 'hideMissingFormats' to Channel.
+  *        - Added 'inactiveFormatAssociations' to Channel.
+  *        - Added 'segmentProfileAssociations' to Site.
+  *        - Added 'targetingRuleId' to ContentInstance.
+  *        - Added 'targetable' to ContentType.
+  *        [8500->8510]
+  *        - Added 'targetingRuleId' to Channel.
+  ***************************************************************************
+		]]></xs:documentation>
+		<xs:appinfo>version=8510</xs:appinfo>
+	</xs:annotation>
+	<xs:element name="packageBody">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ###########################################################################
+  # Name:  packageBody
+  # Desc:  Root element, containing any number of object entries to
+  #        insert or delete on import.
+  #        Entries must be in the following object order.  Container
+  #        objects of the same type must have parent objects specified
+  #        before child objects.  Dependent objects must also be specified
+  #        first.
+  #        Required object ordering:
+  #          1) *any objects to delete, regardless of type*
+  #          2) config nodes
+  #          3) preferences
+  #          4) projects
+  #          5) program tasks
+  #          6) workflow definitions
+  #          7) object types
+  #          8) sites
+  #          9) channels
+  #         10) static files
+  #         11) asLocales
+  #         12) content types
+  #         13) site content types
+  #         14) content instances
+  # Exam:  (see "import" and "delete" below for their content models)
+  #        <packageBody...>
+  #          <importProgramTask>
+  #            <contents entry="progguts_1"/>
+  #            <programTask>...</programTask>
+  #          </importProgramTask>
+  #          <importWorkflow>
+  #            <group name="group_1"/>
+  #            <contents entry="wfguts_1"/>
+  #            <workflow>...</workflow>
+  #          </importWorkflow>
+  #          <importStaticFile>
+  #            <contents entry="sfguts_1"/>
+  #            <staticFile>...</staticFile>
+  #          </importStaticFile>
+  #          <importContentType>
+  #            <group name="group_1"/>
+  #            <group name="group_2"/>
+  #            <contentType>...</contentType>
+  #          </importContentType>
+  #          <importContentInstance>
+  #            <group name="group_1"/>
+  #            <contentInstance>...</contentInstance>
+  #          </importContentInstance>
+  #          ...
+  #        </packageBody>
+  ###########################################################################
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="delete" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="importConfigNode" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="importPreferences" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="importProject" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="importProgramTask" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="importWorkflow" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="importObjectType" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="importSite" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="importChannel" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="importStaticFile" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="importAsLocale" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="importContentType" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="importSiteContentType" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="importContentInstance" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="description" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="delete">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  + Name:  delete
+  + Desc:  Deletes the specified object when the package file is imported.
+  + Exam:  <packageBody...>
+  +          <delete id="0908b3ee02268f00VgnVCMServer2101130aRCRD"/>
+  +          <delete name="myCT" type="contentType"/>
+  +          ...
+  +        </packageBody>
+  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="id" type="xs:string" use="optional"/>
+			<xs:attribute name="name" type="xs:string" use="optional"/>
+			<xs:attribute name="type" type="EN_objectType" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="importAsLocale">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  + Name:  importAsLocale
+  + Desc:  Wraps a <asLocale> specification.
+  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="group" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="asLocale"/>
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:ID" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="asLocale">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ===========================================================================
+  = Name:  asLocale
+  = Desc:  Definition of an AsLocale.
+  = Exam:  <asLocale mgmtId="LenUSL000000000000000000000000000000RCRD"
+  =                 vcmId="LenUSL000000000000000000000000000000RCRD"
+  =                 vcmStatus="approved">
+  = 	     <language>en</language>
+  =	         <country>US</country>
+  = 	     <acl>...</acl> see CT_acl
+  =        </channel>
+  ===========================================================================
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="language" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="country" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="variant" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="flagPathTiny" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                <xs:element name="flagPathSmall" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="active" type="xs:boolean"/>
+				<xs:element name="attribute" type="CT_attribute" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="adhocReferences" type="CT_adhocReferences" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="acl" type="CT_acl" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attributeGroup ref="AG_appSvcsAttributes"/>
+			<xs:attributeGroup ref="AG_moAttributes"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="importChannel">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  + Name:  importChannel
+  + Desc:  Wraps a <channel> specification.
+  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="group" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="channel"/>
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:ID" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="channel">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ===========================================================================
+  = Name:  channel
+  = Desc:  Definition of a Channel.
+  = Exam:  <channel mgmtId="71080dca011a5f00test000000002101130a____"
+  =                 vcmId="21080dda011a5f00test000000002101130aRCRD"
+  =                 vcmStatus="approved" channelType="home">
+  = 	     <name>Home</name>
+  = 	     <description>Home channel description</description>
+  =	         <active>true</active>
+  = 	     <orderAsSibling>0</orderAsSibling>
+  = 	     <hideMissingLocales>true</hideMissingLocales>
+  = 	     <hideMissingFormats>true</hideMissingFormats>
+  = 	     <localizedDataEntries/> see CT_channelLocalizedDataEntries
+  = 	     <inactiveFormatAssociations/> see CT_channelInactiveFormatAssociations
+  = 	     <acl>...</acl> see CT_acl
+  =        </channel>
+  ===========================================================================
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="name" type="xs:string"/>
+				<xs:element name="description" type="xs:string" minOccurs="0"/>
+				<xs:element name="parentChannelId" type="CT_id" minOccurs="0"/>
+				<xs:element name="active" type="xs:boolean"/>
+				<xs:element name="pageRef" type="xs:string" minOccurs="0"/>
+				<xs:element name="orderAsSibling" type="xs:integer"/>
+				<xs:element name="wrapperSpec" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="hideMissingLocales" type="xs:boolean" minOccurs="0"/>
+				<xs:element name="hideMissingFormats" type="xs:boolean" minOccurs="0"/>
+				<xs:element name="furlName" type="xs:string" minOccurs="0"/>
+                <xs:element name="descriptor" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="targetingRuleId" type="CT_id" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="attribute" type="CT_attribute" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="localizedDataEntries" type="CT_channelLocalizedDataEntries" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="inactiveFormatAssociations" type="CT_channelInactiveFormatAssociations" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="adhocReferences" type="CT_adhocReferences" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="classification" type="CT_classification" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="acl" type="CT_acl" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attributeGroup ref="AG_appSvcsAttributes"/>
+			<xs:attributeGroup ref="AG_moAttributes"/>
+			<xs:attribute name="channelType" type="EN_channelType" use="required"/>
+			<xs:attribute name="publishDate" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="importConfigNode">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  + Name:  importConfigNode
+  + Desc:  Wraps a <configNode> specification.  Config node specifications
+  +        are not trivial.  The description is provided at the end of
+  +        this document.  If you wish to generate a config node
+  +        specification, we suggest you use the Config Console to define
+  +        your node, then use 'vgnexport' to export it to a package file
+  +        rather than trying to write it from scratch in XML.
+  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="group" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="configNode"/>
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:ID" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="importContentInstance">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  + Name:  importContentInstance
+  + Desc:  Wraps a <contentInstance> specification.
+  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="group" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="contentInstance"/>
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:ID" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="contentInstance">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ===========================================================================
+  = Name:  contentInstance
+  = Desc:  Definition of a ContentInstance.
+  = Exam:  <contentInstance mgmtId="71080dca011a5f00test000000002101130a____"
+  =                         vcmId="21080dda011a5f00test000000002101130aRCRD"
+  =                         vcmStatus="approved">
+  =          <contentTypeId>91010dca011a5f00test000000002101130a____</contentTypeId>
+  =          <attribute/> see CT_contentInstanceAttribute
+  =          <channelAssociation/> see CT_channelAssociation
+  =          <acl/> see CT_acl
+  =        </contentInstance>
+  ===========================================================================
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="contentTypeId" type="CT_id"/>
+				<xs:element name="attribute" type="CT_attribute" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="relation" type="CT_relationInstance" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="channelAssociation" type="CT_channelAssociation" minOccurs="0"/>
+				<xs:element name="assetExternalIdentifier" type="xs:string" minOccurs="0"/>
+				<xs:element name="assetExternalModDate" type="xs:string" minOccurs="0"/>
+				<xs:element name="furlName" type="xs:string" minOccurs="0"/>
+                <xs:element name="targetingRuleId" type="CT_id" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="adhocReferences" type="CT_adhocReferences" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="classification" type="CT_classification" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="acl" type="CT_acl" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attributeGroup ref="AG_moAttributes"/>
+			<xs:attribute name="publishDate" type="xs:string" use="optional"/>
+			<xs:attribute name="unpublishDate" type="xs:string" use="optional"/>
+			<xs:attribute name="locale" type="AT_id" use="optional"/>
+			<xs:attribute name="translationGroupId" type="AT_id" use="optional"/>
+			<xs:attribute name="sharableTranslation" type="xs:boolean" use="optional" default="false"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="importContentType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  + Name:  importContentType
+  + Desc:  Wraps a <contentType> specification.
+  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="group" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="contentType"/>
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:ID" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="contentType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ===========================================================================
+  = Name:  contentType
+  = Desc:  Definition of a ContentType.
+  = Exam:  <contentType mgmtId="71080dca011a5f00test000000002101130a____"
+  =                     vcmId="21080dda011a5f00test000000002101130aRCRD"
+  =                     vcmStatus="approved">
+  = 	     <name>Article</name>
+  = 	     <displayName>Article</displayName>
+  =          <description>Article content type description.</description>
+  = 	     <iconPath>/MyStaticFiles/icon1.ico</iconPath>
+  = 	     <defaultLogicalPath>ArticleInstances</defaultLogicalPath>
+  = 	     <siteAffinity>0</siteAffinity>
+  =          <workflowCreatedId>13080dcc011a5f00test000000002101130aWFDF</workflowCreatedId>
+  =          <workflowEditId>23090dcc011a5f00test000000002101130aWFDF</workflowEditId>
+  =          <javaClassName>com.xyz.yyz.rush.Class</javaClassName>
+  =          <smallIconPath>/MyStaticFiles/icon2.ico</smallIconPath>
+  =          <largeIconPath>/MyStaticFiles/icon3.ico</largeIconPath>
+  =          <defaultThumbnailPath>/MyStaticFiles/ctdthumbnail.png</defaultThumbnailPath>
+  =          <eligibilitiesClassName>com.xyz.yyz.rush.Class</eligibilitiesClassName>
+  =          <relation/> see CT_relation
+  = 	     <acl/> see CT_acl
+  =        </contentType>
+  ===========================================================================
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="name" type="xs:string"/>
+				<xs:element name="displayName" type="xs:string"/>
+				<xs:element name="description" type="xs:string" minOccurs="0"/>
+				<xs:element name="iconPath" type="xs:string" minOccurs="0"/>
+				<xs:element name="defaultLogicalPath" type="xs:string"/>
+				<xs:element name="siteAffinity" type="xs:boolean"/>
+				<xs:element name="workflowCreateId" type="CT_id" minOccurs="0"/>
+				<xs:element name="workflowEditId" type="CT_id" minOccurs="0"/>
+				<xs:element name="javaClassName" type="xs:string" minOccurs="0"/>
+				<xs:element name="eligibilitiesClassName" type="xs:string" minOccurs="0"/>
+				<xs:element name="dataSourceLabel" type="xs:string" minOccurs="0"/>
+				<xs:element name="userApplURL" type="xs:string" minOccurs="0"/>
+                <xs:element name="editorStyle" type="xs:string" minOccurs="0"/>
+				<xs:element name="smallIconPath" type="xs:string" minOccurs="0"/>
+				<xs:element name="largeIconPath" type="xs:string" minOccurs="0"/>
+				<xs:element name="defaultThumbnailPath" type="xs:string" minOccurs="0"/>
+				<xs:element name="wrapperSpec" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="multilingual" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="mlInstanceDefault" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="mlSetFolder" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="mlCustomFolderClassName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="mlShareCategories" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="mlShareChannels" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="mlShareSchedules" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="workflowTranslateId" type="CT_id" minOccurs="0"/>
+                <xs:element name="targetable" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="attribute" type="CT_attribute" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="relation" type="CT_relation" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="fileXSDRef" type="xs:string" minOccurs="0"/>
+				<xs:element name="pageRef" type="xs:string" minOccurs="0"/>
+				<xs:element name="beanClassName" type="xs:string" minOccurs="0"/>
+				<xs:element name="adhocReferences" type="CT_adhocReferences" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="classification" type="CT_classification" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="acl" type="CT_acl" minOccurs="0"/>
+            </xs:sequence>
+			<xs:attributeGroup ref="AG_appSvcsAttributes"/>
+			<xs:attributeGroup ref="AG_moAttributes"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="importObjectType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  + Name:  importObjectType
+  + Desc:  Wraps an <objectType> specification.
+  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="group" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="objectType"/>
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:ID" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="objectType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ===========================================================================
+  = Name:  objectType
+  = Desc:  Definition of an ObjectType.
+  = Exam:  <objectType mgmtId="71080dca011a5f00test000000002101130a____"
+  =                     vcmId="21080dda011a5f00test000000002101130aRCRD"
+  =                     vcmStatus="approved">
+  = 	     <name>Article</name>
+  = 	     <displayName>Article</displayName>
+  =          <description>Article content type description.</description>
+  = 	     <iconPath>/MyStaticFiles/icon1.ico</iconPath>
+  = 	     <defaultLogicalPath>ArticleInstances</defaultLogicalPath>
+  = 	     <siteAffinity>0</siteAffinity>
+  =          <workflowCreatedId>13080dcc011a5f00test000000002101130aWFDF</workflowCreatedId>
+  =          <workflowEditId>23090dcc011a5f00test000000002101130aWFDF</workflowEditId>
+  =          <smallIconPath>/MyStaticFiles/icon2.ico</smallIconPath>
+  =          <largeIconPath>/MyStaticFiles/icon3.ico</largeIconPath>
+  =          <defaultThumbnailPath>/MyStaticFiles/ctdthumbnail.png</defaultThumbnailPath>
+  =          <javaClassName>com.xyz.yyz.rush.Class</javaClassName>
+  =          <eligibilitiesClassName>com.xyz.yyz.rush.Class</eligibilitiesClassName>
+  =          <relation/> see CT_relation
+  = 	     <acl/> see CT_acl
+  =        </objectType>
+  ===========================================================================
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="name" type="xs:string"/>
+				<xs:element name="displayName" type="xs:string"/>
+				<xs:element name="description" type="xs:string" minOccurs="0"/>
+				<xs:element name="iconPath" type="xs:string" minOccurs="0"/>
+				<xs:element name="defaultLogicalPath" type="xs:string"/>
+				<xs:element name="siteAffinity" type="xs:boolean"/>
+				<xs:element name="workflowCreateId" type="CT_id" minOccurs="0"/>
+				<xs:element name="workflowEditId" type="CT_id" minOccurs="0"/>
+				<xs:element name="javaClassName" type="xs:string" minOccurs="0"/>
+				<xs:element name="eligibilitiesClassName" type="xs:string" minOccurs="0"/>
+				<xs:element name="dataSourceLabel" type="xs:string" minOccurs="0"/>
+				<xs:element name="userApplURL" type="xs:string" minOccurs="0"/>
+				<xs:element name="editorStyle" type="xs:string" minOccurs="0"/>
+				<xs:element name="smallIconPath" type="xs:string" minOccurs="0"/>
+				<xs:element name="largeIconPath" type="xs:string" minOccurs="0"/>
+				<xs:element name="defaultThumbnailPath" type="xs:string" minOccurs="0"/>
+				<xs:element name="wrapperSpec" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="multilingual" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="mlInstanceDefault" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="mlSetFolder" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="mlCustomFolderClassName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="mlShareCategories" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="mlShareChannels" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="mlShareSchedules" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="workflowTranslateId" type="CT_id" minOccurs="0"/>
+				<xs:element name="attribute" type="CT_attribute" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="relation" type="CT_relation" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="adhocReferences" type="CT_adhocReferences" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="classification" type="CT_classification" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="acl" type="CT_acl" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attributeGroup ref="AG_appSvcsAttributes"/>
+			<xs:attributeGroup ref="AG_moAttributes"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="importPreferences">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  + Name:  importPreferences
+  + Desc:  Wraps a <preferences> specification.  The 'user' attribute
+  +        specifies the user name for <preferences> specifications whose
+  +        type="user".  For <preferences type="system">, the 'user'
+  +        attribute must not be used.
+  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="group" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="preferences"/>
+			</xs:sequence>
+			<xs:attribute name="user" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="preferences">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ===========================================================================
+  = Name:  preferences
+  = Desc:  Definition of a Preferences node or tree.
+  =        The <preferences> element is at the root of an XML document
+  =        representing a Preferences tree.
+  =        This XSD element definition is intended to mirror the DTD for the
+  =        java.util.prefs.Preferences class.  Please see the javadocs
+  =        for java.util.prefs.Preferences for more details.
+  = Exam:  (see java.util.prefs.Preferences javadocs)
+  ===========================================================================
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="root">
+					<xs:annotation><xs:documentation xml:lang="en">
+						The root element has a map representing the root's
+						preferences (if any), and one node for each child
+						of the root (if any).
+					</xs:documentation></xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="map" type="CT_prefsMap"/>
+							<xs:element name="node" type="CT_prefsNode" minOccurs="0" maxOccurs="unbounded"/>
+						</xs:sequence>
+						<xs:attribute name="type" use="required">
+							<xs:annotation><xs:documentation xml:lang="en">
+								Additionally, the root contains a type
+								attribute, which specifies whether it's
+								the system or user root.
+							</xs:documentation></xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:NMTOKEN">
+									<xs:enumeration value="system"/>
+									<xs:enumeration value="user"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:attribute>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="EXTERNAL_XML_VERSION" type="xs:string" default="1.0">
+				<xs:annotation><xs:documentation xml:lang="en">
+					The preferences element contains an optional version
+					attribute, which specifies version of DTD [sic].
+					VIGN: Changed default from 0.0 (in DTD) to 1.0.
+				</xs:documentation></xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="CT_prefsMap">
+		<xs:annotation><xs:documentation xml:lang="en">
+			A map represents the preferences stored at a node (if any).
+		</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="entry" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation><xs:documentation xml:lang="en">
+					An entry represents a single preference, which is simply
+     				a key-value pair.
+				</xs:documentation></xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="key" type="xs:string" use="required"/>
+					<xs:attribute name="value" type="xs:string" use="required"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CT_prefsNode">
+		<xs:annotation><xs:documentation xml:lang="en">
+			Each node has a map representing its preferences (if any),
+   			and one node for each child (if any).
+		</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="map" type="CT_prefsMap"/>
+			<xs:element name="node" type="CT_prefsNode" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required">
+			<xs:annotation><xs:documentation xml:lang="en">
+ 				Additionally, each node has a name attribute.
+			</xs:documentation></xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:element name="importProgramTask">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  + Name:  importProgramTask
+  + Desc:  Wraps a <programTask> specification.  The <contents> element
+  +        identifies the entry name in the ZIP file containing the
+  +        program task body.
+  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="group" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="programTask"/>
+				<xs:element ref="contents"/>
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:ID" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="programTask">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ===========================================================================
+  = Name:  programTask
+  = Desc:  Definition of a Program Task.
+  = Exam:  <programTask vcmId="21080dda011a5f00test000000002101130aRCRD">
+  =             <acl/> see CT_acl
+  =        </programTask>
+  ===========================================================================
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="name" type="xs:string" minOccurs="0"/>
+				<xs:element name="description" type="xs:string" minOccurs="0"/>
+				<xs:element name="projectPath" type="xs:string" minOccurs="0"/>
+				<xs:element name="acl" type="CT_acl" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attributeGroup ref="AG_vcmAttributes"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="importProject">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  + Name:  importProject
+  + Desc:  Wraps a <project> specification.
+  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="group" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="project"/>
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:ID" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="project">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ===========================================================================
+  = Name:  project
+  = Desc:  Definition of a Project.
+  = Exam:  <project vcmId="2f58ccfe021d7f00VgnVCMServer1d08130aPROJ">
+  =	         <name>childProject</name>
+  =	         <description>childProject</description>
+  =	         <projectPath>/TestImportExportRootProject/childProject</projectPath>
+  =        </project>
+  ===========================================================================
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="name" type="xs:string" minOccurs="0"/>
+				<xs:element name="description" type="xs:string" minOccurs="0"/>
+				<xs:element name="projectPath" type="xs:string" minOccurs="0"/>
+				<xs:element name="capabilityMask" type="CT_acl" minOccurs="0"/>
+				<xs:element name="acl" type="CT_acl" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attributeGroup ref="AG_vcmAttributes"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="importSite">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  + Name:  importSite
+  + Desc:  Wraps a <site> specification.
+  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="group" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="site"/>
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:ID" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="site">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ===========================================================================
+  = Name:  site
+  = Desc:  Definition of a Site.
+  = Exam:  <site mgmtId="71080dca011a5f00test000000002101130a____"
+  =	             vcmId="c1030dca011c5f00test000000002101130aRCRD"
+  =              vcmStatus="approved">
+  = 	     <name>SiteA</name>
+  = 	     <description>SiteA description</description>
+  = 	     <template>1</template>
+  = 	     <siteURL>www.sitea.com/sitea</siteURL>
+  =          <workflowDeployId>13080dcc011a5f00test000000002101130aWFDF</workflowDeployId>
+  = 	     <channel channelType="home"/> see channel
+  = 	     <channel channelType="unassignedContent"/> see channel
+  = 	     <channel channelType="archivedContent"/> see channel
+  = 	     <channel channelType="applicationAssets"/> see channel
+  = 	     <stageAssociation/> see CT_siteStageAssociation
+  = 	     <localizedDataEntries/> see CT_siteLocalizedDataEntries
+  = 	     <siteFormatAssociations/> see CT_siteFormatAssociations
+  = 	     <segmentProfileAssociations/> see CT_segmentProfileAssociations
+  = 	     <acl/> see CT_acl
+  =        </site>
+  = Note:  To define "site-to-content type" associations, see
+  =        importSiteContentType and siteContentType.
+  ===========================================================================
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="name" type="xs:string"/>
+				<xs:element name="description" type="xs:string" minOccurs="0"/>
+				<xs:element name="template" type="xs:boolean"/>
+				<xs:element name="siteURL" type="xs:string"/>
+				<xs:element name="appInstanceName" type="xs:string" minOccurs="0"/>
+				<xs:element name="ttl" type="xs:string" minOccurs="0"/>
+				<xs:element name="stalePagePolicy" type="xs:boolean" minOccurs="0"/>
+				<xs:element name="workflowDeployId" type="CT_id" minOccurs="0"/>
+				<xs:element name="underConstruction" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="templateSpec" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="defaultTemplate" type="CT_id" minOccurs="0"/>
+				<xs:element name="defaultTheme" type="CT_id" minOccurs="0"/>
+				<xs:element name="defaultLayout" type="CT_id" minOccurs="0"/>
+				<xs:element name="thumbnail" type="CT_id" minOccurs="0"/>
+				<xs:element name="wrapperSpec" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="furlName" type="xs:string" minOccurs="0"/>
+				<xs:element name="mgmtUrlScheme" type="CT_id" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="deliveryUrlScheme" type="CT_id" minOccurs="0" maxOccurs="1"/>
+                <xs:element name="descriptor" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="attribute" type="CT_attribute" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="channel" minOccurs="4" maxOccurs="4"/>
+				<xs:element name="stageAssociation" type="CT_siteStageAssociation" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="localizedDataEntries" type="CT_siteLocalizedDataEntries" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="siteFormatAssociations" type="CT_siteFormatAssociations" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="segmentProfileAssociations" type="CT_segmentProfileAssociations" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="adhocReferences" type="CT_adhocReferences" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="classification" type="CT_classification" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="acl" type="CT_acl" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attributeGroup ref="AG_appSvcsAttributes"/>
+			<xs:attributeGroup ref="AG_moAttributes"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="importSiteContentType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  + Name:  importSiteContentType
+  + Desc:  Wraps a <siteContenType> specification.
+  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+			]]></xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="group" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="siteContentType"/>
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:ID" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="siteContentType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ===========================================================================
+  = Name:  siteContentType
+  = Desc:  Definition of a SiteContentType, which contains
+  =        site-to-content type associations.
+  = Exam:  <siteContentType mgmtId="82090dca011a5f00test000000002101130a____"
+  =	             vcmId="d2040dca011c5f00test000000002101130aRCRD"
+  =              vcmStatus="approved">
+  =          <siteId/>71080dca011a5f00test000000002101130a____</siteId>
+  = 	     <contentTypeAssociation/> see CT_siteContentTypeAssociation
+  =        </siteContentType>
+  ===========================================================================
+			]]></xs:documentation>
+		</xs:annotation>
+			<xs:complexType>
+			<xs:sequence>
+				<xs:element name="siteId" type="CT_id"/>
+                <xs:element name="siteDescriptorId" type="CT_id" minOccurs="0" maxOccurs="1"/>
+                <xs:element name="siteLocaleDescriptorId" type="CT_id" minOccurs="0" maxOccurs="1"/>
+                <xs:element name="channelDescriptorId" type="CT_id" minOccurs="0" maxOccurs="1"/>
+                <xs:element name="channelLocaleDescriptorId" type="CT_id" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="contentTypeAssociation" type="CT_siteContentTypeAssociation" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="adhocReferences" type="CT_adhocReferences" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="acl" type="CT_acl" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attributeGroup ref="AG_appSvcsAttributes"/>
+			<xs:attributeGroup ref="AG_moAttributes"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="importStaticFile">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  + Name:  importStaticFile
+  + Desc:  Wraps a <staticFile> specification.  The <contents> element
+  +        identifies the entry name in the ZIP file containing the
+  +        static file body.
+  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="group" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="staticFile"/>
+				<xs:element ref="contents"/>
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:ID" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="staticFile">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ===========================================================================
+  = Name:  staticFile
+  = Desc:  Definition of a StaticFile (ManagedObject).
+  = Exam:  <staticFile vcmId="21080dda011a5f00test000000002101130aRCRD"
+  =                    vcmStatus="approved">
+  =          <deploymentType>CMSNative</deploymentType>
+  =			 <modCount>4</modCount>
+  =          <channelAssociation/> see CT_channelAssocation
+  =          ...
+  =          <acl/> see CT_acl
+  =        </staticFile>
+  ===========================================================================
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="deploymentType" type="xs:string"/>
+				<xs:element name="placementPath" type="xs:string"/>
+				<xs:element name="description" type="xs:string"/>
+				<xs:element name="fileSourceName" type="xs:string"/>
+				<xs:element name="attribute" type="CT_attribute" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="channelAssociation" type="CT_channelAssociation" minOccurs="0"/>
+				<xs:element name="assetExternalIdentifier" type="xs:string" minOccurs="0"/>
+				<xs:element name="assetExternalModDate" type="xs:string" minOccurs="0"/>
+				<xs:element name="furlName" type="xs:string" minOccurs="0"/>
+				<xs:element name="adhocReferences" type="CT_adhocReferences" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="classification" type="CT_classification" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="acl" type="CT_acl" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attributeGroup ref="AG_moAttributes"/>
+			<xs:attribute name="publishDate" type="xs:string" use="optional"/>
+			<xs:attribute name="unpublishDate" type="xs:string" use="optional"/>
+			<xs:attribute name="locale" type="AT_id" use="optional"/>
+			<xs:attribute name="translationGroupId" type="AT_id" use="optional"/>
+			<xs:attribute name="sharableTranslation" type="xs:boolean" use="optional"  default="false"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="importWorkflow">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  + Name:  importWorkflow
+  + Desc:  Wraps a <workflow> specification.  The <contents> element
+  +        identifies the entry name in the ZIP file containing the
+  +        workflow definition body.
+  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="group" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="workflow"/>
+				<xs:element ref="contents"/>
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:ID" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="workflow">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ===========================================================================
+  = Name:  workflow
+  = Desc:  Definition of a WfDefinition.
+  = Exam:  <workflow vcmId="21080dda011a5f00test000000002101130aWFDF">
+  =          ...
+  =          <acl/> see CT_acl
+  =        </workflow>
+  ===========================================================================
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="name" type="xs:string" minOccurs="0"/>
+				<xs:element name="description" type="xs:string" minOccurs="0"/>
+				<xs:element name="projectPath" type="xs:string" minOccurs="0"/>
+				<xs:element name="markedForDelete" type="xs:boolean" minOccurs="0"/>
+				<xs:element name="escalationHandler" type="CT_id" minOccurs="0"/>
+				<xs:element name="editorStyle" type="xs:string" minOccurs="0"/>
+				<xs:element name="acl" type="CT_acl" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attributeGroup ref="AG_vcmAttributes"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="group">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ===========================================================================
+  = Name:  group
+  = Desc:  Group assignments.
+  ===========================================================================
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="name" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="contents">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ===========================================================================
+  = Name:  contents
+  = Desc:  For static files, workflows, and program tasks, this specifies
+  =        the name of the ZIP entry in the package file containing the
+  =        object's body.
+  ===========================================================================
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="entry" type="xs:string" use="optional"/>
+			<xs:attribute name="file" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:attributeGroup name="AG_appSvcsAttributes">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ---------------------------------------------------------------------------
+  - Name:  AG_appSvcsAttributes
+  - Desc:  Defines common AppSvcs attribs all managed/unmanaged objects
+  -        contain.
+  ---------------------------------------------------------------------------
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="mgmtId" type="AT_id" use="optional"/>
+	</xs:attributeGroup>
+	<xs:attributeGroup name="AG_moAttributes">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ---------------------------------------------------------------------------
+  - Name:  AG_moAttributes
+  - Desc:  Defines common attributes all managed objects contain.
+  ---------------------------------------------------------------------------
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="vcmId" type="AT_id" use="optional"/>
+		<xs:attribute name="vcmStatus" type="xs:string" use="optional"/>
+		<xs:attribute name="vcmName" type="xs:string" use="optional"/>
+		<xs:attribute name="vcmLogicalPath" type="xs:string" use="optional"/>
+	</xs:attributeGroup>
+	<xs:attributeGroup name="AG_vcmAttributes">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ---------------------------------------------------------------------------
+  - Name:  AG_vcmAttributes
+  - Desc:  Defines common VCM attribs all CMSObjects contain.
+  ---------------------------------------------------------------------------
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="vcmId" type="AT_id" use="optional"/>
+	</xs:attributeGroup>
+	<xs:simpleType name="AT_id">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ---------------------------------------------------------------------------
+  - Name:  AT_id
+  - Desc:  Type for attributes whose values are ID's (VCM or AppSvcs).
+  -        The <getId> element is not allowed here.
+  ---------------------------------------------------------------------------
+   			]]></xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value=".{40}|.{0}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="CT_acl">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ---------------------------------------------------------------------------
+  - Name:  CT_acl
+  - Desc:  Defines an access control list (ACL).
+  - Exam:  (see "capability" below for its content model)
+  -        <acl>
+  -          <entry name="aaa" type="group">
+  -            <grants>
+  -              <capability name="bbb"/>
+  -              <capability name="ccc"/>
+  -            </grants>
+  -            <revokes>
+  -              <capability name="ddd"/>
+  -            </revokes>
+  -          </entry>
+  -          <entry name="eee" type="user">
+  -            ...
+  -          </entry>
+  -        </acl>
+  ---------------------------------------------------------------------------
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="entry" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="grants" minOccurs="0">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="capability" type="CT_capability" minOccurs="0" maxOccurs="unbounded"/>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="revokes" minOccurs="0">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="capability" type="CT_capability" minOccurs="0" maxOccurs="unbounded"/>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+					<xs:attribute name="name" type="xs:string" use="required"/>
+					<xs:attribute name="type" use="required">
+						<xs:simpleType>
+							<xs:restriction base="xs:NMTOKEN">
+								<xs:enumeration value="user"/>
+								<xs:enumeration value="group"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CT_capability">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ---------------------------------------------------------------------------
+  - Name:  CT_capability
+  - Desc:  Defines a Capability.
+  - Exam:  <capability application="VCM" name="MODIFY"/>
+  ---------------------------------------------------------------------------
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="application" type="xs:string" use="required"/>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="CT_attribute">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ---------------------------------------------------------------------------
+  - Name:  CT_attribute
+  - Desc:  Defines the attributes and elements that make up a managed object
+  -        attribute.
+  ---------------------------------------------------------------------------
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="valueBLOB">
+					<xs:complexType>
+						<xs:simpleContent>
+							<xs:extension base="xs:base64Binary">
+								<xs:attributeGroup ref="AG_valueAttributes"/>
+							</xs:extension>
+						</xs:simpleContent>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="valueBoolean">
+					<xs:complexType>
+						<xs:simpleContent>
+							<xs:extension base="ST_booleanOrEmpty">
+								<xs:attributeGroup ref="AG_valueAttributes"/>
+							</xs:extension>
+						</xs:simpleContent>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="valueCLOB">
+					<xs:complexType>
+						<xs:simpleContent>
+							<xs:extension base="xs:string">
+								<xs:attributeGroup ref="AG_valueAttributes"/>
+							</xs:extension>
+						</xs:simpleContent>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="valueCompoundReference">
+					<xs:complexType>
+						<xs:complexContent>
+							<xs:extension base="CT_id">
+								<xs:attributeGroup ref="AG_valueAttributes"/>
+							</xs:extension>
+						</xs:complexContent>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="valueDate">
+					<xs:complexType>
+						<xs:simpleContent>
+							<xs:extension base="ST_longOrEmpty">
+								<xs:attributeGroup ref="AG_valueAttributes"/>
+							</xs:extension>
+						</xs:simpleContent>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="valueDecimal">
+					<xs:complexType>
+						<xs:simpleContent>
+							<xs:extension base="ST_doubleOrEmpty">
+								<xs:attributeGroup ref="AG_valueAttributes"/>
+							</xs:extension>
+						</xs:simpleContent>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="valueFilePath">
+					<xs:complexType>
+						<xs:simpleContent>
+							<xs:extension base="xs:string">
+								<xs:attributeGroup ref="AG_valueAttributes"/>
+							</xs:extension>
+						</xs:simpleContent>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="valueGUID">
+					<xs:complexType>
+						<xs:complexContent>
+							<xs:extension base="CT_id">
+								<xs:attributeGroup ref="AG_valueAttributes"/>
+							</xs:extension>
+						</xs:complexContent>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="valueInt">
+					<xs:complexType>
+						<xs:simpleContent>
+							<xs:extension base="ST_intOrEmpty">
+								<xs:attributeGroup ref="AG_valueAttributes"/>
+							</xs:extension>
+						</xs:simpleContent>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="valueNumerical">
+					<xs:complexType>
+						<xs:simpleContent>
+							<xs:extension base="ST_doubleOrEmpty">
+								<xs:attributeGroup ref="AG_valueAttributes"/>
+							</xs:extension>
+						</xs:simpleContent>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="valueString">
+					<xs:complexType>
+						<xs:simpleContent>
+							<xs:extension base="xs:string">
+								<xs:attributeGroup ref="AG_valueAttributes"/>
+							</xs:extension>
+						</xs:simpleContent>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="valueTinyInt">
+					<xs:complexType>
+						<xs:simpleContent>
+							<xs:extension base="ST_shortOrEmpty">
+								<xs:attributeGroup ref="AG_valueAttributes"/>
+							</xs:extension>
+						</xs:simpleContent>
+					</xs:complexType>
+				</xs:element>
+			</xs:choice>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string"/>
+	</xs:complexType>
+	<xs:attributeGroup name="AG_valueAttributes">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ---------------------------------------------------------------------------
+  - Name:  AG_valueAttributes
+  - Desc:  Defines common attribs all VCM valueXXX elements contain.
+  ---------------------------------------------------------------------------
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="isNull" type="xs:boolean" use="optional" default="false"/>
+	</xs:attributeGroup>
+	<xs:complexType name="CT_attributeDefinitionData">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ---------------------------------------------------------------------------
+  - Name:  CT_attributeDefinitionData
+  - Desc:  Defines an attribute definition.
+  ---------------------------------------------------------------------------
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="name" type="xs:string"/>
+			<xs:element name="displayName" type="xs:string"/>
+			<xs:element name="columnSource" type="xs:string"/>
+			<xs:element name="comment" type="xs:string" minOccurs="0"/>
+			<xs:element name="helpText" type="xs:string" minOccurs="0"/>
+			<xs:element name="language" type="xs:string" minOccurs="0"/>
+			<xs:element name="ordering" type="xs:integer"/>
+			<xs:element name="extensibleOrdinal" type="xs:integer"/>
+			<xs:element name="dataTypeValue" type="xs:integer"/>
+			<xs:element name="required" type="xs:boolean"/>
+			<xs:element name="autoGen" type="xs:boolean"/>
+			<xs:element name="workflowRequired" type="xs:boolean"/>
+			<xs:element name="key" type="xs:boolean"/>
+			<xs:element name="searchable" type="xs:boolean"/>
+			<xs:element name="summary" type="xs:boolean"/>
+			<xs:element name="visible" type="xs:boolean"/>
+			<xs:element name="defaultLabel" type="xs:boolean"/>
+			<xs:element name="orderBy" type="xs:boolean"/>
+			<xs:element name="attributeTypeValue" type="xs:integer"/>
+			<xs:element name="widgetName" type="xs:string" minOccurs="0"/>
+			<xs:element name="widgetData" type="xs:string" minOccurs="0"/>
+			<xs:element name="referencedAttributeDefinitionName" type="xs:string" minOccurs="0"/>
+            <xs:element name="beanPropertyName" type="xs:string" minOccurs="0"/>
+            <xs:element name="suppressBeanProperty" type="xs:boolean" minOccurs="0"/>
+            <xs:element name="groupSplit" type="xs:boolean" minOccurs="0"/>
+            <xs:element name="groupName" type="xs:string" minOccurs="0"/>
+            <xs:element name="toolTip" type="xs:string" minOccurs="0"/>
+            <xs:element name="filterable" type="xs:boolean" minOccurs="0"/>
+            <xs:element name="sharable" type="xs:boolean" minOccurs="0"/>
+            <xs:element name="translatable" type="xs:boolean" minOccurs="0"/>
+        </xs:sequence>
+		<xs:attributeGroup ref="AG_appSvcsAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="CT_channelAssociation">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ---------------------------------------------------------------------------
+  - Name:  CT_channelAssociation
+  - Desc:  Defines a content association to a channel.
+  -        This tag can appear in <contentInstance> and <staticFile>
+  -        XML fragments.  The representation of relationships
+  -        between a Channel and content appearing in either object
+  -        uses the same construct.
+  -        Appearing within a <contentInstance> or <staticFile>, each
+  -        <referencId> tag within the <contentAssociation> element contains
+  -        the AppSvcs ID to one or more channels.
+  ---------------------------------------------------------------------------
+			]]></xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="referenceId" type="CT_id" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CT_channelLocalizedDataEntries">
+		<xs:annotation>
+		    <xs:documentation xml:lang="en"><![CDATA[
+  ---------------------------------------------------------------------------
+  - Name:  CT_channelLocalizedDataEntries
+  - Desc:  Defines localized data entries for a channel entity.
+  ---------------------------------------------------------------------------
+		      ]]></xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="localizedData" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="locale" type="CT_id"/>
+						<xs:element name="active" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+						<xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1"/>
+						<xs:element name="furlName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="descriptor" type="xs:string" minOccurs="0" maxOccurs="1"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CT_channelInactiveFormatAssociations">
+		<xs:annotation>
+		    <xs:documentation xml:lang="en"><![CDATA[
+  ---------------------------------------------------------------------------
+  - Name:  CT_channelInactiveFormatAssociations
+  - Desc:  Defines Channel-InactiveFormat asociations for a channel entity.
+  ---------------------------------------------------------------------------
+		      ]]></xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="inactiveFormatAssocData" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="formatId" type="CT_id"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CT_adhocReferences">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ---------------------------------------------------------------------------
+  - Name:  CT_adhocReferences
+  - Desc:  Ad-hoc references associated with a ManagedObject.
+  ---------------------------------------------------------------------------
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="adhocReference" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="referenceName" type="xs:string" minOccurs="1" maxOccurs="1"/>
+						<xs:element name="referentId" type="CT_id" minOccurs="1" maxOccurs="1"/>
+						<xs:element name="metadata" type="xs:string" minOccurs="1" maxOccurs="1"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CT_classification">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ---------------------------------------------------------------------------
+  - Name:  CT_classification
+  - Desc:  Taxonomy classification associated to a ManagedObject.
+  ---------------------------------------------------------------------------
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="path" type="xs:string" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CT_id" mixed="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ---------------------------------------------------------------------------
+  - Name:  CT_id
+  - Desc:  Type for elements whose body MAY contain an ID (VCM or AppSvcs).
+  -        All elements of this type can also contain the <getId> element
+  -        instead of an ID to have an object's ID resolved during import.
+  - Exam:  <valueString>Some user data that's not an ID at all.</valueString>
+  -        <valueString><getId ref="111"/></valueString>
+  -        <parentChannelId>
+  -	         <getId objectName="mySite/Home/myChan" objectType="channel"/>
+  -        </parentChannelId>
+  ---------------------------------------------------------------------------
+    		]]></xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="getId" minOccurs="0">
+				<xs:complexType>
+					<xs:attribute name="ref" type="xs:string" use="optional"/>
+					<xs:attribute name="objectName" type="xs:string" use="optional"/>
+					<xs:attribute name="objectType" type="xs:string" use="optional"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CT_key">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ---------------------------------------------------------------------------
+  - Name:  CT_key
+  - Desc:  Defines a reference's key(s).
+  ---------------------------------------------------------------------------
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="attributeDefinitionName" type="xs:string"/>
+			<xs:element name="sequence" type="xs:integer"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="AG_appSvcsAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="CT_reference">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ---------------------------------------------------------------------------
+  - Name:  CT_reference
+  - Desc:  Defines a reference.
+  ---------------------------------------------------------------------------
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="deletionPolicyValue" type="xs:integer"/>
+			<xs:element name="demotionPolicyValue" type="xs:integer"/>
+			<xs:element name="exportPolicyValue" type="xs:integer"/>
+			<xs:element name="keyCount" type="xs:integer"/>
+			<xs:element name="promotionPolicyValue" type="xs:integer"/>
+			<xs:element name="referencedContentTypeId" type="CT_id"/>
+			<xs:element name="referenceTypeValue" type="xs:integer"/>
+			<xs:element name="snapshotPolicyValue" type="xs:integer"/>
+			<xs:element name="key" type="CT_key" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="AG_appSvcsAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="CT_relation">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ---------------------------------------------------------------------------
+  - Name:  CT_relation
+  - Desc:  Defines content type relation to attribute definitions.
+  ---------------------------------------------------------------------------
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="parentRelation" type="xs:string" minOccurs="0"/>
+			<xs:element name="name" type="xs:string"/>
+			<xs:element name="displayName" type="xs:string"/>
+			<xs:element name="minimum" type="xs:integer"/>
+			<xs:element name="maximum" type="xs:integer"/>
+            <xs:element name="beanPropertyName" type="xs:string" minOccurs="0"/>
+            <xs:element name="suppressBeanProperty" type="xs:boolean" minOccurs="0"/>
+			<xs:element name="attributeDefinition" type="CT_attributeDefinitionData" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="reference" type="CT_reference" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+		<xs:attributeGroup ref="AG_appSvcsAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="CT_relationInstance">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ---------------------------------------------------------------------------
+  - Name:  CT_relationInstance
+  - Desc:  Defines a relation within a content instance which
+  -        has its own attribute values.
+  ---------------------------------------------------------------------------
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="attribute" type="CT_attribute" maxOccurs="unbounded"/>
+			<xs:element name="relation" type="CT_relationInstance" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="CT_siteContentTypeAssociation">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ---------------------------------------------------------------------------
+  - Name:  CT_siteContentTypeAssociation
+  - Desc:  Defines the collection of content type associations for a site.
+  ---------------------------------------------------------------------------
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="contentTypeId" type="CT_id"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="AG_appSvcsAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="CT_siteStageAssociation">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ---------------------------------------------------------------------------
+  - Name:  CT_siteStageAssociation
+  - Desc:  Defines a stage association for a site entity.
+  ---------------------------------------------------------------------------
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="stageName" type="xs:string"/>
+			<xs:element name="ordering" type="xs:integer"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="AG_appSvcsAttributes"/>
+	</xs:complexType>
+	<xs:complexType name="CT_siteLocalizedDataEntries">
+		<xs:annotation>
+		    <xs:documentation xml:lang="en"><![CDATA[
+  ---------------------------------------------------------------------------
+  - Name:  CT_siteLocalizedDataEntries
+  - Desc:  Defines localized data entries for a site entity.
+  ---------------------------------------------------------------------------
+		      ]]></xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="localizedData" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="locale" type="CT_id"/>
+						<xs:element name="active" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+						<xs:element name="required" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+						<xs:element name="default" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+						<xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1"/>
+						<xs:element name="furlName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="descriptor" type="xs:string" minOccurs="0" maxOccurs="1"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CT_siteFormatAssociations">
+		<xs:annotation>
+		    <xs:documentation xml:lang="en"><![CDATA[
+  ---------------------------------------------------------------------------
+  - Name:  CT_siteFormatAssociations
+  - Desc:  Defines Site-Format associations for a site entity.
+  ---------------------------------------------------------------------------
+		      ]]></xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="siteFormatAssocData" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="formatId" type="CT_id"/>
+						<xs:element name="active" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+						<xs:element name="default" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CT_segmentProfileAssociations">
+		<xs:annotation>
+		    <xs:documentation xml:lang="en"><![CDATA[
+  ---------------------------------------------------------------------------
+  - Name:  CT_segmentProfileAssociations
+  - Desc:  Defines Site-SegmentProfile associations for a site entity.
+  ---------------------------------------------------------------------------
+		      ]]></xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="segmentProfileAssocData" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="segmentProfileId" type="CT_id"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="EN_channelType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ---------------------------------------------------------------------------
+  - Name:  EN_channelType
+  - Desc:  Defines if a channel is one of the specific root channel types
+  -        or a sub-channel.
+  -            home = the home root channel
+  -            unassignedContent = unassigned content root channel
+  -            archivedContent = archived content root channel
+  -            applicationAssets = application assets root channel
+  -            subChannel = child of channel acting as a parent
+  ---------------------------------------------------------------------------
+  			]]></xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:NMTOKEN">
+			<xs:enumeration value="home"/>
+			<xs:enumeration value="unassignedContent"/>
+			<xs:enumeration value="archivedContent"/>
+			<xs:enumeration value="applicationAssets"/>
+			<xs:enumeration value="subChannel"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="EN_objectType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ---------------------------------------------------------------------------
+  - Name:  EN_objectType
+  - Desc:  Supported types of objects.  For content instances, use the
+  -        "id" form instead.
+  ---------------------------------------------------------------------------
+			]]></xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="channel"/>
+			<xs:enumeration value="configNode"/>
+			<xs:enumeration value="contentType"/>
+			<xs:enumeration value="objectType"/>
+			<xs:enumeration value="preferences"/>
+			<xs:enumeration value="programTask"/>
+			<xs:enumeration value="project"/>
+			<xs:enumeration value="roles"/>
+			<xs:enumeration value="site"/>
+			<xs:enumeration value="staticFile"/>
+			<xs:enumeration value="taxonomy"/>
+			<xs:enumeration value="workflow"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ST_booleanOrEmpty">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ---------------------------------------------------------------------------
+  - Name:  ST_booleanOrEmpty
+  - Desc:  Simple element type, accepting either a boolean value or an
+  -        empty element.
+  ---------------------------------------------------------------------------
+			]]></xs:documentation>
+		</xs:annotation>
+		<xs:union memberTypes="xs:boolean ST_emptyString"/>
+	</xs:simpleType>
+	<xs:simpleType name="ST_doubleOrEmpty">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ---------------------------------------------------------------------------
+  - Name:  ST_doubleOrEmpty
+  - Desc:  Simple element type, accepting either a double value or an
+  -        empty element.
+  ---------------------------------------------------------------------------
+			]]></xs:documentation>
+		</xs:annotation>
+		<xs:union memberTypes="xs:double ST_emptyString"/>
+	</xs:simpleType>
+	<xs:simpleType name="ST_intOrEmpty">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ---------------------------------------------------------------------------
+  - Name:  ST_intOrEmpty
+  - Desc:  Simple element type, accepting either an integer value or an
+  -        empty element.
+  ---------------------------------------------------------------------------
+			]]></xs:documentation>
+		</xs:annotation>
+		<xs:union memberTypes="xs:int ST_emptyString"/>
+	</xs:simpleType>
+	<xs:simpleType name="ST_longOrEmpty">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ---------------------------------------------------------------------------
+  - Name:  ST_longOrEmpty
+  - Desc:  Simple element type, accepting either a long value or an
+  -        empty element.
+  ---------------------------------------------------------------------------
+			]]></xs:documentation>
+		</xs:annotation>
+		<xs:union memberTypes="xs:long ST_emptyString"/>
+	</xs:simpleType>
+	<xs:simpleType name="ST_shortOrEmpty">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ---------------------------------------------------------------------------
+  - Name:  ST_shortOrEmpty
+  - Desc:  Simple element type, accepting either a short value or an
+  -        empty element.
+  ---------------------------------------------------------------------------
+			]]></xs:documentation>
+		</xs:annotation>
+		<xs:union memberTypes="xs:short ST_emptyString"/>
+	</xs:simpleType>
+	<xs:simpleType name="ST_emptyString">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ---------------------------------------------------------------------------
+  - Name:  ST_emptyString
+  - Desc:  Simple element type, defining an empty string.  Used in the
+  -        ST_xxxOrEmpty type definitions.
+  ---------------------------------------------------------------------------
+			]]></xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value=""/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="configNode" type="configRootNodeType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ===========================================================================
+  - Name:  configNode
+  - Desc:  Description of a node in the configuration space.
+  ===========================================================================
+			]]></xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="configNodeType" abstract="true">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Type which represents a node in the configuration space.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="inclusion" type="inclusionType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Represents an inclusion relation of a config node to its parent node</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="variable" type="configVariableType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Represents a config variable within a config node.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="node" type="configChildNodeType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Represents a child node within a config node.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation xml:lang="en">Specifies the name of the node within its parent, used for building up the node's config id (path).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="type" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation xml:lang="en">Specifies the type of component represented by the node, if any.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="state" use="optional">
+			<xs:annotation>
+				<xs:documentation xml:lang="en">Specifies the state of the node.</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="U">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">unchanged</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="N">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">new</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="D">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">deleted</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="NP">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">new and pushed</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="DP">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">deleted and pushed</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="processNode" type="xs:boolean" use="optional" default="false">
+			<xs:annotation>
+				<xs:documentation xml:lang="en">Specifies whether the node is a process node.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="productNode" type="xs:boolean" use="optional" default="false">
+			<xs:annotation>
+				<xs:documentation xml:lang="en">Specifies whether the node is a product node.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="productState" use="optional">
+			<xs:annotation>
+				<xs:documentation xml:lang="en">Specifies the product state of a product node.</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="U">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">unchanged</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="C">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">changed</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="P">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">pushed</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="configRootNodeType" final="#all">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Type which represents a placeholder for a node in the configuration space at which to perform import. May undergo path replacement to be resolved to a real config node.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="configNodeType">
+				<xs:attribute name="path" type="xs:string" use="optional" default="/">
+					<xs:annotation>
+						<xs:documentation xml:lang="en">Specifies the config id (path) of the node, subject to instance name replacement.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="configChildNodeType" final="#all">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Type which represents a child node in the configuration space.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="configNodeType">
+				<xs:sequence>
+					<xs:element name="inclusion" type="inclusionType" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">Represents an inclusion relation of a config node to its parent node</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="variable" type="configVariableType" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">Represents a config variable within a config node.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="node" type="configChildNodeType" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">Represents a child node within a config node.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="configVariableType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Type which represents a configuration variable.</xs:documentation>
+		</xs:annotation>
+		<xs:all>
+			<xs:element name="runValue" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Represents the current value of the variable, used by running processes.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="configVariableValueType"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="configValue" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Represents the new value of a variable in the Changed state.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="configVariableValueType"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="revertValue" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Represents the last committed value of a variable in the Changed state.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="configVariableValueType"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="defaultValue" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Represents the default value of the variable.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="configVariableValueType"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="overridable" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Specifies whether the variable can be overridden when referenced.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="value" use="optional" default="true">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">Specifies the boolean value of the flag.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="flags" type="configVariableFlagSetType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Represents a set of boolean properties of the variable.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:all>
+		<xs:attribute name="name" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation xml:lang="en">Specifies the name of the variable.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="state" use="optional">
+			<xs:annotation>
+				<xs:documentation xml:lang="en">Specifies the state of the variable.</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="U">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">unchanged</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="N">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">new</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="D">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">deleted</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="C">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">changed</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="NP">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">new and pushed</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="DP">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">deleted and pushed</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="CP">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">changed and pushed</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="type" use="optional">
+			<xs:annotation>
+				<xs:documentation xml:lang="en">Specifies the type of the variable.</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="ENUM">
+						<xs:annotation>
+							<xs:documentation xml:lang="en">enumerated type</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="typeInfo" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation xml:lang="en">Specifies additional type information needed for the type of the variable.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:simpleType name="configVariableValueType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Type which represents a configuration variable value.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:complexType name="flagType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Type which represents a single boolean flag in a flag set.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="id" type="xs:nonNegativeInteger" use="optional">
+			<xs:annotation>
+				<xs:documentation xml:lang="en">Specifies the id (bit position) of the flag.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="name" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation xml:lang="en">Specifies the name of the flag.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="value" type="xs:boolean" use="optional">
+			<xs:annotation>
+				<xs:documentation xml:lang="en">Specifies the boolean value of the flag.</xs:documentation>
+			</xs:annotation>
+			<!-- "use" should really be "required" but the parser being used isn't treating the subsequent restrictions properly -->
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="configVariableFlagSetType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Type which represents various boolean flags associated with config variables.</xs:documentation>
+		</xs:annotation>
+		<xs:all>
+			<xs:element name="interpreter" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Represents the value of the Interpreter flag.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:annotation>
+						<xs:documentation xml:lang="en">Type which represents the "Interpreter" flag on a config variable.</xs:documentation>
+					</xs:annotation>
+					<xs:complexContent>
+						<xs:restriction base="flagType">
+							<xs:attribute name="id" type="xs:nonNegativeInteger" use="optional" default="0">
+								<xs:annotation>
+									<xs:documentation xml:lang="en">Specifies the id (bit position) of the flag.</xs:documentation>
+									<xs:appinfo>Must match com.vignette.config.client.data.ConfigVarFlag.INTERPRETER_VAL.</xs:appinfo>
+								</xs:annotation>
+							</xs:attribute>
+							<xs:attribute name="name" type="xs:string" default="Interpreter">
+								<xs:annotation>
+									<xs:documentation xml:lang="en">Specifies the name of the flag.</xs:documentation>
+									<xs:appinfo>Must match com.vignette.config.client.data.ConfigVarFlag.INTERPRETER_STR.</xs:appinfo>
+								</xs:annotation>
+							</xs:attribute>
+							<xs:attribute name="value" type="xs:boolean" default="true"/>
+						</xs:restriction>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="restartNeeded" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Represents the value of the RestartNeeded flag, which specifies whether any processes must restart when the variable changes.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:annotation>
+						<xs:documentation xml:lang="en">Type which represents the "RestartNeeded" flag on a config variable.</xs:documentation>
+					</xs:annotation>
+					<xs:complexContent>
+						<xs:restriction base="flagType">
+							<xs:attribute name="id" type="xs:nonNegativeInteger" use="optional" default="1">
+								<xs:annotation>
+									<xs:documentation xml:lang="en">Specifies the id (bit position) of the flag.</xs:documentation>
+									<xs:appinfo>Must match com.vignette.config.client.data.ConfigVarFlag.RESTARTNEEDED_VAL.</xs:appinfo>
+								</xs:annotation>
+							</xs:attribute>
+							<xs:attribute name="name" type="xs:string" default="RestartNeeded">
+								<xs:annotation>
+									<xs:documentation xml:lang="en">Specifies the name of the flag.</xs:documentation>
+									<xs:appinfo>Must match com.vignette.config.client.data.ConfigVarFlag.RESTARTNEEDED_STR.</xs:appinfo>
+								</xs:annotation>
+							</xs:attribute>
+							<xs:attribute name="value" type="xs:boolean" default="true"/>
+						</xs:restriction>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="encrypted" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Represents the value of the Encrypted flag, which specifies whether the value of the variable is encrypted.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:annotation>
+						<xs:documentation xml:lang="en">Type which represents the "Encrypted" flag on a config variable.</xs:documentation>
+					</xs:annotation>
+					<xs:complexContent>
+						<xs:restriction base="flagType">
+							<xs:attribute name="id" type="xs:nonNegativeInteger" use="optional" default="2">
+								<xs:annotation>
+									<xs:documentation xml:lang="en">Specifies the id (bit position) of the flag.</xs:documentation>
+									<xs:appinfo>Must match com.vignette.config.client.data.ConfigVarFlag.ENCRYPTED_VAL.</xs:appinfo>
+								</xs:annotation>
+							</xs:attribute>
+							<xs:attribute name="name" type="xs:string" default="Encrypted">
+								<xs:annotation>
+									<xs:documentation xml:lang="en">Specifies the name of the flag.</xs:documentation>
+									<xs:appinfo>Must match com.vignette.config.client.data.ConfigVarFlag.ENCRYPTED_STR.</xs:appinfo>
+								</xs:annotation>
+							</xs:attribute>
+							<xs:attribute name="value" type="xs:boolean" default="true"/>
+						</xs:restriction>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="readOnly" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation xml:lang="en">Represents the value of the ReadOnly flag, which specifies whether the variable is read-only.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:annotation>
+						<xs:documentation xml:lang="en">Type which represents the "ReadOnly" flag on a config variable.</xs:documentation>
+					</xs:annotation>
+					<xs:complexContent>
+						<xs:restriction base="flagType">
+							<xs:attribute name="id" type="xs:nonNegativeInteger" use="optional" default="3">
+								<xs:annotation>
+									<xs:documentation xml:lang="en">Specifies the id (bit position) of the flag.</xs:documentation>
+									<xs:appinfo>Must match com.vignette.config.client.data.ConfigVarFlag.READ_VAL.</xs:appinfo>
+								</xs:annotation>
+							</xs:attribute>
+							<xs:attribute name="name" type="xs:string" default="ReadOnly">
+								<xs:annotation>
+									<xs:documentation xml:lang="en">Specifies the name of the flag.</xs:documentation>
+									<xs:appinfo>Must match com.vignette.config.client.data.ConfigVarFlag.READ_STR.</xs:appinfo>
+								</xs:annotation>
+							</xs:attribute>
+							<xs:attribute name="value" type="xs:boolean" default="true"/>
+						</xs:restriction>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:all>
+		<xs:attribute name="bits" type="xs:hexBinary" use="optional">
+			<xs:annotation>
+				<xs:documentation xml:lang="en">Specifies the values of the bits of the flag set, as a big-endian hexadecimal string.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="inclusionType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en">Type which represents the inclusion relation of a config node to its parent node.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="parentPath" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation xml:lang="en">Specifies the parent path of the node</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="type" type="xs:nonNegativeInteger" use="required">
+			<xs:annotation>
+				<xs:documentation xml:lang="en">Specifies the type of inclusion relation of the node to its parent node ( eg. logical_inclusion, physical_inclusion )</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+</xs:schema>

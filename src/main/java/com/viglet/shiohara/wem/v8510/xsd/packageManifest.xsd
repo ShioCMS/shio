@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright (C) 2014 OpenText Corporation All rights reserved.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		   xmlns="http://www.vignette.com/xmlschemas/importexport"
+		   targetNamespace="http://www.vignette.com/xmlschemas/importexport"
+		   elementFormDefault="qualified"
+		   attributeFormDefault="unqualified">
+	<xs:annotation>
+		<xs:documentation xml:lang="en"><![CDATA[
+  ***************************************************************************
+  * Name:  packageManifest.xsd
+  *
+  * Desc:  This is the XML schema for a package manifest, consumed by
+  *        'vgnexport'.  For more information, refer to the -m option
+  *        in 'vgnexport'.
+  *
+  *        It is strongly recommended that package manifest XML documents
+  *        be encoded in UTF-8, although other encodings should work.
+  *        Assuming a UTF-8 encoding, package manifests must have the
+  *        following XML declaration and root element attributes:
+  *
+  *          <?xml version="1.0" encoding="UTF-8"?>
+  *          <packageManifest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  *              xmlns="http://www.vignette.com/xmlschemas/importexport"
+  *              xsi:schemaLocation="http://www.vignette.com/xmlschemas/importexport 8510/packageManifest.xsd">
+  *
+  *        Note:  There is a space in the last attribute between
+  *        "importexport" and "8510".
+  *
+  *        Validation through the 'vgnexport' command-line utility is
+  *        always enabled.  Therefore, any package manifest XML documents
+  *        passed as an argument into 'vgnexport' must have the root element
+  *        attributes described above.
+  *
+  * Vers:  8510
+  *
+  * Diff:  [7201->7202] None.
+  *        [7202->7310] None.
+  *        [7310->7311] None.
+  *        [7311->7400] Added 'preferences' object type.
+  *        [7400->7500] None.
+  *        [7500->7600] None.
+  *        [7600->8000] None.
+  *        [8000->8100] None.
+  *        [8100->8500] None.
+  *        [8500->8510] None.
+  ***************************************************************************
+		]]></xs:documentation>
+		<xs:appinfo>version=8510</xs:appinfo>
+	</xs:annotation>
+	<xs:annotation>
+		<xs:documentation xml:lang="en"><![CDATA[
+  ###########################################################################
+  # Name:  packageManifest
+  # Desc:  Root element, containing lists of objects for export.
+  #        When exported, entries listed in the "deletes" element will be
+  #        maintain their order in the package file.  Entries in the
+  #        "imports" element will be reordered as dictated by the
+  #        package file.  See the 'packageBody.xsd' for details.
+  # Exam:  <?xml version="1.0" encoding="UTF-8"?>
+  #        <packageManifest...>
+  #          <imports>
+  #            <object name="mySite" type="site"/>
+  #            <object id="0908b3ee02268f00VgnVCMServer2101130aRCRD"/>
+  #          </imports>
+  #          <deletes>
+  #            <object name="/nyc/corleone/santino.jpg" type="staticFile"/>
+  #          </deletes>
+  #        </packageManifest>
+  ###########################################################################
+		]]></xs:documentation>
+	</xs:annotation>
+	<xs:element name="packageManifest">
+		<xs:complexType>
+			<xs:all>
+				<xs:element name="imports" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="object" minOccurs="0" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="deletes" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="object" minOccurs="0" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+	<xs:annotation>
+		<xs:documentation xml:lang="en"><![CDATA[
+		The "object" element must have either the "id" or "name" and "type"
+		attributes specified.  This is enforced programmatically within
+        Export.
+		]]></xs:documentation>
+	</xs:annotation>
+	<xs:element name="object">
+		<xs:complexType>
+			<xs:attribute name="id" type="xs:string" use="optional"/>
+			<xs:attribute name="name" type="xs:string" use="optional"/>
+			<xs:attribute name="type" type="EN_objectType" use="optional"/>
+			<xs:attribute name="group" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:simpleType name="EN_objectType">
+		<xs:annotation>
+			<xs:documentation xml:lang="en"><![CDATA[
+  ---------------------------------------------------------------------------
+  - Name:  EN_objectType
+  - Desc:  Supported types of objects.  For content instances, use the
+  -        "id" form instead.
+  ---------------------------------------------------------------------------
+			]]></xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="asLocale"/>
+			<xs:enumeration value="channel"/>
+			<xs:enumeration value="configNode"/>
+			<xs:enumeration value="contentType"/>
+			<xs:enumeration value="objectType"/>
+			<xs:enumeration value="preferences"/>
+			<xs:enumeration value="programTask"/>
+			<xs:enumeration value="project"/>
+			<xs:enumeration value="site"/>
+			<xs:enumeration value="staticFile"/>
+			<xs:enumeration value="workflow"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

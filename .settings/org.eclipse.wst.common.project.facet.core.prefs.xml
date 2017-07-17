@@ -9,4 +9,29 @@
       <attribute name="provider-id" value="jaxrs-no-op-library-provider"/>
     </node>
   </facet>
+  <facet id="jpt.jaxb">
+    <node name="classgen">
+      <attribute name="package" value="com.viglet.shiohara.wem.v8510.options"/>
+    </node>
+    <node name="libprov">
+      <attribute name="provider-id" value="jaxb-no-op-library-provider"/>
+    </node>
+    <node name="platform">
+      <attribute name="platform-id" value="eclipselink_2_5"/>
+    </node>
+    <node name="schemas">
+      <node name="schema-1">
+        <attribute name="location" value="platform:/resource/viglet-shiohara/src/main/java/com/viglet/shiohara/wem/xsd/v8510/packageBody.xsd"/>
+      </node>
+      <node name="schema-2">
+        <attribute name="location" value="platform:/resource/viglet-shiohara/src/main/java/com/viglet/shiohara/wem/v8510/xsd/packageBody.xsd"/>
+      </node>
+      <node name="schema-3">
+        <attribute name="location" value="platform:/resource/viglet-shiohara/src/main/java/com/viglet/shiohara/wem/v8510/xsd/packageManifest.xsd"/>
+      </node>
+      <node name="schema-4">
+        <attribute name="location" value="platform:/resource/viglet-shiohara/src/main/java/com/viglet/shiohara/wem/v8510/xsd/packageOptions.xsd"/>
+      </node>
+    </node>
+  </facet>
 </root>
