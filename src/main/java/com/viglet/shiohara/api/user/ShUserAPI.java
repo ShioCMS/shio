@@ -2,6 +2,7 @@ package com.viglet.shiohara.api.user;
 
 import java.util.List;
 
+import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -10,14 +11,20 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import org.json.JSONObject;
 
 import com.viglet.shiohara.persistence.model.ShUser;
 import com.viglet.shiohara.persistence.service.ShUserService;
 
 @Path("/user")
 public class ShUserAPI {
+	@Context
+	ServletContext context;
 	ShUserService shUserService = new ShUserService();
 
 	@GET
@@ -26,10 +33,21 @@ public class ShUserAPI {
 		return shUserService.listAll();
 	}
 
+	@Path("/current")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public ShUser current(@QueryParam("access_token") int accessToken) throws Exception {
+		return shUserService.get(accessToken);
+	}
+
 	@Path("/{userId}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public ShUser edit(@PathParam("userId") int id) throws Exception {
+		JSONObject jsonResponse = (JSONObject) context.getAttribute("VecJSONResponse");
+		if (jsonResponse != null) {
+			System.out.println("O atributo: " + jsonResponse.toString());
+		}
 		return shUserService.get(id);
 	}
 

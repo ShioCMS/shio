@@ -40,7 +40,7 @@ angular.module('angularOauth', []).
       authorizationEndpoint: REQUIRED_AND_MISSING,
       localStorageName: 'accessToken',
       verifyFunc: REQUIRED_AND_MISSING,
-      state: []
+      scopes: []
     };
 
     this.extendConfig = function(configExtension) {
@@ -72,9 +72,14 @@ angular.module('angularOauth', []).
           response_type: config.responseType || RESPONSE_TYPE,
           client_id: config.clientId,
           redirect_uri: config.redirectUri,
-          state: config.state.join(" ")
+          scope: config.scopes.join(" ")
         }
       };
+
+      var buildAuthorizationUrl = function(extraParams) {
+        var params = angular.extend(getParams(), extraParams);
+        return config.authorizationEndpoint + '?' + objectToQueryString(params);
+      }
 
       return {
         // TODO: get/set might want to support expiration to reauthenticate
@@ -85,7 +90,7 @@ angular.module('angularOauth', []).
          *
          * @returns {string} The access token.
          */
-        get: function() {
+        get: function() {              
           return localStorage[config.localStorageName];
         },
 
@@ -146,8 +151,8 @@ angular.module('angularOauth', []).
           popupOptions = angular.extend({
             name: 'AuthPopup',
             openParams: {
-              width: 400,
-              height: 430,
+              width: 650,
+              height: 500,
               resizable: true,
               scrollbars: true,
               status: true
@@ -155,8 +160,7 @@ angular.module('angularOauth', []).
           }, popupOptions);
 
           var deferred = $q.defer(),
-            params = angular.extend(getParams(), extraParams),
-            url = config.authorizationEndpoint + '?' + objectToQueryString(params),
+            url = buildAuthorizationUrl(extraParams),
             resolved = false;
 
           var formatPopupOptions = function(options) {
@@ -169,12 +173,11 @@ angular.module('angularOauth', []).
             });
             return pairs.join(',');
           };
-
           var popup = window.open(url, popupOptions.name, formatPopupOptions(popupOptions.openParams));
 
           // TODO: binding occurs for each reauthentication, leading to leaks for long-running apps.
 
-          angular.element($window).bind('message', function(event) {
+          angular.element($window).bind('message', function(event) {         
             // Use JQuery originalEvent if present
             event = event.originalEvent || event;
             if (event.source == popup && event.origin == window.location.origin) {
@@ -191,6 +194,10 @@ angular.module('angularOauth', []).
           // TODO: reject deferred if the popup was closed without a message being delivered + maybe offer a timeout
 
           return deferred.promise;
+        },
+        getTokenInSameWindow: function(extraParams) {
+          var url = buildAuthorizationUrl(extraParams);
+          $window.location.href = url;
         }
       }
     }
@@ -201,7 +208,6 @@ angular.module('angularOauth', []).
    * it back to other windows using.
    */
   controller('CallbackCtrl', function($scope, $location) {
-
     /**
      * Parses an escaped url query string into key-value pairs.
      *
@@ -220,9 +226,10 @@ angular.module('angularOauth', []).
       });
       return obj;
     }
-    
+
     var queryString = $location.path().substring(1);  // preceding slash omitted
     var params = parseKeyValue(queryString);
+
     // TODO: The target origin should be set to an explicit origin.  Otherwise, a malicious site that can receive
     //       the token if it manages to change the location of the parent. (See:
     //       https://developer.mozilla.org/en/docs/DOM/window.postMessage#Security_concerns)

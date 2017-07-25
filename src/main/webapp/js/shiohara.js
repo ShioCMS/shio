@@ -1,9 +1,22 @@
-var shioharaApp = angular.module('shioharaApp', [ 'ui.router' ]);
+var shioharaApp = angular.module('shioharaApp', [ 'ui.router', 'vecchioOauth' ]);
 
-shioharaApp.config(function($stateProvider, $urlRouterProvider) {
+shioharaApp.config(function($stateProvider, $urlRouterProvider, TokenProvider) {
+
+	TokenProvider.extendConfig({
+		clientId : 'b0ec29dd6e0c6bd98b37fee1799dc0a8',
+		redirectUri : 'http://localhost:8080/oauth2callback.html',
+		scopes : [ "https://www.googleapis.com/auth/userinfo.email" ]
+	});
 
 	$urlRouterProvider.otherwise('/content');
-	$stateProvider.state('content', {
+	$stateProvider.state('oauth2', {
+		url : '/oauth2',
+		templateUrl : 'template/oauth2.html',
+		controller : 'VecOAuth2Ctrl',
+		data : {
+			pageTitle : 'OAuth2 | Viglet Shiohara'
+		}
+	}).state('content', {
 		url : '/content',
 		templateUrl : 'template/content.html',
 		controller : 'VecContentCtrl',
@@ -60,17 +73,51 @@ shioharaApp.config(function($stateProvider, $urlRouterProvider) {
 
 });
 
+shioharaApp.controller('VecOAuth2Ctrl', [ "$scope", "$http", "$window",
+		"$state", "$rootScope", "Token",
+		function($scope, $http, $window, $state, $rootScope, Token) {
+			$scope.accessToken = Token.get();
+
+			$scope.authenticate = function() {
+				var extraParams = $scope.askApproval ? {
+					approval_prompt : 'force'
+				} : {};
+				Token.getTokenByPopup(extraParams).then(function(params) {
+					// Success getting token from popup.
+
+					// Verify the token before setting it, to avoid the confused
+					// deputy problem.
+					Token.verifyAsync(params.access_token).then(function(data) {
+						$rootScope.$apply(function() {
+							$scope.accessToken = params.access_token;
+							$scope.expiresIn = params.expires_in;
+
+							Token.set(params.access_token);
+						});
+					}, function() {
+						alert("Failed to verify token.")
+					});
+
+				}, function() {
+					// Failure getting token from popup.
+					alert("Failed to get token from popup.");
+				});
+			};
+		} ]);
+
 shioharaApp.controller('VecContentCtrl', [
 		"$scope",
 		"$http",
 		"$window",
 		"$state",
 		"$rootScope",
-		function($scope, $http, $window, $state, $rootScope) {
+		"Token",
+		function($scope, $http, $window, $state, $rootScope, Token) {
+			$scope.accessToken = Token.get();
 			$scope.shUser = null;
 			$scope.shPosts = null;
 			$rootScope.$state = $state;
-			$scope.$evalAsync($http.get(jp_domain + "/api/user/2").then(
+			$scope.$evalAsync($http.get(jp_domain + "/api/user/2?access_token=" + $scope.accessToken).then(
 					function(response) {
 						$scope.shUser = response.data;
 					}));
@@ -109,43 +156,65 @@ shioharaApp.controller('VecPostTypeSelectCtrl', [
 					}));
 		} ]);
 
-shioharaApp.controller('VecPostTypeItemCtrl', [
-		"$scope",
-		"$http",
-		"$window",
-		"$stateParams",
-		"$state",
-		"$rootScope",
-		function($scope, $http, $window, $stateParams, $state, $rootScope) {
-			$scope.postTypeId = $stateParams.postTypeId;
-			$scope.shPostType = null;
-			$scope.shWidgets = null;
-			$rootScope.$state = $state;
-			$scope.$evalAsync($http.get(
-					jp_domain + "/api/post/type/" + $scope.postTypeId).then(
-					function(response) {
-						$scope.shPostType = response.data;
-						$scope.shPostNewItem = angular.copy($scope.shPostType);
-						for(var i=0; i < $scope.shPostNewItem.shPostTypeAttrs.length; i++) {
-							$scope.shPostNewItem.shPostTypeAttrs[i]['value'] = 'Novo Valor' + i;
-						}
-						
-					}));
-			$scope.$evalAsync($http.get(jp_domain + "/api/widget").then(
-					function(response) {
-						$scope.shWidgets = response.data;
-					}));
-			$scope.postTypeSave = function() {
-				var parameter = angular.toJson($scope.shPostType);
-				$http.put(jp_domain + "/api/post/type/" + $scope.postTypeId,
-						parameter).then(
-						function(data, status, headers, config) {
-							$state.go('content.post-type-item');
-						}, function(data, status, headers, config) {
-							$state.go('content.post-type-item');
-						});
-			}
-		} ]);
+shioharaApp
+		.controller(
+				'VecPostTypeItemCtrl',
+				[
+						"$scope",
+						"$http",
+						"$window",
+						"$stateParams",
+						"$state",
+						"$rootScope",
+						function($scope, $http, $window, $stateParams, $state,
+								$rootScope) {
+							$scope.postTypeId = $stateParams.postTypeId;
+							$scope.shPostType = null;
+							$scope.shWidgets = null;
+							$rootScope.$state = $state;
+							$scope
+									.$evalAsync($http
+											.get(
+													jp_domain
+															+ "/api/post/type/"
+															+ $scope.postTypeId)
+											.then(
+													function(response) {
+														$scope.shPostType = response.data;
+														$scope.shPostNewItem = angular
+																.copy($scope.shPostType);
+														for (var i = 0; i < $scope.shPostNewItem.shPostTypeAttrs.length; i++) {
+															$scope.shPostNewItem.shPostTypeAttrs[i]['value'] = 'Novo Valor'
+																	+ i;
+														}
+
+													}));
+							$scope.$evalAsync($http.get(
+									jp_domain + "/api/widget").then(
+									function(response) {
+										$scope.shWidgets = response.data;
+									}));
+							$scope.postTypeSave = function() {
+								var parameter = angular
+										.toJson($scope.shPostType);
+								$http
+										.put(
+												jp_domain + "/api/post/type/"
+														+ $scope.postTypeId,
+												parameter)
+										.then(
+												function(data, status, headers,
+														config) {
+													$state
+															.go('content.post-type-item');
+												},
+												function(data, status, headers,
+														config) {
+													$state
+															.go('content.post-type-item');
+												});
+							}
+						} ]);
 
 shioharaApp.controller('VecPostTypeAttrCtrl', [
 		"$scope",
@@ -177,16 +246,21 @@ shioharaApp.controller('VecPostTypeAttrCtrl', [
 
 		} ]);
 
-shioharaApp.controller('VecPostNewCtrl', [ "$scope", "$http", "$window",
-		"$stateParams", "$state", "$rootScope",
+shioharaApp.controller('VecPostNewCtrl', [
+		"$scope",
+		"$http",
+		"$window",
+		"$stateParams",
+		"$state",
+		"$rootScope",
 		function($scope, $http, $window, $stateParams, $state, $rootScope) {
 			$scope.postTypeId = $stateParams.postTypeId;
 			$scope.shPost = null;
 			$scope.$evalAsync($http.get(
-					jp_domain + "/api/post/type/" + $scope.postTypeId + "/post/model")
-					.then(function(response) {
-						$scope.shPost = response.data;
-					}));
+					jp_domain + "/api/post/type/" + $scope.postTypeId
+							+ "/post/model").then(function(response) {
+				$scope.shPost = response.data;
+			}));
 			$scope.postEditForm = "template/post/form.html";
 			$scope.postSave = function() {
 				var parameter = angular.toJson($scope.shPost);
@@ -200,34 +274,37 @@ shioharaApp.controller('VecPostNewCtrl', [ "$scope", "$http", "$window",
 			}
 		} ]);
 
-shioharaApp.controller('VecPostEditCtrl', [ "$scope", "$http", "$window",
-	"$stateParams", "$state", "$rootScope",
-	function($scope, $http, $window, $stateParams, $state, $rootScope) {
-		$scope.postId = $stateParams.postId;
-		$scope.shPost = null;
-		$scope.$evalAsync($http.get(
-				jp_domain + "/api/post/" + $scope.postId)
-				.then(function(response) {
-					$scope.shPost = response.data;
-				}));
-		$scope.postEditForm = "template/post/form.html";		
-		$scope.postSave = function() {
-			var parameter = angular.toJson($scope.shPost);
-			$http.put(jp_domain + "/api/post/" + $scope.postId,
-					parameter).then(
-					function(data, status, headers, config) {
-						$state.go('content');
-					}, function(data, status, headers, config) {
-						$state.go('content');
-					});
-		}
-	} ]);
+shioharaApp.controller('VecPostEditCtrl', [
+		"$scope",
+		"$http",
+		"$window",
+		"$stateParams",
+		"$state",
+		"$rootScope",
+		function($scope, $http, $window, $stateParams, $state, $rootScope) {
+			$scope.postId = $stateParams.postId;
+			$scope.shPost = null;
+			$scope.$evalAsync($http.get(
+					jp_domain + "/api/post/" + $scope.postId).then(
+					function(response) {
+						$scope.shPost = response.data;
+					}));
+			$scope.postEditForm = "template/post/form.html";
+			$scope.postSave = function() {
+				var parameter = angular.toJson($scope.shPost);
+				$http.put(jp_domain + "/api/post/" + $scope.postId, parameter)
+						.then(function(data, status, headers, config) {
+							$state.go('content');
+						}, function(data, status, headers, config) {
+							$state.go('content');
+						});
+			}
+		} ]);
 
 shioharaApp.controller('VecPostFormCtrl', [ "$scope", "$http", "$window",
-	"$stateParams", "$state", "$rootScope",
-	function($scope, $http, $window, $stateParams, $state, $rootScope) {
-		$scope.postTypeAttrId = $stateParams.postTypeAttrId;
-		 $scope.shPostTypeItem = angular.copy($scope.shPostType);
-		
-		
-	} ]);
+		"$stateParams", "$state", "$rootScope",
+		function($scope, $http, $window, $stateParams, $state, $rootScope) {
+			$scope.postTypeAttrId = $stateParams.postTypeAttrId;
+			$scope.shPostTypeItem = angular.copy($scope.shPostType);
+
+		} ]);

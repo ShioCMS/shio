@@ -20,7 +20,7 @@
 		<welcome-file>index.xhtml</welcome-file>
 		<welcome-file>index.htm</welcome-file>
 		<welcome-file>index.jsp</welcome-file>
-	</welcome-file-list>	
+	</welcome-file-list>
 	<servlet>
 		<description>
 		JAX-RS Tools Generated - Do not modify</description>
@@ -33,6 +33,10 @@
 		<init-param>
 			<param-name>com.sun.jersey.spi.container.ContainerResponseFilters</param-name>
 			<param-value>com.viglet.shiohara.api.filter.CORSFilter</param-value>
+		</init-param>
+		<init-param>
+			<param-name>com.sun.jersey.spi.container.ContainerRequestFilters</param-name>
+			<param-value>com.viglet.shiohara.api.filter.VecchioFilter</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
