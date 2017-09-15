@@ -13,6 +13,8 @@
 		<class>com.viglet.shiohara.persistence.model.ShSite</class>
 		<class>com.viglet.shiohara.persistence.model.ShUser</class>
 		<class>com.viglet.shiohara.persistence.model.ShWidget</class>
+		<class>com.viglet.shiohara.persistence.model.system.ShConfigVar</class>
+		<class>com.viglet.shiohara.persistence.model.system.ShLocale</class>
 		<properties>
 			<property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema" />
 			<property name="openjpa.ConnectionURL" value="jdbc:hsqldb:store/shioharaDB" />

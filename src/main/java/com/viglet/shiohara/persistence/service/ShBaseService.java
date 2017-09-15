@@ -7,6 +7,6 @@ import javax.persistence.Persistence;
 public class ShBaseService {
 
 	EntityManagerFactory factory = Persistence.createEntityManagerFactory("shiohara-app");
-	EntityManager em = factory.createEntityManager();
+	protected EntityManager em = factory.createEntityManager();
 
 }

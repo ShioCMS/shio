@@ -5,9 +5,6 @@ import javax.persistence.*;
 
 import org.apache.openjpa.persistence.jdbc.ForeignKey;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.annotate.JsonProperty;
-
-import com.viglet.shiohara.utils.MD5Util;
 
 import java.util.Date;
 
