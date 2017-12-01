@@ -1,14 +1,20 @@
-package com.viglet.shiohara.listener.onstartup;
+package com.viglet.shiohara.onstartup.widget;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.persistence.model.ShWidget;
-import com.viglet.shiohara.persistence.service.ShWidgetService;
+import com.viglet.shiohara.persistence.repository.widget.ShWidgetRepository;
 
-
+@Component
 public class ShWidgetOnStartup {
-	public static void createDefaultRows() {
-		ShWidgetService shWidgetService = new ShWidgetService();
-		
-		if (shWidgetService.listAll().isEmpty()) {
+
+	@Autowired
+	ShWidgetRepository shWidgetRepository;
+
+	public void createDefaultRows() {
+
+		if (shWidgetRepository.findAll().isEmpty()) {
 
 			ShWidget shWidget = new ShWidget();
 			shWidget.setName("Text");
@@ -17,6 +23,8 @@ public class ShWidgetOnStartup {
 			shWidget.setImplementationCode("template/widget/text.html");
 			shWidget.setType("TEXT,TEXTAREA");
 			
+			shWidgetRepository.save(shWidget);
+
 			shWidget = new ShWidget();
 			shWidget.setName("Text Area");
 			shWidget.setDescription("Text Area Widget");
@@ -24,6 +32,8 @@ public class ShWidgetOnStartup {
 			shWidget.setImplementationCode("template/widget/textarea.html");
 			shWidget.setType("TEXT,TEXTAREA");
 			
+			shWidgetRepository.save(shWidget);
+
 		}
 
 	}
