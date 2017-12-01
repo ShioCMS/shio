@@ -1,0 +1,1 @@
+var shioharaApp = angular.module('shioharaApp', [ 'ui.router', 'vecchioOauth' ]);
