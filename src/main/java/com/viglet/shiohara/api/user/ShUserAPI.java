@@ -14,30 +14,34 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.persistence.model.ShUser;
-import com.viglet.shiohara.persistence.service.ShUserService;
+import com.viglet.shiohara.persistence.repository.user.ShUserRepository;
 
+@Component
 @Path("/user")
 public class ShUserAPI {
 	@Context
 	ServletContext context;
-	ShUserService shUserService = new ShUserService();
-
+	
+	@Autowired
+	ShUserRepository shUserRepository;
+	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<ShUser> list() throws Exception {
-		return shUserService.listAll();
+		return shUserRepository.findAll();
 	}
 
 	@Path("/current")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public ShUser current(@QueryParam("access_token") int accessToken) throws Exception {
-		return shUserService.get(accessToken);
+		return shUserRepository.findById(accessToken);
 	}
 
 	@Path("/{userId}")
@@ -48,14 +52,14 @@ public class ShUserAPI {
 		if (jsonResponse != null) {
 			System.out.println("O atributo: " + jsonResponse.toString());
 		}
-		return shUserService.get(id);
+		return shUserRepository.findById(id);
 	}
 
 	@Path("/{userId}")
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	public ShUser update(@PathParam("postId") int id, ShUser shUser) throws Exception {
-		ShUser shUserEdit = shUserService.get(id);
+		ShUser shUserEdit = shUserRepository.findById(id);
 		shUserEdit.setConfirmEmail(shUser.getConfirmEmail());
 		shUserEdit.setEmail(shUser.getEmail());
 		shUserEdit.setFirstName(shUser.getFirstName());
@@ -67,7 +71,7 @@ public class ShUserAPI {
 		shUserEdit.setRealm(shUser.getRealm());
 		shUserEdit.setRecoverPassword(shUser.getRecoverPassword());
 		shUserEdit.setUsername(shUser.getUsername());
-		shUserService.save(shUserEdit);
+		shUserRepository.save(shUserEdit);
 		return shUserEdit;
 	}
 
@@ -75,15 +79,15 @@ public class ShUserAPI {
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
 	public boolean delete(@PathParam("userId") int id) throws Exception {
-		return shUserService.delete(id);
+		shUserRepository.delete(id);
+		return true;
 	}
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response add(ShUser shUser) throws Exception {
-		shUserService.save(shUser);
-		String result = "Post saved: " + shUser;
-		return Response.status(200).entity(result).build();
+	public ShUser add(ShUser shUser) throws Exception {
+		shUserRepository.save(shUser);
+		return shUser;
 
 	}
 

@@ -1,11 +1,10 @@
 package com.viglet.shiohara.persistence.model;
 
 import java.io.Serializable;
-import java.security.MessageDigest;
 
 import javax.persistence.*;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import com.viglet.shiohara.utils.MD5Util;
 

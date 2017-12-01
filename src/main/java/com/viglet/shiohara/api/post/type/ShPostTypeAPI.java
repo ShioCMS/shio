@@ -14,37 +14,43 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.viglet.shiohara.persistence.model.ShPost;
 import com.viglet.shiohara.persistence.model.ShPostAttr;
 import com.viglet.shiohara.persistence.model.ShPostType;
 import com.viglet.shiohara.persistence.model.ShPostTypeAttr;
-import com.viglet.shiohara.persistence.service.ShPostTypeAttrService;
-import com.viglet.shiohara.persistence.service.ShPostTypeService;
+import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
+import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 
+@Component
 @Path("/post/type")
 public class ShPostTypeAPI {
-	ShPostTypeService shPostTypeService = new ShPostTypeService();
-	ShPostTypeAttrService shPostTypeAttrService = new ShPostTypeAttrService();
-	
+	@Autowired
+	ShPostTypeRepository shPostTypeRepository;
+	@Autowired
+	ShPostTypeAttrRepository shPostTypeAttrRepository;
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<ShPostType> list() throws Exception {
-		return shPostTypeService.listAll();
+		return shPostTypeRepository.findAll();
 	}
 
 	@Path("/{postTypeId}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public ShPostType edit(@PathParam("postTypeId") int id) throws Exception {
-		return shPostTypeService.get(id);
+		return shPostTypeRepository.findById(id);
 	}
-	
+
 	@Path("/{postTypeId}/post/model")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public ShPost postStructure(@PathParam("postTypeId") int id) throws Exception {
 		ShPost shPost = new ShPost();
-		shPost.setShPostType(shPostTypeService.get(id));
+		shPost.setShPostType(shPostTypeRepository.findById(id));
 		List<ShPostAttr> shPostAttrs = new ArrayList<ShPostAttr>();
 		for (ShPostTypeAttr shPostTypeAttr : shPost.getShPostType().getShPostTypeAttrs()) {
 			ShPostAttr shPostAttr = new ShPostAttr();
@@ -55,23 +61,23 @@ public class ShPostTypeAPI {
 		}
 		shPost.setShPostAttrs(shPostAttrs);
 		return shPost;
-		
+
 	}
 
 	@Path("/{postTypeId}")
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	public ShPostType update(@PathParam("postTypeId") int id, ShPostType shPostType) throws Exception {
-		ShPostType shPostTypeEdit = shPostTypeService.get(id);
+		ShPostType shPostTypeEdit = shPostTypeRepository.findById(id);
 		shPostTypeEdit.setDate(shPostType.getDate());
 		shPostTypeEdit.setTitle(shPostType.getTitle());
 		shPostTypeEdit.setDescription(shPostType.getDescription());
 		shPostTypeEdit.setName(shPostType.getName());
-		
+
 		for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs()) {
-			shPostTypeAttrService.save(shPostTypeAttr);
+			shPostTypeAttrRepository.save(shPostTypeAttr);
 		}
-		shPostTypeService.save(shPostTypeEdit);
+		shPostTypeRepository.save(shPostTypeEdit);
 		return shPostTypeEdit;
 	}
 
@@ -79,13 +85,14 @@ public class ShPostTypeAPI {
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
 	public boolean delete(@PathParam("postTypeId") int id) throws Exception {
-		return shPostTypeService.delete(id);
+		shPostTypeRepository.delete(id);
+		return true;
 	}
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response add(ShPostType shPostType) throws Exception {
-		shPostTypeService.save(shPostType);
+		shPostTypeRepository.save(shPostType);
 		String result = "PostType saved : " + shPostType;
 		return Response.status(200).entity(result).build();
 
@@ -94,16 +101,14 @@ public class ShPostTypeAPI {
 	@POST
 	@Path("/{postTypeId}/attr")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response add(@PathParam("postTypeId") int id, ShPostTypeAttr shPostTypeAttr) throws Exception {
-		ShPostType shPostType = shPostTypeService.get(id);
+	public ShPostTypeAttr add(@PathParam("postTypeId") int id, ShPostTypeAttr shPostTypeAttr) throws Exception {
+		ShPostType shPostType = shPostTypeRepository.findById(id);
 		if (shPostType != null) {
-			
 			shPostTypeAttr.setShPostType(shPostType);
-			shPostTypeAttrService.save(shPostTypeAttr);
-			String result = "Post Attrib saved: " + shPostTypeAttr;
-			return Response.status(200).entity(result).build();
+			shPostTypeAttrRepository.save(shPostTypeAttr);
+			return shPostTypeAttr;
 		} else {
-			return Response.status(500).entity("invalid Post Type Id").build();
+			return null;
 		}
 
 	}

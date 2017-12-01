@@ -1,0 +1,146 @@
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container-fluid">
+		<!-- Brand and toggle get grouped for better mobile display -->
+		<div class="navbar-header">
+			<a class="navbar-brand" href="/">Shiohara</a>
+		</div>
+
+		<!-- Collect the nav links, forms, and other content for toggling -->
+		<div class="collapse navbar-collapse"
+			id="bs-example-navbar-collapse-1">
+			<div class="row">
+				<div class="col-md-6">
+					<form class="navbar-form navbar-left" role="search">
+						<div class="input-group">
+							<input type="text" class="states form-control"
+								style="width: 540px"
+								placeholder="Search for people, posts and things"> <span
+								class="input-group-btn"><button type="submit"
+									style="top: -2px;" class="btn btn-default">
+									<span class="glyphicon glyphicon-search"></span>
+								</button></span>
+						</div>
+					</form>
+				</div>
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="http://other.prj.viglet.co">Come back to
+							Intro Site</a></li>
+					<li><a href="#"><i class="fa fa-user fa-lg"></i> <span
+							class="badge">+1</span></a></li>
+					<li><a href="#" class="disabled"><i
+							class="fa fa-globe fa-lg"></i></a></li>
+					<li><a href="/">{{shUser.firstName}}</a></li>
+					<li><a ui-sref="content">Content</a></li>
+
+					<li class="dropdown"><a href="#" class="dropdown-toggle"
+						data-toggle="dropdown"><span class="glyphicon glyphicon-cog"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="/profile">Profile</a></li>
+							<li class="divider"></li>
+							<li><a href="/signout">Sign out</a></li>
+						</ul></li>
+					<li>&nbsp;&nbsp;&nbsp;</li>
+				</ul>
+			</div>
+		</div>
+		<!-- /.navbar-collapse -->
+	</div>
+	<!-- /.container-fluid -->
+</nav>
+<div style="height: 60px"></div>
+<div ui-view>
+	<div class="settings">
+		<section class="content no-padding" style="height: 170px;">
+
+			<header class="user-profile-header">
+				<img id="user-cover" class="cover-image" src="/img/user-cover.png"
+					title="Alexandre Oliveira's Cover Image">
+
+				<!--  <a class="edit-cover-image js-modal-cover button" href="#">Change Cover</a> -->
+			</header>
+
+			<form class="user-profile" novalidate="novalidate">
+
+				<fieldset class="user-details-top">
+
+					<figure class="user-image">
+						<div id="user-image" class="img"
+						ng-style="{'background-image':'url(' + shUser.gravatar +')'}"
+							href="#">							
+						</div>
+						<!--   <a href="#" class="edit-user-image js-modal-image">Edit Picture</a> -->
+					</figure>
+
+					<div class="form-group">
+						<h3>
+							{{shUser.firstName}}, <small>your content</small>
+						</h3>
+					</div>
+					<div class="pull-right" style="margin: -40px 0 0;">
+						<div class="input-group">
+							0-{{(posts|filter:query).length}} of
+							{{(posts|filter:query).length}} posts&nbsp;&nbsp;
+							<button type="button" class="btn btn-default">
+								<i class="fa fa-angle-left"></i>
+							</button>
+							<button type="button" class="btn btn-default">
+								<i class="fa fa-angle-right"></i>
+							</button>
+						</div>
+
+					</div>
+				</fieldset>
+			</form>
+		</section>
+	</div>
+
+	<div>
+		<div class="row">
+			<div class="col-md-2">
+				<div class="btn-group">
+					<a href="/post/editor/04A8B013D5ECED5EF8F93A29FB53DF43/"
+						class="btn btn-danger">New CTD01 </a> <a class="btn btn-danger"
+						ui-sref="content.post-type-select"><span class="glyphicon glyphicon-th"></span></a>
+				</div>
+				<ul class="nav nav-pills nav-stacked">
+					<li><a href="#">Home</a></li>
+					<li><a href="#">Starred <i
+							class="glyphicon glyphicon-star"></i></a></li>
+					<li><a href="#">All Posts</a></li>
+					<li><a href="#">Trash <i class="glyphicon glyphicon-trash"></i></a></li>
+				</ul>
+				<ul class="nav nav-pills nav-stacked">
+					<li class="nav-header">Tag</li>
+					<li ng-repeat="label in labels | filter:query | orderBy:orderProp">
+						<a href="#"> {{label.title}} </a>
+					</li>
+				</ul>
+			</div>
+			<div class="col-md-10">
+				<ul class="nav nav-tabs" ng-controller="VecSiteListCtrl">
+					<li class="active"><a href="#"><i class="fa fa-user fa-lg"></i>
+							Only Me</a></li>
+					<li><a href="#"><i class="fa fa-users fa-lg"></i> Team</a></li>
+					<li ng-repeat="shSite in shSites | filter:query | orderBy:orderProp">
+						<a href="#"><i class="fa fa-tags fa-lg"></i> {{shSite.name}} </a>
+					</li>
+					<li><a href="/site/editor/"><i class="fa fa-plus fa-lg"></i></a></li>
+				</ul>
+
+
+				<table class="table table-hover">
+					<tr ng-repeat="shPost in shPosts">
+						<td><input type="checkbox" /></td>
+						<td><i class="icon-star-empty"></i></td>
+						<td><a ui-sref="content.post-type-item.post-item({postTypeId: shPost.shPostType.id, postId: shPost.id})">
+								{{shPost.title}}</a></td>
+						<td><span class="label label-info">
+								{{shPost.shPostType.name}}</span></td>
+						<td>{{shPost.summary}}</td>
+						<td><span am-time-ago="shPost.date"></span></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

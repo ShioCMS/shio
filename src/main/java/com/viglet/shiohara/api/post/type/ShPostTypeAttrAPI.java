@@ -11,33 +11,37 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.persistence.model.ShPostTypeAttr;
-import com.viglet.shiohara.persistence.service.ShPostTypeAttrService;
+import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
 
+@Component
 @Path("/post/type/attr")
 public class ShPostTypeAttrAPI {
-	ShPostTypeAttrService shPostTypeAttrService = new ShPostTypeAttrService();
+	@Autowired
+	ShPostTypeAttrRepository shPostTypeAttrRepository;
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<ShPostTypeAttr> list() throws Exception {
-		return shPostTypeAttrService.listAll();
+		return shPostTypeAttrRepository.findAll();
 	}
 
 	@Path("/{postTypeAttrId}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public ShPostTypeAttr edit(@PathParam("postTypeAttrId") int id) throws Exception {
-		return shPostTypeAttrService.get(id);
+		return shPostTypeAttrRepository.findById(id);
 	}
 
 	@Path("/{postTypeAttrId}")
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	public ShPostTypeAttr update(@PathParam("postTypeAttrId") int id, ShPostTypeAttr shPostTypeAttr) throws Exception {
-		ShPostTypeAttr shPostTypeAttrEdit = shPostTypeAttrService.get(id);
+		ShPostTypeAttr shPostTypeAttrEdit = shPostTypeAttrRepository.findById(id);
 		shPostTypeAttrEdit.setIsSummary(shPostTypeAttr.getIsSummary());
 		shPostTypeAttrEdit.setIsTitle(shPostTypeAttr.getIsTitle());
 		shPostTypeAttrEdit.setLabel(shPostTypeAttr.getLabel());
@@ -46,8 +50,8 @@ public class ShPostTypeAttrAPI {
 		shPostTypeAttrEdit.setOrdinal(shPostTypeAttr.getOrdinal());
 		shPostTypeAttrEdit.setRequired(shPostTypeAttr.getRequired());
 		shPostTypeAttrEdit.setDescription(shPostTypeAttr.getDescription());
-		shPostTypeAttrEdit.setShWidget(shPostTypeAttr.getShWidget());;
-		shPostTypeAttrService.save(shPostTypeAttrEdit);
+		shPostTypeAttrEdit.setShWidget(shPostTypeAttr.getShWidget());
+		shPostTypeAttrRepository.save(shPostTypeAttrEdit);
 		return shPostTypeAttrEdit;
 	}
 
@@ -55,16 +59,16 @@ public class ShPostTypeAttrAPI {
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
 	public boolean delete(@PathParam("postTypeAttrId") int id) throws Exception {
-		return shPostTypeAttrService.delete(id);
+		shPostTypeAttrRepository.delete(id);
+		return true;
 	}
 
 	@Deprecated
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response add(ShPostTypeAttr shPostTypeAttr) throws Exception {
-		shPostTypeAttrService.save(shPostTypeAttr);
-		String result = "Post Attrib saved: " + shPostTypeAttr;
-		return Response.status(200).entity(result).build();
+	public ShPostTypeAttr post(ShPostTypeAttr shPostTypeAttr) throws Exception {
+		shPostTypeAttrRepository.save(shPostTypeAttr);
+		return shPostTypeAttr;
 
 	}
 

@@ -3,7 +3,7 @@ package com.viglet.shiohara.persistence.model;
 import java.io.Serializable;
 import javax.persistence.*;
 
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.Date;
 import java.util.List;

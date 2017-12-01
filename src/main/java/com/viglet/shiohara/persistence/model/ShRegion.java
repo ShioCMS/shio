@@ -3,9 +3,6 @@ package com.viglet.shiohara.persistence.model;
 import java.io.Serializable;
 import javax.persistence.*;
 
-import org.apache.openjpa.persistence.jdbc.ForeignKey;
-
-
 /**
  * The persistent class for the ShRegion database table.
  * 
@@ -24,13 +21,11 @@ public class ShRegion implements Serializable {
 	//bi-directional many-to-one association to ShPost
 	@ManyToOne
 	@JoinColumn(name="post_id")
-	@ForeignKey
 	private ShPost shPost;
 
 	//bi-directional many-to-one association to ShPostType
 	@ManyToOne
 	@JoinColumn(name="post_type_id")
-	@ForeignKey
 	private ShPostType shPostType;
 
 	public ShRegion() {

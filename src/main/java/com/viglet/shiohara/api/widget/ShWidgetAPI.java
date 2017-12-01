@@ -13,37 +13,43 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.viglet.shiohara.persistence.model.ShWidget;
-import com.viglet.shiohara.persistence.service.ShWidgetService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import com.viglet.shiohara.persistence.model.ShWidget;
+import com.viglet.shiohara.persistence.repository.widget.ShWidgetRepository;
+
+@Component
 @Path("/widget")
 public class ShWidgetAPI {
-	ShWidgetService shWidgetService = new ShWidgetService();
+	
+	@Autowired
+	ShWidgetRepository shWidgetRepository;
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<ShWidget> list() throws Exception {
-		return shWidgetService.listAll();
+		return shWidgetRepository.findAll();
 	}
 
 	@Path("/{widgetId}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public ShWidget edit(@PathParam("widgetId") int id) throws Exception {
-		return shWidgetService.get(id);
+		return shWidgetRepository.findById(id);
 	}
 
 	@Path("/{widgetId}")
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	public ShWidget update(@PathParam("widgetId") int id, ShWidget shWidget) throws Exception {
-		ShWidget shWidgetEdit = shWidgetService.get(id);
+		ShWidget shWidgetEdit = shWidgetRepository.findById(id);
 		shWidgetEdit.setName(shWidget.getName());
 		shWidgetEdit.setType(shWidget.getType());
 		shWidgetEdit.setClassName(shWidget.getClassName());
 		shWidgetEdit.setDescription(shWidget.getDescription());
 		shWidgetEdit.setImplementationCode(shWidget.getImplementationCode());
-		shWidgetService.save(shWidgetEdit);
+		shWidgetRepository.save(shWidgetEdit);
 		return shWidgetEdit;
 	}
 
@@ -51,15 +57,15 @@ public class ShWidgetAPI {
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
 	public boolean delete(@PathParam("widgetId") int id) throws Exception {
-		return shWidgetService.delete(id);
+		shWidgetRepository.delete(id);
+		return true;
 	}
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response add(ShWidget shWidget) throws Exception {
-		shWidgetService.save(shWidget);
-		String result = "Widget saved: " + shWidget;
-		return Response.status(200).entity(result).build();
+	public ShWidget add(ShWidget shWidget) throws Exception {
+		shWidgetRepository.save(shWidget);
+		return shWidget;
 
 	}
 

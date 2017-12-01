@@ -11,35 +11,40 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.persistence.model.ShSite;
-import com.viglet.shiohara.persistence.service.ShSiteService;
+import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
 
+@Component
 @Path("/site")
 public class ShSiteAPI {
-	ShSiteService shSiteService = new ShSiteService();
+	
+	@Autowired
+	ShSiteRepository shSiteRepository;
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<ShSite> list() throws Exception {
-		return shSiteService.listAll();
+		return shSiteRepository.findAll();
 	}
 
 	@Path("/{siteId}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public ShSite edit(@PathParam("siteId") int id) throws Exception {
-		return shSiteService.get(id);
+		return shSiteRepository.findById(id);
 	}
 
 	@Path("/{siteId}")
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	public ShSite update(@PathParam("siteId") int id, ShSite shSite) throws Exception {
-		ShSite shSiteEdit = shSiteService.get(id);
+		ShSite shSiteEdit = shSiteRepository.findById(id);
 		shSiteEdit.setName(shSite.getName());
-		shSiteService.save(shSiteEdit);
+		shSiteRepository.save(shSiteEdit);
 		return shSiteEdit;
 	}
 
@@ -47,15 +52,15 @@ public class ShSiteAPI {
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
 	public boolean delete(@PathParam("siteId") int id) throws Exception {
-		return shSiteService.delete(id);
+		shSiteRepository.delete(id);
+		return true;
 	}
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response add(ShSite shSite) throws Exception {
-		shSiteService.save(shSite);
-		String result = "Site saved: " + shSite;
-		return Response.status(200).entity(result).build();
+	public ShSite add(ShSite shSite) throws Exception {
+		shSiteRepository.save(shSite);
+		return shSite;
 
 	}
 
