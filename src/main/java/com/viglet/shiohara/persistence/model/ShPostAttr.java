@@ -3,8 +3,7 @@ package com.viglet.shiohara.persistence.model;
 import java.io.Serializable;
 import javax.persistence.*;
 
-import org.apache.openjpa.persistence.jdbc.ForeignKey;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.Date;
 
@@ -38,19 +37,16 @@ public class ShPostAttr implements Serializable {
 	// bi-directional many-to-one association to ShPost
 	@ManyToOne
 	@JoinColumn(name = "post_id")
-	@ForeignKey
 	private ShPost shPost;
 
 	// bi-directional many-to-one association to ShPostType
 	@ManyToOne
 	@JoinColumn(name = "post_type_id")
-	@ForeignKey
 	private ShPostType shPostType;
 
 	// bi-directional many-to-one association to ShPostTypeAttr
 	@ManyToOne
 	@JoinColumn(name = "post_type_attr_id")
-	@ForeignKey
 	private ShPostTypeAttr shPostTypeAttr;
 
 	@Transient

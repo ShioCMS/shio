@@ -11,37 +11,42 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.persistence.model.ShRegion;
-import com.viglet.shiohara.persistence.service.ShRegionService;
+import com.viglet.shiohara.persistence.repository.region.ShRegionRepository;
 
+@Component
 @Path("/region")
 public class ShRegionAPI {
-	ShRegionService shRegionService = new ShRegionService();
+	
+	@Autowired
+	ShRegionRepository shRegionRepository;
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<ShRegion> list() throws Exception {
-		return shRegionService.listAll();
+		return shRegionRepository.findAll();
 	}
 
 	@Path("/{regionId}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public ShRegion edit(@PathParam("regionId") int id) throws Exception {
-		return shRegionService.get(id);
+		return shRegionRepository.findById(id);
 	}
 
 	@Path("/{regionId}")
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	public ShRegion update(@PathParam("regionId") int id, ShRegion shRegion) throws Exception {
-		ShRegion shRegionEdit = shRegionService.get(id);
+		ShRegion shRegionEdit = shRegionRepository.findById(id);
 		shRegionEdit.setName(shRegion.getName());
 		shRegionEdit.setShPost(shRegion.getShPost());
 		shRegionEdit.setShpostType(shRegion.getShPostType());		
-		shRegionService.save(shRegionEdit);
+		shRegionRepository.save(shRegionEdit);
 		return shRegionEdit;
 	}
 
@@ -49,15 +54,15 @@ public class ShRegionAPI {
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
 	public boolean delete(@PathParam("regionId") int id) throws Exception {
-		return shRegionService.delete(id);
+		shRegionRepository.delete(id);
+		return true;
 	}
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response add(ShRegion shRegion) throws Exception {
-		shRegionService.save(shRegion);
-		String result = "Region saved: " + shRegion;
-		return Response.status(200).entity(result).build();
+	public ShRegion add(ShRegion shRegion) throws Exception {
+		shRegionRepository.save(shRegion);
+		return shRegion;
 
 	}
 

@@ -1,0 +1,7 @@
+[INFO ] 2017-11-30 20:38:52.146 [restartedMain] ENGINE - Checkpoint start
+[INFO ] 2017-11-30 20:38:52.149 [restartedMain] ENGINE - checkpointClose start
+[INFO ] 2017-11-30 20:38:52.149 [restartedMain] ENGINE - checkpointClose synched
+[INFO ] 2017-11-30 20:38:52.152 [restartedMain] ENGINE - checkpointClose script done
+[INFO ] 2017-11-30 20:38:52.155 [restartedMain] ENGINE - checkpointClose end
+[INFO ] 2017-11-30 20:38:52.155 [restartedMain] ENGINE - Checkpoint end - txts: 1
+[INFO ] 2017-11-30 20:44:04.766 [restartedMain] ENGINE - Database closed
