@@ -20,6 +20,13 @@
 		"moment": "*",
 		"angular": "*",
 		"angular-ui-router": "*",
+		"angular-translate": "*",
+		"angular-resource": "*",
+		"angular-animate": "*",
+		"angular-sanitize": "*",
+		"angular-bootstrap": "*",
+		"angular-cookies": "*",
+		"angular-moment": "*",
 		"font-awesome": "*"
 	}
 }
