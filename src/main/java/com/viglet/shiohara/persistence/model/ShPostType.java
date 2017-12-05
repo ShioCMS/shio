@@ -3,6 +3,8 @@ package com.viglet.shiohara.persistence.model;
 import java.io.Serializable;
 import javax.persistence.*;
 
+import org.hibernate.annotations.Fetch;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.Date;
@@ -37,15 +39,18 @@ public class ShPostType implements Serializable {
 	private List<ShPost> shPosts;
 
 	//bi-directional many-to-one association to ShPostAttr
-	@OneToMany(mappedBy="shPostType")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "shPostType", cascade = CascadeType.ALL)
+	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
 	private List<ShPostAttr> shPostAttrs;
 
 	//bi-directional many-to-one association to ShPostTypeAttr
-	@OneToMany(mappedBy="shPostType")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "shPostType", cascade = CascadeType.ALL)
+	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
 	private List<ShPostTypeAttr> shPostTypeAttrs;
 
 	//bi-directional many-to-one association to ShRegion
-	@OneToMany(mappedBy="shPostType")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "shPostType", cascade = CascadeType.ALL)
+	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
 	private List<ShRegion> shRegions;
 
 	public ShPostType() {

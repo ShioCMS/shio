@@ -5,20 +5,19 @@ shioharaApp.controller('ShContentCtrl', [
 		"$state",
 		"$rootScope",
 		"Token",
-		function($scope, $http, $window, $state, $rootScope, Token) {
+		"shUserResource",
+		"shPostResource",
+		function($scope, $http, $window, $state, $rootScope, Token, shUserResource, shPostResource) {
 			$scope.accessToken = Token.get();
 			$scope.shUser = null;
 			$scope.shPosts = null;
 			$rootScope.$state = $state;
-			$scope.$evalAsync($http.get(
-					jp_domain + "/api/user/2?access_token="
-							+ $scope.accessToken).then(function(response) {
-				$scope.shUser = response.data;
-			}));
-			$scope.$evalAsync($http.get(jp_domain + "/api/post").then(
-					function(response) {
-						$scope.shPosts = response.data;
-					}));
+			$scope.shUser = shUserResource.get({
+				id : 2,
+				access_token: $scope.accessToken
+			});
+			
+			$scope.shPosts = shPostResource.query();
 		} ]);
 shioharaApp.controller('ShPostFormCtrl', [ "$scope", "$http", "$window",
 		"$stateParams", "$state", "$rootScope",
@@ -34,42 +33,34 @@ shioharaApp.controller('ShPostTypeAttrCtrl', [
 		"$stateParams",
 		"$state",
 		"$rootScope",
-		function($scope, $http, $window, $stateParams, $state, $rootScope) {
+		"shPostTypeAttrResource",
+		function($scope, $http, $window, $stateParams, $state, $rootScope,
+				shPostTypeAttrResource) {
 			$scope.postTypeAttrId = $stateParams.postTypeAttrId;
-			$scope.shPostTypeAttr = null;
+			$scope.shPostTypeAttr = shPostTypeAttrResource.get({
+				id : $scope.postTypeAttrId
+			});
 			$rootScope.$state = $state;
-			$scope.$evalAsync($http.get(
-					jp_domain + "/api/post/type/attr/" + $scope.postTypeAttrId)
-					.then(function(response) {
-						$scope.shPostTypeAttr = response.data;
-					}));
 			$scope.postTypeAttrSave = function() {
-				var parameter = angular.toJson($scope.shPostTypeAttr);
-				$http.put(
-						jp_domain + "/api/post/type/attr/"
-								+ $scope.postTypeAttrId, parameter).then(
-						function(data, status, headers, config) {
-							$state.go('content.post-type-item');
-						}, function(data, status, headers, config) {
-							$state.go('content.post-type-item');
-						});
+				$scope.shshPostTypeAttrPost.$update(function() {
+					$state.go('content.post-type-item');
+				});
 			}
 
 		} ]);
-shioharaApp.controller('ShPostTypeSelectCtrl', [
-		"$scope",
-		"$http",
-		"$window",
-		"$state",
-		"$rootScope",
-		function($scope, $http, $window, $state, $rootScope) {
-			$scope.shPostTypes = null;
-			$rootScope.$state = $state;
-			$scope.$evalAsync($http.get(jp_domain + "/api/post/type").then(
-					function(response) {
-						$scope.shPostTypes = response.data;
-					}));
-		} ]);
+shioharaApp.controller('ShPostTypeSelectCtrl',
+		[
+				"$scope",
+				"$http",
+				"$window",
+				"$state",
+				"$rootScope",
+				"shPostTypeResource",
+				function($scope, $http, $window, $state, $rootScope,
+						shPostTypeResource) {
+					$rootScope.$state = $state;
+					$scope.shPostTypes = shPostTypeResource.query();
+				} ]);
 shioharaApp
 		.controller(
 				'ShPostTypeItemCtrl',
@@ -80,55 +71,52 @@ shioharaApp
 						"$stateParams",
 						"$state",
 						"$rootScope",
+						"shWidgetResource",
+						"shPostTypeResource",
 						function($scope, $http, $window, $stateParams, $state,
-								$rootScope) {
+								$rootScope, shWidgetResource, shPostTypeResource) {
 							$scope.postTypeId = $stateParams.postTypeId;
 							$scope.shPostType = null;
-							$scope.shWidgets = null;
+							$scope.shWidgets = shWidgetResource.query();
 							$rootScope.$state = $state;
-							$scope
-									.$evalAsync($http
-											.get(
-													jp_domain
-															+ "/api/post/type/"
-															+ $scope.postTypeId)
-											.then(
-													function(response) {
-														$scope.shPostType = response.data;
-														$scope.shPostNewItem = angular
-																.copy($scope.shPostType);
-														for (var i = 0; i < $scope.shPostNewItem.shPostTypeAttrs.length; i++) {
-															$scope.shPostNewItem.shPostTypeAttrs[i]['value'] = 'Novo Valor'
-																	+ i;
-														}
+							$scope.shPostType = shPostTypeResource
+									.get(
+											{
+												id : $scope.postTypeId
+											},
+											function(response) {
+												$scope.shPostNewItem = angular
+														.copy($scope.shPostType);
+												for (var i = 0; i < $scope.shPostNewItem.shPostTypeAttrs.length; i++) {
+													$scope.shPostNewItem.shPostTypeAttrs[i]['value'] = 'Novo Valor'
+															+ i;
+												}
+											});
 
-													}));
-							$scope.$evalAsync($http.get(
-									jp_domain + "/api/widget").then(
-									function(response) {
-										$scope.shWidgets = response.data;
-									}));
 							$scope.postTypeSave = function() {
-								var parameter = angular
-										.toJson($scope.shPostType);
-								$http
-										.put(
-												jp_domain + "/api/post/type/"
-														+ $scope.postTypeId,
-												parameter)
-										.then(
-												function(data, status, headers,
-														config) {
-													$state
-															.go('content.post-type-item');
-												},
-												function(data, status, headers,
-														config) {
-													$state
-															.go('content.post-type-item');
-												});
+								$scope.shPostType.$update(function() {
+									$state.go('content.post-type-item');
+								});
 							}
 						} ]);
+shioharaApp.factory('shPostTypeAttrResource', [ '$resource', 'shAPIServerService', function($resource, shAPIServerService) {
+	return $resource(shAPIServerService.get().concat('/post/type/attr/:id'), {
+		id : '@id'
+	}, {
+		update : {
+			method : 'PUT'
+		}
+	});
+} ]);
+shioharaApp.factory('shPostTypeResource', [ '$resource', 'shAPIServerService', function($resource, shAPIServerService) {
+	return $resource(shAPIServerService.get().concat('/post/type/:id'), {
+		id : '@id'
+	}, {
+		update : {
+			method : 'PUT'
+		}
+	});
+} ]);
 shioharaApp.controller('ShPostNewCtrl', [
 		"$scope",
 		"$http",
@@ -136,26 +124,31 @@ shioharaApp.controller('ShPostNewCtrl', [
 		"$stateParams",
 		"$state",
 		"$rootScope",
-		function($scope, $http, $window, $stateParams, $state, $rootScope) {
+		"shAPIServerService",
+		function($scope, $http, $window, $stateParams, $state, $rootScope, shAPIServerService) {
 			$scope.postTypeId = $stateParams.postTypeId;
 			$scope.shPost = null;
 			$scope.$evalAsync($http.get(
-					jp_domain + "/api/post/type/" + $scope.postTypeId
+					shAPIServerService.get().concat("/api/post/type/" + $scope.postTypeId
 							+ "/post/model").then(function(response) {
 				$scope.shPost = response.data;
-			}));
+			})));
 			$scope.postEditForm = "template/post/form.html";
 			$scope.postSave = function() {
-				var parameter = angular.toJson($scope.shPost);
-				$http.post(jp_domain + "/api/post/" + $scope.postTypeId,
-						parameter).then(
-						function(data, status, headers, config) {
-							$state.go('content');
-						}, function(data, status, headers, config) {
-							$state.go('content');
-						});
+				$scope.shPost.$update(function() {
+					$state.go('content');
+				});
 			}
 		} ]);
+shioharaApp.factory('shPostResource', [ '$resource', 'shAPIServerService', function($resource, shAPIServerService) {
+	return $resource(shAPIServerService.get().concat('/post/:id'), {
+		id : '@id'
+	}, {
+		update : {
+			method : 'PUT'
+		}
+	});
+} ]);
 shioharaApp.controller('ShPostEditCtrl', [
 		"$scope",
 		"$http",
@@ -163,25 +156,32 @@ shioharaApp.controller('ShPostEditCtrl', [
 		"$stateParams",
 		"$state",
 		"$rootScope",
-		function($scope, $http, $window, $stateParams, $state, $rootScope) {
+		"shPostResource",
+		function($scope, $http, $window, $stateParams, $state, $rootScope,
+				shPostResource) {
 			$scope.postId = $stateParams.postId;
-			$scope.shPost = null;
-			$scope.$evalAsync($http.get(
-					jp_domain + "/api/post/" + $scope.postId).then(
-					function(response) {
-						$scope.shPost = response.data;
-					}));
+
+			$scope.shPost = shPostResource.get({
+				id : $scope.postId
+			});
+
 			$scope.postEditForm = "template/post/form.html";
+			
 			$scope.postSave = function() {
-				var parameter = angular.toJson($scope.shPost);
-				$http.put(jp_domain + "/api/post/" + $scope.postId, parameter)
-						.then(function(data, status, headers, config) {
-							$state.go('content');
-						}, function(data, status, headers, config) {
-							$state.go('content');
-						});
+				$scope.shPost.$update(function() {
+					$state.go('content');
+				});
 			}
 		} ]);
+shioharaApp.factory('shWidgetResource', [ '$resource', 'shAPIServerService', function($resource, shAPIServerService) {
+	return $resource(shAPIServerService.get().concat('/widget/:id'), {
+		id : '@id'
+	}, {
+		update : {
+			method : 'PUT'
+		}
+	});
+} ]);
 shioharaApp.controller('ShOAuth2Ctrl', [ "$scope", "$http", "$window",
 		"$state", "$rootScope", "Token",
 		function($scope, $http, $window, $state, $rootScope, Token) {
@@ -213,17 +213,32 @@ shioharaApp.controller('ShOAuth2Ctrl', [ "$scope", "$http", "$window",
 				});
 			};
 		} ]);
+shioharaApp.factory('shUserResource', [ '$resource', 'shAPIServerService', function($resource, shAPIServerService) {
+	return $resource(shAPIServerService.get().concat('/user/:id'), {
+		id : '@id'
+	}, {
+		update : {
+			method : 'PUT'
+		}
+	});
+} ]);
 shioharaApp.controller('ShSiteListCtrl', [
 		"$scope",
 		"$http",
 		"$window",
 		"$state",
 		"$rootScope",
-		function($scope, $http, $window, $state, $rootScope) {
-			$scope.shSites = null;
+		"shSiteResource",
+		function($scope, $http, $window, $state, $rootScope, shSiteResource) {
 			$rootScope.$state = $state;
-			$scope.$evalAsync($http.get(jp_domain + "/api/site").then(
-					function(response) {
-						$scope.shSites = response.data;
-					}));
+			$scope.shSites = shSiteResource.query();
 		} ]);
+shioharaApp.factory('shSiteResource', [ '$resource', 'shAPIServerService', function($resource, shAPIServerService) {
+	return $resource(shAPIServerService.get().concat('/site/:id'), {
+		id : '@id'
+	}, {
+		update : {
+			method : 'PUT'
+		}
+	});
+} ]);

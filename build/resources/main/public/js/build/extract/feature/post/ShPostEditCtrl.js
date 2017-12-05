@@ -5,22 +5,20 @@ shioharaApp.controller('ShPostEditCtrl', [
 		"$stateParams",
 		"$state",
 		"$rootScope",
-		function($scope, $http, $window, $stateParams, $state, $rootScope) {
+		"shPostResource",
+		function($scope, $http, $window, $stateParams, $state, $rootScope,
+				shPostResource) {
 			$scope.postId = $stateParams.postId;
-			$scope.shPost = null;
-			$scope.$evalAsync($http.get(
-					jp_domain + "/api/post/" + $scope.postId).then(
-					function(response) {
-						$scope.shPost = response.data;
-					}));
+
+			$scope.shPost = shPostResource.get({
+				id : $scope.postId
+			});
+
 			$scope.postEditForm = "template/post/form.html";
+			
 			$scope.postSave = function() {
-				var parameter = angular.toJson($scope.shPost);
-				$http.put(jp_domain + "/api/post/" + $scope.postId, parameter)
-						.then(function(data, status, headers, config) {
-							$state.go('content');
-						}, function(data, status, headers, config) {
-							$state.go('content');
-						});
+				$scope.shPost.$update(function() {
+					$state.go('content');
+				});
 			}
 		} ]);

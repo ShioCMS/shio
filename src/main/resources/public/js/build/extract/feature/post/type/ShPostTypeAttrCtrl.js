@@ -5,25 +5,18 @@ shioharaApp.controller('ShPostTypeAttrCtrl', [
 		"$stateParams",
 		"$state",
 		"$rootScope",
-		function($scope, $http, $window, $stateParams, $state, $rootScope) {
+		"shPostTypeAttrResource",
+		function($scope, $http, $window, $stateParams, $state, $rootScope,
+				shPostTypeAttrResource) {
 			$scope.postTypeAttrId = $stateParams.postTypeAttrId;
-			$scope.shPostTypeAttr = null;
+			$scope.shPostTypeAttr = shPostTypeAttrResource.get({
+				id : $scope.postTypeAttrId
+			});
 			$rootScope.$state = $state;
-			$scope.$evalAsync($http.get(
-					jp_domain + "/api/post/type/attr/" + $scope.postTypeAttrId)
-					.then(function(response) {
-						$scope.shPostTypeAttr = response.data;
-					}));
 			$scope.postTypeAttrSave = function() {
-				var parameter = angular.toJson($scope.shPostTypeAttr);
-				$http.put(
-						jp_domain + "/api/post/type/attr/"
-								+ $scope.postTypeAttrId, parameter).then(
-						function(data, status, headers, config) {
-							$state.go('content.post-type-item');
-						}, function(data, status, headers, config) {
-							$state.go('content.post-type-item');
-						});
+				$scope.shshPostTypeAttrPost.$update(function() {
+					$state.go('content.post-type-item');
+				});
 			}
 
 		} ]);

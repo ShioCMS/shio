@@ -4,11 +4,8 @@ shioharaApp.controller('ShSiteListCtrl', [
 		"$window",
 		"$state",
 		"$rootScope",
-		function($scope, $http, $window, $state, $rootScope) {
-			$scope.shSites = null;
+		"shSiteResource",
+		function($scope, $http, $window, $state, $rootScope, shSiteResource) {
 			$rootScope.$state = $state;
-			$scope.$evalAsync($http.get(jp_domain + "/api/site").then(
-					function(response) {
-						$scope.shSites = response.data;
-					}));
+			$scope.shSites = shSiteResource.query();
 		} ]);
