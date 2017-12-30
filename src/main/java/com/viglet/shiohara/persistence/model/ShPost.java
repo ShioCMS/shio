@@ -3,6 +3,8 @@ package com.viglet.shiohara.persistence.model;
 import java.io.Serializable;
 import javax.persistence.*;
 
+import org.hibernate.annotations.Fetch;
+
 import java.util.Date;
 import java.util.List;
 
@@ -33,11 +35,13 @@ public class ShPost implements Serializable {
 	private ShPostType shPostType;
 
 	//bi-directional many-to-one association to ShPostAttr
-	@OneToMany(mappedBy="shPost")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "shPost", cascade = CascadeType.ALL)
+	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
 	private List<ShPostAttr> shPostAttrs;
 
 	//bi-directional many-to-one association to ShRegion
-	@OneToMany(mappedBy="shPost")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "shPost", cascade = CascadeType.ALL)
+	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
 	private List<ShRegion> shRegions;
 
 	public ShPost() {
