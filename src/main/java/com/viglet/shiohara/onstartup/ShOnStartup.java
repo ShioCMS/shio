@@ -5,6 +5,7 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+import com.viglet.shiohara.onstartup.post.ShPostOnStartup;
 import com.viglet.shiohara.onstartup.post.type.ShPostTypeOnStartup;
 import com.viglet.shiohara.onstartup.site.ShSiteOnStartup;
 import com.viglet.shiohara.onstartup.system.ShConfigVarOnStartup;
@@ -25,6 +26,8 @@ public class ShOnStartup implements ApplicationRunner {
 	@Autowired
 	private ShPostTypeOnStartup shPostTypeOnStartup;
 	@Autowired
+	private ShPostOnStartup shPostOnStartup;
+	@Autowired
 	private ShConfigVarOnStartup shConfigVarOnStartup;
 	@Autowired
 	private ShSiteOnStartup shSiteOnStartup;
@@ -39,6 +42,7 @@ public class ShOnStartup implements ApplicationRunner {
 			shLocaleOnStartup.createDefaultRows();
 			shWidgetOnStartup.createDefaultRows();
 			shPostTypeOnStartup.createDefaultRows();
+			shPostOnStartup.createDefaultRows();
 			shConfigVarOnStartup.createDefaultRows();
 			shSiteOnStartup.createDefaultRows();
 			
