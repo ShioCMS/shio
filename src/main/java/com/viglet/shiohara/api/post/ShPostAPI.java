@@ -1,5 +1,6 @@
 package com.viglet.shiohara.api.post;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -16,7 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.persistence.model.ShPost;
+import com.viglet.shiohara.persistence.model.ShPostAttr;
 import com.viglet.shiohara.persistence.model.ShPostType;
+import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 
@@ -28,6 +31,8 @@ public class ShPostAPI {
 	ShPostRepository shPostRepository;
 	@Autowired
 	ShPostTypeRepository shPostTypeRepository;
+	@Autowired
+	ShPostAttrRepository shPostAttrRepository;
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -46,11 +51,41 @@ public class ShPostAPI {
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	public ShPost update(@PathParam("postId") int id, ShPost shPost) throws Exception {
+
 		ShPost shPostEdit = shPostRepository.findById(id);
-		shPostEdit.setDate(shPost.getDate());
-		shPostEdit.setTitle(shPost.getTitle());
-		shPostEdit.setSummary(shPost.getSummary());
-		shPostRepository.save(shPost);
+
+		String title = shPostEdit.getTitle();
+		String summary = shPostEdit.getSummary();
+
+		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
+			if (shPostAttr.getShPostTypeAttr().getIsTitle() == 1)
+				title = shPostAttr.getStrValue();
+
+			if (shPostAttr.getShPostTypeAttr().getIsSummary() == 1)
+				summary = shPostAttr.getStrValue();
+
+			System.out.println("Attr id: " + shPostAttr.getId());
+			ShPostAttr shPostAttrEdit = shPostAttrRepository.findOne(shPostAttr.getId());
+
+			if (shPostAttrEdit != null) {
+				System.out.println("Atributo encontrado");
+				shPostAttrEdit.setDateValue(shPostAttr.getDateValue());
+				shPostAttrEdit.setIntValue(shPostAttr.getIntValue());
+				shPostAttrEdit.setStrValue(shPostAttr.getStrValue());
+
+				shPostAttrRepository.saveAndFlush(shPostAttrEdit);
+			} else {
+				System.out.println("Atributo nao encontrado");
+			}
+		}
+		shPostEdit = shPostRepository.findById(id);
+		
+		shPostEdit.setDate(new Date());
+		shPostEdit.setTitle(title);
+		shPostEdit.setSummary(summary);
+
+		shPostRepository.saveAndFlush(shPostEdit);
+
 		return shPostEdit;
 	}
 

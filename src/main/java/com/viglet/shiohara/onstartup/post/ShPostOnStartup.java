@@ -105,7 +105,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 			
-			shPostTypeAttr = shPostTypeAttrRepository.findById(3);
+			shPostTypeAttr = shPostTypeAttrRepository.findById(4);
 			
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
