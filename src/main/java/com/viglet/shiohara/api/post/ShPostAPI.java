@@ -64,22 +64,20 @@ public class ShPostAPI {
 			if (shPostAttr.getShPostTypeAttr().getIsSummary() == 1)
 				summary = shPostAttr.getStrValue();
 
-			System.out.println("Attr id: " + shPostAttr.getId());
 			ShPostAttr shPostAttrEdit = shPostAttrRepository.findOne(shPostAttr.getId());
 
 			if (shPostAttrEdit != null) {
-				System.out.println("Atributo encontrado");
 				shPostAttrEdit.setDateValue(shPostAttr.getDateValue());
 				shPostAttrEdit.setIntValue(shPostAttr.getIntValue());
 				shPostAttrEdit.setStrValue(shPostAttr.getStrValue());
 
 				shPostAttrRepository.saveAndFlush(shPostAttrEdit);
 			} else {
-				System.out.println("Atributo nao encontrado");
+				//
 			}
 		}
 		shPostEdit = shPostRepository.findById(id);
-		
+
 		shPostEdit.setDate(new Date());
 		shPostEdit.setTitle(title);
 		shPostEdit.setSummary(summary);
@@ -97,15 +95,33 @@ public class ShPostAPI {
 		return true;
 	}
 
-	@Path("/{postTypeId}/")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public ShPost add(@PathParam("postTypeId") int postTypeId, ShPost shPost) throws Exception {
+	public ShPost add(ShPost shPost) throws Exception {
 
-		ShPostType shPostType = shPostTypeRepository.findById(postTypeId);
-		shPost.setShPostType(shPostType);
-		shPostRepository.save(shPost);
+		String title = shPost.getTitle();
+		String summary = shPost.getSummary();
 
+		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
+			if (shPostAttr.getShPostTypeAttr().getIsTitle() == 1)
+				title = shPostAttr.getStrValue();
+
+			if (shPostAttr.getShPostTypeAttr().getIsSummary() == 1)
+				summary = shPostAttr.getStrValue();
+		}
+		shPost.setDate(new Date());
+		shPost.setTitle(title);
+		shPost.setSummary(summary);
+
+		shPostRepository.saveAndFlush(shPost);
+
+		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
+			System.out.println(shPost.getId());
+			shPostAttr.setShPost(shPost);
+			System.out.println(shPostAttr.toString());
+			shPostAttrRepository.saveAndFlush(shPostAttr);
+		}
+		
 		return shPost;
 
 	}
