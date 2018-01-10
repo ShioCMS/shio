@@ -166,7 +166,6 @@ shioharaApp.controller('ShPostEditCtrl', [
 			});
 
 			$scope.postEditForm = "template/post/form.html";
-			
 			$scope.postSave = function() {
 				$scope.shPost.$update(function() {
 					$state.go('content');
