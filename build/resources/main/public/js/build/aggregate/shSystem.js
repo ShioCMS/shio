@@ -30,9 +30,9 @@ shioharaApp.config([ '$stateProvider', '$urlRouterProvider', 'TokenProvider',
 					pageTitle : 'Post Type Select | Viglet Shiohara'
 				}
 			}).state('content.post-type-editor', {
-				url : '/post/type/select',
+				url : '/post/type/editor',
 				templateUrl : 'template/post/type/editor.html',
-				controller : 'ShPostTypeSelectCtrl',
+				controller : 'ShPostTypeEditorCtrl',
 				data : {
 					pageTitle : 'Post Type Editor | Viglet Shiohara'
 				}

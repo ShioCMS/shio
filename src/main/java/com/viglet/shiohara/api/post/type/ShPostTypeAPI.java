@@ -1,6 +1,7 @@
 package com.viglet.shiohara.api.post.type;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -44,7 +45,17 @@ public class ShPostTypeAPI {
 	public ShPostType edit(@PathParam("postTypeId") int id) throws Exception {
 		return shPostTypeRepository.findById(id);
 	}
+	
+	@Path("/model")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public ShPostType postTypeStructure() throws Exception {
+		ShPostType shPostType = new ShPostType();	
+		shPostType.setDate(new Date());
+		return shPostType;
 
+	}
+	
 	@Path("/{postTypeId}/post/model")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)

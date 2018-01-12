@@ -32,7 +32,7 @@ shioharaApp
 
 							$scope.postTypeSave = function() {
 								$scope.shPostType.$update(function() {
-									$state.go('content.post-type-item');
+									$state.go('content.post-type-select');
 								});
 							}
 						} ]);

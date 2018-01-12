@@ -118,7 +118,6 @@ public class ShPostAPI {
 		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
 			System.out.println(shPost.getId());
 			shPostAttr.setShPost(shPost);
-			System.out.println(shPostAttr.toString());
 			shPostAttrRepository.saveAndFlush(shPostAttr);
 		}
 		

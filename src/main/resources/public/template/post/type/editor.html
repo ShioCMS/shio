@@ -15,8 +15,7 @@
 				<figure class="user-image">
 					<div id="user-image" class="img"
 						ng-style="{'background-image':'url(' + shUser.gravatar +')'}"
-						href="#">						
-					</div>
+						href="#"></div>
 					<!--   <a href="#" class="edit-user-image js-modal-image">Edit Picture</a> -->
 				</figure>
 
@@ -26,8 +25,8 @@
 					</h3>
 				</div>
 				<div class="pull-right" style="margin: -40px 0 0;">
-					<a ui-sref="content.post-type-select" class="btn btn-default">Or select other
-						Post Type</a>
+					<a ui-sref="content.post-type-select" class="btn btn-default">Or
+						select other Post Type</a>
 
 				</div>
 			</fieldset>
@@ -55,33 +54,33 @@
 		</ul>
 	</div>
 	<div class="col-md-10">
-		<form method="post" action="/post/type/process/basic/" role="form">
-			<input type="hidden" id="jpid" name="jpid" value="">
-			<div class="form-group">
-				<label for="field1">Name</label> <input type="text" id="title"
-					name="title" class="form-control" placeholder="Post Type Name"
-					value="">
-			</div>
-			<div class="form-group">
-				<label for="field2">Description</label>
-				<textarea id="description" name="description" class="form-control"
-					placeholder="About this Post Type"></textarea>
-			</div>
-			<div class="form-group">
-				<label>Identifier</label> <input type="text" id="name" name="name"
-					class="form-control" placeholder="Identfier" value="">
-			</div>
-			<div class="btn-group">
-				<button type="submit" class="btn btn-primary">Save changes</button>
-				<a class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
-					href="#"><span class="caret"></span></a>
-				<ul class="dropdown-menu">
-					<li><a href="#"><i class="icon-trash"></i> Delete</a></li>
-					<li><a href="duplicatecontent.php"><i
-							class="icon-plus-sign"></i> Duplicate</a></li>
-				</ul>
-			</div>
-			<button type="button" class="btn btn-default">Cancel</button>
-		</form>
+		<input type="hidden" id="jpid" name="jpid" value="">
+		<div class="form-group">
+			<label for="field1">Name</label> <input type="text" id="title"
+				name="title" class="form-control" placeholder="Post Type Name"
+				ng-model="shPostType.title">
+		</div>
+		<div class="form-group">
+			<label for="field2">Description</label>
+			<textarea id="description" name="description" class="form-control"
+				placeholder="About this Post Type" ng-model="shPostType.description"></textarea>
+		</div>
+		<div class="form-group">
+			<label>Identifier</label> <input type="text" id="name" name="name"
+				class="form-control" placeholder="Identfier"
+				ng-model="shPostType.name">
+		</div>
+		<div class="btn-group">
+			<button ng-click="postTypeSave()" class="btn btn-primary">Save
+				changes</button>
+			<a class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
+				href="#"><span class="caret"></span></a>
+			<ul class="dropdown-menu">
+				<li><a href="#"><i class="icon-trash"></i> Delete</a></li>
+				<li><a href="duplicatecontent.php"><i
+						class="icon-plus-sign"></i> Duplicate</a></li>
+			</ul>
+		</div>
+		<button type="button" class="btn btn-default">Cancel</button>
 	</div>
 </div>
