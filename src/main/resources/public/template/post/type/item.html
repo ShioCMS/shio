@@ -77,7 +77,8 @@
 				value="04A8B013D5ECED5EF8F93A29FB53DF43" />
 			<table class="table table-hover table-striped">
 				<thead>
-					<th></th>
+					<th>Title</th>
+					<th>Summary</th>
 					<th>Many</th>
 					<th>Required</th>
 					<th>Label</th>
@@ -85,25 +86,39 @@
 					<th></th>
 				</thead>
 				<tbody>
-					<tr ng-repeat="shPostTypeAttr in shPostType.shPostTypeAttrs">
-						<td>{{shPostTypeAttr.label}}</td>
-						<td>
+					<tr ng-repeat="shPostTypeAttr in shPostType.shPostTypeAttrs |filter: {willBeDeleted: '!1'}" style="text-align: center;">				
+						<td >
 							<div class="checkbox">
-								<input type="checkbox" ng-model="shPostTypeAttr.many">
+								<input type="checkbox" ng-model="shPostTypeAttr.isTitle"
+										ng-true-value="1" ng-false-value="0">
 							</div>
 						</td>
 						<td>
 							<div class="checkbox">
-								<input type="checkbox" ng-model="shPostTypeAttr.required">
+								<input type="checkbox" ng-model="shPostTypeAttr.isSummary"
+									ng-true-value="1" ng-false-value="0">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox">
+								<input type="checkbox" ng-model="shPostTypeAttr.many"
+									ng-true-value="1" ng-false-value="0">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox">
+								<input type="checkbox" ng-model="shPostTypeAttr.required"
+									ng-true-value="1" ng-false-value="0">
 							</div>
 						</td>
 
 						<td><input type="text" class="form-control"
-							ng-model="shPostTypeAttr.description" /></td>
+							ng-model="shPostTypeAttr.label" /></td>
+
 						<td><select class="form-control"
 							ng-model="shPostTypeAttr.shWidget"
 							ng-options="shWidget as shWidget.name for shWidget in shWidgets track by shWidget.id">
-							<option value="">- Pick One -</option>
+								<option value="">- Pick One -</option>
 						</select></td>
 						<td>
 
@@ -116,7 +131,7 @@
 									href><span class="caret"></span></a>
 								<ul class="dropdown-menu">
 									<li><a
-										href="/widget/remove/04A8B013D5ECED5EF8F93A29FB53DF43/D8FCD6C7209A157C4E86921E30446F17"><span
+										ng-click="removePostTypeAttr(shPostTypeAttr)" href ><span
 											class="glyphicon glyphicon-minus-sign"></span> Remove</a></li>
 								</ul>
 							</div>
@@ -129,8 +144,7 @@
 			<div class="row">
 				<div class="col-md-2" ng-repeat="shWidget in shWidgets">
 					<div class="well">
-						<a
-							href="/widget/add/{{shWidget.id}}/04A8B013D5ECED5EF8F93A29FB53DF43">
+						<a ng-click="addPostTypeAttr(shWidget)" href>
 							<h4>{{shWidget.name}}</h4>
 						</a>
 					</div>
@@ -142,7 +156,7 @@
 				<a class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
 					href><span class="caret"></span></a>
 				<ul class="dropdown-menu">
-					<li><a href><i class="icon-trash"></i> Delete</a></li>
+					<li><a href ng-click="removePostType()"><i class="icon-trash"></i> Delete</a></li>
 					<li><a href><i class="icon-plus-sign"></i> Duplicate</a></li>
 				</ul>
 			</div>

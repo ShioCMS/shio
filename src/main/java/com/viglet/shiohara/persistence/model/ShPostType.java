@@ -35,7 +35,8 @@ public class ShPostType implements Serializable {
 	private String title;
 
 	//bi-directional many-to-one association to ShPost
-	@OneToMany(mappedBy="shPostType")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "shPostType", cascade = CascadeType.ALL)
+	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
 	private List<ShPost> shPosts;
 
 	//bi-directional many-to-one association to ShPostAttr

@@ -5,6 +5,8 @@ import com.viglet.shiohara.persistence.model.ShPostTypeAttr;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 
 public interface ShPostTypeAttrRepository extends JpaRepository<ShPostTypeAttr, Integer> {
 
@@ -13,6 +15,8 @@ public interface ShPostTypeAttrRepository extends JpaRepository<ShPostTypeAttr, 
 	ShPostTypeAttr findById(int id);
 
 	ShPostTypeAttr save(ShPostTypeAttr shPostTypeAttr);
-
-	void delete(ShPostTypeAttr shPostTypeAttr);
+	
+	@Modifying
+	@Query("delete from ShPostTypeAttr pta where pta.id = ?1")
+	void delete(int shPostTypeAttrId);
 }
