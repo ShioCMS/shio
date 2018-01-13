@@ -17,6 +17,8 @@ shioharaApp.controller('ShPostTypeEditorCtrl', [
 					}));
 			$scope.postTypeSave = function() {
 				delete $scope.shPostType.id;
-				shPostTypeResource.save($scope.shPostType);
+				shPostTypeResource.save($scope.shPostType, function() {
+					$state.go('content.post-type-select');
+				});
 			}
 		} ]);

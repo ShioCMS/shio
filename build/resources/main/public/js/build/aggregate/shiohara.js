@@ -186,7 +186,9 @@ shioharaApp.controller('ShPostTypeEditorCtrl', [
 					}));
 			$scope.postTypeSave = function() {
 				delete $scope.shPostType.id;
-				shPostTypeResource.save($scope.shPostType);
+				shPostTypeResource.save($scope.shPostType, function() {
+					$state.go('content.post-type-select');
+				});
 			}
 		} ]);
 shioharaApp
@@ -201,8 +203,12 @@ shioharaApp
 						"$rootScope",
 						"shWidgetResource",
 						"shPostTypeResource",
+						"shPostTypeAttrResource",
+						"shAPIServerService",
 						function($scope, $http, $window, $stateParams, $state,
-								$rootScope, shWidgetResource, shPostTypeResource) {
+								$rootScope, shWidgetResource,
+								shPostTypeResource, shPostTypeAttrResource,
+								shAPIServerService) {
 							$scope.postTypeId = $stateParams.postTypeId;
 							$scope.shPostType = null;
 							$scope.shWidgets = shWidgetResource.query();
@@ -221,10 +227,72 @@ shioharaApp
 												}
 											});
 
+							$scope.shPostTypeAttrModel = null;
+
+							$scope
+									.$evalAsync($http
+											.get(
+													shAPIServerService
+															.get()
+															.concat(
+																	"/post/type/attr/model"))
+											.then(
+													function(response) {
+														$scope.shPostTypeAttrModel = response.data;
+													}));
+
 							$scope.postTypeSave = function() {
+								angular
+										.forEach(
+												$scope.shPostType.shPostTypeAttrs,
+												function(value, key) {
+													if (value.willBeDeleted == 1) {
+														shPostTypeAttrResource
+																.delete({
+																	id : value.id
+																});
+														var index = $scope.shPostType.shPostTypeAttrs
+																.indexOf(value);
+														$scope.shPostType.shPostTypeAttrs
+																.splice(index,
+																		1);
+													}
+												});
+
 								$scope.shPostType.$update(function() {
-									$state.go('content.post-type-item');
+
+									$state.go('content.post-type-select');
 								});
+
+							}
+
+							$scope.removePostType = function() {
+								shPostTypeResource
+								.delete({
+									id : $scope.shPostType.id
+								});
+							}
+							
+							$scope.addPostTypeAttr = function(shWidget) {
+								$scope.shPostTypeAttrModel.shWidget = shWidget;
+								delete $scope.shPostTypeAttrModel.id;
+								$scope.shPostType.shPostTypeAttrs.push(angular
+										.copy($scope.shPostTypeAttrModel));
+							}
+							
+							$scope.removePostTypeAttr = function(shPostTypeAttr) {
+								if (shPostTypeAttr.id == null
+										|| shPostTypeAttr.id == 0) {
+									// Removed from shPostTypeAttrs because is
+									// not persisted
+									var index = $scope.shPostType.shPostTypeAttrs
+											.indexOf(shPostTypeAttr);
+									$scope.shPostType.shPostTypeAttrs.splice(
+											index, 1);
+								} else {
+									// Mark to be deleted
+									shPostTypeAttr['willBeDeleted'] = 1;
+								}
 							}
 						} ]);
 shioharaApp.factory('shPostTypeAttrResource', [ '$resource', 'shAPIServerService', function($resource, shAPIServerService) {

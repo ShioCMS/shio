@@ -15,7 +15,9 @@ import javax.ws.rs.core.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.viglet.shiohara.persistence.model.ShPostAttr;
 import com.viglet.shiohara.persistence.model.ShPostTypeAttr;
+import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
 
 @Component
@@ -23,7 +25,9 @@ import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrReposi
 public class ShPostTypeAttrAPI {
 	@Autowired
 	ShPostTypeAttrRepository shPostTypeAttrRepository;
-
+	@Autowired
+	ShPostAttrRepository shPostAttrRepository;
+	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<ShPostTypeAttr> list() throws Exception {
@@ -59,6 +63,10 @@ public class ShPostTypeAttrAPI {
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
 	public boolean delete(@PathParam("postTypeAttrId") int id) throws Exception {
+		ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findById(id);
+		for ( ShPostAttr shPostAttr : shPostTypeAttr.getShPostAttrs()) {
+			shPostAttrRepository.delete(shPostAttr.getId());
+		}
 		shPostTypeAttrRepository.delete(id);
 		return true;
 	}
@@ -68,6 +76,15 @@ public class ShPostTypeAttrAPI {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public ShPostTypeAttr post(ShPostTypeAttr shPostTypeAttr) throws Exception {
 		shPostTypeAttrRepository.save(shPostTypeAttr);
+		return shPostTypeAttr;
+
+	}
+	
+	@Path("/model")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public ShPostTypeAttr postTypeAttrStructure() throws Exception {
+		ShPostTypeAttr shPostTypeAttr = new ShPostTypeAttr();
 		return shPostTypeAttr;
 
 	}
