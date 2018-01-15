@@ -1,23 +1,37 @@
 
 <div class="settings">
-	<section class="content no-padding">
+	<section class="content no-padding" style="height: 170px;">
 
-	
-			<fieldset class="user-details-top" style="margin-bottom:30px">
+		<header class="user-profile-header">
+			<img id="user-cover" class="cover-image" src="/img/user-cover.png">
+
+			<!--  <a class="edit-cover-image js-modal-cover button" href="#">Change Cover</a> -->
+		</header>
+
+		<form class="user-profile" novalidate="novalidate">
+
+			<fieldset class="user-details-top">
+
+				<figure class="user-image">
+					<div id="user-image" class="img"
+						ng-style="{'background-image':'url(' + shUser.gravatar +')'}"
+						href="#"></div>
+					<!--   <a href="#" class="edit-user-image js-modal-image">Edit Picture</a> -->
+				</figure>
 
 				<div class="form-group">
 					<h3>
-					Edit your
-							{{shPostType.title}}'s Attribute
+						{{shUser.firstName}}, <small>edit your
+							{{shPostType.title}}'s Attribute</small>
 					</h3>
 				</div>
 				<div class="pull-right" style="margin: -40px 0 0;">
 					<a ui-sref="content.post-type-item({postTypeId: shPostType.id})"
-						class="btn btn-viglet">Or model this Post Type</a>
+						class="btn btn-default">Or model this Post Type</a>
 
 				</div>
 			</fieldset>
-		
+		</form>
 	</section>
 </div>
 
@@ -86,9 +100,9 @@
 		</div>
 		<div class="form-group"></div>
 		<div class="btn-group">
-			<button ng-click="postTypeAttrSave()" class="btn btn-viglet">Save
+			<button ng-click="postTypeAttrSave()" class="btn btn-primary">Save
 				changes</button>
-			<a class="btn btn-viglet dropdown-toggle" data-toggle="dropdown"
+			<a class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
 				href><span class="caret"></span></a>
 			<ul class="dropdown-menu">
 				<li><a href><i class="icon-trash"></i> Delete</a></li>

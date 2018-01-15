@@ -1,19 +1,36 @@
 <div class="settings">
-	<section class="content no-padding">
-	
-			<fieldset class="user-details-top" style="margin-bottom:30px">
+	<section class="content no-padding" style="height: 170px;">
 
-				<div class="form-group" >
+		<header class="user-profile-header">
+			<img id="user-cover" class="cover-image" src="/img/user-cover.png"
+				title="Alexandre Oliveira's Cover Image">
+
+			<!--  <a class="edit-cover-image js-modal-cover button" href="#">Change Cover</a> -->
+		</header>
+
+		<form class="user-profile" novalidate="novalidate">
+
+			<fieldset class="user-details-top">
+
+				<figure class="user-image">
+					<div id="user-image" class="img"
+						ng-style="{'background-image':'url(' + shUser.gravatar +')'}"
+						href="#"></div>
+					<!--   <a href="#" class="edit-user-image js-modal-image">Edit Picture</a> -->
+				</figure>
+
+				<div class="form-group">
 					<h3>
-						What would you like to post?
+						{{shUser.firstName}}, <small>What would you like to post?</small>
 					</h3>
 				</div>
 				<div class="pull-right" style="margin: -40px 0 0;">
-					<a ui-sref="content.post-type-editor" class="btn btn-viglet">Or
+					<a ui-sref="content.post-type-editor" class="btn btn-default">Or
 						model a new Post Type</a>
 
 				</div>
 			</fieldset>
+		</form>
 	</section>
 </div>
 

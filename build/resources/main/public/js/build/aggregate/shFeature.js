@@ -164,6 +164,8 @@ shioharaApp
 								shPostTypeResource
 								.delete({
 									id : $scope.shPostType.id
+								},function() {
+									$state.go('content.post-type-select');
 								});
 							}
 							
