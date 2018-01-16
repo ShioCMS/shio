@@ -31,23 +31,22 @@ public class ShPostOnStartup {
 	private ShSiteRepository shSiteRepository;
 
 	public void createDefaultRows() {
-	//	ShSite shSite = shSiteRepository.findById(1);
+		// ShSite shSite = shSiteRepository.findById(1);
 
 		if (shPostRepository.findAll().isEmpty()) {
 			// Post Text
 			ShPostType shPostType = shPostTypeRepository.findByName("PT-TEXT");
 
 			ShPost shPost = new ShPost();
-			shPost.setDate(new Date());			
+			shPost.setDate(new Date());
 			shPost.setShPostType(shPostType);
 			shPost.setSummary("Summary");
 			shPost.setTitle("Post01");
-		
 
 			shPostRepository.save(shPost);
 
 			ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType, "title");
-			
+
 			ShPostAttr shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
 			shPostAttr.setShPostType(shPostType);
@@ -57,21 +56,20 @@ public class ShPostOnStartup {
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
-			
+
 			// Post Text Area
 			ShPostType shPostTypeArea = shPostTypeRepository.findByName("PT-TEXT-AREA");
 
 			shPost = new ShPost();
-			shPost.setDate(new Date());			
+			shPost.setDate(new Date());
 			shPost.setShPostType(shPostTypeArea);
 			shPost.setSummary("Summary");
 			shPost.setTitle("Post Text Area 01");
-			
 
 			shPostRepository.save(shPost);
 
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeArea, "title");
-			
+
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
 			shPostAttr.setShPostType(shPostTypeArea);
@@ -83,20 +81,19 @@ public class ShPostOnStartup {
 			shPostAttrRepository.save(shPostAttr);
 
 			// Post Article
-			
+
 			ShPostType shPostArticle = shPostTypeRepository.findByName("PT-ARTICLE");
 
 			shPost = new ShPost();
-			shPost.setDate(new Date());			
+			shPost.setDate(new Date());
 			shPost.setShPostType(shPostArticle);
 			shPost.setSummary("A short description");
 			shPost.setTitle("Post Article Title");
-			
 
 			shPostRepository.save(shPost);
 
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostArticle, "title");
-			
+
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
 			shPostAttr.setShPostType(shPostArticle);
@@ -106,9 +103,9 @@ public class ShPostOnStartup {
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
-			
+
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostArticle, "Description");
-			
+
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
 			shPostAttr.setShPostType(shPostArticle);
@@ -117,6 +114,66 @@ public class ShPostOnStartup {
 			shPostAttr.setStrValue("A short description ...");
 			shPostAttr.setType(1);
 
+			shPostAttrRepository.save(shPostAttr);
+
+			// Page Template
+
+			ShPostType shPostPageTemplate = shPostTypeRepository.findByName("PT-PAGE-TEMPLATE");
+
+			shPost = new ShPost();
+			shPost.setDate(new Date());
+			shPost.setShPostType(shPostPageTemplate);
+			shPost.setSummary("Home Template");
+			shPost.setTitle("Home Page");
+
+			shPostRepository.save(shPost);
+
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "title");
+
+			shPostAttr = new ShPostAttr();
+			shPostAttr.setShPost(shPost);
+			shPostAttr.setShPostType(shPostPageTemplate);
+			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+			shPostAttr.setShPostTypeAttrId(1);
+			shPostAttr.setStrValue("Home Page");
+			shPostAttr.setType(1);
+
+			shPostAttrRepository.save(shPostAttr);
+
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "Description");
+
+			shPostAttr = new ShPostAttr();
+			shPostAttr.setShPost(shPost);
+			shPostAttr.setShPostType(shPostPageTemplate);
+			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+			shPostAttr.setShPostTypeAttrId(2);
+			shPostAttr.setStrValue("Home Template");
+			shPostAttr.setType(1);
+
+			shPostAttrRepository.save(shPostAttr);
+			
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "Javascript");
+
+			shPostAttr = new ShPostAttr();
+			shPostAttr.setShPost(shPost);
+			shPostAttr.setShPostType(shPostPageTemplate);
+			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+			shPostAttr.setShPostTypeAttrId(3);
+			shPostAttr.setStrValue("var greeting='hello world ';\n" + "print(greeting);\n" + "greeting;");
+			shPostAttr.setType(1);
+			
+			shPostAttrRepository.save(shPostAttr);
+			
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "HTML");
+
+			shPostAttr = new ShPostAttr();
+			shPostAttr.setShPost(shPost);
+			shPostAttr.setShPostType(shPostPageTemplate);
+			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+			shPostAttr.setShPostTypeAttrId(4);
+			shPostAttr.setStrValue("<h1>Hi World</h1>");
+			shPostAttr.setType(1);
+			
 			shPostAttrRepository.save(shPostAttr);
 		}
 
