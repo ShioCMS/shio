@@ -3,44 +3,64 @@
 <html lang="en" ng-app="shioharaApp">
 <head>
 <meta charset="utf-8">
-<title>Viglet Shiohara</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="">
-<meta name="author" content="">
-<link rel="stylesheet"
-	href="thirdparty/bootstrap/dist/css/bootstrap.min.css">
-<link rel="stylesheet"
-	href="thirdparty/bootstrap/dist/css/bootstrap-theme.min.css">
-<link rel="stylesheet" href="/css/cover.css">
-<link rel="stylesheet"
-	href="thirdparty/font-awesome/css/font-awesome.min.css">
+<meta charset="utf-8"></meta>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+<meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+<title ng-bind="$state.current.data.pageTitle">Console | Viglet
+	Shiohara</title>
+<!-- Bootstrap -->
+<link href="thirdparty/bootstrap/dist/css/bootstrap.min.css"
+	rel="stylesheet"></link>
+<link
+	href="https://viglet.ai/ui/thirdparty/font-awesome/css/font-awesome.min.css"
+	rel="stylesheet"></link>
+<link href="https://viglet.ai/ui/css/viglet.css" rel="stylesheet"></link>
 <link href="https://viglet.ai/ui/favicon.ico" rel="shortcut icon"
 	type="image/x-icon"></link>
-<style type="text/css">
-body {
-	padding-top: 00px;
-	padding-bottom: 40px;
-	background-color: #f5f5f5;
-}
-</style>
-
 </head>
-<body>
-	<div class="container">
-		<style>
-.tt-dropdown-menu {
-	width: 540px;
-	padding: 10px;
-	background-color: #fff;
-	border: 1px solid #000;
-}
-
-.tt-suggestion.tt-cursor {
-	background-color: #ccc;
+<style>
+.nav-pills>li.active>a, .nav-pills>li.active>a:focus, .nav-pills>li.active>a:hover
+	{
+	color: #fff;
+	background-color: #FF874B;
 }
 </style>
-		<div ui-view></div>
+<body data-target=".navbar-default">
+	<div id="wrap" style="margin-bottom: 15px;">
+		<nav class="navbar navbar-default navbar-fixed-top row  row-centered"
+			role="navigation">
+			<div
+				class="container-fluid col-centered col-lg-12 col-md-12 col-sm-12 col-xs-12"
+				style="margin-left: 30px; margin-right: 30px">
+				<!-- Brand and toggle get grouped for better mobile display -->
+				<div class="row">
+					<div class="col-lg-1 col-md-1 col-sm-1 col-xs-2">
+						<a class="navbar-brand" ui-sref="content"><img
+							style="padding: 5px; padding-right: 20px;"
+							src="img/viglet_logo_sm.png"></img></a>
+					</div>
+					<div class="col-lg-10 col-md-10 col-sm-10 col-xs-10"
+						style="padding-top: 7px">
+						<form method="get" action="">
+							<div class="input-group">
+								<input id="q" name="q" type="text" class="form-control"
+									placeholder="{{ 'SEARCH_FOR' | translate }}..."
+									> <span class="input-group-btn">
+									<button class="btn btn-viglet" type="submit">{{
+										'SEARCH' | translate}}</button>
+								</span>
+							</div>
 
+						</form>
+					</div>
+				</div>
+
+			</div>
+			<!-- /.container-fluid -->
+		</nav>
+		<div class="container">
+			<div ui-view></div>
+		</div>
 		<script src="thirdparty/jquery/dist/jquery.min.js"></script>
 
 		<script src="thirdparty/moment/min/moment-with-locales.min.js"></script>
@@ -52,6 +72,7 @@ body {
 		<script src="thirdparty/angular-animate/angular-animate.min.js"></script>
 		<script src="thirdparty/angular-cookies/angular-cookies.min.js"></script>
 		<script src="thirdparty/angular-sanitize/angular-sanitize.min.js"></script>
+		<script src="thirdparty/angular-moment/angular-moment.min.js"></script>
 		<script src="thirdparty/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
 		<script src="thirdparty/bootstrap/dist/js/bootstrap.min.js"></script>
 

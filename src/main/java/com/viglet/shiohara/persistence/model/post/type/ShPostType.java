@@ -1,4 +1,4 @@
-package com.viglet.shiohara.persistence.model;
+package com.viglet.shiohara.persistence.model.post.type;
 
 import java.io.Serializable;
 import javax.persistence.*;
@@ -6,6 +6,9 @@ import javax.persistence.*;
 import org.hibernate.annotations.Fetch;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.viglet.shiohara.persistence.model.post.ShPost;
+import com.viglet.shiohara.persistence.model.post.ShPostAttr;
+import com.viglet.shiohara.persistence.model.region.ShRegion;
 
 import java.util.Date;
 import java.util.List;
@@ -33,6 +36,8 @@ public class ShPostType implements Serializable {
 	private String name;
 
 	private String title;
+	
+	private byte system;
 
 	//bi-directional many-to-one association to ShPost
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "shPostType", cascade = CascadeType.ALL)
@@ -105,14 +110,14 @@ public class ShPostType implements Serializable {
 		this.shPosts = shPosts;
 	}
 
-	public ShPost addShpost(ShPost shPost) {
+	public ShPost addShPost(ShPost shPost) {
 		getShPosts().add(shPost);
 		shPost.setShPostType(this);
 
 		return shPost;
 	}
 
-	public ShPost removeShpost(ShPost shPost) {
+	public ShPost removeShPost(ShPost shPost) {
 		getShPosts().remove(shPost);
 		shPost.setShPostType(null);
 
@@ -184,5 +189,15 @@ public class ShPostType implements Serializable {
 
 		return shRegion;
 	}
+
+	public byte getSystem() {
+		return system;
+	}
+
+	public void setSystem(byte system) {
+		this.system = system;
+	}
+
+
 
 }

@@ -1,13 +1,31 @@
 var shioharaApp = angular.module('shioharaApp', [ 'ngCookies','ngResource', 'ngAnimate',
-	'ngSanitize', 'ui.router', 'ui.bootstrap', 'pascalprecht.translate', 'vecchioOauth' ]);
-shioharaApp.config([ '$stateProvider', '$urlRouterProvider', 'TokenProvider',
-		function($stateProvider, $urlRouterProvider, TokenProvider) {
+	'ngSanitize', 'ui.router', 'ui.bootstrap', 'pascalprecht.translate', 'vecchioOauth', 'angularMoment' ]);
+shioharaApp.config([
+		'$stateProvider',
+		'$urlRouterProvider',
+		'TokenProvider',
+		'$locationProvider',
+		'$translateProvider',
+		function($stateProvider, $urlRouterProvider, TokenProvider,
+				$locationProvider, $translateProvider) {
 
 			TokenProvider.extendConfig({
 				clientId : 'b0ec29dd6e0c6bd98b37fee1799dc0a8',
 				redirectUri : 'http://localhost:8080/oauth2callback.html',
 				scopes : [ "https://www.googleapis.com/auth/userinfo.email" ]
 			});
+
+			$translateProvider.useSanitizeValueStrategy('escaped');
+			$translateProvider.translations('en', {				
+				SEARCH: "Search",
+				SEARCH_FOR: "Search for"
+			});
+			$translateProvider.translations('pt', {
+				SEARCH: "Pesquisar",
+				SEARCH_FOR: "Pesquisar por"
+			});
+			
+			$translateProvider.fallbackLanguage('en');
 
 			$urlRouterProvider.otherwise('/content');
 			$stateProvider.state('oauth2', {
@@ -104,6 +122,23 @@ shioharaApp.service('shAPIServerService', [
 				}
 			}
 		} ]);
+shioharaApp.factory('vigLocale', [
+		'$window',
+		function($window) {
+			return {
+				getLocale : function() {
+					var nav = $window.navigator;
+					if (angular.isArray(nav.languages)) {
+						if (nav.languages.length > 0) {
+							return nav.languages[0].split('-').join('_');
+						}
+					}
+					return ((nav.language || nav.browserLanguage
+							|| nav.systemLanguage || nav.userLanguage) || '')
+							.split('-').join('_');
+				}
+			}
+		} ]);
 shioharaApp.controller('ShContentCtrl', [
 		"$scope",
 		"$http",
@@ -113,16 +148,24 @@ shioharaApp.controller('ShContentCtrl', [
 		"Token",
 		"shUserResource",
 		"shPostResource",
-		function($scope, $http, $window, $state, $rootScope, Token, shUserResource, shPostResource) {
+		'vigLocale',
+		'$location',
+		"$translate",
+		function($scope, $http, $window, $state, $rootScope, Token,
+				shUserResource, shPostResource, vigLocale, $location,
+				$translate) {
+			$scope.vigLanguage = vigLocale.getLocale().substring(0, 2);
+			$translate.use($scope.vigLanguage);
+
 			$scope.accessToken = Token.get();
 			$scope.shUser = null;
 			$scope.shPosts = null;
 			$rootScope.$state = $state;
 			$scope.shUser = shUserResource.get({
 				id : 2,
-				access_token: $scope.accessToken
+				access_token : $scope.accessToken
 			});
-			
+
 			$scope.shPosts = shPostResource.query();
 		} ]);
 shioharaApp.controller('ShPostFormCtrl', [ "$scope", "$http", "$window",

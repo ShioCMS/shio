@@ -1,10 +1,10 @@
 package com.viglet.shiohara.persistence.repository.region;
 
-import com.viglet.shiohara.persistence.model.ShRegion;
-
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.viglet.shiohara.persistence.model.region.ShRegion;
 
 public interface ShRegionRepository extends JpaRepository<ShRegion, Integer> {
 

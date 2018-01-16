@@ -1,10 +1,10 @@
 package com.viglet.shiohara.persistence.repository.site;
 
-import com.viglet.shiohara.persistence.model.ShSite;
-
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.viglet.shiohara.persistence.model.site.ShSite;
 
 public interface ShSiteRepository extends JpaRepository<ShSite, Integer> {
 

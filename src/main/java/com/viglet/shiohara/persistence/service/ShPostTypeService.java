@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.persistence.TypedQuery;
 
-import com.viglet.shiohara.persistence.model.ShPostType;
+import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 
 public class ShPostTypeService extends ShBaseService {
 	public void save(ShPostType shPostType) {

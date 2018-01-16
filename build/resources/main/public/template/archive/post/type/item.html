@@ -1,0 +1,166 @@
+<div ui-view>
+	<div class="settings">
+		<section class="content no-padding" style="height: 170px;">
+
+			<header class="user-profile-header">
+				<img id="user-cover" class="cover-image" src="/img/user-cover.png">
+
+				<!--  <a class="edit-cover-image js-modal-cover button" href="#">Change Cover</a> -->
+			</header>
+
+			<form class="user-profile" novalidate="novalidate">
+
+				<fieldset class="user-details-top">
+
+					<figure class="user-image">
+						<div id="user-image" class="img"
+							ng-style="{'background-image':'url(' + shUser.gravatar +')'}"
+							href="#"></div>
+						<!--   <a href="#" class="edit-user-image js-modal-image">Edit Picture</a> -->
+					</figure>
+
+					<div class="form-group">
+						<h3>
+							{{shUser.firstName}}, <small>model your
+								{{shPostType.title}} Post Type</small>
+						</h3>
+					</div>
+					<div class="pull-right" style="margin: -40px 0 0;">
+						<a ui-sref="content.post-type-select" class="btn btn-default">Or
+							select other Post Type</a>
+
+					</div>
+				</fieldset>
+			</form>
+		</section>
+	</div>
+
+	<div class="row">
+		<div class="col-md-2">
+			<ul class="nav nav-pills nav-stacked">
+				<li class="nav-header">{{shPostType.name}}</li>
+
+				<li class="active"><a
+					ui-sref="content.post-type-item({postTypeId: shPostType.id})">Model</a>
+				</li>
+
+				<li class="nav-header">Attributes</li>
+				<li ng-repeat="shPostTypeAttr in shPostType.shPostTypeAttrs"><a
+					ui-sref="content.post-type-item.attribute({postTypeId:shPostType.id, postTypeAttrId:shPostTypeAttr.id})">{{shPostTypeAttr.label}}</a></li>
+				<li class="nav-header">Look & Feel</li>
+				<li><a href="#">Style</a></li>
+				<li><a href="#">Templates</a></li>
+
+				<li class="nav-header">Developer</li>
+				<li><a href="#">API</a></li>
+				<li><a href="#">Documentation</a></li>
+
+			</ul>
+		</div>
+		<div class="col-md-10">
+			<div class="form-group">
+				<input type="text" id="title" name="title" class="form-control"
+					placeholder="Post Type Title" ng-model="shPostType.title">
+			</div>
+			<div class="form-group">
+				<textarea id="description" name="description" class="form-control"
+					placeholder="About this Post Type"
+					ng-model="shPostType.description"></textarea>
+			</div>
+			<div class="form-group">
+				<label>Identifier</label> <input type="text" id="name" name="name"
+					class="form-control" placeholder="Identfier"
+					ng-model="shPostType.name">
+			</div>
+
+			<input type="hidden" id="posttypeid" name="posttypeid"
+				value="04A8B013D5ECED5EF8F93A29FB53DF43" />
+			<table class="table table-hover table-striped">
+				<thead>
+					<th>Title</th>
+					<th>Summary</th>
+					<th>Many</th>
+					<th>Required</th>
+					<th>Label</th>
+					<th>Widget</th>
+					<th></th>
+				</thead>
+				<tbody>
+					<tr ng-repeat="shPostTypeAttr in shPostType.shPostTypeAttrs |filter: {willBeDeleted: '!1'}" style="text-align: center;">				
+						<td >
+							<div class="checkbox">
+								<input type="checkbox" ng-model="shPostTypeAttr.isTitle"
+										ng-true-value="1" ng-false-value="0">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox">
+								<input type="checkbox" ng-model="shPostTypeAttr.isSummary"
+									ng-true-value="1" ng-false-value="0">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox">
+								<input type="checkbox" ng-model="shPostTypeAttr.many"
+									ng-true-value="1" ng-false-value="0">
+							</div>
+						</td>
+						<td>
+							<div class="checkbox">
+								<input type="checkbox" ng-model="shPostTypeAttr.required"
+									ng-true-value="1" ng-false-value="0">
+							</div>
+						</td>
+
+						<td><input type="text" class="form-control"
+							ng-model="shPostTypeAttr.label" /></td>
+
+						<td><select class="form-control"
+							ng-model="shPostTypeAttr.shWidget"
+							ng-options="shWidget as shWidget.name for shWidget in shWidgets track by shWidget.id">
+								<option value="">- Pick One -</option>
+						</select></td>
+						<td>
+
+							<div class="btn-group">
+								<a
+									href="/widget/edit/04A8B013D5ECED5EF8F93A29FB53DF43/D8FCD6C7209A157C4E86921E30446F17"
+									class="btn btn-default"><span
+									class="glyphicon glyphicon-pencil"></span> Edit</a> <a
+									class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+									href><span class="caret"></span></a>
+								<ul class="dropdown-menu">
+									<li><a
+										ng-click="removePostTypeAttr(shPostTypeAttr)" href ><span
+											class="glyphicon glyphicon-minus-sign"></span> Remove</a></li>
+								</ul>
+							</div>
+						</td>
+
+					</tr>
+				</tbody>
+			</table>
+
+			<div class="row">
+				<div class="col-md-2" ng-repeat="shWidget in shWidgets">
+					<div class="well">
+						<a ng-click="addPostTypeAttr(shWidget)" href>
+							<h4>{{shWidget.name}}</h4>
+						</a>
+					</div>
+				</div>
+			</div>
+			<div class="btn-group">
+				<button ng-click="postTypeSave()" class="btn btn-primary">Save
+					changes</button>
+				<a class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
+					href><span class="caret"></span></a>
+				<ul class="dropdown-menu">
+					<li><a href ng-click="removePostType()"><i class="icon-trash"></i> Delete</a></li>
+					<li><a href><i class="icon-plus-sign"></i> Duplicate</a></li>
+				</ul>
+			</div>
+			<button type="button" class="btn btn-default">Cancel</button>
+		</div>
+	</div>
+</div>

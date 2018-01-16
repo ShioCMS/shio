@@ -15,7 +15,7 @@ import javax.ws.rs.core.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.viglet.shiohara.persistence.model.ShRegion;
+import com.viglet.shiohara.persistence.model.region.ShRegion;
 import com.viglet.shiohara.persistence.repository.region.ShRegionRepository;
 
 @Component

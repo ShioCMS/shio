@@ -1,21 +1,20 @@
 package com.viglet.shiohara.onstartup.post;
 
-import java.util.Calendar;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.viglet.shiohara.persistence.model.ShPost;
-import com.viglet.shiohara.persistence.model.ShPostAttr;
-import com.viglet.shiohara.persistence.model.ShPostType;
-import com.viglet.shiohara.persistence.model.ShPostTypeAttr;
-import com.viglet.shiohara.persistence.model.ShWidget;
+import com.viglet.shiohara.persistence.model.post.ShPostAttr;
+import com.viglet.shiohara.persistence.model.post.ShPost;
+import com.viglet.shiohara.persistence.model.post.type.ShPostType;
+import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
+import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
-import com.viglet.shiohara.persistence.repository.widget.ShWidgetRepository;
+import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
 
 @Component
 public class ShPostOnStartup {
@@ -25,26 +24,29 @@ public class ShPostOnStartup {
 	@Autowired
 	private ShPostAttrRepository shPostAttrRepository;
 	@Autowired
-	ShPostTypeRepository shPostTypeRepository;
+	private ShPostTypeRepository shPostTypeRepository;
 	@Autowired
 	private ShPostTypeAttrRepository shPostTypeAttrRepository;
+	@Autowired
+	private ShSiteRepository shSiteRepository;
 
 	public void createDefaultRows() {
+	//	ShSite shSite = shSiteRepository.findById(1);
 
 		if (shPostRepository.findAll().isEmpty()) {
 			// Post Text
-			ShPostType shPostType = shPostTypeRepository.findById(1);
+			ShPostType shPostType = shPostTypeRepository.findByName("PT-TEXT");
 
 			ShPost shPost = new ShPost();
 			shPost.setDate(new Date());			
 			shPost.setShPostType(shPostType);
 			shPost.setSummary("Summary");
 			shPost.setTitle("Post01");
-			
+		
 
 			shPostRepository.save(shPost);
 
-			ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findById(1);
+			ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType, "title");
 			
 			ShPostAttr shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -57,7 +59,7 @@ public class ShPostOnStartup {
 			shPostAttrRepository.save(shPostAttr);
 			
 			// Post Text Area
-			ShPostType shPostTypeArea = shPostTypeRepository.findById(2);
+			ShPostType shPostTypeArea = shPostTypeRepository.findByName("PT-TEXT-AREA");
 
 			shPost = new ShPost();
 			shPost.setDate(new Date());			
@@ -68,7 +70,7 @@ public class ShPostOnStartup {
 
 			shPostRepository.save(shPost);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findById(2);
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeArea, "title");
 			
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -82,7 +84,7 @@ public class ShPostOnStartup {
 
 			// Post Article
 			
-			ShPostType shPostArticle = shPostTypeRepository.findById(3);
+			ShPostType shPostArticle = shPostTypeRepository.findByName("PT-ARTICLE");
 
 			shPost = new ShPost();
 			shPost.setDate(new Date());			
@@ -93,7 +95,7 @@ public class ShPostOnStartup {
 
 			shPostRepository.save(shPost);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findById(3);
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostArticle, "title");
 			
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -105,7 +107,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 			
-			shPostTypeAttr = shPostTypeAttrRepository.findById(4);
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostArticle, "Description");
 			
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);

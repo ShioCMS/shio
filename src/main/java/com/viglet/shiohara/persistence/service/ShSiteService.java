@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.persistence.TypedQuery;
 
-import com.viglet.shiohara.persistence.model.ShSite;
+import com.viglet.shiohara.persistence.model.site.ShSite;
 
 public class ShSiteService extends ShBaseService {
 	public void save(ShSite shSite) {

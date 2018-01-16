@@ -1,9 +1,11 @@
-package com.viglet.shiohara.persistence.model;
+package com.viglet.shiohara.persistence.model.post;
 
 import java.io.Serializable;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.viglet.shiohara.persistence.model.post.type.ShPostType;
+import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 
 import java.util.Date;
 

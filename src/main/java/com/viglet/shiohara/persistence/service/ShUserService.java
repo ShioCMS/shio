@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.persistence.TypedQuery;
 
-import com.viglet.shiohara.persistence.model.ShUser;
+import com.viglet.shiohara.persistence.model.user.ShUser;
 
 public class ShUserService extends ShBaseService {
 	public void save(ShUser shUser) {

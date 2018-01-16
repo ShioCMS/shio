@@ -1,4 +1,4 @@
-package com.viglet.shiohara.persistence.model;
+package com.viglet.shiohara.persistence.model.post.type;
 
 import java.io.Serializable;
 import javax.persistence.*;
@@ -6,6 +6,8 @@ import javax.persistence.*;
 import org.hibernate.annotations.Fetch;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.viglet.shiohara.persistence.model.post.ShPostAttr;
+import com.viglet.shiohara.persistence.model.widget.ShWidget;
 
 import java.util.List;
 

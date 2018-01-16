@@ -1,11 +1,29 @@
-shioharaApp.config([ '$stateProvider', '$urlRouterProvider', 'TokenProvider',
-		function($stateProvider, $urlRouterProvider, TokenProvider) {
+shioharaApp.config([
+		'$stateProvider',
+		'$urlRouterProvider',
+		'TokenProvider',
+		'$locationProvider',
+		'$translateProvider',
+		function($stateProvider, $urlRouterProvider, TokenProvider,
+				$locationProvider, $translateProvider) {
 
 			TokenProvider.extendConfig({
 				clientId : 'b0ec29dd6e0c6bd98b37fee1799dc0a8',
 				redirectUri : 'http://localhost:8080/oauth2callback.html',
 				scopes : [ "https://www.googleapis.com/auth/userinfo.email" ]
 			});
+
+			$translateProvider.useSanitizeValueStrategy('escaped');
+			$translateProvider.translations('en', {				
+				SEARCH: "Search",
+				SEARCH_FOR: "Search for"
+			});
+			$translateProvider.translations('pt', {
+				SEARCH: "Pesquisar",
+				SEARCH_FOR: "Pesquisar por"
+			});
+			
+			$translateProvider.fallbackLanguage('en');
 
 			$urlRouterProvider.otherwise('/content');
 			$stateProvider.state('oauth2', {
