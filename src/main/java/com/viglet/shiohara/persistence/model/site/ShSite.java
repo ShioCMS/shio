@@ -1,7 +1,14 @@
-package com.viglet.shiohara.persistence.model;
+package com.viglet.shiohara.persistence.model.site;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.*;
+
+import org.hibernate.annotations.Fetch;
+
+import com.viglet.shiohara.persistence.model.post.ShPost;
 
 /**
  * The persistent class for the ShSite database table.
@@ -21,6 +28,11 @@ public class ShSite implements Serializable {
 	private String description;
 
 	private String url;
+
+	// bi-directional many-to-one association to ShRegion
+	@ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
+	private List<ShPost> shPosts = new ArrayList<>();
 
 	public ShSite() {
 	}
@@ -55,6 +67,28 @@ public class ShSite implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public List<ShPost> getShPosts() {
+		return this.shPosts;
+	}
+
+	public void setShPosts(List<ShPost> shPosts) {
+		this.shPosts = shPosts;
+	}
+
+	public ShPost addShPost(ShPost shPost) {
+		getShPosts().add(shPost);
+		//shPost.addShSite(this);
+
+		return shPost;
+	}
+
+	public ShPost removeShPost(ShPost shPost) {
+		getShPosts().remove(shPost);
+		shPost.removeShSite(this);
+
+		return shPost;
 	}
 
 }

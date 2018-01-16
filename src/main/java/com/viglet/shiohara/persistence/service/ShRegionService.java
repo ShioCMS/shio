@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.persistence.TypedQuery;
 
-import com.viglet.shiohara.persistence.model.ShRegion;
+import com.viglet.shiohara.persistence.model.region.ShRegion;
 
 public class ShRegionService extends ShBaseService {
 	public void save(ShRegion shRegion) {

@@ -16,7 +16,7 @@ import javax.ws.rs.core.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.viglet.shiohara.persistence.model.ShWidget;
+import com.viglet.shiohara.persistence.model.widget.ShWidget;
 import com.viglet.shiohara.persistence.repository.widget.ShWidgetRepository;
 
 @Component

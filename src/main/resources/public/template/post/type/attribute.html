@@ -2,29 +2,27 @@
 <div class="settings">
 	<section class="content no-padding">
 
-	
-			<fieldset class="user-details-top" style="margin-bottom:30px">
 
+		<fieldset class="user-details-top" style="margin-bottom: 30px">
+
+			<div class="form-group">
 				<div class="form-group">
-					<h3>
-					Edit your
-							{{shPostType.title}}'s Attribute
-					</h3>
+					<h3>Model your {{shPostType.title}} Post Type</h3>
 				</div>
 				<div class="pull-right" style="margin: -40px 0 0;">
-					<a ui-sref="content.post-type-item({postTypeId: shPostType.id})"
-						class="btn btn-viglet">Or model this Post Type</a>
+					<a ui-sref="content.post-type-select" class="btn btn-viglet">Or
+						select other Post Type</a>
 
 				</div>
-			</fieldset>
-		
+		</fieldset>
+
 	</section>
 </div>
 
 <div class="row">
 	<div class="col-md-2">
 		<ul class="nav nav-pills nav-stacked">
-			<li class="nav-header">CTD01 Post Type</li>
+			<li class="nav-header">{{shPostType.name}}</li>
 
 			<li><a
 				ui-sref="content.post-type-item({postTypeId: shPostType.id})">Model</a>
@@ -88,8 +86,8 @@
 		<div class="btn-group">
 			<button ng-click="postTypeAttrSave()" class="btn btn-viglet">Save
 				changes</button>
-			<a class="btn btn-viglet dropdown-toggle" data-toggle="dropdown"
-				href><span class="caret"></span></a>
+			<a class="btn btn-viglet dropdown-toggle" data-toggle="dropdown" href><span
+				class="caret"></span></a>
 			<ul class="dropdown-menu">
 				<li><a href><i class="icon-trash"></i> Delete</a></li>
 				<li><a href="duplicatecontent.php"><i

@@ -3,9 +3,6 @@
 <div ui-view>
 	<div class="settings">
 		<section class="content no-padding">
-
-			<form class="user-profile" novalidate="novalidate">
-
 				<fieldset class="user-details-top">
 
 					<div class="form-group">
@@ -13,8 +10,8 @@
 					</div>
 					<div class="pull-right" style="margin: -40px 0 0;">
 						<div class="input-group">
-							0-{{(posts|filter:query).length}} of
-							{{(posts|filter:query).length}} posts&nbsp;&nbsp;
+							0-{{(shPosts|filter:query).length}} of
+							{{(shPosts|filter:query).length}} posts&nbsp;&nbsp;
 							<button type="button" class="btn btn-default">
 								<i class="fa fa-viglet fa-angle-left"></i>
 							</button>
@@ -25,13 +22,12 @@
 
 					</div>
 				</fieldset>
-			</form>
 		</section>
 	</div>
 
 	<div>
 		<div class="row">
-			<div class="col-md-2">
+			<div class="col-lg-2 col-md-3 col-sm-3 col-xs-12">
 				<div class="btn-group">
 					<a href="/post/editor/04A8B013D5ECED5EF8F93A29FB53DF43/"
 						class="btn btn-viglet">New CTD01 </a> <a class="btn btn-viglet"
@@ -51,7 +47,7 @@
 					</li>
 				</ul>
 			</div>
-			<div class="col-md-10">
+			<div class="col-lg-10 col-md-9 col-sm-9 col-xs-12">
 				<ul class="nav nav-tabs" ng-controller="ShSiteListCtrl" >
 					<li class="active"><a href="#" style="color:black"><i class="fa fa-viglet fa-user fa-lg"></i>
 							Only Me</a></li>
@@ -65,7 +61,7 @@
 
 				<table class="table table-hover">
 					<tr ng-repeat="shPost in shPosts">
-						<td><input type="checkbox" /></td>
+						<td><input type="checkbox" /> <a href="#"><span class="glyphicon glyphicon-star-empty close"></span></a></td>					
 						<td><i class="icon-star-empty"></i></td>
 						<td><a ui-sref="content.post-type-item.post-item({postTypeId: shPost.shPostType.id, postId: shPost.id})">
 								{{shPost.title}}</a></td>

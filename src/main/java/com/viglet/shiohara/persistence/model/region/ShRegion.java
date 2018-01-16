@@ -1,7 +1,10 @@
-package com.viglet.shiohara.persistence.model;
+package com.viglet.shiohara.persistence.model.region;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import com.viglet.shiohara.persistence.model.post.ShPost;
+import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 
 /**
  * The persistent class for the ShRegion database table.

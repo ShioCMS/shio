@@ -1,25 +1,29 @@
-package com.viglet.shiohara.persistence.model;
+package com.viglet.shiohara.persistence.model.post;
 
 import java.io.Serializable;
 import javax.persistence.*;
 
 import org.hibernate.annotations.Fetch;
 
+import com.viglet.shiohara.persistence.model.post.type.ShPostType;
+import com.viglet.shiohara.persistence.model.region.ShRegion;
+import com.viglet.shiohara.persistence.model.site.ShSite;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 
 /**
  * The persistent class for the ShPost database table.
  * 
  */
 @Entity
-@NamedQuery(name="ShPost.findAll", query="SELECT s FROM ShPost s")
+@NamedQuery(name = "ShPost.findAll", query = "SELECT s FROM ShPost s")
 public class ShPost implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
 	@Temporal(TemporalType.TIMESTAMP)
@@ -29,20 +33,25 @@ public class ShPost implements Serializable {
 
 	private String title;
 
-	//bi-directional many-to-one association to ShPostType
+	// bi-directional many-to-one association to ShPostType
 	@ManyToOne
-	@JoinColumn(name="post_type_id")
+	@JoinColumn(name = "post_type_id")
 	private ShPostType shPostType;
 
-	//bi-directional many-to-one association to ShPostAttr
+	// bi-directional many-to-one association to ShPostAttr
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "shPost", cascade = CascadeType.ALL)
 	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
 	private List<ShPostAttr> shPostAttrs;
 
-	//bi-directional many-to-one association to ShRegion
+	// bi-directional many-to-one association to ShRegion
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "shPost", cascade = CascadeType.ALL)
 	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
 	private List<ShRegion> shRegions;
+
+	// bi-directional many-to-one association to ShRegion
+	@ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
+	private List<ShSite> shSites = new ArrayList<>();
 
 	public ShPost() {
 	}
@@ -131,4 +140,25 @@ public class ShPost implements Serializable {
 		return shRegion;
 	}
 
+	public List<ShSite> getShSites() {
+		return this.shSites;
+	}
+
+	public void setShSites(List<ShSite> shSites) {
+		this.shSites = shSites;
+	}
+
+	public ShSite addShSite(ShSite shSite) {
+		getShSites().add(shSite);
+		shSite.addShPost(this);
+
+		return shSite;
+	}
+
+	public ShSite removeShSite(ShSite shSite) {
+		getShSites().remove(shSite);
+		shSite.removeShPost(this);
+
+		return shSite;
+	}
 }

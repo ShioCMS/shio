@@ -1,4 +1,4 @@
-package com.viglet.shiohara.persistence.model;
+package com.viglet.shiohara.persistence.model.user;
 
 import java.io.Serializable;
 

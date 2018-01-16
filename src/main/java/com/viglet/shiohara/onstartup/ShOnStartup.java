@@ -40,11 +40,11 @@ public class ShOnStartup implements ApplicationRunner {
 			System.out.println("First Time Configuration ...");
 
 			shLocaleOnStartup.createDefaultRows();
+			shSiteOnStartup.createDefaultRows();
 			shWidgetOnStartup.createDefaultRows();
 			shPostTypeOnStartup.createDefaultRows();
 			shPostOnStartup.createDefaultRows();
 			shConfigVarOnStartup.createDefaultRows();
-			shSiteOnStartup.createDefaultRows();
 			
 			System.out.println("Configuration finished.");
 		}

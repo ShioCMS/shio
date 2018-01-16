@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.persistence.TypedQuery;
 
-import com.viglet.shiohara.persistence.model.ShWidget;
+import com.viglet.shiohara.persistence.model.widget.ShWidget;
 
 public class ShWidgetService extends ShBaseService {
 	public void save(ShWidget shWidget) {

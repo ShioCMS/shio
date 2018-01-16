@@ -19,7 +19,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.viglet.shiohara.persistence.model.ShUser;
+import com.viglet.shiohara.persistence.model.user.ShUser;
 import com.viglet.shiohara.persistence.repository.user.ShUserRepository;
 
 @Component
