@@ -24,6 +24,7 @@
 	color: #fff;
 	background-color: #FF874B;
 }
+.ace_editor { height: 200px; }
 </style>
 <body data-target=".navbar-default">
 	<div id="wrap" style="margin-bottom: 15px;">
@@ -44,8 +45,8 @@
 						<form method="get" action="">
 							<div class="input-group">
 								<input id="q" name="q" type="text" class="form-control"
-									placeholder="{{ 'SEARCH_FOR' | translate }}..."
-									> <span class="input-group-btn">
+									placeholder="{{ 'SEARCH_FOR' | translate }}..."> <span
+									class="input-group-btn">
 									<button class="btn btn-viglet" type="submit">{{
 										'SEARCH' | translate}}</button>
 								</span>
@@ -61,8 +62,10 @@
 		<div class="container">
 			<div ui-view></div>
 		</div>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js"></script>
 		<script src="thirdparty/jquery/dist/jquery.min.js"></script>
-
+		<script src="thirdparty/ace-builds/src-min-noconflict/ace.js"></script>
+		
 		<script src="thirdparty/moment/min/moment-with-locales.min.js"></script>
 		<script src="thirdparty/angular/angular.min.js"></script>
 		<script
@@ -75,7 +78,7 @@
 		<script src="thirdparty/angular-moment/angular-moment.min.js"></script>
 		<script src="thirdparty/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
 		<script src="thirdparty/bootstrap/dist/js/bootstrap.min.js"></script>
-
+		<script src="thirdparty/angular-ui-ace/ui-ace.min.js"></script>
 		<script src="js/vecchioOauth.js"></script>
 		<script src="js/angularOauth.js"></script>
 		<script src="js/dist/shiohara.min.js"></script>

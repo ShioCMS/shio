@@ -1,8 +1,6 @@
 import nodeResolve from 'rollup-plugin-node-resolve';
 import uglify from 'rollup-plugin-uglify';
-import progress from 'rollup-plugin-progress';
 import sourcemaps from 'rollup-plugin-sourcemaps';
-import visualizer from 'rollup-plugin-visualizer';
 
 const MINIFY = process.env.MINIFY;
 const MONOLITHIC = process.env.MONOLITHIC;
@@ -45,66 +43,64 @@ const onwarn = (warning) => {
 
 const plugins = [
   nodeResolve({jsnext: true}),
-  progress({ clearLine: false }),
   sourcemaps(),
 ];
 
 if (MINIFY) plugins.push(uglify(uglifyOpts));
-if (ROUTER && MINIFY) plugins.push(visualizer({ sourcemap: true }));
 
 const extension = MINIFY ? ".min.js" : ".js";
 
 const BASE_CONFIG = {
-  sourcemap: true,
-  exports: 'named',
-  plugins: plugins,
-  banner: banner,
   onwarn: onwarn,
+  plugins: plugins,
 };
+
+const BASE_OUTPUT = {
+  banner: banner,
+  exports: 'named',
+  format: 'umd',
+  sourcemap: true,
+}
 
 const ROUTER_CONFIG = Object.assign({
   input: 'lib-esm/index.js',
   external: ['angular', '@uirouter/core'],
-  output: {
+  output: Object.assign({
     file: 'release/ui-router-angularjs' + extension,
-    format: 'umd',
     name: '@uirouter/angularjs',
     globals: { angular: 'angular', '@uirouter/core': '@uirouter/core' },
-  },
+  }, BASE_OUTPUT),
 }, BASE_CONFIG);
 
 // Also bundles the code from @uirouter/core into the same bundle
 const MONOLITHIC_ROUTER_CONFIG = Object.assign({
   input: 'lib-esm/index.js',
   external: 'angular',
-  output: {
+  output: Object.assign({
     file: 'release/angular-ui-router' + extension,
-    format: 'umd',
     name: '@uirouter/angularjs',
     globals: { angular: 'angular' },
-  },
+  }, BASE_OUTPUT),
 }, BASE_CONFIG);
 
 const EVENTS_CONFIG = Object.assign({}, BASE_CONFIG, {
   input: 'lib-esm/legacy/stateEvents.js',
   external: ['angular', '@uirouter/core'],
-  output: {
+  output: Object.assign({
     file: 'release/stateEvents' + extension,
-    format: 'umd',
     name: '@uirouter/angularjs-state-events',
     globals: { angular: 'angular', '@uirouter/core': '@uirouter/core' },
-  },
+  }, BASE_OUTPUT),
 });
 
 const RESOLVE_CONFIG = Object.assign({}, BASE_CONFIG, {
   input: 'lib-esm/legacy/resolveService.js',
   external: ['angular', '@uirouter/core'],
-  output: {
+  output: Object.assign({
     file: 'release/resolveService' + extension,
-    format: 'umd',
     name: '@uirouter/angularjs-resolve-service',
     globals: { angular: 'angular', '@uirouter/core': '@uirouter/core' },
-  },
+  }, BASE_OUTPUT),
 });
 
 const CONFIG =

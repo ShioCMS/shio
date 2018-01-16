@@ -27,6 +27,7 @@
 		"angular-bootstrap": "*",
 		"angular-cookies": "*",
 		"angular-moment": "*",
+		"angular-ui-ace": "*",
 		"font-awesome": "*"
 	}
 }

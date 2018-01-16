@@ -25,9 +25,14 @@ public class ShPostTypeOnStartup {
 	public void createDefaultRows() {
 
 		if (shPostTypeRepository.findAll().isEmpty()) {
-			// Text
+			
 			ShWidget shWidgetText = shWidgetRepository.findById(1);
-
+			ShWidget shWidgetTextArea = shWidgetRepository.findById(2);
+			ShWidget shWidgetAceEditorJS = shWidgetRepository.findById(3);
+			ShWidget shWidgetAceEditorHTML = shWidgetRepository.findById(4);
+			
+			// Text
+			
 			ShPostType shPostType = new ShPostType();
 			shPostType.setName("PT-TEXT");
 			shPostType.setTitle("Text");
@@ -182,7 +187,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
 			// Text Area
-			ShWidget shWidgetTextArea = shWidgetRepository.findById(2);
+		
 
 			shPostType = new ShPostType();
 			shPostType.setName("PT-TEXT-AREA");
@@ -295,7 +300,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setOrdinal(3);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
-			shPostTypeAttr.setShWidget(shWidgetTextArea);
+			shPostTypeAttr.setShWidget(shWidgetAceEditorJS);
 
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
@@ -309,7 +314,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setOrdinal(3);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
-			shPostTypeAttr.setShWidget(shWidgetTextArea);
+			shPostTypeAttr.setShWidget(shWidgetAceEditorHTML);
 
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 		}
