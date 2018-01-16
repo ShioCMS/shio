@@ -68,16 +68,18 @@ public class ShSites extends HttpServlet {
 		for (ShPostAttr shPostAttr : shPostAttrs)
 			shPostAttrMap.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr);
 
+		String javascript = shPostAttrMap.get("Javascript").getStrValue();
+		String html = shPostAttrMap.get("HTML").getStrValue();
 		String name = req.getParameter("name");
 
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
-
 		Bindings bindings = engine.createBindings();
 		bindings.put("name", name);
+		bindings.put("html", html);
 
-		Object result = engine.eval(shPostAttrMap.get("Javascript").getStrValue());
+		Object result = engine.eval(javascript, bindings);
 
-		resp.setContentType("text/plain");
+		resp.setContentType("text/html");
 		resp.getWriter().write(result.toString());
 	}
 

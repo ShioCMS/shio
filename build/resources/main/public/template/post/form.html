@@ -9,7 +9,7 @@ div.affix {
 
 
 <div
-	style="background-color:  #FFF0E8;; height: 55px; width: 100%; padding: 10px; margin-bottom: 10px"
+	style="background-color: #FFF0E8;; height: 55px; width: 100%; padding: 10px; margin-bottom: 10px"
 	class="affix-top" data-spy="affix" data-offset-top="147">
 	<div class="form-actions">
 		<div class="btn-group pull-right">
@@ -23,9 +23,10 @@ div.affix {
 		</div>
 	</div>
 </div>
-
+	
 <div class="form-group" ng-repeat="shPostAttr in shPost.shPostAttrs">
 	<label>{{shPostAttr.shPostTypeAttr.label}}</label>
 	<div ng-include="shPostAttr.shPostTypeAttr.shWidget.implementationCode"></div>
 </div>
+
 

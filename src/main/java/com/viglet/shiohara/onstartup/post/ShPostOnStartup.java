@@ -151,7 +151,7 @@ public class ShPostOnStartup {
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
-			
+
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "Javascript");
 
 			shPostAttr = new ShPostAttr();
@@ -159,11 +159,15 @@ public class ShPostOnStartup {
 			shPostAttr.setShPostType(shPostPageTemplate);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setShPostTypeAttrId(3);
-			shPostAttr.setStrValue("var greeting='hello world ';\n" + "print(greeting);\n" + "greeting;");
+			shPostAttr.setStrValue(
+					"load('https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js');\n"
+							+ "var template = Handlebars.compile(html);\n"
+							+ "var context = {title: \"My New Post\", body: \"This is my first post!\"};\n"
+							+ "var htmlTest   = template(context);\n" + "htmlTest");
 			shPostAttr.setType(1);
-			
+
 			shPostAttrRepository.save(shPostAttr);
-			
+
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "HTML");
 
 			shPostAttr = new ShPostAttr();
@@ -171,9 +175,10 @@ public class ShPostOnStartup {
 			shPostAttr.setShPostType(shPostPageTemplate);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setShPostTypeAttrId(4);
-			shPostAttr.setStrValue("<h1>Hi World</h1>");
+			shPostAttr.setStrValue("<div class=\"entry\">\n" + "  <h1>{{title}}</h1>\n" + "  <div class=\"body\">\n"
+					+ "    {{body}}\n" + "  </div>\n" + "</div>");
 			shPostAttr.setType(1);
-			
+
 			shPostAttrRepository.save(shPostAttr);
 		}
 
