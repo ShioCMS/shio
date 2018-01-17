@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.viglet.shiohara.api.ShAPI;
 import com.viglet.shiohara.api.filter.ShCORSFilter;
 import com.viglet.shiohara.api.post.ShPostAPI;
 import com.viglet.shiohara.api.post.type.ShPostTypeAPI;
@@ -31,6 +32,7 @@ public class JerseyConfig extends ResourceConfig {
 		// register jackson for json
 		register(new ObjectMapperContextResolver(objectMapper));
 		register(ShCORSFilter.class);
+		register(ShAPI.class);
 		register(ShPostAPI.class);
 		register(ShPostTypeAPI.class);
 		register(MultiPartFeature.class);
