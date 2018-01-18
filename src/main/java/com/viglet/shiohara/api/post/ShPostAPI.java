@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.post.ShPost;
-import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
@@ -70,7 +69,6 @@ public class ShPostAPI {
 				shPostAttrEdit.setDateValue(shPostAttr.getDateValue());
 				shPostAttrEdit.setIntValue(shPostAttr.getIntValue());
 				shPostAttrEdit.setStrValue(shPostAttr.getStrValue());
-
 				shPostAttrRepository.saveAndFlush(shPostAttrEdit);
 			} else {
 				//

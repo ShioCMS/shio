@@ -11,6 +11,8 @@ public interface ShPostRepository extends JpaRepository<ShPost, Integer> {
 	List<ShPost> findAll();
 
 	ShPost findById(int id);
+	
+	ShPost findByTitle(String title);
 
 	ShPost save(ShPost shPost);
 
