@@ -69,6 +69,7 @@
 					<th>Summary</th>
 					<th>Many</th>
 					<th>Required</th>
+					<th>Name</th>
 					<th>Label</th>
 					<th>Widget</th>
 					<th></th>
@@ -99,10 +100,10 @@
 									ng-true-value="1" ng-false-value="0">
 							</div>
 						</td>
-
+						<td><input type="text" class="form-control"
+							ng-model="shPostTypeAttr.name" /></td>
 						<td><input type="text" class="form-control"
 							ng-model="shPostTypeAttr.label" /></td>
-
 						<td><select class="form-control"
 							ng-model="shPostTypeAttr.shWidget"
 							ng-options="shWidget as shWidget.name for shWidget in shWidgets track by shWidget.id">
