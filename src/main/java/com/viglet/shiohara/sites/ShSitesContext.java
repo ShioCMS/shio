@@ -97,6 +97,7 @@ public class ShSitesContext {
 		JSONObject shPostItemAttrs = new JSONObject();
 		JSONObject shPostItemSystemAttrs = new JSONObject();
 		shPostItemSystemAttrs.put("id", shPostItem.getId());
+		shPostItemSystemAttrs.put("post-type-id", shPostItem.getShPostType().getId());
 		shPostItemSystemAttrs.put("title", shPostItem.getTitle());
 		shPostItemSystemAttrs.put("summary", shPostItem.getSummary());
 
