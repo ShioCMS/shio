@@ -161,9 +161,8 @@ public class ShPostOnStartup {
 			shPostAttr.setShPostTypeAttrId(3);
 			shPostAttr.setStrValue(
 					"load('https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js');\n"
-							+ "var template = Handlebars.compile(html);\n"
-							+ "var context = {title: \"My New Post\", body: \"This is my first post!\"};\n"
-							+ "var htmlTest   = template(context);\n" + "htmlTest");
+							+ "var template = Handlebars.compile(html);\n" + "var htmlTest = template(post);\n"
+							+ "htmlTest;");
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
@@ -175,8 +174,10 @@ public class ShPostOnStartup {
 			shPostAttr.setShPostType(shPostPageTemplate);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setShPostTypeAttrId(4);
-			shPostAttr.setStrValue("<div class=\"entry\">\n" + "  <h1>{{title}}</h1>\n" + "  <div class=\"body\">\n"
-					+ "    {{body}}\n" + "  </div>\n" + "</div>");
+			shPostAttr.setStrValue("<!DOCTYPE html>\n" + "<html>\n" + "    <head>\n"
+					+ "    <title>Sample Site</title>\n" + "    </head>\n" + "<h1>Testando o Editor</h1>\n"
+					+ "<div class=\"entry\">\n" + "  <h1>{{title}}</h1>\n" + "  <div class=\"body\">\n"
+					+ "    {{summary}}\n" + "  </div>\n" + "</div>\n" + "</html>");
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);

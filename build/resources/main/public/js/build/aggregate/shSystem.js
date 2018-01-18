@@ -99,9 +99,28 @@ shioharaApp.service('shAPIServerService', [
 			var shPort = $location.port();
 			var shAPIContext = "/api";
 			var shEmbServer = shProtocol + "://" + shHostname + ":"
-					+ shPort + shAPIContext;
+					+ shPort;
+			
+			var shEmbAPIServer = shEmbServer + shAPIContext;
 			console.log(shEmbServer);
 
+			this.server = function() {
+
+				if ($cookies.get('shServer') != null)
+					return $cookies.get('shServer');
+				else {
+					$http({
+						method : 'GET',
+						url : shEmbAPIServer
+					}).then(function successCallback(response) {
+						$cookies.put('shServer', shEmbServer);
+					}, function errorCallback(response) {
+						$cookies.put('shServer', 'http://localhost:2710');
+
+					});
+					return shEmbServer;
+				}
+			}
 			this.get = function() {
 
 				if ($cookies.get('shAPIServer') != null)
@@ -109,14 +128,14 @@ shioharaApp.service('shAPIServerService', [
 				else {
 					$http({
 						method : 'GET',
-						url : shEmbServer
+						url : shEmbAPIServer
 					}).then(function successCallback(response) {
-						$cookies.put('shAPIServer', shEmbServer);
+						$cookies.put('shAPIServer', shEmbAPIServer);
 					}, function errorCallback(response) {
 						$cookies.put('shAPIServer', 'http://localhost:2710' + shAPIContext);
 
 					});
-					return shEmbServer;
+					return shEmbAPIServer;
 				}
 			}
 		} ]);
