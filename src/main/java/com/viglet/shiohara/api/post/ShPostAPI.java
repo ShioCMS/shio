@@ -17,10 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
+import com.viglet.shiohara.persistence.model.user.ShUser;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
+import com.viglet.shiohara.persistence.repository.user.ShUserRepository;
 
 @Component
 @Path("/post")
@@ -32,7 +34,9 @@ public class ShPostAPI {
 	ShPostTypeRepository shPostTypeRepository;
 	@Autowired
 	ShPostAttrRepository shPostAttrRepository;
-
+	@Autowired
+	ShUserRepository shUserRepository;
+	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<ShPost> list() throws Exception {
@@ -82,6 +86,10 @@ public class ShPostAPI {
 
 		shPostRepository.saveAndFlush(shPostEdit);
 
+		ShUser shUser  = shUserRepository.findById(1);
+		shUser.setLastPostType(String.valueOf(shPostEdit.getShPostType().getId()));
+		shUserRepository.saveAndFlush(shUser);
+		
 		return shPostEdit;
 	}
 
@@ -117,6 +125,10 @@ public class ShPostAPI {
 			shPostAttr.setShPost(shPost);
 			shPostAttrRepository.saveAndFlush(shPostAttr);
 		}
+		
+		ShUser shUser  = shUserRepository.findById(1);
+		shUser.setLastPostType(String.valueOf(shPost.getShPostType().getId()));
+		shUserRepository.saveAndFlush(shUser);
 		
 		return shPost;
 
