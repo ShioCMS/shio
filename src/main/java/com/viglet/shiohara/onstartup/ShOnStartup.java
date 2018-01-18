@@ -10,6 +10,7 @@ import com.viglet.shiohara.onstartup.post.type.ShPostTypeOnStartup;
 import com.viglet.shiohara.onstartup.site.ShSiteOnStartup;
 import com.viglet.shiohara.onstartup.system.ShConfigVarOnStartup;
 import com.viglet.shiohara.onstartup.system.ShLocaleOnStartup;
+import com.viglet.shiohara.onstartup.user.ShUserOnStartup;
 import com.viglet.shiohara.onstartup.widget.ShWidgetOnStartup;
 import com.viglet.shiohara.persistence.repository.system.ShConfigVarRepository;
 
@@ -31,6 +32,9 @@ public class ShOnStartup implements ApplicationRunner {
 	private ShConfigVarOnStartup shConfigVarOnStartup;
 	@Autowired
 	private ShSiteOnStartup shSiteOnStartup;
+	@Autowired
+	private ShUserOnStartup shUserOnStartup;
+	
 	@Override
 	public void run(ApplicationArguments arg0) throws Exception {
 		final String FIRST_TIME = "FIRST_TIME";
@@ -44,6 +48,7 @@ public class ShOnStartup implements ApplicationRunner {
 			shWidgetOnStartup.createDefaultRows();
 			shPostTypeOnStartup.createDefaultRows();
 			shPostOnStartup.createDefaultRows();
+			shUserOnStartup.createDefaultRows();
 			shConfigVarOnStartup.createDefaultRows();
 			
 			System.out.println("Configuration finished.");
