@@ -116,6 +116,73 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
+			// Theme Template
+
+			ShPostType shPostTheme = shPostTypeRepository.findByName("PT-THEME");
+
+			shPost = new ShPost();
+			shPost.setDate(new Date());
+			shPost.setShPostType(shPostTheme);
+			shPost.setSummary("Home Theme");
+			shPost.setTitle("Home Theme");
+
+			shPostRepository.save(shPost);
+
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTheme, "title");
+
+			shPostAttr = new ShPostAttr();
+			shPostAttr.setShPost(shPost);
+			shPostAttr.setShPostType(shPostTheme);
+			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+			shPostAttr.setShPostTypeAttrId(1);
+			shPostAttr.setStrValue("Home Theme");
+			shPostAttr.setType(1);
+
+			shPostAttrRepository.save(shPostAttr);
+
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTheme, "Description");
+
+			shPostAttr = new ShPostAttr();
+			shPostAttr.setShPost(shPost);
+			shPostAttr.setShPostType(shPostTheme);
+			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+			shPostAttr.setShPostTypeAttrId(2);
+			shPostAttr.setStrValue("Home Theme");
+			shPostAttr.setType(1);
+
+			shPostAttrRepository.save(shPostAttr);
+
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTheme, "CSS");
+
+			shPostAttr = new ShPostAttr();
+			shPostAttr.setShPost(shPost);
+			shPostAttr.setShPostType(shPostTheme);
+			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+			shPostAttr.setShPostTypeAttrId(3);
+			shPostAttr.setStrValue(
+					"<link href=\"https://blackrockdigital.github.io/startbootstrap-one-page-wonder/vendor/bootstrap/css/bootstrap.min.css\" rel=\"stylesheet\">\n"
+							+ "<link href=\"https://fonts.googleapis.com/css?family=Catamaran:100,200,300,400,500,600,700,800,900\" rel=\"stylesheet\">\n"
+							+ "<link href=\"https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i\" rel=\"stylesheet\">\n"
+							+ "<link href=\"https://blackrockdigital.github.io/startbootstrap-one-page-wonder/css/one-page-wonder.min.css\" rel=\"stylesheet\">");
+			shPostAttr.setType(1);
+
+			shPostAttrRepository.save(shPostAttr);
+
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTheme, "Javascript");
+
+			shPostAttr = new ShPostAttr();
+			shPostAttr.setShPost(shPost);
+			shPostAttr.setShPostType(shPostTheme);
+			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+			shPostAttr.setShPostTypeAttrId(4);
+			shPostAttr.setStrValue("<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->\n"
+					+ "<script src=\"https://viglet.ai/ui/thirdparty/jquery/dist/jquery.min.js\"></script>\n"
+					+ "<!-- Include all compiled plugins (below), or include individual files as needed -->\n"
+					+ "<script src=\"https://viglet.ai/ui/thirdparty/bootstrap/dist/js/bootstrap.min.js\"></script>");
+			shPostAttr.setType(1);
+
+			shPostAttrRepository.save(shPostAttr);
+
 			// Page Template
 
 			ShPostType shPostPageTemplate = shPostTypeRepository.findByName("PT-PAGE-TEMPLATE");
@@ -161,8 +228,7 @@ public class ShPostOnStartup {
 			shPostAttr.setShPostTypeAttrId(3);
 			shPostAttr.setStrValue(
 					"load('https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js');\n"
-							+ "var template = Handlebars.compile(html);\n" + "var htmlTest = template(post);\n"
-							+ "htmlTest;");
+							+ "var template = Handlebars.compile(html);\n" + "var html = template(post);\n" + "html;");
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
@@ -175,9 +241,33 @@ public class ShPostOnStartup {
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setShPostTypeAttrId(4);
 			shPostAttr.setStrValue("<!DOCTYPE html>\n" + "<html>\n" + "    <head>\n"
-					+ "    <title>Sample Site</title>\n" + "    </head>\n" + "<h1>Testando o Editor</h1>\n"
-					+ "<div class=\"entry\">\n" + "  <h1>{{title}}</h1>\n" + "  <div class=\"body\">\n"
-					+ "    {{summary}}\n" + "  </div>\n" + "</div>\n" + "</html>");
+					+ "    <title>Sample Site | Viglet Shiohara</title>\n" + "    {{{theme.css}}}\n" + "    </head>\n"
+					+ "    <body>\n" + "\n" + "    <!-- Navigation -->\n"
+					+ "    <nav class=\"navbar navbar-expand-lg navbar-dark navbar-custom fixed-top\">\n"
+					+ "      <div class=\"container\">\n"
+					+ "        <a class=\"navbar-brand\" href=\"#\">Viglet Shiohara</a>\n"
+					+ "        <button class=\"navbar-toggler\" type=\"button\" data-toggle=\"collapse\" data-target=\"#navbarResponsive\" aria-controls=\"navbarResponsive\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">\n"
+					+ "          <span class=\"navbar-toggler-icon\"></span>\n" + "        </button>\n"
+					+ "        <div class=\"collapse navbar-collapse\" id=\"navbarResponsive\">\n"
+					+ "          <ul class=\"navbar-nav ml-auto\">\n" + "            <li class=\"nav-item\">\n"
+					+ "              <a class=\"nav-link\" href=\"#\">Sign Up</a>\n" + "            </li>\n"
+					+ "            <li class=\"nav-item\">\n"
+					+ "              <a class=\"nav-link\" href=\"#\">Log In</a>\n" + "            </li>\n"
+					+ "          </ul>\n" + "        </div>\n" + "      </div>\n" + "    </nav>\n" + "\n"
+					+ "    <header class=\"masthead text-center text-white\">\n"
+					+ "      <div class=\"masthead-content\">\n" + "        <div class=\"container\">\n"
+					+ "          <h1 class=\"masthead-heading mb-0\">{{system.title}}</h1>\n"
+					+ "          <h2 class=\"masthead-subheading mb-0\">{{system.summary}}</h2>\n"
+					+ "          <a href=\"#\" class=\"btn btn-primary btn-xl rounded-pill mt-5\">Learn More</a>\n"
+					+ "        </div>\n" + "      </div>\n" + "      <div class=\"bg-circle-1 bg-circle\"></div>\n"
+					+ "      <div class=\"bg-circle-2 bg-circle\"></div>\n"
+					+ "      <div class=\"bg-circle-3 bg-circle\"></div>\n"
+					+ "      <div class=\"bg-circle-4 bg-circle\"></div>\n" + "    </header>\n" + "\n" + "    \n"
+					+ "    <!-- Footer -->\n" + "    <footer class=\"py-5 bg-black\">\n"
+					+ "      <div class=\"container\">\n"
+					+ "        <p class=\"m-0 text-center text-white small\">Copyright &copy; Viglet Shiohara 2018</p>\n"
+					+ "      </div>\n" + "      <!-- /.container -->\n" + "    </footer>\n" + "\n"
+					+ "{{{theme.javascript}}}\n" + "  </body>\n" + "</html>");
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);

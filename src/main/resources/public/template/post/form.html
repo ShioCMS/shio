@@ -29,7 +29,7 @@ div.affix {
 	</div>
 </div>
 
-<div class="form-group" ng-repeat="shPostAttr in shPost.shPostAttrs">
+<div class="form-group" ng-repeat="shPostAttr in shPost.shPostAttrs |orderBy : 'shPostTypeAttr.ordinal'" >
 	<label>{{shPostAttr.shPostTypeAttr.label}}</label>
 	<div ng-include="shPostAttr.shPostTypeAttr.shWidget.implementationCode"></div>
 </div>

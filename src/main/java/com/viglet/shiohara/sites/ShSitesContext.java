@@ -13,6 +13,8 @@ import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -60,28 +62,59 @@ public class ShSitesContext {
 				break;
 			}
 		}
-		System.out.println(shContext + " " + shSite + " " + shFormat + " " + shLocale + " " + contentPath.toString());
+		// System.out.println(shContext + " " + shSite + " " + shFormat + " " + shLocale
+		// + " " + contentPath.toString());
 
 		String postName = contentPath.get(contentPath.size() - 1).replaceAll("-", " ");
-		
+
 		ShPost shPostItem = shPostRepository.findByTitle(postName);
 
-		ShPost shPost = shPostRepository.findById(4); // Page Template Post
-		List<ShPostAttr> shPostAttrs = shPost.getShPostAttrs();
+		ShPost shPostPageTemplate = shPostRepository.findById(5); // Page Template Post
+	
 
-		Map<String, ShPostAttr> shPostAttrMap = new HashMap<String, ShPostAttr>();
-		for (ShPostAttr shPostAttr : shPostAttrs)
-			shPostAttrMap.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr);
+		List<ShPostAttr> shPostPageTemplateAttrs = shPostPageTemplate.getShPostAttrs();
 
-		String javascript = shPostAttrMap.get("Javascript").getStrValue();
-		String html = shPostAttrMap.get("HTML").getStrValue();
+		Map<String, ShPostAttr> shPostPageTemplateMap = new HashMap<String, ShPostAttr>();
+		for (ShPostAttr shPostPageTemplateAttr : shPostPageTemplateAttrs)
+			shPostPageTemplateMap.put(shPostPageTemplateAttr.getShPostTypeAttr().getName(), shPostPageTemplateAttr);
 
+		String javascript = shPostPageTemplateMap.get("Javascript").getStrValue();
+		String html = shPostPageTemplateMap.get("HTML").getStrValue();
+
+		
+		ShPost shPostTheme = shPostRepository.findById(4); // Theme Post
+		List<ShPostAttr> shPostThemeAttrs = shPostTheme.getShPostAttrs();
+
+		Map<String, ShPostAttr> shPostThemeMap = new HashMap<String, ShPostAttr>();
+		for (ShPostAttr shPostThemeAttr : shPostThemeAttrs)
+			shPostThemeMap.put(shPostThemeAttr.getShPostTypeAttr().getName(), shPostThemeAttr);
+
+		
+		JSONObject shPostItemThemeAttrs = new JSONObject();
+		shPostItemThemeAttrs.put("javascript", shPostThemeMap.get("Javascript").getStrValue());
+		shPostItemThemeAttrs.put("css", shPostThemeMap.get("CSS").getStrValue());
+		
+		JSONObject shPostItemAttrs = new JSONObject();
+		JSONObject shPostItemSystemAttrs = new JSONObject();
+		shPostItemSystemAttrs.put("id", shPostItem.getId());
+		shPostItemSystemAttrs.put("title", shPostItem.getTitle());
+		shPostItemSystemAttrs.put("summary", shPostItem.getSummary());
+
+		shPostItemAttrs.put("system", shPostItemSystemAttrs);
+		shPostItemAttrs.put("theme", shPostItemThemeAttrs); 
+		
+		for (ShPostAttr shPostAttr : shPostItem.getShPostAttrs()) {
+			if (shPostAttr.getShPostTypeAttr().getName() != null) {
+				shPostItemAttrs.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
+			}
+		}
+
+		
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 		Bindings bindings = engine.createBindings();
-		bindings.put("name", postName);
 		bindings.put("html", html);
-		bindings.put("post", shPostItem);
-
+		// PostItem Attribs
+		javascript = "var post = " + shPostItemAttrs.toString() + ";" + javascript;
 		Object result = engine.eval(javascript, bindings);
 
 		response.setContentType("text/html");
