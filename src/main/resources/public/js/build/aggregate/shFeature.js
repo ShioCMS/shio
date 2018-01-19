@@ -30,7 +30,7 @@ shioharaApp.controller('ShContentCtrl', [
 					id : $scope.shUser.lastPostType
 				});
 			});
-
+			
 			$scope.shPosts = shPostResource.query();
 		} ]);
 shioharaApp.controller('ShPostFormCtrl', [ "$scope", "$http", "$window",
@@ -243,9 +243,28 @@ shioharaApp.controller('ShPostNewCtrl', [
 						$scope.shPost = response.data;
 					}));
 			$scope.postEditForm = "template/post/form.html";
+			
+			$scope.openPreviewURL = function() {
+				var previewURL = shAPIServerService.server().concat(
+						"/sites/SampleSite/default/pt-br/"
+								+ $scope.shPost.title.replace(new RegExp(" ",
+										'g'), "-"));
+				 $window.open(previewURL,"_self");
+
+			}
+			
 			$scope.postSave = function() {
-				delete $scope.shPost.id;
-				shPostResource.save($scope.shPost);
+				if ($scope.shPost.id != null && $scope.shPost.id > 0) {
+					$scope.shPost.$update(function() {
+						// $state.go('content');
+					});
+				} else {
+					delete $scope.shPost.id;
+					shPostResource.save($scope.shPost, function(response) {
+						console.log(response);
+						$scope.shPost = response;
+					});
+				}
 			}
 		} ]);
 shioharaApp.factory('shPostResource', [ '$resource', 'shAPIServerService', function($resource, shAPIServerService) {
@@ -272,17 +291,28 @@ shioharaApp.controller('ShPostEditCtrl', [
 
 			$scope.shPost = shPostResource.get({
 				id : $scope.postId
-			}, function() {
-				$scope.previewURL = shAPIServerService.server().concat(
+			});
+
+			$scope.openPreviewURL = function() {
+				var previewURL = shAPIServerService.server().concat(
 						"/sites/SampleSite/default/pt-br/"
 								+ $scope.shPost.title.replace(new RegExp(" ",
 										'g'), "-"));
-			});
+				 $window.open(previewURL,"_self");
 
+			}
 			$scope.postEditForm = "template/post/form.html";
+			$scope.postDelete = function() {
+				shPostResource
+				.delete({
+					id : $scope.shPost.id
+				},function() {
+					$state.go('content',{}, {reload: true});
+				});
+			}
 			$scope.postSave = function() {
 				$scope.shPost.$update(function() {
-					//$state.go('content');
+					// $state.go('content');
 				});
 			}
 		} ]);

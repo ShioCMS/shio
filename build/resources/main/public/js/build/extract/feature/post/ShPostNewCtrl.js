@@ -18,8 +18,27 @@ shioharaApp.controller('ShPostNewCtrl', [
 						$scope.shPost = response.data;
 					}));
 			$scope.postEditForm = "template/post/form.html";
+			
+			$scope.openPreviewURL = function() {
+				var previewURL = shAPIServerService.server().concat(
+						"/sites/SampleSite/default/pt-br/"
+								+ $scope.shPost.title.replace(new RegExp(" ",
+										'g'), "-"));
+				 $window.open(previewURL,"_self");
+
+			}
+			
 			$scope.postSave = function() {
-				delete $scope.shPost.id;
-				shPostResource.save($scope.shPost);
+				if ($scope.shPost.id != null && $scope.shPost.id > 0) {
+					$scope.shPost.$update(function() {
+						// $state.go('content');
+					});
+				} else {
+					delete $scope.shPost.id;
+					shPostResource.save($scope.shPost, function(response) {
+						console.log(response);
+						$scope.shPost = response;
+					});
+				}
 			}
 		} ]);

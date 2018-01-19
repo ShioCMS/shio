@@ -13,17 +13,28 @@ shioharaApp.controller('ShPostEditCtrl', [
 
 			$scope.shPost = shPostResource.get({
 				id : $scope.postId
-			}, function() {
-				$scope.previewURL = shAPIServerService.server().concat(
+			});
+
+			$scope.openPreviewURL = function() {
+				var previewURL = shAPIServerService.server().concat(
 						"/sites/SampleSite/default/pt-br/"
 								+ $scope.shPost.title.replace(new RegExp(" ",
 										'g'), "-"));
-			});
+				 $window.open(previewURL,"_self");
 
+			}
 			$scope.postEditForm = "template/post/form.html";
+			$scope.postDelete = function() {
+				shPostResource
+				.delete({
+					id : $scope.shPost.id
+				},function() {
+					$state.go('content',{}, {reload: true});
+				});
+			}
 			$scope.postSave = function() {
 				$scope.shPost.$update(function() {
-					//$state.go('content');
+					// $state.go('content');
 				});
 			}
 		} ]);

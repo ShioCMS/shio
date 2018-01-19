@@ -30,6 +30,6 @@ shioharaApp.controller('ShContentCtrl', [
 					id : $scope.shUser.lastPostType
 				});
 			});
-
+			
 			$scope.shPosts = shPostResource.query();
 		} ]);
