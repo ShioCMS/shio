@@ -5,6 +5,7 @@
 	<persistence-unit name="shiohara-app">
 		<provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
 		<!-- <non-jta-data-source>jdbc/ShioharaDS</non-jta-data-source> -->
+		<class>com.viglet.shiohara.persistence.model.channel.ShChannel</class>
 		<class>com.viglet.shiohara.persistence.model.post.ShPost</class>
 		<class>com.viglet.shiohara.persistence.model.post.ShPostAttr</class>
 		<class>com.viglet.shiohara.persistence.model.post.type.ShPostType</class>
