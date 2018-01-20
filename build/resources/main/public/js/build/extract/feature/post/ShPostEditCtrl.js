@@ -16,28 +16,50 @@ shioharaApp.controller('ShPostEditCtrl', [
 			});
 
 			$scope.openPreviewURL = function() {
+				
+				if ($scope.shPost.shChannel != null) {
 				$scope
 				.$evalAsync($http
 						.get(
 								shAPIServerService
 										.get()
 										.concat(
-												"/channel/" + $scope.shPost.shChannel.id + "/path"))
+												"/channel/" + $scope.shPost.shChannel.id + "/path")
+												)
 						.then(
 								function(response) {
+									if ($scope.shPost.shPostType.name == 'PT-CHANNEL-INDEX') {
+										var previewURL = shAPIServerService.server().concat(
+												"/sites/SampleSite/default/pt-br" + response.data.channelPath.replace(new RegExp(" ",
+																'g'), "-"));
+									}
+									else {
 									var previewURL = shAPIServerService.server().concat(
-											"/sites/SampleSite/default/pt-br" + response.data.channelPath
+											"/sites/SampleSite/default/pt-br" + response.data.channelPath.replace(new RegExp(" ",
+											'g'), "-")
 													+ $scope.shPost.title.replace(new RegExp(" ",
 															'g'), "-"));
-									 $window.open(previewURL,"_self");
+									 
+									}
+									$window.open(previewURL,"_self");
 								}));
-				var previewURL = shAPIServerService.server().concat(
-						"/sites/SampleSite/default/pt-br/"
-								+ $scope.shPost.title.replace(new RegExp(" ",
-										'g'), "-"));
-				 $window.open(previewURL,"_self");
-
+				}
+				else {
+					if ($scope.shPost.shPostType.name == 'PT-CHANNEL-INDEX') {
+						var previewURL = shAPIServerService.server().concat(
+								"/sites/SampleSite/default/pt-br" + response.data.channelPath.replace(new RegExp(" ",
+												'g'), "-"));
+					}
+					else {
+					   var previewURL = shAPIServerService.server().concat(
+							"/sites/SampleSite/default/pt-br/"
+									+ $scope.shPost.title.replace(new RegExp(" ",
+											'g'), "-"));
+					}
+					 $window.open(previewURL,"_self");
+				}
 			}
+	
 			$scope.postEditForm = "template/post/form.html";
 			$scope.postDelete = function() {
 				shPostResource
