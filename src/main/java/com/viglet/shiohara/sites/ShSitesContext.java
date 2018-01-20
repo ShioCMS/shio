@@ -21,21 +21,29 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.HandlerMapping;
 
+import com.viglet.shiohara.channel.ShChannelUtils;
+import com.viglet.shiohara.persistence.model.channel.ShChannel;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
+import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
+import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
 
 @Controller
 public class ShSitesContext {
 	@Autowired
 	ShPostRepository shPostRepository;
 	@Autowired
+	ShSiteRepository shSiteRepository;
+	@Autowired
 	ShPostAttrRepository shPostAttrRepository;
+	@Autowired
+	ShChannelUtils shChannelUtils;
 
-	@RequestMapping("/sites/{shSite}/{shFormat}/{shLocale}/**")
+	@RequestMapping("/sites/{shSiteName}/{shFormat}/{shLocale}/**")
 	private void sitesFull(HttpServletRequest request, HttpServletResponse response,
-			@PathVariable(value = "shSite") String shSite, @PathVariable(value = "shFormat") String shFormat,
+			@PathVariable(value = "shSiteName") String shSiteName, @PathVariable(value = "shFormat") String shFormat,
 			@PathVariable(value = "shLocale") String shLocale) throws IOException, ScriptException {
 
 		String url = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
@@ -49,7 +57,7 @@ public class ShSitesContext {
 				shContext = contexts[i];
 				break;
 			case 2:
-				shSite = contexts[i];
+				shSiteName = contexts[i];
 				break;
 			case 3:
 				shFormat = contexts[i];
@@ -67,10 +75,25 @@ public class ShSitesContext {
 
 		String postName = contentPath.get(contentPath.size() - 1).replaceAll("-", " ");
 
-		ShPost shPostItem = shPostRepository.findByTitle(postName);
+		ArrayList<String> channelPathArray = contentPath;
+		
+		channelPathArray.remove(channelPathArray.size() - 1);
+		String channelPath = "/";
+		for (String path : channelPathArray) {
+			channelPath =  channelPath + path + "/";
+		}
+		
+		ShSite shSite = shSiteRepository.findById(1);
 
-		ShPost shPostPageTemplate = shPostRepository.findById(5); // Page Template Post
-	
+		ShChannel shChannel = shChannelUtils.channelFromPath(shSite, channelPath);
+
+		System.out.println("shSite: " + shSite.getName());
+		System.out.println("shChannelPath: " + channelPath);
+		System.out.println("shChannel: " + shChannel.getId());
+		
+		ShPost shPostItem = shPostRepository.findByShChannelAndTitle(shChannel, postName);
+
+		ShPost shPostPageTemplate = shPostRepository.findById(6); // Page Template Post
 
 		List<ShPostAttr> shPostPageTemplateAttrs = shPostPageTemplate.getShPostAttrs();
 
@@ -81,19 +104,17 @@ public class ShSitesContext {
 		String javascript = shPostPageTemplateMap.get("Javascript").getStrValue();
 		String html = shPostPageTemplateMap.get("HTML").getStrValue();
 
-		
-		ShPost shPostTheme = shPostRepository.findById(4); // Theme Post
+		ShPost shPostTheme = shPostRepository.findById(5); // Theme Post
 		List<ShPostAttr> shPostThemeAttrs = shPostTheme.getShPostAttrs();
 
 		Map<String, ShPostAttr> shPostThemeMap = new HashMap<String, ShPostAttr>();
 		for (ShPostAttr shPostThemeAttr : shPostThemeAttrs)
 			shPostThemeMap.put(shPostThemeAttr.getShPostTypeAttr().getName(), shPostThemeAttr);
 
-		
 		JSONObject shPostItemThemeAttrs = new JSONObject();
 		shPostItemThemeAttrs.put("javascript", shPostThemeMap.get("Javascript").getStrValue());
 		shPostItemThemeAttrs.put("css", shPostThemeMap.get("CSS").getStrValue());
-		
+
 		JSONObject shPostItemAttrs = new JSONObject();
 		JSONObject shPostItemSystemAttrs = new JSONObject();
 		shPostItemSystemAttrs.put("id", shPostItem.getId());
@@ -102,15 +123,14 @@ public class ShSitesContext {
 		shPostItemSystemAttrs.put("summary", shPostItem.getSummary());
 
 		shPostItemAttrs.put("system", shPostItemSystemAttrs);
-		shPostItemAttrs.put("theme", shPostItemThemeAttrs); 
-		
+		shPostItemAttrs.put("theme", shPostItemThemeAttrs);
+
 		for (ShPostAttr shPostAttr : shPostItem.getShPostAttrs()) {
 			if (shPostAttr.getShPostTypeAttr().getName() != null) {
 				shPostItemAttrs.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
 			}
 		}
 
-		
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 		Bindings bindings = engine.createBindings();
 		bindings.put("html", html);

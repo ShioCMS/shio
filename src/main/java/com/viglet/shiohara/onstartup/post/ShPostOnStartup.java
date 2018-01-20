@@ -41,6 +41,7 @@ public class ShPostOnStartup {
 			
 			ShChannel shChannelHome = shChannelRepository.findByShSiteAndName(shSite, "Home");
 			ShChannel shChannelArticle = shChannelRepository.findByShSiteAndName(shSite, "Article");
+			ShChannel shChannelNews = shChannelRepository.findByShSiteAndName(shSite, "News");
 			ShChannel shChannelSystem = shChannelRepository.findByShSiteAndName(shSite, "System");
 			
 			// Post Text
@@ -124,6 +125,43 @@ public class ShPostOnStartup {
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setShPostTypeAttrId(2);
 			shPostAttr.setStrValue("A short description ...");
+			shPostAttr.setType(1);
+
+			shPostAttrRepository.save(shPostAttr);
+
+
+			// Post Article (Same Name, but different channel)
+
+	
+			shPost = new ShPost();
+			shPost.setDate(new Date());
+			shPost.setShPostType(shPostArticle);
+			shPost.setSummary("A short description 2");
+			shPost.setTitle("Post Article Title");
+			shPost.setShChannel(shChannelNews);
+
+			shPostRepository.save(shPost);
+
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostArticle, "title");
+
+			shPostAttr = new ShPostAttr();
+			shPostAttr.setShPost(shPost);
+			shPostAttr.setShPostType(shPostArticle);
+			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+			shPostAttr.setShPostTypeAttrId(1);
+			shPostAttr.setStrValue("Post Article");
+			shPostAttr.setType(1);
+
+			shPostAttrRepository.save(shPostAttr);
+
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostArticle, "Description");
+
+			shPostAttr = new ShPostAttr();
+			shPostAttr.setShPost(shPost);
+			shPostAttr.setShPostType(shPostArticle);
+			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+			shPostAttr.setShPostTypeAttrId(2);
+			shPostAttr.setStrValue("A short description 2 ...");
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
@@ -277,7 +315,7 @@ public class ShPostOnStartup {
 					+ "      <div class=\"bg-circle-4 bg-circle\"></div>\n" + "    </header>\n" + "\n" + "    \n"
 					+ "    <!-- Footer -->\n" + "    <footer class=\"py-5 bg-black\">\n"
 					+ "      <div class=\"container\">\n"
-					+ "        <p class=\"m-0 text-center text-white small\">Copyright &copy; Viglet Shiohara 2018</p>\n"
+					+ "        <p class=\"m-0 text-center text-white small\">Copyright &copy; Viglet 2018</p>\n"
 					+ "      </div>\n" + "      <!-- /.container -->\n" + "    </footer>\n" + "\n"
 					+ "{{{theme.javascript}}}\n" + "  </body>\n" + "</html>");
 			shPostAttr.setType(1);

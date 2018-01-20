@@ -16,6 +16,7 @@ import javax.ws.rs.core.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.viglet.shiohara.channel.ShChannelUtils;
 import com.viglet.shiohara.persistence.model.channel.ShChannel;
 import com.viglet.shiohara.persistence.repository.channel.ShChannelRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
@@ -28,6 +29,8 @@ public class ShChannelAPI {
 	ShChannelRepository shChannelRepository;
 	@Autowired
 	ShPostRepository shPostRepository;
+	@Autowired
+	ShChannelUtils shChannelUtils;
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -81,10 +84,27 @@ public class ShChannelAPI {
 	@Produces(MediaType.APPLICATION_JSON)
 	public ShChannelList list(@PathParam("channelId") int id) throws Exception {
 		ShChannel parentChannel = shChannelRepository.findById(id);
+
+		String channelPath = shChannelUtils.channelPath(parentChannel);
+
 		ShChannelList shChannelList = new ShChannelList();
 		shChannelList.setShChannels(shChannelRepository.findByParentChannel(parentChannel));
 		shChannelList.setShPosts(shPostRepository.findByShChannel(parentChannel));
+		shChannelList.setChannelPath(channelPath);
+
 		return shChannelList;
+	}
+
+	@Path("/{channelId}/path")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public ShChannelPath path(@PathParam("channelId") int id) throws Exception {
+		ShChannel shChannel = shChannelRepository.findById(id);
+		ShChannelPath shChannelPath = new ShChannelPath();
+		String channelPath = shChannelUtils.channelPath(shChannel);
+		shChannelPath.setChannelPath(channelPath);
+		shChannelPath.setCurrentChannel(shChannelUtils.channelFromPath(shChannel.getShSite(), channelPath));
+		return shChannelPath;
 	}
 
 }
