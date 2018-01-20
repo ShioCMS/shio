@@ -5,6 +5,7 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+import com.viglet.shiohara.onstartup.channel.ShChannelOnStartup;
 import com.viglet.shiohara.onstartup.post.ShPostOnStartup;
 import com.viglet.shiohara.onstartup.post.type.ShPostTypeOnStartup;
 import com.viglet.shiohara.onstartup.site.ShSiteOnStartup;
@@ -34,6 +35,8 @@ public class ShOnStartup implements ApplicationRunner {
 	private ShSiteOnStartup shSiteOnStartup;
 	@Autowired
 	private ShUserOnStartup shUserOnStartup;
+	@Autowired
+	private ShChannelOnStartup shChannelOnStartup;
 	
 	@Override
 	public void run(ApplicationArguments arg0) throws Exception {
@@ -49,6 +52,7 @@ public class ShOnStartup implements ApplicationRunner {
 			shPostTypeOnStartup.createDefaultRows();
 			shPostOnStartup.createDefaultRows();
 			shUserOnStartup.createDefaultRows();
+			shChannelOnStartup.createDefaultRows();
 			shConfigVarOnStartup.createDefaultRows();
 			
 			System.out.println("Configuration finished.");

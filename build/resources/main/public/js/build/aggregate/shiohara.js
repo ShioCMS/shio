@@ -166,13 +166,14 @@ shioharaApp.controller('ShContentCtrl', [
 		"$rootScope",
 		"Token",
 		"shUserResource",
+		"shChannelResource",
 		"shPostResource",
 		"shPostTypeResource",
 		'vigLocale',
 		'$location',
 		"$translate",
 		function($scope, $http, $window, $state, $rootScope, Token,
-				shUserResource, shPostResource, shPostTypeResource, vigLocale, $location,
+				shUserResource, shChannelResource, shPostResource, shPostTypeResource, vigLocale, $location,
 				$translate) {
 			$scope.vigLanguage = vigLocale.getLocale().substring(0, 2);
 			$translate.use($scope.vigLanguage);
@@ -181,7 +182,16 @@ shioharaApp.controller('ShContentCtrl', [
 			$scope.shUser = null;
 			$scope.shPosts = null;
 			$scope.shLastPostType = null;
+			$scope.shChannels = null;
 			$rootScope.$state = $state;
+			
+			$scope.$evalAsync($http.get(
+					shAPIServerService.get().concat(
+							"/site/1/channel"))
+					.then(function(response) {
+						$scope.shChannels = response.data;
+					}));
+			
 			$scope.shUser = shUserResource.get({
 				id : 1,
 				access_token : $scope.accessToken
@@ -525,6 +535,16 @@ shioharaApp.factory('shUserResource', [ '$resource', 'shAPIServerService', funct
 		}
 	});
 } ]);
+shioharaApp.factory('shChannelResource', [ '$resource', 'shAPIServerService',
+		function($resource, shAPIServerService) {
+			return $resource(shAPIServerService.get().concat('/channel/:id'), {
+				id : '@id'
+			}, {
+				update : {
+					method : 'PUT'
+				}
+			});
+		} ]);
 shioharaApp.controller('ShSiteListCtrl', [
 		"$scope",
 		"$http",
