@@ -7,16 +7,17 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import com.viglet.shiohara.persistence.model.channel.ShChannel;
+import com.viglet.shiohara.persistence.model.site.ShSite;
 
 public interface ShChannelRepository extends JpaRepository<ShChannel, Integer> {
 
 	List<ShChannel> findAll();
 
+	List<ShChannel> findByShSiteAndRootChannel(ShSite shSite, byte rootChannel);
+	
 	ShChannel findById(int id);
 
-	ShChannel findByTitle(String title);
-
-	ShChannel save(ShChannel ShChannel);
+	ShChannel save(ShChannel shChannel);
 
 	@Modifying
 	@Query("delete from ShChannel p where p.id = ?1")

@@ -15,15 +15,19 @@ import javax.ws.rs.core.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.viglet.shiohara.persistence.model.channel.ShChannel;
 import com.viglet.shiohara.persistence.model.site.ShSite;
+import com.viglet.shiohara.persistence.repository.channel.ShChannelRepository;
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
 
 @Component
 @Path("/site")
 public class ShSiteAPI {
-	
+
 	@Autowired
 	ShSiteRepository shSiteRepository;
+	@Autowired
+	ShChannelRepository shChannelRepository;
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -61,6 +65,15 @@ public class ShSiteAPI {
 	public ShSite add(ShSite shSite) throws Exception {
 		shSiteRepository.save(shSite);
 		return shSite;
+
+	}
+
+	@Path("/{siteId}/channel")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<ShChannel> rootChannel(@PathParam("siteId") int id) throws Exception {
+		ShSite shSite = shSiteRepository.findById(id);
+		return shChannelRepository.findByShSiteAndRootChannel(shSite, (byte) 1);
 
 	}
 

@@ -3,25 +3,23 @@
 <div ui-view>
 	<div class="settings">
 		<section class="content no-padding">
-				<fieldset class="user-details-top">
+			<fieldset class="user-details-top">
 
-					<div class="form-group">
-						
+				<div class="form-group"></div>
+				<div class="pull-right" style="margin: -40px 0 0;">
+					<div class="input-group">
+						0-{{(shPosts|filter:query).length}} of
+						{{(shPosts|filter:query).length}} posts&nbsp;&nbsp;
+						<button type="button" class="btn btn-default">
+							<i class="fa fa-viglet fa-angle-left"></i>
+						</button>
+						<button type="button" class="btn btn-default">
+							<i class="fa fa-viglet fa-angle-right"></i>
+						</button>
 					</div>
-					<div class="pull-right" style="margin: -40px 0 0;">
-						<div class="input-group">
-							0-{{(shPosts|filter:query).length}} of
-							{{(shPosts|filter:query).length}} posts&nbsp;&nbsp;
-							<button type="button" class="btn btn-default">
-								<i class="fa fa-viglet fa-angle-left"></i>
-							</button>
-							<button type="button" class="btn btn-default">
-								<i class="fa fa-viglet fa-angle-right"></i>
-							</button>
-						</div>
 
-					</div>
-				</fieldset>
+				</div>
+			</fieldset>
 		</section>
 	</div>
 
@@ -30,8 +28,9 @@
 			<div class="col-lg-2 col-md-3 col-sm-3 col-xs-12">
 				<div class="btn-group">
 					<a href="/#!/content/post/type/{{shUser.lastPostType}}/post/new"
-						class="btn btn-viglet">New {{shLastPostType.title}} </a> <a class="btn btn-viglet"
-						ui-sref="content.post-type-select"><span class="glyphicon glyphicon-th"></span></a>
+						class="btn btn-viglet">New {{shLastPostType.title}} </a> <a
+						class="btn btn-viglet" ui-sref="content.post-type-select"><span
+						class="glyphicon glyphicon-th"></span></a>
 				</div>
 				<ul class="nav nav-pills nav-stacked">
 					<li><a href="#">Home</a></li>
@@ -48,22 +47,41 @@
 				</ul>
 			</div>
 			<div class="col-lg-10 col-md-9 col-sm-9 col-xs-12">
-				<ul class="nav nav-tabs" ng-controller="ShSiteListCtrl" >
-					<li class="active"><a href="#" style="color:black"><i class="fa fa-viglet fa-user fa-lg"></i>
-							Only Me</a></li>
-					<li><a href="#" style="color:black"><i class="fa fa-viglet  fa-users fa-lg"></i> Team</a></li>
-					<li ng-repeat="shSite in shSites | filter:query | orderBy:orderProp">
-						<a href="#" style="color:black"><i class="fa fa-viglet fa-tags fa-lg"></i> {{shSite.name}} </a>
+				<ul class="nav nav-tabs" ng-controller="ShSiteListCtrl">
+					<li class="active"><a href="#" style="color: black"><i
+							class="fa fa-viglet fa-user fa-lg"></i> Only Me</a></li>
+					<li><a href="#" style="color: black"><i
+							class="fa fa-viglet  fa-users fa-lg"></i> Team</a></li>
+					<li
+						ng-repeat="shSite in shSites | filter:query | orderBy:orderProp">
+						<a href="#" style="color: black"><i
+							class="fa fa-viglet fa-tags fa-lg"></i> {{shSite.name}} </a>
 					</li>
-					<li><a href="/site/editor/"><i class="fa fa-viglet fa-plus fa-lg"></i></a></li>
+					<li><a href="/site/editor/"><i
+							class="fa fa-viglet fa-plus fa-lg"></i></a></li>
 				</ul>
 
 
 				<table class="table table-hover">
+					<!--  Channels  -->
+					<tr ng-repeat="shChannel in shChannels">
+						<td><input type="checkbox" /> <a href="#"><span
+								class="glyphicon glyphicon-star-empty close"></span></a></td>
+						<td><i class="icon-folder-close-alt"></i></td>
+						<td><a
+							ui-sref="content.post-type-item.post-item({postTypeId: shPost.shPostType.id, postId: shPost.id})">
+								{{shChannel.name}}</a></td>
+						<td><span class="label label-warning"> Channel</span></td>
+						<td>{{shChannel.summary}}</td>
+						<td><span am-time-ago="shChannel.date"></span></td>
+					</tr>
+					<!--  Posts  -->
 					<tr ng-repeat="shPost in shPosts">
-						<td><input type="checkbox" /> <a href="#"><span class="glyphicon glyphicon-star-empty close"></span></a></td>					
+						<td><input type="checkbox" /> <a href="#"><span
+								class="glyphicon glyphicon-star-empty close"></span></a></td>
 						<td><i class="icon-star-empty"></i></td>
-						<td><a ui-sref="content.post-type-item.post-item({postTypeId: shPost.shPostType.id, postId: shPost.id})">
+						<td><a
+							ui-sref="content.post-type-item.post-item({postTypeId: shPost.shPostType.id, postId: shPost.id})">
 								{{shPost.title}}</a></td>
 						<td><span class="label label-warning">
 								{{shPost.shPostType.title}}</span></td>
