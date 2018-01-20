@@ -26,6 +26,7 @@ import com.viglet.shiohara.persistence.model.channel.ShChannel;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.site.ShSite;
+import com.viglet.shiohara.persistence.repository.channel.ShChannelRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
@@ -39,12 +40,19 @@ public class ShSitesContext {
 	@Autowired
 	ShPostAttrRepository shPostAttrRepository;
 	@Autowired
+	ShChannelRepository shChannelRepository;
+	@Autowired
 	ShChannelUtils shChannelUtils;
 
 	@RequestMapping("/sites/{shSiteName}/{shFormat}/{shLocale}/**")
 	private void sitesFull(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable(value = "shSiteName") String shSiteName, @PathVariable(value = "shFormat") String shFormat,
 			@PathVariable(value = "shLocale") String shLocale) throws IOException, ScriptException {
+
+		ShSite shSite = shSiteRepository.findById(1);
+		ShPost shTheme = shPostRepository.findById(5); // Theme
+		ShPost shPostPageTemplate = shPostRepository.findById(6); // Page Template Post
+		ShPost shChannelPageTemplate = shPostRepository.findById(7); // PageTemplate Channel
 
 		String url = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
 		String shContext = null;
@@ -76,68 +84,171 @@ public class ShSitesContext {
 		String postName = contentPath.get(contentPath.size() - 1).replaceAll("-", " ");
 
 		ArrayList<String> channelPathArray = contentPath;
-		
+
 		channelPathArray.remove(channelPathArray.size() - 1);
 		String channelPath = "/";
 		for (String path : channelPathArray) {
-			channelPath =  channelPath + path + "/";
+			channelPath = channelPath + path + "/";
 		}
-		
-		ShSite shSite = shSiteRepository.findById(1);
 
 		ShChannel shChannel = shChannelUtils.channelFromPath(shSite, channelPath);
+		ShChannel shChannelItem = null;
+		boolean isChannel = false;
 
-		System.out.println("shSite: " + shSite.getName());
-		System.out.println("shChannelPath: " + channelPath);
-		System.out.println("shChannel: " + shChannel.getId());
-		
 		ShPost shPostItem = shPostRepository.findByShChannelAndTitle(shChannel, postName);
+		if (shPostItem == null) {
+			shChannelItem = shChannelRepository.findByShSiteAndParentChannelAndName(shSite, shChannel, postName);
+			if (shChannelItem != null) {
+				ShPost shChannelIndex = shPostRepository.findByShChannelAndTitle(shChannelItem, "index");
+				if (shChannelIndex != null) {
 
-		ShPost shPostPageTemplate = shPostRepository.findById(6); // Page Template Post
-
-		List<ShPostAttr> shPostPageTemplateAttrs = shPostPageTemplate.getShPostAttrs();
-
-		Map<String, ShPostAttr> shPostPageTemplateMap = new HashMap<String, ShPostAttr>();
-		for (ShPostAttr shPostPageTemplateAttr : shPostPageTemplateAttrs)
-			shPostPageTemplateMap.put(shPostPageTemplateAttr.getShPostTypeAttr().getName(), shPostPageTemplateAttr);
-
-		String javascript = shPostPageTemplateMap.get("Javascript").getStrValue();
-		String html = shPostPageTemplateMap.get("HTML").getStrValue();
-
-		ShPost shPostTheme = shPostRepository.findById(5); // Theme Post
-		List<ShPostAttr> shPostThemeAttrs = shPostTheme.getShPostAttrs();
-
-		Map<String, ShPostAttr> shPostThemeMap = new HashMap<String, ShPostAttr>();
-		for (ShPostAttr shPostThemeAttr : shPostThemeAttrs)
-			shPostThemeMap.put(shPostThemeAttr.getShPostTypeAttr().getName(), shPostThemeAttr);
-
-		JSONObject shPostItemThemeAttrs = new JSONObject();
-		shPostItemThemeAttrs.put("javascript", shPostThemeMap.get("Javascript").getStrValue());
-		shPostItemThemeAttrs.put("css", shPostThemeMap.get("CSS").getStrValue());
-
-		JSONObject shPostItemAttrs = new JSONObject();
-		JSONObject shPostItemSystemAttrs = new JSONObject();
-		shPostItemSystemAttrs.put("id", shPostItem.getId());
-		shPostItemSystemAttrs.put("post-type-id", shPostItem.getShPostType().getId());
-		shPostItemSystemAttrs.put("title", shPostItem.getTitle());
-		shPostItemSystemAttrs.put("summary", shPostItem.getSummary());
-
-		shPostItemAttrs.put("system", shPostItemSystemAttrs);
-		shPostItemAttrs.put("theme", shPostItemThemeAttrs);
-
-		for (ShPostAttr shPostAttr : shPostItem.getShPostAttrs()) {
-			if (shPostAttr.getShPostTypeAttr().getName() != null) {
-				shPostItemAttrs.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
+					shPostItem = shChannelIndex;
+					isChannel = true;
+				}
 			}
 		}
 
+		// Nashorn Engine
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 		Bindings bindings = engine.createBindings();
-		bindings.put("html", html);
-		// PostItem Attribs
-		javascript = "var post = " + shPostItemAttrs.toString() + ";" + javascript;
-		Object result = engine.eval(javascript, bindings);
 
+		// Theme
+		List<ShPostAttr> shThemeAttrList = shTheme.getShPostAttrs();
+
+		Map<String, ShPostAttr> shThemeMap = new HashMap<String, ShPostAttr>();
+		for (ShPostAttr shPostThemeAttr : shThemeAttrList)
+			shThemeMap.put(shPostThemeAttr.getShPostTypeAttr().getName(), shPostThemeAttr);
+
+		JSONObject shThemeAttrs = new JSONObject();
+		shThemeAttrs.put("javascript", shThemeMap.get("Javascript").getStrValue());
+		shThemeAttrs.put("css", shThemeMap.get("CSS").getStrValue());
+
+		String javascript = null;
+		String html = null;
+
+		// Channel
+		if (isChannel || shPostItem.getShPostType().getName().equals("PT-CHANNEL-INDEX")) {
+			if (shPostItem.getShPostType().getName().equals("PT-CHANNEL-INDEX")) {
+				shChannelItem = shPostItem.getShChannel();
+			}
+			List<ShPostAttr> shChannelPageTemplateAttrs = shChannelPageTemplate.getShPostAttrs();
+
+			Map<String, ShPostAttr> shChannelPageTemplateMap = new HashMap<String, ShPostAttr>();
+			for (ShPostAttr shChannelPageTemplateAttr : shChannelPageTemplateAttrs)
+				shChannelPageTemplateMap.put(shChannelPageTemplateAttr.getShPostTypeAttr().getName(),
+						shChannelPageTemplateAttr);
+
+			javascript = shChannelPageTemplateMap.get("Javascript").getStrValue();
+			html = shChannelPageTemplateMap.get("HTML").getStrValue();
+
+			// Channel converted to JSON
+			JSONObject shChannelItemSystemAttrs = new JSONObject();
+			shChannelItemSystemAttrs.put("id", shChannelItem.getId());
+			shChannelItemSystemAttrs.put("title", shChannelItem.getName());
+			shChannelItemSystemAttrs.put("summary", shChannelItem.getSummary());
+			shChannelItemSystemAttrs.put("link", shChannelUtils.channelPath(shChannelItem));
+			JSONArray shPostItems = new JSONArray();
+			JSONArray shChildChannelItems = new JSONArray();
+
+			JSONObject shChannelItemAttrs = new JSONObject();
+
+			shChannelItemAttrs.put("system", shChannelItemSystemAttrs);
+			shChannelItemAttrs.put("theme", shThemeAttrs);
+			List<ShChannel> shChannels = shChannelRepository.findByParentChannel(shChannelItem);
+
+			for (ShChannel shChildChannel : shChannels) {
+				JSONObject shChildChannelAttrs = new JSONObject();
+				JSONObject shChildChannelSystemAttrs = new JSONObject();
+				shChildChannelSystemAttrs.put("id", shChildChannel.getId());
+				shChildChannelSystemAttrs.put("title", shChildChannel.getName());
+				shChildChannelSystemAttrs.put("summary", shChildChannel.getSummary());
+				shChildChannelSystemAttrs.put("link", shChannelUtils.channelPath(shChildChannel));
+				shChildChannelAttrs.put("system", shChildChannelSystemAttrs);
+				shChildChannelItems.put(shChildChannelAttrs);
+			}
+			List<ShPost> shPosts = shPostRepository.findByShChannel(shChannelItem);
+
+			for (ShPost shPost : shPosts) {
+				if (!shPost.getShPostType().getName().equals("PT-CHANNEL-INDEX")) {
+					JSONObject shPostItemAttrs = new JSONObject();
+
+					JSONObject shPostItemSystemAttrs = new JSONObject();
+					shPostItemSystemAttrs.put("id", shPost.getId());
+					shPostItemSystemAttrs.put("post-type-id", shPost.getShPostType().getId());
+					shPostItemSystemAttrs.put("title", shPost.getTitle());
+					shPostItemSystemAttrs.put("summary", shPost.getSummary());
+					shPostItemSystemAttrs.put("link", shChannelUtils.channelPath(shPost.getShChannel()) + shPost.getTitle().replaceAll(" ", "-"));
+					for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
+						if (shPostAttr.getShPostTypeAttr().getName() != null) {
+							shPostItemAttrs.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
+						}
+					}
+					shPostItemAttrs.put("system", shPostItemSystemAttrs);
+					shPostItems.put(shPostItemAttrs);
+				}
+			}
+
+			// Post Item converted to JSON
+			JSONObject shPostItemSystemAttrs = new JSONObject();
+			shPostItemSystemAttrs.put("id", shPostItem.getId());
+			shPostItemSystemAttrs.put("post-type-id", shPostItem.getShPostType().getId());
+			shPostItemSystemAttrs.put("title", shPostItem.getTitle());
+			shPostItemSystemAttrs.put("summary", shPostItem.getSummary());
+			shPostItemSystemAttrs.put("link", shChannelUtils.channelPath(shPostItem.getShChannel()) + shPostItem.getTitle().replaceAll(" ", "-"));
+			
+			JSONObject shPostItemAttrs = new JSONObject();
+
+			shPostItemAttrs.put("system", shPostItemSystemAttrs);
+			shPostItemAttrs.put("theme", shThemeAttrs);
+
+			for (ShPostAttr shPostAttr : shPostItem.getShPostAttrs()) {
+				if (shPostAttr.getShPostTypeAttr().getName() != null) {
+					shPostItemAttrs.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
+				}
+			}
+
+			shChannelItemAttrs.put("posts", shPostItems);
+			shChannelItemAttrs.put("channels", shChildChannelItems);
+			shChannelItemAttrs.put("post", shPostItemAttrs);
+			// Channel Attribs
+			javascript = "var channel = " + shChannelItemAttrs.toString() + ";" + javascript;
+
+
+		} else {
+			// Post
+			List<ShPostAttr> shPostPageTemplateAttrs = shPostPageTemplate.getShPostAttrs();
+
+			Map<String, ShPostAttr> shPostPageTemplateMap = new HashMap<String, ShPostAttr>();
+			for (ShPostAttr shPostPageTemplateAttr : shPostPageTemplateAttrs)
+				shPostPageTemplateMap.put(shPostPageTemplateAttr.getShPostTypeAttr().getName(), shPostPageTemplateAttr);
+
+			javascript = shPostPageTemplateMap.get("Javascript").getStrValue();
+			html = shPostPageTemplateMap.get("HTML").getStrValue();
+
+			// Post Item converted to JSON
+			JSONObject shPostItemSystemAttrs = new JSONObject();
+			shPostItemSystemAttrs.put("id", shPostItem.getId());
+			shPostItemSystemAttrs.put("post-type-id", shPostItem.getShPostType().getId());
+			shPostItemSystemAttrs.put("title", shPostItem.getTitle());
+			shPostItemSystemAttrs.put("summary", shPostItem.getSummary());
+			shPostItemSystemAttrs.put("link", shChannelUtils.channelPath(shPostItem.getShChannel()) + shPostItem.getTitle().replaceAll(" ", "-"));
+			
+
+			JSONObject shPostItemAttrs = new JSONObject();
+
+			shPostItemAttrs.put("system", shPostItemSystemAttrs);
+			shPostItemAttrs.put("theme", shThemeAttrs);
+
+			for (ShPostAttr shPostAttr : shPostItem.getShPostAttrs()) {
+				if (shPostAttr.getShPostTypeAttr().getName() != null) {
+					shPostItemAttrs.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
+				}
+			}
+			// PostItem Attribs
+			javascript = "var post = " + shPostItemAttrs.toString() + ";" + javascript;
+		}
+		bindings.put("html", html);
+		Object result = engine.eval(javascript, bindings);
 		response.setContentType("text/html");
 		response.getWriter().write(result.toString());
 	}
