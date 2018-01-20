@@ -25,7 +25,8 @@ shioharaApp.config([
 			
 			$translateProvider.fallbackLanguage('en');
 
-			$urlRouterProvider.otherwise('/content');
+			$urlRouterProvider.otherwise('/content/me');
+			
 			$stateProvider.state('oauth2', {
 				url : '/oauth2',
 				templateUrl : 'template/oauth2.html',
@@ -37,6 +38,20 @@ shioharaApp.config([
 				url : '/content',
 				templateUrl : 'template/content.html',
 				controller : 'ShContentCtrl',
+				data : {
+					pageTitle : 'Content | Viglet Shiohara'
+				}
+			}).state('content.list', {
+				url : '/:siteId',
+				templateUrl : 'template/content/content-list.html',
+				controller : 'ShContentListCtrl',
+				data : {
+					pageTitle : 'Content | Viglet Shiohara'
+				}
+			}).state('content.list.channel-list', {
+				url : '/channel/:channelId/list',
+				templateUrl : 'template/channel/channel-list.html',
+				controller : 'ShChannelListCtrl',
 				data : {
 					pageTitle : 'Content | Viglet Shiohara'
 				}

@@ -50,9 +50,9 @@ public class ShOnStartup implements ApplicationRunner {
 			shSiteOnStartup.createDefaultRows();
 			shWidgetOnStartup.createDefaultRows();
 			shPostTypeOnStartup.createDefaultRows();
-			shPostOnStartup.createDefaultRows();
 			shUserOnStartup.createDefaultRows();
 			shChannelOnStartup.createDefaultRows();
+			shPostOnStartup.createDefaultRows();
 			shConfigVarOnStartup.createDefaultRows();
 			
 			System.out.println("Configuration finished.");

@@ -1,4 +1,4 @@
-shioharaApp.controller('ShContentCtrl', [
+shioharaApp.controller('ShContentListCtrl', [
 		"$scope",
 		"$http",
 		"$window",

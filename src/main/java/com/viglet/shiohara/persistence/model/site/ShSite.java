@@ -35,13 +35,6 @@ public class ShSite implements Serializable {
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "shSite", cascade = CascadeType.ALL)
 	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
 	private List<ShChannel> shChannels;
-	
-	// bi-directional many-to-one association to ShRegion
-	@ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
-	private List<ShPost> shPosts = new ArrayList<>();
-	
-	
 
 	public ShSite() {
 	}
@@ -76,28 +69,6 @@ public class ShSite implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public List<ShPost> getShPosts() {
-		return this.shPosts;
-	}
-
-	public void setShPosts(List<ShPost> shPosts) {
-		this.shPosts = shPosts;
-	}
-
-	public ShPost addShPost(ShPost shPost) {
-		getShPosts().add(shPost);
-		//shPost.addShSite(this);
-
-		return shPost;
-	}
-
-	public ShPost removeShPost(ShPost shPost) {
-		getShPosts().remove(shPost);
-		shPost.removeShSite(this);
-
-		return shPost;
 	}
 	
 	public List<ShChannel> getShChannels() {

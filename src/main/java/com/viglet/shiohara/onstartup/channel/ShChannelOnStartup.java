@@ -43,7 +43,6 @@ public class ShChannelOnStartup {
 
 			shChannelRepository.save(shChannelSystem);
 
-			
 			// Home Channel
 			ShChannel shChannelHome = new ShChannel();
 			shChannelHome.setName("Home");
@@ -65,6 +64,28 @@ public class ShChannelOnStartup {
 			shChannelArticle.setRootChannel((byte) 0);
 
 			shChannelRepository.save(shChannelArticle);
+
+			// Text Channel
+			ShChannel shChannelText = new ShChannel();
+			shChannelText.setName("Text");
+			shChannelText.setSummary("Text Channel");
+			shChannelText.setParentChannel(shChannelHome);
+			shChannelText.setShSite(shSite);
+			shChannelText.setDate(new Date());
+			shChannelText.setRootChannel((byte) 0);
+
+			shChannelRepository.save(shChannelText);
+
+			// News Channel
+			ShChannel shChannelNews = new ShChannel();
+			shChannelNews.setName("News");
+			shChannelNews.setSummary("News Channel");
+			shChannelNews.setParentChannel(shChannelArticle);
+			shChannelNews.setShSite(shSite);
+			shChannelNews.setDate(new Date());
+			shChannelNews.setRootChannel((byte) 0);
+			
+			shChannelRepository.save(shChannelNews);
 		}
 
 	}

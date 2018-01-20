@@ -40,6 +40,13 @@ shioharaApp.config([
 				data : {
 					pageTitle : 'Content | Viglet Shiohara'
 				}
+			}).state('content.channel-list', {
+				url : '/channel/:channelId/list',
+				templateUrl : 'template/channel/channel-list.html',
+				controller : 'ShChannelListCtrl',
+				data : {
+					pageTitle : 'Post Type Select | Viglet Shiohara'
+				}
 			}).state('content.post-type-select', {
 				url : '/post/type/select',
 				templateUrl : 'template/post/type/select.html',

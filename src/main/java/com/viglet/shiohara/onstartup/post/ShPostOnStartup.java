@@ -6,10 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
+import com.viglet.shiohara.persistence.model.channel.ShChannel;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.model.site.ShSite;
+import com.viglet.shiohara.persistence.repository.channel.ShChannelRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
@@ -29,11 +31,18 @@ public class ShPostOnStartup {
 	private ShPostTypeAttrRepository shPostTypeAttrRepository;
 	@Autowired
 	private ShSiteRepository shSiteRepository;
+	@Autowired
+	private ShChannelRepository shChannelRepository;
 
 	public void createDefaultRows() {
-		// ShSite shSite = shSiteRepository.findById(1);
+		ShSite shSite = shSiteRepository.findById(1);
 
 		if (shPostRepository.findAll().isEmpty()) {
+			
+			ShChannel shChannelHome = shChannelRepository.findByShSiteAndName(shSite, "Home");
+			ShChannel shChannelArticle = shChannelRepository.findByShSiteAndName(shSite, "Article");
+			ShChannel shChannelSystem = shChannelRepository.findByShSiteAndName(shSite, "System");
+			
 			// Post Text
 			ShPostType shPostType = shPostTypeRepository.findByName("PT-TEXT");
 
@@ -42,6 +51,7 @@ public class ShPostOnStartup {
 			shPost.setShPostType(shPostType);
 			shPost.setSummary("Summary");
 			shPost.setTitle("Post01");
+			shPost.setShChannel(null);
 
 			shPostRepository.save(shPost);
 
@@ -65,6 +75,7 @@ public class ShPostOnStartup {
 			shPost.setShPostType(shPostTypeArea);
 			shPost.setSummary("Summary");
 			shPost.setTitle("Post Text Area 01");
+			shPost.setShChannel(shChannelHome);
 
 			shPostRepository.save(shPost);
 
@@ -89,6 +100,7 @@ public class ShPostOnStartup {
 			shPost.setShPostType(shPostArticle);
 			shPost.setSummary("A short description");
 			shPost.setTitle("Post Article Title");
+			shPost.setShChannel(shChannelArticle);
 
 			shPostRepository.save(shPost);
 
@@ -125,6 +137,7 @@ public class ShPostOnStartup {
 			shPost.setShPostType(shPostTheme);
 			shPost.setSummary("Home Theme");
 			shPost.setTitle("Home Theme");
+			shPost.setShChannel(shChannelSystem);
 
 			shPostRepository.save(shPost);
 
@@ -192,6 +205,7 @@ public class ShPostOnStartup {
 			shPost.setShPostType(shPostPageTemplate);
 			shPost.setSummary("Home Template");
 			shPost.setTitle("Home Page");
+			shPost.setShChannel(shChannelSystem);
 
 			shPostRepository.save(shPost);
 

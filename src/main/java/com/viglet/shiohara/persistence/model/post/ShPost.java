@@ -5,6 +5,8 @@ import javax.persistence.*;
 
 import org.hibernate.annotations.Fetch;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.viglet.shiohara.persistence.model.channel.ShChannel;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.region.ShRegion;
 import com.viglet.shiohara.persistence.model.site.ShSite;
@@ -37,7 +39,12 @@ public class ShPost implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "post_type_id")
 	private ShPostType shPostType;
-
+	
+	// bi-directional many-to-one association to ShChannel
+	@ManyToOne
+	@JoinColumn(name = "channel_id")
+	private ShChannel shChannel;
+		
 	// bi-directional many-to-one association to ShPostAttr
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "shPost", cascade = CascadeType.ALL)
 	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
@@ -47,11 +54,6 @@ public class ShPost implements Serializable {
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "shPost", cascade = CascadeType.ALL)
 	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
 	private List<ShRegion> shRegions;
-
-	// bi-directional many-to-one association to ShRegion
-	@ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
-	private List<ShSite> shSites = new ArrayList<>();
 
 	public ShPost() {
 	}
@@ -140,25 +142,12 @@ public class ShPost implements Serializable {
 		return shRegion;
 	}
 
-	public List<ShSite> getShSites() {
-		return this.shSites;
+	public ShChannel getShChannel() {
+		return shChannel;
 	}
 
-	public void setShSites(List<ShSite> shSites) {
-		this.shSites = shSites;
+	public void setShChannel(ShChannel shChannel) {
+		this.shChannel = shChannel;
 	}
-
-	public ShSite addShSite(ShSite shSite) {
-		getShSites().add(shSite);
-		shSite.addShPost(this);
-
-		return shSite;
-	}
-
-	public ShSite removeShSite(ShSite shSite) {
-		getShSites().remove(shSite);
-		shSite.removeShPost(this);
-
-		return shSite;
-	}
+	
 }
