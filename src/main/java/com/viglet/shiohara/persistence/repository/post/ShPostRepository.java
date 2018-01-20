@@ -18,7 +18,9 @@ public interface ShPostRepository extends JpaRepository<ShPost, Integer> {
 	ShPost findById(int id);
 	
 	ShPost findByTitle(String title);
-
+	
+	ShPost findByShChannelAndTitle(ShChannel shChannel, String title);
+	
 	ShPost save(ShPost shPost);
 
 	@Modifying

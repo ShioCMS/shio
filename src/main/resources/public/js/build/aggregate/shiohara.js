@@ -440,13 +440,24 @@ shioharaApp.controller('ShPostEditCtrl', [
 			});
 
 			$scope.openPreviewURL = function() {
-				var previewURL = shAPIServerService.server().concat(
-						"/sites/SampleSite/default/pt-br/"
-								+ $scope.shPost.title.replace(new RegExp(" ",
-										'g'), "-"));
-				 $window.open(previewURL,"_self");
-
-			}
+				$scope
+				.$evalAsync($http
+						.get(
+								shAPIServerService
+										.get()
+										.concat(
+												"/channel/" + $scope.shPost.shChannel.id + "/path"))
+						.then(
+								function(response) {
+									var previewURL = shAPIServerService.server().concat(
+											"/sites/SampleSite/default/pt-br" + response.data.channelPath
+													+ $scope.shPost.title.replace(new RegExp(" ",
+															'g'), "-"));
+									 $window.open(previewURL,"_self");
+								}));
+				}
+				
+	
 			$scope.postEditForm = "template/post/form.html";
 			$scope.postDelete = function() {
 				shPostResource

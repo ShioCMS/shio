@@ -10,6 +10,8 @@ public class ShChannelList {
 	List<ShChannel> shChannels;
 
 	List<ShPost> shPosts;
+	
+	String channelPath;
 
 	public List<ShChannel> getShChannels() {
 		return shChannels;
@@ -25,6 +27,14 @@ public class ShChannelList {
 
 	public void setShPosts(List<ShPost> shPosts) {
 		this.shPosts = shPosts;
+	}
+
+	public String getChannelPath() {
+		return channelPath;
+	}
+
+	public void setChannelPath(String channelPath) {
+		this.channelPath = channelPath;
 	}
 
 }
