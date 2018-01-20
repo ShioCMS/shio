@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.persistence.model.channel.ShChannel;
 import com.viglet.shiohara.persistence.repository.channel.ShChannelRepository;
+import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 
 @Component
 @Path("/channel")
@@ -25,6 +26,8 @@ public class ShChannelAPI {
 
 	@Autowired
 	ShChannelRepository shChannelRepository;
+	@Autowired
+	ShPostRepository shPostRepository;
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -71,6 +74,17 @@ public class ShChannelAPI {
 		shChannelRepository.save(shChannel);
 		return shChannel;
 
+	}
+
+	@Path("/{channelId}/list")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public ShChannelList list(@PathParam("channelId") int id) throws Exception {
+		ShChannel parentChannel = shChannelRepository.findById(id);
+		ShChannelList shChannelList = new ShChannelList();
+		shChannelList.setShChannels(shChannelRepository.findByParentChannel(parentChannel));
+		shChannelList.setShPosts(shPostRepository.findByShChannel(parentChannel));
+		return shChannelList;
 	}
 
 }

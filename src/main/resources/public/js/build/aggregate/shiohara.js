@@ -27,7 +27,8 @@ shioharaApp.config([
 			
 			$translateProvider.fallbackLanguage('en');
 
-			$urlRouterProvider.otherwise('/content');
+			$urlRouterProvider.otherwise('/content/me');
+			
 			$stateProvider.state('oauth2', {
 				url : '/oauth2',
 				templateUrl : 'template/oauth2.html',
@@ -39,6 +40,20 @@ shioharaApp.config([
 				url : '/content',
 				templateUrl : 'template/content.html',
 				controller : 'ShContentCtrl',
+				data : {
+					pageTitle : 'Content | Viglet Shiohara'
+				}
+			}).state('content.list', {
+				url : '/:siteId',
+				templateUrl : 'template/content/content-list.html',
+				controller : 'ShContentListCtrl',
+				data : {
+					pageTitle : 'Content | Viglet Shiohara'
+				}
+			}).state('content.list.channel-list', {
+				url : '/channel/:channelId/list',
+				templateUrl : 'template/channel/channel-list.html',
+				controller : 'ShChannelListCtrl',
 				data : {
 					pageTitle : 'Content | Viglet Shiohara'
 				}
@@ -158,51 +173,11 @@ shioharaApp.factory('vigLocale', [
 				}
 			}
 		} ]);
-shioharaApp.controller('ShContentCtrl', [
-		"$scope",
-		"$http",
-		"$window",
-		"$state",
-		"$rootScope",
-		"Token",
-		"shUserResource",
-		"shChannelResource",
-		"shPostResource",
-		"shPostTypeResource",
-		"shAPIServerService",
-		'vigLocale',
-		'$location',
-		"$translate",
-		function($scope, $http, $window, $state, $rootScope, Token,
-				shUserResource, shChannelResource, shPostResource, shPostTypeResource, shAPIServerService, vigLocale, $location,
-				$translate) {
+shioharaApp.controller('ShContentCtrl', [ "$scope", "Token", 'vigLocale',
+		"$translate", function($scope, Token, vigLocale, $translate) {
 			$scope.vigLanguage = vigLocale.getLocale().substring(0, 2);
 			$translate.use($scope.vigLanguage);
-
 			$scope.accessToken = Token.get();
-			$scope.shUser = null;
-			$scope.shPosts = null;
-			$scope.shLastPostType = null;
-			$scope.shChannels = null;
-			$rootScope.$state = $state;
-			
-			$scope.$evalAsync($http.get(
-					shAPIServerService.get().concat(
-							"/site/1/channel"))
-					.then(function(response) {
-						$scope.shChannels = response.data;
-					}));
-			
-			$scope.shUser = shUserResource.get({
-				id : 1,
-				access_token : $scope.accessToken
-			}, function() {
-				$scope.shLastPostType = shPostTypeResource.get({
-					id : $scope.shUser.lastPostType
-				});
-			});
-			
-			$scope.shPosts = shPostResource.query();
 		} ]);
 shioharaApp.controller('ShPostFormCtrl', [ "$scope", "$http", "$window",
 		"$stateParams", "$state", "$rootScope",
@@ -527,6 +502,50 @@ shioharaApp.controller('ShOAuth2Ctrl', [ "$scope", "$http", "$window",
 				});
 			};
 		} ]);
+shioharaApp.controller('ShContentListCtrl', [
+		"$scope",
+		"$http",
+		"$window",
+		"$state",
+		"$rootScope",
+		"Token",
+		"shUserResource",
+		"shChannelResource",
+		"shPostTypeResource",
+		"shAPIServerService",
+		'vigLocale',
+		'$location',
+		"$translate",
+		function($scope, $http, $window, $state, $rootScope, Token,
+				shUserResource, shChannelResource, shPostTypeResource, shAPIServerService, vigLocale, $location,
+				$translate) {
+			$scope.vigLanguage = vigLocale.getLocale().substring(0, 2);
+			$translate.use($scope.vigLanguage);
+
+			$scope.accessToken = Token.get();
+			$scope.shUser = null;
+			$scope.shPosts = null;
+			$scope.shLastPostType = null;
+			$scope.shChannels = null;
+			$rootScope.$state = $state;
+			
+			$scope.$evalAsync($http.get(
+					shAPIServerService.get().concat(
+							"/site/1/channel"))
+					.then(function(response) {
+						$scope.shChannels = response.data.shChannels;
+						$scope.shPosts = response.data.shPosts;
+					}));
+			
+			$scope.shUser = shUserResource.get({
+				id : 1,
+				access_token : $scope.accessToken
+			}, function() {
+				$scope.shLastPostType = shPostTypeResource.get({
+					id : $scope.shUser.lastPostType
+				});
+			});
+		} ]);
 shioharaApp.factory('shUserResource', [ '$resource', 'shAPIServerService', function($resource, shAPIServerService) {
 	return $resource(shAPIServerService.get().concat('/user/:id'), {
 		id : '@id'
@@ -536,6 +555,43 @@ shioharaApp.factory('shUserResource', [ '$resource', 'shAPIServerService', funct
 		}
 	});
 } ]);
+shioharaApp.controller('ShChannelListCtrl', [
+		"$scope",
+		"$http",
+		"$window",
+		"$state",
+		"$stateParams",
+		"$rootScope",
+		"Token",
+		"shUserResource",
+		"shChannelResource",
+		"shPostResource",
+		"shPostTypeResource",
+		"shAPIServerService",
+		'vigLocale',
+		'$location',
+		"$translate",
+		function($scope, $http, $window, $state, $stateParams, $rootScope,
+				Token, shUserResource, shChannelResource, shPostResource,
+				shPostTypeResource, shAPIServerService, vigLocale, $location,
+				$translate) {
+			$scope.channelId = $stateParams.channelId;
+			$scope.vigLanguage = vigLocale.getLocale().substring(0, 2);
+			$translate.use($scope.vigLanguage);
+
+			$scope.shChannels = null;
+			$scope.shPosts = null;
+			$rootScope.$state = $state;
+
+			$scope.$evalAsync($http.get(
+					shAPIServerService.get().concat(
+							"/channel/" + $scope.channelId + "/list")).then(
+					function(response) {
+						$scope.shChannels = response.data.shChannels;
+						$scope.shPosts = response.data.shPosts;
+					}));
+
+		} ]);
 shioharaApp.factory('shChannelResource', [ '$resource', 'shAPIServerService',
 		function($resource, shAPIServerService) {
 			return $resource(shAPIServerService.get().concat('/channel/:id'), {

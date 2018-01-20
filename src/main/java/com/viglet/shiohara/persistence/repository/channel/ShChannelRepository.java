@@ -15,6 +15,10 @@ public interface ShChannelRepository extends JpaRepository<ShChannel, Integer> {
 
 	List<ShChannel> findByShSiteAndRootChannel(ShSite shSite, byte rootChannel);
 	
+	ShChannel findByShSiteAndName(ShSite shSite, String name);
+	
+	List<ShChannel> findByParentChannel(ShChannel parentChannel);
+	
 	ShChannel findById(int id);
 
 	ShChannel save(ShChannel shChannel);

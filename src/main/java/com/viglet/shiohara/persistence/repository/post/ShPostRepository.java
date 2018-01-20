@@ -6,12 +6,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import com.viglet.shiohara.persistence.model.channel.ShChannel;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 
 public interface ShPostRepository extends JpaRepository<ShPost, Integer> {
 
 	List<ShPost> findAll();
 
+	List<ShPost> findByShChannel(ShChannel shChannel);
+	
 	ShPost findById(int id);
 	
 	ShPost findByTitle(String title);

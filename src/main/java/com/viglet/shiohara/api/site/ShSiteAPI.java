@@ -15,9 +15,10 @@ import javax.ws.rs.core.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.viglet.shiohara.persistence.model.channel.ShChannel;
+import com.viglet.shiohara.api.channel.ShChannelList;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.channel.ShChannelRepository;
+import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
 
 @Component
@@ -28,6 +29,8 @@ public class ShSiteAPI {
 	ShSiteRepository shSiteRepository;
 	@Autowired
 	ShChannelRepository shChannelRepository;
+	@Autowired
+	ShPostRepository shPostRepository;
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -71,9 +74,13 @@ public class ShSiteAPI {
 	@Path("/{siteId}/channel")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<ShChannel> rootChannel(@PathParam("siteId") int id) throws Exception {
+	public ShChannelList rootChannel(@PathParam("siteId") int id) throws Exception {
 		ShSite shSite = shSiteRepository.findById(id);
-		return shChannelRepository.findByShSiteAndRootChannel(shSite, (byte) 1);
+
+		ShChannelList shChannelList = new ShChannelList();
+		shChannelList.setShChannels(shChannelRepository.findByShSiteAndRootChannel(shSite, (byte) 1));
+		shChannelList.setShPosts(shPostRepository.findByShChannel(null));
+		return shChannelList;
 
 	}
 

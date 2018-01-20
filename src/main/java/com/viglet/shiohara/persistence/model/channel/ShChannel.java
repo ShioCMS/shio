@@ -6,6 +6,7 @@ import javax.persistence.*;
 import org.hibernate.annotations.Fetch;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 
 import java.util.Date;
@@ -17,7 +18,7 @@ import java.util.List;
  */
 @Entity
 @NamedQuery(name = "ShChannel.findAll", query = "SELECT c FROM ShChannel c")
-@JsonIgnoreProperties({ "shChannels" })
+@JsonIgnoreProperties({ "shChannels", "shPosts" })
 public class ShChannel implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -31,7 +32,7 @@ public class ShChannel implements Serializable {
 	private String name;
 
 	private String summary;
-	
+
 	private byte rootChannel;
 
 	// bi-directional many-to-one association to ShChannel
@@ -48,6 +49,11 @@ public class ShChannel implements Serializable {
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "parentChannel", cascade = CascadeType.ALL)
 	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
 	private List<ShChannel> shChannels;
+
+	// bi-directional many-to-one association to ShChannel
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "shChannel", cascade = CascadeType.ALL)
+	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
+	private List<ShPost> shPosts;
 
 	public ShChannel() {
 	}
@@ -106,6 +112,14 @@ public class ShChannel implements Serializable {
 
 	public void setShChannels(List<ShChannel> shChannels) {
 		this.shChannels = shChannels;
+	}
+
+	public List<ShPost> getShPosts() {
+		return this.shPosts;
+	}
+
+	public void setShPosts(List<ShPost> shPosts) {
+		this.shPosts = shPosts;
 	}
 
 	public byte getRootChannel() {
