@@ -478,11 +478,27 @@ shioharaApp.controller('ShPostEditCtrl', [
 		function($scope, $http, $window, $stateParams, $state, $rootScope,
 				shPostResource, shAPIServerService) {
 			$scope.postId = $stateParams.postId;
-
+			$scope.breadcrumb = null;
 			$scope.shPost = shPostResource.get({
 				id : $scope.postId
+			}, function() {
+				$scope
+				.$evalAsync($http
+						.get(
+								shAPIServerService
+										.get()
+										.concat(
+												"/channel/" + $scope.shPost.shChannel.id + "/path")
+												)
+						.then(
+								function(response) {
+									$scope.breadcrumb = response.data.breadcrumb;
+								}
+								));
 			});
 
+			
+							
 			$scope.openPreviewURL = function() {
 				
 				if ($scope.shPost.shChannel != null) {
