@@ -1,6 +1,7 @@
 package com.viglet.shiohara.channel;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,25 @@ import com.viglet.shiohara.persistence.repository.channel.ShChannelRepository;
 public class ShChannelUtils {
 	@Autowired
 	ShChannelRepository shChannelRepository;
+
+	public ArrayList<ShChannel> breadcrumb(ShChannel shChannel) {
+		boolean rootChannel = false;
+		ArrayList<ShChannel> channelBreadcrumb = new ArrayList<ShChannel>();
+		channelBreadcrumb.add(shChannel);
+		ShChannel parentChannel = shChannel.getParentChannel();
+		while (parentChannel != null && !rootChannel) {
+			channelBreadcrumb.add(parentChannel);
+			if ((parentChannel.getRootChannel() == (byte) 1) || (parentChannel.getParentChannel() == null)) {
+				rootChannel = true;
+			} else {
+				parentChannel = parentChannel.getParentChannel();
+			}
+		}
+
+		   Collections.reverse(channelBreadcrumb);
+	
+		return channelBreadcrumb;
+	}
 
 	public String channelPath(ShChannel shChannel) {
 		boolean rootChannel = false;
@@ -36,7 +56,6 @@ public class ShChannelUtils {
 		path = "/" + path;
 		return path;
 	}
-
 	public ShChannel channelFromPath(ShSite shSite, String channelPath) {
 		ShChannel currentChannel = null;
 		String[] contexts = channelPath.split("/");
