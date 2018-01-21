@@ -1,8 +1,10 @@
-shioharaApp.controller('ShContentCtrl', [ "$scope", "Token", 'vigLocale',
-		"$translate", function($scope, Token, vigLocale, $translate) {
+shioharaApp.controller('ShContentCtrl', [ "$rootScope", "$scope", "Token",
+		'vigLocale', "$translate",
+		function($rootScope, $scope, Token, vigLocale, $translate) {
 			$scope.vigLanguage = vigLocale.getLocale().substring(0, 2);
 			$translate.use($scope.vigLanguage);
 			$scope.accessToken = Token.get();
+
 		} ]);
 shioharaApp.controller('ShPostFormCtrl', [ "$scope", "$http", "$window",
 		"$stateParams", "$state", "$rootScope",
@@ -419,7 +421,7 @@ shioharaApp.controller('ShContentListCtrl', [
 		"shAPIServerService",
 		'vigLocale',
 		'$location',
-		"$translate",
+		'$translate',
 		function($scope, $http, $window, $state, $rootScope, Token,
 				shUserResource, shChannelResource, shPostTypeResource, shAPIServerService, vigLocale, $location,
 				$translate) {
@@ -430,8 +432,9 @@ shioharaApp.controller('ShContentListCtrl', [
 			$scope.shUser = null;
 			$scope.shPosts = null;
 			$scope.shLastPostType = null;
-			$scope.shChannels = null;
+			$scope.shChannels = null;		
 			$rootScope.$state = $state;
+			$scope.breadcrumb = null;
 			
 			$scope.$evalAsync($http.get(
 					shAPIServerService.get().concat(
@@ -439,6 +442,7 @@ shioharaApp.controller('ShContentListCtrl', [
 					.then(function(response) {
 						$scope.shChannels = response.data.shChannels;
 						$scope.shPosts = response.data.shPosts;
+						$scope.breadcrumb = response.data.breadcrumb;
 					}));
 			
 			$scope.shUser = shUserResource.get({
@@ -478,21 +482,23 @@ shioharaApp.controller('ShChannelListCtrl', [
 		function($scope, $http, $window, $state, $stateParams, $rootScope,
 				Token, shUserResource, shChannelResource, shPostResource,
 				shPostTypeResource, shAPIServerService, vigLocale, $location,
-				$translate) {
+				$translate, breadcrumb) {
 			$scope.channelId = $stateParams.channelId;
 			$scope.vigLanguage = vigLocale.getLocale().substring(0, 2);
 			$translate.use($scope.vigLanguage);
 
 			$scope.shChannels = null;
 			$scope.shPosts = null;
+			$scope.breadcrumb = null;
 			$rootScope.$state = $state;
-
+		
 			$scope.$evalAsync($http.get(
 					shAPIServerService.get().concat(
 							"/channel/" + $scope.channelId + "/list")).then(
 					function(response) {
 						$scope.shChannels = response.data.shChannels;
 						$scope.shPosts = response.data.shPosts;
+						$scope.breadcrumb = response.data.breadcrumb;
 					}));
 
 		} ]);

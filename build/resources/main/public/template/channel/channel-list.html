@@ -12,13 +12,20 @@
 			class="fa fa-viglet fa-plus fa-lg"></i></a></li>
 </ul>
 
-
+<ul class="breadcrumb" style="margin-top: 5px; margin-bottom: 5px;">
+	<li><a ui-sref="content.list({sitelId: 'me'})">Only Me</a></li>
+	<li ng-repeat="breacrumbItem in breadcrumb" ng-class="{'active':$last}"><a
+		ng-if="!$last"
+		ui-sref="content.list.channel-list({channelId: breacrumbItem.id})">{{breacrumbItem.name}}</a><span
+		ng-if="$last">{{breacrumbItem.name}}</span></li>
+</ul>
 <table class="table table-hover">
 	<!--  Channels  -->
 	<tr ng-repeat="shChannel in shChannels">
 		<td><input type="checkbox" /> <a href="#"><span
 				class="glyphicon glyphicon-folder-open close"></span></a></td>
-		<td><a ui-sref="content.list.channel-list({channelId: shChannel.id})">
+		<td><a
+			ui-sref="content.list.channel-list({channelId: shChannel.id})">
 				{{shChannel.name}}</a></td>
 		<td><span class="label label-primary">Channel</span></td>
 		<td>{{shChannel.summary}}</td>

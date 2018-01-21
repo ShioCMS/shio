@@ -1,5 +1,6 @@
 package com.viglet.shiohara.api.channel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.viglet.shiohara.persistence.model.channel.ShChannel;
@@ -13,6 +14,8 @@ public class ShChannelList {
 	
 	String channelPath;
 
+	ArrayList<ShChannel> breadcrumb;
+	
 	public List<ShChannel> getShChannels() {
 		return shChannels;
 	}
@@ -35,6 +38,14 @@ public class ShChannelList {
 
 	public void setChannelPath(String channelPath) {
 		this.channelPath = channelPath;
+	}
+
+	public ArrayList<ShChannel> getBreadcrumb() {
+		return breadcrumb;
+	}
+
+	public void setBreadcrumb(ArrayList<ShChannel> breadcrumb) {
+		this.breadcrumb = breadcrumb;
 	}
 
 }

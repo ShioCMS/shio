@@ -11,7 +11,7 @@ shioharaApp.controller('ShContentListCtrl', [
 		"shAPIServerService",
 		'vigLocale',
 		'$location',
-		"$translate",
+		'$translate',
 		function($scope, $http, $window, $state, $rootScope, Token,
 				shUserResource, shChannelResource, shPostTypeResource, shAPIServerService, vigLocale, $location,
 				$translate) {
@@ -22,8 +22,9 @@ shioharaApp.controller('ShContentListCtrl', [
 			$scope.shUser = null;
 			$scope.shPosts = null;
 			$scope.shLastPostType = null;
-			$scope.shChannels = null;
+			$scope.shChannels = null;		
 			$rootScope.$state = $state;
+			$scope.breadcrumb = null;
 			
 			$scope.$evalAsync($http.get(
 					shAPIServerService.get().concat(
@@ -31,6 +32,7 @@ shioharaApp.controller('ShContentListCtrl', [
 					.then(function(response) {
 						$scope.shChannels = response.data.shChannels;
 						$scope.shPosts = response.data.shPosts;
+						$scope.breadcrumb = response.data.breadcrumb;
 					}));
 			
 			$scope.shUser = shUserResource.get({

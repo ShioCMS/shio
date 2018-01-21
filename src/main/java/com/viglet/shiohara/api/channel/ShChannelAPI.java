@@ -1,5 +1,6 @@
 package com.viglet.shiohara.api.channel;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -86,12 +87,14 @@ public class ShChannelAPI {
 		ShChannel parentChannel = shChannelRepository.findById(id);
 
 		String channelPath = shChannelUtils.channelPath(parentChannel);
-
+		ArrayList<ShChannel> breadcrumb = shChannelUtils.breadcrumb(parentChannel);
+		
 		ShChannelList shChannelList = new ShChannelList();
 		shChannelList.setShChannels(shChannelRepository.findByParentChannel(parentChannel));
 		shChannelList.setShPosts(shPostRepository.findByShChannel(parentChannel));
 		shChannelList.setChannelPath(channelPath);
-
+		shChannelList.setBreadcrumb(breadcrumb);
+		
 		return shChannelList;
 	}
 
@@ -102,8 +105,10 @@ public class ShChannelAPI {
 		ShChannel shChannel = shChannelRepository.findById(id);
 		ShChannelPath shChannelPath = new ShChannelPath();
 		String channelPath = shChannelUtils.channelPath(shChannel);
+		ArrayList<ShChannel> breadcrumb = shChannelUtils.breadcrumb(shChannel);
 		shChannelPath.setChannelPath(channelPath);
 		shChannelPath.setCurrentChannel(shChannelUtils.channelFromPath(shChannel.getShSite(), channelPath));
+		shChannelPath.setBreadcrumb(breadcrumb);
 		return shChannelPath;
 	}
 
