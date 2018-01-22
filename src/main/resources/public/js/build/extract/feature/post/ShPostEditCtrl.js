@@ -14,6 +14,7 @@ shioharaApp.controller('ShPostEditCtrl', [
 			$scope.shPost = shPostResource.get({
 				id : $scope.postId
 			}, function() {
+				if ( $scope.shPost.shChannel != null) {
 				$scope
 				.$evalAsync($http
 						.get(
@@ -27,8 +28,10 @@ shioharaApp.controller('ShPostEditCtrl', [
 									$scope.breadcrumb = response.data.breadcrumb;
 								}
 								));
+				}
 			});
-
+			
+	
 			
 							
 			$scope.openPreviewURL = function() {

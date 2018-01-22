@@ -17,7 +17,7 @@ shioharaApp.controller('ShContentListCtrl', [
 				$translate) {
 			$scope.vigLanguage = vigLocale.getLocale().substring(0, 2);
 			$translate.use($scope.vigLanguage);
-
+			$scope.channelId = 0;
 			$scope.accessToken = Token.get();
 			$scope.shUser = null;
 			$scope.shPosts = null;
@@ -31,8 +31,7 @@ shioharaApp.controller('ShContentListCtrl', [
 							"/site/1/channel"))
 					.then(function(response) {
 						$scope.shChannels = response.data.shChannels;
-						$scope.shPosts = response.data.shPosts;
-						$scope.breadcrumb = response.data.breadcrumb;
+						$scope.shPosts = response.data.shPosts;					
 					}));
 			
 			$scope.shUser = shUserResource.get({

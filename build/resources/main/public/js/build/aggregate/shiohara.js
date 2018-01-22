@@ -58,6 +58,13 @@ shioharaApp.config([
 					pageTitle : 'Content | Viglet Shiohara'
 				}
 			}).state('content.post-type-select', {
+				url : '/channel/:channelId/post/type',
+				templateUrl : 'template/post/type/select.html',
+				controller : 'ShPostTypeSelectCtrl',
+				data : {
+					pageTitle : 'Post Type Select | Viglet Shiohara'
+				}
+			}).state('content.post-type-select2', {
 				url : '/post/type/select',
 				templateUrl : 'template/post/type/select.html',
 				controller : 'ShPostTypeSelectCtrl',
@@ -86,7 +93,7 @@ shioharaApp.config([
 					pageTitle : 'Post Type Editor | Viglet Shiohara'
 				}
 			}).state('content.post-type-item.post-item-new', {
-				url : '/post/new',
+				url : '/channel/:channelId',
 				templateUrl : 'template/post/item.html',
 				controller : 'ShPostNewCtrl',
 				data : {
@@ -216,12 +223,22 @@ shioharaApp.controller('ShPostTypeSelectCtrl',
 				"$http",
 				"$window",
 				"$state",
+				"$stateParams",
 				"$rootScope",
 				"shPostTypeResource",
-				function($scope, $http, $window, $state, $rootScope,
-						shPostTypeResource) {
+				"shAPIServerService",
+				function($scope, $http, $window, $state, $stateParams, $rootScope,
+						shPostTypeResource, shAPIServerService) {
+					$scope.channelId = $stateParams.channelId;
 					$rootScope.$state = $state;
 					$scope.shPostTypes = shPostTypeResource.query();
+					$scope.breadcrumb = null;
+					$scope.$evalAsync($http.get(
+							shAPIServerService.get().concat(
+									"/channel/" + $scope.channelId + "/path"))
+							.then(function(response) {
+								$scope.breadcrumb = response.data.breadcrumb;
+							}));
 				} ]);
 shioharaApp.controller('ShPostTypeEditorCtrl', [
 		"$scope",
@@ -385,8 +402,18 @@ shioharaApp
 						"shPostResource",
 						function($scope, $http, $window, $stateParams, $state,
 								$rootScope, shAPIServerService, shPostResource) {
+							$scope.channelId = $stateParams.channelId;
 							$scope.postTypeId = $stateParams.postTypeId;
+							$scope.breadcrumb = null;
 							$scope.shPost = null;
+							$scope.shChannel = null;
+							$scope.$evalAsync($http.get(
+									shAPIServerService.get().concat(
+											"/channel/" + $scope.channelId + "/path"))
+									.then(function(response) {
+										$scope.shChannel = response.data.currentChannel
+										$scope.breadcrumb = response.data.breadcrumb;
+									}));
 							$scope.$evalAsync($http.get(
 									shAPIServerService.get().concat(
 											"/post/type/" + $scope.postTypeId
@@ -449,6 +476,7 @@ shioharaApp
 									});
 								} else {
 									delete $scope.shPost.id;
+									$scope.shPost.shChannel = $scope.shChannel;
 									shPostResource.save($scope.shPost,
 											function(response) {
 												console.log(response);
@@ -478,11 +506,30 @@ shioharaApp.controller('ShPostEditCtrl', [
 		function($scope, $http, $window, $stateParams, $state, $rootScope,
 				shPostResource, shAPIServerService) {
 			$scope.postId = $stateParams.postId;
-
+			$scope.breadcrumb = null;
 			$scope.shPost = shPostResource.get({
 				id : $scope.postId
+			}, function() {
+				if ( $scope.shPost.shChannel != null) {
+				$scope
+				.$evalAsync($http
+						.get(
+								shAPIServerService
+										.get()
+										.concat(
+												"/channel/" + $scope.shPost.shChannel.id + "/path")
+												)
+						.then(
+								function(response) {
+									$scope.breadcrumb = response.data.breadcrumb;
+								}
+								));
+				}
 			});
-
+			
+	
+			
+							
 			$scope.openPreviewURL = function() {
 				
 				if ($scope.shPost.shChannel != null) {
@@ -602,7 +649,7 @@ shioharaApp.controller('ShContentListCtrl', [
 				$translate) {
 			$scope.vigLanguage = vigLocale.getLocale().substring(0, 2);
 			$translate.use($scope.vigLanguage);
-
+			$scope.channelId = 0;
 			$scope.accessToken = Token.get();
 			$scope.shUser = null;
 			$scope.shPosts = null;
@@ -616,8 +663,7 @@ shioharaApp.controller('ShContentListCtrl', [
 							"/site/1/channel"))
 					.then(function(response) {
 						$scope.shChannels = response.data.shChannels;
-						$scope.shPosts = response.data.shPosts;
-						$scope.breadcrumb = response.data.breadcrumb;
+						$scope.shPosts = response.data.shPosts;					
 					}));
 			
 			$scope.shUser = shUserResource.get({
@@ -659,6 +705,7 @@ shioharaApp.controller('ShChannelListCtrl', [
 				shPostTypeResource, shAPIServerService, vigLocale, $location,
 				$translate, breadcrumb) {
 			$scope.channelId = $stateParams.channelId;
+			$scope.$parent.channelId = $stateParams.channelId;
 			$scope.vigLanguage = vigLocale.getLocale().substring(0, 2);
 			$translate.use($scope.vigLanguage);
 
@@ -674,6 +721,7 @@ shioharaApp.controller('ShChannelListCtrl', [
 						$scope.shChannels = response.data.shChannels;
 						$scope.shPosts = response.data.shPosts;
 						$scope.breadcrumb = response.data.breadcrumb;
+						$scope.$parent.breadcrumb = response.data.breadcrumb;
 					}));
 
 		} ]);

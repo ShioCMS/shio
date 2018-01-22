@@ -4,10 +4,20 @@ shioharaApp.controller('ShPostTypeSelectCtrl',
 				"$http",
 				"$window",
 				"$state",
+				"$stateParams",
 				"$rootScope",
 				"shPostTypeResource",
-				function($scope, $http, $window, $state, $rootScope,
-						shPostTypeResource) {
+				"shAPIServerService",
+				function($scope, $http, $window, $state, $stateParams, $rootScope,
+						shPostTypeResource, shAPIServerService) {
+					$scope.channelId = $stateParams.channelId;
 					$rootScope.$state = $state;
 					$scope.shPostTypes = shPostTypeResource.query();
+					$scope.breadcrumb = null;
+					$scope.$evalAsync($http.get(
+							shAPIServerService.get().concat(
+									"/channel/" + $scope.channelId + "/path"))
+							.then(function(response) {
+								$scope.breadcrumb = response.data.breadcrumb;
+							}));
 				} ]);
