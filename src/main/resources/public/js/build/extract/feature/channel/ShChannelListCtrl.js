@@ -19,6 +19,7 @@ shioharaApp.controller('ShChannelListCtrl', [
 				shPostTypeResource, shAPIServerService, vigLocale, $location,
 				$translate, breadcrumb) {
 			$scope.channelId = $stateParams.channelId;
+			$scope.$parent.channelId = $stateParams.channelId;
 			$scope.vigLanguage = vigLocale.getLocale().substring(0, 2);
 			$translate.use($scope.vigLanguage);
 
@@ -34,6 +35,7 @@ shioharaApp.controller('ShChannelListCtrl', [
 						$scope.shChannels = response.data.shChannels;
 						$scope.shPosts = response.data.shPosts;
 						$scope.breadcrumb = response.data.breadcrumb;
+						$scope.$parent.breadcrumb = response.data.breadcrumb;
 					}));
 
 		} ]);

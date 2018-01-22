@@ -1,3 +1,8 @@
+<ul class="breadcrumb" style="margin-top: 5px; margin-bottom: 20px;">
+	<li><a ui-sref="content.list({siteId: 'me'})" ui-sref-opts="{reload:true}">Only Me</a></li>
+	<li ng-repeat="breacrumbItem in breadcrumb"><a
+		ui-sref="content.list.channel-list({siteId: 'me', channelId: breacrumbItem.id})" ui-sref-opts="{reload:true}">{{breacrumbItem.name}}</a></li>
+</ul>
 <div class="settings">
 	<section class="content no-padding">
 
@@ -20,7 +25,7 @@
 	<div class="col-md-2"
 		ng-repeat="shPostType in shPostTypes | filter: { system: '1'} | orderBy:orderProp">
 		<div class="well">
-			<a ui-sref="content.post-type-item.post-item-new({postTypeId: shPostType.id})"><h3>{{shPostType.title}}</h3></a>
+			<a ui-sref="content.post-type-item.post-item-new({postTypeId: shPostType.id, channelId: channelId})"><h3>{{shPostType.title}}</h3></a>
 		</div>
 	</div>
 </div>
@@ -31,7 +36,7 @@
 			<a href="#"><span class="glyphicon glyphicon-star-empty close"></span></a>
 			<a ui-sref="content.post-type-item({postTypeId: shPostType.id})"><span
 				class="glyphicon glyphicon-pencil close"></span></a> <a
-				ui-sref="content.post-type-item.post-item-new({postTypeId: shPostType.id})"><h1>
+				ui-sref="content.post-type-item.post-item-new({postTypeId: shPostType.id, channelId: channelId})"><h1>
 					{{shPostType.title}} <br /> <small>
 						{{shPostType.description}} </small>
 				</h1></a>

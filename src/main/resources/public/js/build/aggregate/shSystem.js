@@ -56,6 +56,13 @@ shioharaApp.config([
 					pageTitle : 'Content | Viglet Shiohara'
 				}
 			}).state('content.post-type-select', {
+				url : '/channel/:channelId/post/type',
+				templateUrl : 'template/post/type/select.html',
+				controller : 'ShPostTypeSelectCtrl',
+				data : {
+					pageTitle : 'Post Type Select | Viglet Shiohara'
+				}
+			}).state('content.post-type-select2', {
 				url : '/post/type/select',
 				templateUrl : 'template/post/type/select.html',
 				controller : 'ShPostTypeSelectCtrl',
@@ -84,7 +91,7 @@ shioharaApp.config([
 					pageTitle : 'Post Type Editor | Viglet Shiohara'
 				}
 			}).state('content.post-type-item.post-item-new', {
-				url : '/post/new',
+				url : '/channel/:channelId',
 				templateUrl : 'template/post/item.html',
 				controller : 'ShPostNewCtrl',
 				data : {

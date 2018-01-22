@@ -16,46 +16,55 @@ public class ShChannelUtils {
 	ShChannelRepository shChannelRepository;
 
 	public ArrayList<ShChannel> breadcrumb(ShChannel shChannel) {
-		boolean rootChannel = false;
-		ArrayList<ShChannel> channelBreadcrumb = new ArrayList<ShChannel>();
-		channelBreadcrumb.add(shChannel);
-		ShChannel parentChannel = shChannel.getParentChannel();
-		while (parentChannel != null && !rootChannel) {
-			channelBreadcrumb.add(parentChannel);
-			if ((parentChannel.getRootChannel() == (byte) 1) || (parentChannel.getParentChannel() == null)) {
-				rootChannel = true;
-			} else {
-				parentChannel = parentChannel.getParentChannel();
+		if (shChannel != null) {
+			boolean rootChannel = false;
+			ArrayList<ShChannel> channelBreadcrumb = new ArrayList<ShChannel>();
+			channelBreadcrumb.add(shChannel);
+			ShChannel parentChannel = shChannel.getParentChannel();
+			while (parentChannel != null && !rootChannel) {
+				channelBreadcrumb.add(parentChannel);
+				if ((parentChannel.getRootChannel() == (byte) 1) || (parentChannel.getParentChannel() == null)) {
+					rootChannel = true;
+				} else {
+					parentChannel = parentChannel.getParentChannel();
+				}
 			}
-		}
 
-		   Collections.reverse(channelBreadcrumb);
-	
-		return channelBreadcrumb;
+			Collections.reverse(channelBreadcrumb);
+			return channelBreadcrumb;
+		} else {
+			return null;
+		}
 	}
 
 	public String channelPath(ShChannel shChannel) {
-		boolean rootChannel = false;
-		ArrayList<String> pathContexts = new ArrayList<String>();
-		pathContexts.add(shChannel.getName());
-		ShChannel parentChannel = shChannel.getParentChannel();
-		while (parentChannel != null && !rootChannel) {
-			pathContexts.add(parentChannel.getName());
-			if ((parentChannel.getRootChannel() == (byte) 1) || (parentChannel.getParentChannel() == null)) {
-				rootChannel = true;
-			} else {
-				parentChannel = parentChannel.getParentChannel();
+		if (shChannel != null) {
+			boolean rootChannel = false;
+			ArrayList<String> pathContexts = new ArrayList<String>();
+			pathContexts.add(shChannel.getName());
+			ShChannel parentChannel = shChannel.getParentChannel();
+			while (parentChannel != null && !rootChannel) {
+				pathContexts.add(parentChannel.getName());
+				if ((parentChannel.getRootChannel() == (byte) 1) || (parentChannel.getParentChannel() == null)) {
+					rootChannel = true;
+				} else {
+					parentChannel = parentChannel.getParentChannel();
+				}
 			}
+
+			String path = "";
+
+			for (String context : pathContexts) {
+				path = context + "/" + path;
+			}
+			path = "/" + path;
+			return path;
+		} else {
+			return "/";
 		}
 
-		String path = "";
-
-		for (String context : pathContexts) {
-			path = context + "/" + path;
-		}
-		path = "/" + path;
-		return path;
 	}
+
 	public ShChannel channelFromPath(ShSite shSite, String channelPath) {
 		ShChannel currentChannel = null;
 		String[] contexts = channelPath.split("/");

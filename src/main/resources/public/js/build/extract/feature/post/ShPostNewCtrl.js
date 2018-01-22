@@ -12,8 +12,18 @@ shioharaApp
 						"shPostResource",
 						function($scope, $http, $window, $stateParams, $state,
 								$rootScope, shAPIServerService, shPostResource) {
+							$scope.channelId = $stateParams.channelId;
 							$scope.postTypeId = $stateParams.postTypeId;
+							$scope.breadcrumb = null;
 							$scope.shPost = null;
+							$scope.shChannel = null;
+							$scope.$evalAsync($http.get(
+									shAPIServerService.get().concat(
+											"/channel/" + $scope.channelId + "/path"))
+									.then(function(response) {
+										$scope.shChannel = response.data.currentChannel
+										$scope.breadcrumb = response.data.breadcrumb;
+									}));
 							$scope.$evalAsync($http.get(
 									shAPIServerService.get().concat(
 											"/post/type/" + $scope.postTypeId
@@ -76,6 +86,7 @@ shioharaApp
 									});
 								} else {
 									delete $scope.shPost.id;
+									$scope.shPost.shChannel = $scope.shChannel;
 									shPostResource.save($scope.shPost,
 											function(response) {
 												console.log(response);
