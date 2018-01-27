@@ -19,7 +19,10 @@ import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.channel.ShChannelUtils;
 import com.viglet.shiohara.persistence.model.channel.ShChannel;
+import com.viglet.shiohara.persistence.model.post.ShPost;
+import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.repository.channel.ShChannelRepository;
+import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 
 @Component
@@ -30,6 +33,8 @@ public class ShChannelAPI {
 	ShChannelRepository shChannelRepository;
 	@Autowired
 	ShPostRepository shPostRepository;
+	@Autowired
+	ShPostAttrRepository shPostAttrRepository;
 	@Autowired
 	ShChannelUtils shChannelUtils;
 
@@ -68,13 +73,14 @@ public class ShChannelAPI {
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
 	public boolean delete(@PathParam("channelId") int id) throws Exception {
-		shChannelRepository.delete(id);
-		return true;
+		ShChannel shChannel = shChannelRepository.findById(id);		
+		return shChannelUtils.deleteChannel(shChannel);
 	}
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public ShChannel add(ShChannel shChannel) throws Exception {
+		shChannel.setDate(new Date());
 		shChannelRepository.save(shChannel);
 		return shChannel;
 
@@ -108,12 +114,21 @@ public class ShChannelAPI {
 			String channelPath = shChannelUtils.channelPath(shChannel);
 			ArrayList<ShChannel> breadcrumb = shChannelUtils.breadcrumb(shChannel);
 			shChannelPath.setChannelPath(channelPath);
-			shChannelPath.setCurrentChannel(shChannelUtils.channelFromPath(shChannel.getShSite(), channelPath));
+			shChannelPath.setCurrentChannel(shChannelUtils.channelFromPath(channelPath));
 			shChannelPath.setBreadcrumb(breadcrumb);
 			return shChannelPath;
 		} else {
 			return null;
 		}
+	}
+	
+	@Path("/model")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public ShChannel channelStructure() throws Exception {
+		ShChannel shChannel = new ShChannel();
+		return shChannel;
+
 	}
 
 }

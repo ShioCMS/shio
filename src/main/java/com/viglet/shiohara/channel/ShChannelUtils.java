@@ -7,13 +7,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.persistence.model.channel.ShChannel;
+import com.viglet.shiohara.persistence.model.post.ShPost;
+import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.channel.ShChannelRepository;
+import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
+import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 
 @Component
 public class ShChannelUtils {
 	@Autowired
 	ShChannelRepository shChannelRepository;
+	@Autowired
+	ShPostRepository shPostRepository;
+	@Autowired
+	ShPostAttrRepository shPostAttrRepository;
 
 	public ArrayList<ShChannel> breadcrumb(ShChannel shChannel) {
 		if (shChannel != null) {
@@ -65,14 +73,28 @@ public class ShChannelUtils {
 
 	}
 
-	public ShChannel channelFromPath(ShSite shSite, String channelPath) {
+	public ShChannel channelFromPath(String channelPath) {
 		ShChannel currentChannel = null;
 		String[] contexts = channelPath.split("/");
 		for (int i = 1; i < contexts.length; i++) {
-			currentChannel = shChannelRepository.findByShSiteAndParentChannelAndName(shSite, currentChannel,
-					contexts[i]);
+			currentChannel = shChannelRepository.findByParentChannelAndName(currentChannel, contexts[i]);
 
 		}
 		return currentChannel;
+	}
+
+	public boolean deleteChannel(ShChannel shChannel) {
+		for (ShPost shPost : shChannel.getShPosts()) {
+			for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
+				shPostAttrRepository.delete(shPostAttr.getId());
+			}
+			shPostRepository.delete(shPost.getId());
+		}
+		for (ShChannel shChannelChild : shChannel.getShChannels()) {
+			this.deleteChannel(shChannelChild);
+		}
+		
+		shChannelRepository.delete(shChannel.getId());
+		return true;
 	}
 }

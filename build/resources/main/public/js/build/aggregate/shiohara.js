@@ -62,14 +62,7 @@ shioharaApp.config([
 				templateUrl : 'template/post/type/select.html',
 				controller : 'ShPostTypeSelectCtrl',
 				data : {
-					pageTitle : 'Post Type Select | Viglet Shiohara'
-				}
-			}).state('content.post-type-select2', {
-				url : '/post/type/select',
-				templateUrl : 'template/post/type/select.html',
-				controller : 'ShPostTypeSelectCtrl',
-				data : {
-					pageTitle : 'Post Type Select | Viglet Shiohara'
+					pageTitle : 'Post Type Selection | Viglet Shiohara'
 				}
 			}).state('content.post-type-editor', {
 				url : '/post/type/editor',
@@ -97,19 +90,28 @@ shioharaApp.config([
 				templateUrl : 'template/post/item.html',
 				controller : 'ShPostNewCtrl',
 				data : {
-					pageTitle : 'Post New | Viglet Shiohara'
+					pageTitle : 'New Post | Viglet Shiohara'
 				}
 			}).state('content.post-type-item.post-item', {
 				url : '/post/:postId',
 				templateUrl : 'template/post/item.html',
 				controller : 'ShPostEditCtrl',
 				data : {
-					pageTitle : 'Post New | Viglet Shiohara'
+					pageTitle : 'New Post | Viglet Shiohara'
 				}
 			}).state('post-item-form', {
 				url : '/post/type/:postTypeId/post/form',
 				templateUrl : 'template/post/form.html',
-				controller : 'ShPostFormCtrl'
+				controller : 'ShPostFormCtrl',
+				data : {
+				}
+			}).state('content.channel-new', {
+				url : '/channel/:channelId/channel',
+				templateUrl : 'template/channel/channel-new.html',
+				controller : 'ShChannelNewCtrl',
+				data : {
+					pageTitle : 'New Channel | Viglet Shiohara'
+				}
 			})
 
 		} ]);
@@ -635,6 +637,7 @@ shioharaApp.controller('ShContentListCtrl', [
 		"$http",
 		"$window",
 		"$state",
+		"$stateParams",
 		"$rootScope",
 		"Token",
 		"shUserResource",
@@ -644,11 +647,12 @@ shioharaApp.controller('ShContentListCtrl', [
 		'vigLocale',
 		'$location',
 		'$translate',
-		function($scope, $http, $window, $state, $rootScope, Token,
+		function($scope, $http, $window, $state, $stateParams, $rootScope, Token,
 				shUserResource, shChannelResource, shPostTypeResource, shAPIServerService, vigLocale, $location,
 				$translate) {
 			$scope.vigLanguage = vigLocale.getLocale().substring(0, 2);
 			$translate.use($scope.vigLanguage);
+			$scope.siteId = $stateParams.siteId;
 			$scope.channelId = 0;
 			$scope.accessToken = Token.get();
 			$scope.shUser = null;
@@ -673,7 +677,16 @@ shioharaApp.controller('ShContentListCtrl', [
 				$scope.shLastPostType = shPostTypeResource.get({
 					id : $scope.shUser.lastPostType
 				});
+				
 			});
+			$scope.channelDelete = function(channelId) {
+				shChannelResource
+				.delete({
+					id : channelId
+				},function() {
+					$state.go('content',{}, {reload: true});
+				});
+			}
 		} ]);
 shioharaApp.factory('shUserResource', [ '$resource', 'shAPIServerService', function($resource, shAPIServerService) {
 	return $resource(shAPIServerService.get().concat('/user/:id'), {
@@ -684,6 +697,61 @@ shioharaApp.factory('shUserResource', [ '$resource', 'shAPIServerService', funct
 		}
 	});
 } ]);
+shioharaApp.controller('ShChannelNewCtrl', [
+		"$scope",
+		"$http",
+		"$window",
+		"$state",
+		"$stateParams",
+		"$rootScope",
+		"Token",
+		"shChannelResource",
+		"shAPIServerService",
+		'vigLocale',
+		'$location',
+		"$translate",
+		function($scope, $http, $window, $state, $stateParams, $rootScope,
+				Token, shChannelResource, shAPIServerService, vigLocale, $location,
+				$translate, breadcrumb) {
+			$scope.siteId = $stateParams.siteId;
+			$scope.channelId = $stateParams.channelId;
+			$scope.vigLanguage = vigLocale.getLocale().substring(0, 2);
+			$translate.use($scope.vigLanguage);
+
+			$scope.shParentChannel = null;
+			$scope.shChannel = null;
+			$scope.breadcrumb = null;
+			$rootScope.$state = $state;
+			$scope.$evalAsync($http.get(
+					shAPIServerService.get().concat("/channel/model")).then(
+					function(response) {
+						$scope.shChannel = response.data;
+					}));
+			$scope.$evalAsync($http.get(
+					shAPIServerService.get().concat(
+							"/channel/" + $scope.channelId + "/path")).then(
+					function(response) {
+						$scope.shParentChannel = response.data.currentChannel
+						$scope.breadcrumb = response.data.breadcrumb;
+						$scope.$parent.breadcrumb = response.data.breadcrumb;
+					}));
+
+			$scope.channelSave = function() {
+				if ($scope.shChannel.id != null && $scope.shChannel.id > 0) {
+					$scope.shChannel.$update(function() {
+						// $state.go('content');
+					});
+				} else {
+					delete $scope.shChannel.id;
+					$scope.shChannel.parentChannel = $scope.shParentChannel;
+					shChannelResource.save($scope.shChannel, function(response) {
+						console.log(response);
+						$scope.shChannel = response;
+					});
+				}
+			}
+
+		} ]);
 shioharaApp.controller('ShChannelListCtrl', [
 		"$scope",
 		"$http",
@@ -704,6 +772,7 @@ shioharaApp.controller('ShChannelListCtrl', [
 				Token, shUserResource, shChannelResource, shPostResource,
 				shPostTypeResource, shAPIServerService, vigLocale, $location,
 				$translate, breadcrumb) {
+			$scope.siteId = $stateParams.siteId;
 			$scope.channelId = $stateParams.channelId;
 			$scope.$parent.channelId = $stateParams.channelId;
 			$scope.vigLanguage = vigLocale.getLocale().substring(0, 2);
@@ -723,6 +792,14 @@ shioharaApp.controller('ShChannelListCtrl', [
 						$scope.breadcrumb = response.data.breadcrumb;
 						$scope.$parent.breadcrumb = response.data.breadcrumb;
 					}));
+			$scope.channelDelete = function(channelId) {
+				shChannelResource
+				.delete({
+					id : channelId
+				},function() {
+					$state.go('content',{}, {reload: true});
+				});
+			}
 
 		} ]);
 shioharaApp.factory('shChannelResource', [ '$resource', 'shAPIServerService',

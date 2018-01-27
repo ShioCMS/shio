@@ -14,7 +14,13 @@
 <table class="table table-hover">
 	<!--  Channels  -->
 	<tr ng-repeat="shChannel in shChannels">
-		<td><input type="checkbox" /> <a href="#"><span
+		<td style="width: 90px;"><input type="checkbox" />
+		<div ng-click="channelDelete(shChannel.id)"
+				class="glyphicon glyphicon-trash close"
+				style="font-size: 14px; margin: 5px"></div>
+			<div class="glyphicon glyphicon-star-empty close"
+				style="font-size: 14px; margin: 5px"></div></td>
+		<td><a href="#"><span
 				class="glyphicon glyphicon-folder-open close"></span></a></td>
 		<td><a
 			ui-sref="content.list.channel-list({channelId: shChannel.id})">
@@ -25,8 +31,12 @@
 	</tr>
 	<!--  Posts  -->
 	<tr ng-repeat="shPost in shPosts">
-		<td><input type="checkbox" /> <a href="#"><span
-				class="glyphicon glyphicon-star-empty close"></span></a></td>
+		<td style="width: 90px;"><input type="checkbox" />
+		<div class="glyphicon glyphicon-trash close"
+				style="font-size: 14px; margin: 5px"></div>
+			<div class="glyphicon glyphicon-star-empty close"
+				style="font-size: 14px; margin: 5px"></div></td>
+		<td><a href="#"><span class="glyphicon glyphicon-edit close"></span></a></td>
 		<td><a
 			ui-sref="content.post-type-item.post-item({postTypeId: shPost.shPostType.id, postId: shPost.id})">
 				{{shPost.title}}</a></td>

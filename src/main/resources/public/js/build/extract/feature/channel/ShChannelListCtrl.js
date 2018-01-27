@@ -18,6 +18,7 @@ shioharaApp.controller('ShChannelListCtrl', [
 				Token, shUserResource, shChannelResource, shPostResource,
 				shPostTypeResource, shAPIServerService, vigLocale, $location,
 				$translate, breadcrumb) {
+			$scope.siteId = $stateParams.siteId;
 			$scope.channelId = $stateParams.channelId;
 			$scope.$parent.channelId = $stateParams.channelId;
 			$scope.vigLanguage = vigLocale.getLocale().substring(0, 2);
@@ -37,5 +38,13 @@ shioharaApp.controller('ShChannelListCtrl', [
 						$scope.breadcrumb = response.data.breadcrumb;
 						$scope.$parent.breadcrumb = response.data.breadcrumb;
 					}));
+			$scope.channelDelete = function(channelId) {
+				shChannelResource
+				.delete({
+					id : channelId
+				},function() {
+					$state.go('content',{}, {reload: true});
+				});
+			}
 
 		} ]);
