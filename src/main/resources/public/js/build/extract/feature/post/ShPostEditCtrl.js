@@ -9,23 +9,28 @@ shioharaApp.controller('ShPostEditCtrl', [
 		"shAPIServerService",
 		function($scope, $http, $window, $stateParams, $state, $rootScope,
 				shPostResource, shAPIServerService) {
+			$scope.channelId = null;
 			$scope.postId = $stateParams.postId;
 			$scope.breadcrumb = null;
+			$scope.shSite = null;
 			$scope.shPost = shPostResource.get({
 				id : $scope.postId
 			}, function() {
 				if ( $scope.shPost.shChannel != null) {
+					$scope.channelId = $scope.shPost.shChannel.id;
 				$scope
 				.$evalAsync($http
 						.get(
 								shAPIServerService
 										.get()
 										.concat(
-												"/channel/" + $scope.shPost.shChannel.id + "/path")
+												"/channel/" + $scope.channelId + "/path")
 												)
 						.then(
 								function(response) {
 									$scope.breadcrumb = response.data.breadcrumb;
+									$scope.shSite = response.data.shSite;
+									
 								}
 								));
 				}

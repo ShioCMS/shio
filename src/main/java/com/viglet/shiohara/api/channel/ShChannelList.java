@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.viglet.shiohara.persistence.model.channel.ShChannel;
 import com.viglet.shiohara.persistence.model.post.ShPost;
+import com.viglet.shiohara.persistence.model.site.ShSite;
 
 public class ShChannelList {
 
@@ -13,8 +14,10 @@ public class ShChannelList {
 	List<ShPost> shPosts;
 	
 	String channelPath;
-
+	
 	ArrayList<ShChannel> breadcrumb;
+	
+	ShSite shSite;
 	
 	public List<ShChannel> getShChannels() {
 		return shChannels;
@@ -46,6 +49,14 @@ public class ShChannelList {
 
 	public void setBreadcrumb(ArrayList<ShChannel> breadcrumb) {
 		this.breadcrumb = breadcrumb;
+	}
+
+	public ShSite getShSite() {
+		return shSite;
+	}
+
+	public void setShSite(ShSite shSite) {
+		this.shSite = shSite;
 	}
 
 }

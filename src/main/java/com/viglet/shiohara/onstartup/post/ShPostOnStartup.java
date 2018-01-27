@@ -53,7 +53,7 @@ public class ShPostOnStartup {
 			shPost.setShPostType(shPostType);
 			shPost.setSummary("Summary");
 			shPost.setTitle("Post01");
-			shPost.setShChannel(null);
+			shPost.setShChannel(shChannelHome);
 
 			shPostRepository.save(shPost);
 

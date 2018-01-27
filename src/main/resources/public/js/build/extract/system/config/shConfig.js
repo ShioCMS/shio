@@ -14,19 +14,19 @@ shioharaApp.config([
 			});
 
 			$translateProvider.useSanitizeValueStrategy('escaped');
-			$translateProvider.translations('en', {				
-				SEARCH: "Search",
-				SEARCH_FOR: "Search for"
+			$translateProvider.translations('en', {
+				SEARCH : "Search",
+				SEARCH_FOR : "Search for"
 			});
 			$translateProvider.translations('pt', {
-				SEARCH: "Pesquisar",
-				SEARCH_FOR: "Pesquisar por"
+				SEARCH : "Pesquisar",
+				SEARCH_FOR : "Pesquisar por"
 			});
-			
+
 			$translateProvider.fallbackLanguage('en');
 
-			$urlRouterProvider.otherwise('/content/me');
-			
+			$urlRouterProvider.otherwise('/content/list/site/1');
+
 			$stateProvider.state('oauth2', {
 				url : '/oauth2',
 				templateUrl : 'template/oauth2.html',
@@ -41,26 +41,26 @@ shioharaApp.config([
 				data : {
 					pageTitle : 'Content | Viglet Shiohara'
 				}
-			}).state('content.list', {
-				url : '/:siteId',
-				templateUrl : 'template/content/content-list.html',
-				controller : 'ShContentListCtrl',
+			}).state('content.children', {
+				url : '/list',
+				templateUrl : 'template/content/content-children.html',
+				controller : 'ShContentChildrenCtrl',
 				data : {
 					pageTitle : 'Content | Viglet Shiohara'
 				}
-			}).state('content.list.channel-list', {
-				url : '/channel/:channelId/list',
-				templateUrl : 'template/channel/channel-list.html',
-				controller : 'ShChannelListCtrl',
+			}).state('content.children.site-children', {
+				url : '/site/:siteId',
+				templateUrl : 'template/site/site-children.html',
+				controller : 'ShSiteChildrenCtrl',
 				data : {
 					pageTitle : 'Content | Viglet Shiohara'
 				}
-			}).state('content.post-type-select', {
-				url : '/channel/:channelId/post/type',
-				templateUrl : 'template/post/type/select.html',
-				controller : 'ShPostTypeSelectCtrl',
+			}).state('content.children.channel-children', {
+				url : '/channel/:channelId',
+				templateUrl : 'template/channel/channel-children.html',
+				controller : 'ShChannelChildrenCtrl',
 				data : {
-					pageTitle : 'Post Type Selection | Viglet Shiohara'
+					pageTitle : 'Content | Viglet Shiohara'
 				}
 			}).state('content.post-type-editor', {
 				url : '/post/type/editor',
@@ -101,14 +101,38 @@ shioharaApp.config([
 				url : '/post/type/:postTypeId/post/form',
 				templateUrl : 'template/post/form.html',
 				controller : 'ShPostFormCtrl',
-				data : {
-				}
-			}).state('content.channel-new', {
-				url : '/channel/:channelId/channel',
+				data : {}
+			}).state('content.channel', {
+				url : '/channel/:channelId'
+			}).state('content.site', {
+				url : '/site/:siteId'
+			}).state('content.channel.channel-new', {
+				url : '/channel',
 				templateUrl : 'template/channel/channel-new.html',
 				controller : 'ShChannelNewCtrl',
 				data : {
 					pageTitle : 'New Channel | Viglet Shiohara'
+				}
+			}).state('content.site.channel-new', {
+				url : '/channel',
+				templateUrl : 'template/channel/channel-new.html',
+				controller : 'ShChannelNewCtrl',
+				data : {
+					pageTitle : 'New Channel | Viglet Shiohara'
+				}
+			}).state('content.channel.post-type-select', {
+				url : '/post/type',
+				templateUrl : 'template/post/type/select.html',
+				controller : 'ShPostTypeSelectCtrl',
+				data : {
+					pageTitle : 'Post Type Selection | Viglet Shiohara'
+				}
+			}).state('content.site.post-type-select', {
+				url : '/post/type',
+				templateUrl : 'template/post/type/select.html',
+				controller : 'ShPostTypeSelectCtrl',
+				data : {
+					pageTitle : 'Post Type Selection | Viglet Shiohara'
 				}
 			})
 

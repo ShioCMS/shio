@@ -17,12 +17,14 @@ shioharaApp
 							$scope.breadcrumb = null;
 							$scope.shPost = null;
 							$scope.shChannel = null;
+							$scope.shSite = null;
 							$scope.$evalAsync($http.get(
 									shAPIServerService.get().concat(
 											"/channel/" + $scope.channelId + "/path"))
 									.then(function(response) {
 										$scope.shChannel = response.data.currentChannel
 										$scope.breadcrumb = response.data.breadcrumb;
+										$scope.shSite = response.data.shSite;
 									}));
 							$scope.$evalAsync($http.get(
 									shAPIServerService.get().concat(
