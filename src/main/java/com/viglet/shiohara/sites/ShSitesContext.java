@@ -91,13 +91,13 @@ public class ShSitesContext {
 			channelPath = channelPath + path + "/";
 		}
 
-		ShChannel shChannel = shChannelUtils.channelFromPath(shSite, channelPath);
+		ShChannel shChannel = shChannelUtils.channelFromPath(channelPath);
 		ShChannel shChannelItem = null;
 		boolean isChannel = false;
 
 		ShPost shPostItem = shPostRepository.findByShChannelAndTitle(shChannel, postName);
 		if (shPostItem == null) {
-			shChannelItem = shChannelRepository.findByShSiteAndParentChannelAndName(shSite, shChannel, postName);
+			shChannelItem = shChannelRepository.findByParentChannelAndName(shChannel, postName);
 			if (shChannelItem != null) {
 				ShPost shChannelIndex = shPostRepository.findByShChannelAndTitle(shChannelItem, "index");
 				if (shChannelIndex != null) {

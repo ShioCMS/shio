@@ -1,0 +1,42 @@
+<ul class="breadcrumb" style="margin-top: 5px; margin-bottom: 20px;">
+	<li><a ui-sref="content.list({siteId: 'me'})"
+		ui-sref-opts="{reload:true}">Only Me</a></li>
+	<li ng-repeat="breacrumbItem in breadcrumb"><a
+		ui-sref="content.list.channel-list({siteId: 'me', channelId: breacrumbItem.id})"
+		ui-sref-opts="{reload:true}">{{breacrumbItem.name}}</a></li>
+</ul>
+<div class="settings">
+	<section class="content no-padding">
+
+		<fieldset class="user-details-top" style="margin-bottom: 30px">
+
+			<div class="form-group">
+				<h3>Create your new Channel</h3>
+			</div>
+			<div class="pull-right" style="margin: -40px 0 0;">
+				<a ui-sref="content.post-type-select({channelId: channelId})" class="btn btn-viglet">Create
+					other kind of Post</a>
+
+			</div>
+		</fieldset>
+	</section>
+</div>
+
+
+<div
+	style="background-color: #FFF0E8;; height: 55px; width: 100%; padding: 10px; margin-bottom: 10px"
+	class="affix-top" data-spy="affix" data-offset-top="147">
+	<div class="form-actions">
+		<div class="pull-right">
+				<button ng-click="channelSave()" class="btn btn-viglet">Save</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+	<div class="form-group">
+		<label for="field1">Name</label> <input type="text" id="name"
+			name="name" class="form-control" placeholder="Channel Name"
+			ng-model="shChannel.name">
+	</div>
+</div>

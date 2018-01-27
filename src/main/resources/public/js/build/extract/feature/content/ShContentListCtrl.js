@@ -3,6 +3,7 @@ shioharaApp.controller('ShContentListCtrl', [
 		"$http",
 		"$window",
 		"$state",
+		"$stateParams",
 		"$rootScope",
 		"Token",
 		"shUserResource",
@@ -12,11 +13,12 @@ shioharaApp.controller('ShContentListCtrl', [
 		'vigLocale',
 		'$location',
 		'$translate',
-		function($scope, $http, $window, $state, $rootScope, Token,
+		function($scope, $http, $window, $state, $stateParams, $rootScope, Token,
 				shUserResource, shChannelResource, shPostTypeResource, shAPIServerService, vigLocale, $location,
 				$translate) {
 			$scope.vigLanguage = vigLocale.getLocale().substring(0, 2);
 			$translate.use($scope.vigLanguage);
+			$scope.siteId = $stateParams.siteId;
 			$scope.channelId = 0;
 			$scope.accessToken = Token.get();
 			$scope.shUser = null;
@@ -41,5 +43,14 @@ shioharaApp.controller('ShContentListCtrl', [
 				$scope.shLastPostType = shPostTypeResource.get({
 					id : $scope.shUser.lastPostType
 				});
+				
 			});
+			$scope.channelDelete = function(channelId) {
+				shChannelResource
+				.delete({
+					id : channelId
+				},function() {
+					$state.go('content',{}, {reload: true});
+				});
+			}
 		} ]);

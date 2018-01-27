@@ -60,14 +60,7 @@ shioharaApp.config([
 				templateUrl : 'template/post/type/select.html',
 				controller : 'ShPostTypeSelectCtrl',
 				data : {
-					pageTitle : 'Post Type Select | Viglet Shiohara'
-				}
-			}).state('content.post-type-select2', {
-				url : '/post/type/select',
-				templateUrl : 'template/post/type/select.html',
-				controller : 'ShPostTypeSelectCtrl',
-				data : {
-					pageTitle : 'Post Type Select | Viglet Shiohara'
+					pageTitle : 'Post Type Selection | Viglet Shiohara'
 				}
 			}).state('content.post-type-editor', {
 				url : '/post/type/editor',
@@ -95,19 +88,28 @@ shioharaApp.config([
 				templateUrl : 'template/post/item.html',
 				controller : 'ShPostNewCtrl',
 				data : {
-					pageTitle : 'Post New | Viglet Shiohara'
+					pageTitle : 'New Post | Viglet Shiohara'
 				}
 			}).state('content.post-type-item.post-item', {
 				url : '/post/:postId',
 				templateUrl : 'template/post/item.html',
 				controller : 'ShPostEditCtrl',
 				data : {
-					pageTitle : 'Post New | Viglet Shiohara'
+					pageTitle : 'New Post | Viglet Shiohara'
 				}
 			}).state('post-item-form', {
 				url : '/post/type/:postTypeId/post/form',
 				templateUrl : 'template/post/form.html',
-				controller : 'ShPostFormCtrl'
+				controller : 'ShPostFormCtrl',
+				data : {
+				}
+			}).state('content.channel-new', {
+				url : '/channel/:channelId/channel',
+				templateUrl : 'template/channel/channel-new.html',
+				controller : 'ShChannelNewCtrl',
+				data : {
+					pageTitle : 'New Channel | Viglet Shiohara'
+				}
 			})
 
 		} ]);
