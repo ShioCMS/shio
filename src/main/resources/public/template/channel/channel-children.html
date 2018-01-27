@@ -1,0 +1,47 @@
+
+<ul class="nav nav-tabs" ng-controller="ShSiteListCtrl">
+	<li ng-class="{active: siteId == shSite.id}"
+		ng-repeat="shSite in shSites | filter:query | orderBy:orderProp">
+		<a ui-sref="content.children.site-children({siteId: shSite.id})"
+		ui-sref-opts="{reload:true}" style="color: black"><i
+			class="fa fa-viglet fa-tags fa-lg"></i> {{shSite.name}} </a>
+	</li>
+	<li><a href="/site/editor/"><i
+			class="fa fa-viglet fa-plus fa-lg"></i></a></li>
+</ul>
+<table class="table table-hover">
+	<!--  Channels  -->
+	<tr ng-repeat="shChannel in shChannels">
+		<td style="width: 90px;"><input type="checkbox" />
+			<div ng-click="channelDelete(shChannel.id)"
+				class="glyphicon glyphicon-trash close"
+				style="font-size: 14px; margin: 5px"></div>
+			<div class="glyphicon glyphicon-star-empty close"
+				style="font-size: 14px; margin: 5px"></div></td>
+		<td><a href="#"><span
+				class="glyphicon glyphicon-folder-open close"></span></a></td>
+		<td><a
+			ui-sref="content.children.channel-children({channelId: shChannel.id})">
+				{{shChannel.name}}</a></td>
+		<td><span class="label label-primary">Channel</span></td>
+		<td>{{shChannel.summary}}</td>
+		<td><span am-time-ago="shChannel.date"></span></td>
+	</tr>
+	<!--  Posts  -->
+	<tr ng-repeat="shPost in shPosts">
+		<td style="width: 90px;"><input type="checkbox" />
+			<div ng-click="postDelete(shPost.id)"
+				class="glyphicon glyphicon-trash close"
+				style="font-size: 14px; margin: 5px"></div>
+			<div class="glyphicon glyphicon-star-empty close"
+				style="font-size: 14px; margin: 5px"></div></td>
+		<td><a href="#"><span class="glyphicon glyphicon-edit close"></span></a></td>
+		<td><a
+			ui-sref="content.post-type-item.post-item({postTypeId: shPost.shPostType.id, postId: shPost.id})">
+				{{shPost.title}}</a></td>
+		<td><span class="label label-warning">
+				{{shPost.shPostType.title}}</span></td>
+		<td>{{shPost.summary}}</td>
+		<td><span am-time-ago="shPost.date"></span></td>
+	</tr>
+</table>

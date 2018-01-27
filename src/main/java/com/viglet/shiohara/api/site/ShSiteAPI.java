@@ -80,6 +80,7 @@ public class ShSiteAPI {
 		ShChannelList shChannelList = new ShChannelList();
 		shChannelList.setShChannels(shChannelRepository.findByShSiteAndRootChannel(shSite, (byte) 1));
 		shChannelList.setShPosts(shPostRepository.findByShChannel(null));
+		shChannelList.setShSite(shSite);
 		return shChannelList;
 
 	}

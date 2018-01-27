@@ -1,0 +1,8 @@
+<ul class="breadcrumb" style="margin-top: 5px; margin-bottom: 25px;">
+	<li><a
+		ui-sref="content.children.site-children({siteId: shSite.id})"
+		ui-sref-opts="{reload:true}">{{shSite.name}}</a></li>
+	<li ng-repeat="breacrumbItem in breadcrumb"><a
+		ui-sref="content.children.channel-children({channelId: breacrumbItem.id})"
+		ui-sref-opts="{reload:true}">{{breacrumbItem.name}}</a></li>
+</ul>

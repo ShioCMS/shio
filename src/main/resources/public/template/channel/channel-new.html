@@ -1,10 +1,5 @@
-<ul class="breadcrumb" style="margin-top: 5px; margin-bottom: 20px;">
-	<li><a ui-sref="content.list({siteId: 'me'})"
-		ui-sref-opts="{reload:true}">Only Me</a></li>
-	<li ng-repeat="breacrumbItem in breadcrumb"><a
-		ui-sref="content.list.channel-list({siteId: 'me', channelId: breacrumbItem.id})"
-		ui-sref-opts="{reload:true}">{{breacrumbItem.name}}</a></li>
-</ul>
+<div ng-include="'template/breadcrumb/breadcrumb.html'"></div>
+
 <div class="settings">
 	<section class="content no-padding">
 

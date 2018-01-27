@@ -22,6 +22,13 @@ public class ShSiteOnStartup {
 			shSite.setUrl("http://example.com");
 					
 			shSiteRepository.save(shSite);
+			
+			shSite = new ShSite();
+			shSite.setName("Viglet");
+			shSite.setDescription("Viglet Site");
+			shSite.setUrl("http://viglet.com");
+					
+			shSiteRepository.save(shSite);
 
 		}
 

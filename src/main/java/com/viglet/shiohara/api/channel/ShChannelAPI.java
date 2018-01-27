@@ -90,17 +90,17 @@ public class ShChannelAPI {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public ShChannelList list(@PathParam("channelId") int id) throws Exception {
-		ShChannel parentChannel = shChannelRepository.findById(id);
+		ShChannel shChannel = shChannelRepository.findById(id);
 
-		String channelPath = shChannelUtils.channelPath(parentChannel);
-		ArrayList<ShChannel> breadcrumb = shChannelUtils.breadcrumb(parentChannel);
+		String channelPath = shChannelUtils.channelPath(shChannel);
+		ArrayList<ShChannel> breadcrumb = shChannelUtils.breadcrumb(shChannel);
 
 		ShChannelList shChannelList = new ShChannelList();
-		shChannelList.setShChannels(shChannelRepository.findByParentChannel(parentChannel));
-		shChannelList.setShPosts(shPostRepository.findByShChannel(parentChannel));
+		shChannelList.setShChannels(shChannelRepository.findByParentChannel(shChannel));
+		shChannelList.setShPosts(shPostRepository.findByShChannel(shChannel));
 		shChannelList.setChannelPath(channelPath);
 		shChannelList.setBreadcrumb(breadcrumb);
-
+		shChannelList.setShSite(breadcrumb.get(0).getShSite());
 		return shChannelList;
 	}
 
@@ -116,6 +116,7 @@ public class ShChannelAPI {
 			shChannelPath.setChannelPath(channelPath);
 			shChannelPath.setCurrentChannel(shChannelUtils.channelFromPath(channelPath));
 			shChannelPath.setBreadcrumb(breadcrumb);
+			shChannelPath.setShSite(breadcrumb.get(0).getShSite());
 			return shChannelPath;
 		} else {
 			return null;

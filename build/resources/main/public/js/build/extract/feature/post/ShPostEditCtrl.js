@@ -11,6 +11,7 @@ shioharaApp.controller('ShPostEditCtrl', [
 				shPostResource, shAPIServerService) {
 			$scope.postId = $stateParams.postId;
 			$scope.breadcrumb = null;
+			$scope.shSite = null;
 			$scope.shPost = shPostResource.get({
 				id : $scope.postId
 			}, function() {
@@ -26,6 +27,7 @@ shioharaApp.controller('ShPostEditCtrl', [
 						.then(
 								function(response) {
 									$scope.breadcrumb = response.data.breadcrumb;
+									$scope.shSite = response.data.currentChannel.shSite;
 								}
 								));
 				}

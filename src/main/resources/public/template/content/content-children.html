@@ -1,10 +1,12 @@
 <div style="margin-bottom: 50px;">
 	<ul class="breadcrumb" style="margin-top: 5px; margin-bottom: 5px;">
-		<li><a ui-sref="content.list({siteId: 'me'})"
-			ui-sref-opts="{reload:true}">Only Me</a></li>
+		<li><a ng-if="breadcrumb != null"
+			ui-sref="content.children.site-children({siteId: shSite.id})"
+			ui-sref-opts="{reload:true}">{{shSite.name}}</a><span
+			ng-if="breadcrumb == null">{{shSite.name}}</span></li>
 		<li ng-repeat="breacrumbItem in breadcrumb"
 			ng-class="{'active':$last}"><a ng-if="!$last"
-			ui-sref="content.list.channel-list({siteId: 'me', channelId: breacrumbItem.id})"
+			ui-sref="content.children.channel-children({channelId: breacrumbItem.id})"
 			ui-sref-opts="{reload:true}">{{breacrumbItem.name}}</a><span
 			ng-if="$last">{{breacrumbItem.name}}</span></li>
 	</ul>
@@ -32,13 +34,20 @@
 <div>
 	<div class="row">
 		<div class="col-lg-2 col-md-3 col-sm-3 col-xs-12">
-			<div class="btn-group">
+			<div ng-if="channelId > 0" class="btn-group">
 				<a
 					ui-sref="content.post-type-item.post-item-new({channelId: channelId, postTypeId: shUser.lastPostType})"
-					class="btn btn-viglet">New {{shLastPostType.title}} </a> <a
+					class="btn btn-viglet">New {{shLastPostType.title}}</a>
+					
+					<a ng-if="channelId > 0"
 					class="btn btn-viglet"
-					ui-sref="content.post-type-select({channelId: channelId})"><span
-					class="glyphicon glyphicon-th"></span></a>
+					ui-sref="content.channel.post-type-select({channelId: channelId})"><span
+					class="glyphicon glyphicon-th"></span></a>					
+			</div>
+			<div ng-if="channelId <= 0" class="btn-group">
+				<a
+					ui-sref="content.site.channel-new({siteId: siteId})"
+					class="btn btn-viglet">New Channel</a>
 			</div>
 			<ul class="nav nav-pills nav-stacked">
 				<li><a href="#">Home</a></li>
@@ -56,17 +65,9 @@
 		<div class="col-lg-10 col-md-9 col-sm-9 col-xs-12">
 			<div ui-view>
 				<ul class="nav nav-tabs" ng-controller="ShSiteListCtrl">
-					<li ng-class="{active: siteId == 'me'}"><a
-						ui-sref="content.list({siteId: 'me'})"
-						ui-sref-opts="{reload:true}" style="color: black"><i
-							class="fa fa-viglet fa-user fa-lg"></i> Only Me</a></li>
-					<li ng-class="{active: siteId == 'team'}"><a
-						ui-sref="content.list({siteId: 'team'})"
-						ui-sref-opts="{reload:true}" style="color: black"><i
-							class="fa fa-viglet  fa-users fa-lg"></i> Team</a></li>
-					<li ng-class="{active: siteId == shSite.name}"
+					<li ng-class="{active: siteId == shSite.id}"
 						ng-repeat="shSite in shSites | filter:query | orderBy:orderProp">
-						<a ui-sref="content.list({siteId: shSite.name})"
+						<a ui-sref="content.children.site-children({siteId: shSite.id})"
 						ui-sref-opts="{reload:true}" style="color: black"><i
 							class="fa fa-viglet fa-tags fa-lg"></i> {{shSite.name}} </a>
 					</li>
@@ -76,11 +77,12 @@
 				<table class="table table-hover">
 					<!--  Channels  -->
 					<tr ng-repeat="shChannel in shChannels">
-						<td style="width: 90px;"><input type="checkbox" /><div ng-click="channelDelete(shChannel.id)"
-								class="glyphicon glyphicon-trash close" style="font-size: 14px;margin:5px"></div>
-							<div
-								class="glyphicon glyphicon-star-empty close"
-								style="font-size: 14px;margin:5px"></div></td>
+						<td style="width: 90px;"><input type="checkbox" />
+							<div ng-click="channelDelete(shChannel.id)"
+								class="glyphicon glyphicon-trash close"
+								style="font-size: 14px; margin: 5px"></div>
+							<div class="glyphicon glyphicon-star-empty close"
+								style="font-size: 14px; margin: 5px"></div></td>
 						<td><a href="#"><span
 								class="glyphicon glyphicon-folder-open close"></span></a></td>
 						<td><a
@@ -92,11 +94,12 @@
 					</tr>
 					<!--  Posts  -->
 					<tr ng-repeat="shPost in shPosts">
-						<td style="width: 90px;"><input type="checkbox" /> <a href="#"><span
-								class="glyphicon glyphicon-trash close" style="font-size: 14px;margin:5px"></span></a>
-							<a href="#"><span
-								class="glyphicon glyphicon-star-empty close"
-								style="font-size: 14px;margin:5px"></span></a></td>
+						<td style="width: 90px;"><input type="checkbox" />
+							<div ng-click="postDelete(shPost.id)"
+								class="glyphicon glyphicon-trash close"
+								style="font-size: 14px; margin: 5px"></div>
+							<div class="glyphicon glyphicon-star-empty close"
+								style="font-size: 14px; margin: 5px"></div></td>
 						<td><a href="#"><span
 								class="glyphicon glyphicon-edit close"></span></a></td>
 						<td><a

@@ -1,8 +1,5 @@
-<ul class="breadcrumb" style="margin-top: 5px; margin-bottom: 20px;">
-	<li><a ui-sref="content.list({siteId: 'me'})" ui-sref-opts="{reload:true}">Only Me</a></li>
-	<li ng-repeat="breacrumbItem in breadcrumb"><a
-		ui-sref="content.list.channel-list({siteId: 'me', channelId: breacrumbItem.id})" ui-sref-opts="{reload:true}">{{breacrumbItem.name}}</a></li>
-</ul>
+<div ng-include="'template/breadcrumb/breadcrumb.html'"></div>
+
 <div class="settings">
 	<section class="content no-padding">
 
@@ -12,9 +9,13 @@
 				<h3>What would you like to post?</h3>
 			</div>
 			<div class="pull-right" style="margin: -40px 0 0;">
-			<a ui-sref="content.channel-new({channelId: channelId})" class="btn btn-viglet">Or
-					create a new Channel</a>
-				<a ui-sref="content.post-type-editor" class="btn btn-viglet">Or
+				<a ng-if="channelId > 0"
+					ui-sref="content.channel.channel-new({channelId: channelId})"
+					class="btn btn-viglet">Or create a new Channel</a> <a
+					ng-if="channelId <= 0 || channelId == null"
+					ui-sref="content.site.channel-new({siteId: siteId})"
+					class="btn btn-viglet">Or create a new Channel</a> <a
+					ui-sref="content.post-type-editor" class="btn btn-viglet">Or
 					model a new Post Type</a>
 
 			</div>
@@ -27,7 +28,8 @@
 	<div class="col-md-2"
 		ng-repeat="shPostType in shPostTypes | filter: { system: '1'} | orderBy:orderProp">
 		<div class="well">
-			<a ui-sref="content.post-type-item.post-item-new({postTypeId: shPostType.id, channelId: channelId})"><h3>{{shPostType.title}}</h3></a>
+			<a
+				ui-sref="content.post-type-item.post-item-new({postTypeId: shPostType.id, channelId: channelId})"><h3>{{shPostType.title}}</h3></a>
 		</div>
 	</div>
 </div>
