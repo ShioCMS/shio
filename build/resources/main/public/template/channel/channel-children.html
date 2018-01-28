@@ -1,10 +1,10 @@
 
 <ul class="nav nav-tabs" ng-controller="ShSiteListCtrl">
-	<li ng-class="{active: siteId == shSite.id}"
-		ng-repeat="shSite in shSites | filter:query | orderBy:orderProp">
-		<a ui-sref="content.children.site-children({siteId: shSite.id})"
+	<li ng-class="{active: shSiteItem.id == shSite.id}"
+		ng-repeat="shSiteItem in shSites | filter:query | orderBy:orderProp">
+		<a ui-sref="content.children.site-children({siteId: shSiteItem.id})"
 		ui-sref-opts="{reload:true}" style="color: black"><i
-			class="fa fa-viglet fa-tags fa-lg"></i> {{shSite.name}} </a>
+			class="fa fa-viglet fa-tags fa-lg"></i>{{shSiteItem.name}}</a>
 	</li>
 	<li><a href="/site/editor/"><i
 			class="fa fa-viglet fa-plus fa-lg"></i></a></li>

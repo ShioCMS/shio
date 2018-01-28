@@ -21,6 +21,7 @@ import com.viglet.shiohara.channel.ShChannelUtils;
 import com.viglet.shiohara.persistence.model.channel.ShChannel;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
+import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.channel.ShChannelRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
@@ -94,13 +95,13 @@ public class ShChannelAPI {
 
 		String channelPath = shChannelUtils.channelPath(shChannel);
 		ArrayList<ShChannel> breadcrumb = shChannelUtils.breadcrumb(shChannel);
-
+		ShSite shSite = breadcrumb.get(0).getShSite();
 		ShChannelList shChannelList = new ShChannelList();
 		shChannelList.setShChannels(shChannelRepository.findByParentChannel(shChannel));
 		shChannelList.setShPosts(shPostRepository.findByShChannel(shChannel));
 		shChannelList.setChannelPath(channelPath);
 		shChannelList.setBreadcrumb(breadcrumb);
-		shChannelList.setShSite(breadcrumb.get(0).getShSite());
+		shChannelList.setShSite(shSite);
 		return shChannelList;
 	}
 
@@ -113,10 +114,11 @@ public class ShChannelAPI {
 			ShChannelPath shChannelPath = new ShChannelPath();
 			String channelPath = shChannelUtils.channelPath(shChannel);
 			ArrayList<ShChannel> breadcrumb = shChannelUtils.breadcrumb(shChannel);
+			ShSite shSite = breadcrumb.get(0).getShSite();
 			shChannelPath.setChannelPath(channelPath);
-			shChannelPath.setCurrentChannel(shChannelUtils.channelFromPath(channelPath));
+			shChannelPath.setCurrentChannel(shChannelUtils.channelFromPath(shSite, channelPath));
 			shChannelPath.setBreadcrumb(breadcrumb);
-			shChannelPath.setShSite(breadcrumb.get(0).getShSite());
+			shChannelPath.setShSite(shSite);
 			return shChannelPath;
 		} else {
 			return null;

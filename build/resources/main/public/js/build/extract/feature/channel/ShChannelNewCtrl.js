@@ -53,7 +53,7 @@ shioharaApp
 														function(response) {
 															$scope.shParentChannel = response.data.currentChannel
 															$scope.breadcrumb = response.data.breadcrumb;
-															$scope.shSite = response.data.currentChannel.shSite;
+															$scope.shSite = response.data.shSite;
 														}));
 							} else {
 								$scope.shSite = shSiteResource.get({
