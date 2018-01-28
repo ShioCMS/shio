@@ -1,6 +1,6 @@
 shioharaApp
 		.controller(
-				'ShChannelNewCtrl',
+				'ShChannelEditCtrl',
 				[
 						"$scope",
 						"$http",
@@ -19,12 +19,8 @@ shioharaApp
 								$rootScope, Token, shChannelResource,
 								shSiteResource, shAPIServerService, vigLocale,
 								$location, $translate) {
-							$scope.siteId = $stateParams.siteId;
 							$scope.channelId = $stateParams.channelId;
-							rootChannel = false;
-							if ($scope.siteId != null) {
-								rootChannel = true;
-							}
+
 							$scope.vigLanguage = vigLocale.getLocale()
 									.substring(0, 2);
 							$translate.use($scope.vigLanguage);
@@ -33,12 +29,14 @@ shioharaApp
 							$scope.shChannel = null;
 							$scope.breadcrumb = null;
 							$rootScope.$state = $state;
-							$scope.$evalAsync($http.get(
-									shAPIServerService.get().concat(
-											"/channel/model")).then(
-									function(response) {
-										$scope.shChannel = response.data;
-									}));
+							$scope.shChannel = shChannelResource.get({
+								id : $scope.channelId
+							});
+							rootChannel = false;
+							if ($scope.shChannel.rootChannel == 1) {
+								rootChannel = true;
+							}
+
 							if (!rootChannel) {
 								$scope
 										.$evalAsync($http
@@ -56,40 +54,18 @@ shioharaApp
 															$scope.shSite = response.data.shSite;
 														}));
 							} else {
-								$scope.shSite = shSiteResource.get({
-									id : $scope.siteId
-								});
+								$scope.shSite = $scope.shChannel.shSite;
 							}
 							$scope.channelSave = function() {
-								if ($scope.shChannel.id != null
-										&& $scope.shChannel.id > 0) {
-									$scope.shChannel.$update(function() {
-										$state.go('content.children.channel-children', {channelId: $scope.shChannel.id});
-									});
-								} else {
-									delete $scope.shChannel.id;
-									if (rootChannel) {
-
-										$scope.shChannel.rootChannel = 1;
-										$scope.shChannel.shSite = $scope.shSite;
-										shChannelResource
-												.save(
-														$scope.shChannel,
-														function(response) {
-															$scope.shChannel = response;
-														});
-
-									} else {
-										$scope.shChannel.parentChannel = $scope.shParentChannel;
-										shChannelResource
-												.save(
-														$scope.shChannel,
-														function(response) {
-															$scope.shChannel = response;
-															$state.go('content.children.channel-children', {channelId: $scope.shChannel.id});
-														});
-									}
-								}
+								$scope.shChannel
+										.$update(function() {
+											$state
+													.go(
+															'content.children.channel-children',
+															{
+																channelId : $scope.shChannel.id
+															});
+										});
 							}
 
 						} ]);

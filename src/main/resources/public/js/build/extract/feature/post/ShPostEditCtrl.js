@@ -32,7 +32,8 @@ shioharaApp.controller('ShPostEditCtrl', [
 									$scope.breadcrumb = response.data.breadcrumb;
 									$scope.shSite = response.data.shSite;
 									channelURL = shAPIServerService.server().concat(
-											"/sites/" + $scope.shSite.name + "/default/pt-br" + response.data.channelPath.replace(new RegExp(" ",
+											"/sites/" + $scope.shSite.name.replace(new RegExp(" ",
+											'g'), "-") + "/default/pt-br" + response.data.channelPath.replace(new RegExp(" ",
 															'g'), "-"));
 								}
 								));

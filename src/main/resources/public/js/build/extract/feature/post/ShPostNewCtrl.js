@@ -25,7 +25,8 @@ shioharaApp.controller('ShPostNewCtrl', [
 						$scope.shSite = response.data.shSite;
 						channelURL = shAPIServerService.server().concat(
 								"/sites/"
-										+ $scope.shSite.name
+										+ $scope.shSite.name.replace(new RegExp(" ",
+										'g'), "-")
 										+ "/default/pt-br"
 										+ response.data.channelPath.replace(
 												new RegExp(" ", 'g'), "-"));

@@ -50,7 +50,7 @@ shioharaApp.config([
 				}
 			}).state('content.children.site-children', {
 				url : '/site/:siteId',
-				templateUrl : 'template/site/site-children.html',
+				templateUrl : 'template/channel/channel-children.html',
 				controller : 'ShSiteChildrenCtrl',
 				data : {
 					pageTitle : 'Content | Viglet Shiohara'
@@ -104,6 +104,13 @@ shioharaApp.config([
 				data : {}
 			}).state('content.channel', {
 				url : '/channel/:channelId'
+			}).state('content.channel.edit', {
+				url : '/edit',
+				templateUrl : 'template/channel/channel-edit.html',
+				controller : 'ShChannelEditCtrl',
+				data : {
+					pageTitle : 'Edit Channel | Viglet Shiohara'
+				}
 			}).state('content.site', {
 				url : '/site/:siteId'
 			}).state('content.site.edit', {

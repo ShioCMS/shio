@@ -1,14 +1,12 @@
 <div style="margin-bottom: 50px;">
 	<ul class="breadcrumb" style="margin-top: 5px; margin-bottom: 5px;">
+		<li><a
+		ui-sref="content"
+		ui-sref-opts="{reload:true}">Content</a></li>
 		<li><a ng-if="breadcrumb != null"
 			ui-sref="content.children.site-children({siteId: shSite.id})"
-			ui-sref-opts="{reload:true}">{{shSite.name}}</a><span
-			ng-if="breadcrumb == null">{{shSite.name}}</span></li>
-		<li ng-repeat="breacrumbItem in breadcrumb"
-			ng-class="{'active':$last}"><a ng-if="!$last"
-			ui-sref="content.children.channel-children({channelId: breacrumbItem.id})"
-			ui-sref-opts="{reload:true}">{{breacrumbItem.name}}</a><span
-			ng-if="$last">{{breacrumbItem.name}}</span></li>
+			ui-sref-opts="{reload:true}">{{shSite.name}} (Site)</a><span
+			ng-if="breadcrumb == null">{{shSite.name}} (Site)</span></li>
 	</ul>
 </div>
 <div class="settings">
@@ -61,54 +59,6 @@
 		</div>
 		<div class="col-lg-10 col-md-9 col-sm-9 col-xs-12">
 			<div ui-view>
-				<ul class="nav nav-tabs" ng-controller="ShSiteListCtrl">
-					<li ng-class="{active: shSiteItem.id == shSite.id}"
-						ng-repeat="shSiteItem in shSites | filter:query | orderBy:orderProp">
-						<a
-						ui-sref="content.children.site-children({siteId: shSiteItem.id})"
-						ui-sref-opts="{reload:true}" style="color: black"><i
-							class="fa fa-viglet fa-tags fa-lg"></i>{{shSiteItem.name}}</a>
-					</li>
-					<li><a ui-sref="content.site-new"><i
-							class="fa fa-viglet fa-plus fa-lg"></i></a></li>
-				</ul>
-				<table class="table table-hover">
-					<!--  Channels  -->
-					<tr ng-repeat="shChannel in shChannels">
-						<td style="width: 90px;"><input type="checkbox" />
-							<div ng-click="channelDelete(shChannel.id)"
-								class="glyphicon glyphicon-trash close"
-								style="font-size: 14px; margin: 5px"></div>
-							<div class="glyphicon glyphicon-star-empty close"
-								style="font-size: 14px; margin: 5px"></div></td>
-						<td><a href="#"><span
-								class="glyphicon glyphicon-folder-open close"></span></a></td>
-						<td><a
-							ui-sref="content.list.channel-list({channelId: shChannel.id})">
-								{{shChannel.name}}</a></td>
-						<td><span class="label label-primary">Channel</span></td>
-						<td>{{shChannel.summary}}</td>
-						<td><span am-time-ago="shChannel.date"></span></td>
-					</tr>
-					<!--  Posts  -->
-					<tr ng-repeat="shPost in shPosts">
-						<td style="width: 90px;"><input type="checkbox" />
-							<div ng-click="postDelete(shPost.id)"
-								class="glyphicon glyphicon-trash close"
-								style="font-size: 14px; margin: 5px"></div>
-							<div class="glyphicon glyphicon-star-empty close"
-								style="font-size: 14px; margin: 5px"></div></td>
-						<td><a href="#"><span
-								class="glyphicon glyphicon-edit close"></span></a></td>
-						<td><a
-							ui-sref="content.post-type-item.post-item({postTypeId: shPost.shPostType.id, postId: shPost.id})">
-								{{shPost.title}}</a></td>
-						<td><span class="label label-warning">
-								{{shPost.shPostType.title}}</span></td>
-						<td>{{shPost.summary}}</td>
-						<td><span am-time-ago="shPost.date"></span></td>
-					</tr>
-				</table>
 			</div>
 		</div>
 	</div>

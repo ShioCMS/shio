@@ -51,7 +51,7 @@ public class ShPostOnStartup {
 			ShPost shPost = new ShPost();
 			shPost.setDate(new Date());
 			shPost.setShPostType(shPostType);
-			shPost.setSummary("Summary");
+			shPost.setSummary(null);
 			shPost.setTitle("Post01");
 			shPost.setShChannel(shChannelHome);
 
@@ -64,7 +64,7 @@ public class ShPostOnStartup {
 			shPostAttr.setShPostType(shPostType);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setShPostTypeAttrId(1);
-			shPostAttr.setStrValue("Post01");
+			shPostAttr.setStrValue(shPost.getTitle());
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
@@ -75,7 +75,7 @@ public class ShPostOnStartup {
 			shPost = new ShPost();
 			shPost.setDate(new Date());
 			shPost.setShPostType(shPostTypeArea);
-			shPost.setSummary("Summary");
+			shPost.setSummary(null);
 			shPost.setTitle("Post Text Area 01");
 			shPost.setShChannel(shChannelHome);
 
@@ -88,7 +88,7 @@ public class ShPostOnStartup {
 			shPostAttr.setShPostType(shPostTypeArea);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setShPostTypeAttrId(1);
-			shPostAttr.setStrValue("Post Text Area 01");
+			shPostAttr.setStrValue(shPost.getTitle());
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
@@ -113,7 +113,7 @@ public class ShPostOnStartup {
 			shPostAttr.setShPostType(shPostArticle);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setShPostTypeAttrId(1);
-			shPostAttr.setStrValue("Post Article");
+			shPostAttr.setStrValue(shPost.getTitle());
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
@@ -125,7 +125,7 @@ public class ShPostOnStartup {
 			shPostAttr.setShPostType(shPostArticle);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setShPostTypeAttrId(2);
-			shPostAttr.setStrValue("A short description ...");
+			shPostAttr.setStrValue(shPost.getSummary());
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
@@ -148,7 +148,7 @@ public class ShPostOnStartup {
 			shPostAttr.setShPostType(shPostArticle);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setShPostTypeAttrId(1);
-			shPostAttr.setStrValue("Post Article");
+			shPostAttr.setStrValue(shPost.getTitle());
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
@@ -160,7 +160,7 @@ public class ShPostOnStartup {
 			shPostAttr.setShPostType(shPostArticle);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setShPostTypeAttrId(2);
-			shPostAttr.setStrValue("A short description 2 ...");
+			shPostAttr.setStrValue(shPost.getSummary());
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
@@ -185,7 +185,7 @@ public class ShPostOnStartup {
 			shPostAttr.setShPostType(shPostTheme);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setShPostTypeAttrId(1);
-			shPostAttr.setStrValue("Home Theme");
+			shPostAttr.setStrValue(shPost.getTitle());
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
@@ -197,7 +197,7 @@ public class ShPostOnStartup {
 			shPostAttr.setShPostType(shPostTheme);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setShPostTypeAttrId(2);
-			shPostAttr.setStrValue("Home Theme");
+			shPostAttr.setStrValue(shPost.getSummary());
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
@@ -253,7 +253,7 @@ public class ShPostOnStartup {
 			shPostAttr.setShPostType(shPostPageTemplate);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setShPostTypeAttrId(1);
-			shPostAttr.setStrValue("Post Page");
+			shPostAttr.setStrValue(shPost.getTitle());
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
@@ -265,7 +265,7 @@ public class ShPostOnStartup {
 			shPostAttr.setShPostType(shPostPageTemplate);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setShPostTypeAttrId(2);
-			shPostAttr.setStrValue("Post Template");
+			shPostAttr.setStrValue(shPost.getSummary());
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
@@ -339,7 +339,7 @@ public class ShPostOnStartup {
 			shPostAttr.setShPostType(shPostPageTemplate);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setShPostTypeAttrId(1);
-			shPostAttr.setStrValue("Channel Page");
+			shPostAttr.setStrValue(shPost.getTitle());
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
@@ -351,7 +351,7 @@ public class ShPostOnStartup {
 			shPostAttr.setShPostType(shPostPageTemplate);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setShPostTypeAttrId(2);
-			shPostAttr.setStrValue("Channel Template");
+			shPostAttr.setStrValue(shPost.getSummary());
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
@@ -392,7 +392,7 @@ public class ShPostOnStartup {
 					+ "                    <a class=\"nav-link\" href=\"{{../site.system.link}}{{this.system.link}}\">{{this.system.title}}</a>\n"
 					+ "                    </li>\n" + "                {{/each}}\n"
 					+ "            <li class=\"nav-item\">\n"
-					+ "              <a class=\"nav-link\" href=\"/#!/content/post/type/{{system.post-type-id}}/post/{{system.id}}\">Come back to Content</a>\n"
+					+ "              <a class=\"nav-link\" href=\"/#!/content/list/channel/{{system.id}}\">Come back to Channel</a>\n"
 					+ "            </li>\n" + "          </ul>\n" + "        </div>\n" + "      </div>\n"
 					+ "    </nav>\n" + "\n" + "    <header class=\"masthead text-center text-white\">\n"
 					+ "      <div class=\"masthead-content\">\n" + "        <div class=\"container\">\n"
@@ -427,26 +427,26 @@ public class ShPostOnStartup {
 
 			shPostRepository.save(shPost);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostArticle, "title");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "title");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
 			shPostAttr.setShPostType(shPostChannelIndex);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setShPostTypeAttrId(1);
-			shPostAttr.setStrValue("index");
+			shPostAttr.setStrValue(shPost.getTitle());
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostArticle, "Description");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "Description");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
 			shPostAttr.setShPostType(shPostChannelIndex);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setShPostTypeAttrId(2);
-			shPostAttr.setStrValue("Home Channel Index description ...");
+			shPostAttr.setStrValue(shPost.getSummary());
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
@@ -461,26 +461,26 @@ public class ShPostOnStartup {
 
 			shPostRepository.save(shPost);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostArticle, "title");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "title");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
 			shPostAttr.setShPostType(shPostChannelIndex);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setShPostTypeAttrId(1);
-			shPostAttr.setStrValue("index");
+			shPostAttr.setStrValue(shPost.getTitle());
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostArticle, "Description");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "Description");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
 			shPostAttr.setShPostType(shPostChannelIndex);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setShPostTypeAttrId(2);
-			shPostAttr.setStrValue("Article Channel Index description ...");
+			shPostAttr.setStrValue(shPost.getSummary());
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
@@ -495,26 +495,26 @@ public class ShPostOnStartup {
 
 			shPostRepository.save(shPost);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostArticle, "title");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "title");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
 			shPostAttr.setShPostType(shPostChannelIndex);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setShPostTypeAttrId(1);
-			shPostAttr.setStrValue("index");
+			shPostAttr.setStrValue(shPost.getTitle());
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostArticle, "Description");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "Description");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
 			shPostAttr.setShPostType(shPostChannelIndex);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setShPostTypeAttrId(2);
-			shPostAttr.setStrValue("News Channel Index description ...");
+			shPostAttr.setStrValue(shPost.getSummary());
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
@@ -529,26 +529,26 @@ public class ShPostOnStartup {
 
 			shPostRepository.save(shPost);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostArticle, "title");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "title");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
 			shPostAttr.setShPostType(shPostChannelIndex);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setShPostTypeAttrId(1);
-			shPostAttr.setStrValue("index");
+			shPostAttr.setStrValue(shPost.getTitle());
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostArticle, "Description");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "Description");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
 			shPostAttr.setShPostType(shPostChannelIndex);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setShPostTypeAttrId(2);
-			shPostAttr.setStrValue("Text Channel Index description ...");
+			shPostAttr.setStrValue(shPost.getSummary());
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);

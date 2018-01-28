@@ -78,7 +78,7 @@ public class ShSitesContext {
 			}
 		}
 
-		ShSite shSite = shSiteRepository.findByName(shSiteName);
+		ShSite shSite = shSiteRepository.findByName(shSiteName.replaceAll("-", " "));
 
 		// System.out.println(shContext + " " + shSite + " " + shFormat + " " + shLocale
 		// + " " + contentPath.toString());
