@@ -49,7 +49,6 @@ public class ShSitesContext {
 			@PathVariable(value = "shSiteName") String shSiteName, @PathVariable(value = "shFormat") String shFormat,
 			@PathVariable(value = "shLocale") String shLocale) throws IOException, ScriptException {
 
-		ShSite shSite = shSiteRepository.findById(1);
 		ShPost shTheme = shPostRepository.findById(5); // Theme
 		ShPost shPostPageTemplate = shPostRepository.findById(6); // Page Template Post
 		ShPost shChannelPageTemplate = shPostRepository.findById(7); // PageTemplate Channel
@@ -78,10 +77,14 @@ public class ShSitesContext {
 				break;
 			}
 		}
+
+		ShSite shSite = shSiteRepository.findByName(shSiteName);
+
 		// System.out.println(shContext + " " + shSite + " " + shFormat + " " + shLocale
 		// + " " + contentPath.toString());
 
-		String postName = contentPath.get(contentPath.size() - 1).replaceAll("-", " ");
+		int lastPosition = contentPath.size() - 1;
+		String postName = contentPath.get(lastPosition).replaceAll("-", " ");
 
 		ArrayList<String> channelPathArray = contentPath;
 
@@ -91,21 +94,29 @@ public class ShSitesContext {
 			channelPath = channelPath + path + "/";
 		}
 
-		ShChannel shChannel = shChannelUtils.channelFromPath(channelPath);
+		ShChannel shChannel = shChannelUtils.channelFromPath(shSite, channelPath);
 		ShChannel shChannelItem = null;
 		boolean isChannel = false;
 
 		ShPost shPostItem = shPostRepository.findByShChannelAndTitle(shChannel, postName);
 		if (shPostItem == null) {
-			shChannelItem = shChannelRepository.findByParentChannelAndName(shChannel, postName);
-			if (shChannelItem != null) {
-				ShPost shChannelIndex = shPostRepository.findByShChannelAndTitle(shChannelItem, "index");
-				if (shChannelIndex != null) {
+			String channelPathCurrent = channelPath + postName.replaceAll(" ", "-") + "/";
 
+			shChannelItem = shChannelUtils.channelFromPath(shSite, channelPathCurrent);
+			if (shChannelItem != null) {
+				// System.out.println("shChannelItem is not null");
+				ShPost shChannelIndex = shPostRepository.findByShChannelAndTitle(shChannelItem, "index");
+				
+				if (shChannelIndex != null) {
 					shPostItem = shChannelIndex;
 					isChannel = true;
 				}
+			} else {
+				// System.out.println("shChannelItem is null");
+
 			}
+			// System.out.println(shSite.getName());
+			// System.out.println(channelPathCurrent);
 		}
 
 		// Nashorn Engine
@@ -147,6 +158,7 @@ public class ShSitesContext {
 			shChannelItemSystemAttrs.put("title", shChannelItem.getName());
 			shChannelItemSystemAttrs.put("summary", shChannelItem.getSummary());
 			shChannelItemSystemAttrs.put("link", shChannelUtils.channelPath(shChannelItem));
+
 			JSONArray shPostItems = new JSONArray();
 			JSONArray shChildChannelItems = new JSONArray();
 
@@ -154,6 +166,18 @@ public class ShSitesContext {
 
 			shChannelItemAttrs.put("system", shChannelItemSystemAttrs);
 			shChannelItemAttrs.put("theme", shThemeAttrs);
+
+			JSONObject shSiteItemSystemAttrs = new JSONObject();
+			shSiteItemSystemAttrs.put("id", shSite.getId());
+			shSiteItemSystemAttrs.put("title", shSite.getName());
+			shSiteItemSystemAttrs.put("summary", shSite.getDescription());
+			shSiteItemSystemAttrs.put("link",
+					"/" + shContext + "/" + shSite.getName().replaceAll(" ", "-") + "/default/pt-br");
+
+			JSONObject shSiteItemAttrs = new JSONObject();
+
+			shSiteItemAttrs.put("system", shSiteItemSystemAttrs);
+
 			List<ShChannel> shChannels = shChannelRepository.findByParentChannel(shChannelItem);
 
 			for (ShChannel shChildChannel : shChannels) {
@@ -177,7 +201,8 @@ public class ShSitesContext {
 					shPostItemSystemAttrs.put("post-type-id", shPost.getShPostType().getId());
 					shPostItemSystemAttrs.put("title", shPost.getTitle());
 					shPostItemSystemAttrs.put("summary", shPost.getSummary());
-					shPostItemSystemAttrs.put("link", shChannelUtils.channelPath(shPost.getShChannel()) + shPost.getTitle().replaceAll(" ", "-"));
+					shPostItemSystemAttrs.put("link",
+							shChannelUtils.channelPath(shPost.getShChannel()) + shPost.getTitle().replaceAll(" ", "-"));
 					for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
 						if (shPostAttr.getShPostTypeAttr().getName() != null) {
 							shPostItemAttrs.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
@@ -194,8 +219,9 @@ public class ShSitesContext {
 			shPostItemSystemAttrs.put("post-type-id", shPostItem.getShPostType().getId());
 			shPostItemSystemAttrs.put("title", shPostItem.getTitle());
 			shPostItemSystemAttrs.put("summary", shPostItem.getSummary());
-			shPostItemSystemAttrs.put("link", shChannelUtils.channelPath(shPostItem.getShChannel()) + shPostItem.getTitle().replaceAll(" ", "-"));
-			
+			shPostItemSystemAttrs.put("link",
+					shChannelUtils.channelPath(shPostItem.getShChannel()) + shPostItem.getTitle().replaceAll(" ", "-"));
+
 			JSONObject shPostItemAttrs = new JSONObject();
 
 			shPostItemAttrs.put("system", shPostItemSystemAttrs);
@@ -210,9 +236,9 @@ public class ShSitesContext {
 			shChannelItemAttrs.put("posts", shPostItems);
 			shChannelItemAttrs.put("channels", shChildChannelItems);
 			shChannelItemAttrs.put("post", shPostItemAttrs);
+			shChannelItemAttrs.put("site", shSiteItemAttrs);
 			// Channel Attribs
 			javascript = "var channel = " + shChannelItemAttrs.toString() + ";" + javascript;
-
 
 		} else {
 			// Post
@@ -231,13 +257,25 @@ public class ShSitesContext {
 			shPostItemSystemAttrs.put("post-type-id", shPostItem.getShPostType().getId());
 			shPostItemSystemAttrs.put("title", shPostItem.getTitle());
 			shPostItemSystemAttrs.put("summary", shPostItem.getSummary());
-			shPostItemSystemAttrs.put("link", shChannelUtils.channelPath(shPostItem.getShChannel()) + shPostItem.getTitle().replaceAll(" ", "-"));
-			
+			shPostItemSystemAttrs.put("link",
+					shChannelUtils.channelPath(shPostItem.getShChannel()) + shPostItem.getTitle().replaceAll(" ", "-"));
+
+			JSONObject shSiteItemSystemAttrs = new JSONObject();
+			shSiteItemSystemAttrs.put("id", shSite.getId());
+			shSiteItemSystemAttrs.put("title", shSite.getName());
+			shSiteItemSystemAttrs.put("summary", shSite.getDescription());
+			shSiteItemSystemAttrs.put("link",
+					"/" + shContext + "/" + shSite.getName().replaceAll(" ", "-") + "/default/pt-br");
+
+			JSONObject shSiteItemAttrs = new JSONObject();
+
+			shSiteItemAttrs.put("system", shSiteItemSystemAttrs);
 
 			JSONObject shPostItemAttrs = new JSONObject();
 
 			shPostItemAttrs.put("system", shPostItemSystemAttrs);
 			shPostItemAttrs.put("theme", shThemeAttrs);
+			shPostItemAttrs.put("site", shSiteItemAttrs);
 
 			for (ShPostAttr shPostAttr : shPostItem.getShPostAttrs()) {
 				if (shPostAttr.getShPostTypeAttr().getName() != null) {

@@ -9,6 +9,7 @@ shioharaApp.controller('ShPostEditCtrl', [
 		"shAPIServerService",
 		function($scope, $http, $window, $stateParams, $state, $rootScope,
 				shPostResource, shAPIServerService) {
+			var channelURL = null;
 			$scope.channelId = null;
 			$scope.postId = $stateParams.postId;
 			$scope.breadcrumb = null;
@@ -30,7 +31,9 @@ shioharaApp.controller('ShPostEditCtrl', [
 								function(response) {
 									$scope.breadcrumb = response.data.breadcrumb;
 									$scope.shSite = response.data.shSite;
-									
+									channelURL = shAPIServerService.server().concat(
+											"/sites/" + $scope.shSite.name + "/default/pt-br" + response.data.channelPath.replace(new RegExp(" ",
+															'g'), "-"));
 								}
 								));
 				}
@@ -40,48 +43,15 @@ shioharaApp.controller('ShPostEditCtrl', [
 			
 							
 			$scope.openPreviewURL = function() {
-				
-				if ($scope.shPost.shChannel != null) {
-				$scope
-				.$evalAsync($http
-						.get(
-								shAPIServerService
-										.get()
-										.concat(
-												"/channel/" + $scope.shPost.shChannel.id + "/path")
-												)
-						.then(
-								function(response) {
-									if ($scope.shPost.shPostType.name == 'PT-CHANNEL-INDEX') {
-										var previewURL = shAPIServerService.server().concat(
-												"/sites/SampleSite/default/pt-br" + response.data.channelPath.replace(new RegExp(" ",
-																'g'), "-"));
-									}
-									else {
-									var previewURL = shAPIServerService.server().concat(
-											"/sites/SampleSite/default/pt-br" + response.data.channelPath.replace(new RegExp(" ",
-											'g'), "-")
-													+ $scope.shPost.title.replace(new RegExp(" ",
-															'g'), "-"));
-									 
-									}
-									$window.open(previewURL,"_self");
-								}));
-				}
-				else {
 					if ($scope.shPost.shPostType.name == 'PT-CHANNEL-INDEX') {
-						var previewURL = shAPIServerService.server().concat(
-								"/sites/SampleSite/default/pt-br" + response.data.channelPath.replace(new RegExp(" ",
-												'g'), "-"));
+						var previewURL = channelURL;
 					}
 					else {
-					   var previewURL = shAPIServerService.server().concat(
-							"/sites/SampleSite/default/pt-br/"
+					   var previewURL = channelURL
 									+ $scope.shPost.title.replace(new RegExp(" ",
-											'g'), "-"));
+											'g'), "-");
 					}
 					 $window.open(previewURL,"_self");
-				}
 			}
 	
 			$scope.postEditForm = "template/post/form.html";

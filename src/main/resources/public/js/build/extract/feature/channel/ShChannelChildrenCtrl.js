@@ -25,6 +25,7 @@ shioharaApp.controller('ShChannelChildrenCtrl', [
 			$scope.vigLanguage = vigLocale.getLocale().substring(0, 2);
 			$translate.use($scope.vigLanguage);
 
+			$scope.shSite = null;
 			$scope.shChannels = null;
 			$scope.shPosts = null;
 			$scope.breadcrumb = null;
@@ -38,7 +39,8 @@ shioharaApp.controller('ShChannelChildrenCtrl', [
 						$scope.shPosts = response.data.shPosts;
 						$scope.breadcrumb = response.data.breadcrumb;
 						$scope.$parent.breadcrumb = response.data.breadcrumb;
-						$scope.$parent.shSite = response.data.shSite;
+						$scope.shSite = response.data.shSite;
+						$scope.$parent.shSite = $scope.shSite;
 					}));
 			$scope.channelDelete = function(channelId) {
 				shChannelResource

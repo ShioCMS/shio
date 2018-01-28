@@ -11,6 +11,8 @@ public interface ShSiteRepository extends JpaRepository<ShSite, Integer> {
 	List<ShSite> findAll();
 
 	ShSite findById(int id);
+	
+	ShSite findByName(String name);
 
 	ShSite save(ShSite shSite);
 

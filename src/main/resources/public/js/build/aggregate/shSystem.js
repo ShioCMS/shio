@@ -95,7 +95,7 @@ shioharaApp.config([
 				templateUrl : 'template/post/item.html',
 				controller : 'ShPostEditCtrl',
 				data : {
-					pageTitle : 'New Post | Viglet Shiohara'
+					pageTitle : 'Edit Post | Viglet Shiohara'
 				}
 			}).state('post-item-form', {
 				url : '/post/type/:postTypeId/post/form',

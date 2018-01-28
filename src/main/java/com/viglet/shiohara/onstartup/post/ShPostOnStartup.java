@@ -365,7 +365,8 @@ public class ShPostOnStartup {
 			shPostAttr.setShPostTypeAttrId(3);
 			shPostAttr.setStrValue(
 					"load('https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js');\n"
-							+ "var template = Handlebars.compile(html);\n" + "var html = template(channel);\n" + "html;");
+							+ "var template = Handlebars.compile(html);\n" + "var html = template(channel);\n"
+							+ "html;");
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
@@ -388,7 +389,7 @@ public class ShPostOnStartup {
 					+ "        <div class=\"collapse navbar-collapse\" id=\"navbarResponsive\">\n"
 					+ "          <ul class=\"navbar-nav ml-auto\">\n" + "                {{#each channels}}\n"
 					+ "                    <li class=\"nav-item\">\n"
-					+ "                    <a class=\"nav-link\" href=\"/sites/SampleSite/default/pt-br{{this.system.link}}\">{{this.system.title}}</a>\n"
+					+ "                    <a class=\"nav-link\" href=\"{{../site.system.link}}{{this.system.link}}\">{{this.system.title}}</a>\n"
 					+ "                    </li>\n" + "                {{/each}}\n"
 					+ "            <li class=\"nav-item\">\n"
 					+ "              <a class=\"nav-link\" href=\"/#!/content/post/type/{{system.post-type-id}}/post/{{system.id}}\">Come back to Content</a>\n"
@@ -398,7 +399,7 @@ public class ShPostOnStartup {
 					+ "          <h1 class=\"masthead-heading mb-0\">{{system.title}}</h1>\n"
 					+ "          <h2 class=\"masthead-subheading mb-0\">{{system.summary}}</h2>\n"
 					+ "            {{#each posts}}\n"
-					+ "            <a href=\"/sites/SampleSite/default/pt-br{{this.system.link}}\" class=\"btn btn-primary btn-xl rounded-pill mt-5\">{{this.system.title}}</a>\n"
+					+ "            <a href=\"{{../site.system.link}}{{this.system.link}}\" class=\"btn btn-primary btn-xl rounded-pill mt-5\">{{this.system.title}}</a>\n"
 					+ "            {{/each}}\n" + "        </div>\n" + "      </div>\n"
 					+ "      <div class=\"bg-circle-1 bg-circle\"></div>\n"
 					+ "      <div class=\"bg-circle-2 bg-circle\"></div>\n"
@@ -449,7 +450,6 @@ public class ShPostOnStartup {
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
-			
 
 			// Post Channel Index Article
 			shPost = new ShPost();
@@ -484,7 +484,6 @@ public class ShPostOnStartup {
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
-			
 
 			// Post Channel Index News
 			shPost = new ShPost();
@@ -519,7 +518,6 @@ public class ShPostOnStartup {
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
-			
 
 			// Post Channel Index Text
 			shPost = new ShPost();

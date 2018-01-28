@@ -66,18 +66,23 @@ public class ShChannelUtils {
 				path = context + "/" + path;
 			}
 			path = "/" + path;
-			return path;
+			return path.replaceAll(" ", "-");
 		} else {
 			return "/";
 		}
 
 	}
 
-	public ShChannel channelFromPath(String channelPath) {
+	public ShChannel channelFromPath(ShSite shSite, String channelPath) {
 		ShChannel currentChannel = null;
-		String[] contexts = channelPath.split("/");
+		String[] contexts = channelPath.replaceAll("-", " "). split("/");
 		for (int i = 1; i < contexts.length; i++) {
-			currentChannel = shChannelRepository.findByParentChannelAndName(currentChannel, contexts[i]);
+			if (currentChannel == null) {
+				// When is null channel, because is rootChannel and it contains shSite attribute
+				currentChannel = shChannelRepository.findByShSiteAndName(shSite, contexts[i]);
+			} else {				
+				currentChannel = shChannelRepository.findByParentChannelAndName(currentChannel, contexts[i]);
+			}
 
 		}
 		return currentChannel;
@@ -93,7 +98,7 @@ public class ShChannelUtils {
 		for (ShChannel shChannelChild : shChannel.getShChannels()) {
 			this.deleteChannel(shChannelChild);
 		}
-		
+
 		shChannelRepository.delete(shChannel.getId());
 		return true;
 	}
