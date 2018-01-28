@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.api.channel.ShChannelList;
+import com.viglet.shiohara.channel.ShChannelUtils;
+import com.viglet.shiohara.persistence.model.channel.ShChannel;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.channel.ShChannelRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
@@ -31,6 +33,8 @@ public class ShSiteAPI {
 	ShChannelRepository shChannelRepository;
 	@Autowired
 	ShPostRepository shPostRepository;
+	@Autowired
+	ShChannelUtils shChannelUtils;
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -59,7 +63,14 @@ public class ShSiteAPI {
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
 	public boolean delete(@PathParam("siteId") int id) throws Exception {
+		ShSite shSite = shSiteRepository.findById(id);
+		
+		for (ShChannel shChannel : shSite.getShChannels()) {
+			shChannelUtils.deleteChannel(shChannel);
+		}
+		
 		shSiteRepository.delete(id);
+
 		return true;
 	}
 
@@ -85,4 +96,12 @@ public class ShSiteAPI {
 
 	}
 
+	@Path("/model")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public ShSite siteStructure() throws Exception {
+		ShSite shSite = new ShSite();
+		return shSite;
+
+	}
 }

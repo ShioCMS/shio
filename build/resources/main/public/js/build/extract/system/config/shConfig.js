@@ -106,6 +106,13 @@ shioharaApp.config([
 				url : '/channel/:channelId'
 			}).state('content.site', {
 				url : '/site/:siteId'
+			}).state('content.site.edit', {
+				url : '/edit',
+				templateUrl : 'template/site/site-edit.html',
+				controller : 'ShSiteEditCtrl',
+				data : {
+					pageTitle : 'Edit Site | Viglet Shiohara'
+				}
 			}).state('content.channel.channel-new', {
 				url : '/channel',
 				templateUrl : 'template/channel/channel-new.html',
@@ -133,6 +140,13 @@ shioharaApp.config([
 				controller : 'ShPostTypeSelectCtrl',
 				data : {
 					pageTitle : 'Post Type Selection | Viglet Shiohara'
+				}
+			}).state('content.site-new', {
+				url : '/site/new',
+				templateUrl : 'template/site/site-new.html',
+				controller : 'ShSiteNewCtrl',
+				data : {
+					pageTitle : 'New Site | Viglet Shiohara'
 				}
 			})
 

@@ -64,7 +64,7 @@ shioharaApp
 								if ($scope.shChannel.id != null
 										&& $scope.shChannel.id > 0) {
 									$scope.shChannel.$update(function() {
-										// $state.go('content');
+										$state.go('content.children.channel-children', {channelId: $scope.shChannel.id});
 									});
 								} else {
 									delete $scope.shChannel.id;
