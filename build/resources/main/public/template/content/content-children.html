@@ -47,7 +47,7 @@
 					class="btn btn-viglet">New Channel</a>
 			</div>
 			<ul class="nav nav-pills nav-stacked">
-				<li><a href="#">Home</a></li>
+				<li><a ui-sref="content.site.edit({siteId: shSite.id})">Site Properties</a></li>
 				<li><a href="#">Starred <i class="glyphicon glyphicon-star"></i></a></li>
 				<li><a href="#">All Posts</a></li>
 				<li><a href="#">Trash <i class="glyphicon glyphicon-trash"></i></a></li>
@@ -69,7 +69,7 @@
 						ui-sref-opts="{reload:true}" style="color: black"><i
 							class="fa fa-viglet fa-tags fa-lg"></i>{{shSiteItem.name}}</a>
 					</li>
-					<li><a href="/site/editor/"><i
+					<li><a ui-sref="content.site-new"><i
 							class="fa fa-viglet fa-plus fa-lg"></i></a></li>
 				</ul>
 				<table class="table table-hover">

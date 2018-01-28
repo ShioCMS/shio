@@ -108,6 +108,13 @@ shioharaApp.config([
 				url : '/channel/:channelId'
 			}).state('content.site', {
 				url : '/site/:siteId'
+			}).state('content.site.edit', {
+				url : '/edit',
+				templateUrl : 'template/site/site-edit.html',
+				controller : 'ShSiteEditCtrl',
+				data : {
+					pageTitle : 'Edit Site | Viglet Shiohara'
+				}
 			}).state('content.channel.channel-new', {
 				url : '/channel',
 				templateUrl : 'template/channel/channel-new.html',
@@ -135,6 +142,13 @@ shioharaApp.config([
 				controller : 'ShPostTypeSelectCtrl',
 				data : {
 					pageTitle : 'Post Type Selection | Viglet Shiohara'
+				}
+			}).state('content.site-new', {
+				url : '/site/new',
+				templateUrl : 'template/site/site-new.html',
+				controller : 'ShSiteNewCtrl',
+				data : {
+					pageTitle : 'New Site | Viglet Shiohara'
 				}
 			})
 
@@ -765,7 +779,7 @@ shioharaApp
 								if ($scope.shChannel.id != null
 										&& $scope.shChannel.id > 0) {
 									$scope.shChannel.$update(function() {
-										// $state.go('content');
+										$state.go('content.children.channel-children', {channelId: $scope.shChannel.id});
 									});
 								} else {
 									delete $scope.shChannel.id;
@@ -886,6 +900,65 @@ shioharaApp.controller('ShSiteListCtrl', [
 		function($scope, $http, $window, $state, $rootScope, shSiteResource) {
 			$rootScope.$state = $state;
 			$scope.shSites = shSiteResource.query();
+		} ]);
+shioharaApp.controller('ShSiteEditCtrl', [
+		"$scope",
+		"$http",
+		"$state",
+		"$stateParams",
+		"$rootScope",
+		"shSiteResource",
+		"shAPIServerService",
+		function($scope, $http, $state, $stateParams, $rootScope,
+				shSiteResource, shAPIServerService) {
+			$scope.shSite = shSiteResource.get({id: $stateParams.siteId});
+			$scope.siteSave = function() {
+				$scope.shSite.$update(function() {
+					$state.go('content.children.site-children', {
+						siteId : $scope.shSite.id
+					});
+				});
+			}
+			
+			$scope.siteDelete = function() {
+				shSiteResource
+				.delete({
+					id : $scope.shSite.id
+				},function() {
+					$state.go('content',{}, {reload: true});
+				});
+			}
+
+		} ]);
+shioharaApp.controller('ShSiteNewCtrl', [
+		"$scope",
+		"$http",
+		"$state",
+		"$stateParams",
+		"$rootScope",
+		"shSiteResource",
+		"shAPIServerService",
+		function($scope, $http, $state, $stateParams, $rootScope, shSiteResource,
+				shAPIServerService) {
+			$scope.shSite = null;
+			$scope.$evalAsync($http.get(
+					shAPIServerService.get().concat("/site/model")).then(
+					function(response) {
+						$scope.shSite = response.data;
+					}));
+			$scope.siteSave = function() {
+				if ($scope.shSite.id != null && $scope.shSite.id > 0) {
+					$scope.shSite.$update(function() {
+						$state.go('content.children.site-children',{siteId: $scope.shSite.id});
+					});
+				} else {
+					delete $scope.shSite.id;
+					shSiteResource.save($scope.shSite, function(response){
+						$state.go('content.children.site-children',{siteId: response.id});
+					});
+				}
+			}
+
 		} ]);
 shioharaApp.controller('ShSiteChildrenCtrl', [
 		"$scope",
