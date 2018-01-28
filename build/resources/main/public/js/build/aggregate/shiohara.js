@@ -52,7 +52,7 @@ shioharaApp.config([
 				}
 			}).state('content.children.site-children', {
 				url : '/site/:siteId',
-				templateUrl : 'template/site/site-children.html',
+				templateUrl : 'template/channel/channel-children.html',
 				controller : 'ShSiteChildrenCtrl',
 				data : {
 					pageTitle : 'Content | Viglet Shiohara'
@@ -106,6 +106,13 @@ shioharaApp.config([
 				data : {}
 			}).state('content.channel', {
 				url : '/channel/:channelId'
+			}).state('content.channel.edit', {
+				url : '/edit',
+				templateUrl : 'template/channel/channel-edit.html',
+				controller : 'ShChannelEditCtrl',
+				data : {
+					pageTitle : 'Edit Channel | Viglet Shiohara'
+				}
 			}).state('content.site', {
 				url : '/site/:siteId'
 			}).state('content.site.edit', {
@@ -464,7 +471,8 @@ shioharaApp.controller('ShPostNewCtrl', [
 						$scope.shSite = response.data.shSite;
 						channelURL = shAPIServerService.server().concat(
 								"/sites/"
-										+ $scope.shSite.name
+										+ $scope.shSite.name.replace(new RegExp(" ",
+										'g'), "-")
 										+ "/default/pt-br"
 										+ response.data.channelPath.replace(
 												new RegExp(" ", 'g'), "-"));
@@ -547,7 +555,8 @@ shioharaApp.controller('ShPostEditCtrl', [
 									$scope.breadcrumb = response.data.breadcrumb;
 									$scope.shSite = response.data.shSite;
 									channelURL = shAPIServerService.server().concat(
-											"/sites/" + $scope.shSite.name + "/default/pt-br" + response.data.channelPath.replace(new RegExp(" ",
+											"/sites/" + $scope.shSite.name.replace(new RegExp(" ",
+											'g'), "-") + "/default/pt-br" + response.data.channelPath.replace(new RegExp(" ",
 															'g'), "-"));
 								}
 								));
@@ -801,9 +810,81 @@ shioharaApp
 														$scope.shChannel,
 														function(response) {
 															$scope.shChannel = response;
+															$state.go('content.children.channel-children', {channelId: $scope.shChannel.id});
 														});
 									}
 								}
+							}
+
+						} ]);
+shioharaApp
+		.controller(
+				'ShChannelEditCtrl',
+				[
+						"$scope",
+						"$http",
+						"$window",
+						"$state",
+						"$stateParams",
+						"$rootScope",
+						"Token",
+						"shChannelResource",
+						"shSiteResource",
+						"shAPIServerService",
+						'vigLocale',
+						'$location',
+						'$translate',
+						function($scope, $http, $window, $state, $stateParams,
+								$rootScope, Token, shChannelResource,
+								shSiteResource, shAPIServerService, vigLocale,
+								$location, $translate) {
+							$scope.channelId = $stateParams.channelId;
+
+							$scope.vigLanguage = vigLocale.getLocale()
+									.substring(0, 2);
+							$translate.use($scope.vigLanguage);
+							$scope.shSite = null;
+							$scope.shParentChannel = null;
+							$scope.shChannel = null;
+							$scope.breadcrumb = null;
+							$rootScope.$state = $state;
+							$scope.shChannel = shChannelResource.get({
+								id : $scope.channelId
+							});
+							rootChannel = false;
+							if ($scope.shChannel.rootChannel == 1) {
+								rootChannel = true;
+							}
+
+							if (!rootChannel) {
+								$scope
+										.$evalAsync($http
+												.get(
+														shAPIServerService
+																.get()
+																.concat(
+																		"/channel/"
+																				+ $scope.channelId
+																				+ "/path"))
+												.then(
+														function(response) {
+															$scope.shParentChannel = response.data.currentChannel
+															$scope.breadcrumb = response.data.breadcrumb;
+															$scope.shSite = response.data.shSite;
+														}));
+							} else {
+								$scope.shSite = $scope.shChannel.shSite;
+							}
+							$scope.channelSave = function() {
+								$scope.shChannel
+										.$update(function() {
+											$state
+													.go(
+															'content.children.channel-children',
+															{
+																channelId : $scope.shChannel.id
+															});
+										});
 							}
 
 						} ]);

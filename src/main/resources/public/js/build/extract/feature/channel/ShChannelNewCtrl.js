@@ -86,6 +86,7 @@ shioharaApp
 														$scope.shChannel,
 														function(response) {
 															$scope.shChannel = response;
+															$state.go('content.children.channel-children', {channelId: $scope.shChannel.id});
 														});
 									}
 								}

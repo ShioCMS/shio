@@ -21,10 +21,14 @@ import com.viglet.shiohara.channel.ShChannelUtils;
 import com.viglet.shiohara.persistence.model.channel.ShChannel;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
+import com.viglet.shiohara.persistence.model.post.type.ShPostType;
+import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.channel.ShChannelRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
+import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
+import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 
 @Component
 @Path("/channel")
@@ -38,7 +42,11 @@ public class ShChannelAPI {
 	ShPostAttrRepository shPostAttrRepository;
 	@Autowired
 	ShChannelUtils shChannelUtils;
-
+	@Autowired
+	ShPostTypeRepository shPostTypeRepository;
+	@Autowired
+	ShPostTypeAttrRepository shPostTypeAttrRepository;
+	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<ShChannel> list() throws Exception {
@@ -83,6 +91,44 @@ public class ShChannelAPI {
 	public ShChannel add(ShChannel shChannel) throws Exception {
 		shChannel.setDate(new Date());
 		shChannelRepository.save(shChannel);
+		
+		
+		// Channel Index
+		
+		ShPostType shPostChannelIndex = shPostTypeRepository.findByName("PT-CHANNEL-INDEX");
+
+		ShPost shPost = new ShPost();
+		shPost.setDate(new Date());
+		shPost.setShPostType(shPostChannelIndex);
+		shPost.setSummary("Channel Index");
+		shPost.setTitle("index");
+		shPost.setShChannel(shChannel);
+
+		shPostRepository.save(shPost);
+
+		ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "title");
+
+		ShPostAttr shPostAttr = new ShPostAttr();
+		shPostAttr.setShPost(shPost);
+		shPostAttr.setShPostType(shPostChannelIndex);
+		shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+		shPostAttr.setShPostTypeAttrId(1);
+		shPostAttr.setStrValue(shPost.getTitle());
+		shPostAttr.setType(1);
+
+		shPostAttrRepository.save(shPostAttr);
+
+		shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "Description");
+
+		shPostAttr = new ShPostAttr();
+		shPostAttr.setShPost(shPost);
+		shPostAttr.setShPostType(shPostChannelIndex);
+		shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+		shPostAttr.setShPostTypeAttrId(2);
+		shPostAttr.setStrValue(shPost.getSummary());
+		shPostAttr.setType(1);
+
+		shPostAttrRepository.save(shPostAttr);
 		return shChannel;
 
 	}
