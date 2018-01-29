@@ -1,4 +1,7 @@
-<div ng-include="'template/breadcrumb/breadcrumb.html'"></div>
+<ul class="breadcrumb" style="margin-top: 5px; margin-bottom: 25px;">
+	<li><a ui-sref="content" ui-sref-opts="{reload:true}">Content</a></li>
+	<li>Post Types</li>
+</ul>
 
 <div class="settings">
 	<section class="content no-padding">
@@ -6,44 +9,52 @@
 		<fieldset class="user-details-top" style="margin-bottom: 30px">
 
 			<div class="form-group">
-				<h3>What would you like to post?</h3>
-			</div>
-			<div class="pull-right" style="margin: -40px 0 0;">
-				<a ng-if="channelId > 0"
-					ui-sref="content.channel.channel-new({channelId: channelId})"
-					class="btn btn-viglet">Or create a new Channel</a> <a
-					ng-if="channelId <= 0 || channelId == null"
-					ui-sref="content.site.channel-new({siteId: siteId})"
-					class="btn btn-viglet">Or create a new Channel</a> <a
-					ui-sref="content.post-type-editor" class="btn btn-viglet">Or
-					model a new Post Type</a>
-
+				<h3>Select your Post Type</h3>
 			</div>
 		</fieldset>
 	</section>
 </div>
 
-
 <div class="row">
-	<div class="col-md-2"
-		ng-repeat="shPostType in shPostTypes | filter: { system: '1'} | orderBy:orderProp">
-		<div class="well">
-			<a
-				ui-sref="content.post-type-item.post-item-new({postTypeId: shPostType.id, channelId: channelId})"><h3>{{shPostType.title}}</h3></a>
+	<div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+		<div class="thumbnail">
+			<a ui-sref="content.post-type-editor">
+				<div
+					style="background-color: #3399ff; text-align: center; height: 200px">
+					<img src="img/add.png" alt="nlp" style="padding: 15px">
+					<h3
+						style="color: white; position: absolute; left: 30px; top: 170px; z-index: 10">New
+						Post Type</h3>
+				</div>
+			</a>
+			<div class="caption">
+				<p>Create a New Post Type</p>
+				<p>
+					<a ui-sref="content.post-type-editor"
+						class="btn btn-primary btn-lg btn-block" role="button">Create</a>
+				</p>
+			</div>
 		</div>
 	</div>
-</div>
-<div class="row">
-	<div class="col-md-4"
+	<div class="col-lg-3 col-md-3 col-sm-4 col-xs-12"
 		ng-repeat="shPostType in shPostTypes | filter: { system: '0'} | orderBy:orderProp">
-		<div class="well">
-			<a href="#"><span class="glyphicon glyphicon-star-empty close"></span></a>
-			<a ui-sref="content.post-type-item({postTypeId: shPostType.id})"><span
-				class="glyphicon glyphicon-pencil close"></span></a> <a
-				ui-sref="content.post-type-item.post-item-new({postTypeId: shPostType.id, channelId: channelId})"><h1>
-					{{shPostType.title}} <br /> <small>
-						{{shPostType.description}} </small>
-				</h1></a>
+		<div class="thumbnail">
+			<a ui-sref="content.post-type-item({postTypeId: shPostType.id})"
+				ui-sref-opts="{reload:true}">
+				<div
+					style="background-color: #FF874B; text-align: right; height: 200px">
+					<img src="img/posttype.png" alt="site" style="padding: 15px">
+					<h3
+						style="color: white; position: absolute; left: 30px; top: 170px; z-index: 10">{{shPostType.title}}</h3>
+				</div>
+			</a>
+			<div class="caption">
+				<p>{{shPostType.description}}</p>
+				<p>
+					<a ui-sref="content.post-type-item({postTypeId: shPostType.id})"
+						class="btn btn-viglet btn-lg btn-block" role="button">Configure</a>
+				</p>
+			</div>
 		</div>
 	</div>
 </div>

@@ -25,7 +25,7 @@ shioharaApp.config([
 
 			$translateProvider.fallbackLanguage('en');
 
-			$urlRouterProvider.otherwise('/content/list/site/1');
+			$urlRouterProvider.otherwise('/content');
 
 			$stateProvider.state('oauth2', {
 				url : '/oauth2',
@@ -135,6 +135,13 @@ shioharaApp.config([
 					pageTitle : 'New Channel | Viglet Shiohara'
 				}
 			}).state('content.channel.post-type-select', {
+				url : '/post/type',
+				templateUrl : 'template/post/type/select-with-channel.html',
+				controller : 'ShPostTypeSelectWithChannelCtrl',
+				data : {
+					pageTitle : 'Post Type Selection | Viglet Shiohara'
+				}
+			}).state('content.post-type-select', {
 				url : '/post/type',
 				templateUrl : 'template/post/type/select.html',
 				controller : 'ShPostTypeSelectCtrl',

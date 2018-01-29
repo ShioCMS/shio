@@ -6,3 +6,36 @@
 guidelines](CONTRIBUTING.md).**
 
 **We use [GitHub issues](https://github.com/openviglet/shiohara/issues) for tracking requests and bugs.**
+
+# Installation
+
+## Deploy 
+
+### 1. Runtime
+
+Use Gradle to execute a Viglet Shiohara, without generate jar file.
+
+```shell
+$ ./gradlew bootrun
+```
+
+
+### 2. Or Generate JAR File
+
+Use Gradle to generate a Viglet Shiohara executable JAR file.
+
+```shell
+$ ./gradlew build
+```
+
+#### 2.1 Run
+
+To run Viglet Shiohara executable JAR file, just execute the following line:
+
+```shell
+$ java -jar build/libs/shiohara-0.1.0.jar
+```
+
+## Viglet Shiohara
+* Administration Console: [http://localhost:2710](http://localhost:2710).
+* Sample Site: [http://localhost:2710/sites/Sample/default/pt-br/Home](http://localhost:2710/sites/Sample/default/pt-br/Home/).
