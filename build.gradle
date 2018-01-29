@@ -99,7 +99,8 @@ exclude(module: 'commons-logging')
     compile group: 'commons-io', name: 'commons-io', version:'2.5'
     compile group: 'commons-lang', name: 'commons-lang', version:'2.6'
     compile group: 'org.apache.logging.log4j', name: 'log4j-core', version:'2.7'
-
+	compile group: 'org.jsoup', name: 'jsoup', version: '1.8.3'
+	
     runtime group: 'org.springframework.boot', name: 'spring-boot-devtools', version:'1.5.2.RELEASE'
     testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version:'1.5.2.RELEASE') {
 exclude(module: 'commons-logging')
