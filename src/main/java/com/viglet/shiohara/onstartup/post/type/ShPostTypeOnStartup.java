@@ -461,6 +461,20 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setShWidget(shWidgetTextArea);
 
 			shPostTypeAttrRepository.save(shPostTypeAttr);
+
+			shPostTypeAttr = new ShPostTypeAttr();
+			shPostTypeAttr.setName("Javascript");
+			shPostTypeAttr.setLabel("Javascript");
+			shPostTypeAttr.setDescription("Javascript");
+			shPostTypeAttr.setIsSummary((byte) 0);
+			shPostTypeAttr.setIsTitle((byte) 0);
+			shPostTypeAttr.setMany((byte) 0);
+			shPostTypeAttr.setOrdinal(3);
+			shPostTypeAttr.setRequired((byte) 1);
+			shPostTypeAttr.setShPostType(shPostType);
+			shPostTypeAttr.setShWidget(shWidgetAceEditorJS);
+
+			shPostTypeAttrRepository.save(shPostTypeAttr);
 			
 			shPostTypeAttr = new ShPostTypeAttr();
 			shPostTypeAttr.setName("HTML");
@@ -469,7 +483,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setIsSummary((byte) 0);
 			shPostTypeAttr.setIsTitle((byte) 0);
 			shPostTypeAttr.setMany((byte) 0);
-			shPostTypeAttr.setOrdinal(3);
+			shPostTypeAttr.setOrdinal(4);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
 			shPostTypeAttr.setShWidget(shWidgetAceEditorHTML);
