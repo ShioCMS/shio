@@ -1,25 +1,29 @@
 <div ui-view>
+
+	<ul class="breadcrumb" style="margin-top: 5px; margin-bottom: 25px;">
+		<li><a ui-sref="content" ui-sref-opts="{reload:true}">Content</a></li>
+		<li><a ui-sref="content.post-type-select"
+			ui-sref-opts="{reload:true}">Post Types</a></li>
+	</ul>
+
 	<div class="settings">
-		<section class="content no-padding" >
+		<section class="content no-padding">
 
-		
-				<fieldset class="user-details-top" style="margin-bottom:30px">
 
-				
+			<fieldset class="user-details-top" style="margin-bottom: 30px">
 
-					<div class="form-group">
-						<h3>
-						Model your
-								{{shPostType.title}} Post Type
-						</h3>
-					</div>
-					<div class="pull-right" style="margin: -40px 0 0;">
-						<a ui-sref="content.post-type-select" class="btn btn-viglet">Or
-							select other Post Type</a>
 
-					</div>
-				</fieldset>
-	
+
+				<div class="form-group">
+					<h3>Model your {{shPostType.title}} Post Type</h3>
+				</div>
+				<div class="pull-right" style="margin: -40px 0 0;">
+					<a ui-sref="content.post-type-select" class="btn btn-viglet">Or
+						select other Post Type</a>
+
+				</div>
+			</fieldset>
+
 		</section>
 	</div>
 
@@ -75,11 +79,13 @@
 					<th></th>
 				</thead>
 				<tbody>
-					<tr ng-repeat="shPostTypeAttr in shPostType.shPostTypeAttrs |filter: {willBeDeleted: '!1'}" style="text-align: center;">				
-						<td >
+					<tr
+						ng-repeat="shPostTypeAttr in shPostType.shPostTypeAttrs |filter: {willBeDeleted: '!1'}"
+						style="text-align: center;">
+						<td>
 							<div class="checkbox">
 								<input type="checkbox" ng-model="shPostTypeAttr.isTitle"
-										ng-true-value="1" ng-false-value="0">
+									ng-true-value="1" ng-false-value="0">
 							</div>
 						</td>
 						<td>
@@ -119,8 +125,7 @@
 									class="btn btn-default dropdown-toggle" data-toggle="dropdown"
 									href><span class="caret"></span></a>
 								<ul class="dropdown-menu">
-									<li><a
-										ng-click="removePostTypeAttr(shPostTypeAttr)" href ><span
+									<li><a ng-click="removePostTypeAttr(shPostTypeAttr)" href><span
 											class="glyphicon glyphicon-minus-sign"></span> Remove</a></li>
 								</ul>
 							</div>
@@ -145,7 +150,8 @@
 				<a class="btn btn-viglet dropdown-toggle" data-toggle="dropdown"
 					href><span class="caret"></span></a>
 				<ul class="dropdown-menu">
-					<li><a href ng-click="removePostType()"><i class="icon-trash"></i> Delete</a></li>
+					<li><a href ng-click="removePostType()"><i
+							class="icon-trash"></i> Delete</a></li>
 					<li><a href><i class="icon-plus-sign"></i> Duplicate</a></li>
 				</ul>
 			</div>
