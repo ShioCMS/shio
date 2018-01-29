@@ -552,6 +552,57 @@ public class ShPostOnStartup {
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
+
+			// Post Home Page Layout
+
+			ShPostType shPostTypePageLayout = shPostTypeRepository.findByName("PT-PAGE-LAYOUT");
+			shPost = new ShPost();
+			shPost.setDate(new Date());
+			shPost.setShPostType(shPostTypePageLayout);
+			shPost.setSummary("Home Page Layout");
+			shPost.setTitle("Home Page Layout");
+			shPost.setShChannel(shChannelSystem);
+
+			shPostRepository.save(shPost);
+
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypePageLayout, "title");
+
+			shPostAttr = new ShPostAttr();
+			shPostAttr.setShPost(shPost);
+			shPostAttr.setShPostType(shPostTypePageLayout);
+			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+			shPostAttr.setShPostTypeAttrId(1);
+			shPostAttr.setStrValue(shPost.getTitle());
+			shPostAttr.setType(1);
+
+			shPostAttrRepository.save(shPostAttr);
+
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypePageLayout, "Description");
+
+			shPostAttr = new ShPostAttr();
+			shPostAttr.setShPost(shPost);
+			shPostAttr.setShPostType(shPostTypePageLayout);
+			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+			shPostAttr.setShPostTypeAttrId(2);
+			shPostAttr.setStrValue(shPost.getSummary());
+			shPostAttr.setType(1);
+
+			shPostAttrRepository.save(shPostAttr);
+
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypePageLayout, "HTML");
+
+			shPostAttr = new ShPostAttr();
+			shPostAttr.setShPost(shPost);
+			shPostAttr.setShPostType(shPostTypePageLayout);
+			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+			shPostAttr.setShPostTypeAttrId(3);
+			shPostAttr.setStrValue("<!DOCTYPE html>\n" + "<html>\n" + "    <title>\n" + "        Sample Site\n"
+					+ "    </title>\n" + "    <body>\n" + "        <div sh-region=\"Banner\">\n"
+					+ "            Banner Placeholder\n" + "        </div>\n" + "        <div sh-region=\"Content\">\n"
+					+ "            Content Placeholder\n" + "        </div>\n" + "    </body>\n" + "</html>");
+			shPostAttr.setType(1);
+
+			shPostAttrRepository.save(shPostAttr);
 		}
 
 	}
