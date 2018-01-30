@@ -54,10 +54,8 @@ public class ShSitesContext {
 			@PathVariable(value = "shLocale") String shLocale) throws IOException, ScriptException {
 
 		ShPost shTheme = shPostRepository.findById(5); // Theme
-		ShPost shPostPageTemplate = shPostRepository.findById(6); // Page Template Post
-		ShPost shChannelPageTemplate = shPostRepository.findById(7); // PageTemplate Channel
-		ShPost shPostPageLayout = shPostRepository.findById(12); // PageTemplate Channel
-		ShPost shChannelPageLayout = shPostRepository.findById(15); // PageTemplate Channel
+		ShPost shPostPageLayout = shPostRepository.findById(10); // Page Layout Post
+		ShPost shChannelPageLayout = shPostRepository.findById(13); // Page Layout Channel
 
 		String url = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
 		String shContext = null;
@@ -141,7 +139,6 @@ public class ShSitesContext {
 		shThemeAttrs.put("css", shThemeMap.get("CSS").getStrValue());
 
 		String javascript = null;
-		String html = null;
 		String javascriptVar = null;
 		String pageLayoutHTML = null;
 		String pageLayoutJS = null;
@@ -160,18 +157,6 @@ public class ShSitesContext {
 
 			pageLayoutHTML = shChanneltPageLayoutMap.get("HTML").getStrValue();
 			pageLayoutJS = shChanneltPageLayoutMap.get("Javascript").getStrValue();
-
-			// Page Template
-
-			List<ShPostAttr> shChannelPageTemplateAttrs = shChannelPageTemplate.getShPostAttrs();
-
-			Map<String, ShPostAttr> shChannelPageTemplateMap = new HashMap<String, ShPostAttr>();
-			for (ShPostAttr shChannelPageTemplateAttr : shChannelPageTemplateAttrs)
-				shChannelPageTemplateMap.put(shChannelPageTemplateAttr.getShPostTypeAttr().getName(),
-						shChannelPageTemplateAttr);
-
-			javascript = shChannelPageTemplateMap.get("Javascript").getStrValue();
-			html = shChannelPageTemplateMap.get("HTML").getStrValue();
 
 			// Channel converted to JSON
 			JSONObject shChannelItemSystemAttrs = new JSONObject();
@@ -274,16 +259,6 @@ public class ShSitesContext {
 			pageLayoutHTML = shPostPageLayoutMap.get("HTML").getStrValue();
 			pageLayoutJS = shPostPageLayoutMap.get("Javascript").getStrValue();
 
-			// Page Template
-			List<ShPostAttr> shPostPageTemplateAttrs = shPostPageTemplate.getShPostAttrs();
-
-			Map<String, ShPostAttr> shPostPageTemplateMap = new HashMap<String, ShPostAttr>();
-			for (ShPostAttr shPostPageTemplateAttr : shPostPageTemplateAttrs)
-				shPostPageTemplateMap.put(shPostPageTemplateAttr.getShPostTypeAttr().getName(), shPostPageTemplateAttr);
-
-			javascript = shPostPageTemplateMap.get("Javascript").getStrValue();
-			html = shPostPageTemplateMap.get("HTML").getStrValue();
-
 			// Post Item converted to JSON
 			JSONObject shPostItemSystemAttrs = new JSONObject();
 			shPostItemSystemAttrs.put("id", shPostItem.getId());
@@ -319,8 +294,6 @@ public class ShSitesContext {
 			javascriptVar = "var shContent = " + shPostItemAttrs.toString() + ";";
 			javascript = javascriptVar + javascript;
 		}
-		bindings.put("html", html);
-		Object result = engine.eval(javascript, bindings);
 
 		// Page Layout
 
@@ -335,7 +308,7 @@ public class ShSitesContext {
 		for (Element element : elements) {
 
 			String regionAttr = element.attr("sh-region");
-			System.out.println("regionAttr: " + regionAttr);
+			//System.out.println("regionAttr: " + regionAttr);
 			ShPost shRegionPageTemplate = shPostRepository.findByTitle(regionAttr);
 
 			List<ShPostAttr> shRegionPageTemplateAttrs = shRegionPageTemplate.getShPostAttrs();

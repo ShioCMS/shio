@@ -43,6 +43,39 @@ public class ShChannelOnStartup {
 
 			shChannelRepository.save(shChannelSystem);
 
+			// System > Templates Channel
+			ShChannel shChannelSystemTemplates = new ShChannel();
+			shChannelSystemTemplates.setName("Templates");
+			shChannelSystemTemplates.setSummary("Templates Channel");
+			shChannelSystemTemplates.setParentChannel(shChannelSystem);
+			shChannelSystemTemplates.setShSite(shSite);
+			shChannelSystemTemplates.setDate(new Date());
+			shChannelSystemTemplates.setRootChannel((byte) 0);
+
+			shChannelRepository.save(shChannelSystemTemplates);
+
+			// System > Layouts Channel
+			ShChannel shChannelSystemLayouts = new ShChannel();
+			shChannelSystemLayouts.setName("Layouts");
+			shChannelSystemLayouts.setSummary("Layouts Channel");
+			shChannelSystemLayouts.setParentChannel(shChannelSystem);
+			shChannelSystemLayouts.setShSite(shSite);
+			shChannelSystemLayouts.setDate(new Date());
+			shChannelSystemLayouts.setRootChannel((byte) 0);
+
+			shChannelRepository.save(shChannelSystemLayouts);
+
+			// System > Themes Channel
+			ShChannel shChannelSystemThemes = new ShChannel();
+			shChannelSystemThemes.setName("Themes");
+			shChannelSystemThemes.setSummary("Themes Channel");
+			shChannelSystemThemes.setParentChannel(shChannelSystem);
+			shChannelSystemThemes.setShSite(shSite);
+			shChannelSystemThemes.setDate(new Date());
+			shChannelSystemThemes.setRootChannel((byte) 0);
+
+			shChannelRepository.save(shChannelSystemThemes);
+
 			// Home Channel
 			ShChannel shChannelHome = new ShChannel();
 			shChannelHome.setName("Home");
@@ -84,7 +117,7 @@ public class ShChannelOnStartup {
 			shChannelNews.setShSite(shSite);
 			shChannelNews.setDate(new Date());
 			shChannelNews.setRootChannel((byte) 0);
-			
+
 			shChannelRepository.save(shChannelNews);
 		}
 

@@ -43,11 +43,20 @@ public class ShPostOnStartup {
 			ShChannel shChannelArticle = shChannelRepository.findByShSiteAndName(shSite, "Article");
 			ShChannel shChannelNews = shChannelRepository.findByShSiteAndName(shSite, "News");
 			ShChannel shChannelSystem = shChannelRepository.findByShSiteAndName(shSite, "System");
+			ShChannel shChannelTemplates = shChannelRepository.findByShSiteAndName(shSite, "Templates");
+			ShChannel shChannelLayouts = shChannelRepository.findByShSiteAndName(shSite, "Layouts");
 			ShChannel shChannelText = shChannelRepository.findByShSiteAndName(shSite, "Text");
+			ShChannel shChannelThemes = shChannelRepository.findByShSiteAndName(shSite, "Themes");
 
-			// Post Text
+			
+			ShPostType shPostPageTemplate = shPostTypeRepository.findByName("PT-PAGE-TEMPLATE");
 			ShPostType shPostType = shPostTypeRepository.findByName("PT-TEXT");
-
+			ShPostType shPostTypeArea = shPostTypeRepository.findByName("PT-TEXT-AREA");
+			ShPostType shPostArticle = shPostTypeRepository.findByName("PT-ARTICLE");
+			ShPostType shPostChannelIndex = shPostTypeRepository.findByName("PT-CHANNEL-INDEX");
+			
+			// Post Text
+			
 			ShPost shPost = new ShPost();
 			shPost.setDate(new Date());
 			shPost.setShPostType(shPostType);
@@ -70,7 +79,6 @@ public class ShPostOnStartup {
 			shPostAttrRepository.save(shPostAttr);
 
 			// Post Text Area
-			ShPostType shPostTypeArea = shPostTypeRepository.findByName("PT-TEXT-AREA");
 
 			shPost = new ShPost();
 			shPost.setDate(new Date());
@@ -94,8 +102,6 @@ public class ShPostOnStartup {
 			shPostAttrRepository.save(shPostAttr);
 
 			// Post Article
-
-			ShPostType shPostArticle = shPostTypeRepository.findByName("PT-ARTICLE");
 
 			shPost = new ShPost();
 			shPost.setDate(new Date());
@@ -165,16 +171,16 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			// Theme Template
+			// Sample Theme
 
 			ShPostType shPostTheme = shPostTypeRepository.findByName("PT-THEME");
 
 			shPost = new ShPost();
 			shPost.setDate(new Date());
 			shPost.setShPostType(shPostTheme);
-			shPost.setSummary("Home Theme");
-			shPost.setTitle("Home Theme");
-			shPost.setShChannel(shChannelSystem);
+			shPost.setSummary("Sample Theme");
+			shPost.setTitle("Sample Theme");
+			shPost.setShChannel(shChannelThemes);
 
 			shPostRepository.save(shPost);
 
@@ -232,191 +238,9 @@ public class ShPostOnStartup {
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
-
-			// Page Template Posts
-
-			ShPostType shPostPageTemplate = shPostTypeRepository.findByName("PT-PAGE-TEMPLATE");
-
-			shPost = new ShPost();
-			shPost.setDate(new Date());
-			shPost.setShPostType(shPostPageTemplate);
-			shPost.setSummary("Post Template");
-			shPost.setTitle("Post Page");
-			shPost.setShChannel(shChannelSystem);
-
-			shPostRepository.save(shPost);
-
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "title");
-
-			shPostAttr = new ShPostAttr();
-			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostPageTemplate);
-			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-			shPostAttr.setShPostTypeAttrId(1);
-			shPostAttr.setStrValue(shPost.getTitle());
-			shPostAttr.setType(1);
-
-			shPostAttrRepository.save(shPostAttr);
-
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "Description");
-
-			shPostAttr = new ShPostAttr();
-			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostPageTemplate);
-			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-			shPostAttr.setShPostTypeAttrId(2);
-			shPostAttr.setStrValue(shPost.getSummary());
-			shPostAttr.setType(1);
-
-			shPostAttrRepository.save(shPostAttr);
-
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "Javascript");
-
-			shPostAttr = new ShPostAttr();
-			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostPageTemplate);
-			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-			shPostAttr.setShPostTypeAttrId(3);
-			shPostAttr.setStrValue(
-					"load('https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js');\n"
-							+ "var template = Handlebars.compile(html);\n" + "var html = template(shContent);\n" + "html;");
-			shPostAttr.setType(1);
-
-			shPostAttrRepository.save(shPostAttr);
-
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "HTML");
-
-			shPostAttr = new ShPostAttr();
-			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostPageTemplate);
-			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-			shPostAttr.setShPostTypeAttrId(4);
-			shPostAttr.setStrValue("<!DOCTYPE html>\n" + "<html>\n" + "    <head>\n"
-					+ "    <title>Sample Site | Viglet Shiohara</title>\n" + "    {{{theme.css}}}\n" + "    </head>\n"
-					+ "    <body>\n" + "\n" + "    <!-- Navigation -->\n"
-					+ "    <nav class=\"navbar navbar-expand-lg navbar-dark navbar-custom fixed-top\">\n"
-					+ "      <div class=\"container\">\n"
-					+ "        <a class=\"navbar-brand\" href=\"#\">Viglet Shiohara</a>\n"
-					+ "        <button class=\"navbar-toggler\" type=\"button\" data-toggle=\"collapse\" data-target=\"#navbarResponsive\" aria-controls=\"navbarResponsive\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">\n"
-					+ "          <span class=\"navbar-toggler-icon\"></span>\n" + "        </button>\n"
-					+ "        <div class=\"collapse navbar-collapse\" id=\"navbarResponsive\">\n"
-					+ "          <ul class=\"navbar-nav ml-auto\">\n" + "            <li class=\"nav-item\">\n"
-					+ "              <a class=\"nav-link\" href=\"/#!/content/post/type/{{system.post-type-id}}/post/{{system.id}}\">Come back to Content</a>\n"
-					+ "            </li>\n" + "          </ul>\n" + "        </div>\n" + "      </div>\n"
-					+ "    </nav>\n" + "\n" + "    <header class=\"masthead text-center text-white\">\n"
-					+ "      <div class=\"masthead-content\">\n" + "        <div class=\"container\">\n"
-					+ "          <h1 class=\"masthead-heading mb-0\">{{system.title}}</h1>\n"
-					+ "          <h2 class=\"masthead-subheading mb-0\">{{system.summary}}</h2>\n"
-					+ "          <a href=\"#\" class=\"btn btn-primary btn-xl rounded-pill mt-5\">Learn More</a>\n"
-					+ "        </div>\n" + "      </div>\n" + "      <div class=\"bg-circle-1 bg-circle\"></div>\n"
-					+ "      <div class=\"bg-circle-2 bg-circle\"></div>\n"
-					+ "      <div class=\"bg-circle-3 bg-circle\"></div>\n"
-					+ "      <div class=\"bg-circle-4 bg-circle\"></div>\n" + "    </header>\n" + "\n" + "    \n"
-					+ "    <!-- Footer -->\n" + "    <footer class=\"py-5 bg-black\">\n"
-					+ "      <div class=\"container\">\n"
-					+ "        <p class=\"m-0 text-center text-white small\">Copyright &copy; Viglet 2018</p>\n"
-					+ "      </div>\n" + "      <!-- /.container -->\n" + "    </footer>\n" + "\n"
-					+ "{{{theme.javascript}}}\n" + "  </body>\n" + "</html>");
-			shPostAttr.setType(1);
-
-			shPostAttrRepository.save(shPostAttr);
-
-			// Page Template Channel
-
-			shPost = new ShPost();
-			shPost.setDate(new Date());
-			shPost.setShPostType(shPostPageTemplate);
-			shPost.setSummary("Channel Template");
-			shPost.setTitle("Channel Page");
-			shPost.setShChannel(shChannelSystem);
-
-			shPostRepository.save(shPost);
-
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "title");
-
-			shPostAttr = new ShPostAttr();
-			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostPageTemplate);
-			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-			shPostAttr.setShPostTypeAttrId(1);
-			shPostAttr.setStrValue(shPost.getTitle());
-			shPostAttr.setType(1);
-
-			shPostAttrRepository.save(shPostAttr);
-
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "Description");
-
-			shPostAttr = new ShPostAttr();
-			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostPageTemplate);
-			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-			shPostAttr.setShPostTypeAttrId(2);
-			shPostAttr.setStrValue(shPost.getSummary());
-			shPostAttr.setType(1);
-
-			shPostAttrRepository.save(shPostAttr);
-
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "Javascript");
-
-			shPostAttr = new ShPostAttr();
-			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostPageTemplate);
-			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-			shPostAttr.setShPostTypeAttrId(3);
-			shPostAttr.setStrValue(
-					"load('https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js');\n"
-							+ "var template = Handlebars.compile(html);\n" + "var html = template(shContent);\n"
-							+ "html;");
-			shPostAttr.setType(1);
-
-			shPostAttrRepository.save(shPostAttr);
-
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "HTML");
-
-			shPostAttr = new ShPostAttr();
-			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostPageTemplate);
-			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-			shPostAttr.setShPostTypeAttrId(4);
-			shPostAttr.setStrValue("<!DOCTYPE html>\n" + "<html>\n" + "    <head>\n"
-					+ "    <title>Sample Site | Viglet Shiohara</title>\n" + "    {{{theme.css}}}\n" + "    </head>\n"
-					+ "    <body>\n" + "\n" + "    <!-- Navigation -->\n"
-					+ "    <nav class=\"navbar navbar-expand-lg navbar-dark navbar-custom fixed-top\">\n"
-					+ "      <div class=\"container\">\n"
-					+ "        <a class=\"navbar-brand\" href=\"#\">Viglet Shiohara</a>\n"
-					+ "        <button class=\"navbar-toggler\" type=\"button\" data-toggle=\"collapse\" data-target=\"#navbarResponsive\" aria-controls=\"navbarResponsive\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">\n"
-					+ "          <span class=\"navbar-toggler-icon\"></span>\n" + "        </button>\n"
-					+ "        <div class=\"collapse navbar-collapse\" id=\"navbarResponsive\">\n"
-					+ "          <ul class=\"navbar-nav ml-auto\">\n" + "                {{#each channels}}\n"
-					+ "                    <li class=\"nav-item\">\n"
-					+ "                    <a class=\"nav-link\" href=\"{{../site.system.link}}{{this.system.link}}\">{{this.system.title}}</a>\n"
-					+ "                    </li>\n" + "                {{/each}}\n"
-					+ "            <li class=\"nav-item\">\n"
-					+ "              <a class=\"nav-link\" href=\"/#!/content/list/channel/{{system.id}}\">Come back to Channel</a>\n"
-					+ "            </li>\n" + "          </ul>\n" + "        </div>\n" + "      </div>\n"
-					+ "    </nav>\n" + "\n" + "    <header class=\"masthead text-center text-white\">\n"
-					+ "      <div class=\"masthead-content\">\n" + "        <div class=\"container\">\n"
-					+ "          <h1 class=\"masthead-heading mb-0\">{{system.title}}</h1>\n"
-					+ "          <h2 class=\"masthead-subheading mb-0\">{{system.summary}}</h2>\n"
-					+ "            {{#each posts}}\n"
-					+ "            <a href=\"{{../site.system.link}}{{this.system.link}}\" class=\"btn btn-primary btn-xl rounded-pill mt-5\">{{this.system.title}}</a>\n"
-					+ "            {{/each}}\n" + "        </div>\n" + "      </div>\n"
-					+ "      <div class=\"bg-circle-1 bg-circle\"></div>\n"
-					+ "      <div class=\"bg-circle-2 bg-circle\"></div>\n"
-					+ "      <div class=\"bg-circle-3 bg-circle\"></div>\n"
-					+ "      <div class=\"bg-circle-4 bg-circle\"></div>\n" + "    </header>\n" + "\n" + "    \n"
-					+ "    <!-- Footer -->\n" + "    <footer class=\"py-5 bg-black\">\n"
-					+ "      <div class=\"container\">\n"
-					+ "        <p class=\"m-0 text-center text-white small\">Copyright &copy; Viglet 2018</p>\n"
-					+ "      </div>\n" + "      <!-- /.container -->\n" + "    </footer>\n" + "\n"
-					+ "{{{theme.javascript}}}\n" + "  </body>\n" + "</html>");
-			shPostAttr.setType(1);
-
-			shPostAttrRepository.save(shPostAttr);
-
+	
+			
 			// Post Channel Index Home
-
-			ShPostType shPostChannelIndex = shPostTypeRepository.findByName("PT-CHANNEL-INDEX");
 
 			shPost = new ShPost();
 			shPost.setDate(new Date());
@@ -561,7 +385,7 @@ public class ShPostOnStartup {
 			shPost.setShPostType(shPostTypePageLayout);
 			shPost.setSummary("Post Page Layout");
 			shPost.setTitle("Post Page Layout");
-			shPost.setShChannel(shChannelSystem);
+			shPost.setShChannel(shChannelLayouts);
 
 			shPostRepository.save(shPost);
 
@@ -627,7 +451,7 @@ public class ShPostOnStartup {
 			shPost.setShPostType(shPostPageTemplate);
 			shPost.setSummary("Navigation Template");
 			shPost.setTitle("Navigation");
-			shPost.setShChannel(shChannelSystem);
+			shPost.setShChannel(shChannelTemplates);
 
 			shPostRepository.save(shPost);
 
@@ -698,7 +522,7 @@ public class ShPostOnStartup {
 			shPost.setShPostType(shPostPageTemplate);
 			shPost.setSummary("Content Template");
 			shPost.setTitle("Content");
-			shPost.setShChannel(shChannelSystem);
+			shPost.setShChannel(shChannelTemplates);
 
 			shPostRepository.save(shPost);
 
@@ -771,7 +595,7 @@ public class ShPostOnStartup {
 			shPost.setShPostType(shPostTypePageLayout);
 			shPost.setSummary("Channel Page Layout");
 			shPost.setTitle("Channel Page Layout");
-			shPost.setShChannel(shChannelSystem);
+			shPost.setShChannel(shChannelLayouts);
 
 			shPostRepository.save(shPost);
 
@@ -836,7 +660,7 @@ public class ShPostOnStartup {
 			shPost.setShPostType(shPostPageTemplate);
 			shPost.setSummary("Navigation Channel Template");
 			shPost.setTitle("NavigationChannel");
-			shPost.setShChannel(shChannelSystem);
+			shPost.setShChannel(shChannelTemplates);
 
 			shPostRepository.save(shPost);
 
@@ -911,7 +735,7 @@ public class ShPostOnStartup {
 			shPost.setShPostType(shPostPageTemplate);
 			shPost.setSummary("Content Channel Template");
 			shPost.setTitle("ContentChannel");
-			shPost.setShChannel(shChannelSystem);
+			shPost.setShChannel(shChannelTemplates);
 
 			shPostRepository.save(shPost);
 
