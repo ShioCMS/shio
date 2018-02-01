@@ -1,33 +1,34 @@
 {
-	"name": "shiohara",
-	"version": "1.0",
-	"description": "Viglet Shiohara",
-	"authors": [
-		"Alexandre Oliveira"
-	],
-	"license": "MIT",
-	"homepage": "http://www.viglet.com",
-	"ignore": [
-		"**/.*",
-		"node_modules",
-		"bower_components",
-		"thirdparty",
-		"test",
-		"tests"
-	],
-	"dependencies": {
-		"bootstrap": "*",
-		"moment": "*",
-		"angular": "*",
-		"angular-ui-router": "*",
-		"angular-translate": "*",
-		"angular-resource": "*",
-		"angular-animate": "*",
-		"angular-sanitize": "*",
-		"angular-bootstrap": "*",
-		"angular-cookies": "*",
-		"angular-moment": "*",
-		"angular-ui-ace": "*",
-		"font-awesome": "*"
-	}
+  "name": "shiohara",
+  "version": "1.0",
+  "description": "Viglet Shiohara",
+  "authors": [
+    "Alexandre Oliveira"
+  ],
+  "license": "MIT",
+  "homepage": "http://www.viglet.com",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "thirdparty",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "<4.0",
+    "moment": "*",
+    "angular": "*",
+    "angular-ui-router": "*",
+    "angular-translate": "*",
+    "angular-resource": "*",
+    "angular-animate": "*",
+    "angular-sanitize": "*",
+    "angular-bootstrap": "*",
+    "angular-cookies": "*",
+    "angular-moment": "*",
+    "angular-ui-ace": "*",
+    "font-awesome": "*",
+    "ng-file-upload": "*"
+  }
 }

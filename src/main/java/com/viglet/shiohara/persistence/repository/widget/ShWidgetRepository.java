@@ -11,6 +11,8 @@ public interface ShWidgetRepository extends JpaRepository<ShWidget, Integer> {
 	List<ShWidget> findAll();
 
 	ShWidget findById(int id);
+	
+	ShWidget findByName(String name);
 
 	ShWidget save(ShWidget shWidget);
 

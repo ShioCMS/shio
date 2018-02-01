@@ -35,6 +35,15 @@ public class ShWidgetOnStartup {
 			shWidgetRepository.save(shWidget);
 			
 			shWidget = new ShWidget();
+			shWidget.setName("File");
+			shWidget.setDescription("File Widget");
+			shWidget.setClassName("com.viglet.shiohara.widget.ShFileWidget");
+			shWidget.setImplementationCode("template/widget/file.html");
+			shWidget.setType("TEXT,TEXTAREA");
+			
+			shWidgetRepository.save(shWidget);
+			
+			shWidget = new ShWidget();
 			shWidget.setName("Ace Editor - Javascript");
 			shWidget.setDescription("Ace Editor Widget");
 			shWidget.setClassName("com.viglet.shiohara.widget.ShAceEditorWidget");
@@ -50,7 +59,6 @@ public class ShWidgetOnStartup {
 			shWidget.setImplementationCode("template/widget/ace-editor-html.html");
 			shWidget.setType("TEXT,TEXTAREA");
 
-			
 			shWidgetRepository.save(shWidget);
 
 		}
