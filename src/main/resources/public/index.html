@@ -41,11 +41,11 @@
 					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
 						<a class="navbar-brand" ui-sref="content"
 							ui-sref-opts="{reload:true}"><img
-							style="margin: 5px;padding:0px;width:40px;height:40px"
+							style="margin: 5px; padding: 0px; width: 40px; height: 40px"
 							src="img/viglet_logo_sm.png"></img> </a> <a class="navbar-brand"
-							ui-sref="content"
-							ui-sref-opts="{reload:true}"><div class="hidden-xs"
-								style="margin-top: 17px; margin-left:20px; color: #444; font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif; font-size: 20px; line-height: 1; letter-spacing: .02em; font-weight: 400;">Shiohara</div></a>
+							ui-sref="content" ui-sref-opts="{reload:true}"><div
+								class="hidden-xs"
+								style="margin-top: 17px; margin-left: 20px; color: #444; font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif; font-size: 20px; line-height: 1; letter-spacing: .02em; font-weight: 400;">Shiohara</div></a>
 					</div>
 					<div class="col-lg-9 col-md-9 col-sm-8 col-xs-7"
 						style="padding-top: 7px">
@@ -83,6 +83,9 @@
 		<script src="thirdparty/angular-cookies/angular-cookies.min.js"></script>
 		<script src="thirdparty/angular-sanitize/angular-sanitize.min.js"></script>
 		<script src="thirdparty/angular-moment/angular-moment.min.js"></script>
+		<!-- shim is needed to support non-HTML5 FormData browsers (IE8-9)-->
+		<script src="thirdparty/ng-file-upload/ng-file-upload-shim.min.js"></script>
+		<script src="thirdparty/ng-file-upload/ng-file-upload.min.js"></script>
 		<script src="thirdparty/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
 		<script src="thirdparty/bootstrap/dist/js/bootstrap.min.js"></script>
 		<script src="thirdparty/angular-ui-ace/ui-ace.min.js"></script>

@@ -1,5 +1,5 @@
 var shioharaApp = angular.module('shioharaApp', [ 'ngCookies','ngResource', 'ngAnimate',
-	'ngSanitize', 'ui.router', 'ui.bootstrap', 'pascalprecht.translate', 'vecchioOauth', 'angularMoment', 'ui.ace' ]);
+	'ngSanitize', 'ui.router', 'ui.bootstrap', 'pascalprecht.translate', 'vecchioOauth', 'angularMoment', 'ui.ace', 'ngFileUpload' ]);
 shioharaApp.config([
 		'$stateProvider',
 		'$urlRouterProvider',
@@ -167,6 +167,24 @@ shioharaApp.config([
 			})
 
 		} ]);
+shioharaApp.directive("fileread", [ function() {
+	return {
+		scope : {
+			fileread : "="
+		},
+		link : function(scope, element, attributes) {
+			element.bind("change", function(changeEvent) {
+				var reader = new FileReader();
+				reader.onload = function(loadEvent) {
+					scope.$apply(function() {
+						scope.fileread = loadEvent.target.result;
+					});
+				}
+				reader.readAsDataURL(changeEvent.target.files[0]);
+			});
+		}
+	}
+} ]);
 shioharaApp.service('shAPIServerService', [
 		'$http',
 		'$location',
@@ -617,6 +635,66 @@ shioharaApp.controller('ShPostEditCtrl', [
 				});
 			}
 		} ]);
+shioharaApp
+		.controller(
+				'ShWidgetFileCtrl',
+				[
+						'$scope',
+						'Upload',
+						'$timeout',
+						function($scope, Upload, $timeout) {
+							$scope.$watch('files', function() {
+								$scope.upload($scope.files);
+							});
+							$scope.$watch('file', function() {
+								if ($scope.file != null) {
+									$scope.files = [ $scope.file ];
+								}
+							});
+							$scope.log = '';
+
+							$scope.upload = function(files) {
+								if (files && files.length) {
+									for (var i = 0; i < files.length; i++) {
+										var file = files[i];
+										if (!file.$error) {
+											Upload
+													.upload(
+															{
+																url : 'http://localhost:2710/api/staticfile/upload',
+																data : {
+																	file : file
+																}
+															})
+													.then(
+															function(resp) {
+																$timeout(function() {
+																	$scope.log = 'file: '
+																			+ resp.config.data.file.name
+																			+ ', Response: '
+																			+ JSON
+																					.stringify(resp.data)
+																			+ '\n'
+																			+ $scope.log;
+																});
+															},
+															null,
+															function(evt) {
+																var progressPercentage = parseInt(100.0
+																		* evt.loaded
+																		/ evt.total);
+																$scope.log = 'progress: '
+																		+ progressPercentage
+																		+ '% '
+																		+ evt.config.data.file.name
+																		+ '\n'
+																		+ $scope.log;
+															});
+										}
+									}
+								}
+							};
+						} ]);
 shioharaApp.factory('shWidgetResource', [ '$resource', 'shAPIServerService', function($resource, shAPIServerService) {
 	return $resource(shAPIServerService.get().concat('/widget/:id'), {
 		id : '@id'
