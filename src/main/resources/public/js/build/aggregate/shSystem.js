@@ -4,9 +4,19 @@ shioharaApp.config([
 		'TokenProvider',
 		'$locationProvider',
 		'$translateProvider',
+		'NotificationProvider',
 		function($stateProvider, $urlRouterProvider, TokenProvider,
-				$locationProvider, $translateProvider) {
-
+				$locationProvider, $translateProvider, NotificationProvider) {
+			
+			NotificationProvider.setOptions({
+				delay : 5000,
+				startTop : 20,
+				startRight : 10,
+				verticalSpacing : 20,
+				horizontalSpacing : 20,
+				positionX : 'right',
+				positionY : 'bottom'
+			});
 			TokenProvider.extendConfig({
 				clientId : 'b0ec29dd6e0c6bd98b37fee1799dc0a8',
 				redirectUri : 'http://localhost:8080/oauth2callback.html',

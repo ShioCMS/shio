@@ -16,9 +16,10 @@ shioharaApp.controller('ShSiteChildrenCtrl', [
 		'$location',
 		'$translate',
 		'$filter',
+		'Notification',
 		function($scope, $http, $window, $state, $stateParams, $rootScope, Token,
 				shUserResource, shSiteResource, shChannelResource, shPostTypeResource, shPostResource, shAPIServerService, vigLocale, $location,
-				$translate, $filter) {
+				$translate, $filter, Notification) {
 			$scope.vigLanguage = vigLocale.getLocale().substring(0, 2);
 			$translate.use($scope.vigLanguage);
 			$scope.siteId = $stateParams.siteId;
@@ -50,6 +51,10 @@ shioharaApp.controller('ShSiteChildrenCtrl', [
 				
 			});
 			$scope.channelDelete = function(channelId) {
+				$scope.shChannel = shChannelResource
+				.get({
+					id : channelId
+				});
 				shChannelResource
 				.delete({
 					id : channelId
@@ -59,11 +64,18 @@ shioharaApp.controller('ShSiteChildrenCtrl', [
 				    // get the index
 				    var index = $scope.shChannels.indexOf(foundItem );
 				    // remove the item from array
-				    $scope.shChannels.splice(index, 1);    				   
+				    $scope.shChannels.splice(index, 1); 
+					Notification.error('The '
+							+ $scope.shChannel.name
+							+ ' Channel was deleted.');
 				});
 			}
 			
 			$scope.postDelete = function(postId) {
+				$scope.shPost = shPostResource
+				.get({
+					id : postId
+				});
 				shPostResource
 				.delete({
 					id : postId
@@ -73,7 +85,10 @@ shioharaApp.controller('ShSiteChildrenCtrl', [
 				    // get the index
 				    var index = $scope.shPosts.indexOf(foundItem );
 				    // remove the item from array
-				    $scope.shPosts.splice(index, 1);    				   
+				    $scope.shPosts.splice(index, 1);   
+					Notification.error('The '
+							+ $scope.shPost.title
+							+ ' Post was deleted.');
 				});
 			}
 		} ]);

@@ -7,8 +7,9 @@ shioharaApp.controller('ShPostNewCtrl', [
 		"$rootScope",
 		"shAPIServerService",
 		"shPostResource",
+		"Notification",
 		function($scope, $http, $window, $stateParams, $state, $rootScope,
-				shAPIServerService, shPostResource) {
+				shAPIServerService, shPostResource, Notification) {
 			$scope.channelId = $stateParams.channelId;
 			$scope.postTypeId = $stateParams.postTypeId;
 			$scope.breadcrumb = null;
@@ -54,6 +55,9 @@ shioharaApp.controller('ShPostNewCtrl', [
 			$scope.postSave = function() {
 				if ($scope.shPost.id != null && $scope.shPost.id > 0) {
 					$scope.shPost.$update(function() {
+						Notification.warning('The '
+								+ $scope.shPost.title
+								+ ' Post was update.');
 						// $state.go('content');
 					});
 				} else {
@@ -62,6 +66,9 @@ shioharaApp.controller('ShPostNewCtrl', [
 					shPostResource.save($scope.shPost, function(response) {
 						console.log(response);
 						$scope.shPost = response;
+						Notification.warning('The '
+								+ $scope.shPost.title
+								+ ' Post was created.');
 					});
 				}
 			}
