@@ -29,6 +29,7 @@
     "angular-moment": "*",
     "angular-ui-ace": "*",
     "font-awesome": "*",
-    "ng-file-upload": "*"
+    "ng-file-upload": "*",
+    "angular-ui-notification": "^0.3.6"
   }
 }

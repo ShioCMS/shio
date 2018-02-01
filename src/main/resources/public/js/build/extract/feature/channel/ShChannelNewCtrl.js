@@ -15,10 +15,11 @@ shioharaApp
 						'vigLocale',
 						'$location',
 						'$translate',
+						'Notification',
 						function($scope, $http, $window, $state, $stateParams,
 								$rootScope, Token, shChannelResource,
 								shSiteResource, shAPIServerService, vigLocale,
-								$location, $translate) {
+								$location, $translate, Notification) {
 							$scope.siteId = $stateParams.siteId;
 							$scope.channelId = $stateParams.channelId;
 							rootChannel = false;
@@ -64,12 +65,12 @@ shioharaApp
 								if ($scope.shChannel.id != null
 										&& $scope.shChannel.id > 0) {
 									$scope.shChannel.$update(function() {
+										 Notification.warning('The ' + $scope.shChannel.name +' Channel was created.');
 										$state.go('content.children.channel-children', {channelId: $scope.shChannel.id});
 									});
 								} else {
 									delete $scope.shChannel.id;
 									if (rootChannel) {
-
 										$scope.shChannel.rootChannel = 1;
 										$scope.shChannel.shSite = $scope.shSite;
 										shChannelResource
@@ -77,6 +78,8 @@ shioharaApp
 														$scope.shChannel,
 														function(response) {
 															$scope.shChannel = response;
+															Notification.warning('The ' + $scope.shChannel.name +' Channel was created.');
+															$state.go('content.children.channel-children', {channelId: $scope.shChannel.id});
 														});
 
 									} else {
@@ -86,6 +89,7 @@ shioharaApp
 														$scope.shChannel,
 														function(response) {
 															$scope.shChannel = response;
+															Notification.warning('The ' + $scope.shChannel.name +' Channel was created.');
 															$state.go('content.children.channel-children', {channelId: $scope.shChannel.id});
 														});
 									}

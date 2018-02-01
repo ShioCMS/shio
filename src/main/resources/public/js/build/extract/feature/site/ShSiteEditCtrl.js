@@ -6,11 +6,13 @@ shioharaApp.controller('ShSiteEditCtrl', [
 		"$rootScope",
 		"shSiteResource",
 		"shAPIServerService",
+		"Notification",
 		function($scope, $http, $state, $stateParams, $rootScope,
-				shSiteResource, shAPIServerService) {
+				shSiteResource, shAPIServerService, Notification) {
 			$scope.shSite = shSiteResource.get({id: $stateParams.siteId});
 			$scope.siteSave = function() {
 				$scope.shSite.$update(function() {
+					Notification.warning('The ' + $scope.shSite.name +' Site was updated.');
 					$state.go('content.children.site-children', {
 						siteId : $scope.shSite.id
 					});
@@ -22,6 +24,7 @@ shioharaApp.controller('ShSiteEditCtrl', [
 				.delete({
 					id : $scope.shSite.id
 				},function() {
+					Notification.error('The ' + $scope.shSite.name +' Site was deleted.');
 					$state.go('content',{}, {reload: true});
 				});
 			}

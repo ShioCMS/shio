@@ -92,8 +92,9 @@ shioharaApp.controller('ShPostTypeEditorCtrl', [
 		"$rootScope",
 		"shAPIServerService",
 		"shPostTypeResource",
+		"Notification",
 		function($scope, $http, $window, $state, $rootScope,
-				shAPIServerService, shPostTypeResource) {
+				shAPIServerService, shPostTypeResource, Notification) {
 			$rootScope.$state = $state;
 			$scope.shPostType = null;
 			$scope.$evalAsync($http.get(
@@ -104,6 +105,7 @@ shioharaApp.controller('ShPostTypeEditorCtrl', [
 			$scope.postTypeSave = function() {
 				delete $scope.shPostType.id;
 				shPostTypeResource.save($scope.shPostType, function() {
+					Notification.warning('The ' + $scope.shPostType.name +' Site was created.');
 					$state.go('content.post-type-select');
 				});
 			}
@@ -122,10 +124,11 @@ shioharaApp
 						"shPostTypeResource",
 						"shPostTypeAttrResource",
 						"shAPIServerService",
+						"Notification",
 						function($scope, $http, $window, $stateParams, $state,
 								$rootScope, shWidgetResource,
 								shPostTypeResource, shPostTypeAttrResource,
-								shAPIServerService) {
+								shAPIServerService, Notification) {
 							$scope.postTypeId = $stateParams.postTypeId;
 							$scope.shPostType = null;
 							$scope.shWidgets = shWidgetResource.query();
@@ -177,7 +180,7 @@ shioharaApp
 												});
 
 								$scope.shPostType.$update(function() {
-
+									Notification.warning('The ' + $scope.shPostType.name +' Site was updated.');
 									$state.go('content.post-type-select');
 								});
 
@@ -188,6 +191,7 @@ shioharaApp
 								.delete({
 									id : $scope.shPostType.id
 								},function() {
+									Notification.error('The ' + $scope.shPostType.name +' Site was deleted.');
 									$state.go('content.post-type-select');
 								});
 							}
@@ -241,8 +245,9 @@ shioharaApp.controller('ShPostNewCtrl', [
 		"$rootScope",
 		"shAPIServerService",
 		"shPostResource",
+		"Notification",
 		function($scope, $http, $window, $stateParams, $state, $rootScope,
-				shAPIServerService, shPostResource) {
+				shAPIServerService, shPostResource, Notification) {
 			$scope.channelId = $stateParams.channelId;
 			$scope.postTypeId = $stateParams.postTypeId;
 			$scope.breadcrumb = null;
@@ -288,6 +293,9 @@ shioharaApp.controller('ShPostNewCtrl', [
 			$scope.postSave = function() {
 				if ($scope.shPost.id != null && $scope.shPost.id > 0) {
 					$scope.shPost.$update(function() {
+						Notification.warning('The '
+								+ $scope.shPost.title
+								+ ' Post was update.');
 						// $state.go('content');
 					});
 				} else {
@@ -296,6 +304,9 @@ shioharaApp.controller('ShPostNewCtrl', [
 					shPostResource.save($scope.shPost, function(response) {
 						console.log(response);
 						$scope.shPost = response;
+						Notification.warning('The '
+								+ $scope.shPost.title
+								+ ' Post was created.');
 					});
 				}
 			}
@@ -318,8 +329,9 @@ shioharaApp.controller('ShPostEditCtrl', [
 		"$rootScope",
 		"shPostResource",
 		"shAPIServerService",
+		"Notification",
 		function($scope, $http, $window, $stateParams, $state, $rootScope,
-				shPostResource, shAPIServerService) {
+				shPostResource, shAPIServerService, Notification) {
 			var channelURL = null;
 			$scope.channelId = null;
 			$scope.postId = $stateParams.postId;
@@ -372,12 +384,13 @@ shioharaApp.controller('ShPostEditCtrl', [
 				.delete({
 					id : $scope.shPost.id
 				},function() {
+					 Notification.error('The ' + $scope.shPost.title +' Post was deleted.');
 					$state.go('content',{}, {reload: true});
 				});
 			}
 			$scope.postSave = function() {
 				$scope.shPost.$update(function() {
-					// $state.go('content');
+					 Notification.warning('The ' + $scope.shPost.title +' Post was updated.');
 				});
 			}
 		} ]);
@@ -499,9 +512,10 @@ shioharaApp.controller('ShContentChildrenCtrl', [
 		'$location',
 		'$translate',
 		'$filter',
+		'Notification',
 		function($scope, $http, $window, $state, $stateParams, $rootScope, Token,
 				shUserResource, shSiteResource, shChannelResource, shPostTypeResource, shPostResource, shAPIServerService, vigLocale, $location,
-				$translate, $filter) {
+				$translate, $filter, Notification) {
 			$scope.vigLanguage = vigLocale.getLocale().substring(0, 2);
 			$translate.use($scope.vigLanguage);
 			$scope.siteId = $stateParams.siteId;
@@ -534,6 +548,10 @@ shioharaApp.controller('ShContentChildrenCtrl', [
 				
 			});
 			$scope.channelDelete = function(channelId) {
+				$scope.shChannel = shChannelResource
+				.get({
+					id : channelId
+				});
 				shChannelResource
 				.delete({
 					id : channelId
@@ -543,11 +561,19 @@ shioharaApp.controller('ShContentChildrenCtrl', [
 				    // get the index
 				    var index = $scope.shChannels.indexOf(foundItem );
 				    // remove the item from array
-				    $scope.shChannels.splice(index, 1);    				   
+				    $scope.shChannels.splice(index, 1);   
+					Notification.error('The '
+							+ $scope.shChannel.name
+							+ ' Channel was deleted.');
+				    
 				});
 			}
 			
 			$scope.postDelete = function(postId) {
+				$scope.shPost = shPostResource
+				.get({
+					id : postId
+				});
 				shPostResource
 				.delete({
 					id : postId
@@ -557,7 +583,10 @@ shioharaApp.controller('ShContentChildrenCtrl', [
 				    // get the index
 				    var index = $scope.shPosts.indexOf(foundItem );
 				    // remove the item from array
-				    $scope.shPosts.splice(index, 1);    				   
+				    $scope.shPosts.splice(index, 1);  
+					Notification.error('The '
+							+ $scope.shPost.title
+							+ ' Post was deleted.');
 				});
 			}
 		} ]);
@@ -587,10 +616,11 @@ shioharaApp
 						'vigLocale',
 						'$location',
 						'$translate',
+						'Notification',
 						function($scope, $http, $window, $state, $stateParams,
 								$rootScope, Token, shChannelResource,
 								shSiteResource, shAPIServerService, vigLocale,
-								$location, $translate) {
+								$location, $translate, Notification) {
 							$scope.siteId = $stateParams.siteId;
 							$scope.channelId = $stateParams.channelId;
 							rootChannel = false;
@@ -636,12 +666,12 @@ shioharaApp
 								if ($scope.shChannel.id != null
 										&& $scope.shChannel.id > 0) {
 									$scope.shChannel.$update(function() {
+										 Notification.warning('The ' + $scope.shChannel.name +' Channel was created.');
 										$state.go('content.children.channel-children', {channelId: $scope.shChannel.id});
 									});
 								} else {
 									delete $scope.shChannel.id;
 									if (rootChannel) {
-
 										$scope.shChannel.rootChannel = 1;
 										$scope.shChannel.shSite = $scope.shSite;
 										shChannelResource
@@ -649,6 +679,8 @@ shioharaApp
 														$scope.shChannel,
 														function(response) {
 															$scope.shChannel = response;
+															Notification.warning('The ' + $scope.shChannel.name +' Channel was created.');
+															$state.go('content.children.channel-children', {channelId: $scope.shChannel.id});
 														});
 
 									} else {
@@ -658,6 +690,7 @@ shioharaApp
 														$scope.shChannel,
 														function(response) {
 															$scope.shChannel = response;
+															Notification.warning('The ' + $scope.shChannel.name +' Channel was created.');
 															$state.go('content.children.channel-children', {channelId: $scope.shChannel.id});
 														});
 									}
@@ -682,10 +715,11 @@ shioharaApp
 						'vigLocale',
 						'$location',
 						'$translate',
+						'Notification',
 						function($scope, $http, $window, $state, $stateParams,
 								$rootScope, Token, shChannelResource,
 								shSiteResource, shAPIServerService, vigLocale,
-								$location, $translate) {
+								$location, $translate, Notification) {
 							$scope.channelId = $stateParams.channelId;
 
 							$scope.vigLanguage = vigLocale.getLocale()
@@ -726,6 +760,9 @@ shioharaApp
 							$scope.channelSave = function() {
 								$scope.shChannel
 										.$update(function() {
+											Notification.warning('The '
+													+ $scope.shChannel.name
+													+ ' Channel was updated.');
 											$state
 													.go(
 															'content.children.channel-children',
@@ -753,10 +790,11 @@ shioharaApp.controller('ShChannelChildrenCtrl', [
 		'$location',
 		"$translate",
 		"$filter",
+		"Notification",
 		function($scope, $http, $window, $state, $stateParams, $rootScope,
 				Token, shUserResource, shChannelResource, shPostResource,
 				shPostTypeResource, shAPIServerService, vigLocale, $location,
-				$translate, $filter) {
+				$translate, $filter, Notification) {
 			$scope.siteId = $stateParams.siteId;
 			$scope.channelId = $stateParams.channelId;
 			$scope.$parent.channelId = $stateParams.channelId;
@@ -781,6 +819,10 @@ shioharaApp.controller('ShChannelChildrenCtrl', [
 						$scope.$parent.shSite = $scope.shSite;
 					}));
 			$scope.channelDelete = function(channelId) {
+				$scope.shChannel = shChannelResource
+				.get({
+					id : channelId
+				});
 				shChannelResource
 				.delete({
 					id : channelId
@@ -790,11 +832,18 @@ shioharaApp.controller('ShChannelChildrenCtrl', [
 				    // get the index
 				    var index = $scope.shChannels.indexOf(foundItem );
 				    // remove the item from array
-				    $scope.shChannels.splice(index, 1);    				   
+				    $scope.shChannels.splice(index, 1);    		
+					Notification.error('The '
+							+ $scope.shChannel.name
+							+ ' Channel was deleted.');
 				});
 			}
 			
 			$scope.postDelete = function(postId) {
+				$scope.shPost = shPostResource
+				.get({
+					id : postId
+				});
 				shPostResource
 				.delete({
 					id : postId
@@ -804,7 +853,10 @@ shioharaApp.controller('ShChannelChildrenCtrl', [
 				    // get the index
 				    var index = $scope.shPosts.indexOf(foundItem );
 				    // remove the item from array
-				    $scope.shPosts.splice(index, 1);    				   
+				    $scope.shPosts.splice(index, 1);    		
+					Notification.error('The '
+							+ $scope.shPost.title
+							+ ' Post was deleted.');
 				});
 			}
 
@@ -838,11 +890,13 @@ shioharaApp.controller('ShSiteEditCtrl', [
 		"$rootScope",
 		"shSiteResource",
 		"shAPIServerService",
+		"Notification",
 		function($scope, $http, $state, $stateParams, $rootScope,
-				shSiteResource, shAPIServerService) {
+				shSiteResource, shAPIServerService, Notification) {
 			$scope.shSite = shSiteResource.get({id: $stateParams.siteId});
 			$scope.siteSave = function() {
 				$scope.shSite.$update(function() {
+					Notification.warning('The ' + $scope.shSite.name +' Site was updated.');
 					$state.go('content.children.site-children', {
 						siteId : $scope.shSite.id
 					});
@@ -854,6 +908,7 @@ shioharaApp.controller('ShSiteEditCtrl', [
 				.delete({
 					id : $scope.shSite.id
 				},function() {
+					Notification.error('The ' + $scope.shSite.name +' Site was deleted.');
 					$state.go('content',{}, {reload: true});
 				});
 			}
@@ -867,8 +922,9 @@ shioharaApp.controller('ShSiteNewCtrl', [
 		"$rootScope",
 		"shSiteResource",
 		"shAPIServerService",
+		"Notification",
 		function($scope, $http, $state, $stateParams, $rootScope, shSiteResource,
-				shAPIServerService) {
+				shAPIServerService, Notification) {
 			$scope.shSite = null;
 			$scope.$evalAsync($http.get(
 					shAPIServerService.get().concat("/site/model")).then(
@@ -878,11 +934,13 @@ shioharaApp.controller('ShSiteNewCtrl', [
 			$scope.siteSave = function() {
 				if ($scope.shSite.id != null && $scope.shSite.id > 0) {
 					$scope.shSite.$update(function() {
-						$state.go('content.children.site-children',{siteId: $scope.shSite.id});
+						Notification.warning('The ' + $scope.shSite.name +' Site was updated.');
+						$state.go('content.children.site-children',{siteId: $scope.shSite.id});						
 					});
 				} else {
 					delete $scope.shSite.id;
 					shSiteResource.save($scope.shSite, function(response){
+						Notification.warning('The ' + $scope.shSite.name +' Site was created.');
 						$state.go('content.children.site-children',{siteId: response.id});
 					});
 				}
@@ -907,9 +965,10 @@ shioharaApp.controller('ShSiteChildrenCtrl', [
 		'$location',
 		'$translate',
 		'$filter',
+		'Notification',
 		function($scope, $http, $window, $state, $stateParams, $rootScope, Token,
 				shUserResource, shSiteResource, shChannelResource, shPostTypeResource, shPostResource, shAPIServerService, vigLocale, $location,
-				$translate, $filter) {
+				$translate, $filter, Notification) {
 			$scope.vigLanguage = vigLocale.getLocale().substring(0, 2);
 			$translate.use($scope.vigLanguage);
 			$scope.siteId = $stateParams.siteId;
@@ -941,6 +1000,10 @@ shioharaApp.controller('ShSiteChildrenCtrl', [
 				
 			});
 			$scope.channelDelete = function(channelId) {
+				$scope.shChannel = shChannelResource
+				.get({
+					id : channelId
+				});
 				shChannelResource
 				.delete({
 					id : channelId
@@ -950,11 +1013,18 @@ shioharaApp.controller('ShSiteChildrenCtrl', [
 				    // get the index
 				    var index = $scope.shChannels.indexOf(foundItem );
 				    // remove the item from array
-				    $scope.shChannels.splice(index, 1);    				   
+				    $scope.shChannels.splice(index, 1); 
+					Notification.error('The '
+							+ $scope.shChannel.name
+							+ ' Channel was deleted.');
 				});
 			}
 			
 			$scope.postDelete = function(postId) {
+				$scope.shPost = shPostResource
+				.get({
+					id : postId
+				});
 				shPostResource
 				.delete({
 					id : postId
@@ -964,7 +1034,10 @@ shioharaApp.controller('ShSiteChildrenCtrl', [
 				    // get the index
 				    var index = $scope.shPosts.indexOf(foundItem );
 				    // remove the item from array
-				    $scope.shPosts.splice(index, 1);    				   
+				    $scope.shPosts.splice(index, 1);   
+					Notification.error('The '
+							+ $scope.shPost.title
+							+ ' Post was deleted.');
 				});
 			}
 		} ]);
