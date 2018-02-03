@@ -1,6 +1,7 @@
 package com.viglet.shiohara.persistence.repository.post;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -15,7 +16,7 @@ public interface ShPostRepository extends JpaRepository<ShPost, Integer> {
 
 	List<ShPost> findByShChannel(ShChannel shChannel);
 	
-	ShPost findById(int id);
+	ShPost findById(UUID id);
 	
 	ShPost findByTitle(String title);
 	
@@ -25,5 +26,5 @@ public interface ShPostRepository extends JpaRepository<ShPost, Integer> {
 
 	@Modifying
 	@Query("delete from ShPost p where p.id = ?1")
-	void delete(int shPostId);
+	void delete(UUID shPostId);
 }

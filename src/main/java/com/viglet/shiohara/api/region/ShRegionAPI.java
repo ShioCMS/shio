@@ -1,6 +1,7 @@
 package com.viglet.shiohara.api.region;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -34,14 +35,14 @@ public class ShRegionAPI {
 	@Path("/{regionId}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public ShRegion edit(@PathParam("regionId") int id) throws Exception {
+	public ShRegion edit(@PathParam("regionId") UUID id) throws Exception {
 		return shRegionRepository.findById(id);
 	}
 
 	@Path("/{regionId}")
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
-	public ShRegion update(@PathParam("regionId") int id, ShRegion shRegion) throws Exception {
+	public ShRegion update(@PathParam("regionId") UUID id, ShRegion shRegion) throws Exception {
 		ShRegion shRegionEdit = shRegionRepository.findById(id);
 		shRegionEdit.setName(shRegion.getName());
 		shRegionEdit.setShPost(shRegion.getShPost());

@@ -1,6 +1,7 @@
 package com.viglet.shiohara.onstartup.channel;
 
 import java.util.Date;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,7 +31,7 @@ public class ShChannelOnStartup {
 
 		if (shChannelRepository.findAll().isEmpty()) {
 
-			ShSite shSite = shSiteRepository.findById(1);
+			ShSite shSite = shSiteRepository.findByName("Sample");
 
 			// System Channel
 			ShChannel shChannelSystem = new ShChannel();

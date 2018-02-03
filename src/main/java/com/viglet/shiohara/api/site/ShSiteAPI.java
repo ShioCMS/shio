@@ -2,6 +2,7 @@ package com.viglet.shiohara.api.site;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -59,14 +60,14 @@ public class ShSiteAPI {
 	@Path("/{siteId}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public ShSite edit(@PathParam("siteId") int id) throws Exception {
+	public ShSite edit(@PathParam("siteId") UUID id) throws Exception {
 		return shSiteRepository.findById(id);
 	}
 
 	@Path("/{siteId}")
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
-	public ShSite update(@PathParam("siteId") int id, ShSite shSite) throws Exception {
+	public ShSite update(@PathParam("siteId") UUID id, ShSite shSite) throws Exception {
 		ShSite shSiteEdit = shSiteRepository.findById(id);
 		shSiteEdit.setName(shSite.getName());
 		shSiteRepository.save(shSiteEdit);
@@ -76,7 +77,7 @@ public class ShSiteAPI {
 	@Path("/{siteId}")
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
-	public boolean delete(@PathParam("siteId") int id) throws Exception {
+	public boolean delete(@PathParam("siteId") UUID id) throws Exception {
 		ShSite shSite = shSiteRepository.findById(id);
 
 		for (ShChannel shChannel : shSite.getShChannels()) {
@@ -123,7 +124,6 @@ public class ShSiteAPI {
 		shPostAttr.setShPost(shPost);
 		shPostAttr.setShPostType(shPostChannelIndex);
 		shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-		shPostAttr.setShPostTypeAttrId(1);
 		shPostAttr.setStrValue(shPost.getTitle());
 		shPostAttr.setType(1);
 
@@ -135,7 +135,6 @@ public class ShSiteAPI {
 		shPostAttr.setShPost(shPost);
 		shPostAttr.setShPostType(shPostChannelIndex);
 		shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-		shPostAttr.setShPostTypeAttrId(2);
 		shPostAttr.setStrValue(shPost.getSummary());
 		shPostAttr.setType(1);
 
@@ -147,7 +146,7 @@ public class ShSiteAPI {
 	@Path("/{siteId}/channel")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public ShChannelList rootChannel(@PathParam("siteId") int id) throws Exception {
+	public ShChannelList rootChannel(@PathParam("siteId") UUID id) throws Exception {
 		ShSite shSite = shSiteRepository.findById(id);
 
 		ShChannelList shChannelList = new ShChannelList();

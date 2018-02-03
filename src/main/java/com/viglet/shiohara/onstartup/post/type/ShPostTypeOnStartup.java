@@ -1,6 +1,7 @@
 package com.viglet.shiohara.onstartup.post.type;
 
 import java.util.Calendar;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -58,7 +59,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
 			// Photo
-			shWidgetText = shWidgetRepository.findById(1);
 
 			shPostType = new ShPostType();
 			shPostType.setName("PT-PHOTO");
@@ -84,7 +84,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
 			// Video
-			shWidgetText = shWidgetRepository.findById(1);
 
 			shPostType = new ShPostType();
 			shPostType.setName("PT-VIDEO");
@@ -110,7 +109,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
 			// Quote
-			shWidgetText = shWidgetRepository.findById(1);
 
 			shPostType = new ShPostType();
 			shPostType.setName("PT-QUOTE");
@@ -136,7 +134,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
 			// Link
-			shWidgetText = shWidgetRepository.findById(1);
 
 			shPostType = new ShPostType();
 			shPostType.setName("PT-LINK");
@@ -162,7 +159,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
 			// File
-			shWidgetText = shWidgetRepository.findById(1);
 
 			shPostType = new ShPostType();
 			shPostType.setName("PT-FILE");

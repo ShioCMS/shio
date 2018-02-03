@@ -4,6 +4,7 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.viglet.shiohara.persistence.model.channel.ShChannel;
@@ -14,6 +15,7 @@ import com.viglet.shiohara.persistence.model.site.ShSite;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * The persistent class for the ShPost database table.
@@ -24,10 +26,21 @@ import java.util.List;
 public class ShPost implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	//@Id
+	//@GeneratedValue(strategy = GenerationType.IDENTITY)
+	//private int id;
 
+	@Id
+	@GenericGenerator(
+			name = "UUID",
+			strategy = "org.hibernate.id.UUIDGenerator"
+		)
+	@GeneratedValue(generator = "UUID")
+	
+	@Column(name = "id", updatable = false, nullable = false)
+	private UUID id;
+	
+	 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date date;
 
@@ -58,11 +71,11 @@ public class ShPost implements Serializable {
 	public ShPost() {
 	}
 
-	public int getId() {
+	public UUID getId() {
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(UUID id) {
 		this.id = id;
 	}
 

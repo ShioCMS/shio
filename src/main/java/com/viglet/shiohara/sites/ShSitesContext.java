@@ -53,9 +53,9 @@ public class ShSitesContext {
 			@PathVariable(value = "shSiteName") String shSiteName, @PathVariable(value = "shFormat") String shFormat,
 			@PathVariable(value = "shLocale") String shLocale) throws IOException, ScriptException {
 
-		ShPost shTheme = shPostRepository.findById(5); // Theme
-		ShPost shPostPageLayout = shPostRepository.findById(10); // Page Layout Post
-		ShPost shChannelPageLayout = shPostRepository.findById(13); // Page Layout Channel
+		ShPost shTheme = shPostRepository.findByTitle("Sample Theme"); // Theme
+		ShPost shPostPageLayout = shPostRepository.findByTitle("Post Page Layout"); // Page Layout Post
+		ShPost shChannelPageLayout = shPostRepository.findByTitle("Channel Page Layout"); // Page Layout Channel
 
 		String url = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
 		String shContext = null;
@@ -119,8 +119,8 @@ public class ShSitesContext {
 				// System.out.println("shChannelItem is null");
 
 			}
-			// System.out.println(shSite.getName());
-			// System.out.println(channelPathCurrent);
+			 //System.out.println(shSite.getName());
+			 //System.out.println(channelPathCurrent);
 		}
 
 		// Nashorn Engine

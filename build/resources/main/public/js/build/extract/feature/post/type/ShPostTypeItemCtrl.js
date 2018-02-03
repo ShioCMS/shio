@@ -12,10 +12,11 @@ shioharaApp
 						"shPostTypeResource",
 						"shPostTypeAttrResource",
 						"shAPIServerService",
+						"Notification",
 						function($scope, $http, $window, $stateParams, $state,
 								$rootScope, shWidgetResource,
 								shPostTypeResource, shPostTypeAttrResource,
-								shAPIServerService) {
+								shAPIServerService, Notification) {
 							$scope.postTypeId = $stateParams.postTypeId;
 							$scope.shPostType = null;
 							$scope.shWidgets = shWidgetResource.query();
@@ -67,7 +68,7 @@ shioharaApp
 												});
 
 								$scope.shPostType.$update(function() {
-
+									Notification.warning('The ' + $scope.shPostType.name +' Site was updated.');
 									$state.go('content.post-type-select');
 								});
 
@@ -78,6 +79,7 @@ shioharaApp
 								.delete({
 									id : $scope.shPostType.id
 								},function() {
+									Notification.error('The ' + $scope.shPostType.name +' Site was deleted.');
 									$state.go('content.post-type-select');
 								});
 							}

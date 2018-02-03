@@ -1,6 +1,7 @@
 package com.viglet.shiohara.api.widget;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -35,14 +36,14 @@ public class ShWidgetAPI {
 	@Path("/{widgetId}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public ShWidget edit(@PathParam("widgetId") int id) throws Exception {
+	public ShWidget edit(@PathParam("widgetId") UUID id) throws Exception {
 		return shWidgetRepository.findById(id);
 	}
 
 	@Path("/{widgetId}")
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
-	public ShWidget update(@PathParam("widgetId") int id, ShWidget shWidget) throws Exception {
+	public ShWidget update(@PathParam("widgetId") UUID id, ShWidget shWidget) throws Exception {
 		ShWidget shWidgetEdit = shWidgetRepository.findById(id);
 		shWidgetEdit.setName(shWidget.getName());
 		shWidgetEdit.setType(shWidget.getType());

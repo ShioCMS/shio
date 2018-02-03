@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.util.Date;
+import java.util.UUID;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -86,7 +87,7 @@ public class ShStaticFileAPI {
 				}
 
 				// Post File
-				ShSite shSite = shSiteRepository.findById(1);
+				ShSite shSite = shSiteRepository.findById(UUID.fromString("need-fix-this"));
 				ShPostType shPostType = shPostTypeRepository.findByName("PT-FILE");
 				ShChannel shChannelHome = shChannelRepository.findByShSiteAndName(shSite, "Home");
 
@@ -105,7 +106,6 @@ public class ShStaticFileAPI {
 				shPostAttr.setShPost(shPost);
 				shPostAttr.setShPostType(shPostType);
 				shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-				shPostAttr.setShPostTypeAttrId(1);
 				shPostAttr.setStrValue(shPost.getTitle());
 				shPostAttr.setType(1);
 
