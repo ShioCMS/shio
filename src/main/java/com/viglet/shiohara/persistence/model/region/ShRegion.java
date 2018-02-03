@@ -1,7 +1,11 @@
 package com.viglet.shiohara.persistence.model.region;
 
 import java.io.Serializable;
+import java.util.UUID;
+
 import javax.persistence.*;
+
+import org.hibernate.annotations.GenericGenerator;
 
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
@@ -16,8 +20,14 @@ public class ShRegion implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int id;
+	@GenericGenerator(
+			name = "UUID",
+			strategy = "org.hibernate.id.UUIDGenerator"
+		)
+	@GeneratedValue(generator = "UUID")
+	
+	@Column(name = "id", updatable = false, nullable = false)
+	private UUID id;
 
 	private String name;
 
@@ -34,11 +44,11 @@ public class ShRegion implements Serializable {
 	public ShRegion() {
 	}
 
-	public int getId() {
+	public UUID getId() {
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(UUID id) {
 		this.id = id;
 	}
 

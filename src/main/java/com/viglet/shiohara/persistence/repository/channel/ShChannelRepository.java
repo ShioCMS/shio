@@ -1,6 +1,7 @@
 package com.viglet.shiohara.persistence.repository.channel;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -21,11 +22,11 @@ public interface ShChannelRepository extends JpaRepository<ShChannel, Integer> {
 	
 	List<ShChannel> findByParentChannel(ShChannel parentChannel);
 	
-	ShChannel findById(int id);
+	ShChannel findById(UUID id);
 
 	ShChannel save(ShChannel shChannel);
 
 	@Modifying
 	@Query("delete from ShChannel p where p.id = ?1")
-	void delete(int shChannelId);
+	void delete(UUID shChannelId);
 }

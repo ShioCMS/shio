@@ -1,6 +1,7 @@
 package com.viglet.shiohara.persistence.repository.post.type;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -13,7 +14,7 @@ public interface ShPostTypeAttrRepository extends JpaRepository<ShPostTypeAttr, 
 
 	List<ShPostTypeAttr> findAll();
 
-	ShPostTypeAttr findById(int id);
+	ShPostTypeAttr findById(UUID id);
 	
 	ShPostTypeAttr findByShPostTypeAndName(ShPostType shPostType, String name);
 
@@ -21,5 +22,5 @@ public interface ShPostTypeAttrRepository extends JpaRepository<ShPostTypeAttr, 
 	
 	@Modifying
 	@Query("delete from ShPostTypeAttr pta where pta.id = ?1")
-	void delete(int shPostTypeAttrId);
+	void delete(UUID shPostTypeAttrId);
 }

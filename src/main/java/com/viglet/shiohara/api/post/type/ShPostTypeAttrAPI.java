@@ -1,6 +1,7 @@
 package com.viglet.shiohara.api.post.type;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -37,14 +38,14 @@ public class ShPostTypeAttrAPI {
 	@Path("/{postTypeAttrId}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public ShPostTypeAttr edit(@PathParam("postTypeAttrId") int id) throws Exception {
+	public ShPostTypeAttr edit(@PathParam("postTypeAttrId") UUID id) throws Exception {
 		return shPostTypeAttrRepository.findById(id);
 	}
 
 	@Path("/{postTypeAttrId}")
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
-	public ShPostTypeAttr update(@PathParam("postTypeAttrId") int id, ShPostTypeAttr shPostTypeAttr) throws Exception {
+	public ShPostTypeAttr update(@PathParam("postTypeAttrId") UUID id, ShPostTypeAttr shPostTypeAttr) throws Exception {
 		ShPostTypeAttr shPostTypeAttrEdit = shPostTypeAttrRepository.findById(id);
 		shPostTypeAttrEdit.setIsSummary(shPostTypeAttr.getIsSummary());
 		shPostTypeAttrEdit.setIsTitle(shPostTypeAttr.getIsTitle());
@@ -62,7 +63,7 @@ public class ShPostTypeAttrAPI {
 	@Path("/{postTypeAttrId}")
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
-	public boolean delete(@PathParam("postTypeAttrId") int id) throws Exception {
+	public boolean delete(@PathParam("postTypeAttrId") UUID id) throws Exception {
 		ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findById(id);
 		for ( ShPostAttr shPostAttr : shPostTypeAttr.getShPostAttrs()) {
 			shPostAttrRepository.delete(shPostAttr.getId());

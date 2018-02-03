@@ -15,10 +15,11 @@ shioharaApp
 						'vigLocale',
 						'$location',
 						'$translate',
+						'Notification',
 						function($scope, $http, $window, $state, $stateParams,
 								$rootScope, Token, shChannelResource,
 								shSiteResource, shAPIServerService, vigLocale,
-								$location, $translate) {
+								$location, $translate, Notification) {
 							$scope.channelId = $stateParams.channelId;
 
 							$scope.vigLanguage = vigLocale.getLocale()
@@ -59,6 +60,9 @@ shioharaApp
 							$scope.channelSave = function() {
 								$scope.shChannel
 										.$update(function() {
+											Notification.warning('The '
+													+ $scope.shChannel.name
+													+ ' Channel was updated.');
 											$state
 													.go(
 															'content.children.channel-children',

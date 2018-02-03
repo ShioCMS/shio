@@ -3,6 +3,7 @@ package com.viglet.shiohara.api.channel;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -56,14 +57,14 @@ public class ShChannelAPI {
 	@Path("/{channelId}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public ShChannel edit(@PathParam("channelId") int id) throws Exception {
+	public ShChannel edit(@PathParam("channelId") UUID id) throws Exception {
 		return shChannelRepository.findById(id);
 	}
 
 	@Path("/{channelId}")
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
-	public ShChannel update(@PathParam("channelId") int id, ShChannel shChannel) throws Exception {
+	public ShChannel update(@PathParam("channelId") UUID id, ShChannel shChannel) throws Exception {
 
 		ShChannel shChannelEdit = shChannelRepository.findById(id);
 
@@ -81,7 +82,7 @@ public class ShChannelAPI {
 	@Path("/{channelId}")
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
-	public boolean delete(@PathParam("channelId") int id) throws Exception {
+	public boolean delete(@PathParam("channelId") UUID id) throws Exception {
 		ShChannel shChannel = shChannelRepository.findById(id);		
 		return shChannelUtils.deleteChannel(shChannel);
 	}
@@ -112,7 +113,6 @@ public class ShChannelAPI {
 		shPostAttr.setShPost(shPost);
 		shPostAttr.setShPostType(shPostChannelIndex);
 		shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-		shPostAttr.setShPostTypeAttrId(1);
 		shPostAttr.setStrValue(shPost.getTitle());
 		shPostAttr.setType(1);
 
@@ -124,7 +124,6 @@ public class ShChannelAPI {
 		shPostAttr.setShPost(shPost);
 		shPostAttr.setShPostType(shPostChannelIndex);
 		shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-		shPostAttr.setShPostTypeAttrId(2);
 		shPostAttr.setStrValue(shPost.getSummary());
 		shPostAttr.setType(1);
 
@@ -136,7 +135,7 @@ public class ShChannelAPI {
 	@Path("/{channelId}/list")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public ShChannelList list(@PathParam("channelId") int id) throws Exception {
+	public ShChannelList list(@PathParam("channelId") UUID id) throws Exception {
 		ShChannel shChannel = shChannelRepository.findById(id);
 
 		String channelPath = shChannelUtils.channelPath(shChannel);
@@ -154,7 +153,7 @@ public class ShChannelAPI {
 	@Path("/{channelId}/path")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public ShChannelPath path(@PathParam("channelId") int id) throws Exception {
+	public ShChannelPath path(@PathParam("channelId") UUID id) throws Exception {
 		ShChannel shChannel = shChannelRepository.findById(id);
 		if (shChannel != null) {
 			ShChannelPath shChannelPath = new ShChannelPath();

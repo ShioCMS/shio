@@ -3,11 +3,14 @@ package com.viglet.shiohara.persistence.model.post;
 import java.io.Serializable;
 import javax.persistence.*;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * The persistent class for the ShPostAttr database table.
@@ -20,9 +23,15 @@ public class ShPostAttr implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
-
+	@GenericGenerator(
+			name = "UUID",
+			strategy = "org.hibernate.id.UUIDGenerator"
+		)
+	@GeneratedValue(generator = "UUID")
+	
+	@Column(name = "id", updatable = false, nullable = false)
+	private UUID id;
+	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "date_value")
 	private Date dateValue;
@@ -52,27 +61,27 @@ public class ShPostAttr implements Serializable {
 	private ShPostTypeAttr shPostTypeAttr;
 
 	@Transient
-	private int shPostTypeAttrId;
+	private UUID shPostTypeAttrId;
 
-	public int getShPostTypeAttrId() {
-		if (shPostTypeAttr.getId() >= 0) {
+	public UUID getShPostTypeAttrId() {
+		if (shPostTypeAttr.getId() != null) {
 			shPostTypeAttrId = shPostTypeAttr.getId();
 		}
 		return shPostTypeAttrId;
 	}
 
-	public void setShPostTypeAttrId(int shPostTypeAttrId) {
+	public void setShPostTypeAttrId(UUID shPostTypeAttrId) {
 		this.shPostTypeAttrId = shPostTypeAttrId;
 	}
 
 	public ShPostAttr() {
 	}
 
-	public int getId() {
+	public UUID getId() {
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(UUID id) {
 		this.id = id;
 	}
 

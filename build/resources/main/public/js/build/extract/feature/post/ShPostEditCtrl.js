@@ -7,8 +7,9 @@ shioharaApp.controller('ShPostEditCtrl', [
 		"$rootScope",
 		"shPostResource",
 		"shAPIServerService",
+		"Notification",
 		function($scope, $http, $window, $stateParams, $state, $rootScope,
-				shPostResource, shAPIServerService) {
+				shPostResource, shAPIServerService, Notification) {
 			var channelURL = null;
 			$scope.channelId = null;
 			$scope.postId = $stateParams.postId;
@@ -61,12 +62,13 @@ shioharaApp.controller('ShPostEditCtrl', [
 				.delete({
 					id : $scope.shPost.id
 				},function() {
+					 Notification.error('The ' + $scope.shPost.title +' Post was deleted.');
 					$state.go('content',{}, {reload: true});
 				});
 			}
 			$scope.postSave = function() {
 				$scope.shPost.$update(function() {
-					// $state.go('content');
+					 Notification.warning('The ' + $scope.shPost.title +' Post was updated.');
 				});
 			}
 		} ]);

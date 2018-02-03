@@ -2,6 +2,7 @@ package com.viglet.shiohara.api.post;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -47,14 +48,14 @@ public class ShPostAPI {
 	@Path("/{postId}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public ShPost edit(@PathParam("postId") int id) throws Exception {
+	public ShPost edit(@PathParam("postId") UUID id) throws Exception {
 		return shPostRepository.findById(id);
 	}
 
 	@Path("/{postId}")
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
-	public ShPost update(@PathParam("postId") int id, ShPost shPost) throws Exception {
+	public ShPost update(@PathParam("postId") UUID id, ShPost shPost) throws Exception {
 
 		ShPost shPostEdit = shPostRepository.findById(id);
 
@@ -68,7 +69,7 @@ public class ShPostAPI {
 			if (shPostAttr.getShPostTypeAttr().getIsSummary() == 1)
 				summary = shPostAttr.getStrValue();
 
-			ShPostAttr shPostAttrEdit = shPostAttrRepository.findOne(shPostAttr.getId());
+			ShPostAttr shPostAttrEdit = shPostAttrRepository.findById(shPostAttr.getId());
 
 			if (shPostAttrEdit != null) {
 				shPostAttrEdit.setDateValue(shPostAttr.getDateValue());
@@ -97,7 +98,7 @@ public class ShPostAPI {
 	@Path("/{postId}")
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
-	public boolean delete(@PathParam("postId") int id) throws Exception {
+	public boolean delete(@PathParam("postId") UUID id) throws Exception {
 		ShPost shPost = shPostRepository.findById(id);
 		
 		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
