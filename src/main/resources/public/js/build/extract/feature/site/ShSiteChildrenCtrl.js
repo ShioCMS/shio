@@ -23,7 +23,7 @@ shioharaApp.controller('ShSiteChildrenCtrl', [
 			$scope.vigLanguage = vigLocale.getLocale().substring(0, 2);
 			$translate.use($scope.vigLanguage);
 			$scope.siteId = $stateParams.siteId;
-			$scope.channelId = 0;
+			$scope.channelId = null;
 			$scope.accessToken = Token.get();
 			$scope.shUser = null;
 			$scope.shSite = null;

@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import com.viglet.shiohara.persistence.model.channel.ShChannel;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 
-public interface ShPostRepository extends JpaRepository<ShPost, Integer> {
+public interface ShPostRepository extends JpaRepository<ShPost, UUID> {
 
 	List<ShPost> findAll();
 

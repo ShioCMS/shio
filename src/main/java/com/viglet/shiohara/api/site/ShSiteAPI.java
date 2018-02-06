@@ -1,7 +1,10 @@
 package com.viglet.shiohara.api.site;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.ws.rs.Consumes;
@@ -19,6 +22,10 @@ import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.api.channel.ShChannelList;
 import com.viglet.shiohara.channel.ShChannelUtils;
+import com.viglet.shiohara.exchange.ShChannelExchange;
+import com.viglet.shiohara.exchange.ShExchange;
+import com.viglet.shiohara.exchange.ShPostExchange;
+import com.viglet.shiohara.exchange.ShSiteExchange;
 import com.viglet.shiohara.persistence.model.channel.ShChannel;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
@@ -50,7 +57,7 @@ public class ShSiteAPI {
 	ShPostTypeAttrRepository shPostTypeAttrRepository;
 	@Autowired
 	ShPostAttrRepository shPostAttrRepository;
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<ShSite> list() throws Exception {
@@ -157,6 +164,30 @@ public class ShSiteAPI {
 
 	}
 
+	@Path("/{siteId}/export")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public ShExchange siteExport(@PathParam("siteId") UUID id) throws Exception {
+		ShExchange shExchange = new ShExchange();
+		ShSite shSite = shSiteRepository.findById(id);
+		ShSiteExchange shSiteExchange = new ShSiteExchange();
+		shSiteExchange.setId(shSite.getId());
+		shSiteExchange.setName(shSite.getName());
+		shSiteExchange.setUrl(shSite.getUrl());
+		shSiteExchange.setDescription(shSite.getDescription());
+
+		List<ShSiteExchange> shSiteExchanges = new ArrayList<ShSiteExchange>();
+		shSiteExchanges.add(shSiteExchange);
+		shExchange.setSites(shSiteExchanges);
+
+		List<ShChannel> rootChannels = shChannelRepository.findByShSiteAndRootChannel(shSite, (byte) 1);
+		ShExchange shExchangeChannel = this.shChannelExchangeIterate(rootChannels);
+
+		shExchange.setChannels(shExchangeChannel.getChannels());
+		shExchange.setPosts(shExchangeChannel.getPosts());
+		return shExchange;
+	}
+
 	@Path("/model")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -165,4 +196,71 @@ public class ShSiteAPI {
 		return shSite;
 
 	}
+
+	@Path("/import")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	public ShExchange siteImport(ShExchange shExchange) throws Exception {
+		for (ShSiteExchange shSiteExchange : shExchange.getSites()) {
+			ShSite shSite = new ShSite();
+			shSite.setId(shSiteExchange.getId());
+			shSite.setName(shSiteExchange.getName());
+			shSite.setUrl(shSiteExchange.getUrl());
+			shSite.setDescription(shSiteExchange.getDescription());
+
+			shSiteRepository.save(shSite);
+		}
+
+		return shExchange;
+	}
+
+	public ShExchange shChannelExchangeNested(ShChannel shChannel) {
+		List<ShChannel> childChannels = shChannelRepository.findByParentChannel(shChannel);
+		return this.shChannelExchangeIterate(childChannels);
+	}
+
+	public ShExchange shChannelExchangeIterate(List<ShChannel> shChannels) {
+		ShExchange shExchange = new ShExchange();
+		List<ShChannelExchange> shChannelExchanges = new ArrayList<ShChannelExchange>();
+		List<ShPostExchange> shPostExchanges = new ArrayList<ShPostExchange>();
+		for (ShChannel shChannel : shChannels) {
+			for (ShPost shPost : shChannel.getShPosts()) {
+				ShPostExchange shPostExchange = new ShPostExchange();
+				shPostExchange.setId(shPost.getId());
+				shPostExchange.setChannel(shPost.getShChannel().getId());
+				shPostExchange.setDate(shPost.getDate());
+				shPostExchange.setSummary(shPost.getSummary());
+				shPostExchange.setTitle(shPost.getTitle());
+				
+				Map<String, Object> fields = new HashMap<String, Object>();
+				for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
+					fields.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
+				}
+				
+				shPostExchange.setFields(fields);
+				
+				shPostExchanges.add(shPostExchange);
+			}
+			ShChannelExchange shChannelExchangeChild = new ShChannelExchange();
+			shChannelExchangeChild.setId(shChannel.getId());
+			shChannelExchangeChild.setDate(shChannel.getDate());
+			shChannelExchangeChild.setName(shChannel.getName());
+			shChannelExchangeChild.setRootChannel(shChannel.getRootChannel());
+			shChannelExchangeChild.setSummary(shChannel.getSummary());
+			if (shChannel.getParentChannel() != null) {
+				shChannelExchangeChild.setParentChannel(shChannel.getParentChannel().getId());
+			}
+			if (shChannel.getShSite() != null) {
+				shChannelExchangeChild.setSite(shChannel.getShSite().getId());
+			}
+			shChannelExchanges.add(shChannelExchangeChild);
+			ShExchange shExchangeChild = this.shChannelExchangeNested(shChannel);
+			shChannelExchanges.addAll(shExchangeChild.getChannels());
+			shPostExchanges.addAll(shExchangeChild.getPosts());
+		}
+		shExchange.setChannels(shChannelExchanges);
+		shExchange.setPosts(shPostExchanges);
+		return shExchange;
+	}
+
 }

@@ -32,15 +32,15 @@
 <div>
 	<div class="row">
 		<div class="col-lg-2 col-md-3 col-sm-3 col-xs-12">
-			<div ng-if="channelId > 0" class="btn-group">
+			<div ng-if="channelId.length != null" class="btn-group">
 				<a
 					ui-sref="content.post-type-item.post-item-new({channelId: channelId, postTypeId: shUser.lastPostType})"
 					class="btn btn-viglet">New {{shLastPostType.title}}</a> <a
-					ng-if="channelId > 0" class="btn btn-viglet"
+					class="btn btn-viglet"
 					ui-sref="content.channel.post-type-select({channelId: channelId})"><span
 					class="glyphicon glyphicon-th"></span></a>
 			</div>
-			<div ng-if="channelId <= 0" class="btn-group">
+			<div ng-if="channelId.length == null" class="btn-group">
 				<a ui-sref="content.site.channel-new({siteId: siteId})"
 					class="btn btn-viglet">New Channel</a>
 			</div>
