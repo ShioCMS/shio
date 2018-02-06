@@ -14,6 +14,8 @@ public class ShPostExchange {
 	private String title;
 
 	private UUID channel;
+	
+	private UUID postType;
 
 	private Map<String, Object> fields;
 	
@@ -63,6 +65,14 @@ public class ShPostExchange {
 
 	public void setFields(Map<String, Object> fields) {
 		this.fields = fields;
+	}
+
+	public UUID getPostType() {
+		return postType;
+	}
+
+	public void setPostType(UUID postType) {
+		this.postType = postType;
 	}
 
 }
