@@ -54,7 +54,7 @@ public class ShRegionAPI {
 	@Path("/{regionId}")
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
-	public boolean delete(@PathParam("regionId") int id) throws Exception {
+	public boolean delete(@PathParam("regionId") UUID id) throws Exception {
 		shRegionRepository.delete(id);
 		return true;
 	}

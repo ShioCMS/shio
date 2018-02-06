@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 
-public interface ShPostAttrRepository extends JpaRepository<ShPostAttr, Integer> {
+public interface ShPostAttrRepository extends JpaRepository<ShPostAttr, UUID> {
 
 	List<ShPostAttr> findAll();
 

@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.viglet.shiohara.persistence.model.widget.ShWidget;
 
-public interface ShWidgetRepository extends JpaRepository<ShWidget, Integer> {
+public interface ShWidgetRepository extends JpaRepository<ShWidget, UUID> {
 
 	List<ShWidget> findAll();
 

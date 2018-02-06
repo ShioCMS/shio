@@ -23,10 +23,7 @@ public class ShPostAttr implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GenericGenerator(
-			name = "UUID",
-			strategy = "org.hibernate.id.UUIDGenerator"
-		)
+	@GenericGenerator(name = "UUID", strategy = "com.viglet.shiohara.jpa.ShUUIDGenerator")
 	@GeneratedValue(generator = "UUID")
 	
 	@Column(name = "id", updatable = false, nullable = false)

@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 
-public interface ShPostTypeRepository extends JpaRepository<ShPostType, Integer> {
+public interface ShPostTypeRepository extends JpaRepository<ShPostType, UUID> {
 
 	List<ShPostType> findAll();
 

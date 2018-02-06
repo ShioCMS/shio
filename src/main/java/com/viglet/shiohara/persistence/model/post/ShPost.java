@@ -26,21 +26,17 @@ import java.util.UUID;
 public class ShPost implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	//@Id
-	//@GeneratedValue(strategy = GenerationType.IDENTITY)
-	//private int id;
+	// @Id
+	// @GeneratedValue(strategy = GenerationType.IDENTITY)
+	// private int id;
 
 	@Id
-	@GenericGenerator(
-			name = "UUID",
-			strategy = "org.hibernate.id.UUIDGenerator"
-		)
+	@GenericGenerator(name = "UUID", strategy = "com.viglet.shiohara.jpa.ShUUIDGenerator")
 	@GeneratedValue(generator = "UUID")
-	
+
 	@Column(name = "id", updatable = false, nullable = false)
 	private UUID id;
-	
-	 
+
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date date;
 
@@ -52,12 +48,12 @@ public class ShPost implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "post_type_id")
 	private ShPostType shPostType;
-	
+
 	// bi-directional many-to-one association to ShChannel
 	@ManyToOne
 	@JoinColumn(name = "channel_id")
 	private ShChannel shChannel;
-		
+
 	// bi-directional many-to-one association to ShPostAttr
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "shPost", cascade = CascadeType.ALL)
 	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
@@ -162,5 +158,5 @@ public class ShPost implements Serializable {
 	public void setShChannel(ShChannel shChannel) {
 		this.shChannel = shChannel;
 	}
-	
+
 }

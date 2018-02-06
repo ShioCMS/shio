@@ -57,7 +57,7 @@ public class ShWidgetAPI {
 	@Path("/{widgetId}")
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
-	public boolean delete(@PathParam("widgetId") int id) throws Exception {
+	public boolean delete(@PathParam("widgetId") UUID id) throws Exception {
 		shWidgetRepository.delete(id);
 		return true;
 	}
