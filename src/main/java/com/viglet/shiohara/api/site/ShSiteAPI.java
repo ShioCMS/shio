@@ -76,6 +76,7 @@ public class ShSiteAPI {
 	@Produces(MediaType.APPLICATION_JSON)
 	public ShSite update(@PathParam("siteId") UUID id, ShSite shSite) throws Exception {
 		ShSite shSiteEdit = shSiteRepository.findById(id);
+		shSiteEdit.setDate(new Date());
 		shSiteEdit.setName(shSite.getName());
 		shSiteRepository.save(shSiteEdit);
 		return shSiteEdit;
@@ -99,6 +100,7 @@ public class ShSiteAPI {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public ShSite add(ShSite shSite) throws Exception {
+		shSite.setDate(new Date());
 		shSiteRepository.save(shSite);
 
 		// Home Channel
@@ -170,17 +172,26 @@ public class ShSiteAPI {
 	public ShExchange siteExport(@PathParam("siteId") UUID id) throws Exception {
 		ShExchange shExchange = new ShExchange();
 		ShSite shSite = shSiteRepository.findById(id);
+		
+		List<ShChannel> rootChannels = shChannelRepository.findByShSiteAndRootChannel(shSite, (byte) 1);
+		
+		List<UUID> rootChannelsUUID = new ArrayList<UUID>();
+		for (ShChannel shChannel : rootChannels) {
+			rootChannelsUUID.add(shChannel.getId());
+		}
+		
 		ShSiteExchange shSiteExchange = new ShSiteExchange();
 		shSiteExchange.setId(shSite.getId());
 		shSiteExchange.setName(shSite.getName());
 		shSiteExchange.setUrl(shSite.getUrl());
 		shSiteExchange.setDescription(shSite.getDescription());
-
+		shSiteExchange.setDate(shSite.getDate());
+		shSiteExchange.setRootChannels(rootChannelsUUID);
+		
 		List<ShSiteExchange> shSiteExchanges = new ArrayList<ShSiteExchange>();
 		shSiteExchanges.add(shSiteExchange);
 		shExchange.setSites(shSiteExchanges);
-
-		List<ShChannel> rootChannels = shChannelRepository.findByShSiteAndRootChannel(shSite, (byte) 1);
+		
 		ShExchange shExchangeChannel = this.shChannelExchangeIterate(rootChannels);
 
 		shExchange.setChannels(shExchangeChannel.getChannels());
@@ -212,9 +223,7 @@ public class ShSiteAPI {
 				shPostExchange.setId(shPost.getId());
 				shPostExchange.setChannel(shPost.getShChannel().getId());
 				shPostExchange.setDate(shPost.getDate());
-				shPostExchange.setSummary(shPost.getSummary());
-				shPostExchange.setTitle(shPost.getTitle());
-				shPostExchange.setPostType(shPost.getShPostType().getId());
+				shPostExchange.setPostType(shPost.getShPostType().getName());
 				Map<String, Object> fields = new HashMap<String, Object>();
 				for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
 					fields.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
@@ -228,14 +237,10 @@ public class ShSiteAPI {
 			shChannelExchangeChild.setId(shChannel.getId());
 			shChannelExchangeChild.setDate(shChannel.getDate());
 			shChannelExchangeChild.setName(shChannel.getName());
-			shChannelExchangeChild.setRootChannel(shChannel.getRootChannel());
 			shChannelExchangeChild.setSummary(shChannel.getSummary());
 			if (shChannel.getParentChannel() != null) {
 				shChannelExchangeChild.setParentChannel(shChannel.getParentChannel().getId());
-			}
-			if (shChannel.getShSite() != null) {
-				shChannelExchangeChild.setSite(shChannel.getShSite().getId());
-			}
+			}			
 			shChannelExchanges.add(shChannelExchangeChild);
 			ShExchange shExchangeChild = this.shChannelExchangeNested(shChannel);
 			shChannelExchanges.addAll(shExchangeChild.getChannels());

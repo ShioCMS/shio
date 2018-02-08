@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.viglet.shiohara.api.ShAPI;
 import com.viglet.shiohara.api.channel.ShChannelAPI;
 import com.viglet.shiohara.api.exchange.ShImportAPI;
@@ -60,6 +61,8 @@ public class JerseyConfig extends ResourceConfig {
 
 		@Override
 		public ObjectMapper getContext(Class<?> type) {
+			ObjectMapper objectMapper = new ObjectMapper();
+	       
 			return mapper;
 		}
 	}

@@ -22,6 +22,7 @@ import com.viglet.shiohara.exchange.ShSiteExchange;
 import com.viglet.shiohara.persistence.model.channel.ShChannel;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
+import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.channel.ShChannelRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
@@ -54,11 +55,19 @@ public class ShImportAPI {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public ShExchange siteImport(ShExchange shExchange) throws Exception {
 		for (ShSiteExchange shSiteExchange : shExchange.getSites()) {
+			shObjects.put(shSiteExchange.getId(), shSiteExchange);
+			List<UUID> rootChannels = shSiteExchange.getRootChannels();
+
+			
+//			DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+//			Date siteDate = df.parse(shSiteExchange.getDate());
+
 			ShSite shSite = new ShSite();
 			shSite.setId(shSiteExchange.getId());
 			shSite.setName(shSiteExchange.getName());
 			shSite.setUrl(shSiteExchange.getUrl());
 			shSite.setDescription(shSiteExchange.getDescription());
+			shSite.setDate(shSiteExchange.getDate());
 
 			shSiteRepository.save(shSite);
 
@@ -74,13 +83,16 @@ public class ShImportAPI {
 						shChildObjects.put(shChannelExchange.getParentChannel(), childChannelList);
 					}
 				} else {
-					if (shChildObjects.containsKey(shChannelExchange.getSite())) {
-						shChildObjects.get(shChannelExchange.getSite()).add(shChannelExchange.getId());
-					} else {
-						List<UUID> childChannelList = new ArrayList<UUID>();
-						childChannelList.add(shChannelExchange.getId());
-						shChildObjects.put(shChannelExchange.getSite(), childChannelList);
+					if (rootChannels.contains(shChannelExchange.getId())) {
+						if (shChildObjects.containsKey(shSite.getId())) {
+							shChildObjects.get(shSite.getId()).add(shChannelExchange.getId());
+						} else {
+							List<UUID> childChannelList = new ArrayList<UUID>();
+							childChannelList.add(shChannelExchange.getId());
+							shChildObjects.put(shSite.getId(), childChannelList);
+						}
 					}
+
 				}
 			}
 
@@ -111,17 +123,20 @@ public class ShImportAPI {
 					shChannelChild.setId(shChannelExchange.getId());
 					shChannelChild.setDate(shChannelExchange.getDate());
 					shChannelChild.setName(shChannelExchange.getName());
-					shChannelChild.setRootChannel(shChannelExchange.getRootChannel());
 					shChannelChild.setSummary(shChannelExchange.getSummary());
 					if (shChannelExchange.getParentChannel() != null) {
 						ShChannel parentChannel = shChannelRepository.findById(shChannelExchange.getParentChannel());
 						shChannelChild.setParentChannel(parentChannel);
 						shChannelChild.setRootChannel((byte) 0);
-					}
-					if (shChannelExchange.getSite() != null) {
-						ShSite parentSite = shSiteRepository.findById(shChannelExchange.getSite());
-						shChannelChild.setShSite(parentSite);
-						shChannelChild.setRootChannel((byte) 1);
+					} else {
+						if (shObjects.get(shObject) instanceof ShSiteExchange) {
+							ShSiteExchange shSiteExchange = (ShSiteExchange) shObjects.get(shObject);
+							if (shSiteExchange.getRootChannels().contains(shChannelExchange.getId())) {
+								shChannelChild.setRootChannel((byte) 1);
+								ShSite parentSite = shSiteRepository.findById(shSiteExchange.getId());
+								shChannelChild.setShSite(parentSite);
+							}
+						}
 					}
 					shChannelRepository.save(shChannelChild);
 					this.shChannelImportNested(shChannelChild.getId());
@@ -132,10 +147,18 @@ public class ShImportAPI {
 					ShPost shPost = new ShPost();
 					shPost.setId(shPostExchange.getId());
 					shPost.setDate(shPostExchange.getDate());
-					shPost.setSummary(shPostExchange.getSummary());
-					shPost.setTitle(shPostExchange.getTitle());
 					shPost.setShChannel(shChannelRepository.findById(shPostExchange.getChannel()));
-					shPost.setShPostType(shPostTypeRepository.findById(shPostExchange.getPostType()));
+					shPost.setShPostType(shPostTypeRepository.findByName(shPostExchange.getPostType()));
+
+					for (Entry<String, Object> shPostFields : shPostExchange.getFields().entrySet()) {
+						ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository
+								.findByShPostTypeAndName(shPost.getShPostType(), shPostFields.getKey());
+						if (shPostTypeAttr.getIsTitle() == (byte) 1) {
+							shPost.setTitle((String) shPostFields.getValue());
+						} else if (shPostTypeAttr.getIsSummary() == (byte) 1) {
+							shPost.setSummary((String) shPostFields.getValue());
+						}
+					}
 					shPostRepository.save(shPost);
 
 					for (Entry<String, Object> shPostFields : shPostExchange.getFields().entrySet()) {

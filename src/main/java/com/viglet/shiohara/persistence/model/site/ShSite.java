@@ -2,6 +2,7 @@ package com.viglet.shiohara.persistence.model.site;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,6 +37,9 @@ public class ShSite implements Serializable {
 	private String description;
 
 	private String url;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date date;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "shSite", cascade = CascadeType.ALL)
 	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
@@ -82,6 +86,14 @@ public class ShSite implements Serializable {
 
 	public void setShChannels(List<ShChannel> shChannels) {
 		this.shChannels = shChannels;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
 	}
 
 }
