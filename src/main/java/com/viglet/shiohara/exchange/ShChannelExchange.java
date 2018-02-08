@@ -3,21 +3,20 @@ package com.viglet.shiohara.exchange;
 import java.util.Date;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class ShChannelExchange {
 	private UUID id;
 
+	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm'Z'")
 	private Date date;
 
 	private String name;
 
 	private String summary;
 
-	private byte rootChannel;
-
 	private UUID parentChannel;
-	
-	private UUID site;
-	
+
 	public UUID getId() {
 		return id;
 	}
@@ -27,7 +26,7 @@ public class ShChannelExchange {
 	}
 
 	public Date getDate() {
-		return date;
+		return this.date;
 	}
 
 	public void setDate(Date date) {
@@ -50,14 +49,6 @@ public class ShChannelExchange {
 		this.summary = summary;
 	}
 
-	public byte getRootChannel() {
-		return rootChannel;
-	}
-
-	public void setRootChannel(byte rootChannel) {
-		this.rootChannel = rootChannel;
-	}
-
 	public UUID getParentChannel() {
 		return parentChannel;
 	}
@@ -66,13 +57,4 @@ public class ShChannelExchange {
 		this.parentChannel = parentChannel;
 	}
 
-	public UUID getSite() {
-		return site;
-	}
-
-	public void setSite(UUID shSite) {
-		this.site = shSite;
-	}
-
-	
 }

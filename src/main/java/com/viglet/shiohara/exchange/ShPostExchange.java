@@ -4,21 +4,20 @@ import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class ShPostExchange {
 	private UUID id;
 
+	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm'Z'")
 	private Date date;
 
-	private String summary;
-
-	private String title;
-
 	private UUID channel;
-	
-	private UUID postType;
+
+	private String postType;
 
 	private Map<String, Object> fields;
-	
+
 	public UUID getId() {
 		return id;
 	}
@@ -28,27 +27,11 @@ public class ShPostExchange {
 	}
 
 	public Date getDate() {
-		return date;
+		return this.date;
 	}
-
+	
 	public void setDate(Date date) {
 		this.date = date;
-	}
-
-	public String getSummary() {
-		return summary;
-	}
-
-	public void setSummary(String summary) {
-		this.summary = summary;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
 	}
 
 	public UUID getChannel() {
@@ -67,11 +50,11 @@ public class ShPostExchange {
 		this.fields = fields;
 	}
 
-	public UUID getPostType() {
+	public String getPostType() {
 		return postType;
 	}
 
-	public void setPostType(UUID postType) {
+	public void setPostType(String postType) {
 		this.postType = postType;
 	}
 
