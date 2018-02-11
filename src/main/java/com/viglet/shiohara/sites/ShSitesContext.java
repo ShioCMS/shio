@@ -1,6 +1,9 @@
 package com.viglet.shiohara.sites;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,6 +56,19 @@ public class ShSitesContext {
 			@PathVariable(value = "shSiteName") String shSiteName, @PathVariable(value = "shFormat") String shFormat,
 			@PathVariable(value = "shLocale") String shLocale) throws IOException, ScriptException {
 
+		
+		InputStreamReader isr = new InputStreamReader(ShSitesContext.class.getClass().getResourceAsStream("/js/shObject.js"));
+		
+		
+		
+		StringBuilder shObjectJS = new StringBuilder();
+	    try (Reader reader = new BufferedReader(isr)) {
+	        int c = 0;
+	        while ((c = reader.read()) != -1) {
+	        	shObjectJS.append((char) c);
+	        }
+	    }
+			    
 		ShPost shTheme = shPostRepository.findByTitle("Sample Theme"); // Theme
 		ShPost shPostPageLayout = shPostRepository.findByTitle("Post Page Layout"); // Page Layout Post
 		ShPost shChannelPageLayout = shPostRepository.findByTitle("Channel Page Layout"); // Page Layout Channel
@@ -323,6 +339,9 @@ public class ShSitesContext {
 			javascript = javascriptVar + shRegionJS;
 
 			bindings.put("html", shRegionHTML);
+			
+			javascript = shObjectJS.toString() + javascript;
+			
 			Object regionResult = engine.eval(javascript, bindings);
 			element.html(regionResult.toString());
 		}
