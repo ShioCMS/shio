@@ -58,10 +58,6 @@ public class ShImportAPI {
 			shObjects.put(shSiteExchange.getId(), shSiteExchange);
 			List<UUID> rootChannels = shSiteExchange.getRootChannels();
 
-			
-//			DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
-//			Date siteDate = df.parse(shSiteExchange.getDate());
-
 			ShSite shSite = new ShSite();
 			shSite.setId(shSiteExchange.getId());
 			shSite.setName(shSiteExchange.getName());
