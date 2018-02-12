@@ -130,6 +130,17 @@ public class ShPostOnStartup {
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
+			
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostArticle, "TEXT");
+
+			shPostAttr = new ShPostAttr();
+			shPostAttr.setShPost(shPost);
+			shPostAttr.setShPostType(shPostArticle);
+			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+			shPostAttr.setStrValue("Some text...");
+			shPostAttr.setType(1);
+
+			shPostAttrRepository.save(shPostAttr);
 
 			// Post Article (Same Name, but different channel)
 
@@ -163,6 +174,16 @@ public class ShPostOnStartup {
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
+			
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostArticle, "TEXT");
+
+			shPostAttr = new ShPostAttr();
+			shPostAttr.setShPost(shPost);
+			shPostAttr.setShPostType(shPostArticle);
+			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+			shPostAttr.setStrValue("Some text 2...");
+			shPostAttr.setType(1);
+
 
 			// Sample Theme
 

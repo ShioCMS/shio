@@ -172,14 +172,14 @@ public class ShSiteAPI {
 	public ShExchange siteExport(@PathParam("siteId") UUID id) throws Exception {
 		ShExchange shExchange = new ShExchange();
 		ShSite shSite = shSiteRepository.findById(id);
-		
+
 		List<ShChannel> rootChannels = shChannelRepository.findByShSiteAndRootChannel(shSite, (byte) 1);
-		
+
 		List<UUID> rootChannelsUUID = new ArrayList<UUID>();
 		for (ShChannel shChannel : rootChannels) {
 			rootChannelsUUID.add(shChannel.getId());
 		}
-		
+
 		ShSiteExchange shSiteExchange = new ShSiteExchange();
 		shSiteExchange.setId(shSite.getId());
 		shSiteExchange.setName(shSite.getName());
@@ -187,11 +187,11 @@ public class ShSiteAPI {
 		shSiteExchange.setDescription(shSite.getDescription());
 		shSiteExchange.setDate(shSite.getDate());
 		shSiteExchange.setRootChannels(rootChannelsUUID);
-		
+
 		List<ShSiteExchange> shSiteExchanges = new ArrayList<ShSiteExchange>();
 		shSiteExchanges.add(shSiteExchange);
 		shExchange.setSites(shSiteExchanges);
-		
+
 		ShExchange shExchangeChannel = this.shChannelExchangeIterate(rootChannels);
 
 		shExchange.setChannels(shExchangeChannel.getChannels());
@@ -226,7 +226,9 @@ public class ShSiteAPI {
 				shPostExchange.setPostType(shPost.getShPostType().getName());
 				Map<String, Object> fields = new HashMap<String, Object>();
 				for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
-					fields.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
+					if (shPostAttr != null && shPostAttr.getShPostTypeAttr() != null) {
+						fields.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
+					}
 				}
 
 				shPostExchange.setFields(fields);
@@ -240,7 +242,7 @@ public class ShSiteAPI {
 			shChannelExchangeChild.setSummary(shChannel.getSummary());
 			if (shChannel.getParentChannel() != null) {
 				shChannelExchangeChild.setParentChannel(shChannel.getParentChannel().getId());
-			}			
+			}
 			shChannelExchanges.add(shChannelExchangeChild);
 			ShExchange shExchangeChild = this.shChannelExchangeNested(shChannel);
 			shChannelExchanges.addAll(shExchangeChild.getChannels());

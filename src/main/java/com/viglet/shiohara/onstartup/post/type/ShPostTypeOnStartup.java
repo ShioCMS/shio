@@ -245,6 +245,20 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setShWidget(shWidgetTextArea);
 
 			shPostTypeAttrRepository.save(shPostTypeAttr);
+			
+			shPostTypeAttr = new ShPostTypeAttr();
+			shPostTypeAttr.setName("TEXT");
+			shPostTypeAttr.setLabel("Text");
+			shPostTypeAttr.setDescription("Text");
+			shPostTypeAttr.setIsSummary((byte) 1);
+			shPostTypeAttr.setIsTitle((byte) 0);
+			shPostTypeAttr.setMany((byte) 0);
+			shPostTypeAttr.setOrdinal(2);
+			shPostTypeAttr.setRequired((byte) 1);
+			shPostTypeAttr.setShPostType(shPostType);
+			shPostTypeAttr.setShWidget(shWidgetTextArea);
+
+			shPostTypeAttrRepository.save(shPostTypeAttr);
 
 			// Page Template
 
