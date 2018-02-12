@@ -1,7 +1,6 @@
 package com.viglet.shiohara.onstartup.post;
 
 import java.util.Date;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -43,7 +42,6 @@ public class ShPostOnStartup {
 			ShChannel shChannelHome = shChannelRepository.findByShSiteAndName(shSite, "Home");
 			ShChannel shChannelArticle = shChannelRepository.findByShSiteAndName(shSite, "Article");
 			ShChannel shChannelNews = shChannelRepository.findByShSiteAndName(shSite, "News");
-			ShChannel shChannelSystem = shChannelRepository.findByShSiteAndName(shSite, "System");
 			ShChannel shChannelTemplates = shChannelRepository.findByShSiteAndName(shSite, "Templates");
 			ShChannel shChannelLayouts = shChannelRepository.findByShSiteAndName(shSite, "Layouts");
 			ShChannel shChannelText = shChannelRepository.findByShSiteAndName(shSite, "Text");
@@ -67,7 +65,7 @@ public class ShPostOnStartup {
 
 			shPostRepository.save(shPost);
 
-			ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType, "title");
+			ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType, "TEXT");
 
 			ShPostAttr shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -89,7 +87,7 @@ public class ShPostOnStartup {
 
 			shPostRepository.save(shPost);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeArea, "title");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeArea, "TEXT");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -111,7 +109,7 @@ public class ShPostOnStartup {
 
 			shPostRepository.save(shPost);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostArticle, "title");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostArticle, "TITLE");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -122,7 +120,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostArticle, "Description");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostArticle, "DESCRIPTION");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -144,7 +142,7 @@ public class ShPostOnStartup {
 
 			shPostRepository.save(shPost);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostArticle, "title");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostArticle, "TITLE");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -155,7 +153,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostArticle, "Description");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostArticle, "DESCRIPTION");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -179,7 +177,7 @@ public class ShPostOnStartup {
 
 			shPostRepository.save(shPost);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTheme, "title");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTheme, "TITLE");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -190,7 +188,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTheme, "Description");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTheme, "DESCRIPTION");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -216,7 +214,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTheme, "Javascript");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTheme, "JAVASCRIPT");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -242,7 +240,7 @@ public class ShPostOnStartup {
 
 			shPostRepository.save(shPost);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "title");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "TITLE");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -253,7 +251,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "Description");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "DESCRIPTION");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -263,6 +261,18 @@ public class ShPostOnStartup {
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
+			
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "PAGE-LAYOUT");
+
+			shPostAttr = new ShPostAttr();
+			shPostAttr.setShPost(shPost);
+			shPostAttr.setShPostType(shPostChannelIndex);
+			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+			shPostAttr.setStrValue("Channel Page Layout");
+			shPostAttr.setType(1);
+
+			shPostAttrRepository.save(shPostAttr);
+
 
 			// Post Channel Index Article
 			shPost = new ShPost();
@@ -274,7 +284,7 @@ public class ShPostOnStartup {
 
 			shPostRepository.save(shPost);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "title");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "TITLE");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -285,7 +295,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "Description");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "DESCRIPTION");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -296,6 +306,17 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "PAGE-LAYOUT");
+
+			shPostAttr = new ShPostAttr();
+			shPostAttr.setShPost(shPost);
+			shPostAttr.setShPostType(shPostChannelIndex);
+			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+			shPostAttr.setStrValue("Channel Page Layout");
+			shPostAttr.setType(1);
+
+			shPostAttrRepository.save(shPostAttr);
+			
 			// Post Channel Index News
 			shPost = new ShPost();
 			shPost.setDate(new Date());
@@ -306,7 +327,7 @@ public class ShPostOnStartup {
 
 			shPostRepository.save(shPost);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "title");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "TITLE");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -317,7 +338,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "Description");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "DESCRIPTION");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -328,6 +349,17 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "PAGE-LAYOUT");
+
+			shPostAttr = new ShPostAttr();
+			shPostAttr.setShPost(shPost);
+			shPostAttr.setShPostType(shPostChannelIndex);
+			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+			shPostAttr.setStrValue("Channel Page Layout");
+			shPostAttr.setType(1);
+
+			shPostAttrRepository.save(shPostAttr);
+			
 			// Post Channel Index Text
 			shPost = new ShPost();
 			shPost.setDate(new Date());
@@ -338,7 +370,7 @@ public class ShPostOnStartup {
 
 			shPostRepository.save(shPost);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "title");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "TITLE");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -349,7 +381,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "Description");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "DESCRIPTION");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -360,6 +392,17 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "PAGE-LAYOUT");
+
+			shPostAttr = new ShPostAttr();
+			shPostAttr.setShPost(shPost);
+			shPostAttr.setShPostType(shPostChannelIndex);
+			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+			shPostAttr.setStrValue("Channel Page Layout");
+			shPostAttr.setType(1);
+
+			shPostAttrRepository.save(shPostAttr);
+			
 			// Post Page Layout
 
 			ShPostType shPostTypePageLayout = shPostTypeRepository.findByName("PT-PAGE-LAYOUT");
@@ -372,7 +415,7 @@ public class ShPostOnStartup {
 
 			shPostRepository.save(shPost);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypePageLayout, "title");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypePageLayout, "TITLE");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -383,7 +426,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypePageLayout, "Description");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypePageLayout, "DESCRIPTION");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -393,8 +436,20 @@ public class ShPostOnStartup {
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
+			
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "Javascript");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypePageLayout, "THEME");
+
+			shPostAttr = new ShPostAttr();
+			shPostAttr.setShPost(shPost);
+			shPostAttr.setShPostType(shPostTypePageLayout);
+			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+			shPostAttr.setStrValue("Sample Theme");
+			shPostAttr.setType(1);
+
+			shPostAttrRepository.save(shPostAttr);
+
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "JAVASCRIPT");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -434,7 +489,7 @@ public class ShPostOnStartup {
 
 			shPostRepository.save(shPost);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "title");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "TITLE");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -445,7 +500,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "Description");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "DESCRIPTION");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -456,7 +511,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "Javascript");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "JAVASCRIPT");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -501,7 +556,7 @@ public class ShPostOnStartup {
 
 			shPostRepository.save(shPost);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "title");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "TITLE");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -512,7 +567,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "Description");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "DESCRIPTION");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -523,7 +578,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "Javascript");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "JAVASCRIPT");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -570,7 +625,7 @@ public class ShPostOnStartup {
 
 			shPostRepository.save(shPost);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypePageLayout, "title");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypePageLayout, "TITLE");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -581,7 +636,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypePageLayout, "Description");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypePageLayout, "DESCRIPTION");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -592,7 +647,18 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "Javascript");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypePageLayout, "THEME");
+
+			shPostAttr = new ShPostAttr();
+			shPostAttr.setShPost(shPost);
+			shPostAttr.setShPostType(shPostTypePageLayout);
+			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+			shPostAttr.setStrValue("Sample Theme");
+			shPostAttr.setType(1);
+
+			shPostAttrRepository.save(shPostAttr);
+			
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "JAVASCRIPT");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -631,7 +697,7 @@ public class ShPostOnStartup {
 
 			shPostRepository.save(shPost);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "title");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "TITLE");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -642,7 +708,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "Description");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "DESCRIPTION");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -653,7 +719,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "Javascript");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "JAVASCRIPT");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -702,7 +768,7 @@ public class ShPostOnStartup {
 
 			shPostRepository.save(shPost);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "title");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "TITLE");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -713,7 +779,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "Description");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "DESCRIPTION");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -724,7 +790,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "Javascript");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "JAVASCRIPT");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);

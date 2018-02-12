@@ -56,22 +56,21 @@ public class ShSitesContext {
 			@PathVariable(value = "shSiteName") String shSiteName, @PathVariable(value = "shFormat") String shFormat,
 			@PathVariable(value = "shLocale") String shLocale) throws IOException, ScriptException {
 
-		
-		InputStreamReader isr = new InputStreamReader(ShSitesContext.class.getClass().getResourceAsStream("/js/shObject.js"));
-		
-		
-		
+		InputStreamReader isr = new InputStreamReader(
+				ShSitesContext.class.getClass().getResourceAsStream("/js/shObject.js"));
+
 		StringBuilder shObjectJS = new StringBuilder();
-	    try (Reader reader = new BufferedReader(isr)) {
-	        int c = 0;
-	        while ((c = reader.read()) != -1) {
-	        	shObjectJS.append((char) c);
-	        }
-	    }
-			    
-		ShPost shTheme = shPostRepository.findByTitle("Sample Theme"); // Theme
+		try (Reader reader = new BufferedReader(isr)) {
+			int c = 0;
+			while ((c = reader.read()) != -1) {
+				shObjectJS.append((char) c);
+			}
+		}
+
+		// ShPost shTheme = shPostRepository.findByTitle("Sample Theme"); // Theme
 		ShPost shPostPageLayout = shPostRepository.findByTitle("Post Page Layout"); // Page Layout Post
-		ShPost shChannelPageLayout = shPostRepository.findByTitle("Channel Page Layout"); // Page Layout Channel
+		// ShPost shChannelPageLayout = shPostRepository.findByTitle("Channel Page
+		// Layout"); // Page Layout Channel
 
 		String url = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
 		String shContext = null;
@@ -135,24 +134,13 @@ public class ShSitesContext {
 				// System.out.println("shChannelItem is null");
 
 			}
-			 //System.out.println(shSite.getName());
-			 //System.out.println(channelPathCurrent);
+			// System.out.println(shSite.getName());
+			// System.out.println(channelPathCurrent);
 		}
 
 		// Nashorn Engine
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 		Bindings bindings = engine.createBindings();
-
-		// Theme
-		List<ShPostAttr> shThemeAttrList = shTheme.getShPostAttrs();
-
-		Map<String, ShPostAttr> shThemeMap = new HashMap<String, ShPostAttr>();
-		for (ShPostAttr shPostThemeAttr : shThemeAttrList)
-			shThemeMap.put(shPostThemeAttr.getShPostTypeAttr().getName(), shPostThemeAttr);
-
-		JSONObject shThemeAttrs = new JSONObject();
-		shThemeAttrs.put("javascript", shThemeMap.get("Javascript").getStrValue());
-		shThemeAttrs.put("css", shThemeMap.get("CSS").getStrValue());
 
 		String javascript = null;
 		String javascriptVar = null;
@@ -160,19 +148,38 @@ public class ShSitesContext {
 		String pageLayoutJS = null;
 		// Channel
 		if (isChannel || shPostItem.getShPostType().getName().equals("PT-CHANNEL-INDEX")) {
+
 			if (shPostItem.getShPostType().getName().equals("PT-CHANNEL-INDEX")) {
 				shChannelItem = shPostItem.getShChannel();
 			}
+
+			// Channel Index
+
+			Map<String, ShPostAttr> shChannelIndexMap = this.postToMap(shPostItem);
+
 			// Page Layout
-			List<ShPostAttr> shChannelPageLayoutAttrList = shChannelPageLayout.getShPostAttrs();
+			String pageLayoutName = shChannelIndexMap.get("PAGE-LAYOUT").getStrValue();
+			System.out.println("Page Layout: " + pageLayoutName);
+			ShPost shChannelPageLayout = shPostRepository.findByTitle(pageLayoutName);
 
-			Map<String, ShPostAttr> shChanneltPageLayoutMap = new HashMap<String, ShPostAttr>();
-			for (ShPostAttr shChannelPageLayoutAttr : shChannelPageLayoutAttrList)
-				shChanneltPageLayoutMap.put(shChannelPageLayoutAttr.getShPostTypeAttr().getName(),
-						shChannelPageLayoutAttr);
+			Map<String, ShPostAttr> shChannelPageLayoutMap = this.postToMap(shChannelPageLayout);
 
-			pageLayoutHTML = shChanneltPageLayoutMap.get("HTML").getStrValue();
-			pageLayoutJS = shChanneltPageLayoutMap.get("Javascript").getStrValue();
+			pageLayoutHTML = shChannelPageLayoutMap.get("HTML").getStrValue();
+			pageLayoutJS = shChannelPageLayoutMap.get("JAVASCRIPT").getStrValue();
+
+			// Theme
+			
+			String themeName = shChannelPageLayoutMap.get("THEME").getStrValue();
+			
+			System.out.println("Theme: " + themeName);
+			
+			ShPost shTheme = shPostRepository.findByTitle(themeName);
+
+			Map<String, ShPostAttr> shThemeMap = this.postToMap(shTheme);
+
+			JSONObject shThemeAttrs = new JSONObject();
+			shThemeAttrs.put("javascript", shThemeMap.get("JAVASCRIPT").getStrValue());
+			shThemeAttrs.put("css", shThemeMap.get("CSS").getStrValue());
 
 			// Channel converted to JSON
 			JSONObject shChannelItemSystemAttrs = new JSONObject();
@@ -266,15 +273,21 @@ public class ShSitesContext {
 		} else {
 			// Post
 			// Page Layout
-			List<ShPostAttr> shPostPageLayoutAttrList = shPostPageLayout.getShPostAttrs();
-
-			Map<String, ShPostAttr> shPostPageLayoutMap = new HashMap<String, ShPostAttr>();
-			for (ShPostAttr shPostPageLayoutAttr : shPostPageLayoutAttrList)
-				shPostPageLayoutMap.put(shPostPageLayoutAttr.getShPostTypeAttr().getName(), shPostPageLayoutAttr);
+			Map<String, ShPostAttr> shPostPageLayoutMap = this.postToMap(shPostPageLayout);
 
 			pageLayoutHTML = shPostPageLayoutMap.get("HTML").getStrValue();
-			pageLayoutJS = shPostPageLayoutMap.get("Javascript").getStrValue();
+			pageLayoutJS = shPostPageLayoutMap.get("JAVASCRIPT").getStrValue();
 
+			// Theme
+			String themeName = shPostPageLayoutMap.get("THEME").getStrValue();
+			ShPost shTheme = shPostRepository.findByTitle(themeName);
+
+			Map<String, ShPostAttr> shThemeMap = this.postToMap(shTheme);
+			
+			JSONObject shThemeAttrs = new JSONObject();
+			shThemeAttrs.put("javascript", shThemeMap.get("JAVASCRIPT").getStrValue());
+			shThemeAttrs.put("css", shThemeMap.get("CSS").getStrValue());
+			
 			// Post Item converted to JSON
 			JSONObject shPostItemSystemAttrs = new JSONObject();
 			shPostItemSystemAttrs.put("id", shPostItem.getId());
@@ -324,24 +337,19 @@ public class ShSitesContext {
 		for (Element element : elements) {
 
 			String regionAttr = element.attr("sh-region");
-			//System.out.println("regionAttr: " + regionAttr);
+			// System.out.println("regionAttr: " + regionAttr);
 			ShPost shRegionPageTemplate = shPostRepository.findByTitle(regionAttr);
 
-			List<ShPostAttr> shRegionPageTemplateAttrs = shRegionPageTemplate.getShPostAttrs();
+			Map<String, ShPostAttr> shRegionPageTemplateMap = this.postToMap(shRegionPageTemplate);
 
-			Map<String, ShPostAttr> shRegionPageTemplateMap = new HashMap<String, ShPostAttr>();
-			for (ShPostAttr shRegionPageTemplateAttr : shRegionPageTemplateAttrs)
-				shRegionPageTemplateMap.put(shRegionPageTemplateAttr.getShPostTypeAttr().getName(),
-						shRegionPageTemplateAttr);
-
-			String shRegionJS = shRegionPageTemplateMap.get("Javascript").getStrValue();
+			String shRegionJS = shRegionPageTemplateMap.get("JAVASCRIPT").getStrValue();
 			String shRegionHTML = shRegionPageTemplateMap.get("HTML").getStrValue();
 			javascript = javascriptVar + shRegionJS;
 
 			bindings.put("html", shRegionHTML);
-			
+
 			javascript = shObjectJS.toString() + javascript;
-			
+
 			Object regionResult = engine.eval(javascript, bindings);
 			element.html(regionResult.toString());
 		}
@@ -351,4 +359,15 @@ public class ShSitesContext {
 		response.getWriter().write(doc.html());
 	}
 
+	public Map<String, ShPostAttr> postToMap(ShPost shPost) {
+
+		List<ShPostAttr> shPostAttrList = shPost.getShPostAttrs();
+
+		Map<String, ShPostAttr> shPostMap = new HashMap<String, ShPostAttr>();
+		for (ShPostAttr shPostAttr : shPostAttrList)
+			shPostMap.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr);
+
+		return shPostMap;
+
+	}
 }

@@ -1,7 +1,6 @@
 package com.viglet.shiohara.onstartup.post.type;
 
 import java.util.Calendar;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -45,9 +44,9 @@ public class ShPostTypeOnStartup {
 			shPostTypeRepository.save(shPostType);
 
 			ShPostTypeAttr shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("title");
-			shPostTypeAttr.setLabel("Title");
-			shPostTypeAttr.setDescription("Title");
+			shPostTypeAttr.setName("TEXT");
+			shPostTypeAttr.setLabel("Text");
+			shPostTypeAttr.setDescription("Text");
 			shPostTypeAttr.setIsSummary((byte) 0);
 			shPostTypeAttr.setIsTitle((byte) 1);
 			shPostTypeAttr.setMany((byte) 0);
@@ -70,7 +69,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeRepository.save(shPostType);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("Photo");
+			shPostTypeAttr.setName("PHOTO");
 			shPostTypeAttr.setLabel("Photo Path");
 			shPostTypeAttr.setDescription("Photo Path");
 			shPostTypeAttr.setIsSummary((byte) 0);
@@ -95,7 +94,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeRepository.save(shPostType);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("Video");
+			shPostTypeAttr.setName("VIDEO");
 			shPostTypeAttr.setLabel("Video Path");
 			shPostTypeAttr.setDescription("Video Path");
 			shPostTypeAttr.setIsSummary((byte) 0);
@@ -120,7 +119,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeRepository.save(shPostType);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("Quote");
+			shPostTypeAttr.setName("QUOTE");
 			shPostTypeAttr.setLabel("Quote");
 			shPostTypeAttr.setDescription("Quote Text");
 			shPostTypeAttr.setIsSummary((byte) 0);
@@ -145,7 +144,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeRepository.save(shPostType);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("Link");
+			shPostTypeAttr.setName("LINK");
 			shPostTypeAttr.setLabel("Link");
 			shPostTypeAttr.setDescription("Link");
 			shPostTypeAttr.setIsSummary((byte) 0);
@@ -170,7 +169,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeRepository.save(shPostType);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("File");
+			shPostTypeAttr.setName("FILE");
 			shPostTypeAttr.setLabel("File Path");
 			shPostTypeAttr.setDescription("File Path");
 			shPostTypeAttr.setIsSummary((byte) 0);
@@ -195,9 +194,9 @@ public class ShPostTypeOnStartup {
 			shPostTypeRepository.save(shPostType);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("title");
-			shPostTypeAttr.setLabel("Title");
-			shPostTypeAttr.setDescription("Title");
+			shPostTypeAttr.setName("TEXT");
+			shPostTypeAttr.setLabel("Text");
+			shPostTypeAttr.setDescription("Text");
 			shPostTypeAttr.setIsSummary((byte) 0);
 			shPostTypeAttr.setIsTitle((byte) 1);
 			shPostTypeAttr.setMany((byte) 0);
@@ -220,7 +219,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeRepository.save(shPostType);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("title");
+			shPostTypeAttr.setName("TITLE");
 			shPostTypeAttr.setLabel("Title");
 			shPostTypeAttr.setDescription("Title");
 			shPostTypeAttr.setIsSummary((byte) 0);
@@ -234,7 +233,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("Description");
+			shPostTypeAttr.setName("DESCRIPTION");
 			shPostTypeAttr.setLabel("Description");
 			shPostTypeAttr.setDescription("Description");
 			shPostTypeAttr.setIsSummary((byte) 1);
@@ -259,7 +258,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeRepository.save(shPostType);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("title");
+			shPostTypeAttr.setName("TITLE");
 			shPostTypeAttr.setLabel("Title");
 			shPostTypeAttr.setDescription("Title");
 			shPostTypeAttr.setIsSummary((byte) 0);
@@ -273,7 +272,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("Description");
+			shPostTypeAttr.setName("DESCRIPTION");
 			shPostTypeAttr.setLabel("Description");
 			shPostTypeAttr.setDescription("Description");
 			shPostTypeAttr.setIsSummary((byte) 1);
@@ -287,7 +286,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("Javascript");
+			shPostTypeAttr.setName("JAVASCRIPT");
 			shPostTypeAttr.setLabel("Javascript");
 			shPostTypeAttr.setDescription("Javascript");
 			shPostTypeAttr.setIsSummary((byte) 0);
@@ -326,7 +325,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeRepository.save(shPostType);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("title");
+			shPostTypeAttr.setName("TITLE");
 			shPostTypeAttr.setLabel("Title");
 			shPostTypeAttr.setDescription("Title");
 			shPostTypeAttr.setIsSummary((byte) 0);
@@ -340,7 +339,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("Description");
+			shPostTypeAttr.setName("DESCRIPTION");
 			shPostTypeAttr.setLabel("Description");
 			shPostTypeAttr.setDescription("Description");
 			shPostTypeAttr.setIsSummary((byte) 1);
@@ -368,13 +367,94 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("Javascript");
+			shPostTypeAttr.setName("JAVASCRIPT");
 			shPostTypeAttr.setLabel("Javascript");
 			shPostTypeAttr.setDescription("Javascript");
 			shPostTypeAttr.setIsSummary((byte) 0);
 			shPostTypeAttr.setIsTitle((byte) 0);
 			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(4);
+			shPostTypeAttr.setRequired((byte) 1);
+			shPostTypeAttr.setShPostType(shPostType);
+			shPostTypeAttr.setShWidget(shWidgetAceEditorHTML);
+
+			shPostTypeAttrRepository.save(shPostTypeAttr);
+
+			// Page Layout
+
+			shPostType = new ShPostType();
+			shPostType.setName("PT-PAGE-LAYOUT");
+			shPostType.setTitle("Page Layout");
+			shPostType.setDate(Calendar.getInstance().getTime());
+			shPostType.setDescription("Page Layout Post Type");
+			shPostType.setSystem((byte) 1);
+
+			shPostTypeRepository.save(shPostType);
+
+			shPostTypeAttr = new ShPostTypeAttr();
+			shPostTypeAttr.setName("TITLE");
+			shPostTypeAttr.setLabel("Title");
+			shPostTypeAttr.setDescription("Title");
+			shPostTypeAttr.setIsSummary((byte) 0);
+			shPostTypeAttr.setIsTitle((byte) 1);
+			shPostTypeAttr.setMany((byte) 0);
+			shPostTypeAttr.setOrdinal(1);
+			shPostTypeAttr.setRequired((byte) 1);
+			shPostTypeAttr.setShPostType(shPostType);
+			shPostTypeAttr.setShWidget(shWidgetText);
+
+			shPostTypeAttrRepository.save(shPostTypeAttr);
+
+			shPostTypeAttr = new ShPostTypeAttr();
+			shPostTypeAttr.setName("DESCRIPTION");
+			shPostTypeAttr.setLabel("Description");
+			shPostTypeAttr.setDescription("Description");
+			shPostTypeAttr.setIsSummary((byte) 1);
+			shPostTypeAttr.setIsTitle((byte) 0);
+			shPostTypeAttr.setMany((byte) 0);
+			shPostTypeAttr.setOrdinal(2);
+			shPostTypeAttr.setRequired((byte) 1);
+			shPostTypeAttr.setShPostType(shPostType);
+			shPostTypeAttr.setShWidget(shWidgetText);
+
+			shPostTypeAttrRepository.save(shPostTypeAttr);
+
+			shPostTypeAttr = new ShPostTypeAttr();
+			shPostTypeAttr.setName("THEME");
+			shPostTypeAttr.setLabel("Theme");
+			shPostTypeAttr.setDescription("Theme");
+			shPostTypeAttr.setIsSummary((byte) 0);
+			shPostTypeAttr.setIsTitle((byte) 0);
+			shPostTypeAttr.setMany((byte) 0);
+			shPostTypeAttr.setOrdinal(3);
+			shPostTypeAttr.setRequired((byte) 1);
+			shPostTypeAttr.setShPostType(shPostType);
+			shPostTypeAttr.setShWidget(shWidgetText);
+
+			shPostTypeAttrRepository.save(shPostTypeAttr);
+
+			shPostTypeAttr = new ShPostTypeAttr();
+			shPostTypeAttr.setName("JAVASCRIPT");
+			shPostTypeAttr.setLabel("Javascript");
+			shPostTypeAttr.setDescription("Javascript");
+			shPostTypeAttr.setIsSummary((byte) 0);
+			shPostTypeAttr.setIsTitle((byte) 0);
+			shPostTypeAttr.setMany((byte) 0);
+			shPostTypeAttr.setOrdinal(4);
+			shPostTypeAttr.setRequired((byte) 1);
+			shPostTypeAttr.setShPostType(shPostType);
+			shPostTypeAttr.setShWidget(shWidgetAceEditorJS);
+
+			shPostTypeAttrRepository.save(shPostTypeAttr);
+
+			shPostTypeAttr = new ShPostTypeAttr();
+			shPostTypeAttr.setName("HTML");
+			shPostTypeAttr.setLabel("HTML");
+			shPostTypeAttr.setDescription("HTML");
+			shPostTypeAttr.setIsSummary((byte) 0);
+			shPostTypeAttr.setIsTitle((byte) 0);
+			shPostTypeAttr.setMany((byte) 0);
+			shPostTypeAttr.setOrdinal(5);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
 			shPostTypeAttr.setShWidget(shWidgetAceEditorHTML);
@@ -393,7 +473,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeRepository.save(shPostType);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("title");
+			shPostTypeAttr.setName("TITLE");
 			shPostTypeAttr.setLabel("Title");
 			shPostTypeAttr.setDescription("Title");
 			shPostTypeAttr.setIsSummary((byte) 0);
@@ -407,7 +487,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("Description");
+			shPostTypeAttr.setName("DESCRIPTION");
 			shPostTypeAttr.setLabel("Description");
 			shPostTypeAttr.setDescription("Description");
 			shPostTypeAttr.setIsSummary((byte) 1);
@@ -420,72 +500,20 @@ public class ShPostTypeOnStartup {
 
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
-			// Page Layout
-
-			shPostType = new ShPostType();
-			shPostType.setName("PT-PAGE-LAYOUT");
-			shPostType.setTitle("Page Layout");
-			shPostType.setDate(Calendar.getInstance().getTime());
-			shPostType.setDescription("Page Layout Post Type");
-			shPostType.setSystem((byte) 1);
-
-			shPostTypeRepository.save(shPostType);
-
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("title");
-			shPostTypeAttr.setLabel("Title");
-			shPostTypeAttr.setDescription("Title");
+			shPostTypeAttr.setName("PAGE-LAYOUT");
+			shPostTypeAttr.setLabel("Page Layout");
+			shPostTypeAttr.setDescription("Page Layout");
 			shPostTypeAttr.setIsSummary((byte) 0);
-			shPostTypeAttr.setIsTitle((byte) 1);
+			shPostTypeAttr.setIsTitle((byte) 0);
 			shPostTypeAttr.setMany((byte) 0);
-			shPostTypeAttr.setOrdinal(1);
+			shPostTypeAttr.setOrdinal(2);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
 			shPostTypeAttr.setShWidget(shWidgetText);
 
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
-			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("Description");
-			shPostTypeAttr.setLabel("Description");
-			shPostTypeAttr.setDescription("Description");
-			shPostTypeAttr.setIsSummary((byte) 1);
-			shPostTypeAttr.setIsTitle((byte) 0);
-			shPostTypeAttr.setMany((byte) 0);
-			shPostTypeAttr.setOrdinal(2);
-			shPostTypeAttr.setRequired((byte) 1);
-			shPostTypeAttr.setShPostType(shPostType);
-			shPostTypeAttr.setShWidget(shWidgetTextArea);
-
-			shPostTypeAttrRepository.save(shPostTypeAttr);
-
-			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("Javascript");
-			shPostTypeAttr.setLabel("Javascript");
-			shPostTypeAttr.setDescription("Javascript");
-			shPostTypeAttr.setIsSummary((byte) 0);
-			shPostTypeAttr.setIsTitle((byte) 0);
-			shPostTypeAttr.setMany((byte) 0);
-			shPostTypeAttr.setOrdinal(3);
-			shPostTypeAttr.setRequired((byte) 1);
-			shPostTypeAttr.setShPostType(shPostType);
-			shPostTypeAttr.setShWidget(shWidgetAceEditorJS);
-
-			shPostTypeAttrRepository.save(shPostTypeAttr);
-			
-			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("HTML");
-			shPostTypeAttr.setLabel("HTML");
-			shPostTypeAttr.setDescription("HTML");
-			shPostTypeAttr.setIsSummary((byte) 0);
-			shPostTypeAttr.setIsTitle((byte) 0);
-			shPostTypeAttr.setMany((byte) 0);
-			shPostTypeAttr.setOrdinal(4);
-			shPostTypeAttr.setRequired((byte) 1);
-			shPostTypeAttr.setShPostType(shPostType);
-			shPostTypeAttr.setShWidget(shWidgetAceEditorHTML);
-
-			shPostTypeAttrRepository.save(shPostTypeAttr);
 		}
 
 	}
