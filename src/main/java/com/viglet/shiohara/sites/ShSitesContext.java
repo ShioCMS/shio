@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +16,6 @@ import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.catalina.startup.ContextConfig;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
@@ -40,6 +38,8 @@ import com.viglet.shiohara.persistence.repository.channel.ShChannelRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
+import com.viglet.shiohara.post.ShPostUtils;
+import com.viglet.shiohara.site.ShSiteUtils;
 
 @Controller
 public class ShSitesContext {
@@ -53,9 +53,13 @@ public class ShSitesContext {
 	ShChannelRepository shChannelRepository;
 	@Autowired
 	ShChannelUtils shChannelUtils;
+	@Autowired
+	ShPostUtils shPostUtils;
+	@Autowired
+	ShSiteUtils shSiteUtils;
 	@Resource
 	private ApplicationContext context;
-	
+
 	@RequestMapping("/sites/{shSiteName}/{shFormat}/{shLocale}/**")
 	private void sitesFull(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable(value = "shSiteName") String shSiteName, @PathVariable(value = "shFormat") String shFormat,
@@ -72,10 +76,7 @@ public class ShSitesContext {
 			}
 		}
 
-		// ShPost shTheme = shPostRepository.findByTitle("Sample Theme"); // Theme
 		ShPost shPostPageLayout = shPostRepository.findByTitle("Post Page Layout"); // Page Layout Post
-		// ShPost shChannelPageLayout = shPostRepository.findByTitle("Channel Page
-		// Layout"); // Page Layout Channel
 
 		String url = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
 		String shContext = null;
@@ -145,7 +146,7 @@ public class ShSitesContext {
 
 		// Nashorn Engine
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
-		
+
 		Bindings bindings = engine.createBindings();
 
 		String javascript = null;
@@ -161,110 +162,58 @@ public class ShSitesContext {
 
 			// Channel Index
 
-			Map<String, ShPostAttr> shChannelIndexMap = this.postToMap(shPostItem);
+			Map<String, ShPostAttr> shChannelIndexMap = shPostUtils.postToMap(shPostItem);
 
 			// Page Layout
 			String pageLayoutName = shChannelIndexMap.get("PAGE-LAYOUT").getStrValue();
 
 			ShPost shChannelPageLayout = shPostRepository.findByTitle(pageLayoutName);
 
-			Map<String, ShPostAttr> shChannelPageLayoutMap = this.postToMap(shChannelPageLayout);
+			Map<String, ShPostAttr> shChannelPageLayoutMap = shPostUtils.postToMap(shChannelPageLayout);
 
 			pageLayoutHTML = shChannelPageLayoutMap.get("HTML").getStrValue();
 			pageLayoutJS = shChannelPageLayoutMap.get("JAVASCRIPT").getStrValue();
 
 			// Theme
-			
+
 			String themeName = shChannelPageLayoutMap.get("THEME").getStrValue();
-			
+
 			ShPost shTheme = shPostRepository.findByTitle(themeName);
 
-			Map<String, ShPostAttr> shThemeMap = this.postToMap(shTheme);
+			Map<String, ShPostAttr> shThemeMap = shPostUtils.postToMap(shTheme);
 
 			JSONObject shThemeAttrs = new JSONObject();
 			shThemeAttrs.put("javascript", shThemeMap.get("JAVASCRIPT").getStrValue());
 			shThemeAttrs.put("css", shThemeMap.get("CSS").getStrValue());
 
 			// Channel converted to JSON
-			JSONObject shChannelItemSystemAttrs = new JSONObject();
-			shChannelItemSystemAttrs.put("id", shChannelItem.getId());
-			shChannelItemSystemAttrs.put("title", shChannelItem.getName());
-			shChannelItemSystemAttrs.put("summary", shChannelItem.getSummary());
-			shChannelItemSystemAttrs.put("link", shChannelUtils.channelPath(shChannelItem));
-
+		
 			JSONArray shPostItems = new JSONArray();
 			JSONArray shChildChannelItems = new JSONArray();
 
-			JSONObject shChannelItemAttrs = new JSONObject();
+			JSONObject shChannelItemAttrs = shChannelUtils.toJSON(shChannelItem);
 
-			shChannelItemAttrs.put("system", shChannelItemSystemAttrs);
 			shChannelItemAttrs.put("theme", shThemeAttrs);
 
-			JSONObject shSiteItemSystemAttrs = new JSONObject();
-			shSiteItemSystemAttrs.put("id", shSite.getId());
-			shSiteItemSystemAttrs.put("title", shSite.getName());
-			shSiteItemSystemAttrs.put("summary", shSite.getDescription());
-			shSiteItemSystemAttrs.put("link",
-					"/" + shContext + "/" + shSite.getName().replaceAll(" ", "-") + "/default/pt-br");
-
-			JSONObject shSiteItemAttrs = new JSONObject();
-
-			shSiteItemAttrs.put("system", shSiteItemSystemAttrs);
+			JSONObject shSiteItemAttrs = shSiteUtils.toJSON(shSite, shContext);
 
 			List<ShChannel> shChannels = shChannelRepository.findByParentChannel(shChannelItem);
 
 			for (ShChannel shChildChannel : shChannels) {
-				JSONObject shChildChannelAttrs = new JSONObject();
-				JSONObject shChildChannelSystemAttrs = new JSONObject();
-				shChildChannelSystemAttrs.put("id", shChildChannel.getId());
-				shChildChannelSystemAttrs.put("title", shChildChannel.getName());
-				shChildChannelSystemAttrs.put("summary", shChildChannel.getSummary());
-				shChildChannelSystemAttrs.put("link", shChannelUtils.channelPath(shChildChannel));
-				shChildChannelAttrs.put("system", shChildChannelSystemAttrs);
-				shChildChannelItems.put(shChildChannelAttrs);
+				shChildChannelItems.put(shChannelUtils.toJSON(shChildChannel));
 			}
 			List<ShPost> shPosts = shPostRepository.findByShChannel(shChannelItem);
 
 			for (ShPost shPost : shPosts) {
 				if (!shPost.getShPostType().getName().equals("PT-CHANNEL-INDEX")) {
-					JSONObject shPostItemAttrs = new JSONObject();
-
-					JSONObject shPostItemSystemAttrs = new JSONObject();
-					shPostItemSystemAttrs.put("id", shPost.getId());
-					shPostItemSystemAttrs.put("post-type-id", shPost.getShPostType().getId());
-					shPostItemSystemAttrs.put("title", shPost.getTitle());
-					shPostItemSystemAttrs.put("summary", shPost.getSummary());
-					shPostItemSystemAttrs.put("link",
-							shChannelUtils.channelPath(shPost.getShChannel()) + shPost.getTitle().replaceAll(" ", "-"));
-					for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
-						if (shPostAttr.getShPostTypeAttr().getName() != null) {
-							shPostItemAttrs.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
-						}
-					}
-					shPostItemAttrs.put("system", shPostItemSystemAttrs);
+					JSONObject shPostItemAttrs = shPostUtils.toJSON(shPost);
 					shPostItems.put(shPostItemAttrs);
 				}
 			}
 
 			// Post Item converted to JSON
-			JSONObject shPostItemSystemAttrs = new JSONObject();
-			shPostItemSystemAttrs.put("id", shPostItem.getId());
-			shPostItemSystemAttrs.put("post-type-id", shPostItem.getShPostType().getId());
-			shPostItemSystemAttrs.put("title", shPostItem.getTitle());
-			shPostItemSystemAttrs.put("summary", shPostItem.getSummary());
-			shPostItemSystemAttrs.put("link",
-					shChannelUtils.channelPath(shPostItem.getShChannel()) + shPostItem.getTitle().replaceAll(" ", "-"));
-
-			JSONObject shPostItemAttrs = new JSONObject();
-
-			shPostItemAttrs.put("system", shPostItemSystemAttrs);
+			JSONObject shPostItemAttrs = shPostUtils.toJSON(shPostItem);
 			shPostItemAttrs.put("theme", shThemeAttrs);
-
-			for (ShPostAttr shPostAttr : shPostItem.getShPostAttrs()) {
-				if (shPostAttr.getShPostTypeAttr().getName() != null) {
-					shPostItemAttrs.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
-				}
-			}
 
 			shChannelItemAttrs.put("posts", shPostItems);
 			shChannelItemAttrs.put("channels", shChildChannelItems);
@@ -277,7 +226,7 @@ public class ShSitesContext {
 		} else {
 			// Post
 			// Page Layout
-			Map<String, ShPostAttr> shPostPageLayoutMap = this.postToMap(shPostPageLayout);
+			Map<String, ShPostAttr> shPostPageLayoutMap = shPostUtils.postToMap(shPostPageLayout);
 
 			pageLayoutHTML = shPostPageLayoutMap.get("HTML").getStrValue();
 			pageLayoutJS = shPostPageLayoutMap.get("JAVASCRIPT").getStrValue();
@@ -286,43 +235,19 @@ public class ShSitesContext {
 			String themeName = shPostPageLayoutMap.get("THEME").getStrValue();
 			ShPost shTheme = shPostRepository.findByTitle(themeName);
 
-			Map<String, ShPostAttr> shThemeMap = this.postToMap(shTheme);
-			
+			Map<String, ShPostAttr> shThemeMap = shPostUtils.postToMap(shTheme);
+
 			JSONObject shThemeAttrs = new JSONObject();
 			shThemeAttrs.put("javascript", shThemeMap.get("JAVASCRIPT").getStrValue());
 			shThemeAttrs.put("css", shThemeMap.get("CSS").getStrValue());
-			
-			// Post Item converted to JSON
-			JSONObject shPostItemSystemAttrs = new JSONObject();
-			shPostItemSystemAttrs.put("id", shPostItem.getId());
-			shPostItemSystemAttrs.put("post-type-id", shPostItem.getShPostType().getId());
-			shPostItemSystemAttrs.put("title", shPostItem.getTitle());
-			shPostItemSystemAttrs.put("summary", shPostItem.getSummary());
-			shPostItemSystemAttrs.put("link",
-					shChannelUtils.channelPath(shPostItem.getShChannel()) + shPostItem.getTitle().replaceAll(" ", "-"));
+	
+			JSONObject shSiteItemAttrs = shSiteUtils.toJSON(shSite, shContext);
 
-			JSONObject shSiteItemSystemAttrs = new JSONObject();
-			shSiteItemSystemAttrs.put("id", shSite.getId());
-			shSiteItemSystemAttrs.put("title", shSite.getName());
-			shSiteItemSystemAttrs.put("summary", shSite.getDescription());
-			shSiteItemSystemAttrs.put("link",
-					"/" + shContext + "/" + shSite.getName().replaceAll(" ", "-") + "/default/pt-br");
+			JSONObject shPostItemAttrs = shPostUtils.toJSON(shPostItem);
 
-			JSONObject shSiteItemAttrs = new JSONObject();
-
-			shSiteItemAttrs.put("system", shSiteItemSystemAttrs);
-
-			JSONObject shPostItemAttrs = new JSONObject();
-
-			shPostItemAttrs.put("system", shPostItemSystemAttrs);
 			shPostItemAttrs.put("theme", shThemeAttrs);
 			shPostItemAttrs.put("site", shSiteItemAttrs);
 
-			for (ShPostAttr shPostAttr : shPostItem.getShPostAttrs()) {
-				if (shPostAttr.getShPostTypeAttr().getName() != null) {
-					shPostItemAttrs.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
-				}
-			}
 			// PostItem Attribs
 			javascriptVar = "var shContent = " + shPostItemAttrs.toString() + ";";
 			javascript = javascriptVar + javascript;
@@ -344,7 +269,7 @@ public class ShSitesContext {
 			// System.out.println("regionAttr: " + regionAttr);
 			ShPost shRegionPageTemplate = shPostRepository.findByTitle(regionAttr);
 
-			Map<String, ShPostAttr> shRegionPageTemplateMap = this.postToMap(shRegionPageTemplate);
+			Map<String, ShPostAttr> shRegionPageTemplateMap = shPostUtils.postToMap(shRegionPageTemplate);
 
 			String shRegionJS = shRegionPageTemplateMap.get("JAVASCRIPT").getStrValue();
 			String shRegionHTML = shRegionPageTemplateMap.get("HTML").getStrValue();
@@ -363,15 +288,5 @@ public class ShSitesContext {
 		response.getWriter().write(doc.html());
 	}
 
-	public Map<String, ShPostAttr> postToMap(ShPost shPost) {
-
-		List<ShPostAttr> shPostAttrList = shPost.getShPostAttrs();
-
-		Map<String, ShPostAttr> shPostMap = new HashMap<String, ShPostAttr>();
-		for (ShPostAttr shPostAttr : shPostAttrList)
-			shPostMap.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr);
-
-		return shPostMap;
-
-	}
+	
 }

@@ -247,13 +247,27 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 			
 			shPostTypeAttr = new ShPostTypeAttr();
+			shPostTypeAttr.setName("FILE");
+			shPostTypeAttr.setLabel("File Path");
+			shPostTypeAttr.setDescription("File Path");
+			shPostTypeAttr.setIsSummary((byte) 0);
+			shPostTypeAttr.setIsTitle((byte) 0);
+			shPostTypeAttr.setMany((byte) 0);
+			shPostTypeAttr.setOrdinal(3);
+			shPostTypeAttr.setRequired((byte) 0);
+			shPostTypeAttr.setShPostType(shPostType);
+			shPostTypeAttr.setShWidget(shWidgetText);
+
+			shPostTypeAttrRepository.save(shPostTypeAttr);
+			
+			shPostTypeAttr = new ShPostTypeAttr();
 			shPostTypeAttr.setName("TEXT");
 			shPostTypeAttr.setLabel("Text");
 			shPostTypeAttr.setDescription("Text");
-			shPostTypeAttr.setIsSummary((byte) 1);
+			shPostTypeAttr.setIsSummary((byte) 0);
 			shPostTypeAttr.setIsTitle((byte) 0);
 			shPostTypeAttr.setMany((byte) 0);
-			shPostTypeAttr.setOrdinal(2);
+			shPostTypeAttr.setOrdinal(4);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
 			shPostTypeAttr.setShWidget(shWidgetTextArea);
