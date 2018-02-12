@@ -36,8 +36,7 @@ public class ShPostAttr implements Serializable {
 	@Column(name = "int_value")
 	private int intValue;
 
-	@Lob
-	@Column(name = "str_value", length = 20971520)
+	@Column(name = "str_value", length =  5 * 1024 * 1024) //5Mb
 	private String strValue;
 
 	private int type;

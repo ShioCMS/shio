@@ -107,7 +107,7 @@ public class ShChannelAPI {
 
 		shPostRepository.save(shPost);
 
-		ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "title");
+		ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "TITLE");
 
 		ShPostAttr shPostAttr = new ShPostAttr();
 		shPostAttr.setShPost(shPost);
@@ -118,13 +118,24 @@ public class ShChannelAPI {
 
 		shPostAttrRepository.save(shPostAttr);
 
-		shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "Description");
+		shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "DESCRIPTION");
 
 		shPostAttr = new ShPostAttr();
 		shPostAttr.setShPost(shPost);
 		shPostAttr.setShPostType(shPostChannelIndex);
 		shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 		shPostAttr.setStrValue(shPost.getSummary());
+		shPostAttr.setType(1);
+
+		shPostAttrRepository.save(shPostAttr);
+		
+		shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "PAGE-LAYOUT");
+
+		shPostAttr = new ShPostAttr();
+		shPostAttr.setShPost(shPost);
+		shPostAttr.setShPostType(shPostChannelIndex);
+		shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+		shPostAttr.setStrValue("");
 		shPostAttr.setType(1);
 
 		shPostAttrRepository.save(shPostAttr);

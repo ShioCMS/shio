@@ -14,6 +14,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -76,10 +77,10 @@ public class ShPostAPI {
 
 		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
 			if (shPostAttr.getShPostTypeAttr().getIsTitle() == 1)
-				title = shPostAttr.getStrValue();
+				title = StringUtils.abbreviate(shPostAttr.getStrValue(), 255);
 
 			if (shPostAttr.getShPostTypeAttr().getIsSummary() == 1)
-				summary = shPostAttr.getStrValue();
+				summary = StringUtils.abbreviate(shPostAttr.getStrValue(), 255);
 
 			ShPostAttr shPostAttrEdit = shPostAttrRepository.findById(shPostAttr.getId());
 
@@ -130,10 +131,10 @@ public class ShPostAPI {
 
 		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
 			if (shPostAttr.getShPostTypeAttr().getIsTitle() == 1)
-				title = shPostAttr.getStrValue();
+				title = StringUtils.abbreviate(shPostAttr.getStrValue(), 255);
 
 			if (shPostAttr.getShPostTypeAttr().getIsSummary() == 1)
-				summary = shPostAttr.getStrValue();
+				summary = StringUtils.abbreviate(shPostAttr.getStrValue(), 255);
 		}
 		shPost.setDate(new Date());
 		shPost.setTitle(title);

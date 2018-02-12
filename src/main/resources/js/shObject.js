@@ -3,6 +3,8 @@ if (typeof importClass != "function") {
 }
 
 var shObject = Java.type('com.viglet.shiohara.js.shObject');
+var shNavigationComponent = spring.getBean('shNavigationComponent', Java
+		.type('com.viglet.shiohara.component.ShNavigationComponent'));
 
 var viglet = this.viglet || {};
 viglet.shiohara = viglet.shiohara || {};
@@ -13,6 +15,8 @@ viglet.shiohara.shObject = function() {
 		return "Hello World";
 	}, this.getTestClass = function() {
 		return shObject.test();
+	}, this.navigation = function(siteName, home) {
+		return Java.from(shNavigationComponent.navigation(siteName, home));
 	}
 
 };

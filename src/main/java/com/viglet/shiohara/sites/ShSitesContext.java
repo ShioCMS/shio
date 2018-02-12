@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.script.Bindings;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -16,6 +17,7 @@ import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.catalina.startup.ContextConfig;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
@@ -23,6 +25,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,7 +53,9 @@ public class ShSitesContext {
 	ShChannelRepository shChannelRepository;
 	@Autowired
 	ShChannelUtils shChannelUtils;
-
+	@Resource
+	private ApplicationContext context;
+	
 	@RequestMapping("/sites/{shSiteName}/{shFormat}/{shLocale}/**")
 	private void sitesFull(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable(value = "shSiteName") String shSiteName, @PathVariable(value = "shFormat") String shFormat,
@@ -140,6 +145,7 @@ public class ShSitesContext {
 
 		// Nashorn Engine
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+		
 		Bindings bindings = engine.createBindings();
 
 		String javascript = null;
@@ -159,7 +165,7 @@ public class ShSitesContext {
 
 			// Page Layout
 			String pageLayoutName = shChannelIndexMap.get("PAGE-LAYOUT").getStrValue();
-			System.out.println("Page Layout: " + pageLayoutName);
+
 			ShPost shChannelPageLayout = shPostRepository.findByTitle(pageLayoutName);
 
 			Map<String, ShPostAttr> shChannelPageLayoutMap = this.postToMap(shChannelPageLayout);
@@ -170,8 +176,6 @@ public class ShSitesContext {
 			// Theme
 			
 			String themeName = shChannelPageLayoutMap.get("THEME").getStrValue();
-			
-			System.out.println("Theme: " + themeName);
 			
 			ShPost shTheme = shPostRepository.findByTitle(themeName);
 
@@ -325,9 +329,9 @@ public class ShSitesContext {
 		}
 
 		// Page Layout
-
 		javascript = javascriptVar + pageLayoutJS;
 		bindings.put("html", pageLayoutHTML);
+		bindings.put("spring", context);
 		Object pageLayoutResult = engine.eval(javascript, bindings);
 		String pageLayoutHTMLMod = (pageLayoutResult.toString());
 
