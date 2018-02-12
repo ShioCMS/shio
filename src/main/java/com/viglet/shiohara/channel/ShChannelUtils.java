@@ -3,6 +3,7 @@ package com.viglet.shiohara.channel;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +23,20 @@ public class ShChannelUtils {
 	ShPostRepository shPostRepository;
 	@Autowired
 	ShPostAttrRepository shPostAttrRepository;
+
+	public JSONObject toJSON(ShChannel shChannel) {
+		JSONObject shChannelItemAttrs = new JSONObject();
+
+		JSONObject shChannelItemSystemAttrs = new JSONObject();
+		shChannelItemSystemAttrs.put("id", shChannel.getId());
+		shChannelItemSystemAttrs.put("title", shChannel.getName());
+		shChannelItemSystemAttrs.put("summary", shChannel.getSummary());
+		shChannelItemSystemAttrs.put("link", this.channelPath(shChannel));
+
+		shChannelItemAttrs.put("system", shChannelItemSystemAttrs);
+
+		return shChannelItemAttrs;
+	}
 
 	public ArrayList<ShChannel> breadcrumb(ShChannel shChannel) {
 		if (shChannel != null) {
@@ -75,12 +90,12 @@ public class ShChannelUtils {
 
 	public ShChannel channelFromPath(ShSite shSite, String channelPath) {
 		ShChannel currentChannel = null;
-		String[] contexts = channelPath.replaceAll("-", " "). split("/");
+		String[] contexts = channelPath.replaceAll("-", " ").split("/");
 		for (int i = 1; i < contexts.length; i++) {
 			if (currentChannel == null) {
 				// When is null channel, because is rootChannel and it contains shSite attribute
 				currentChannel = shChannelRepository.findByShSiteAndName(shSite, contexts[i]);
-			} else {				
+			} else {
 				currentChannel = shChannelRepository.findByParentChannelAndName(currentChannel, contexts[i]);
 			}
 

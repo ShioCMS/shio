@@ -12,6 +12,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -146,13 +147,13 @@ public class ShImportAPI {
 					shPost.setShChannel(shChannelRepository.findById(shPostExchange.getChannel()));
 					shPost.setShPostType(shPostTypeRepository.findByName(shPostExchange.getPostType()));
 
-					for (Entry<String, Object> shPostFields : shPostExchange.getFields().entrySet()) {
+					for (Entry<String, Object> shPostField : shPostExchange.getFields().entrySet()) {
 						ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository
-								.findByShPostTypeAndName(shPost.getShPostType(), shPostFields.getKey());
+								.findByShPostTypeAndName(shPost.getShPostType(), shPostField.getKey());
 						if (shPostTypeAttr.getIsTitle() == (byte) 1) {
-							shPost.setTitle((String) shPostFields.getValue());
+							shPost.setTitle(StringUtils.abbreviate((String) shPostField.getValue(), 255));
 						} else if (shPostTypeAttr.getIsSummary() == (byte) 1) {
-							shPost.setSummary((String) shPostFields.getValue());
+							shPost.setSummary(StringUtils.abbreviate((String) shPostField.getValue(), 255));
 						}
 					}
 					shPostRepository.save(shPost);
