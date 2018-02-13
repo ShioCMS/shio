@@ -1,4 +1,4 @@
-package com.viglet.shiohara.site;
+package com.viglet.shiohara.utils;
 
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;

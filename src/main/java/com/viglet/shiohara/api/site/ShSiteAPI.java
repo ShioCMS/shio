@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.api.channel.ShChannelList;
-import com.viglet.shiohara.channel.ShChannelUtils;
 import com.viglet.shiohara.exchange.ShChannelExchange;
 import com.viglet.shiohara.exchange.ShExchange;
 import com.viglet.shiohara.exchange.ShPostExchange;
@@ -38,6 +37,7 @@ import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
+import com.viglet.shiohara.utils.ShChannelUtils;
 
 @Component
 @Path("/site")
@@ -106,7 +106,6 @@ public class ShSiteAPI {
 		// Home Channel
 		ShChannel shChannelHome = new ShChannel();
 		shChannelHome.setName("Home");
-		shChannelHome.setSummary("Home Channel");
 		shChannelHome.setParentChannel(null);
 		shChannelHome.setShSite(shSite);
 		shChannelHome.setDate(new Date());
@@ -239,7 +238,6 @@ public class ShSiteAPI {
 			shChannelExchangeChild.setId(shChannel.getId());
 			shChannelExchangeChild.setDate(shChannel.getDate());
 			shChannelExchangeChild.setName(shChannel.getName());
-			shChannelExchangeChild.setSummary(shChannel.getSummary());
 			if (shChannel.getParentChannel() != null) {
 				shChannelExchangeChild.setParentChannel(shChannel.getParentChannel().getId());
 			}

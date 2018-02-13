@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.HandlerMapping;
 
-import com.viglet.shiohara.channel.ShChannelUtils;
 import com.viglet.shiohara.persistence.model.channel.ShChannel;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
@@ -38,8 +37,9 @@ import com.viglet.shiohara.persistence.repository.channel.ShChannelRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
-import com.viglet.shiohara.post.ShPostUtils;
-import com.viglet.shiohara.site.ShSiteUtils;
+import com.viglet.shiohara.utils.ShChannelUtils;
+import com.viglet.shiohara.utils.ShPostUtils;
+import com.viglet.shiohara.utils.ShSiteUtils;
 
 @Controller
 public class ShSitesContext {

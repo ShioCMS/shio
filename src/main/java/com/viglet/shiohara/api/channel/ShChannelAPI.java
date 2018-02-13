@@ -18,7 +18,6 @@ import javax.ws.rs.core.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.viglet.shiohara.channel.ShChannelUtils;
 import com.viglet.shiohara.persistence.model.channel.ShChannel;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
@@ -30,6 +29,7 @@ import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
+import com.viglet.shiohara.utils.ShChannelUtils;
 
 @Component
 @Path("/channel")
@@ -70,7 +70,6 @@ public class ShChannelAPI {
 
 		shChannelEdit.setDate(new Date());
 		shChannelEdit.setName(shChannel.getName());
-		shChannelEdit.setSummary(shChannel.getName());
 		shChannelEdit.setParentChannel(shChannel.getParentChannel());
 		shChannelEdit.setShSite(shChannel.getShSite());
 
