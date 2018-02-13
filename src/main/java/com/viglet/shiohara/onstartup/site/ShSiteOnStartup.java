@@ -25,8 +25,10 @@ public class ShSiteOnStartup {
 			shSite.setName("Sample");
 			shSite.setDescription("Sample Site");
 			shSite.setUrl("http://example.com");
+			shSite.setPostTypeLayout(
+					"{\"PT-ARTICLE\" :  \"Post Page Layout\", \n" + "\"PT-TEXT\": \"Post Page Layout\"}");
 			shSite.setDate(new Date());
-					
+
 			shSiteRepository.save(shSite);
 		}
 

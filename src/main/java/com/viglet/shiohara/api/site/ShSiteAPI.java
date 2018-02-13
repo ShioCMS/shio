@@ -78,6 +78,7 @@ public class ShSiteAPI {
 		ShSite shSiteEdit = shSiteRepository.findById(id);
 		shSiteEdit.setDate(new Date());
 		shSiteEdit.setName(shSite.getName());
+		shSiteEdit.setPostTypeLayout(shSite.getPostTypeLayout());
 		shSiteRepository.save(shSiteEdit);
 		return shSiteEdit;
 	}
@@ -184,7 +185,8 @@ public class ShSiteAPI {
 		shSiteExchange.setName(shSite.getName());
 		shSiteExchange.setUrl(shSite.getUrl());
 		shSiteExchange.setDescription(shSite.getDescription());
-		shSiteExchange.setDate(shSite.getDate());
+		shSiteExchange.setPostTypeLayout(shSite.getPostTypeLayout());
+		shSiteExchange.setDate(shSite.getDate());		
 		shSiteExchange.setRootChannels(rootChannelsUUID);
 
 		List<ShSiteExchange> shSiteExchanges = new ArrayList<ShSiteExchange>();

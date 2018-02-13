@@ -1,7 +1,6 @@
 package com.viglet.shiohara.persistence.model.site;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -13,7 +12,6 @@ import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.viglet.shiohara.persistence.model.channel.ShChannel;
-import com.viglet.shiohara.persistence.model.post.ShPost;
 
 /**
  * The persistent class for the ShSite database table.
@@ -37,6 +35,9 @@ public class ShSite implements Serializable {
 	private String description;
 
 	private String url;
+	
+	@Column(name = "post_type_layout", length =  5 * 1024 * 1024) //5Mb
+	private String postTypeLayout;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date date;
@@ -94,6 +95,14 @@ public class ShSite implements Serializable {
 
 	public void setDate(Date date) {
 		this.date = date;
+	}
+
+	public String getPostTypeLayout() {
+		return postTypeLayout;
+	}
+
+	public void setPostTypeLayout(String postTypeLayout) {
+		this.postTypeLayout = postTypeLayout;
 	}
 
 }

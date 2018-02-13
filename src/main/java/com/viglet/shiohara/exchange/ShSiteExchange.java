@@ -19,6 +19,8 @@ public class ShSiteExchange {
 
 	private String url;
 
+	private String postTypeLayout;
+	
 	private List<UUID> rootChannels;
 
 	public UUID getId() {
@@ -67,6 +69,14 @@ public class ShSiteExchange {
 
 	public void setRootChannels(List<UUID> rootChannels) {
 		this.rootChannels = rootChannels;
+	}
+
+	public String getPostTypeLayout() {
+		return postTypeLayout;
+	}
+
+	public void setPostTypeLayout(String postTypeLayout) {
+		this.postTypeLayout = postTypeLayout;
 	}
 
 }

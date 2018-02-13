@@ -76,7 +76,7 @@ public class ShSitesContext {
 			}
 		}
 
-		ShPost shPostPageLayout = shPostRepository.findByTitle("Post Page Layout"); // Page Layout Post
+	//	ShPost shPostPageLayout = shPostRepository.findByTitle("Post Page Layout"); // Page Layout Post
 
 		String url = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
 		String shContext = null;
@@ -225,7 +225,11 @@ public class ShSitesContext {
 
 		} else {
 			// Post
-			// Page Layout
+			// Page Layout			
+			JSONObject postTypeLayout = new JSONObject(shSite.getPostTypeLayout());
+			String pageLayoutName = (String) postTypeLayout.get(shPostItem.getShPostType().getName());
+			ShPost shPostPageLayout = shPostRepository.findByTitle(pageLayoutName);
+			
 			Map<String, ShPostAttr> shPostPageLayoutMap = shPostUtils.postToMap(shPostPageLayout);
 
 			pageLayoutHTML = shPostPageLayoutMap.get("HTML").getStrValue();
