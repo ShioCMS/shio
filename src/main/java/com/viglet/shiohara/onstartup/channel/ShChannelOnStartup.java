@@ -36,7 +36,6 @@ public class ShChannelOnStartup {
 			// System Channel
 			ShChannel shChannelSystem = new ShChannel();
 			shChannelSystem.setName("System");
-			shChannelSystem.setSummary("System Channel");
 			shChannelSystem.setParentChannel(null);
 			shChannelSystem.setShSite(shSite);
 			shChannelSystem.setDate(new Date());
@@ -47,7 +46,6 @@ public class ShChannelOnStartup {
 			// System > Templates Channel
 			ShChannel shChannelSystemTemplates = new ShChannel();
 			shChannelSystemTemplates.setName("Templates");
-			shChannelSystemTemplates.setSummary("Templates Channel");
 			shChannelSystemTemplates.setParentChannel(shChannelSystem);
 			shChannelSystemTemplates.setShSite(shSite);
 			shChannelSystemTemplates.setDate(new Date());
@@ -58,7 +56,6 @@ public class ShChannelOnStartup {
 			// System > Layouts Channel
 			ShChannel shChannelSystemLayouts = new ShChannel();
 			shChannelSystemLayouts.setName("Layouts");
-			shChannelSystemLayouts.setSummary("Layouts Channel");
 			shChannelSystemLayouts.setParentChannel(shChannelSystem);
 			shChannelSystemLayouts.setShSite(shSite);
 			shChannelSystemLayouts.setDate(new Date());
@@ -69,7 +66,6 @@ public class ShChannelOnStartup {
 			// System > Themes Channel
 			ShChannel shChannelSystemThemes = new ShChannel();
 			shChannelSystemThemes.setName("Themes");
-			shChannelSystemThemes.setSummary("Themes Channel");
 			shChannelSystemThemes.setParentChannel(shChannelSystem);
 			shChannelSystemThemes.setShSite(shSite);
 			shChannelSystemThemes.setDate(new Date());
@@ -80,7 +76,6 @@ public class ShChannelOnStartup {
 			// Home Channel
 			ShChannel shChannelHome = new ShChannel();
 			shChannelHome.setName("Home");
-			shChannelHome.setSummary("Home Channel");
 			shChannelHome.setParentChannel(null);
 			shChannelHome.setShSite(shSite);
 			shChannelHome.setDate(new Date());
@@ -91,7 +86,6 @@ public class ShChannelOnStartup {
 			// Article Channel
 			ShChannel shChannelArticle = new ShChannel();
 			shChannelArticle.setName("Article");
-			shChannelArticle.setSummary("Article Channel");
 			shChannelArticle.setParentChannel(shChannelHome);
 			shChannelArticle.setShSite(shSite);
 			shChannelArticle.setDate(new Date());
@@ -102,7 +96,6 @@ public class ShChannelOnStartup {
 			// Text Channel
 			ShChannel shChannelText = new ShChannel();
 			shChannelText.setName("Text");
-			shChannelText.setSummary("Text Channel");
 			shChannelText.setParentChannel(shChannelHome);
 			shChannelText.setShSite(shSite);
 			shChannelText.setDate(new Date());
@@ -113,7 +106,6 @@ public class ShChannelOnStartup {
 			// News Channel
 			ShChannel shChannelNews = new ShChannel();
 			shChannelNews.setName("News");
-			shChannelNews.setSummary("News Channel");
 			shChannelNews.setParentChannel(shChannelArticle);
 			shChannelNews.setShSite(shSite);
 			shChannelNews.setDate(new Date());

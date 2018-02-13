@@ -1,7 +1,8 @@
-package com.viglet.shiohara.channel;
+package com.viglet.shiohara.utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.UUID;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,6 @@ public class ShChannelUtils {
 		JSONObject shChannelItemSystemAttrs = new JSONObject();
 		shChannelItemSystemAttrs.put("id", shChannel.getId());
 		shChannelItemSystemAttrs.put("title", shChannel.getName());
-		shChannelItemSystemAttrs.put("summary", shChannel.getSummary());
 		shChannelItemSystemAttrs.put("link", this.channelPath(shChannel));
 
 		shChannelItemAttrs.put("system", shChannelItemSystemAttrs);
@@ -88,6 +88,27 @@ public class ShChannelUtils {
 
 	}
 
+	public ShSite getSite(ShChannel shChannel) {
+		ShSite shSite = null;
+		if (shChannel != null) {
+			boolean rootChannel = false;
+			if ((shChannel.getRootChannel() == (byte) 1) || (shChannel.getParentChannel() == null)) {
+				shSite = shChannel.getShSite();
+			} else {
+				ShChannel parentChannel = shChannel.getParentChannel();
+				while (parentChannel != null && !rootChannel) {
+					if ((parentChannel.getRootChannel() == (byte) 1) || (parentChannel.getParentChannel() == null)) {
+						rootChannel = true;
+						shSite = parentChannel.getShSite();
+					} else {
+						parentChannel = parentChannel.getParentChannel();
+					}
+				}
+			}
+		}
+		return shSite;
+	}
+
 	public ShChannel channelFromPath(ShSite shSite, String channelPath) {
 		ShChannel currentChannel = null;
 		String[] contexts = channelPath.replaceAll("-", " ").split("/");
@@ -101,6 +122,17 @@ public class ShChannelUtils {
 
 		}
 		return currentChannel;
+	}
+
+	public String generateChannelLink(String channelID) {
+		String shContext = "sites";
+		ShChannel shChannel = shChannelRepository.findById(UUID.fromString(channelID));
+		ShSite shSite = this.getSite(shChannel);
+		String link = "/" + shContext + "/";
+		link = link + shSite.getName().replaceAll(" ", "-");
+		link = link + "/default/pt-br";
+		link = link + this.channelPath(shChannel);
+		return link;
 	}
 
 	public boolean deleteChannel(ShChannel shChannel) {

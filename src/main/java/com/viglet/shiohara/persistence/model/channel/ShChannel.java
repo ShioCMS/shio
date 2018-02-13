@@ -36,8 +36,6 @@ public class ShChannel implements Serializable {
 
 	private String name;
 
-	private String summary;
-
 	private byte rootChannel;
 
 	// bi-directional many-to-one association to ShChannel
@@ -85,14 +83,6 @@ public class ShChannel implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getSummary() {
-		return summary;
-	}
-
-	public void setSummary(String summary) {
-		this.summary = summary;
 	}
 
 	public ShChannel getParentChannel() {

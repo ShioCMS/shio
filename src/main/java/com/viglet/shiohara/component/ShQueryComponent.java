@@ -15,7 +15,7 @@ import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.repository.channel.ShChannelRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
-import com.viglet.shiohara.post.ShPostUtils;
+import com.viglet.shiohara.utils.ShPostUtils;
 
 @Component
 public class ShQueryComponent {

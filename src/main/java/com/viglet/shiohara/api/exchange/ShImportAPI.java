@@ -120,7 +120,6 @@ public class ShImportAPI {
 					shChannelChild.setId(shChannelExchange.getId());
 					shChannelChild.setDate(shChannelExchange.getDate());
 					shChannelChild.setName(shChannelExchange.getName());
-					shChannelChild.setSummary(shChannelExchange.getSummary());
 					if (shChannelExchange.getParentChannel() != null) {
 						ShChannel parentChannel = shChannelRepository.findById(shChannelExchange.getParentChannel());
 						shChannelChild.setParentChannel(parentChannel);
