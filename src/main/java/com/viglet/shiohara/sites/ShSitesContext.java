@@ -1,6 +1,7 @@
 package com.viglet.shiohara.sites;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -24,6 +25,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,16 +59,17 @@ public class ShSitesContext {
 	ShPostUtils shPostUtils;
 	@Autowired
 	ShSiteUtils shSiteUtils;
+	@Autowired
+	ResourceLoader resourceloader;
+
 	@Resource
 	private ApplicationContext context;
-
 	@RequestMapping("/sites/{shSiteName}/{shFormat}/{shLocale}/**")
 	private void sitesFull(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable(value = "shSiteName") String shSiteName, @PathVariable(value = "shFormat") String shFormat,
 			@PathVariable(value = "shLocale") String shLocale) throws IOException, ScriptException {
 
-		InputStreamReader isr = new InputStreamReader(
-				ShSitesContext.class.getClass().getResourceAsStream("/js/shObject.js"));
+		InputStreamReader isr = new InputStreamReader(resourceloader.getResource("classpath:/js/shObject.js").getInputStream());
 
 		StringBuilder shObjectJS = new StringBuilder();
 		try (Reader reader = new BufferedReader(isr)) {
