@@ -1,4 +1,4 @@
-<div style="margin-bottom: 50px;">
+<div style="margin-bottom: 30px;">
 	<ul class="breadcrumb" style="margin-top: 5px; margin-bottom: 5px;">
 		<li><a
 		ui-sref="content"
@@ -29,6 +29,23 @@
 	</section>
 </div>
 	-->
+	
+<div class="settings">
+	<section class="content no-padding">
+
+		<fieldset class="user-details-top" style="margin-bottom: 30px">
+
+			<div class="form-group" style="text-align:center">
+				<h3 ng-show="shSite">{{shSite.name}} Site</h3>				
+			</div>
+			<div class="pull-right" style="margin: -40px 0 0;">
+				<a ng-if="channelId != null" ui-sref="content.channel.channel-new({channelId: channelId})" class="btn btn-viglet">New
+					Channel</a>
+
+			</div>
+		</fieldset>
+	</section>
+</div>	
 <div>
 	<div class="row">
 		<div class="col-lg-2 col-md-3 col-sm-3 col-xs-12">
