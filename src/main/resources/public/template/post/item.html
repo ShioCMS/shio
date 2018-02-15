@@ -7,9 +7,9 @@
 
 			<div class="form-group">
 
-				<h3 ng-if="shPost.id == 0">Create your new {{shPostType.title}}
+				<h3 ng-if="shPost.id == null">Create your new {{shPostType.title}}
 					Post</h3>
-				<h3 ng-if="shPost.id > 0">Edit your {{shPostType.title}} Post</h3>
+				<h3 ng-if="shPost.id != null">Edit your {{shPostType.title}} Post</h3>
 			</div>
 			<div class="pull-right" style="margin: -40px 0 0;">
 				<a ui-sref="content.channel.post-type-select({channelId: channelId})" class="btn btn-viglet">Create

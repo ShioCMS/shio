@@ -23,13 +23,18 @@
 				style="font-size: 14px; margin: 5px"></div> <a
 			ui-sref="content.channel.edit({channelId: shChannel.id})"
 			class="glyphicon glyphicon-pencil close"
-			style="font-size: 14px; margin: 5px"></a></td>	
+			style="font-size: 14px; margin: 5px"></a></td>
 		<td><a
+			ui-sref="content.children.channel-children({channelId: shChannel.id})"><i
+				class="fa fa-folder-open fa-2x" aria-hidden="true"
+				></i></a></td>
+		<td style="width: 200px;"><a
 			ui-sref="content.children.channel-children({channelId: shChannel.id})">
-				<i class="fa fa-folder-open fa-2x" aria-hidden="true" style="margin-right:15px"></i>{{shChannel.name}}</a></td>
-		<td><span class="label label-primary">Channel</span></td>
-		<td>{{shChannel.summary}}</td>
-		<td><span am-time-ago="shChannel.date"></span></td>
+
+				{{shChannel.name}}</a></td>
+		<td style="width: 100px;"><span class="label label-primary">Channel</span></td>
+		<td><div style="width: 450px; height: 1.2em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{shChannel.summary}}</div></td>
+		<td style="width: 120px;"><span am-time-ago="shChannel.date"></span></td>
 	</tr>
 	<!--  Posts  -->
 	<tr ng-repeat="shPost in shPosts">
@@ -43,11 +48,15 @@
 			class="glyphicon glyphicon-pencil close"
 			style="font-size: 14px; margin: 5px"></a></td>
 		<td><a
+			ui-sref="content.post-type-item.post-item({postTypeId: shPost.shPostType.id, postId: shPost.id})"><i
+				class="fa fa-file-o fa-2x" aria-hidden="true"
+				></i></a></td>
+		<td style="width: 200px;"><a
 			ui-sref="content.post-type-item.post-item({postTypeId: shPost.shPostType.id, postId: shPost.id})">
-				<i class="fa fa-file-o fa-2x" aria-hidden="true" style="margin-right:18px"></i>{{shPost.title}}</a></td>
-		<td><span class="label label-warning">
+				{{shPost.title}}</a></td>
+		<td style="width: 100px;"><span class="label label-warning">
 				{{shPost.shPostType.title}}</span></td>
-		<td>{{shPost.summary}}</td>
-		<td><span am-time-ago="shPost.date"></span></td>
+		<td><div style="width: 450px; height: 1.2em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{shPost.summary}}</div></td>
+		<td style="width: 120px;"><span am-time-ago="shPost.date"></span></td>
 	</tr>
 </table>
