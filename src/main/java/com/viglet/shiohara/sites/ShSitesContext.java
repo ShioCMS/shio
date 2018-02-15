@@ -266,17 +266,18 @@ public class ShSitesContext {
 
 		Document doc = Jsoup.parse(pageLayoutHTMLMod);
 		Elements elements = doc.getElementsByAttribute("sh-region");
-
+		
+		// Regions
 		for (Element element : elements) {
 
 			String regionAttr = element.attr("sh-region");
-			// System.out.println("regionAttr: " + regionAttr);
-			ShPost shRegionPageTemplate = shPostRepository.findByTitle(regionAttr);
+			
+			ShPost shRegionPost = shPostRepository.findByTitle(regionAttr);
 
-			Map<String, ShPostAttr> shRegionPageTemplateMap = shPostUtils.postToMap(shRegionPageTemplate);
+			Map<String, ShPostAttr> shRegionPostMap = shPostUtils.postToMap(shRegionPost);
 
-			String shRegionJS = shRegionPageTemplateMap.get("JAVASCRIPT").getStrValue();
-			String shRegionHTML = shRegionPageTemplateMap.get("HTML").getStrValue();
+			String shRegionJS = shRegionPostMap.get("JAVASCRIPT").getStrValue();
+			String shRegionHTML = shRegionPostMap.get("HTML").getStrValue();
 			javascript = javascriptVar + shRegionJS;
 
 			bindings.put("html", shRegionHTML);

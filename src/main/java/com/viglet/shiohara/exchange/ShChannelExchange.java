@@ -13,8 +13,6 @@ public class ShChannelExchange {
 
 	private String name;
 
-	private String summary;
-
 	private UUID parentChannel;
 
 	public UUID getId() {
@@ -39,14 +37,6 @@ public class ShChannelExchange {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getSummary() {
-		return summary;
-	}
-
-	public void setSummary(String summary) {
-		this.summary = summary;
 	}
 
 	public UUID getParentChannel() {

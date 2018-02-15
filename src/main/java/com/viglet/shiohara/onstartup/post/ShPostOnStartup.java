@@ -48,7 +48,7 @@ public class ShPostOnStartup {
 			ShChannel shChannelThemes = shChannelRepository.findByShSiteAndName(shSite, "Themes");
 
 			
-			ShPostType shPostPageTemplate = shPostTypeRepository.findByName("PT-PAGE-TEMPLATE");
+			ShPostType shPostRegion = shPostTypeRepository.findByName("PT-REGION");
 			ShPostType shPostType = shPostTypeRepository.findByName("PT-TEXT");
 			ShPostType shPostTypeArea = shPostTypeRepository.findByName("PT-TEXT-AREA");
 			ShPostType shPostArticle = shPostTypeRepository.findByName("PT-ARTICLE");
@@ -470,11 +470,11 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "JAVASCRIPT");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "JAVASCRIPT");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostPageTemplate);
+			shPostAttr.setShPostType(shPostRegion);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(
 					"load('https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js');\n"
@@ -503,40 +503,40 @@ public class ShPostOnStartup {
 
 			shPost = new ShPost();
 			shPost.setDate(new Date());
-			shPost.setShPostType(shPostPageTemplate);
+			shPost.setShPostType(shPostRegion);
 			shPost.setSummary("Navigation Template");
 			shPost.setTitle("Navigation");
 			shPost.setShChannel(shChannelTemplates);
 
 			shPostRepository.save(shPost);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "TITLE");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "TITLE");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostPageTemplate);
+			shPostAttr.setShPostType(shPostRegion);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(shPost.getTitle());
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "DESCRIPTION");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "DESCRIPTION");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostPageTemplate);
+			shPostAttr.setShPostType(shPostRegion);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(shPost.getSummary());
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "JAVASCRIPT");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "JAVASCRIPT");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostPageTemplate);
+			shPostAttr.setShPostType(shPostRegion);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(
 					"load('https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js');\n"
@@ -545,11 +545,11 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "HTML");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "HTML");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostPageTemplate);
+			shPostAttr.setShPostType(shPostRegion);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue("<!-- Navigation -->\n"
 					+ "    <nav class=\"navbar navbar-expand-lg navbar-dark navbar-custom fixed-top\">\n"
@@ -570,40 +570,40 @@ public class ShPostOnStartup {
 
 			shPost = new ShPost();
 			shPost.setDate(new Date());
-			shPost.setShPostType(shPostPageTemplate);
+			shPost.setShPostType(shPostRegion);
 			shPost.setSummary("Content Template");
 			shPost.setTitle("Content");
 			shPost.setShChannel(shChannelTemplates);
 
 			shPostRepository.save(shPost);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "TITLE");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "TITLE");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostPageTemplate);
+			shPostAttr.setShPostType(shPostRegion);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(shPost.getTitle());
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "DESCRIPTION");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "DESCRIPTION");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostPageTemplate);
+			shPostAttr.setShPostType(shPostRegion);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(shPost.getSummary());
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "JAVASCRIPT");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "JAVASCRIPT");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostPageTemplate);
+			shPostAttr.setShPostType(shPostRegion);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(
 					"load('https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js');\n"
@@ -612,11 +612,11 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "HTML");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "HTML");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostPageTemplate);
+			shPostAttr.setShPostType(shPostRegion);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue("<header class=\"masthead text-center text-white\">\n"
 					+ "      <div class=\"masthead-content\">\n" + "        <div class=\"container\">\n"
@@ -679,11 +679,11 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 			
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "JAVASCRIPT");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "JAVASCRIPT");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostPageTemplate);
+			shPostAttr.setShPostType(shPostRegion);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(
 					"load('https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js');\n"
@@ -711,40 +711,40 @@ public class ShPostOnStartup {
 
 			shPost = new ShPost();
 			shPost.setDate(new Date());
-			shPost.setShPostType(shPostPageTemplate);
+			shPost.setShPostType(shPostRegion);
 			shPost.setSummary("Navigation Channel Template");
 			shPost.setTitle("NavigationChannel");
 			shPost.setShChannel(shChannelTemplates);
 
 			shPostRepository.save(shPost);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "TITLE");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "TITLE");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostPageTemplate);
+			shPostAttr.setShPostType(shPostRegion);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(shPost.getTitle());
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "DESCRIPTION");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "DESCRIPTION");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostPageTemplate);
+			shPostAttr.setShPostType(shPostRegion);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(shPost.getSummary());
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "JAVASCRIPT");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "JAVASCRIPT");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostPageTemplate);
+			shPostAttr.setShPostType(shPostRegion);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(
 					"load('https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js');\n"
@@ -753,11 +753,11 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "HTML");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "HTML");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostPageTemplate);
+			shPostAttr.setShPostType(shPostRegion);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue("<!-- Navigation -->\n"
 					+ "    <nav class=\"navbar navbar-expand-lg navbar-dark navbar-custom fixed-top\">\n"
@@ -782,40 +782,40 @@ public class ShPostOnStartup {
 
 			shPost = new ShPost();
 			shPost.setDate(new Date());
-			shPost.setShPostType(shPostPageTemplate);
+			shPost.setShPostType(shPostRegion);
 			shPost.setSummary("Content Channel Template");
 			shPost.setTitle("ContentChannel");
 			shPost.setShChannel(shChannelTemplates);
 
 			shPostRepository.save(shPost);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "TITLE");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "TITLE");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostPageTemplate);
+			shPostAttr.setShPostType(shPostRegion);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(shPost.getTitle());
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "DESCRIPTION");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "DESCRIPTION");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostPageTemplate);
+			shPostAttr.setShPostType(shPostRegion);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(shPost.getSummary());
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "JAVASCRIPT");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "JAVASCRIPT");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostPageTemplate);
+			shPostAttr.setShPostType(shPostRegion);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(
 					"load('https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js');\n"
@@ -824,11 +824,11 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostPageTemplate, "HTML");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "HTML");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostPageTemplate);
+			shPostAttr.setShPostType(shPostRegion);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(" <header class=\"masthead text-center text-white\">\n"
 					+ "      <div class=\"masthead-content\">\n" + "        <div class=\"container\">\n"
