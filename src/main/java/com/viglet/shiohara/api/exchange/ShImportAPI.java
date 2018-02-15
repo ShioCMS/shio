@@ -64,6 +64,7 @@ public class ShImportAPI {
 			shSite.setName(shSiteExchange.getName());
 			shSite.setUrl(shSiteExchange.getUrl());
 			shSite.setDescription(shSiteExchange.getDescription());
+			shSite.setPostTypeLayout(shSiteExchange.getPostTypeLayout());
 			shSite.setDate(shSiteExchange.getDate());
 
 			shSiteRepository.save(shSite);

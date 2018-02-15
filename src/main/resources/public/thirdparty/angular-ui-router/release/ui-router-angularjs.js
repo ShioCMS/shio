@@ -1,7 +1,7 @@
 /**
  * State-based routing for AngularJS 1.x
  * This bundle requires the ui-router-core.js bundle from the @uirouter/core package.
- * @version v1.0.13
+ * @version v1.0.15
  * @link https://ui-router.github.io
  * @license MIT License, http://www.opensource.org/licenses/MIT
  */
@@ -1150,8 +1150,8 @@ uiSrefDirective = ['$uiRouter', '$timeout',
                         attrs.$set(type.attr, def.href);
                 }
                 if (ref.paramExpr) {
-                    scope.$watch(ref.paramExpr, function (val$$1) {
-                        rawDef.uiStateParams = core.extend({}, val$$1);
+                    scope.$watch(ref.paramExpr, function (val) {
+                        rawDef.uiStateParams = core.extend({}, val);
                         update();
                     }, true);
                     rawDef.uiStateParams = core.extend({}, scope.$eval(ref.paramExpr));
@@ -1366,6 +1366,17 @@ uiStateDirective = ['$uiRouter', '$timeout',
  * </div>
  * ```
  *
+ * Arrays are also supported as values in the `ngClass`-like interface.
+ * This allows multiple states to add `active` class.
+ *
+ * #### Example:
+ * Given the following template, with "admin.roles" being the current state, the class will be added too:
+ * ```html
+ * <div ui-sref-active="{'active': ['owner.**', 'admin.**']}">
+ *   <a ui-sref-active="active" ui-sref="admin.roles">Roles</a>
+ * </div>
+ * ```
+ *
  * When the current state is "admin.roles" the "active" class will be applied to both the `<div>` and `<a>` elements.
  * It is important to note that the state names/globs passed to `ui-sref-active` override any state provided by a linked `ui-sref`.
  *
@@ -1398,14 +1409,7 @@ uiSrefActiveDirective = ['$state', '$stateParams', '$interpolate', '$uiRouter',
                         // Fall back to using $interpolate below
                     }
                     uiSrefActive = uiSrefActive || $interpolate($attrs.uiSrefActive || '', false)($scope);
-                    if (core.isObject(uiSrefActive)) {
-                        core.forEach(uiSrefActive, function (stateOrName, activeClass) {
-                            if (core.isString(stateOrName)) {
-                                var ref = parseStateRef(stateOrName);
-                                addState(ref.state, $scope.$eval(ref.paramExpr), activeClass);
-                            }
-                        });
-                    }
+                    setStatesFromDefinitionObject(uiSrefActive);
                     // Allow uiSref to communicate with uiSrefActive[Equals]
                     this.$$addStateInfo = function (newState, newParams) {
                         // we already got an explicit state provided by ui-sref-active, so we
@@ -1420,10 +1424,44 @@ uiSrefActiveDirective = ['$state', '$stateParams', '$interpolate', '$uiRouter',
                     function updateAfterTransition(trans) {
                         trans.promise.then(update, core.noop);
                     }
-                    $scope.$on('$stateChangeSuccess', update);
-                    $scope.$on('$destroy', $uiRouter.transitionService.onStart({}, updateAfterTransition));
+                    $scope.$on('$destroy', setupEventListeners());
                     if ($uiRouter.globals.transition) {
                         updateAfterTransition($uiRouter.globals.transition);
+                    }
+                    function setupEventListeners() {
+                        var deregisterStatesChangedListener = $uiRouter.stateRegistry.onStatesChanged(handleStatesChanged);
+                        var deregisterOnStartListener = $uiRouter.transitionService.onStart({}, updateAfterTransition);
+                        var deregisterStateChangeSuccessListener = $scope.$on('$stateChangeSuccess', update);
+                        return function cleanUp() {
+                            deregisterStatesChangedListener();
+                            deregisterOnStartListener();
+                            deregisterStateChangeSuccessListener();
+                        };
+                    }
+                    function handleStatesChanged() {
+                        setStatesFromDefinitionObject(uiSrefActive);
+                    }
+                    function setStatesFromDefinitionObject(statesDefinition) {
+                        if (core.isObject(statesDefinition)) {
+                            states = [];
+                            core.forEach(statesDefinition, function (stateOrName, activeClass) {
+                                // Helper function to abstract adding state.
+                                var addStateForClass = function (stateOrName, activeClass) {
+                                    var ref = parseStateRef(stateOrName);
+                                    addState(ref.state, $scope.$eval(ref.paramExpr), activeClass);
+                                };
+                                if (core.isString(stateOrName)) {
+                                    // If state is string, just add it.
+                                    addStateForClass(stateOrName, activeClass);
+                                }
+                                else if (core.isArray(stateOrName)) {
+                                    // If state is an array, iterate over it and add each array item individually.
+                                    core.forEach(stateOrName, function (stateOrName) {
+                                        addStateForClass(stateOrName, activeClass);
+                                    });
+                                }
+                            });
+                        }
                     }
                     function addState(stateName, stateParams, activeClass) {
                         var state = $state.get(stateName, stateContext($element));
@@ -1887,7 +1925,7 @@ function registerControllerCallbacks($q, $transitions, controllerInstance, $scop
             if (changedToParams.length) {
                 var changedKeys_1 = changedToParams.map(function (x) { return x.id; });
                 // Filter the params to only changed/new to params.  `$transition$.params()` may be used to get all params.
-                var newValues = core.filter(toParams, function (val$$1, key) { return changedKeys_1.indexOf(key) !== -1; });
+                var newValues = core.filter(toParams, function (val, key) { return changedKeys_1.indexOf(key) !== -1; });
                 controllerInstance.uiOnParamsChanged(newValues, $transition$);
             }
         };
@@ -1907,7 +1945,7 @@ function registerControllerCallbacks($q, $transitions, controllerInstance, $scop
             var ids = trans[cacheProp_1] = trans[cacheProp_1] || {};
             if (!prevTruthyAnswer_1(trans)) {
                 promise = $q.when(controllerInstance.uiCanExit(trans));
-                promise.then(function (val$$1) { return ids[id_1] = (val$$1 !== false); });
+                promise.then(function (val) { return ids[id_1] = (val !== false); });
             }
             return promise;
         };
@@ -1944,8 +1982,9 @@ ng.module('ui.router.state').provider('$uiViewScroll', $ViewScrollProvider);
  */ /** */
 var index = 'ui.router';
 
-exports['default'] = index;
+Object.keys(core).forEach(function (key) { exports[key] = core[key]; });
 exports.core = core;
+exports.default = index;
 exports.watchDigests = watchDigests;
 exports.getLocals = getLocals;
 exports.getNg1ViewConfigFactory = getNg1ViewConfigFactory;
@@ -1953,7 +1992,6 @@ exports.ng1ViewsBuilder = ng1ViewsBuilder;
 exports.Ng1ViewConfig = Ng1ViewConfig;
 exports.StateProvider = StateProvider;
 exports.UrlRouterProvider = UrlRouterProvider;
-Object.keys(core).forEach(function (key) { exports[key] = core[key]; });
 
 Object.defineProperty(exports, '__esModule', { value: true });
 

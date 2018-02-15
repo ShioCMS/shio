@@ -60,6 +60,15 @@ public class ShWidgetOnStartup {
 			shWidget.setType("TEXT,TEXTAREA");
 
 			shWidgetRepository.save(shWidget);
+			
+			shWidget = new ShWidget();
+			shWidget.setName("HTML Editor");
+			shWidget.setDescription("HTML Editor Widget");
+			shWidget.setClassName("com.viglet.shiohara.widget.ShHTMLWidget");
+			shWidget.setImplementationCode("template/widget/html-editor.html");
+			shWidget.setType("TEXT,TEXTAREA");
+
+			shWidgetRepository.save(shWidget);
 
 		}
 

@@ -30,6 +30,7 @@
     "angular-ui-ace": "*",
     "font-awesome": "*",
     "ng-file-upload": "*",
-    "angular-ui-notification": "^0.3.6"
+    "angular-ui-notification": "^0.3.6",
+    "textAngular": "*"
   }
 }

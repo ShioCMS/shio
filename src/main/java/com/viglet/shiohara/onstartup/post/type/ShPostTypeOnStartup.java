@@ -274,13 +274,13 @@ public class ShPostTypeOnStartup {
 
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
-			// Page Template
+			// Region
 
 			shPostType = new ShPostType();
-			shPostType.setName("PT-PAGE-TEMPLATE");
-			shPostType.setTitle("Page Template");
+			shPostType.setName("PT-REGION");
+			shPostType.setTitle("Region");
 			shPostType.setDate(Calendar.getInstance().getTime());
-			shPostType.setDescription("Page Template Post Type");
+			shPostType.setDescription("Region Post Type");
 			shPostType.setSystem((byte) 1);
 
 			shPostTypeRepository.save(shPostType);
