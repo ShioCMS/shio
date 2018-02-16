@@ -58,11 +58,11 @@ public class ShStaticFileAPI {
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces("application/json")
 	@Path("upload")
-	public Response fileUpload(@DefaultValue("true") @FormDataParam("enabled") boolean enabled,
-			@FormDataParam("file") InputStream inputStream,
+	public String fileUpload(@DefaultValue("true") @FormDataParam("enabled") boolean enabled,
+			@FormDataParam("file") InputStream inputStream, @FormDataParam("channelId") UUID channelId,
 			@FormDataParam("file") FormDataContentDisposition fileDetail, @Context UriInfo uriInfo)
 			throws URISyntaxException {
-
+		String filePath = null;
 		File userDir = new File(System.getProperty("user.dir"));
 		if (userDir.exists() && userDir.isDirectory()) {
 			File fileSourceDir = new File(userDir.getAbsolutePath().concat("/store/file_source"));
@@ -85,31 +85,10 @@ public class ShStaticFileAPI {
 				while ((read = inputStream.read(bytes)) != -1) {
 					outputStream.write(bytes, 0, read);
 				}
-
-				// Post File
-				ShSite shSite = shSiteRepository.findById(UUID.fromString("need-fix-this"));
-				ShPostType shPostType = shPostTypeRepository.findByName("PT-FILE");
-				ShChannel shChannelHome = shChannelRepository.findByShSiteAndName(shSite, "Home");
-
-				ShPost shPost = new ShPost();
-				shPost.setDate(new Date());
-				shPost.setShPostType(shPostType);
-				shPost.setSummary(null);
-				shPost.setTitle(fileDetail.getFileName());
-				shPost.setShChannel(shChannelHome);
-
-				shPostRepository.save(shPost);
-
-				ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType, "File");
-
-				ShPostAttr shPostAttr = new ShPostAttr();
-				shPostAttr.setShPost(shPost);
-				shPostAttr.setShPostType(shPostType);
-				shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-				shPostAttr.setStrValue(shPost.getTitle());
-				shPostAttr.setType(1);
-
-				shPostAttrRepository.save(shPostAttr);
+				ShChannel shChannel = shChannelRepository.findById(channelId);
+					
+				
+				filePath = fileDetail.getFileName();
 
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -132,7 +111,7 @@ public class ShStaticFileAPI {
 				}
 			}
 		}
-		return Response.ok().build();
+		return "{ \"file\":\"" + filePath + "\"}";
 	}
 
 }

@@ -1,5 +1,5 @@
 <div>
-	<ul class="breadcrumb" style="margin-top: 5px; margin-bottom: 5px;">
+	<ul class="breadcrumb" style="margin-top: 0px; margin-bottom: 5px;">
 		<li><a ng-if="breadcrumb != null"
 			ui-sref="content.children.site-children({siteId: shSite.id})"
 			ui-sref-opts="{reload:true}"><i class="fa fa-sitemap"
@@ -15,39 +15,57 @@
 <table class="table table-hover">
 	<!--  Channels  -->
 	<tr ng-repeat="shChannel in shChannels">
-		<td style="width: 120px;"><input type="checkbox" />
-			<div ng-click="channelDelete(shChannel.id)"
-				class="glyphicon glyphicon-trash close"
-				style="font-size: 14px; margin: 5px"></div>
-			<div class="glyphicon glyphicon-star-empty close"
-				style="font-size: 14px; margin: 5px"></div> <a
-			ui-sref="content.channel.edit({channelId: shChannel.id})"
-			class="glyphicon glyphicon-pencil close"
-			style="font-size: 14px; margin: 5px"></a></td>	
+		<td style="width: 120px; white-space: nowrap; text-align: left">
+			<div class="row" style="width: 60px; margin: 0px; margin-right: 10px">
+				<div ng-click="channelDelete(shChannel.id)"
+					class="glyphicon glyphicon-trash close col-lg-1 col-md-1 col-sm-1 col-xs-1"
+					style="font-size: 14px; margin: 5px; padding: 0px; width: 10px"></div>
+				<div
+					class="glyphicon glyphicon-star-empty close col-lg-1 col-md-1 col-sm-1 col-xs-1"
+					style="font-size: 14px; margin: 5px; padding: 0px; width: 10px"></div>
+				<a ui-sref="content.channel.edit({channelId: shChannel.id})"><div
+						class="glyphicon glyphicon-pencil close col-lg-1 col-md-1 col-sm-1 col-xs-1"
+						style="font-size: 14px; margin: 5px; padding: 0px; width: 10px"></div></a>
+			</div>
+		</td>
 		<td><a
+			ui-sref="content.children.channel-children({channelId: shChannel.id})"><i
+				class="fa fa-folder-open fa-2x" aria-hidden="true"></i></a></td>
+		<td><div style="width: 300px"><a
 			ui-sref="content.children.channel-children({channelId: shChannel.id})">
-				<i class="fa fa-folder-open fa-2x" aria-hidden="true" style="margin-right:15px"></i>{{shChannel.name}}</a></td>
-		<td><span class="label label-primary">Channel</span></td>
-		<td>{{shChannel.summary}}</td>
-		<td><span am-time-ago="shChannel.date"></span></td>
+
+				{{shChannel.name}}</a></div></td>
+		<td style="width: 100px;"><span class="label label-primary">Channel</span></td>
+		<td style="width: 100%;" class="hidden-md hidden-sm hidden-xs">{{shChannel.summary}}</td>
+		<td style="width: 120px; white-space: nowrap;" class="hidden-sm hidden-xs"><span
+			am-time-ago="shChannel.date"></span></td>
 	</tr>
 	<!--  Posts  -->
 	<tr ng-repeat="shPost in shPosts">
-		<td style="width: 120px;"><input type="checkbox" />
-			<div ng-click="postDelete(shPost.id)"
-				class="glyphicon glyphicon-trash close"
-				style="font-size: 14px; margin: 5px"></div>
-			<div class="glyphicon glyphicon-star-empty close"
-				style="font-size: 14px; margin: 5px"></div> <a
-			ui-sref="content.post-type-item.post-item({postTypeId: shPost.shPostType.id, postId: shPost.id})"
-			class="glyphicon glyphicon-pencil close"
-			style="font-size: 14px; margin: 5px"></a></td>
+		<td style="width: 120px; white-space: nowrap; text-align: left">
+			<div class="row" style="width: 60px; margin: 0px; margin-right: 10px">
+				<div ng-click="postDelete(shPost.id)"
+					class="glyphicon glyphicon-trash close col-lg-1 col-md-1 col-sm-1 col-xs-1"
+					style="font-size: 14px; margin: 5px; padding: 0px; width: 10px"></div>
+				<div
+					class="glyphicon glyphicon-star-empty close col-lg-1 col-md-1 col-sm-1 col-xs-1"
+					style="font-size: 14px; margin: 5px; padding: 0px; width: 10px"></div>
+				<a
+					ui-sref="content.post-type-item.post-item({postTypeId: shPost.shPostType.id, postId: shPost.id})"><div
+						class="glyphicon glyphicon-pencil close col-lg-1 col-md-1 col-sm-1 col-xs-1"
+						style="font-size: 14px; margin: 5px; padding: 0px; width: 10px"></div></a>
+			</div>
+		</td>
 		<td><a
+			ui-sref="content.post-type-item.post-item({postTypeId: shPost.shPostType.id, postId: shPost.id})"><i
+				class="fa fa-file-o fa-2x" aria-hidden="true"></i></a></td>
+		<td><div style="width: 300px"><a
 			ui-sref="content.post-type-item.post-item({postTypeId: shPost.shPostType.id, postId: shPost.id})">
-				<i class="fa fa-file-o fa-2x" aria-hidden="true" style="margin-right:18px"></i>{{shPost.title}}</a></td>
-		<td><span class="label label-warning">
+				{{shPost.title}}</a></div></td>
+		<td style="width: 100px;"><span class="label label-warning">
 				{{shPost.shPostType.title}}</span></td>
-		<td>{{shPost.summary}}</td>
-		<td><span am-time-ago="shPost.date"></span></td>
+		<td style="width: 100%;" class="hidden-md hidden-sm hidden-xs">{{shPost.summary}}</td>
+		<td style="width: 120px; white-space: nowrap;" class="hidden-sm hidden-xs"><span
+			am-time-ago="shPost.date"></span></td>
 	</tr>
 </table>
