@@ -6,7 +6,13 @@ shioharaApp
 						'Upload',
 						'$timeout',
 						function($scope, Upload, $timeout) {
-							$scope.$watch('files', function() {
+							
+							$scope.$watch('shPostAttr.file', function() {
+								if ($scope.shPostAttr.file != null) {
+									$scope.shPostAttr.strValue = $scope.shPostAttr.file.name;
+								}
+							});
+/*							$scope.$watch('files', function() {
 								$scope.upload($scope.files);
 							});
 							$scope.$watch('file', function() {
@@ -56,5 +62,5 @@ shioharaApp
 										}
 									}
 								}
-							};
+							};*/
 						} ]);

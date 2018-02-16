@@ -10,6 +10,10 @@ shioharaApp.controller('ShPostEditCtrl', [
 		"Notification",
 		function($scope, $http, $window, $stateParams, $state, $rootScope,
 				shPostResource, shAPIServerService, Notification) {
+			$scope.tinymceOptions = {
+				    plugins: 'link image code',
+				    toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code'
+				  };
 			var channelURL = null;
 			$scope.channelId = null;
 			$scope.postId = $stateParams.postId;

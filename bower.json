@@ -31,6 +31,6 @@
     "font-awesome": "*",
     "ng-file-upload": "*",
     "angular-ui-notification": "^0.3.6",
-    "textAngular": "*"
+    "angular-ui-tinymce": "^0.0.19"
   }
 }
