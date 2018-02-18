@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
+import java.util.Date;
 import java.util.UUID;
 
 import javax.ws.rs.Consumes;
@@ -23,7 +24,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.persistence.model.channel.ShChannel;
+import com.viglet.shiohara.persistence.model.post.ShPost;
+import com.viglet.shiohara.persistence.model.post.ShPostAttr;
+import com.viglet.shiohara.persistence.model.post.type.ShPostType;
+import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.repository.channel.ShChannelRepository;
+import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
+import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
+import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
+import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
 
 @Component
@@ -34,6 +43,14 @@ public class ShStaticFileAPI {
 	private ShChannelRepository shChannelRepository;
 	@Autowired
 	private ShStaticFileUtils shStaticFileUtils;
+	@Autowired
+	private ShPostTypeRepository shPostTypeRepository;
+	@Autowired
+	private ShPostRepository shPostRepository;
+	@Autowired
+	private ShPostTypeAttrRepository shPostTypeAttrRepository;
+	@Autowired
+	private ShPostAttrRepository shPostAttrRepository;
 
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -41,6 +58,7 @@ public class ShStaticFileAPI {
 	@Path("upload")
 	public String fileUpload(@DefaultValue("true") @FormDataParam("enabled") boolean enabled,
 			@FormDataParam("file") InputStream inputStream, @FormDataParam("channelId") UUID channelId,
+			@FormDataParam("createPost") boolean createPost,
 			@FormDataParam("file") FormDataContentDisposition fileDetail, @Context UriInfo uriInfo)
 			throws URISyntaxException {
 
@@ -69,6 +87,30 @@ public class ShStaticFileAPI {
 
 				filePath = fileDetail.getFileName();
 
+				if (createPost) {
+					// Post File
+					ShPostType shPostType = shPostTypeRepository.findByName("PT-FILE");
+					ShPost shPost = new ShPost();
+					shPost.setDate(new Date());
+					shPost.setShPostType(shPostType);
+					shPost.setSummary(null);
+					shPost.setTitle(filePath);
+					shPost.setShChannel(shChannel);
+
+					shPostRepository.save(shPost);
+
+					ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType,
+							"FILE");
+
+					ShPostAttr shPostAttr = new ShPostAttr();
+					shPostAttr.setShPost(shPost);
+					shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+					shPostAttr.setStrValue(shPost.getTitle());
+					shPostAttr.setType(1);
+
+					shPostAttrRepository.save(shPostAttr);
+
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			} finally {

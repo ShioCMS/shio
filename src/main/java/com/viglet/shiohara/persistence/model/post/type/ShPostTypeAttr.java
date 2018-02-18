@@ -61,6 +61,17 @@ public class ShPostTypeAttr implements Serializable {
 	@JoinColumn(name = "widget_id")
 	private ShWidget shWidget;
 
+	@Transient
+	private String shPostTypeName;
+
+	public String getShPostTypeName() {
+		if (shPostType != null) {
+			shPostTypeName = shPostType.getName();
+		}
+		return shPostTypeName;
+	}
+
+	
 	public ShPostTypeAttr() {
 	}
 

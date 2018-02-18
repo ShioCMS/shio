@@ -7,11 +7,21 @@ shioharaApp
 						'$timeout',
 						function($scope, Upload, $timeout) {
 							
+							$scope.uploadNewFile = false;
 							$scope.$watch('shPostAttr.file', function() {
 								if ($scope.shPostAttr.file != null) {
+									$scope.uploadNewFile = false;
 									$scope.shPostAttr.strValue = $scope.shPostAttr.file.name;
 								}
 							});
+							
+							$scope.newFile = function() {
+								$scope.uploadNewFile = true;
+							}
+							$scope.clearFile = function(shPostAttr) {
+								shPostAttr.strValue = null;
+								shPostAttr.file = null;
+							}
 /*							$scope.$watch('files', function() {
 								$scope.upload($scope.files);
 							});
