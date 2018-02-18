@@ -15,6 +15,7 @@ shioharaApp.controller('ShPostEditCtrl', [
 				    toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code'
 				  };
 			var channelURL = null;
+			var folderPath = null;
 			$scope.channelId = null;
 			$scope.postId = $stateParams.postId;
 			$scope.breadcrumb = null;
@@ -36,6 +37,7 @@ shioharaApp.controller('ShPostEditCtrl', [
 								function(response) {
 									$scope.breadcrumb = response.data.breadcrumb;
 									$scope.shSite = response.data.shSite;
+									folderPath = "/store/file_source/" + $scope.shSite.name + response.data.channelPath;
 									channelURL = shAPIServerService.server().concat(
 											"/sites/" + $scope.shSite.name.replace(new RegExp(" ",
 											'g'), "-") + "/default/pt-br" + response.data.channelPath.replace(new RegExp(" ",
@@ -49,7 +51,10 @@ shioharaApp.controller('ShPostEditCtrl', [
 			
 							
 			$scope.openPreviewURL = function() {
-					if ($scope.shPost.shPostType.name == 'PT-CHANNEL-INDEX') {
+				if ($scope.shPost.shPostType.name == 'PT-FILE') {
+					var previewURL = folderPath + $scope.shPost.title;
+				}
+				else if ($scope.shPost.shPostType.name == 'PT-CHANNEL-INDEX') {
 						var previewURL = channelURL;
 					}
 					else {

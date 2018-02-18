@@ -70,7 +70,6 @@ public class ShPostTypeAPI {
 		List<ShPostAttr> shPostAttrs = new ArrayList<ShPostAttr>();
 		for (ShPostTypeAttr shPostTypeAttr : shPost.getShPostType().getShPostTypeAttrs()) {
 			ShPostAttr shPostAttr = new ShPostAttr();
-			shPostAttr.setShPostType(shPost.getShPostType());
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setShPostTypeAttrId(shPostTypeAttr.getId());
 			shPostAttrs.add(shPostAttr);
@@ -125,9 +124,6 @@ public class ShPostTypeAPI {
 	@Produces(MediaType.APPLICATION_JSON)
 	public boolean delete(@PathParam("postTypeId") UUID id) throws Exception {
 		ShPostType shPostType = shPostTypeRepository.findById(id);
-		for (ShPostAttr shPostAttr : shPostType.getShPostAttrs()) {
-			shPostAttrRepository.delete(shPostAttr.getId());
-		}
 
 		for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs()) {
 			for (ShPostAttr shPostAttr : shPostTypeAttr.getShPostAttrs()) {

@@ -162,7 +162,6 @@ public class ShImportAPI {
 						ShPostAttr shPostAttr = new ShPostAttr();
 						shPostAttr.setStrValue((String) shPostFields.getValue());
 						shPostAttr.setShPost(shPost);
-						shPostAttr.setShPostType(shPost.getShPostType());
 						shPostAttr.setShPostTypeAttr(shPostTypeAttrRepository
 								.findByShPostTypeAndName(shPost.getShPostType(), shPostFields.getKey()));
 						shPostAttr.setType(1);
