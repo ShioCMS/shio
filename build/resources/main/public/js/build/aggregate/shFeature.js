@@ -280,7 +280,9 @@ shioharaApp
 														$scope.shChannel = response.data.currentChannel
 														$scope.breadcrumb = response.data.breadcrumb;
 														$scope.shSite = response.data.shSite;
-														folderPath = "/store/file_source/" + $scope.shSite.name + response.data.channelPath;
+														folderPath = "/store/file_source/"
+																+ $scope.shSite.name
+																+ response.data.channelPath;
 														channelURL = shAPIServerService
 																.server()
 																.concat(
@@ -310,9 +312,9 @@ shioharaApp
 
 							$scope.openPreviewURL = function() {
 								if ($scope.shPost.shPostType.name == 'PT-FILE') {
-									var previewURL = folderPath + $scope.shPost.title;
-								}
-								else if ($scope.shPost.shPostType.name == 'PT-CHANNEL-INDEX') {
+									var previewURL = folderPath
+											+ $scope.shPost.title;
+								} else if ($scope.shPost.shPostType.name == 'PT-CHANNEL-INDEX') {
 									var previewURL = channelURL;
 								} else {
 									var previewURL = channelURL
@@ -322,19 +324,27 @@ shioharaApp
 								$window.open(previewURL, "_self");
 							}
 
-							var uploadFile = function(shPostAttr, key) {
+							var uploadFile = function(shPostAttr, key, postType) {
 								var deferredFile = $q.defer();
 								if (shPostAttr.shPostTypeAttr.shWidget.name == "File") {
+									var createPost = true;
+									if (postType.name == "PT-FILE") {
+										createPost = false;
+									}
 									$scope.numberOfFileWidgets++;
 									$scope.file = shPostAttr.file;
 									if (!$scope.file.$error) {
 										Upload
 												.upload(
 														{
-															url : 'http://localhost:2710/api/staticfile/upload',
+															url : shAPIServerService
+																	.get()
+																	.concat(
+																			'/staticfile/upload'),
 															data : {
 																file : $scope.file,
-																channelId : $scope.shChannel.id
+																channelId : $scope.shChannel.id,
+																createPost : createPost
 															}
 														})
 												.then(
@@ -379,11 +389,16 @@ shioharaApp
 
 								$scope.filePath = null;
 								$scope.numberOfFileWidgets = 0;
-								angular.forEach($scope.shPost.shPostAttrs,
-										function(shPostAttr, key) {
-											promiseFiles.push(uploadFile(
-													shPostAttr, key));
-										});
+								var postType = $scope.shPost.shPostType;
+								angular
+										.forEach($scope.shPost.shPostAttrs,
+												function(shPostAttr, key) {
+													promiseFiles
+															.push(uploadFile(
+																	shPostAttr,
+																	key,
+																	postType));
+												});
 
 								$q
 										.all(promiseFiles)

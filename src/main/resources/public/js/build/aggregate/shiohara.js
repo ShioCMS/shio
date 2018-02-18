@@ -546,7 +546,12 @@ shioharaApp
 														$scope.shChannel = response.data.currentChannel
 														$scope.breadcrumb = response.data.breadcrumb;
 														$scope.shSite = response.data.shSite;
-														folderPath = "/store/file_source/" + $scope.shSite.name + response.data.channelPath;
+														folderPath = shAPIServerService
+																.server()
+																.concat(
+																		"/store/file_source/"
+																				+ $scope.shSite.name
+																				+ response.data.channelPath);
 														channelURL = shAPIServerService
 																.server()
 																.concat(
@@ -576,9 +581,9 @@ shioharaApp
 
 							$scope.openPreviewURL = function() {
 								if ($scope.shPost.shPostType.name == 'PT-FILE') {
-									var previewURL = folderPath + $scope.shPost.title;
-								}
-								else if ($scope.shPost.shPostType.name == 'PT-CHANNEL-INDEX') {
+									var previewURL = folderPath
+											+ $scope.shPost.title;
+								} else if ($scope.shPost.shPostType.name == 'PT-CHANNEL-INDEX') {
 									var previewURL = channelURL;
 								} else {
 									var previewURL = channelURL
@@ -588,19 +593,27 @@ shioharaApp
 								$window.open(previewURL, "_self");
 							}
 
-							var uploadFile = function(shPostAttr, key) {
+							var uploadFile = function(shPostAttr, key, postType) {
 								var deferredFile = $q.defer();
-								if (shPostAttr.shPostTypeAttr.shWidget.name == "File") {
+								if (shPostAttr.shPostTypeAttr.shWidget.name == "File" && shPostAttr.file != null) {
+									var createPost = true;
+									if (postType.name == "PT-FILE") {
+										createPost = false;
+									}
 									$scope.numberOfFileWidgets++;
 									$scope.file = shPostAttr.file;
 									if (!$scope.file.$error) {
 										Upload
 												.upload(
 														{
-															url : 'http://localhost:2710/api/staticfile/upload',
+															url : shAPIServerService
+																	.get()
+																	.concat(
+																			'/staticfile/upload'),
 															data : {
 																file : $scope.file,
-																channelId : $scope.shChannel.id
+																channelId : $scope.shChannel.id,
+																createPost : createPost
 															}
 														})
 												.then(
@@ -645,11 +658,16 @@ shioharaApp
 
 								$scope.filePath = null;
 								$scope.numberOfFileWidgets = 0;
-								angular.forEach($scope.shPost.shPostAttrs,
-										function(shPostAttr, key) {
-											promiseFiles.push(uploadFile(
-													shPostAttr, key));
-										});
+								var postType = $scope.shPost.shPostType;
+								angular
+										.forEach($scope.shPost.shPostAttrs,
+												function(shPostAttr, key) {
+													promiseFiles
+															.push(uploadFile(
+																	shPostAttr,
+																	key,
+																	postType));
+												});
 
 								$q
 										.all(promiseFiles)
@@ -703,8 +721,11 @@ shioharaApp.controller('ShPostEditCtrl', [
 		"shPostResource",
 		"shAPIServerService",
 		"Notification",
+		"Upload",
+		"$q",
+		"$timeout",
 		function($scope, $http, $window, $stateParams, $state, $rootScope,
-				shPostResource, shAPIServerService, Notification) {
+				shPostResource, shAPIServerService, Notification, Upload, $q, $timeout) {
 			$scope.tinymceOptions = {
 				    plugins: 'link image code',
 				    toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code'
@@ -732,7 +753,7 @@ shioharaApp.controller('ShPostEditCtrl', [
 								function(response) {
 									$scope.breadcrumb = response.data.breadcrumb;
 									$scope.shSite = response.data.shSite;
-									folderPath = "/store/file_source/" + $scope.shSite.name + response.data.channelPath;
+									folderPath =  shAPIServerService.server().concat("/store/file_source/" + $scope.shSite.name + response.data.channelPath);
 									channelURL = shAPIServerService.server().concat(
 											"/sites/" + $scope.shSite.name.replace(new RegExp(" ",
 											'g'), "-") + "/default/pt-br" + response.data.channelPath.replace(new RegExp(" ",
@@ -771,9 +792,90 @@ shioharaApp.controller('ShPostEditCtrl', [
 				});
 			}
 			$scope.postSave = function() {
+				var promiseFiles = [];
+
+				$scope.filePath = null;
+				$scope.numberOfFileWidgets = 0;
+				var postType = $scope.shPost.shPostType;
+				angular
+						.forEach($scope.shPost.shPostAttrs,
+								function(shPostAttr, key) {
+									promiseFiles
+											.push(uploadFile(
+													shPostAttr,
+													key,
+													postType));
+								});
+
+				$q
+						.all(promiseFiles)
+						.then(
+								function(dataThatWasPassed) {
 				$scope.shPost.$update(function() {
 					 Notification.warning('The ' + $scope.shPost.title +' Post was updated.');
 				});
+								});
+				
+			}
+			
+			var uploadFile = function(shPostAttr, key, postType) {
+				var deferredFile = $q.defer();
+				if (shPostAttr.shPostTypeAttr.shWidget.name == "File" && shPostAttr.file != null) {
+					var createPost = true;
+					if (postType.name == "PT-FILE") {
+						createPost = false;
+					}
+					$scope.numberOfFileWidgets++;
+					$scope.file = shPostAttr.file;
+					if (!$scope.file.$error) {
+						Upload
+								.upload(
+										{
+											url : shAPIServerService
+													.get()
+													.concat(
+															'/staticfile/upload'),
+											data : {
+												file : $scope.file,
+												channelId : $scope.channelId,
+												createPost : createPost
+											}
+										})
+								.then(
+
+										function(resp) {
+											$scope.filePath = resp.config.data.file.name;
+											$scope.shPost.shPostAttrs[key].strValue = $scope.filePath;
+
+											deferredFile
+													.resolve("Success");
+											$timeout(function() {
+												$scope.log = 'file: '
+														+ resp.config.data.file.name
+														+ ', Response: '
+														+ JSON
+																.stringify(resp.data)
+														+ '\n'
+														+ $scope.log;
+											});
+										},
+										null,
+										function(evt) {
+											var progressPercentage = parseInt(100.0
+													* evt.loaded
+													/ evt.total);
+											$scope.log = 'progress: '
+													+ progressPercentage
+													+ '% '
+													+ evt.config.data.file.name
+													+ '\n'
+													+ $scope.log;
+										});
+					}
+				} else {
+					deferredFile.resolve("Success");
+				}
+				return deferredFile.promise;
 			}
 		} ]);
 shioharaApp
@@ -785,11 +887,21 @@ shioharaApp
 						'$timeout',
 						function($scope, Upload, $timeout) {
 							
+							$scope.uploadNewFile = false;
 							$scope.$watch('shPostAttr.file', function() {
 								if ($scope.shPostAttr.file != null) {
+									$scope.uploadNewFile = false;
 									$scope.shPostAttr.strValue = $scope.shPostAttr.file.name;
 								}
 							});
+							
+							$scope.newFile = function() {
+								$scope.uploadNewFile = true;
+							}
+							$scope.clearFile = function(shPostAttr) {
+								shPostAttr.strValue = null;
+								shPostAttr.file = null;
+							}
 /*							$scope.$watch('files', function() {
 								$scope.upload($scope.files);
 							});
