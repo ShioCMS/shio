@@ -79,8 +79,6 @@ public class ShSitesContext {
 			}
 		}
 
-	//	ShPost shPostPageLayout = shPostRepository.findByTitle("Post Page Layout"); // Page Layout Post
-
 		String url = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
 		String shContext = null;
 		String[] contexts = url.split("/");

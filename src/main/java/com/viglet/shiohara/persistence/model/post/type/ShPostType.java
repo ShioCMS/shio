@@ -8,7 +8,6 @@ import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.viglet.shiohara.persistence.model.post.ShPost;
-import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.region.ShRegion;
 
 import java.util.Date;
@@ -48,11 +47,6 @@ public class ShPostType implements Serializable {
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "shPostType", cascade = CascadeType.ALL)
 	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
 	private List<ShPost> shPosts;
-
-	//bi-directional many-to-one association to ShPostAttr
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "shPostType", cascade = CascadeType.ALL)
-	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
-	private List<ShPostAttr> shPostAttrs;
 
 	//bi-directional many-to-one association to ShPostTypeAttr
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "shPostType", cascade = CascadeType.ALL)
@@ -127,28 +121,6 @@ public class ShPostType implements Serializable {
 		shPost.setShPostType(null);
 
 		return shPost;
-	}
-
-	public List<ShPostAttr> getShPostAttrs() {
-		return this.shPostAttrs;
-	}
-
-	public void setShPostAttrs(List<ShPostAttr> shPostAttrs) {
-		this.shPostAttrs = shPostAttrs;
-	}
-
-	public ShPostAttr addShPostAttr(ShPostAttr shPostAttr) {
-		getShPostAttrs().add(shPostAttr);
-		shPostAttr.setShPostType(this);
-
-		return shPostAttr;
-	}
-
-	public ShPostAttr removeShPostAttr(ShPostAttr shPostAttr) {
-		getShPostAttrs().remove(shPostAttr);
-		shPostAttr.setShPostType(null);
-
-		return shPostAttr;
 	}
 
 	public List<ShPostTypeAttr> getShPostTypeAttrs() {

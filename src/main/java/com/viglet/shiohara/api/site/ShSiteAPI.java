@@ -131,7 +131,6 @@ public class ShSiteAPI {
 
 		ShPostAttr shPostAttr = new ShPostAttr();
 		shPostAttr.setShPost(shPost);
-		shPostAttr.setShPostType(shPostChannelIndex);
 		shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 		shPostAttr.setStrValue(shPost.getTitle());
 		shPostAttr.setType(1);
@@ -142,7 +141,6 @@ public class ShSiteAPI {
 
 		shPostAttr = new ShPostAttr();
 		shPostAttr.setShPost(shPost);
-		shPostAttr.setShPostType(shPostChannelIndex);
 		shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 		shPostAttr.setStrValue(shPost.getSummary());
 		shPostAttr.setType(1);

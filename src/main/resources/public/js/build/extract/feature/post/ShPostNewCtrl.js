@@ -42,6 +42,7 @@ shioharaApp
 														$scope.shChannel = response.data.currentChannel
 														$scope.breadcrumb = response.data.breadcrumb;
 														$scope.shSite = response.data.shSite;
+														folderPath = "/store/file_source/" + $scope.shSite.name + response.data.channelPath;
 														channelURL = shAPIServerService
 																.server()
 																.concat(
@@ -70,8 +71,10 @@ shioharaApp
 							$scope.postEditForm = "template/post/form.html";
 
 							$scope.openPreviewURL = function() {
-
-								if ($scope.shPost.shPostType.name == 'PT-CHANNEL-INDEX') {
+								if ($scope.shPost.shPostType.name == 'PT-FILE') {
+									var previewURL = folderPath + $scope.shPost.title;
+								}
+								else if ($scope.shPost.shPostType.name == 'PT-CHANNEL-INDEX') {
 									var previewURL = channelURL;
 								} else {
 									var previewURL = channelURL

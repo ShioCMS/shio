@@ -61,6 +61,10 @@ public class ShChannelUtils {
 	}
 
 	public String channelPath(ShChannel shChannel) {
+		return this.channelPath(shChannel, "/");
+	}
+
+	public String channelPath(ShChannel shChannel, String separator) {
 		if (shChannel != null) {
 			boolean rootChannel = false;
 			ArrayList<String> pathContexts = new ArrayList<String>();
@@ -78,12 +82,12 @@ public class ShChannelUtils {
 			String path = "";
 
 			for (String context : pathContexts) {
-				path = context + "/" + path;
+				path = context + separator + path;
 			}
-			path = "/" + path;
+			path = separator + path;
 			return path.replaceAll(" ", "-");
 		} else {
-			return "/";
+			return separator;
 		}
 
 	}
@@ -110,8 +114,12 @@ public class ShChannelUtils {
 	}
 
 	public ShChannel channelFromPath(ShSite shSite, String channelPath) {
+		return this.channelFromPath(shSite, channelPath, "/");
+	}
+
+	public ShChannel channelFromPath(ShSite shSite, String channelPath, String separator) {
 		ShChannel currentChannel = null;
-		String[] contexts = channelPath.replaceAll("-", " ").split("/");
+		String[] contexts = channelPath.replaceAll("-", " ").split(separator);
 		for (int i = 1; i < contexts.length; i++) {
 			if (currentChannel == null) {
 				// When is null channel, because is rootChannel and it contains shSite attribute

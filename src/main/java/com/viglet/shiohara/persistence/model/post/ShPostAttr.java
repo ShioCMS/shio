@@ -46,11 +46,6 @@ public class ShPostAttr implements Serializable {
 	@JoinColumn(name = "post_id")
 	private ShPost shPost;
 
-	// bi-directional many-to-one association to ShPostType
-	@ManyToOne
-	@JoinColumn(name = "post_type_id")
-	private ShPostType shPostType;
-
 	// bi-directional many-to-one association to ShPostTypeAttr
 	@ManyToOne
 	@JoinColumn(name = "post_type_attr_id")
@@ -120,15 +115,7 @@ public class ShPostAttr implements Serializable {
 	public void setShPost(ShPost shPost) {
 		this.shPost = shPost;
 	}
-
-	public ShPostType getShPostType() {
-		return this.shPostType;
-	}
-
-	public void setShPostType(ShPostType shPostType) {
-		this.shPostType = shPostType;
-	}
-
+	
 	public ShPostTypeAttr getShPostTypeAttr() {
 		return this.shPostTypeAttr;
 	}

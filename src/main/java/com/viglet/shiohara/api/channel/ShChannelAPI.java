@@ -110,7 +110,6 @@ public class ShChannelAPI {
 
 		ShPostAttr shPostAttr = new ShPostAttr();
 		shPostAttr.setShPost(shPost);
-		shPostAttr.setShPostType(shPostChannelIndex);
 		shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 		shPostAttr.setStrValue(shPost.getTitle());
 		shPostAttr.setType(1);
@@ -121,7 +120,6 @@ public class ShChannelAPI {
 
 		shPostAttr = new ShPostAttr();
 		shPostAttr.setShPost(shPost);
-		shPostAttr.setShPostType(shPostChannelIndex);
 		shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 		shPostAttr.setStrValue(shPost.getSummary());
 		shPostAttr.setType(1);
@@ -132,7 +130,6 @@ public class ShChannelAPI {
 
 		shPostAttr = new ShPostAttr();
 		shPostAttr.setShPost(shPost);
-		shPostAttr.setShPostType(shPostChannelIndex);
 		shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 		shPostAttr.setStrValue("");
 		shPostAttr.setType(1);

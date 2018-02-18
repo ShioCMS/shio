@@ -69,7 +69,6 @@ public class ShPostOnStartup {
 
 			ShPostAttr shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostType);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(shPost.getTitle());
 			shPostAttr.setType(1);
@@ -91,7 +90,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostTypeArea);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(shPost.getTitle());
 			shPostAttr.setType(1);
@@ -113,7 +111,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostArticle);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(shPost.getTitle());
 			shPostAttr.setType(1);
@@ -124,7 +121,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostArticle);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(shPost.getSummary());
 			shPostAttr.setType(1);
@@ -135,7 +131,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostArticle);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue("Some text...");
 			shPostAttr.setType(1);
@@ -157,7 +152,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostArticle);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(shPost.getTitle());
 			shPostAttr.setType(1);
@@ -168,7 +162,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostArticle);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(shPost.getSummary());
 			shPostAttr.setType(1);
@@ -179,7 +172,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostArticle);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue("Some text 2...");
 			shPostAttr.setType(1);
@@ -202,7 +194,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostTheme);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(shPost.getTitle());
 			shPostAttr.setType(1);
@@ -213,7 +204,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostTheme);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(shPost.getSummary());
 			shPostAttr.setType(1);
@@ -224,7 +214,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostTheme);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(
 					"<link href=\"https://blackrockdigital.github.io/startbootstrap-one-page-wonder/vendor/bootstrap/css/bootstrap.min.css\" rel=\"stylesheet\">\n"
@@ -239,7 +228,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostTheme);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue("<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->\n"
 					+ "<script src=\"https://viglet.ai/ui/thirdparty/jquery/dist/jquery.min.js\"></script>\n"
@@ -265,7 +253,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostChannelIndex);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(shPost.getTitle());
 			shPostAttr.setType(1);
@@ -276,7 +263,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostChannelIndex);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(shPost.getSummary());
 			shPostAttr.setType(1);
@@ -287,7 +273,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostChannelIndex);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue("Channel Page Layout");
 			shPostAttr.setType(1);
@@ -309,7 +294,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostChannelIndex);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(shPost.getTitle());
 			shPostAttr.setType(1);
@@ -320,7 +304,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostChannelIndex);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(shPost.getSummary());
 			shPostAttr.setType(1);
@@ -331,7 +314,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostChannelIndex);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue("Channel Page Layout");
 			shPostAttr.setType(1);
@@ -352,7 +334,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostChannelIndex);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(shPost.getTitle());
 			shPostAttr.setType(1);
@@ -363,7 +344,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostChannelIndex);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(shPost.getSummary());
 			shPostAttr.setType(1);
@@ -374,7 +354,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostChannelIndex);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue("Channel Page Layout");
 			shPostAttr.setType(1);
@@ -395,7 +374,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostChannelIndex);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(shPost.getTitle());
 			shPostAttr.setType(1);
@@ -406,7 +384,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostChannelIndex);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(shPost.getSummary());
 			shPostAttr.setType(1);
@@ -417,7 +394,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostChannelIndex);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue("Channel Page Layout");
 			shPostAttr.setType(1);
@@ -440,7 +416,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostTypePageLayout);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(shPost.getTitle());
 			shPostAttr.setType(1);
@@ -451,7 +426,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostTypePageLayout);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(shPost.getSummary());
 			shPostAttr.setType(1);
@@ -463,7 +437,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostTypePageLayout);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue("Sample Theme");
 			shPostAttr.setType(1);
@@ -474,7 +447,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostRegion);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(
 					"load('https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js');\n"
@@ -487,7 +459,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostTypePageLayout);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue("<!DOCTYPE html>\n" + "<html>\n" + "    <head>\n" + "        <title>\n"
 					+ "            Sample Site\n" + "        </title>\n" + "        {{{theme.css}}}\n" + "    </head>\n"
@@ -514,7 +485,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostRegion);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(shPost.getTitle());
 			shPostAttr.setType(1);
@@ -525,7 +495,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostRegion);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(shPost.getSummary());
 			shPostAttr.setType(1);
@@ -536,7 +505,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostRegion);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(
 					"load('https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js');\n"
@@ -549,7 +517,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostRegion);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue("<!-- Navigation -->\n"
 					+ "    <nav class=\"navbar navbar-expand-lg navbar-dark navbar-custom fixed-top\">\n"
@@ -581,7 +548,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostRegion);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(shPost.getTitle());
 			shPostAttr.setType(1);
@@ -592,7 +558,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostRegion);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(shPost.getSummary());
 			shPostAttr.setType(1);
@@ -603,7 +568,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostRegion);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(
 					"load('https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js');\n"
@@ -616,7 +580,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostRegion);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue("<header class=\"masthead text-center text-white\">\n"
 					+ "      <div class=\"masthead-content\">\n" + "        <div class=\"container\">\n"
@@ -650,7 +613,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostTypePageLayout);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(shPost.getTitle());
 			shPostAttr.setType(1);
@@ -661,7 +623,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostTypePageLayout);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(shPost.getSummary());
 			shPostAttr.setType(1);
@@ -672,7 +633,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostTypePageLayout);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue("Sample Theme");
 			shPostAttr.setType(1);
@@ -683,7 +643,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostRegion);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(
 					"load('https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js');\n"
@@ -696,7 +655,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostTypePageLayout);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue("<!DOCTYPE html>\n" + "<html>\n" + "    <head>\n" + "        <title>\n"
 					+ "            Sample Site | Viglet Shiohara\n" + "        </title>\n" + "        {{{theme.css}}}\n"
@@ -722,7 +680,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostRegion);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(shPost.getTitle());
 			shPostAttr.setType(1);
@@ -733,7 +690,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostRegion);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(shPost.getSummary());
 			shPostAttr.setType(1);
@@ -744,7 +700,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostRegion);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(
 					"load('https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js');\n"
@@ -757,7 +712,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostRegion);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue("<!-- Navigation -->\n"
 					+ "    <nav class=\"navbar navbar-expand-lg navbar-dark navbar-custom fixed-top\">\n"
@@ -793,7 +747,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostRegion);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(shPost.getTitle());
 			shPostAttr.setType(1);
@@ -804,7 +757,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostRegion);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(shPost.getSummary());
 			shPostAttr.setType(1);
@@ -815,7 +767,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostRegion);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(
 					"load('https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js');\n"
@@ -828,7 +779,6 @@ public class ShPostOnStartup {
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
-			shPostAttr.setShPostType(shPostRegion);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(" <header class=\"masthead text-center text-white\">\n"
 					+ "      <div class=\"masthead-content\">\n" + "        <div class=\"container\">\n"
