@@ -21,15 +21,12 @@ import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.user.ShUser;
+import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.post.ShPost;
-import com.viglet.shiohara.persistence.repository.channel.ShChannelRepository;
+import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
-import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
-import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
-import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
 import com.viglet.shiohara.persistence.repository.user.ShUserRepository;
-import com.viglet.shiohara.utils.ShChannelUtils;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
 
 @Component
@@ -37,24 +34,18 @@ import com.viglet.shiohara.utils.ShStaticFileUtils;
 public class ShPostAPI {
 
 	@Autowired
-	ShPostRepository shPostRepository;
+	private ShPostRepository shPostRepository;
 	@Autowired
-	ShPostTypeRepository shPostTypeRepository;
+	private ShPostAttrRepository shPostAttrRepository;
 	@Autowired
-	ShPostAttrRepository shPostAttrRepository;
-	@Autowired
-	ShUserRepository shUserRepository;
-	@Autowired
-	ShChannelRepository shChannelRepository;
-	@Autowired
-	ShSiteRepository shSiteRepository;
-	@Autowired
-	ShPostTypeAttrRepository shPostTypeAttrRepository;
-	@Autowired
-	ShChannelUtils shChannelUtils;
+	private ShUserRepository shUserRepository;
 	@Autowired
 	private ShStaticFileUtils shStaticFileUtils;
-
+	@Autowired
+	private ShPostOutput shPostOutput;
+	@Autowired
+	private ShGlobalIdRepository shGlobalIdRepository;
+	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<ShPost> list() throws Exception {
@@ -64,8 +55,8 @@ public class ShPostAPI {
 	@Path("/{postId}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public ShPost edit(@PathParam("postId") UUID id) throws Exception {
-		return shPostRepository.findById(id);
+	public ShPostOutput edit(@PathParam("postId") UUID id) throws Exception {
+		return shPostOutput.instance(shPostRepository.findById(id));
 	}
 
 	@Path("/{postId}")
@@ -163,6 +154,12 @@ public class ShPostAPI {
 		shPost.setSummary(summary);
 
 		shPostRepository.saveAndFlush(shPost);
+		
+		ShGlobalId shGlobalId = new ShGlobalId();
+		shGlobalId.setObjectId(shPost.getId());
+		shGlobalId.setType("POST");
+		
+		shGlobalIdRepository.save(shGlobalId);	
 
 		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
 			shPostAttr.setShPost(shPost);

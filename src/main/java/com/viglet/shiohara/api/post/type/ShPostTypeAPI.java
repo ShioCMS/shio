@@ -19,9 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
+import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
+import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
@@ -31,14 +33,18 @@ import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository
 @Path("/post/type")
 public class ShPostTypeAPI {
 	@Autowired
-	ShPostTypeRepository shPostTypeRepository;
+	private ShPostTypeRepository shPostTypeRepository;
 	@Autowired
-	ShPostTypeAttrRepository shPostTypeAttrRepository;
+	private ShPostTypeAttrRepository shPostTypeAttrRepository;
 	@Autowired
-	ShPostAttrRepository shPostAttrRepository;
+	private ShPostAttrRepository shPostAttrRepository;
 	@Autowired
-	ShPostRepository shPostRepository;
-
+	private ShPostRepository shPostRepository;
+	@Autowired
+	private ShPostTypeOutput shPostTypeOutput;
+	@Autowired
+	private ShGlobalIdRepository shGlobalIdRepository;
+	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<ShPostType> list() throws Exception {
@@ -48,8 +54,8 @@ public class ShPostTypeAPI {
 	@Path("/{postTypeId}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public ShPostType edit(@PathParam("postTypeId") UUID id) throws Exception {
-		return shPostTypeRepository.findById(id);
+	public ShPostTypeOutput edit(@PathParam("postTypeId") UUID id) throws Exception {
+		return shPostTypeOutput.newInstance(shPostTypeRepository.findById(id));
 	}
 
 	@Path("/model")
@@ -149,6 +155,13 @@ public class ShPostTypeAPI {
 	public ShPostType add(ShPostType shPostType) throws Exception {
 		shPostTypeRepository.save(shPostType);
 		shPostType.setDate(new Date());
+		
+		ShGlobalId shGlobalId = new ShGlobalId();
+		shGlobalId.setObjectId(shPostType.getId());
+		shGlobalId.setType("POST_TYPE");
+
+		shGlobalIdRepository.save(shGlobalId);
+		
 		return shPostType;
 
 	}

@@ -42,9 +42,12 @@ shioharaApp
 														$scope.shChannel = response.data.currentChannel
 														$scope.breadcrumb = response.data.breadcrumb;
 														$scope.shSite = response.data.shSite;
-														folderPath = "/store/file_source/"
-																+ $scope.shSite.name
-																+ response.data.channelPath;
+														folderPath = shAPIServerService
+																.server()
+																.concat(
+																		"/store/file_source/"
+																				+ $scope.shSite.name
+																				+ response.data.channelPath);
 														channelURL = shAPIServerService
 																.server()
 																.concat(
@@ -88,7 +91,7 @@ shioharaApp
 
 							var uploadFile = function(shPostAttr, key, postType) {
 								var deferredFile = $q.defer();
-								if (shPostAttr.shPostTypeAttr.shWidget.name == "File") {
+								if (shPostAttr.shPostTypeAttr.shWidget.name == "File" && shPostAttr.file != null) {
 									var createPost = true;
 									if (postType.name == "PT-FILE") {
 										createPost = false;

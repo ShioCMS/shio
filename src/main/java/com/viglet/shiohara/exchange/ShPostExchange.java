@@ -7,6 +7,9 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class ShPostExchange {
+	
+	private UUID globalId;
+	
 	private UUID id;
 
 	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm'Z'")
@@ -17,6 +20,15 @@ public class ShPostExchange {
 	private String postType;
 
 	private Map<String, Object> fields;
+
+	
+	public UUID getGlobalId() {
+		return globalId;
+	}
+
+	public void setGlobalId(UUID globalId) {
+		this.globalId = globalId;
+	}
 
 	public UUID getId() {
 		return id;

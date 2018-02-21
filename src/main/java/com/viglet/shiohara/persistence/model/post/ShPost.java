@@ -5,12 +5,16 @@ import javax.persistence.*;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.viglet.shiohara.persistence.model.channel.ShChannel;
+import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.region.ShRegion;
 import com.viglet.shiohara.persistence.model.site.ShSite;
+import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,6 +25,7 @@ import java.util.UUID;
  * The persistent class for the ShPost database table.
  * 
  */
+@Configurable(preConstruction = true)
 @Entity
 @NamedQuery(name = "ShPost.findAll", query = "SELECT s FROM ShPost s")
 public class ShPost implements Serializable {

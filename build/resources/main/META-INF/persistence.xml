@@ -6,10 +6,13 @@
 		<provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
 		<!-- <non-jta-data-source>jdbc/ShioharaDS</non-jta-data-source> -->
 		<class>com.viglet.shiohara.persistence.model.channel.ShChannel</class>
+		<class>com.viglet.shiohara.persistence.model.globalid.ShGlobalId</class>
 		<class>com.viglet.shiohara.persistence.model.post.ShPost</class>
 		<class>com.viglet.shiohara.persistence.model.post.ShPostAttr</class>
 		<class>com.viglet.shiohara.persistence.model.post.type.ShPostType</class>
 		<class>com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr</class>
+		<class>com.viglet.shiohara.persistence.model.reference.ShReference</class>
+		<class>com.viglet.shiohara.persistence.model.reference.ShReferenceId</class>
 		<class>com.viglet.shiohara.persistence.model.region.ShRegion</class>
 		<class>com.viglet.shiohara.persistence.model.site.ShSite</class>
 		<class>com.viglet.shiohara.persistence.model.system.ShConfigVar</class>

@@ -7,11 +7,13 @@ import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.channel.ShChannel;
+import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.channel.ShChannelRepository;
+import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
@@ -33,7 +35,9 @@ public class ShPostOnStartup {
 	private ShSiteRepository shSiteRepository;
 	@Autowired
 	private ShChannelRepository shChannelRepository;
-
+	@Autowired
+	private ShGlobalIdRepository shGlobalIdRepository;
+	
 	public void createDefaultRows() {
 		ShSite shSite = shSiteRepository.findByName("Sample");
 
@@ -64,6 +68,12 @@ public class ShPostOnStartup {
 			shPost.setShChannel(shChannelHome);
 
 			shPostRepository.save(shPost);
+			
+			ShGlobalId shGlobalId = new ShGlobalId();
+			shGlobalId.setObjectId(shPost.getId());
+			shGlobalId.setType("POST");
+			
+			shGlobalIdRepository.save(shGlobalId);			
 
 			ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType, "TEXT");
 
@@ -85,6 +95,12 @@ public class ShPostOnStartup {
 			shPost.setShChannel(shChannelHome);
 
 			shPostRepository.save(shPost);
+			
+			shGlobalId = new ShGlobalId();
+			shGlobalId.setObjectId(shPost.getId());
+			shGlobalId.setType("POST");
+			
+			shGlobalIdRepository.save(shGlobalId);			
 
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeArea, "TEXT");
 
@@ -106,6 +122,12 @@ public class ShPostOnStartup {
 			shPost.setShChannel(shChannelArticle);
 
 			shPostRepository.save(shPost);
+			
+			shGlobalId = new ShGlobalId();
+			shGlobalId.setObjectId(shPost.getId());
+			shGlobalId.setType("POST");
+			
+			shGlobalIdRepository.save(shGlobalId);			
 
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostArticle, "TITLE");
 
@@ -147,6 +169,12 @@ public class ShPostOnStartup {
 			shPost.setShChannel(shChannelNews);
 
 			shPostRepository.save(shPost);
+			
+			shGlobalId = new ShGlobalId();
+			shGlobalId.setObjectId(shPost.getId());
+			shGlobalId.setType("POST");
+			
+			shGlobalIdRepository.save(shGlobalId);			
 
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostArticle, "TITLE");
 
@@ -189,6 +217,12 @@ public class ShPostOnStartup {
 			shPost.setShChannel(shChannelThemes);
 
 			shPostRepository.save(shPost);
+			
+			shGlobalId = new ShGlobalId();
+			shGlobalId.setObjectId(shPost.getId());
+			shGlobalId.setType("POST");
+			
+			shGlobalIdRepository.save(shGlobalId);			
 
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTheme, "TITLE");
 
@@ -248,7 +282,13 @@ public class ShPostOnStartup {
 			shPost.setShChannel(shChannelHome);
 
 			shPostRepository.save(shPost);
-
+			
+			shGlobalId = new ShGlobalId();
+			shGlobalId.setObjectId(shPost.getId());
+			shGlobalId.setType("POST");
+			
+			shGlobalIdRepository.save(shGlobalId);			
+			
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "TITLE");
 
 			shPostAttr = new ShPostAttr();
@@ -289,6 +329,12 @@ public class ShPostOnStartup {
 			shPost.setShChannel(shChannelArticle);
 
 			shPostRepository.save(shPost);
+			
+			shGlobalId = new ShGlobalId();
+			shGlobalId.setObjectId(shPost.getId());
+			shGlobalId.setType("POST");
+			
+			shGlobalIdRepository.save(shGlobalId);			
 
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "TITLE");
 
@@ -329,6 +375,12 @@ public class ShPostOnStartup {
 			shPost.setShChannel(shChannelNews);
 
 			shPostRepository.save(shPost);
+			
+			shGlobalId = new ShGlobalId();
+			shGlobalId.setObjectId(shPost.getId());
+			shGlobalId.setType("POST");
+			
+			shGlobalIdRepository.save(shGlobalId);			
 
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "TITLE");
 
@@ -369,6 +421,12 @@ public class ShPostOnStartup {
 			shPost.setShChannel(shChannelText);
 
 			shPostRepository.save(shPost);
+			
+			shGlobalId = new ShGlobalId();
+			shGlobalId.setObjectId(shPost.getId());
+			shGlobalId.setType("POST");
+			
+			shGlobalIdRepository.save(shGlobalId);			
 
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "TITLE");
 
@@ -411,7 +469,13 @@ public class ShPostOnStartup {
 			shPost.setShChannel(shChannelLayouts);
 
 			shPostRepository.save(shPost);
-
+			
+			shGlobalId = new ShGlobalId();
+			shGlobalId.setObjectId(shPost.getId());
+			shGlobalId.setType("POST");
+			
+			shGlobalIdRepository.save(shGlobalId);			
+			
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypePageLayout, "TITLE");
 
 			shPostAttr = new ShPostAttr();
@@ -480,6 +544,12 @@ public class ShPostOnStartup {
 			shPost.setShChannel(shChannelTemplates);
 
 			shPostRepository.save(shPost);
+			
+			shGlobalId = new ShGlobalId();
+			shGlobalId.setObjectId(shPost.getId());
+			shGlobalId.setType("POST");
+			
+			shGlobalIdRepository.save(shGlobalId);			
 
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "TITLE");
 
@@ -543,7 +613,13 @@ public class ShPostOnStartup {
 			shPost.setShChannel(shChannelTemplates);
 
 			shPostRepository.save(shPost);
-
+			
+			shGlobalId = new ShGlobalId();
+			shGlobalId.setObjectId(shPost.getId());
+			shGlobalId.setType("POST");
+			
+			shGlobalIdRepository.save(shGlobalId);			
+			
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "TITLE");
 
 			shPostAttr = new ShPostAttr();
@@ -608,6 +684,12 @@ public class ShPostOnStartup {
 			shPost.setShChannel(shChannelLayouts);
 
 			shPostRepository.save(shPost);
+			
+			shGlobalId = new ShGlobalId();
+			shGlobalId.setObjectId(shPost.getId());
+			shGlobalId.setType("POST");
+			
+			shGlobalIdRepository.save(shGlobalId);			
 
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypePageLayout, "TITLE");
 
@@ -675,6 +757,12 @@ public class ShPostOnStartup {
 			shPost.setShChannel(shChannelTemplates);
 
 			shPostRepository.save(shPost);
+			
+			shGlobalId = new ShGlobalId();
+			shGlobalId.setObjectId(shPost.getId());
+			shGlobalId.setType("POST");
+			
+			shGlobalIdRepository.save(shGlobalId);			
 
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "TITLE");
 
@@ -742,6 +830,12 @@ public class ShPostOnStartup {
 			shPost.setShChannel(shChannelTemplates);
 
 			shPostRepository.save(shPost);
+			
+			shGlobalId = new ShGlobalId();
+			shGlobalId.setObjectId(shPost.getId());
+			shGlobalId.setType("POST");
+			
+			shGlobalIdRepository.save(shGlobalId);			
 
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "TITLE");
 
