@@ -21,11 +21,13 @@ import com.viglet.shiohara.exchange.ShExchange;
 import com.viglet.shiohara.exchange.ShPostExchange;
 import com.viglet.shiohara.exchange.ShSiteExchange;
 import com.viglet.shiohara.persistence.model.channel.ShChannel;
+import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.channel.ShChannelRepository;
+import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
@@ -48,7 +50,9 @@ public class ShImportAPI {
 	ShPostTypeAttrRepository shPostTypeAttrRepository;
 	@Autowired
 	ShPostAttrRepository shPostAttrRepository;
-
+	@Autowired
+	ShGlobalIdRepository shGlobalIdRepository;
+	
 	Map<UUID, Object> shObjects = new HashMap<UUID, Object>();
 	Map<UUID, List<UUID>> shChildObjects = new HashMap<UUID, List<UUID>>();
 
@@ -68,6 +72,13 @@ public class ShImportAPI {
 			shSite.setDate(shSiteExchange.getDate());
 
 			shSiteRepository.save(shSite);
+			
+			ShGlobalId shGlobalId = new ShGlobalId();
+			shGlobalId.setId(shSiteExchange.getGlobalId());
+			shGlobalId.setObjectId(shSite.getId());
+			shGlobalId.setType("SITE");
+
+			shGlobalIdRepository.save(shGlobalId);
 
 			for (ShChannelExchange shChannelExchange : shExchange.getChannels()) {
 
@@ -136,6 +147,14 @@ public class ShImportAPI {
 						}
 					}
 					shChannelRepository.save(shChannelChild);
+					
+					ShGlobalId shGlobalId = new ShGlobalId();
+					shGlobalId.setId(shChannelExchange.getGlobalId());
+					shGlobalId.setObjectId(shChannelExchange.getId());
+					shGlobalId.setType("CHANNEL");
+
+					shGlobalIdRepository.save(shGlobalId);
+					
 					this.shChannelImportNested(shChannelChild.getId());
 				}
 
@@ -158,6 +177,13 @@ public class ShImportAPI {
 					}
 					shPostRepository.save(shPost);
 
+					ShGlobalId shGlobalId = new ShGlobalId();
+					shGlobalId.setId(shPostExchange.getGlobalId());
+					shGlobalId.setObjectId(shPostExchange.getId());
+					shGlobalId.setType("POST");
+
+					shGlobalIdRepository.save(shGlobalId);
+					
 					for (Entry<String, Object> shPostFields : shPostExchange.getFields().entrySet()) {
 						ShPostAttr shPostAttr = new ShPostAttr();
 						shPostAttr.setStrValue((String) shPostFields.getValue());

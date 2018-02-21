@@ -6,6 +6,8 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class ShChannelExchange {
+	private UUID globalId;
+	
 	private UUID id;
 
 	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm'Z'")
@@ -14,6 +16,14 @@ public class ShChannelExchange {
 	private String name;
 
 	private UUID parentChannel;
+
+	public UUID getGlobalId() {
+		return globalId;
+	}
+
+	public void setGlobalId(UUID globalId) {
+		this.globalId = globalId;
+	}
 
 	public UUID getId() {
 		return id;

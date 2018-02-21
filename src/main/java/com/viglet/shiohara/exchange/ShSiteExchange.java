@@ -7,7 +7,9 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class ShSiteExchange {
-
+	
+	private UUID globalId;
+	
 	private UUID id;
 
 	private String name;
@@ -22,6 +24,14 @@ public class ShSiteExchange {
 	private String postTypeLayout;
 	
 	private List<UUID> rootChannels;
+
+	public UUID getGlobalId() {
+		return globalId;
+	}
+
+	public void setGlobalId(UUID globalId) {
+		this.globalId = globalId;
+	}
 
 	public UUID getId() {
 		return id;

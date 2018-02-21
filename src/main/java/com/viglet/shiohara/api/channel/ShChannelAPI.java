@@ -19,12 +19,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.persistence.model.channel.ShChannel;
+import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.channel.ShChannelRepository;
+import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
@@ -47,7 +49,11 @@ public class ShChannelAPI {
 	ShPostTypeRepository shPostTypeRepository;
 	@Autowired
 	ShPostTypeAttrRepository shPostTypeAttrRepository;
-	
+	@Autowired
+	ShChannelOutput shChannelOutput;
+	@Autowired
+	private ShGlobalIdRepository shGlobalIdRepository;
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<ShChannel> list() throws Exception {
@@ -57,8 +63,8 @@ public class ShChannelAPI {
 	@Path("/{channelId}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public ShChannel edit(@PathParam("channelId") UUID id) throws Exception {
-		return shChannelRepository.findById(id);
+	public ShChannelOutput edit(@PathParam("channelId") UUID id) throws Exception {
+		return shChannelOutput.newInstance(shChannelRepository.findById(id));
 	}
 
 	@Path("/{channelId}")
@@ -82,7 +88,7 @@ public class ShChannelAPI {
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
 	public boolean delete(@PathParam("channelId") UUID id) throws Exception {
-		ShChannel shChannel = shChannelRepository.findById(id);		
+		ShChannel shChannel = shChannelRepository.findById(id);
 		return shChannelUtils.deleteChannel(shChannel);
 	}
 
@@ -91,10 +97,15 @@ public class ShChannelAPI {
 	public ShChannel add(ShChannel shChannel) throws Exception {
 		shChannel.setDate(new Date());
 		shChannelRepository.save(shChannel);
+
+		ShGlobalId shGlobalId = new ShGlobalId();
+		shGlobalId.setObjectId(shChannel.getId());
+		shGlobalId.setType("CHANNEL");
 		
+		shGlobalIdRepository.save(shGlobalId);
 		
 		// Channel Index
-		
+
 		ShPostType shPostChannelIndex = shPostTypeRepository.findByName("PT-CHANNEL-INDEX");
 
 		ShPost shPost = new ShPost();
@@ -105,6 +116,12 @@ public class ShChannelAPI {
 		shPost.setShChannel(shChannel);
 
 		shPostRepository.save(shPost);
+		
+		shGlobalId = new ShGlobalId();
+		shGlobalId.setObjectId(shPost.getId());
+		shGlobalId.setType("POST");
+		
+		shGlobalIdRepository.save(shGlobalId);	
 
 		ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "TITLE");
 
@@ -125,7 +142,7 @@ public class ShChannelAPI {
 		shPostAttr.setType(1);
 
 		shPostAttrRepository.save(shPostAttr);
-		
+
 		shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "PAGE-LAYOUT");
 
 		shPostAttr = new ShPostAttr();
@@ -176,7 +193,7 @@ public class ShChannelAPI {
 			return null;
 		}
 	}
-	
+
 	@Path("/model")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)

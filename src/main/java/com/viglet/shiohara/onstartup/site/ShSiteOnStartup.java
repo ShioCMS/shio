@@ -6,7 +6,9 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.site.ShSite;
+import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
 
 @Component
@@ -14,7 +16,9 @@ public class ShSiteOnStartup {
 
 	@Autowired
 	ShSiteRepository shSiteRepository;
-
+	@Autowired
+	ShGlobalIdRepository shGlobalIdRepository;
+	
 	public void createDefaultRows() {
 
 		if (shSiteRepository.findAll().isEmpty()) {
@@ -30,6 +34,14 @@ public class ShSiteOnStartup {
 			shSite.setDate(new Date());
 
 			shSiteRepository.save(shSite);
+			
+			ShGlobalId shGlobalId = new ShGlobalId();
+			shGlobalId.setObjectId(shSite.getId());
+			shGlobalId.setType("SITE");
+			
+			shGlobalIdRepository.save(shGlobalId);			
+
+
 		}
 
 	}
