@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.viglet.shiohara.persistence.model.channel.ShChannel;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
+import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.region.ShRegion;
 import com.viglet.shiohara.persistence.model.site.ShSite;
@@ -28,19 +29,8 @@ import java.util.UUID;
 @Configurable(preConstruction = true)
 @Entity
 @NamedQuery(name = "ShPost.findAll", query = "SELECT s FROM ShPost s")
-public class ShPost implements Serializable {
+public class ShPost extends ShObject {
 	private static final long serialVersionUID = 1L;
-
-	// @Id
-	// @GeneratedValue(strategy = GenerationType.IDENTITY)
-	// private int id;
-
-	@Id
-	@GenericGenerator(name = "UUID", strategy = "com.viglet.shiohara.jpa.ShUUIDGenerator")
-	@GeneratedValue(generator = "UUID")
-
-	@Column(name = "id", updatable = false, nullable = false)
-	private UUID id;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date date;
@@ -72,14 +62,7 @@ public class ShPost implements Serializable {
 	public ShPost() {
 	}
 
-	public UUID getId() {
-		return this.id;
-	}
-
-	public void setId(UUID id) {
-		this.id = id;
-	}
-
+	
 	public Date getDate() {
 		return this.date;
 	}

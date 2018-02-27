@@ -55,8 +55,8 @@ public class ShPostAPI {
 	@Path("/{postId}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public ShPostOutput edit(@PathParam("postId") UUID id) throws Exception {
-		return shPostOutput.instance(shPostRepository.findById(id));
+	public ShPost edit(@PathParam("postId") UUID id) throws Exception {
+		return shPostRepository.findById(id);
 	}
 
 	@Path("/{postId}")

@@ -16,5 +16,9 @@ public class StaticResourceConfiguration extends WebMvcConfigurerAdapter {
     	
     		String resourceLocation = "file:" + shStaticFileUtils.getFileSource().getAbsolutePath();
         registry.addResourceHandler("/store/**").addResourceLocations(resourceLocation);
+		if (!registry.hasMappingForPattern("/thirdparty/**")) {
+			registry.addResourceHandler("/thirdparty/**").addResourceLocations(
+                "classpath:/META-INF/resources/webjars/");
+		}
     }
 }
