@@ -32,5 +32,15 @@
     "ng-file-upload": "*",
     "angular-ui-notification": "^0.3.6",
     "angular-ui-tinymce": "^0.0.19"
+  },
+   "install": {
+    "path": "vendor",
+    "sources": {
+      "bootstrap": [
+        "bower_components/bootstrap/dist/css/bootstrap.min.css",
+        "bower_components/bootstrap/dist/js/bootstrap.min.js",
+        "bower_components/bootstrap/dist/fonts/*"
+      ]
+    }
   }
 }
