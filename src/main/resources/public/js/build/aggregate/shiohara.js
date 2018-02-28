@@ -950,7 +950,8 @@ shioharaApp
 
 							var uploadFile = function(shPostAttr, key, postType) {
 								var deferredFile = $q.defer();
-								if (shPostAttr.shPostTypeAttr.shWidget.name == "File" && shPostAttr.file != null) {
+								if (shPostAttr.shPostTypeAttr.shWidget.name == "File"
+										&& shPostAttr.file != null) {
 									var createPost = true;
 									if (postType.name == "PT-FILE") {
 										createPost = false;
@@ -974,9 +975,14 @@ shioharaApp
 												.then(
 
 														function(resp) {
-															$scope.filePath = resp.config.data.file.name;
-															$scope.shPost.shPostAttrs[key].strValue = $scope.filePath;
 
+															$scope.filePath = resp.data.title;
+														
+															if (createPost) {
+																$scope.shPost.shPostAttrs[key].strValue = resp.data.id;
+															} else {
+																$scope.shPost.shPostAttrs[key].strValue = $scope.filePath;
+															}			
 															deferredFile
 																	.resolve("Success");
 															$timeout(function() {

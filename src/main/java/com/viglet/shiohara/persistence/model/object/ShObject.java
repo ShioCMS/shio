@@ -1,6 +1,7 @@
 package com.viglet.shiohara.persistence.model.object;
 
 import java.io.Serializable;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
@@ -11,12 +12,19 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 
+import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
+import com.viglet.shiohara.persistence.model.post.ShPostAttr;
+
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -34,6 +42,19 @@ public class ShObject implements Serializable {
 	@OneToOne(mappedBy = "shObject", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
 	private ShGlobalId shGlobalId;
 
+	@ManyToMany(mappedBy = "referenceObjects")
+	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
+	private Set<ShPostAttr> shPostAttrRefs;
+
+	
+/*	public Set<ShPostAttr> getShPostAttrRefs() {
+		return this.shPostAttrRefs;
+	}
+
+	public void setShPostAttrRefs(Set<ShPostAttr> shPostAttrs) {
+		this.shPostAttrRefs = shPostAttrs;
+	}
+*/
 	public UUID getId() {
 		return this.id;
 	}

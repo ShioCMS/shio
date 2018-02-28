@@ -3,13 +3,15 @@ package com.viglet.shiohara.persistence.model.post;
 import java.io.Serializable;
 import javax.persistence.*;
 
+import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.viglet.shiohara.persistence.model.post.type.ShPostType;
+import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 
 import java.util.Date;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -25,10 +27,10 @@ public class ShPostAttr implements Serializable {
 	@Id
 	@GenericGenerator(name = "UUID", strategy = "com.viglet.shiohara.jpa.ShUUIDGenerator")
 	@GeneratedValue(generator = "UUID")
-	
+
 	@Column(name = "id", updatable = false, nullable = false)
 	private UUID id;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "date_value")
 	private Date dateValue;
@@ -36,10 +38,26 @@ public class ShPostAttr implements Serializable {
 	@Column(name = "int_value")
 	private int intValue;
 
-	@Column(name = "str_value", length =  5 * 1024 * 1024) //5Mb
+	@Column(name = "str_value", length = 5 * 1024 * 1024) // 5Mb
 	private String strValue;
 
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinTable(name = "object_post_attr", 
+	joinColumns = @JoinColumn(name = "post_attr_id", referencedColumnName = "id"), 
+	inverseJoinColumns = @JoinColumn(name = "object_id", referencedColumnName = "id"))
+	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
+	private Set<ShObject> referenceObjects;
+
 	private int type;
+
+	
+	public Set<ShObject> getReferenceObjects() {
+		return referenceObjects;
+	}
+
+	public void setReferenceObjects(Set<ShObject> referenceObjects) {
+		this.referenceObjects = referenceObjects;
+	}
 
 	// bi-directional many-to-one association to ShPost
 	@ManyToOne
@@ -115,7 +133,7 @@ public class ShPostAttr implements Serializable {
 	public void setShPost(ShPost shPost) {
 		this.shPost = shPost;
 	}
-	
+
 	public ShPostTypeAttr getShPostTypeAttr() {
 		return this.shPostTypeAttr;
 	}
@@ -123,5 +141,4 @@ public class ShPostAttr implements Serializable {
 	public void setShPostTypeAttr(ShPostTypeAttr shPostTypeAttr) {
 		this.shPostTypeAttr = shPostTypeAttr;
 	}
-
 }

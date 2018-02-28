@@ -3,13 +3,17 @@ package com.viglet.shiohara.persistence.model.reference;
 import java.io.Serializable;
 import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
 public class ShReferenceId implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	@Column(name = "from_id")
 	private UUID fromId;
+	
+	@Column(name = "to_id")
 	private UUID toId;
 	
 	public UUID getFromId() {
