@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import com.viglet.shiohara.utils.ShStaticFileUtils;
 
 @Configuration
-public class StaticResourceConfiguration extends WebMvcConfigurerAdapter {
+public class ShStaticResourceConfiguration extends WebMvcConfigurerAdapter {
 	@Autowired
 	ShStaticFileUtils shStaticFileUtils;
     @Override

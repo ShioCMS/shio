@@ -42,8 +42,6 @@ public class ShPostAPI {
 	@Autowired
 	private ShStaticFileUtils shStaticFileUtils;
 	@Autowired
-	private ShPostOutput shPostOutput;
-	@Autowired
 	private ShGlobalIdRepository shGlobalIdRepository;
 	
 	@GET
@@ -156,7 +154,7 @@ public class ShPostAPI {
 		shPostRepository.saveAndFlush(shPost);
 		
 		ShGlobalId shGlobalId = new ShGlobalId();
-		shGlobalId.setObjectId(shPost.getId());
+	//	shGlobalId.setObjectId(shPost.getId());
 		shGlobalId.setType("POST");
 		
 		shGlobalIdRepository.save(shGlobalId);	

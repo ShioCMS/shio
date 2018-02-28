@@ -1,25 +1,24 @@
 package com.viglet.shiohara.persistence.model.globalid;
 
-import java.util.List;
 import java.util.UUID;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
-import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.viglet.shiohara.persistence.model.object.ShObject;
-import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 
 @Entity
 @NamedQuery(name = "ShGlobalId.findAll", query = "SELECT g FROM ShGlobalId g")
+@JsonIgnoreProperties({ "shObject" })
 public class ShGlobalId {
 
 	@Id
@@ -29,15 +28,12 @@ public class ShGlobalId {
 	@Column(name = "id", updatable = false, nullable = false)
 	private UUID id;
 
-	private UUID objectId;
-
 	@Column(name = "type", length = 20)
 	private String type;
 
-	// bi-directional many-to-one association to ShPostAttr
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "shGlobalId", cascade = CascadeType.ALL)
-	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
-	private List<ShObject> shObjects;
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "object_id")
+	private ShObject shObject;
 
 	public UUID getId() {
 		return id;
@@ -45,14 +41,6 @@ public class ShGlobalId {
 
 	public void setId(UUID id) {
 		this.id = id;
-	}
-
-	public UUID getObjectId() {
-		return objectId;
-	}
-
-	public void setObjectId(UUID objectId) {
-		this.objectId = objectId;
 	}
 
 	public String getType() {
@@ -63,12 +51,12 @@ public class ShGlobalId {
 		this.type = type;
 	}
 
-	public List<ShObject> getShObjects() {
-		return shObjects;
+	public ShObject getShObject() {
+		return shObject;
 	}
 
-	public void setShObjects(List<ShObject> shObjects) {
-		this.shObjects = shObjects;
+	public void setShObject(ShObject shObject) {
+		this.shObject = shObject;
 	}
 
 }

@@ -1,18 +1,16 @@
 package com.viglet.shiohara.persistence.model.post.type;
 
-import java.io.Serializable;
 import javax.persistence.*;
 
 import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.region.ShRegion;
 
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 
 /**
@@ -22,15 +20,8 @@ import java.util.UUID;
 @Entity
 @NamedQuery(name="ShPostType.findAll", query="SELECT s FROM ShPostType s")
 @JsonIgnoreProperties({ "shPosts", "shPostAttrs" })
-public class ShPostType implements Serializable {
+public class ShPostType extends ShObject {
 	private static final long serialVersionUID = 1L;
-
-	@Id
-	@GenericGenerator(name = "UUID", strategy = "com.viglet.shiohara.jpa.ShUUIDGenerator")
-	@GeneratedValue(generator = "UUID")
-	
-	@Column(name = "id", updatable = false, nullable = false)
-	private UUID id;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date date;
@@ -59,14 +50,6 @@ public class ShPostType implements Serializable {
 	private List<ShRegion> shRegions;
 
 	public ShPostType() {
-	}
-
-	public UUID getId() {
-		return this.id;
-	}
-
-	public void setId(UUID id) {
-		this.id = id;
 	}
 
 	public Date getDate() {

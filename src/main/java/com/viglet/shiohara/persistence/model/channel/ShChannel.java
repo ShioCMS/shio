@@ -7,6 +7,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 
@@ -21,15 +22,8 @@ import java.util.UUID;
 @Entity
 @NamedQuery(name = "ShChannel.findAll", query = "SELECT c FROM ShChannel c")
 @JsonIgnoreProperties({ "shChannels", "shPosts" })
-public class ShChannel implements Serializable {
+public class ShChannel extends ShObject {
 	private static final long serialVersionUID = 1L;
-
-	@Id
-	@GenericGenerator(name = "UUID", strategy = "com.viglet.shiohara.jpa.ShUUIDGenerator")
-	@GeneratedValue(generator = "UUID")
-	
-	@Column(name = "id", updatable = false, nullable = false)
-	private UUID id;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date date;
@@ -59,14 +53,6 @@ public class ShChannel implements Serializable {
 	private List<ShPost> shPosts;
 
 	public ShChannel() {
-	}
-
-	public UUID getId() {
-		return id;
-	}
-
-	public void setId(UUID id) {
-		this.id = id;
 	}
 
 	public Date getDate() {

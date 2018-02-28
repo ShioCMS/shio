@@ -50,8 +50,6 @@ public class ShChannelAPI {
 	@Autowired
 	ShPostTypeAttrRepository shPostTypeAttrRepository;
 	@Autowired
-	ShChannelOutput shChannelOutput;
-	@Autowired
 	private ShGlobalIdRepository shGlobalIdRepository;
 
 	@GET
@@ -63,8 +61,8 @@ public class ShChannelAPI {
 	@Path("/{channelId}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public ShChannelOutput edit(@PathParam("channelId") UUID id) throws Exception {
-		return shChannelOutput.newInstance(shChannelRepository.findById(id));
+	public ShChannel edit(@PathParam("channelId") UUID id) throws Exception {
+		return shChannelRepository.findById(id);
 	}
 
 	@Path("/{channelId}")
@@ -99,7 +97,7 @@ public class ShChannelAPI {
 		shChannelRepository.save(shChannel);
 
 		ShGlobalId shGlobalId = new ShGlobalId();
-		shGlobalId.setObjectId(shChannel.getId());
+//		shGlobalId.setObjectId(shChannel.getId());
 		shGlobalId.setType("CHANNEL");
 		
 		shGlobalIdRepository.save(shGlobalId);
@@ -118,7 +116,7 @@ public class ShChannelAPI {
 		shPostRepository.save(shPost);
 		
 		shGlobalId = new ShGlobalId();
-		shGlobalId.setObjectId(shPost.getId());
+	//	shGlobalId.setObjectId(shPost.getId());
 		shGlobalId.setType("POST");
 		
 		shGlobalIdRepository.save(shGlobalId);	

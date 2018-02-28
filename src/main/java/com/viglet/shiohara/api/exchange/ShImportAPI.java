@@ -52,7 +52,7 @@ public class ShImportAPI {
 	ShPostAttrRepository shPostAttrRepository;
 	@Autowired
 	ShGlobalIdRepository shGlobalIdRepository;
-	
+
 	Map<UUID, Object> shObjects = new HashMap<UUID, Object>();
 	Map<UUID, List<UUID>> shChildObjects = new HashMap<UUID, List<UUID>>();
 
@@ -72,10 +72,10 @@ public class ShImportAPI {
 			shSite.setDate(shSiteExchange.getDate());
 
 			shSiteRepository.save(shSite);
-			
+
 			ShGlobalId shGlobalId = new ShGlobalId();
 			shGlobalId.setId(shSiteExchange.getGlobalId());
-			shGlobalId.setObjectId(shSite.getId());
+			shGlobalId.setShObject(shSite);
 			shGlobalId.setType("SITE");
 
 			shGlobalIdRepository.save(shGlobalId);
@@ -147,14 +147,14 @@ public class ShImportAPI {
 						}
 					}
 					shChannelRepository.save(shChannelChild);
-					
+
 					ShGlobalId shGlobalId = new ShGlobalId();
 					shGlobalId.setId(shChannelExchange.getGlobalId());
-					shGlobalId.setObjectId(shChannelExchange.getId());
+					shGlobalId.setShObject(shChannelChild);
 					shGlobalId.setType("CHANNEL");
 
 					shGlobalIdRepository.save(shGlobalId);
-					
+
 					this.shChannelImportNested(shChannelChild.getId());
 				}
 
@@ -179,11 +179,11 @@ public class ShImportAPI {
 
 					ShGlobalId shGlobalId = new ShGlobalId();
 					shGlobalId.setId(shPostExchange.getGlobalId());
-					shGlobalId.setObjectId(shPostExchange.getId());
+					shGlobalId.setShObject(shPost);
 					shGlobalId.setType("POST");
 
 					shGlobalIdRepository.save(shGlobalId);
-					
+
 					for (Entry<String, Object> shPostFields : shPostExchange.getFields().entrySet()) {
 						ShPostAttr shPostAttr = new ShPostAttr();
 						shPostAttr.setStrValue((String) shPostFields.getValue());

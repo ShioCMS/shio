@@ -61,8 +61,6 @@ public class ShSiteAPI {
 	ShPostAttrRepository shPostAttrRepository;
 	@Autowired
 	ShGlobalIdRepository shGlobalIdRepository;
-	@Autowired
-	ShSiteOutput shSiteOutput;
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -73,8 +71,8 @@ public class ShSiteAPI {
 	@Path("/{siteId}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public ShSiteOutput edit(@PathParam("siteId") UUID id) throws Exception {
-		return shSiteOutput.newInstance(shSiteRepository.findById(id));
+	public ShSite edit(@PathParam("siteId") UUID id) throws Exception {
+		return shSiteRepository.findById(id);
 	}
 
 	@Path("/{siteId}")
@@ -112,7 +110,7 @@ public class ShSiteAPI {
 		shSiteRepository.save(shSite);
 
 		ShGlobalId shGlobalId = new ShGlobalId();
-		shGlobalId.setObjectId(shSite.getId());
+		shGlobalId.setShObject(shSite);
 		shGlobalId.setType("SITE");
 
 		shGlobalIdRepository.save(shGlobalId);
@@ -128,7 +126,7 @@ public class ShSiteAPI {
 		shChannelRepository.save(shChannelHome);
 
 		shGlobalId = new ShGlobalId();
-		shGlobalId.setObjectId(shChannelHome.getId());
+		shGlobalId.setShObject(shChannelHome);
 		shGlobalId.setType("CHANNEL");
 
 		shGlobalIdRepository.save(shGlobalId);
@@ -147,7 +145,7 @@ public class ShSiteAPI {
 		shPostRepository.save(shPost);
 
 		shGlobalId = new ShGlobalId();
-		shGlobalId.setObjectId(shPost.getId());
+		shGlobalId.setShObject(shPost);
 		shGlobalId.setType("POST");
 
 		shGlobalIdRepository.save(shGlobalId);
@@ -211,7 +209,7 @@ public class ShSiteAPI {
 		shSiteExchange.setPostTypeLayout(shSite.getPostTypeLayout());
 		shSiteExchange.setDate(shSite.getDate());
 		shSiteExchange.setRootChannels(rootChannelsUUID);
-		shSiteExchange.setGlobalId(shGlobalIdRepository.findByObjectId(shSite.getId()).getId());
+		shSiteExchange.setGlobalId(shSite.getShGlobalId().getId());
 
 		List<ShSiteExchange> shSiteExchanges = new ArrayList<ShSiteExchange>();
 		shSiteExchanges.add(shSiteExchange);
@@ -249,7 +247,8 @@ public class ShSiteAPI {
 				shPostExchange.setChannel(shPost.getShChannel().getId());
 				shPostExchange.setDate(shPost.getDate());
 				shPostExchange.setPostType(shPost.getShPostType().getName());
-				shPostExchange.setGlobalId(shGlobalIdRepository.findByObjectId(shPostExchange.getId()).getId());
+
+				shPostExchange.setGlobalId(shPost.getShGlobalId().getId());
 				Map<String, Object> fields = new HashMap<String, Object>();
 				for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
 					if (shPostAttr != null && shPostAttr.getShPostTypeAttr() != null) {
@@ -263,8 +262,7 @@ public class ShSiteAPI {
 			}
 			ShChannelExchange shChannelExchangeChild = new ShChannelExchange();
 			shChannelExchangeChild.setId(shChannel.getId());
-			shChannelExchangeChild
-					.setGlobalId(shGlobalIdRepository.findByObjectId(shChannelExchangeChild.getId()).getId());
+			shChannelExchangeChild.setGlobalId(shChannel.getShGlobalId().getId());
 			shChannelExchangeChild.setDate(shChannel.getDate());
 			shChannelExchangeChild.setName(shChannel.getName());
 			if (shChannel.getParentChannel() != null) {
