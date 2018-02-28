@@ -1,9 +1,12 @@
 package com.viglet.shiohara.api.post;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
+import java.util.Set;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -20,12 +23,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
+import com.viglet.shiohara.persistence.model.reference.ShReference;
+import com.viglet.shiohara.persistence.model.reference.ShReferenceId;
 import com.viglet.shiohara.persistence.model.user.ShUser;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
+import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
+import com.viglet.shiohara.persistence.repository.reference.ShReferenceRepository;
 import com.viglet.shiohara.persistence.repository.user.ShUserRepository;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
 
@@ -43,7 +50,9 @@ public class ShPostAPI {
 	private ShStaticFileUtils shStaticFileUtils;
 	@Autowired
 	private ShGlobalIdRepository shGlobalIdRepository;
-	
+	@Autowired
+	private ShReferenceRepository shReferenceRepository;
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<ShPost> list() throws Exception {
@@ -152,15 +161,29 @@ public class ShPostAPI {
 		shPost.setSummary(summary);
 
 		shPostRepository.saveAndFlush(shPost);
-		
+
 		ShGlobalId shGlobalId = new ShGlobalId();
-	//	shGlobalId.setObjectId(shPost.getId());
+		shGlobalId.setShObject(shPost);
 		shGlobalId.setType("POST");
-		
-		shGlobalIdRepository.save(shGlobalId);	
+
+		shGlobalIdRepository.saveAndFlush(shGlobalId);
 
 		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
 			shPostAttr.setShPost(shPost);
+			if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals("File")) {
+				ShPost shPostFile = shPostRepository.findById(UUID.fromString(shPostAttr.getStrValue()));
+				ShReferenceId shReferenceId = new ShReferenceId();
+				shReferenceId.setFromId(shGlobalId.getId());
+				shReferenceId.setToId(shPostFile.getShGlobalId().getId());
+				ShReference shReference = new ShReference();
+				shReference.setId(shReferenceId);
+
+				shReferenceRepository.saveAndFlush(shReference);
+				Set<ShObject> referenceObjects = new HashSet<ShObject>();
+				referenceObjects.add(shPostFile);
+				shPostAttr.setReferenceObjects(referenceObjects);
+				
+			}
 			shPostAttrRepository.saveAndFlush(shPostAttr);
 		}
 

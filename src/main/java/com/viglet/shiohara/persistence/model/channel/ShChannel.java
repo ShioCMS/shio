@@ -1,10 +1,8 @@
 package com.viglet.shiohara.persistence.model.channel;
 
-import java.io.Serializable;
 import javax.persistence.*;
 
 import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.viglet.shiohara.persistence.model.object.ShObject;
@@ -13,7 +11,6 @@ import com.viglet.shiohara.persistence.model.site.ShSite;
 
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * The persistent class for the ShPost database table.

@@ -24,11 +24,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.persistence.model.channel.ShChannel;
+import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.repository.channel.ShChannelRepository;
+import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
@@ -51,12 +53,14 @@ public class ShStaticFileAPI {
 	private ShPostTypeAttrRepository shPostTypeAttrRepository;
 	@Autowired
 	private ShPostAttrRepository shPostAttrRepository;
-
+	@Autowired
+	private ShGlobalIdRepository shGlobalIdRepository;
+	
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces("application/json")
 	@Path("upload")
-	public String fileUpload(@DefaultValue("true") @FormDataParam("enabled") boolean enabled,
+	public ShPost fileUpload(@DefaultValue("true") @FormDataParam("enabled") boolean enabled,
 			@FormDataParam("file") InputStream inputStream, @FormDataParam("channelId") UUID channelId,
 			@FormDataParam("createPost") boolean createPost,
 			@FormDataParam("file") FormDataContentDisposition fileDetail, @Context UriInfo uriInfo)
@@ -64,13 +68,14 @@ public class ShStaticFileAPI {
 
 		ShChannel shChannel = shChannelRepository.findById(channelId);
 		File directoryPath = shStaticFileUtils.dirPath(shChannel);
+		ShPost shPost = new ShPost();
 		String filePath = null;
 		if (directoryPath != null) {
 			if (!directoryPath.exists()) {
 				directoryPath.mkdirs();
 			}
 			OutputStream outputStream = null;
-
+			
 			try {
 
 				// write the inputStream to a FileOutputStream
@@ -86,11 +91,11 @@ public class ShStaticFileAPI {
 				}
 
 				filePath = fileDetail.getFileName();
-
+				
 				if (createPost) {
 					// Post File
 					ShPostType shPostType = shPostTypeRepository.findByName("PT-FILE");
-					ShPost shPost = new ShPost();
+					
 					shPost.setDate(new Date());
 					shPost.setShPostType(shPostType);
 					shPost.setSummary(null);
@@ -99,6 +104,12 @@ public class ShStaticFileAPI {
 
 					shPostRepository.save(shPost);
 
+					ShGlobalId shGlobalId = new ShGlobalId();
+					shGlobalId.setShObject(shPost);
+					shGlobalId.setType("POST");
+
+					shGlobalIdRepository.saveAndFlush(shGlobalId);
+					
 					ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType,
 							"FILE");
 
@@ -110,6 +121,9 @@ public class ShStaticFileAPI {
 
 					shPostAttrRepository.save(shPostAttr);
 
+				}
+				else {
+					shPost.setTitle(filePath);
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -132,7 +146,7 @@ public class ShStaticFileAPI {
 				}
 			}
 		}
-		return "{ \"file\":\"" + filePath + "\"}";
+		return shPost;
 	}
 
 }
