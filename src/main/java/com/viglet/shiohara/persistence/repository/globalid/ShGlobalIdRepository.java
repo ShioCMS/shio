@@ -15,7 +15,7 @@ public interface ShGlobalIdRepository extends JpaRepository<ShGlobalId, UUID> {
 
 	ShGlobalId findById(UUID id);
 	
-	ShGlobalId findByObjectId(UUID objectId);
+	//ShGlobalId findByObjectId(UUID objectId);
 
 	ShGlobalId save(ShGlobalId shGlobalObject);
 

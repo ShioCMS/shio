@@ -36,7 +36,7 @@ public class ShSiteOnStartup {
 			shSiteRepository.save(shSite);
 			
 			ShGlobalId shGlobalId = new ShGlobalId();
-			shGlobalId.setObjectId(shSite.getId());
+			shGlobalId.setShObject(shSite);
 			shGlobalId.setType("SITE");
 			
 			shGlobalIdRepository.save(shGlobalId);			

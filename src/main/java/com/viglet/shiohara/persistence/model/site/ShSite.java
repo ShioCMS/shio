@@ -1,17 +1,15 @@
 package com.viglet.shiohara.persistence.model.site;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import javax.persistence.*;
 
 import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.viglet.shiohara.persistence.model.channel.ShChannel;
+import com.viglet.shiohara.persistence.model.object.ShObject;
 
 /**
  * The persistent class for the ShSite database table.
@@ -20,15 +18,8 @@ import com.viglet.shiohara.persistence.model.channel.ShChannel;
 @Entity
 @NamedQuery(name = "ShSite.findAll", query = "SELECT s FROM ShSite s")
 @JsonIgnoreProperties({ "shChannels", "shPosts" })
-public class ShSite implements Serializable {
+public class ShSite extends ShObject {
 	private static final long serialVersionUID = 1L;
-
-	@Id
-	@GenericGenerator(name = "UUID", strategy = "com.viglet.shiohara.jpa.ShUUIDGenerator")
-	@GeneratedValue(generator = "UUID")
-	
-	@Column(name = "id", updatable = false, nullable = false)
-	private UUID id;
 
 	private String name;
 
@@ -63,14 +54,6 @@ public class ShSite implements Serializable {
 
 	public void setUrl(String url) {
 		this.url = url;
-	}
-
-	public UUID getId() {
-		return this.id;
-	}
-
-	public void setId(UUID id) {
-		this.id = id;
 	}
 
 	public String getName() {

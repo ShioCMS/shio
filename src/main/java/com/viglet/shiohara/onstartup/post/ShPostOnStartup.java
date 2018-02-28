@@ -1,6 +1,7 @@
 package com.viglet.shiohara.onstartup.post;
 
 import java.util.Date;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -37,7 +38,7 @@ public class ShPostOnStartup {
 	private ShChannelRepository shChannelRepository;
 	@Autowired
 	private ShGlobalIdRepository shGlobalIdRepository;
-	
+
 	public void createDefaultRows() {
 		ShSite shSite = shSiteRepository.findByName("Sample");
 
@@ -51,29 +52,28 @@ public class ShPostOnStartup {
 			ShChannel shChannelText = shChannelRepository.findByShSiteAndName(shSite, "Text");
 			ShChannel shChannelThemes = shChannelRepository.findByShSiteAndName(shSite, "Themes");
 
-			
 			ShPostType shPostRegion = shPostTypeRepository.findByName("PT-REGION");
 			ShPostType shPostType = shPostTypeRepository.findByName("PT-TEXT");
 			ShPostType shPostTypeArea = shPostTypeRepository.findByName("PT-TEXT-AREA");
 			ShPostType shPostArticle = shPostTypeRepository.findByName("PT-ARTICLE");
 			ShPostType shPostChannelIndex = shPostTypeRepository.findByName("PT-CHANNEL-INDEX");
-			
+
 			// Post Text
-			
+
 			ShPost shPost = new ShPost();
+			shPost.setId(UUID.fromString("990e5c4b-3369-4718-b8dc-5efde982c4b7"));
 			shPost.setDate(new Date());
 			shPost.setShPostType(shPostType);
 			shPost.setSummary(null);
 			shPost.setTitle("Post01");
 			shPost.setShChannel(shChannelHome);
-
 			shPostRepository.save(shPost);
-			
+
 			ShGlobalId shGlobalId = new ShGlobalId();
-			shGlobalId.setObjectId(shPost.getId());
+			shGlobalId.setShObject(shPost);
 			shGlobalId.setType("POST");
-			
-			shGlobalIdRepository.save(shGlobalId);			
+
+			shGlobalIdRepository.save(shGlobalId);
 
 			ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType, "TEXT");
 
@@ -95,12 +95,12 @@ public class ShPostOnStartup {
 			shPost.setShChannel(shChannelHome);
 
 			shPostRepository.save(shPost);
-			
+
 			shGlobalId = new ShGlobalId();
-			shGlobalId.setObjectId(shPost.getId());
+			shGlobalId.setShObject(shPost);
 			shGlobalId.setType("POST");
-			
-			shGlobalIdRepository.save(shGlobalId);			
+
+			shGlobalIdRepository.save(shGlobalId);
 
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeArea, "TEXT");
 
@@ -122,12 +122,12 @@ public class ShPostOnStartup {
 			shPost.setShChannel(shChannelArticle);
 
 			shPostRepository.save(shPost);
-			
+
 			shGlobalId = new ShGlobalId();
-			shGlobalId.setObjectId(shPost.getId());
+			shGlobalId.setShObject(shPost);
 			shGlobalId.setType("POST");
-			
-			shGlobalIdRepository.save(shGlobalId);			
+
+			shGlobalIdRepository.save(shGlobalId);
 
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostArticle, "TITLE");
 
@@ -148,7 +148,7 @@ public class ShPostOnStartup {
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
-			
+
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostArticle, "TEXT");
 
 			shPostAttr = new ShPostAttr();
@@ -169,12 +169,12 @@ public class ShPostOnStartup {
 			shPost.setShChannel(shChannelNews);
 
 			shPostRepository.save(shPost);
-			
+
 			shGlobalId = new ShGlobalId();
-			shGlobalId.setObjectId(shPost.getId());
+			shGlobalId.setShObject(shPost);
 			shGlobalId.setType("POST");
-			
-			shGlobalIdRepository.save(shGlobalId);			
+
+			shGlobalIdRepository.save(shGlobalId);
 
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostArticle, "TITLE");
 
@@ -195,7 +195,7 @@ public class ShPostOnStartup {
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
-			
+
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostArticle, "TEXT");
 
 			shPostAttr = new ShPostAttr();
@@ -203,7 +203,6 @@ public class ShPostOnStartup {
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue("Some text 2...");
 			shPostAttr.setType(1);
-
 
 			// Sample Theme
 
@@ -217,12 +216,12 @@ public class ShPostOnStartup {
 			shPost.setShChannel(shChannelThemes);
 
 			shPostRepository.save(shPost);
-			
+
 			shGlobalId = new ShGlobalId();
-			shGlobalId.setObjectId(shPost.getId());
+			shGlobalId.setShObject(shPost);
 			shGlobalId.setType("POST");
-			
-			shGlobalIdRepository.save(shGlobalId);			
+
+			shGlobalIdRepository.save(shGlobalId);
 
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTheme, "TITLE");
 
@@ -270,8 +269,7 @@ public class ShPostOnStartup {
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
-	
-			
+
 			// Post Channel Index Home
 
 			shPost = new ShPost();
@@ -282,13 +280,13 @@ public class ShPostOnStartup {
 			shPost.setShChannel(shChannelHome);
 
 			shPostRepository.save(shPost);
-			
+
 			shGlobalId = new ShGlobalId();
-			shGlobalId.setObjectId(shPost.getId());
+			shGlobalId.setShObject(shPost);
 			shGlobalId.setType("POST");
-			
-			shGlobalIdRepository.save(shGlobalId);			
-			
+
+			shGlobalIdRepository.save(shGlobalId);
+
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "TITLE");
 
 			shPostAttr = new ShPostAttr();
@@ -308,7 +306,7 @@ public class ShPostOnStartup {
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
-			
+
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "PAGE-LAYOUT");
 
 			shPostAttr = new ShPostAttr();
@@ -318,7 +316,6 @@ public class ShPostOnStartup {
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
-
 
 			// Post Channel Index Article
 			shPost = new ShPost();
@@ -329,12 +326,12 @@ public class ShPostOnStartup {
 			shPost.setShChannel(shChannelArticle);
 
 			shPostRepository.save(shPost);
-			
+
 			shGlobalId = new ShGlobalId();
-			shGlobalId.setObjectId(shPost.getId());
+			shGlobalId.setShObject(shPost);
 			shGlobalId.setType("POST");
-			
-			shGlobalIdRepository.save(shGlobalId);			
+
+			shGlobalIdRepository.save(shGlobalId);
 
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "TITLE");
 
@@ -365,7 +362,7 @@ public class ShPostOnStartup {
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
-			
+
 			// Post Channel Index News
 			shPost = new ShPost();
 			shPost.setDate(new Date());
@@ -375,12 +372,12 @@ public class ShPostOnStartup {
 			shPost.setShChannel(shChannelNews);
 
 			shPostRepository.save(shPost);
-			
+
 			shGlobalId = new ShGlobalId();
-			shGlobalId.setObjectId(shPost.getId());
+			shGlobalId.setShObject(shPost);
 			shGlobalId.setType("POST");
-			
-			shGlobalIdRepository.save(shGlobalId);			
+
+			shGlobalIdRepository.save(shGlobalId);
 
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "TITLE");
 
@@ -411,7 +408,7 @@ public class ShPostOnStartup {
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
-			
+
 			// Post Channel Index Text
 			shPost = new ShPost();
 			shPost.setDate(new Date());
@@ -421,12 +418,12 @@ public class ShPostOnStartup {
 			shPost.setShChannel(shChannelText);
 
 			shPostRepository.save(shPost);
-			
+
 			shGlobalId = new ShGlobalId();
-			shGlobalId.setObjectId(shPost.getId());
+			shGlobalId.setShObject(shPost);
 			shGlobalId.setType("POST");
-			
-			shGlobalIdRepository.save(shGlobalId);			
+
+			shGlobalIdRepository.save(shGlobalId);
 
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "TITLE");
 
@@ -457,7 +454,7 @@ public class ShPostOnStartup {
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
-			
+
 			// Post Page Layout
 
 			ShPostType shPostTypePageLayout = shPostTypeRepository.findByName("PT-PAGE-LAYOUT");
@@ -469,13 +466,13 @@ public class ShPostOnStartup {
 			shPost.setShChannel(shChannelLayouts);
 
 			shPostRepository.save(shPost);
-			
+
 			shGlobalId = new ShGlobalId();
-			shGlobalId.setObjectId(shPost.getId());
+			shGlobalId.setShObject(shPost);
 			shGlobalId.setType("POST");
-			
-			shGlobalIdRepository.save(shGlobalId);			
-			
+
+			shGlobalIdRepository.save(shGlobalId);
+
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypePageLayout, "TITLE");
 
 			shPostAttr = new ShPostAttr();
@@ -495,7 +492,6 @@ public class ShPostOnStartup {
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
-			
 
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypePageLayout, "THEME");
 
@@ -514,7 +510,8 @@ public class ShPostOnStartup {
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(
 					"load('https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js');\n"
-							+ "var template = Handlebars.compile(html);\n" + "var html = template(shContent);\n" + "html;");
+							+ "var template = Handlebars.compile(html);\n" + "var html = template(shContent);\n"
+							+ "html;");
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
@@ -544,12 +541,12 @@ public class ShPostOnStartup {
 			shPost.setShChannel(shChannelTemplates);
 
 			shPostRepository.save(shPost);
-			
+
 			shGlobalId = new ShGlobalId();
-			shGlobalId.setObjectId(shPost.getId());
+			shGlobalId.setShObject(shPost);
 			shGlobalId.setType("POST");
-			
-			shGlobalIdRepository.save(shGlobalId);			
+
+			shGlobalIdRepository.save(shGlobalId);
 
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "TITLE");
 
@@ -578,7 +575,8 @@ public class ShPostOnStartup {
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(
 					"load('https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js');\n"
-							+ "var template = Handlebars.compile(html);\n" + "var html = template(shContent);\n" + "html;");
+							+ "var template = Handlebars.compile(html);\n" + "var html = template(shContent);\n"
+							+ "html;");
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
@@ -613,13 +611,13 @@ public class ShPostOnStartup {
 			shPost.setShChannel(shChannelTemplates);
 
 			shPostRepository.save(shPost);
-			
+
 			shGlobalId = new ShGlobalId();
-			shGlobalId.setObjectId(shPost.getId());
+			shGlobalId.setShObject(shPost);
 			shGlobalId.setType("POST");
-			
-			shGlobalIdRepository.save(shGlobalId);			
-			
+
+			shGlobalIdRepository.save(shGlobalId);
+
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "TITLE");
 
 			shPostAttr = new ShPostAttr();
@@ -647,7 +645,8 @@ public class ShPostOnStartup {
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(
 					"load('https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js');\n"
-							+ "var template = Handlebars.compile(html);\n" + "var html = template(shContent);\n" + "html;");
+							+ "var template = Handlebars.compile(html);\n" + "var html = template(shContent);\n"
+							+ "html;");
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
@@ -684,12 +683,12 @@ public class ShPostOnStartup {
 			shPost.setShChannel(shChannelLayouts);
 
 			shPostRepository.save(shPost);
-			
+
 			shGlobalId = new ShGlobalId();
-			shGlobalId.setObjectId(shPost.getId());
+			shGlobalId.setShObject(shPost);
 			shGlobalId.setType("POST");
-			
-			shGlobalIdRepository.save(shGlobalId);			
+
+			shGlobalIdRepository.save(shGlobalId);
 
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypePageLayout, "TITLE");
 
@@ -720,7 +719,7 @@ public class ShPostOnStartup {
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
-			
+
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "JAVASCRIPT");
 
 			shPostAttr = new ShPostAttr();
@@ -728,7 +727,8 @@ public class ShPostOnStartup {
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(
 					"load('https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js');\n"
-							+ "var template = Handlebars.compile(html);\n" + "var html = template(shContent);\n" + "html;");
+							+ "var template = Handlebars.compile(html);\n" + "var html = template(shContent);\n"
+							+ "html;");
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
@@ -757,12 +757,12 @@ public class ShPostOnStartup {
 			shPost.setShChannel(shChannelTemplates);
 
 			shPostRepository.save(shPost);
-			
+
 			shGlobalId = new ShGlobalId();
-			shGlobalId.setObjectId(shPost.getId());
+			shGlobalId.setShObject(shPost);
 			shGlobalId.setType("POST");
-			
-			shGlobalIdRepository.save(shGlobalId);			
+
+			shGlobalIdRepository.save(shGlobalId);
 
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "TITLE");
 
@@ -791,7 +791,8 @@ public class ShPostOnStartup {
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(
 					"load('https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js');\n"
-							+ "var template = Handlebars.compile(html);\n" + "var html = template(shContent);\n" + "html;");
+							+ "var template = Handlebars.compile(html);\n" + "var html = template(shContent);\n"
+							+ "html;");
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
@@ -830,12 +831,12 @@ public class ShPostOnStartup {
 			shPost.setShChannel(shChannelTemplates);
 
 			shPostRepository.save(shPost);
-			
+
 			shGlobalId = new ShGlobalId();
-			shGlobalId.setObjectId(shPost.getId());
+			shGlobalId.setShObject(shPost);
 			shGlobalId.setType("POST");
-			
-			shGlobalIdRepository.save(shGlobalId);			
+
+			shGlobalIdRepository.save(shGlobalId);
 
 			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "TITLE");
 
@@ -864,7 +865,8 @@ public class ShPostOnStartup {
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue(
 					"load('https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js');\n"
-							+ "var template = Handlebars.compile(html);\n" + "var html = template(shContent);\n" + "html;");
+							+ "var template = Handlebars.compile(html);\n" + "var html = template(shContent);\n"
+							+ "html;");
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);

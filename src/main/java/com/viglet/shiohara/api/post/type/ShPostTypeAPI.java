@@ -41,8 +41,6 @@ public class ShPostTypeAPI {
 	@Autowired
 	private ShPostRepository shPostRepository;
 	@Autowired
-	private ShPostTypeOutput shPostTypeOutput;
-	@Autowired
 	private ShGlobalIdRepository shGlobalIdRepository;
 	
 	@GET
@@ -54,8 +52,8 @@ public class ShPostTypeAPI {
 	@Path("/{postTypeId}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public ShPostTypeOutput edit(@PathParam("postTypeId") UUID id) throws Exception {
-		return shPostTypeOutput.newInstance(shPostTypeRepository.findById(id));
+	public ShPostType edit(@PathParam("postTypeId") UUID id) throws Exception {
+		return shPostTypeRepository.findById(id);
 	}
 
 	@Path("/model")
@@ -157,7 +155,7 @@ public class ShPostTypeAPI {
 		shPostType.setDate(new Date());
 		
 		ShGlobalId shGlobalId = new ShGlobalId();
-		shGlobalId.setObjectId(shPostType.getId());
+	//	shGlobalId.setObjectId(shPostType.getId());
 		shGlobalId.setType("POST_TYPE");
 
 		shGlobalIdRepository.save(shGlobalId);

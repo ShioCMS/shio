@@ -48,7 +48,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeRepository.save(shPostType);
 
 			ShGlobalId shGlobalId = new ShGlobalId();
-			shGlobalId.setObjectId(shPostType.getId());
+			shGlobalId.setShObject(shPostType);
 			shGlobalId.setType("POST_TYPE");
 
 			shGlobalIdRepository.save(shGlobalId);
@@ -79,7 +79,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeRepository.save(shPostType);
 
 			shGlobalId = new ShGlobalId();
-			shGlobalId.setObjectId(shPostType.getId());
+			shGlobalId.setShObject(shPostType);
 			shGlobalId.setType("POST_TYPE");
 
 			shGlobalIdRepository.save(shGlobalId);
@@ -110,7 +110,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeRepository.save(shPostType);
 
 			shGlobalId = new ShGlobalId();
-			shGlobalId.setObjectId(shPostType.getId());
+			shGlobalId.setShObject(shPostType);
 			shGlobalId.setType("POST_TYPE");
 
 			shGlobalIdRepository.save(shGlobalId);
@@ -141,7 +141,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeRepository.save(shPostType);
 
 			shGlobalId = new ShGlobalId();
-			shGlobalId.setObjectId(shPostType.getId());
+			shGlobalId.setShObject(shPostType);
 			shGlobalId.setType("POST_TYPE");
 
 			shGlobalIdRepository.save(shGlobalId);
@@ -172,7 +172,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeRepository.save(shPostType);
 
 			shGlobalId = new ShGlobalId();
-			shGlobalId.setObjectId(shPostType.getId());
+			shGlobalId.setShObject(shPostType);
 			shGlobalId.setType("POST_TYPE");
 
 			shGlobalIdRepository.save(shGlobalId);
@@ -203,7 +203,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeRepository.save(shPostType);
 
 			shGlobalId = new ShGlobalId();
-			shGlobalId.setObjectId(shPostType.getId());
+			shGlobalId.setShObject(shPostType);
 			shGlobalId.setType("POST_TYPE");
 
 			shGlobalIdRepository.save(shGlobalId);
@@ -234,7 +234,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeRepository.save(shPostType);
 
 			shGlobalId = new ShGlobalId();
-			shGlobalId.setObjectId(shPostType.getId());
+			shGlobalId.setShObject(shPostType);
 			shGlobalId.setType("POST_TYPE");
 
 			shGlobalIdRepository.save(shGlobalId);
@@ -265,7 +265,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeRepository.save(shPostType);
 
 			shGlobalId = new ShGlobalId();
-			shGlobalId.setObjectId(shPostType.getId());
+			shGlobalId.setShObject(shPostType);
 			shGlobalId.setType("POST_TYPE");
 
 			shGlobalIdRepository.save(shGlobalId);
@@ -338,7 +338,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeRepository.save(shPostType);
 
 			shGlobalId = new ShGlobalId();
-			shGlobalId.setObjectId(shPostType.getId());
+			shGlobalId.setShObject(shPostType);
 			shGlobalId.setType("POST_TYPE");
 
 			shGlobalIdRepository.save(shGlobalId);
@@ -411,7 +411,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeRepository.save(shPostType);
 
 			shGlobalId = new ShGlobalId();
-			shGlobalId.setObjectId(shPostType.getId());
+			shGlobalId.setShObject(shPostType);
 			shGlobalId.setType("POST_TYPE");
 
 			shGlobalIdRepository.save(shGlobalId);
@@ -484,7 +484,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeRepository.save(shPostType);
 
 			shGlobalId = new ShGlobalId();
-			shGlobalId.setObjectId(shPostType.getId());
+			shGlobalId.setShObject(shPostType);
 			shGlobalId.setType("POST_TYPE");
 
 			shGlobalIdRepository.save(shGlobalId);
@@ -571,7 +571,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeRepository.save(shPostType);
 
 			shGlobalId = new ShGlobalId();
-			shGlobalId.setObjectId(shPostType.getId());
+			shGlobalId.setShObject(shPostType);
 			shGlobalId.setType("POST_TYPE");
 
 			shGlobalIdRepository.save(shGlobalId);

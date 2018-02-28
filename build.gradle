@@ -100,6 +100,7 @@ exclude(module: 'commons-logging')
     compile group: 'commons-lang', name: 'commons-lang', version:'2.6'
     compile group: 'org.apache.logging.log4j', name: 'log4j-core', version:'2.7'
 	compile group: 'org.jsoup', name: 'jsoup', version: '1.8.3'
+	
 	compile 'org.webjars.bower:jquery:1.11.1'
 	compile 'org.webjars:bootstrap:3.3.7-1'
 	compile 'org.webjars.bower:moment:2.20.1'
