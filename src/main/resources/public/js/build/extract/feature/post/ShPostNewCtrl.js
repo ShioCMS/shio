@@ -109,7 +109,7 @@ shioharaApp
 																			'/staticfile/upload'),
 															data : {
 																file : $scope.file,
-																channelId : $scope.shChannel.id,
+																channelId : $scope.channelId,
 																createPost : createPost
 															}
 														})
