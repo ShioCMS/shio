@@ -1,7 +1,6 @@
 package com.viglet.shiohara.api.post;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -86,21 +85,43 @@ public class ShPostAPI {
 
 			ShPostAttr shPostAttrEdit = shPostAttrRepository.findById(shPostAttr.getId());
 
-			if (shPost.getShPostType().getName().equals("PT-FILE")
-					&& shPostAttrEdit.getShPostTypeAttr().getName().equals("FILE")) {
-				File fileFrom = shStaticFileUtils.filePath(shPost.getShChannel(), shPostAttrEdit.getStrValue());
-				File fileTo = shStaticFileUtils.filePath(shPost.getShChannel(), shPostAttr.getStrValue());
-				if (fileFrom != null && fileTo != null) {
-					if (fileFrom.exists()) {
-						fileFrom.renameTo(fileTo);
+			if (shPostAttrEdit.getShPostTypeAttr().getName().equals("FILE")) {
+				if (shPost.getShPostType().getName().equals("PT-FILE")) {
+					File fileFrom = shStaticFileUtils.filePath(shPost.getShChannel(), shPostAttrEdit.getStrValue());
+					File fileTo = shStaticFileUtils.filePath(shPost.getShChannel(), shPostAttr.getStrValue());
+					if (fileFrom != null && fileTo != null) {
+						if (fileFrom.exists()) {
+							fileFrom.renameTo(fileTo);
+						}
+					}
+
+				} else {
+					if (shPostAttr.getStrValue() == null) {
+						shPostAttr.setReferenceObjects(null);
+					} else {
+						ShPost shPostFile = shPostRepository.findById(UUID.fromString(shPostAttr.getStrValue()));
+
+						// TODO Need remove old reference
+						ShReferenceId shReferenceId = new ShReferenceId();
+						shReferenceId.setFromId(shPost.getShGlobalId().getId());
+						shReferenceId.setToId(shPostFile.getShGlobalId().getId());
+						ShReference shReference = new ShReference();
+						shReference.setId(shReferenceId);
+
+						shReferenceRepository.saveAndFlush(shReference);
+						Set<ShObject> referenceObjects = new HashSet<ShObject>();
+						referenceObjects.add(shPostFile);
+						shPostAttr.setReferenceObjects(referenceObjects);
 					}
 				}
+
 			}
 
 			if (shPostAttrEdit != null) {
 				shPostAttrEdit.setDateValue(shPostAttr.getDateValue());
 				shPostAttrEdit.setIntValue(shPostAttr.getIntValue());
 				shPostAttrEdit.setStrValue(shPostAttr.getStrValue());
+				shPostAttrEdit.setReferenceObjects(shPostAttr.getReferenceObjects());
 				shPostAttrRepository.saveAndFlush(shPostAttrEdit);
 			}
 		}
@@ -126,7 +147,7 @@ public class ShPostAPI {
 
 		ShPost shPost = shPostRepository.findById(id);
 
-		if (shPost.getShPostType().getName().equals("PT-FILE")) {
+		if (shPost.getShPostType().getName().equals("PT-FILE") && shPost.getShPostAttrs().size() > 0) {
 			File file = shStaticFileUtils.filePath(shPost.getShChannel(), shPost.getShPostAttrs().get(0).getStrValue());
 			if (file != null) {
 				if (file.exists()) {
@@ -170,7 +191,8 @@ public class ShPostAPI {
 
 		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
 			shPostAttr.setShPost(shPost);
-			if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals("File")) {
+			if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals("File")
+					&& !shPost.getShPostType().getName().equals("PT-FILE")) {
 				ShPost shPostFile = shPostRepository.findById(UUID.fromString(shPostAttr.getStrValue()));
 				ShReferenceId shReferenceId = new ShReferenceId();
 				shReferenceId.setFromId(shGlobalId.getId());
@@ -182,7 +204,7 @@ public class ShPostAPI {
 				Set<ShObject> referenceObjects = new HashSet<ShObject>();
 				referenceObjects.add(shPostFile);
 				shPostAttr.setReferenceObjects(referenceObjects);
-				
+
 			}
 			shPostAttrRepository.saveAndFlush(shPostAttr);
 		}

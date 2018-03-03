@@ -131,9 +131,15 @@ shioharaApp.controller('ShPostEditCtrl', [
 								.then(
 
 										function(resp) {
-											$scope.filePath = resp.config.data.file.name;
-											$scope.shPost.shPostAttrs[key].strValue = $scope.filePath;
 
+											$scope.filePath = resp.data.title;
+										
+											if (createPost) {
+												$scope.shPost.shPostAttrs[key].strValue = resp.data.id;
+												delete $scope.shPost.shPostAttrs[key].referenceObjects;
+											} else {
+												$scope.shPost.shPostAttrs[key].strValue = $scope.filePath;
+											}			
 											deferredFile
 													.resolve("Success");
 											$timeout(function() {
