@@ -14,9 +14,11 @@ shioharaApp
 						"Upload",
 						"$q",
 						"$timeout",
+						"shStaticFileFactory",
 						function($scope, $http, $window, $stateParams, $state,
 								$rootScope, shAPIServerService, shPostResource,
-								Notification, Upload, $q, $timeout) {
+								Notification, Upload, $q, $timeout,
+								shStaticFileFactory) {
 							$scope.tinymceOptions = {
 								plugins : 'link image code',
 								toolbar : 'undo redo | bold italic | alignleft aligncenter alignright | code'
@@ -90,69 +92,10 @@ shioharaApp
 							}
 
 							var uploadFile = function(shPostAttr, key, postType) {
-								var deferredFile = $q.defer();
-								if (shPostAttr.shPostTypeAttr.shWidget.name == "File"
-										&& shPostAttr.file != null) {
-									var createPost = true;
-									if (postType.name == "PT-FILE") {
-										createPost = false;
-									}
-									$scope.numberOfFileWidgets++;
-									$scope.file = shPostAttr.file;
-									if (!$scope.file.$error) {
-										Upload
-												.upload(
-														{
-															url : shAPIServerService
-																	.get()
-																	.concat(
-																			'/staticfile/upload'),
-															data : {
-																file : $scope.file,
-																channelId : $scope.channelId,
-																createPost : createPost
-															}
-														})
-												.then(
-
-														function(resp) {
-
-															$scope.filePath = resp.data.title;
-														
-															if (createPost) {
-																$scope.shPost.shPostAttrs[key].strValue = resp.data.id;
-															} else {
-																$scope.shPost.shPostAttrs[key].strValue = $scope.filePath;
-															}			
-															deferredFile
-																	.resolve("Success");
-															$timeout(function() {
-																$scope.log = 'file: '
-																		+ resp.config.data.file.name
-																		+ ', Response: '
-																		+ JSON
-																				.stringify(resp.data)
-																		+ '\n'
-																		+ $scope.log;
-															});
-														},
-														null,
-														function(evt) {
-															var progressPercentage = parseInt(100.0
-																	* evt.loaded
-																	/ evt.total);
-															$scope.log = 'progress: '
-																	+ progressPercentage
-																	+ '% '
-																	+ evt.config.data.file.name
-																	+ '\n'
-																	+ $scope.log;
-														});
-									}
-								} else {
-									deferredFile.resolve("Success");
-								}
-								return deferredFile.promise;
+								return shStaticFileFactory.uploadFile(
+										$scope.channelId, shPostAttr, key,
+										postType, $scope.shPost,
+										$scope.numberOfFileWidgets);
 							}
 							$scope.postSave = function() {
 
