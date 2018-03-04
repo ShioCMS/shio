@@ -33,15 +33,12 @@ shioharaApp.factory('shStaticFileFactory', [
 												filePath = resp.data.title;
 											
 												if (createPost) {
-													console.log("createPost true");
 													shPost.shPostAttrs[key].strValue = resp.data.id;
 													
 													delete shPost.shPostAttrs[key].referenceObjects;
 												} else {
-													console.log("createPost false");
 													shPost.shPostAttrs[key].strValue = filePath;
 												}	
-												console.log("shPost.shPostAttrs[key].strValue" + shPost.shPostAttrs[key].strValue);
 												deferredFile
 														.resolve("Success");										
 											},

@@ -3,25 +3,8 @@ shioharaApp.factory('shChannelFactory', [
 		function($uibModal,shChannelResource, Notification, $filter) {
 			return {
 				
-				delete : function(shChannel, shChannels) {
-					var $ctrl = this;
-					
-					var modalInstance = $uibModal.open({
-						animation : true,
-						ariaLabelledBy : 'modal-title',
-						ariaDescribedBy : 'modal-body',
-						templateUrl : 'template/modal/shDeleteObject.html',
-						controller : 'ShModalDeleteObjectCtrl',
-						controllerAs : '$ctrl',
-						size : null,
-						appendTo : undefined,
-						resolve : {
-							instanceName : function() {
-								return shChannel.name;
-							}
-						}
-					});
-					
+				deleteFromList : function(shChannel, shChannels) {
+					var modalInstance = this.modalDelete(shChannel);
 					modalInstance.result.then(function(removeInstance) {
 						deletedMessage = 'The '
 							+ shChannel.name
@@ -42,6 +25,24 @@ shioharaApp.factory('shChannelFactory', [
 					}, function() {
 						// Selected NO
 					});
-				}						
+				}, 
+				modalDelete: function (shChannel) {
+	                var $ctrl = this;
+	                return $uibModal.open({
+	                    animation: true
+	                    , ariaLabelledBy: 'modal-title'
+	                    , ariaDescribedBy: 'modal-body'
+	                    , templateUrl: 'template/modal/shDeleteObject.html'
+	                    , controller: 'ShModalDeleteObjectCtrl'
+	                    , controllerAs: '$ctrl'
+	                    , size: null
+	                    , appendTo: undefined
+	                    , resolve: {
+	                        instanceName: function () {
+	                            return shPost.title;
+	                        }
+	                    }
+	                });
+	            }						
 			}
 		} ]);
