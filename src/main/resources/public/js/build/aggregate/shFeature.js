@@ -252,9 +252,11 @@ shioharaApp
 						"Upload",
 						"$q",
 						"$timeout",
+						"shStaticFileFactory",
 						function($scope, $http, $window, $stateParams, $state,
 								$rootScope, shAPIServerService, shPostResource,
-								Notification, Upload, $q, $timeout) {
+								Notification, Upload, $q, $timeout,
+								shStaticFileFactory) {
 							$scope.tinymceOptions = {
 								plugins : 'link image code',
 								toolbar : 'undo redo | bold italic | alignleft aligncenter alignright | code'
@@ -328,69 +330,10 @@ shioharaApp
 							}
 
 							var uploadFile = function(shPostAttr, key, postType) {
-								var deferredFile = $q.defer();
-								if (shPostAttr.shPostTypeAttr.shWidget.name == "File"
-										&& shPostAttr.file != null) {
-									var createPost = true;
-									if (postType.name == "PT-FILE") {
-										createPost = false;
-									}
-									$scope.numberOfFileWidgets++;
-									$scope.file = shPostAttr.file;
-									if (!$scope.file.$error) {
-										Upload
-												.upload(
-														{
-															url : shAPIServerService
-																	.get()
-																	.concat(
-																			'/staticfile/upload'),
-															data : {
-																file : $scope.file,
-																channelId : $scope.channelId,
-																createPost : createPost
-															}
-														})
-												.then(
-
-														function(resp) {
-
-															$scope.filePath = resp.data.title;
-														
-															if (createPost) {
-																$scope.shPost.shPostAttrs[key].strValue = resp.data.id;
-															} else {
-																$scope.shPost.shPostAttrs[key].strValue = $scope.filePath;
-															}			
-															deferredFile
-																	.resolve("Success");
-															$timeout(function() {
-																$scope.log = 'file: '
-																		+ resp.config.data.file.name
-																		+ ', Response: '
-																		+ JSON
-																				.stringify(resp.data)
-																		+ '\n'
-																		+ $scope.log;
-															});
-														},
-														null,
-														function(evt) {
-															var progressPercentage = parseInt(100.0
-																	* evt.loaded
-																	/ evt.total);
-															$scope.log = 'progress: '
-																	+ progressPercentage
-																	+ '% '
-																	+ evt.config.data.file.name
-																	+ '\n'
-																	+ $scope.log;
-														});
-									}
-								} else {
-									deferredFile.resolve("Success");
-								}
-								return deferredFile.promise;
+								return shStaticFileFactory.uploadFile(
+										$scope.channelId, shPostAttr, key,
+										postType, $scope.shPost,
+										$scope.numberOfFileWidgets);
 							}
 							$scope.postSave = function() {
 
@@ -451,6 +394,52 @@ shioharaApp.factory('shPostResource', [ '$resource', 'shAPIServerService', funct
 		}
 	});
 } ]);
+shioharaApp.factory('shPostFactory', [
+	'$uibModal','shPostResource', 'Notification','$filter',
+		function($uibModal,shPostResource, Notification, $filter) {
+			return {
+				delete : function(shPost, shPosts) {
+					var $ctrl = this;
+					
+					var modalInstance = $uibModal.open({
+						animation : true,
+						ariaLabelledBy : 'modal-title',
+						ariaDescribedBy : 'modal-body',
+						templateUrl : 'template/modal/shDeleteObject.html',
+						controller : 'ShModalDeleteObjectCtrl',
+						controllerAs : '$ctrl',
+						size : null,
+						appendTo : undefined,
+						resolve : {
+							instanceName : function() {
+								return shPost.title;
+							}
+						}
+					});
+			
+					modalInstance.result.then(function(removeInstance) {
+						deletedMessage = 'The '
+						+ shPost.title
+						+ ' Post was deleted.';
+						
+						shPostResource
+						.delete({
+							id : shPost.id
+						},function() {
+							// filter the array
+						    var foundItem = $filter('filter')(shPosts, { id: shPost.id  }, true)[0];
+						    // get the index
+						    var index = shPosts.indexOf(foundItem );
+						    // remove the item from array
+						    shPosts.splice(index, 1);    		
+							Notification.error(deletedMessage);
+						});
+					}, function() {
+						// Selected NO
+					});
+				}
+			}
+		} ]);
 shioharaApp.controller('ShPostEditCtrl', [
 		"$scope",
 		"$http",
@@ -464,8 +453,9 @@ shioharaApp.controller('ShPostEditCtrl', [
 		"Upload",
 		"$q",
 		"$timeout",
+		"shStaticFileFactory",
 		function($scope, $http, $window, $stateParams, $state, $rootScope,
-				shPostResource, shAPIServerService, Notification, Upload, $q, $timeout) {
+				shPostResource, shAPIServerService, Notification, Upload, $q, $timeout, shStaticFileFactory) {
 			$scope.tinymceOptions = {
 				    plugins: 'link image code',
 				    toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code'
@@ -559,69 +549,10 @@ shioharaApp.controller('ShPostEditCtrl', [
 			}
 			
 			var uploadFile = function(shPostAttr, key, postType) {
-				var deferredFile = $q.defer();
-				if (shPostAttr.shPostTypeAttr.shWidget.name == "File" && shPostAttr.file != null) {
-					var createPost = true;
-					if (postType.name == "PT-FILE") {
-						createPost = false;
-					}
-					$scope.numberOfFileWidgets++;
-					$scope.file = shPostAttr.file;
-					if (!$scope.file.$error) {
-						Upload
-								.upload(
-										{
-											url : shAPIServerService
-													.get()
-													.concat(
-															'/staticfile/upload'),
-											data : {
-												file : $scope.file,
-												channelId : $scope.channelId,
-												createPost : createPost
-											}
-										})
-								.then(
-
-										function(resp) {
-
-											$scope.filePath = resp.data.title;
-										
-											if (createPost) {
-												$scope.shPost.shPostAttrs[key].strValue = resp.data.id;
-												delete $scope.shPost.shPostAttrs[key].referenceObjects;
-											} else {
-												$scope.shPost.shPostAttrs[key].strValue = $scope.filePath;
-											}			
-											deferredFile
-													.resolve("Success");
-											$timeout(function() {
-												$scope.log = 'file: '
-														+ resp.config.data.file.name
-														+ ', Response: '
-														+ JSON
-																.stringify(resp.data)
-														+ '\n'
-														+ $scope.log;
-											});
-										},
-										null,
-										function(evt) {
-											var progressPercentage = parseInt(100.0
-													* evt.loaded
-													/ evt.total);
-											$scope.log = 'progress: '
-													+ progressPercentage
-													+ '% '
-													+ evt.config.data.file.name
-													+ '\n'
-													+ $scope.log;
-										});
-					}
-				} else {
-					deferredFile.resolve("Success");
-				}
-				return deferredFile.promise;
+				return shStaticFileFactory.uploadFile(
+						$scope.channelId, shPostAttr, key,
+						postType, $scope.shPost,
+						$scope.numberOfFileWidgets);
 			}
 		} ]);
 shioharaApp.controller('ShWidgetFileCtrl', [ '$scope', 'Upload', '$timeout',
@@ -687,25 +618,20 @@ shioharaApp.controller('ShOAuth2Ctrl', [ "$scope", "$http", "$window",
 shioharaApp.controller('ShContentChildrenCtrl', [
 		"$scope",
 		"$http",
-		"$window",
 		"$state",
 		"$stateParams",
 		"$rootScope",
 		"Token",
 		"shUserResource",
-		"shSiteResource",
-		"shChannelResource",
 		"shPostTypeResource",		
-		"shPostResource",
 		"shAPIServerService",
 		'vigLocale',
-		'$location',
 		'$translate',
-		'$filter',
-		'Notification',
-		function($scope, $http, $window, $state, $stateParams, $rootScope, Token,
-				shUserResource, shSiteResource, shChannelResource, shPostTypeResource, shPostResource, shAPIServerService, vigLocale, $location,
-				$translate, $filter, Notification) {
+		"shChannelFactory",
+		"shPostFactory",
+		function($scope, $http, $state, $stateParams, $rootScope, Token,
+				shUserResource, shPostTypeResource, shAPIServerService, vigLocale,
+				$translate,shChannelFactory, shPostFactory ) {
 			$scope.vigLanguage = vigLocale.getLocale().substring(0, 2);
 			$translate.use($scope.vigLanguage);
 			$scope.siteId = $stateParams.siteId;
@@ -737,47 +663,73 @@ shioharaApp.controller('ShContentChildrenCtrl', [
 				});
 				
 			});
-			$scope.channelDelete = function(channelId) {
-				$scope.shChannel = shChannelResource
-				.get({
-					id : channelId
-				});
-				shChannelResource
-				.delete({
-					id : channelId
-				},function() {
-					// filter the array
-				    var foundItem = $filter('filter')($scope.shChannels, { id: channelId  }, true)[0];
-				    // get the index
-				    var index = $scope.shChannels.indexOf(foundItem );
-				    // remove the item from array
-				    $scope.shChannels.splice(index, 1);   
-					Notification.error('The '
-							+ $scope.shChannel.name
-							+ ' Channel was deleted.');
-				    
-				});
+			$scope.channelDelete = function(shChannel) {
+				shChannelFactory.delete(shChannel, $scope.shChannels);
 			}
 			
-			$scope.postDelete = function(postId) {
-				$scope.shPost = shPostResource
-				.get({
-					id : postId
-				});
-				shPostResource
-				.delete({
-					id : postId
-				},function() {
-					// filter the array
-				    var foundItem = $filter('filter')($scope.shPosts, { id: postId  }, true)[0];
-				    // get the index
-				    var index = $scope.shPosts.indexOf(foundItem );
-				    // remove the item from array
-				    $scope.shPosts.splice(index, 1);  
-					Notification.error('The '
-							+ $scope.shPost.title
-							+ ' Post was deleted.');
-				});
+			$scope.postDelete = function(shPost) {
+				shPostFactory.delete(shPost, $scope.shPosts);
+			}
+		} ]);
+shioharaApp.factory('shStaticFileFactory', [
+	'$q','Upload', 'shAPIServerService','$timeout',
+		function($q,Upload, shAPIServerService,$timeout) {
+			return {
+				uploadFile : function(channelId, shPostAttr, key, postType, shPost, numberOfFileWidgets ) {
+					var deferredFile = $q.defer();
+					if (shPostAttr.shPostTypeAttr.shWidget.name == "File"
+							&& shPostAttr.file != null) {
+						var createPost = true;
+						if (postType.name == "PT-FILE") {
+							createPost = false;
+						}
+						numberOfFileWidgets++;
+						file = shPostAttr.file;
+						if (!file.$error) {
+							Upload
+									.upload(
+											{
+												url : shAPIServerService
+														.get()
+														.concat(
+																'/staticfile/upload'),
+												data : {
+													file : file,
+													channelId : channelId,
+													createPost : createPost
+												}
+											})
+									.then(
+
+											function(resp) {
+
+												filePath = resp.data.title;
+											
+												if (createPost) {
+													console.log("createPost true");
+													shPost.shPostAttrs[key].strValue = resp.data.id;
+													
+													delete shPost.shPostAttrs[key].referenceObjects;
+												} else {
+													console.log("createPost false");
+													shPost.shPostAttrs[key].strValue = filePath;
+												}	
+												console.log("shPost.shPostAttrs[key].strValue" + shPost.shPostAttrs[key].strValue);
+												deferredFile
+														.resolve("Success");										
+											},
+											null,
+											function(evt) {
+												var progressPercentage = parseInt(100.0
+														* evt.loaded
+														/ evt.total);
+											});
+						}
+					} else {
+						deferredFile.resolve("Success");
+					}
+					return deferredFile.promise;
+				}					
 			}
 		} ]);
 shioharaApp.factory('shUserResource', [ '$resource', 'shAPIServerService', function($resource, shAPIServerService) {
@@ -965,26 +917,17 @@ shioharaApp
 						} ]);
 shioharaApp.controller('ShChannelChildrenCtrl', [
 		"$scope",
-		"$http",
-		"$window",
 		"$state",
 		"$stateParams",
 		"$rootScope",
-		"Token",
-		"shUserResource",
-		"shChannelResource",
-		"shPostResource",
-		"shPostTypeResource",
+		"$translate",
+		"$http",
 		"shAPIServerService",
 		'vigLocale',
-		'$location',
-		"$translate",
-		"$filter",
-		"Notification",
-		function($scope, $http, $window, $state, $stateParams, $rootScope,
-				Token, shUserResource, shChannelResource, shPostResource,
-				shPostTypeResource, shAPIServerService, vigLocale, $location,
-				$translate, $filter, Notification) {
+		"shChannelFactory",
+		"shPostFactory",
+		function($scope, $state, $stateParams, $rootScope, $translate,$http,
+				shAPIServerService, vigLocale, shChannelFactory, shPostFactory) {
 			$scope.siteId = $stateParams.siteId;
 			$scope.channelId = $stateParams.channelId;
 			$scope.$parent.channelId = $stateParams.channelId;
@@ -1008,48 +951,13 @@ shioharaApp.controller('ShChannelChildrenCtrl', [
 						$scope.shSite = response.data.shSite;
 						$scope.$parent.shSite = $scope.shSite;
 					}));
-			$scope.channelDelete = function(channelId) {
-				$scope.shChannel = shChannelResource
-				.get({
-					id : channelId
-				});
-				shChannelResource
-				.delete({
-					id : channelId
-				},function() {
-					// filter the array
-				    var foundItem = $filter('filter')($scope.shChannels, { id: channelId  }, true)[0];
-				    // get the index
-				    var index = $scope.shChannels.indexOf(foundItem );
-				    // remove the item from array
-				    $scope.shChannels.splice(index, 1);    		
-					Notification.error('The '
-							+ $scope.shChannel.name
-							+ ' Channel was deleted.');
-				});
+			$scope.channelDelete = function(shChannel) {
+				shChannelFactory.delete(shChannel, $scope.shChannels);
 			}
 			
-			$scope.postDelete = function(postId) {
-				$scope.shPost = shPostResource
-				.get({
-					id : postId
-				});
-				shPostResource
-				.delete({
-					id : postId
-				},function() {
-					// filter the array
-				    var foundItem = $filter('filter')($scope.shPosts, { id: postId  }, true)[0];
-				    // get the index
-				    var index = $scope.shPosts.indexOf(foundItem );
-				    // remove the item from array
-				    $scope.shPosts.splice(index, 1);    		
-					Notification.error('The '
-							+ $scope.shPost.title
-							+ ' Post was deleted.');
-				});
+			$scope.postDelete = function(shPost) {
+				shPostFactory.delete(shPost, $scope.shPosts);
 			}
-
 		} ]);
 shioharaApp.factory('shChannelResource', [ '$resource', 'shAPIServerService',
 		function($resource, shAPIServerService) {
@@ -1060,6 +968,53 @@ shioharaApp.factory('shChannelResource', [ '$resource', 'shAPIServerService',
 					method : 'PUT'
 				}
 			});
+		} ]);
+shioharaApp.factory('shChannelFactory', [
+	'$uibModal','shChannelResource', 'Notification','$filter',
+		function($uibModal,shChannelResource, Notification, $filter) {
+			return {
+				
+				delete : function(shChannel, shChannels) {
+					var $ctrl = this;
+					
+					var modalInstance = $uibModal.open({
+						animation : true,
+						ariaLabelledBy : 'modal-title',
+						ariaDescribedBy : 'modal-body',
+						templateUrl : 'template/modal/shDeleteObject.html',
+						controller : 'ShModalDeleteObjectCtrl',
+						controllerAs : '$ctrl',
+						size : null,
+						appendTo : undefined,
+						resolve : {
+							instanceName : function() {
+								return shChannel.name;
+							}
+						}
+					});
+					
+					modalInstance.result.then(function(removeInstance) {
+						deletedMessage = 'The '
+							+ shChannel.name
+							+ ' Channel was deleted.';
+						
+						shChannelResource
+						.delete({
+							id : shChannel.id
+						},function() {
+							// filter the array
+						    var foundItem = $filter('filter')(shChannels, { id: shChannel.id }, true)[0];
+						    // get the index
+						    var index = shChannels.indexOf(foundItem );
+						    // remove the item from array
+						    shChannels.splice(index, 1);    		
+							Notification.error(deletedMessage);
+						});
+					}, function() {
+						// Selected NO
+					});
+				}						
+			}
 		} ]);
 shioharaApp.controller('ShSiteListCtrl', [
 		"$scope",
@@ -1140,25 +1095,20 @@ shioharaApp.controller('ShSiteNewCtrl', [
 shioharaApp.controller('ShSiteChildrenCtrl', [
 		"$scope",
 		"$http",
-		"$window",
 		"$state",
 		"$stateParams",
 		"$rootScope",
 		"Token",
 		"shUserResource",
-		"shSiteResource",
-		"shChannelResource",
 		"shPostTypeResource",		
-		"shPostResource",
 		"shAPIServerService",
 		'vigLocale',
-		'$location',
 		'$translate',
-		'$filter',
-		'Notification',
-		function($scope, $http, $window, $state, $stateParams, $rootScope, Token,
-				shUserResource, shSiteResource, shChannelResource, shPostTypeResource, shPostResource, shAPIServerService, vigLocale, $location,
-				$translate, $filter, Notification) {
+		"shChannelFactory",
+		"shPostFactory",
+		function($scope, $http, $state, $stateParams, $rootScope, Token,
+				shUserResource, shPostTypeResource, shAPIServerService, vigLocale,
+				$translate, shChannelFactory, shPostFactory) {
 			$scope.vigLanguage = vigLocale.getLocale().substring(0, 2);
 			$translate.use($scope.vigLanguage);
 			$scope.siteId = $stateParams.siteId;
@@ -1189,46 +1139,12 @@ shioharaApp.controller('ShSiteChildrenCtrl', [
 				});
 				
 			});
-			$scope.channelDelete = function(channelId) {
-				$scope.shChannel = shChannelResource
-				.get({
-					id : channelId
-				});
-				shChannelResource
-				.delete({
-					id : channelId
-				},function() {
-					// filter the array
-				    var foundItem = $filter('filter')($scope.shChannels, { id: channelId  }, true)[0];
-				    // get the index
-				    var index = $scope.shChannels.indexOf(foundItem );
-				    // remove the item from array
-				    $scope.shChannels.splice(index, 1); 
-					Notification.error('The '
-							+ $scope.shChannel.name
-							+ ' Channel was deleted.');
-				});
+			$scope.channelDelete = function(shChannel) {
+				shChannelFactory.delete(shChannel, $scope.shChannels);
 			}
 			
-			$scope.postDelete = function(postId) {
-				$scope.shPost = shPostResource
-				.get({
-					id : postId
-				});
-				shPostResource
-				.delete({
-					id : postId
-				},function() {
-					// filter the array
-				    var foundItem = $filter('filter')($scope.shPosts, { id: postId  }, true)[0];
-				    // get the index
-				    var index = $scope.shPosts.indexOf(foundItem );
-				    // remove the item from array
-				    $scope.shPosts.splice(index, 1);   
-					Notification.error('The '
-							+ $scope.shPost.title
-							+ ' Post was deleted.');
-				});
+			$scope.postDelete = function(shPost) {
+				shPostFactory.delete(shPost, $scope.shPosts);
 			}
 		} ]);
 shioharaApp.factory('shSiteResource', [ '$resource', 'shAPIServerService', function($resource, shAPIServerService) {
@@ -1240,3 +1156,18 @@ shioharaApp.factory('shSiteResource', [ '$resource', 'shAPIServerService', funct
 		}
 	});
 } ]);
+shioharaApp.controller('ShModalDeleteObjectCtrl', [ "$uibModalInstance",
+		"instanceName", function($uibModalInstance, instanceName) {
+			var $ctrl = this;
+			$ctrl.removeInstance = false;
+			$ctrl.instanceName = instanceName;
+			$ctrl.ok = function() {
+				$ctrl.removeInstance = true;
+				$uibModalInstance.close($ctrl.removeInstance);
+			};
+
+			$ctrl.cancel = function() {
+				$ctrl.removeInstance = false;
+				$uibModalInstance.dismiss('cancel');
+			};
+		} ]);
