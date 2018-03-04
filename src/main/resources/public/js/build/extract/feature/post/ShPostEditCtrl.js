@@ -12,8 +12,9 @@ shioharaApp.controller('ShPostEditCtrl', [
 		"$q",
 		"$timeout",
 		"shStaticFileFactory",
+		"shPostFactory",
 		function($scope, $http, $window, $stateParams, $state, $rootScope,
-				shPostResource, shAPIServerService, Notification, Upload, $q, $timeout, shStaticFileFactory) {
+				shPostResource, shAPIServerService, Notification, Upload, $q, $timeout, shStaticFileFactory, shPostFactory) {
 			$scope.tinymceOptions = {
 				    plugins: 'link image code',
 				    toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code'
@@ -71,13 +72,7 @@ shioharaApp.controller('ShPostEditCtrl', [
 	
 			$scope.postEditForm = "template/post/form.html";
 			$scope.postDelete = function() {
-				shPostResource
-				.delete({
-					id : $scope.shPost.id
-				},function() {
-					 Notification.error('The ' + $scope.shPost.title +' Post was deleted.');
-					$state.go('content',{}, {reload: true});
-				});
+				shPostFactory.delete($scope.shPost);
 			}
 			$scope.postSave = function() {
 				var promiseFiles = [];

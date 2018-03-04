@@ -395,51 +395,70 @@ shioharaApp.factory('shPostResource', [ '$resource', 'shAPIServerService', funct
 	});
 } ]);
 shioharaApp.factory('shPostFactory', [
-	'$uibModal','shPostResource', 'Notification','$filter',
-		function($uibModal,shPostResource, Notification, $filter) {
-			return {
-				delete : function(shPost, shPosts) {
-					var $ctrl = this;
-					
-					var modalInstance = $uibModal.open({
-						animation : true,
-						ariaLabelledBy : 'modal-title',
-						ariaDescribedBy : 'modal-body',
-						templateUrl : 'template/modal/shDeleteObject.html',
-						controller : 'ShModalDeleteObjectCtrl',
-						controllerAs : '$ctrl',
-						size : null,
-						appendTo : undefined,
-						resolve : {
-							instanceName : function() {
-								return shPost.title;
-							}
-						}
-					});
-			
-					modalInstance.result.then(function(removeInstance) {
-						deletedMessage = 'The '
-						+ shPost.title
-						+ ' Post was deleted.';
-						
-						shPostResource
-						.delete({
-							id : shPost.id
-						},function() {
-							// filter the array
-						    var foundItem = $filter('filter')(shPosts, { id: shPost.id  }, true)[0];
-						    // get the index
-						    var index = shPosts.indexOf(foundItem );
-						    // remove the item from array
-						    shPosts.splice(index, 1);    		
-							Notification.error(deletedMessage);
-						});
-					}, function() {
-						// Selected NO
-					});
-				}
-			}
-		} ]);
+	'$uibModal', 'shPostResource', 'Notification', '$filter', "$state"
+
+
+
+    
+    , function ($uibModal, shPostResource, Notification, $filter, $state) {
+        return {
+            deleteFromList: function (shPost, shPosts) {
+                var modalInstance = this.modalDelete(shPost);
+                modalInstance.result.then(function (removeInstance) {
+                    var deletedMessage = 'The ' + shPost.title + ' Post was deleted.';
+                    shPostResource.delete({
+                        id: shPost.id
+                    }, function () {
+                        // filter the array
+                        var foundItem = $filter('filter')(shPosts, {
+                            id: shPost.id
+                        }, true)[0];
+                        // get the index
+                        var index = shPosts.indexOf(foundItem);
+                        // remove the item from array
+                        shPosts.splice(index, 1);
+                        Notification.error(deletedMessage);
+                    });
+                }, function () {
+                    // Selected NO
+                });
+            }
+            , delete: function (shPost) {
+                var modalInstance = this.modalDelete(shPost);
+                modalInstance.result.then(function (removeInstance) {
+                    deletedMessage = 'The ' + shPost.title + ' Post was deleted.';
+                    shPostResource.delete({
+                        id: shPost.id
+                    }, function () {
+                        Notification.error(deletedMessage);
+                        $state.go('content.children.channel-children', {
+                            channelId: shPost.shChannel.id
+                        });
+                    });
+                }, function () {
+                    // Selected NO
+                });
+            }
+            , modalDelete: function (shPost) {
+                var $ctrl = this;
+                return $uibModal.open({
+                    animation: true
+                    , ariaLabelledBy: 'modal-title'
+                    , ariaDescribedBy: 'modal-body'
+                    , templateUrl: 'template/modal/shDeleteObject.html'
+                    , controller: 'ShModalDeleteObjectCtrl'
+                    , controllerAs: '$ctrl'
+                    , size: null
+                    , appendTo: undefined
+                    , resolve: {
+                        instanceName: function () {
+                            return shPost.title;
+                        }
+                    }
+                });
+            }
+        }
+		}]);
 shioharaApp.controller('ShPostEditCtrl', [
 		"$scope",
 		"$http",
@@ -454,8 +473,9 @@ shioharaApp.controller('ShPostEditCtrl', [
 		"$q",
 		"$timeout",
 		"shStaticFileFactory",
+		"shPostFactory",
 		function($scope, $http, $window, $stateParams, $state, $rootScope,
-				shPostResource, shAPIServerService, Notification, Upload, $q, $timeout, shStaticFileFactory) {
+				shPostResource, shAPIServerService, Notification, Upload, $q, $timeout, shStaticFileFactory, shPostFactory) {
 			$scope.tinymceOptions = {
 				    plugins: 'link image code',
 				    toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code'
@@ -513,13 +533,7 @@ shioharaApp.controller('ShPostEditCtrl', [
 	
 			$scope.postEditForm = "template/post/form.html";
 			$scope.postDelete = function() {
-				shPostResource
-				.delete({
-					id : $scope.shPost.id
-				},function() {
-					 Notification.error('The ' + $scope.shPost.title +' Post was deleted.');
-					$state.go('content',{}, {reload: true});
-				});
+				shPostFactory.delete($scope.shPost);
 			}
 			$scope.postSave = function() {
 				var promiseFiles = [];
@@ -555,8 +569,8 @@ shioharaApp.controller('ShPostEditCtrl', [
 						$scope.numberOfFileWidgets);
 			}
 		} ]);
-shioharaApp.controller('ShWidgetFileCtrl', [ '$scope', 'Upload', '$timeout',
-		function($scope, Upload, $timeout) {
+shioharaApp.controller('ShWidgetFileCtrl', [ '$scope', 'Upload', '$timeout','$uibModal',
+		function($scope, Upload, $timeout,$uibModal) {
 			$scope.fileName = null;
 			$scope.uploadNewFile = false;
 			$scope.$watch('shPostAttr.file', function() {
@@ -574,6 +588,37 @@ shioharaApp.controller('ShWidgetFileCtrl', [ '$scope', 'Upload', '$timeout',
 				shPostAttr.strValue = null;
 				shPostAttr.file = null;
 			}
+			
+			$scope.selectFile =  function() {
+				var modalInstance = this.modalSelectFile();
+                modalInstance.result.then(function (instance) {
+                		// Selected YES
+                }, function () {
+                    // Selected NO
+                });
+			}
+			
+			$scope.modalSelectFile = function () {
+                var $ctrl = this;
+                return $uibModal.open({
+                    animation: true
+                    , ariaLabelledBy: 'modal-title'
+                    , ariaDescribedBy: 'modal-body'
+                    , templateUrl: 'template/widget/file/fileSelect.html'
+                    , controller: 'ShWidgetFileSelectCtrl'
+                    , controllerAs: '$ctrl'
+                    , size: null
+                    , appendTo: undefined
+                    , resolve: {
+                        instanceName: function () {
+                            return null;
+                        }
+                    }
+                });
+            }
+		} ]);
+shioharaApp.controller('ShWidgetFileSelectCtrl', [ '$scope', 'Upload', '$timeout',
+		function($scope, Upload, $timeout) {		
 		} ]);
 shioharaApp.factory('shWidgetResource', [ '$resource', 'shAPIServerService', function($resource, shAPIServerService) {
 	return $resource(shAPIServerService.get().concat('/widget/:id'), {
@@ -668,7 +713,7 @@ shioharaApp.controller('ShContentChildrenCtrl', [
 			}
 			
 			$scope.postDelete = function(shPost) {
-				shPostFactory.delete(shPost, $scope.shPosts);
+				shPostFactory.deleteFromList(shPost, $scope.shPosts);
 			}
 		} ]);
 shioharaApp.factory('shStaticFileFactory', [
@@ -706,15 +751,12 @@ shioharaApp.factory('shStaticFileFactory', [
 												filePath = resp.data.title;
 											
 												if (createPost) {
-													console.log("createPost true");
 													shPost.shPostAttrs[key].strValue = resp.data.id;
 													
 													delete shPost.shPostAttrs[key].referenceObjects;
 												} else {
-													console.log("createPost false");
 													shPost.shPostAttrs[key].strValue = filePath;
 												}	
-												console.log("shPost.shPostAttrs[key].strValue" + shPost.shPostAttrs[key].strValue);
 												deferredFile
 														.resolve("Success");										
 											},
@@ -956,7 +998,7 @@ shioharaApp.controller('ShChannelChildrenCtrl', [
 			}
 			
 			$scope.postDelete = function(shPost) {
-				shPostFactory.delete(shPost, $scope.shPosts);
+				shPostFactory.deleteFromList(shPost, $scope.shPosts);
 			}
 		} ]);
 shioharaApp.factory('shChannelResource', [ '$resource', 'shAPIServerService',
@@ -974,25 +1016,8 @@ shioharaApp.factory('shChannelFactory', [
 		function($uibModal,shChannelResource, Notification, $filter) {
 			return {
 				
-				delete : function(shChannel, shChannels) {
-					var $ctrl = this;
-					
-					var modalInstance = $uibModal.open({
-						animation : true,
-						ariaLabelledBy : 'modal-title',
-						ariaDescribedBy : 'modal-body',
-						templateUrl : 'template/modal/shDeleteObject.html',
-						controller : 'ShModalDeleteObjectCtrl',
-						controllerAs : '$ctrl',
-						size : null,
-						appendTo : undefined,
-						resolve : {
-							instanceName : function() {
-								return shChannel.name;
-							}
-						}
-					});
-					
+				deleteFromList : function(shChannel, shChannels) {
+					var modalInstance = this.modalDelete(shChannel);
 					modalInstance.result.then(function(removeInstance) {
 						deletedMessage = 'The '
 							+ shChannel.name
@@ -1013,7 +1038,25 @@ shioharaApp.factory('shChannelFactory', [
 					}, function() {
 						// Selected NO
 					});
-				}						
+				}, 
+				modalDelete: function (shChannel) {
+	                var $ctrl = this;
+	                return $uibModal.open({
+	                    animation: true
+	                    , ariaLabelledBy: 'modal-title'
+	                    , ariaDescribedBy: 'modal-body'
+	                    , templateUrl: 'template/modal/shDeleteObject.html'
+	                    , controller: 'ShModalDeleteObjectCtrl'
+	                    , controllerAs: '$ctrl'
+	                    , size: null
+	                    , appendTo: undefined
+	                    , resolve: {
+	                        instanceName: function () {
+	                            return shPost.title;
+	                        }
+	                    }
+	                });
+	            }						
 			}
 		} ]);
 shioharaApp.controller('ShSiteListCtrl', [
@@ -1029,47 +1072,26 @@ shioharaApp.controller('ShSiteListCtrl', [
 		} ]);
 shioharaApp.controller('ShSiteEditCtrl', [
 		"$scope",
-		"$http",
 		"$state",
-		"$stateParams",
-		"$rootScope",
 		"shSiteResource",
-		"shAPIServerService",
-		"Notification",
-		function($scope, $http, $state, $stateParams, $rootScope,
-				shSiteResource, shAPIServerService, Notification) {
+		"shSiteFactory",
+		function($scope, shSiteResource, shSiteFactory) {
 			$scope.shSite = shSiteResource.get({id: $stateParams.siteId});
 			$scope.siteSave = function() {
-				$scope.shSite.$update(function() {
-					Notification.warning('The ' + $scope.shSite.name +' Site was updated.');
-					$state.go('content.children.site-children', {
-						siteId : $scope.shSite.id
-					});
-				});
+				shSiteFactory.save($scope.shSite);
 			}
 			
 			$scope.siteDelete = function() {
-				shSiteResource
-				.delete({
-					id : $scope.shSite.id
-				},function() {
-					Notification.error('The ' + $scope.shSite.name +' Site was deleted.');
-					$state.go('content',{}, {reload: true});
-				});
+				shSiteFactory.delete($scope.shSite);
 			}
 
 		} ]);
 shioharaApp.controller('ShSiteNewCtrl', [
 		"$scope",
 		"$http",
-		"$state",
-		"$stateParams",
-		"$rootScope",
-		"shSiteResource",
 		"shAPIServerService",
-		"Notification",
-		function($scope, $http, $state, $stateParams, $rootScope, shSiteResource,
-				shAPIServerService, Notification) {
+		"shSiteFactory",
+		function($scope, $http, shAPIServerService, shSiteFactory) {
 			$scope.shSite = null;
 			$scope.$evalAsync($http.get(
 					shAPIServerService.get().concat("/site/model")).then(
@@ -1077,18 +1099,7 @@ shioharaApp.controller('ShSiteNewCtrl', [
 						$scope.shSite = response.data;
 					}));
 			$scope.siteSave = function() {
-				if ($scope.shSite.id != null && $scope.shSite.id > 0) {
-					$scope.shSite.$update(function() {
-						Notification.warning('The ' + $scope.shSite.name +' Site was updated.');
-						$state.go('content.children.site-children',{siteId: $scope.shSite.id});						
-					});
-				} else {
-					delete $scope.shSite.id;
-					shSiteResource.save($scope.shSite, function(response){
-						Notification.warning('The ' + $scope.shSite.name +' Site was created.');
-						$state.go('content.children.site-children',{siteId: response.id});
-					});
-				}
+				shSiteFactory.save($scope.shSite);
 			}
 
 		} ]);
@@ -1144,7 +1155,64 @@ shioharaApp.controller('ShSiteChildrenCtrl', [
 			}
 			
 			$scope.postDelete = function(shPost) {
-				shPostFactory.delete(shPost, $scope.shPosts);
+				shPostFactory.deleteFromList(shPost, $scope.shPosts);
+			}
+		} ]);
+shioharaApp.factory('shSiteFactory', [
+	'$uibModal','shSiteResource', 'Notification','$state',
+		function($uibModal,shChannelResource, Notification, $state) {
+			return {
+				
+				delete : function(shSite) {
+					var modalInstance = this.modalDelete(shSite);
+					modalInstance.result.then(function(removeInstance) {
+						deletedMessage = 'The ' + shSite.name +' Site was deleted.';
+						
+						shSiteResource
+						.delete({
+							id : shSite.id
+						},function() {
+							Notification.error(deletedMessage);
+							$state.go('content',{}, {reload: true});
+						});
+					}, function() {
+						// Selected NO
+					});
+				}, 			
+				save: function(shSite) {
+					if (shSite.id != null) {
+						var updateMessage = 'The ' + shSite.name +' Site was saved.';
+						shSite.$update(function() {
+							Notification.warning(updateMessage);
+							$state.go('content.children.site-children',{siteId: shSite.id});						
+						});
+					} else {
+						var saveMessage = 'The ' + shSite.name +' Site was updated.';
+						delete $scope.shSite.id;
+						shSiteResource.save(shSite, function(response){
+							Notification.warning(saveMessage);
+							$state.go('content.children.site-children',{siteId: response.id});
+						});
+					}	
+				},
+				modalDelete: function (shSite) {
+	                var $ctrl = this;
+	                return $uibModal.open({
+	                    animation: true
+	                    , ariaLabelledBy: 'modal-title'
+	                    , ariaDescribedBy: 'modal-body'
+	                    , templateUrl: 'template/modal/shDeleteObject.html'
+	                    , controller: 'ShModalDeleteObjectCtrl'
+	                    , controllerAs: '$ctrl'
+	                    , size: null
+	                    , appendTo: undefined
+	                    , resolve: {
+	                        instanceName: function () {
+	                            return shSite.name;
+	                        }
+	                    }
+	                });
+	            }						
 			}
 		} ]);
 shioharaApp.factory('shSiteResource', [ '$resource', 'shAPIServerService', function($resource, shAPIServerService) {

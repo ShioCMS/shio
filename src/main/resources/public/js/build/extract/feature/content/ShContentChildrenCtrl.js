@@ -51,6 +51,6 @@ shioharaApp.controller('ShContentChildrenCtrl', [
 			}
 			
 			$scope.postDelete = function(shPost) {
-				shPostFactory.delete(shPost, $scope.shPosts);
+				shPostFactory.deleteFromList(shPost, $scope.shPosts);
 			}
 		} ]);
