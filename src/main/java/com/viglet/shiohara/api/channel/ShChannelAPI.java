@@ -97,11 +97,11 @@ public class ShChannelAPI {
 		shChannelRepository.save(shChannel);
 
 		ShGlobalId shGlobalId = new ShGlobalId();
-//		shGlobalId.setObjectId(shChannel.getId());
+		// shGlobalId.setObjectId(shChannel.getId());
 		shGlobalId.setType("CHANNEL");
-		
+
 		shGlobalIdRepository.save(shGlobalId);
-		
+
 		// Channel Index
 
 		ShPostType shPostChannelIndex = shPostTypeRepository.findByName("PT-CHANNEL-INDEX");
@@ -114,12 +114,12 @@ public class ShChannelAPI {
 		shPost.setShChannel(shChannel);
 
 		shPostRepository.save(shPost);
-		
+
 		shGlobalId = new ShGlobalId();
-	//	shGlobalId.setObjectId(shPost.getId());
+		// shGlobalId.setObjectId(shPost.getId());
 		shGlobalId.setType("POST");
-		
-		shGlobalIdRepository.save(shGlobalId);	
+
+		shGlobalIdRepository.save(shGlobalId);
 
 		ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "TITLE");
 
@@ -166,6 +166,25 @@ public class ShChannelAPI {
 		ShChannelList shChannelList = new ShChannelList();
 		shChannelList.setShChannels(shChannelRepository.findByParentChannel(shChannel));
 		shChannelList.setShPosts(shPostRepository.findByShChannel(shChannel));
+		shChannelList.setChannelPath(channelPath);
+		shChannelList.setBreadcrumb(breadcrumb);
+		shChannelList.setShSite(shSite);
+		return shChannelList;
+	}
+
+	@Path("/{channelId}/list/{postTypeName}")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public ShChannelList listByPostType(@PathParam("channelId") UUID id, @PathParam("postTypeName") String postTypeName)
+			throws Exception {
+		ShChannel shChannel = shChannelRepository.findById(id);
+		ShPostType shPostType = shPostTypeRepository.findByName(postTypeName);
+		String channelPath = shChannelUtils.channelPath(shChannel);
+		ArrayList<ShChannel> breadcrumb = shChannelUtils.breadcrumb(shChannel);
+		ShSite shSite = breadcrumb.get(0).getShSite();
+		ShChannelList shChannelList = new ShChannelList();
+		shChannelList.setShChannels(shChannelRepository.findByParentChannel(shChannel));
+		shChannelList.setShPosts(shPostRepository.findByShChannelAndShPostType(shChannel, shPostType));
 		shChannelList.setChannelPath(channelPath);
 		shChannelList.setBreadcrumb(breadcrumb);
 		shChannelList.setShSite(shSite);

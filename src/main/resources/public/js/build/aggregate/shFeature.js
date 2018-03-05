@@ -1197,8 +1197,8 @@ shioharaApp.factory('shWidgetResource', [ '$resource', 'shAPIServerService', fun
 	});
 } ]);
 
-shioharaApp.controller('ShWidgetFileCtrl', [ '$scope', 'Upload', '$timeout','$uibModal',
-		function($scope, Upload, $timeout,$uibModal) {
+shioharaApp.controller('ShWidgetFileCtrl', [ '$scope', 'Upload', '$timeout',
+		'$uibModal', function($scope, Upload, $timeout, $uibModal) {
 			$scope.fileName = null;
 			$scope.uploadNewFile = false;
 			$scope.$watch('shPostAttr.file', function() {
@@ -1216,34 +1216,38 @@ shioharaApp.controller('ShWidgetFileCtrl', [ '$scope', 'Upload', '$timeout','$ui
 				shPostAttr.strValue = null;
 				shPostAttr.file = null;
 			}
-			
-			$scope.selectFile =  function(shPost, shPostAttr) {
+
+			$scope.selectFile = function(shPost, shPostAttr) {
 				var modalInstance = this.modalSelectFile(shPost);
-                modalInstance.result.then(function (instance) {
-                	// Selected YES
-                }, function () {
-                    // Selected NO
-                });
+				modalInstance.result.then(function(shPostSelected) {
+					// Selected INSERT
+					$scope.uploadNewFile = false;
+					$scope.fileName = shPostSelected.title;
+					shPostAttr.strValue = shPostSelected.id;
+					shPostAttr.referenceObjects=[shPostSelected];
+				}, function() {
+					// Selected CANCEL
+				});
 			}
-			
-			$scope.modalSelectFile = function (shPost) {
-                var $ctrl = this;
-                return $uibModal.open({
-                    animation: true
-                    , ariaLabelledBy: 'modal-title'
-                    , ariaDescribedBy: 'modal-body'
-                    , templateUrl: 'template/widget/file/fileSelect.html'
-                    , controller: 'ShWidgetFileSelectCtrl'
-                    , controllerAs: '$ctrl'
-                    , size: null
-                    , appendTo: undefined
-                    , resolve: {
-                        shPost: function () {
-                            return shPost;
-                        }
-                    }
-                });
-            }
+
+			$scope.modalSelectFile = function(shPost) {
+				var $ctrl = this;
+				return $uibModal.open({
+					animation : true,
+					ariaLabelledBy : 'modal-title',
+					ariaDescribedBy : 'modal-body',
+					templateUrl : 'template/widget/file/file-select.html',
+					controller : 'ShWidgetFileSelectCtrl',
+					controllerAs : '$ctrl',
+					size : null,
+					appendTo : undefined,
+					resolve : {
+						shPost : function() {
+							return shPost;
+						}
+					}
+				});
+			}
 		} ]);
 shioharaApp.controller('ShWidgetFileSelectCtrl', [
 		'$scope',
@@ -1253,15 +1257,15 @@ shioharaApp.controller('ShWidgetFileSelectCtrl', [
 		'shPost',
 		function($scope, shAPIServerService, $http, $uibModalInstance, shPost) {
 			var $ctrl = this;
-			$ctrl.removeInstance = false;
+			
 			$ctrl.shPost = shPost;
+			$ctrl.shPostSelected = null;
 			$ctrl.ok = function() {
-				$ctrl.removeInstance = true;
-				$uibModalInstance.close($ctrl.removeInstance);
+				$uibModalInstance.close($ctrl.shPostSelected);
 			};
 
 			$ctrl.cancel = function() {
-				$ctrl.removeInstance = false;
+				$ctrl.shPostSelected = null;
 				$uibModalInstance.dismiss('cancel');
 			};
 			
@@ -1271,13 +1275,39 @@ shioharaApp.controller('ShWidgetFileSelectCtrl', [
 			$scope.shPosts = null;
 			$scope.breadcrumb = null;
 
-			$scope.$evalAsync($http.get(
-					shAPIServerService.get().concat(
-							"/channel/" + $scope.channelId + "/list")).then(
-					function(response) {
-						$scope.shChannels = response.data.shChannels;
-						$scope.shPosts = response.data.shPosts;
-						$scope.breadcrumb = response.data.breadcrumb;
-						$scope.shSite = response.data.shSite;
-					}));
+			// BEGIN Functions
+			$scope.channelList = function(channelId) {
+				$ctrl.shPostSelected = null;
+				$scope.$evalAsync($http.get(
+						shAPIServerService.get().concat(
+								"/channel/" + channelId + "/list/PT-FILE")).then(
+						function(response) {
+							$scope.shChannels = response.data.shChannels;
+							$scope.shPosts = response.data.shPosts;
+							$scope.breadcrumb = response.data.breadcrumb;
+							$scope.shSite = response.data.shSite;
+						}));
+			}
+			
+			
+			$scope.siteList = function(siteId) {
+				$ctrl.shPostSelected = null;
+				$scope.$evalAsync($http.get(
+						shAPIServerService.get().concat(
+								"/site/" + siteId +"/channel"))
+						.then(function(response) {
+							$scope.shChannels = response.data.shChannels;
+							$scope.shPosts = response.data.shPosts;
+							$scope.shSite = response.data.shSite;
+						}));
+			}
+			
+			$scope.selectedPost = function(shPost) {
+				$ctrl.shPostSelected = shPost;
+			}
+			//END Functions
+			
+			$scope.channelList($scope.channelId);
+			
+		
 		} ]);
