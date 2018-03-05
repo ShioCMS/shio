@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="shioharaApp">
+<head>
+<meta charset="utf-8">
+<meta charset="utf-8"></meta>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+<meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+<title ng-bind="$state.current.data.pageTitle">Console | Viglet
+	Shiohara</title>
+<!-- Bootstrap -->
+<link href="http://localhost:2710/thirdparty/bootstrap/3.3.7-1/css/bootstrap.min.css"
+	rel="stylesheet"></link>
+<link
+	href="http://localhost:2710/thirdparty/angular-ui-notification/0.3.6/dist/angular-ui-notification.min.css"
+	rel="stylesheet"></link>
+<link
+	href="http://localhost:2710/thirdparty/font-awesome/4.7.0/css/font-awesome.min.css"
+	rel="stylesheet"></link>
+
+<link href="https://viglet.ai/ui/css/viglet.css" rel="stylesheet"></link>
+
+<link href="https://viglet.ai/ui/favicon.ico" rel="shortcut icon"
+	type="image/x-icon"></link>
+</head>
+<style>
+.nav-pills>li.active>a, .nav-pills>li.active>a:focus, .nav-pills>li.active>a:hover
+	{
+	color: #fff;
+	background-color: #FF874B;
+}
+
+.ace_editor {
+	height: 200px;
+}
+</style>
+<body data-target=".navbar-default">
+	<div id="wrap" style="margin-bottom: 15px;">
+		<nav class="navbar navbar-default navbar-fixed-top row  row-centered"
+			role="navigation">
+			<div
+				class="container-fluid col-centered col-lg-12 col-md-12 col-sm-12 col-xs-12"
+				style="margin-left: 30px; margin-right: 30px">
+				<!-- Brand and toggle get grouped for better mobile display -->
+				<div class="row">
+					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
+						<a class="navbar-brand" ui-sref="content"
+							ui-sref-opts="{reload:true}"><img
+							style="margin: 5px; padding: 0px; width: 40px; height: 40px"
+							src="img/viglet_logo_sm.png"></img> </a> <a class="navbar-brand"
+							ui-sref="content" ui-sref-opts="{reload:true}"><div
+								class="hidden-xs"
+								style="margin-top: 17px; margin-left: 20px; color: #444; font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif; font-size: 20px; line-height: 1; letter-spacing: .02em; font-weight: 400;">Shiohara</div></a>
+					</div>
+					<div class="col-lg-9 col-md-9 col-sm-8 col-xs-7"
+						style="padding-top: 7px">
+						<form method="get" action="">
+							<div class="input-group">
+								<input id="q" name="q" type="text" class="form-control"
+									placeholder="{{ 'SEARCH_FOR' | translate }}..."> <span
+									class="input-group-btn">
+									<button class="btn btn-viglet" type="submit">{{
+										'SEARCH' | translate}}</button>
+								</span>
+							</div>
+
+						</form>
+					</div>
+				</div>
+
+			</div>
+			<!-- /.container-fluid -->
+		</nav>
+		<div class="container">
+			<div ui-view></div>
+		</div>
+		<script src="http://localhost:2710/thirdparty/jquery/1.11.1/dist/jquery.min.js"></script>
+		<script src="http://localhost:2710/thirdparty/tinymce/4.5.8/tinymce.min.js"></script>
+		<script src="http://localhost:2710/thirdparty/ace-builds/1.3.1/src-min-noconflict/ace.js"></script>
+
+		<script src="http://localhost:2710/thirdparty/moment/2.20.1/min/moment-with-locales.min.js"></script>
+		<script src="http://localhost:2710/thirdparty/angular/1.6.9/angular.min.js"></script>
+		<script
+			src="http://localhost:2710/thirdparty/angular-ui-router/1.0.14/release/angular-ui-router.min.js"></script>
+		<script src="http://localhost:2710/thirdparty/angular-translate/2.17.0/angular-translate.min.js"></script>
+		<script src="http://localhost:2710/thirdparty/angular-resource/1.6.9/angular-resource.min.js"></script>
+		<script src="http://localhost:2710/thirdparty/angular-animate/1.6.9/angular-animate.min.js"></script>
+		<script src="http://localhost:2710/thirdparty/angular-cookies/1.6.9/angular-cookies.min.js"></script>
+		<script src="http://localhost:2710/thirdparty/angular-sanitize/1.6.9/angular-sanitize.min.js"></script>
+		<script src="http://localhost:2710/thirdparty/angular-moment/1.2.0/angular-moment.min.js"></script>
+		<!-- shim is needed to support non-HTML5 FormData browsers (IE8-9)-->
+		<script src="http://localhost:2710/thirdparty/ng-file-upload/12.2.13/ng-file-upload-shim.min.js"></script>
+		<script src="http://localhost:2710/thirdparty/ng-file-upload/12.2.13/ng-file-upload.min.js"></script>
+		<script
+			src="http://localhost:2710/thirdparty/angular-ui-notification/0.3.6/dist/angular-ui-notification.min.js"></script>
+		<script src="http://localhost:2710/thirdparty/angular-bootstrap/2.5.0/ui-bootstrap-tpls.min.js"></script>
+		<script src="http://localhost:2710/thirdparty/angular-ui-tinymce/0.0.19/dist/tinymce.min.js"></script>	
+		<script src="http://localhost:2710/thirdparty/bootstrap/3.3.7-1/js/bootstrap.min.js"></script>
+		<script src="http://localhost:2710/thirdparty/angular-ui-ace/0.2.3/ui-ace.min.js"></script>
+		<script src="/js/vecchioOauth.js"></script>
+		<script src="/js/angularOauth.js"></script>
+		<script src="/js/dist/shiohara.min.js"></script>
+</body>
+</html>
