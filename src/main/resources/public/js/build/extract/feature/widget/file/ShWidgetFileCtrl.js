@@ -18,16 +18,16 @@ shioharaApp.controller('ShWidgetFileCtrl', [ '$scope', 'Upload', '$timeout','$ui
 				shPostAttr.file = null;
 			}
 			
-			$scope.selectFile =  function() {
-				var modalInstance = this.modalSelectFile();
+			$scope.selectFile =  function(shPost, shPostAttr) {
+				var modalInstance = this.modalSelectFile(shPost);
                 modalInstance.result.then(function (instance) {
-                		// Selected YES
+                	// Selected YES
                 }, function () {
                     // Selected NO
                 });
 			}
 			
-			$scope.modalSelectFile = function () {
+			$scope.modalSelectFile = function (shPost) {
                 var $ctrl = this;
                 return $uibModal.open({
                     animation: true
@@ -39,8 +39,8 @@ shioharaApp.controller('ShWidgetFileCtrl', [ '$scope', 'Upload', '$timeout','$ui
                     , size: null
                     , appendTo: undefined
                     , resolve: {
-                        instanceName: function () {
-                            return null;
+                        shPost: function () {
+                            return shPost;
                         }
                     }
                 });

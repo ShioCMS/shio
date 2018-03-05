@@ -1,13 +1,16 @@
-package com.viglet.shiohara.staticfile;
+package com.viglet.shiohara.spring;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import com.viglet.shiohara.utils.ShStaticFileUtils;
 
 @Configuration
+@EnableWebMvc
 public class ShStaticResourceConfiguration extends WebMvcConfigurerAdapter {
 	@Autowired
 	ShStaticFileUtils shStaticFileUtils;
@@ -20,5 +23,13 @@ public class ShStaticResourceConfiguration extends WebMvcConfigurerAdapter {
 			registry.addResourceHandler("/thirdparty/**").addResourceLocations(
                 "classpath:/META-INF/resources/webjars/");
 		}
+    }
+    
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/thirdparty/**")
+            .allowedOrigins("*")
+            .allowedMethods("PUT", "DELETE", "GET", "POST")
+            .allowCredentials(false).maxAge(3600);
     }
 }
