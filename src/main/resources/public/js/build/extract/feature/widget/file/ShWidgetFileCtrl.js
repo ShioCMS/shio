@@ -1,5 +1,5 @@
-shioharaApp.controller('ShWidgetFileCtrl', [ '$scope', 'Upload', '$timeout','$uibModal',
-		function($scope, Upload, $timeout,$uibModal) {
+shioharaApp.controller('ShWidgetFileCtrl', [ '$scope', 'Upload', '$timeout',
+		'$uibModal', function($scope, Upload, $timeout, $uibModal) {
 			$scope.fileName = null;
 			$scope.uploadNewFile = false;
 			$scope.$watch('shPostAttr.file', function() {
@@ -17,32 +17,36 @@ shioharaApp.controller('ShWidgetFileCtrl', [ '$scope', 'Upload', '$timeout','$ui
 				shPostAttr.strValue = null;
 				shPostAttr.file = null;
 			}
-			
-			$scope.selectFile =  function(shPost, shPostAttr) {
+
+			$scope.selectFile = function(shPost, shPostAttr) {
 				var modalInstance = this.modalSelectFile(shPost);
-                modalInstance.result.then(function (instance) {
-                	// Selected YES
-                }, function () {
-                    // Selected NO
-                });
+				modalInstance.result.then(function(shPostSelected) {
+					// Selected INSERT
+					$scope.uploadNewFile = false;
+					$scope.fileName = shPostSelected.title;
+					shPostAttr.strValue = shPostSelected.id;
+					shPostAttr.referenceObjects=[shPostSelected];
+				}, function() {
+					// Selected CANCEL
+				});
 			}
-			
-			$scope.modalSelectFile = function (shPost) {
-                var $ctrl = this;
-                return $uibModal.open({
-                    animation: true
-                    , ariaLabelledBy: 'modal-title'
-                    , ariaDescribedBy: 'modal-body'
-                    , templateUrl: 'template/widget/file/fileSelect.html'
-                    , controller: 'ShWidgetFileSelectCtrl'
-                    , controllerAs: '$ctrl'
-                    , size: null
-                    , appendTo: undefined
-                    , resolve: {
-                        shPost: function () {
-                            return shPost;
-                        }
-                    }
-                });
-            }
+
+			$scope.modalSelectFile = function(shPost) {
+				var $ctrl = this;
+				return $uibModal.open({
+					animation : true,
+					ariaLabelledBy : 'modal-title',
+					ariaDescribedBy : 'modal-body',
+					templateUrl : 'template/widget/file/file-select.html',
+					controller : 'ShWidgetFileSelectCtrl',
+					controllerAs : '$ctrl',
+					size : null,
+					appendTo : undefined,
+					resolve : {
+						shPost : function() {
+							return shPost;
+						}
+					}
+				});
+			}
 		} ]);
