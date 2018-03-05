@@ -55,8 +55,8 @@ shioharaApp.factory('shPostFactory', [
                     , size: null
                     , appendTo: undefined
                     , resolve: {
-                        instanceName: function () {
-                            return shPost.title;
+                        shPost: function () {
+                            return shPost;
                         }
                     }
                 });

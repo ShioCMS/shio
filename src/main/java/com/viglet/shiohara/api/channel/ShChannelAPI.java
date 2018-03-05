@@ -97,7 +97,7 @@ public class ShChannelAPI {
 		shChannelRepository.save(shChannel);
 
 		ShGlobalId shGlobalId = new ShGlobalId();
-		// shGlobalId.setObjectId(shChannel.getId());
+		shGlobalId.setShObject(shChannel);
 		shGlobalId.setType("CHANNEL");
 
 		shGlobalIdRepository.save(shGlobalId);
@@ -116,7 +116,7 @@ public class ShChannelAPI {
 		shPostRepository.save(shPost);
 
 		shGlobalId = new ShGlobalId();
-		// shGlobalId.setObjectId(shPost.getId());
+		shGlobalId.setShObject(shPost);
 		shGlobalId.setType("POST");
 
 		shGlobalIdRepository.save(shGlobalId);

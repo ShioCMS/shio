@@ -1,8 +1,8 @@
 shioharaApp.controller('ShModalDeleteObjectCtrl', [ "$uibModalInstance",
-		"instanceName", function($uibModalInstance, instanceName) {
+		"instanceName", function($uibModalInstance, shPost) {
 			var $ctrl = this;
 			$ctrl.removeInstance = false;
-			$ctrl.instanceName = instanceName;
+			$ctrl.shPost = shPost;
 			$ctrl.ok = function() {
 				$ctrl.removeInstance = true;
 				$uibModalInstance.close($ctrl.removeInstance);
