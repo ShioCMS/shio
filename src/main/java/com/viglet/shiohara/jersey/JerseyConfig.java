@@ -1,7 +1,9 @@
 package com.viglet.shiohara.jersey;
 
 import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import org.glassfish.jersey.message.filtering.EntityFilteringFeature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -35,6 +37,11 @@ public class JerseyConfig extends ResourceConfig {
 		packages("com.shengwang.demo");
 		// register jackson for json
 		register(new ObjectMapperContextResolver(objectMapper));
+		//register(EntityFilteringFeature.class);
+        // register(SecurityEntityFilteringFeature.class);
+        // register(SelectableEntityFilteringFeature.class);
+ 
+        //register(JacksonFeature.class);
 		register(ShCORSFilter.class);
 		register(ShAPI.class);
 		register(ShPostAPI.class);

@@ -20,12 +20,13 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 
 @Entity
 @NamedQuery(name = "ShGlobalId.findAll", query = "SELECT g FROM ShGlobalId g")
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIgnoreProperties({ "shObject" })
 public class ShGlobalId implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -41,7 +42,7 @@ public class ShGlobalId implements Serializable {
 	private String type;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
-	@JoinColumn(name = "object_id")
+	@JoinColumn(name = "object_id")	
 	private ShObject shObject;
 
 	public UUID getId() {

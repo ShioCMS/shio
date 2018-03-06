@@ -12,6 +12,7 @@ import javax.ws.rs.core.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.reference.ShReference;
 import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
@@ -19,6 +20,7 @@ import com.viglet.shiohara.persistence.repository.reference.ShReferenceRepositor
 
 @Component
 @Path("/reference")
+
 public class ShReferenceAPI {
 
 	@Autowired

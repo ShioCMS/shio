@@ -30,12 +30,10 @@ public class ShReference implements Serializable{
 	
 	@ManyToOne
 	@JoinColumn(name = "global_from_id")
-	@JsonManagedReference
 	private ShGlobalId shGlobalFromId;
 	
 	@ManyToOne
 	@JoinColumn(name = "global_to_id")
-	@JsonManagedReference
 	private ShGlobalId shGlobalToId;
 
 	public UUID getId() {
