@@ -23,7 +23,6 @@ import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.reference.ShReference;
-import com.viglet.shiohara.persistence.model.reference.ShReferenceId;
 import com.viglet.shiohara.persistence.model.user.ShUser;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.object.ShObject;
@@ -102,13 +101,11 @@ public class ShPostAPI {
 						ShPost shPostFile = shPostRepository.findById(UUID.fromString(shPostAttr.getStrValue()));
 
 						// TODO Need remove old reference
-						ShReferenceId shReferenceId = new ShReferenceId();
-						shReferenceId.setFromId(shPost.getShGlobalId().getId());
-						shReferenceId.setToId(shPostFile.getShGlobalId().getId());
 						ShReference shReference = new ShReference();
-						shReference.setId(shReferenceId);
-
+						shReference.setShGlobalFromId(shPost.getShGlobalId());
+						shReference.setShGlobalToId(shPostFile.getShGlobalId());
 						shReferenceRepository.saveAndFlush(shReference);
+						
 						Set<ShObject> referenceObjects = new HashSet<ShObject>();
 						referenceObjects.add(shPostFile);
 						shPostAttr.setReferenceObjects(referenceObjects);
@@ -194,13 +191,13 @@ public class ShPostAPI {
 			if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals("File")
 					&& !shPost.getShPostType().getName().equals("PT-FILE")) {
 				ShPost shPostFile = shPostRepository.findById(UUID.fromString(shPostAttr.getStrValue()));
-				ShReferenceId shReferenceId = new ShReferenceId();
-				shReferenceId.setFromId(shGlobalId.getId());
-				shReferenceId.setToId(shPostFile.getShGlobalId().getId());
+				
 				ShReference shReference = new ShReference();
-				shReference.setId(shReferenceId);
+				shReference.setShGlobalFromId(shGlobalId);
+				shReference.setShGlobalToId(shPostFile.getShGlobalId());
 
 				shReferenceRepository.saveAndFlush(shReference);
+				
 				Set<ShObject> referenceObjects = new HashSet<ShObject>();
 				referenceObjects.add(shPostFile);
 				shPostAttr.setReferenceObjects(referenceObjects);
