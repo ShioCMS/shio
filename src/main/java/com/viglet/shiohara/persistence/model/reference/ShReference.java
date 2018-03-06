@@ -1,24 +1,68 @@
 package com.viglet.shiohara.persistence.model.reference;
 
-import javax.persistence.EmbeddedId;
+import java.io.Serializable;
+import java.util.UUID;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
+
+import org.hibernate.annotations.GenericGenerator;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 
 
 @Entity
 @NamedQuery(name = "ShReference.findAll", query = "SELECT r FROM ShReference r")
-public class ShReference {
+public class ShReference implements Serializable{
 	
-	 @EmbeddedId ShReferenceId id;
+	private static final long serialVersionUID = 1L;
+	@Id
+	@GenericGenerator(name = "UUID", strategy = "com.viglet.shiohara.jpa.ShUUIDGenerator")
+	@GeneratedValue(generator = "UUID")
+	@Column(name = "id", updatable = false, nullable = false)
+	private UUID id;
+	
+	@ManyToOne
+	@JoinColumn(name = "global_from_id")
+	@JsonManagedReference
+	private ShGlobalId shGlobalFromId;
+	
+	@ManyToOne
+	@JoinColumn(name = "global_to_id")
+	@JsonManagedReference
+	private ShGlobalId shGlobalToId;
 
-	public ShReferenceId getId() {
+	public UUID getId() {
 		return id;
 	}
 
-	public void setId(ShReferenceId id) {
+	public void setId(UUID id) {
 		this.id = id;
 	}
-	 
+
+	public ShGlobalId getShGlobalFromId() {
+		return shGlobalFromId;
+	}
+
+	public void setShGlobalFromId(ShGlobalId shGlobalFromId) {
+		this.shGlobalFromId = shGlobalFromId;
+	}
+
+	public ShGlobalId getShGlobalToId() {
+		return shGlobalToId;
+	}
+
+	public void setShGlobalToId(ShGlobalId shGlobalToId) {
+		this.shGlobalToId = shGlobalToId;
+	}
+
+
 	 
 	
 }
