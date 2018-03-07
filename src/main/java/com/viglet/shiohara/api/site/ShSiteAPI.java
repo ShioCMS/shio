@@ -20,6 +20,8 @@ import javax.ws.rs.core.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.viglet.shiohara.api.SystemObjectView;
 import com.viglet.shiohara.api.channel.ShChannelList;
 import com.viglet.shiohara.exchange.ShChannelExchange;
 import com.viglet.shiohara.exchange.ShExchange;
@@ -64,6 +66,7 @@ public class ShSiteAPI {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({SystemObjectView.ShObject.class})	
 	public List<ShSite> list() throws Exception {
 		return shSiteRepository.findAll();
 	}
@@ -71,6 +74,7 @@ public class ShSiteAPI {
 	@Path("/{siteId}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({SystemObjectView.ShObject.class})	
 	public ShSite edit(@PathParam("siteId") UUID id) throws Exception {
 		return shSiteRepository.findById(id);
 	}
@@ -78,6 +82,7 @@ public class ShSiteAPI {
 	@Path("/{siteId}")
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({SystemObjectView.ShObject.class})	
 	public ShSite update(@PathParam("siteId") UUID id, ShSite shSite) throws Exception {
 		ShSite shSiteEdit = shSiteRepository.findById(id);
 		shSiteEdit.setDate(new Date());
@@ -104,6 +109,7 @@ public class ShSiteAPI {
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
+	@JsonView({SystemObjectView.ShObject.class})	
 	public ShSite add(ShSite shSite) throws Exception {
 		shSite.setDate(new Date());
 
@@ -176,6 +182,7 @@ public class ShSiteAPI {
 	@Path("/{siteId}/channel")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({SystemObjectView.ShObject.class})	
 	public ShChannelList rootChannel(@PathParam("siteId") UUID id) throws Exception {
 		ShSite shSite = shSiteRepository.findById(id);
 
@@ -190,6 +197,7 @@ public class ShSiteAPI {
 	@Path("/{siteId}/export")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({SystemObjectView.ShObject.class})	
 	public ShExchange siteExport(@PathParam("siteId") UUID id) throws Exception {
 		ShExchange shExchange = new ShExchange();
 		ShSite shSite = shSiteRepository.findById(id);
@@ -225,6 +233,7 @@ public class ShSiteAPI {
 	@Path("/model")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({SystemObjectView.ShObject.class})	
 	public ShSite siteStructure() throws Exception {
 		ShSite shSite = new ShSite();
 		return shSite;

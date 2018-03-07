@@ -24,6 +24,8 @@ import org.springframework.stereotype.Component;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.reference.ShReference;
 import com.viglet.shiohara.persistence.model.user.ShUser;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.viglet.shiohara.api.SystemObjectView;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
@@ -53,6 +55,7 @@ public class ShPostAPI {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({ SystemObjectView.ShObject.class })
 	public List<ShPost> list() throws Exception {
 		return shPostRepository.findAll();
 	}
@@ -60,6 +63,7 @@ public class ShPostAPI {
 	@Path("/{postId}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({ SystemObjectView.ShObject.class })
 	public ShPost edit(@PathParam("postId") UUID id) throws Exception {
 		return shPostRepository.findById(id);
 	}
@@ -67,6 +71,7 @@ public class ShPostAPI {
 	@Path("/{postId}")
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({ SystemObjectView.ShObject.class })
 	public ShPost update(@PathParam("postId") UUID id, ShPost shPost) throws Exception {
 
 		ShPost shPostEdit = shPostRepository.findById(id);
@@ -99,13 +104,33 @@ public class ShPostAPI {
 						shPostAttr.setReferenceObjects(null);
 					} else {
 						ShPost shPostFile = shPostRepository.findById(UUID.fromString(shPostAttr.getStrValue()));
+						// TODO Two or more attributes with FILE Widget and same file, it cannot remove a valid reference
+						// Remove old references
+						List<ShReference> shOldReferences = shReferenceRepository
+								.findByShGlobalFromId(shPost.getShGlobalId());
+						if (shOldReferences.size() > 0) {
+							//System.out.println("Removing old references");
+							for (ShReference shOldReference : shOldReferences) {
+								//System.out.println("Old Reference: " + shOldReference.getShGlobalFromId().getId() + ", "
+								//		+ shOldReference.getShGlobalToId().getId());
+								for (ShObject shObject : shPostAttrEdit.getReferenceObjects()) {
+									//System.out.println("shObject: " + shObject.getShGlobalId().getId().toString());
+									if (shOldReference.getShGlobalToId().getId().toString()
+											.equals(shObject.getShGlobalId().getId().toString())) {
+										shReferenceRepository.delete(shOldReference);
+										//System.out.println("Reference removed");
+										break;
+									}
+								}
+							}
+						}
 
-						// TODO Need remove old reference
+						// Create new reference
 						ShReference shReference = new ShReference();
 						shReference.setShGlobalFromId(shPost.getShGlobalId());
 						shReference.setShGlobalToId(shPostFile.getShGlobalId());
 						shReferenceRepository.saveAndFlush(shReference);
-						
+
 						Set<ShObject> referenceObjects = new HashSet<ShObject>();
 						referenceObjects.add(shPostFile);
 						shPostAttr.setReferenceObjects(referenceObjects);
@@ -162,6 +187,7 @@ public class ShPostAPI {
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
+	@JsonView({ SystemObjectView.ShObject.class })
 	public ShPost add(ShPost shPost) throws Exception {
 
 		String title = shPost.getTitle();
@@ -191,13 +217,13 @@ public class ShPostAPI {
 			if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals("File")
 					&& !shPost.getShPostType().getName().equals("PT-FILE")) {
 				ShPost shPostFile = shPostRepository.findById(UUID.fromString(shPostAttr.getStrValue()));
-				
+
 				ShReference shReference = new ShReference();
 				shReference.setShGlobalFromId(shGlobalId);
 				shReference.setShGlobalToId(shPostFile.getShGlobalId());
 
 				shReferenceRepository.saveAndFlush(shReference);
-				
+
 				Set<ShObject> referenceObjects = new HashSet<ShObject>();
 				referenceObjects.add(shPostFile);
 				shPostAttr.setReferenceObjects(referenceObjects);

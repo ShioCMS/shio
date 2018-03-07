@@ -1,10 +1,55 @@
 
-<div class="modal-header">
-	<h3 class="modal-title" id="modal-title">Remove {{$ctrl.instanceName}}?</h3>
+<div class="modal-header" ng-if="$ctrl.objectRefers.length == 0">
+	<h3 class="modal-title" id="modal-title">Remove
+		{{$ctrl.objectName}}?</h3>
 </div>
-<div class="modal-body">
+<div class="modal-header" ng-if="$ctrl.objectRefers.length > 0">
+	<h3 class="modal-title" id="modal-title">Wait! First, need remove
+		the references to {{$ctrl.objectName}}</h3>
 </div>
-<div class="modal-footer">
+<div class="modal-body" ng-if="$ctrl.objectRefers.length > 0">
+	<p>There are some objects that reference to this object. Do you
+		want to clear or reference to other object?</p>
+	<div class="list-group">
+		<a ng-repeat="objectRefer in $ctrl.objectRefers"
+			class="list-group-item" ng-click="$ctrl.cancel()"
+			ui-sref="content.children.channel-children({channelId: objectRefer.shGlobalFromId.shObject.id})"
+			style="color: #337ab7;"
+			ng-if="objectRefer.shGlobalFromId.type === 'CHANNEL'">
+			<div class="row">
+				<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+					<i class="fa fa-folder-open fa-2x" aria-hidden="true"></i>
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">{{objectRefer.shGlobalFromId.shObject.name}}</div>
+				<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+					<span class="label label-primary">{{objectRefer.shGlobalFromId.type}}</span>
+				</div>
+			</div>
+		</a> <a ng-repeat="objectRefer in $ctrl.objectRefers"
+			class="list-group-item" ng-click="$ctrl.cancel()"
+			ui-sref="content.post-type-item.post-item({postTypeId: objectRefer.shGlobalFromId.shObject.shPostType.id, postId: objectRefer.shGlobalFromId.shObject.id})"
+			style="color: #337ab7;"
+			ng-if="objectRefer.shGlobalFromId.type === 'POST'">
+			<div class="row">
+				<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+					<i class="fa fa-file-o fa-2x" aria-hidden="true"> </i>
+				</div>
+
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">{{objectRefer.shGlobalFromId.shObject.title}}</div>
+				<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+					<span class="label label-primary">{{objectRefer.shGlobalFromId.type}}</span>
+				</div>
+			</div>
+		</a>
+	</div>
+</div>
+<div class="modal-footer" ng-if="$ctrl.objectRefers.length == 0">
 	<button class="btn btn-viglet" type="button" ng-click="$ctrl.ok()">Delete</button>
+	<button class="btn btn-default" type="button" ng-click="$ctrl.cancel()">Cancel</button>
+</div>
+<div class="modal-footer" ng-if="$ctrl.objectRefers.length > 0">
+	<button class="btn btn-viglet" type="button" ng-click="$ctrl.ok()">Replace
+		using other File</button>
+	<button class="btn btn-viglet" type="button" ng-click="$ctrl.ok()">Clear</button>
 	<button class="btn btn-default" type="button" ng-click="$ctrl.cancel()">Cancel</button>
 </div>

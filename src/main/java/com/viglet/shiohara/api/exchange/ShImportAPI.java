@@ -16,6 +16,8 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.viglet.shiohara.api.SystemObjectView;
 import com.viglet.shiohara.exchange.ShChannelExchange;
 import com.viglet.shiohara.exchange.ShExchange;
 import com.viglet.shiohara.exchange.ShPostExchange;
@@ -58,6 +60,7 @@ public class ShImportAPI {
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
+	@JsonView({SystemObjectView.ShObject.class})	
 	public ShExchange siteImport(ShExchange shExchange) throws Exception {
 		for (ShSiteExchange shSiteExchange : shExchange.getSites()) {
 			shObjects.put(shSiteExchange.getId(), shSiteExchange);
@@ -199,5 +202,4 @@ public class ShImportAPI {
 
 		}
 	}
-
 }

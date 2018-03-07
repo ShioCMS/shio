@@ -27,6 +27,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.viglet.shiohara.api.SystemObjectView;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 
@@ -44,6 +45,7 @@ public class ShObject implements Serializable {
 	private UUID id;
 
 	@OneToOne(mappedBy = "shObject", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+	@JsonView({SystemObjectView.ShObject.class})
 	private ShGlobalId shGlobalId;
 
 	@ManyToMany(mappedBy = "referenceObjects")

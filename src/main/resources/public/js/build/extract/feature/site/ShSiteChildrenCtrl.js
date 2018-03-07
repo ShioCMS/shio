@@ -46,7 +46,7 @@ shioharaApp.controller('ShSiteChildrenCtrl', [
 				
 			});
 			$scope.channelDelete = function(shChannel) {
-				shChannelFactory.delete(shChannel, $scope.shChannels);
+				shChannelFactory.deleteFromList(shChannel, $scope.shChannels);
 			}
 			
 			$scope.postDelete = function(shPost) {

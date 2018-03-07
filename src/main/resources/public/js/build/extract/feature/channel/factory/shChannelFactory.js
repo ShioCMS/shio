@@ -38,8 +38,8 @@ shioharaApp.factory('shChannelFactory', [
 	                    , size: null
 	                    , appendTo: undefined
 	                    , resolve: {
-	                        instanceName: function () {
-	                            return shPost.title;
+	                    	shObject: function () {
+	                            return shChannel;
 	                        }
 	                    }
 	                });
