@@ -19,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.viglet.shiohara.api.SystemObjectView;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
@@ -45,6 +47,7 @@ public class ShPostTypeAPI {
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({SystemObjectView.ShObject.class})
 	public List<ShPostType> list() throws Exception {
 		return shPostTypeRepository.findAll();
 	}
@@ -52,6 +55,7 @@ public class ShPostTypeAPI {
 	@Path("/{postTypeId}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({SystemObjectView.ShObject.class})
 	public ShPostType edit(@PathParam("postTypeId") UUID id) throws Exception {
 		return shPostTypeRepository.findById(id);
 	}
@@ -59,6 +63,7 @@ public class ShPostTypeAPI {
 	@Path("/model")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({SystemObjectView.ShObject.class})
 	public ShPostType postTypeStructure() throws Exception {
 		ShPostType shPostType = new ShPostType();
 		return shPostType;
@@ -68,6 +73,7 @@ public class ShPostTypeAPI {
 	@Path("/{postTypeId}/post/model")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({SystemObjectView.ShObject.class})
 	public ShPost postStructure(@PathParam("postTypeId") UUID id) throws Exception {
 		ShPost shPost = new ShPost();
 		shPost.setShPostType(shPostTypeRepository.findById(id));
@@ -86,6 +92,7 @@ public class ShPostTypeAPI {
 	@Path("/{postTypeId}")
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({SystemObjectView.ShObject.class})
 	public ShPostType update(@PathParam("postTypeId") UUID id, ShPostType shPostType) throws Exception {
 		ShPostType shPostTypeEdit = shPostTypeRepository.findById(id);
 
@@ -150,6 +157,7 @@ public class ShPostTypeAPI {
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
+	@JsonView({SystemObjectView.ShObject.class})
 	public ShPostType add(ShPostType shPostType) throws Exception {
 		shPostTypeRepository.save(shPostType);
 		shPostType.setDate(new Date());

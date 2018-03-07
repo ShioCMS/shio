@@ -47,8 +47,8 @@ shioharaApp.factory('shSiteFactory', [
 	                    , size: null
 	                    , appendTo: undefined
 	                    , resolve: {
-	                        instanceName: function () {
-	                            return shSite.name;
+	                        shObject: function () {
+	                            return shSite;
 	                        }
 	                    }
 	                });

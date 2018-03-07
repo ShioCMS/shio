@@ -18,6 +18,8 @@ import javax.ws.rs.core.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.viglet.shiohara.api.SystemObjectView;
 import com.viglet.shiohara.persistence.model.channel.ShChannel;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.post.ShPost;
@@ -54,6 +56,7 @@ public class ShChannelAPI {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({SystemObjectView.ShObject.class})	
 	public List<ShChannel> list() throws Exception {
 		return shChannelRepository.findAll();
 	}
@@ -61,6 +64,7 @@ public class ShChannelAPI {
 	@Path("/{channelId}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({SystemObjectView.ShObject.class})
 	public ShChannel edit(@PathParam("channelId") UUID id) throws Exception {
 		return shChannelRepository.findById(id);
 	}
@@ -68,6 +72,7 @@ public class ShChannelAPI {
 	@Path("/{channelId}")
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({SystemObjectView.ShObject.class})
 	public ShChannel update(@PathParam("channelId") UUID id, ShChannel shChannel) throws Exception {
 
 		ShChannel shChannelEdit = shChannelRepository.findById(id);
@@ -92,6 +97,7 @@ public class ShChannelAPI {
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
+	@JsonView({SystemObjectView.ShObject.class})
 	public ShChannel add(ShChannel shChannel) throws Exception {
 		shChannel.setDate(new Date());
 		shChannelRepository.save(shChannel);
@@ -157,6 +163,7 @@ public class ShChannelAPI {
 	@Path("/{channelId}/list")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({SystemObjectView.ShObject.class})	
 	public ShChannelList list(@PathParam("channelId") UUID id) throws Exception {
 		ShChannel shChannel = shChannelRepository.findById(id);
 
@@ -175,6 +182,7 @@ public class ShChannelAPI {
 	@Path("/{channelId}/list/{postTypeName}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({SystemObjectView.ShObject.class})	
 	public ShChannelList listByPostType(@PathParam("channelId") UUID id, @PathParam("postTypeName") String postTypeName)
 			throws Exception {
 		ShChannel shChannel = shChannelRepository.findById(id);
@@ -194,6 +202,7 @@ public class ShChannelAPI {
 	@Path("/{channelId}/path")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({SystemObjectView.ShObject.class})	
 	public ShChannelPath path(@PathParam("channelId") UUID id) throws Exception {
 		ShChannel shChannel = shChannelRepository.findById(id);
 		if (shChannel != null) {
@@ -214,6 +223,7 @@ public class ShChannelAPI {
 	@Path("/model")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({SystemObjectView.ShObject.class})	
 	public ShChannel channelStructure() throws Exception {
 		ShChannel shChannel = new ShChannel();
 		return shChannel;

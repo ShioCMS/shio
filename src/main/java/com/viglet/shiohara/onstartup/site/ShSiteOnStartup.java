@@ -33,7 +33,7 @@ public class ShSiteOnStartup {
 					"{\"PT-ARTICLE\" :  \"Post Page Layout\", \n" + "\"PT-TEXT\": \"Post Page Layout\"}");
 			shSite.setDate(new Date());
 
-			shSiteRepository.save(shSite);
+			shSiteRepository.saveAndFlush(shSite);
 			
 			ShGlobalId shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shSite);

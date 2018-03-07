@@ -3,7 +3,6 @@ package com.viglet.shiohara.persistence.model.globalid;
 import java.io.Serializable;
 import java.util.UUID;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,20 +12,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 
-import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.GenericGenerator;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
+import com.viglet.shiohara.api.SystemObjectView;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 
 @Entity
 @NamedQuery(name = "ShGlobalId.findAll", query = "SELECT g FROM ShGlobalId g")
-@JsonIgnoreProperties({ "shObject" })
 public class ShGlobalId implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -41,8 +35,10 @@ public class ShGlobalId implements Serializable {
 	@Column(name = "type", length = 20)
 	private String type;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
+	//@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "object_id")	
+	@JsonView({SystemObjectView.ShReference.class})
 	private ShObject shObject;
 
 	public UUID getId() {

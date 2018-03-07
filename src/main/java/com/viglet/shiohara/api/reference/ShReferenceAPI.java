@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.viglet.shiohara.api.SystemObjectView;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.reference.ShReference;
 import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
@@ -31,6 +32,7 @@ public class ShReferenceAPI {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({SystemObjectView.ShReference.class})
 	public List<ShReference> list() throws Exception {
 		return shReferenceRepository.findAll();
 	}
@@ -38,6 +40,7 @@ public class ShReferenceAPI {
 	@Path("/from/{fromId}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({SystemObjectView.ShReference.class})
 	public List<ShReference> from(@PathParam("fromId") UUID fromId) throws Exception {
 		ShGlobalId shGlobalId = shGlobalIdRepository.findById(fromId);
 		return shReferenceRepository.findByShGlobalFromId(shGlobalId);
@@ -46,6 +49,7 @@ public class ShReferenceAPI {
 	@Path("/to/{toId}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({SystemObjectView.ShReference.class})
 	public List<ShReference> to(@PathParam("toId") UUID toId) throws Exception {
 		ShGlobalId shGlobalId = shGlobalIdRepository.findById(toId);
 		return shReferenceRepository.findByShGlobalToId(shGlobalId);
