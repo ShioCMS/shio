@@ -147,10 +147,12 @@ public class ShPostTypeAPI {
 			for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
 				shPostAttrRepository.delete(shPostAttr.getId());
 			}
-
+			shGlobalIdRepository.delete(shPost.getShGlobalId().getId());
 			shPostRepository.delete(shPost.getId());
 		}
 
+		shGlobalIdRepository.delete(shPostType.getShGlobalId().getId());
+		
 		shPostTypeRepository.delete(id);
 		return true;
 	}

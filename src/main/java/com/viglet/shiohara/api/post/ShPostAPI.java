@@ -132,7 +132,17 @@ public class ShPostAPI {
 			shPostAttrRepository.delete(shPostAttr.getId());
 		}
 
+		for (ShReference shReference : shReferenceRepository.findByShGlobalFromId(shPost.getShGlobalId())) {
+			shReferenceRepository.delete(shReference.getId());
+		}
+		for (ShReference shReference : shReferenceRepository.findByShGlobalToId(shPost.getShGlobalId())) {
+			shReferenceRepository.delete(shReference.getId());
+		}
+
+		shGlobalIdRepository.delete(shPost.getShGlobalId().getId());
+
 		shPostRepository.delete(id);
+
 		return true;
 	}
 
@@ -150,8 +160,11 @@ public class ShPostAPI {
 
 			if (shPostAttr.getShPostTypeAttr().getIsSummary() == 1)
 				summary = StringUtils.abbreviate(shPostAttr.getStrValue(), 255);
-
-			shPostAttr.setReferenceObjects(null);
+			
+			if (shPostAttr != null) {
+				shPostAttr.setReferenceObjects(null);
+				
+			}
 		}
 		shPost.setDate(new Date());
 		shPost.setTitle(title);
@@ -159,38 +172,22 @@ public class ShPostAPI {
 
 		shPostRepository.saveAndFlush(shPost);
 
-		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
-			this.referencedFile(shPostAttr, shPostAttr, shPost);
-		}
-
-		shPostRepository.saveAndFlush(shPost);
-
 		ShGlobalId shGlobalId = new ShGlobalId();
 		shGlobalId.setShObject(shPost);
 		shGlobalId.setType("POST");
-
+		
 		shGlobalIdRepository.saveAndFlush(shGlobalId);
+
+		ShPost shPostWithGlobalId = shPostRepository.findById(shPost.getId());
 
 		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
 			shPostAttr.setShPost(shPost);
-			if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals("File")
-					&& !shPost.getShPostType().getName().equals("PT-FILE")) {
-				ShPost shPostFile = shPostRepository.findById(UUID.fromString(shPostAttr.getStrValue()));
-
-				ShReference shReference = new ShReference();
-				shReference.setShGlobalFromId(shGlobalId);
-				shReference.setShGlobalToId(shPostFile.getShGlobalId());
-
-				shReferenceRepository.saveAndFlush(shReference);
-
-				Set<ShObject> referenceObjects = new HashSet<ShObject>();
-				referenceObjects.add(shPostFile);
-				shPostAttr.setReferenceObjects(referenceObjects);
-
-			}
+			this.referencedFile(shPostAttr, shPostAttr, shPostWithGlobalId);
 			shPostAttrRepository.saveAndFlush(shPostAttr);
 		}
 
+		shPostRepository.saveAndFlush(shPost);
+		
 		ShUser shUser = shUserRepository.findById(1);
 		shUser.setLastPostType(String.valueOf(shPost.getShPostType().getId()));
 		shUserRepository.saveAndFlush(shUser);
@@ -201,6 +198,7 @@ public class ShPostAPI {
 
 	public void referencedFile(ShPostAttr shPostAttrEdit, ShPostAttr shPostAttr, ShPost shPost) {
 		if (shPostAttrEdit.getShPostTypeAttr().getName().equals("FILE")) {
+			
 			if (shPost.getShPostType().getName().equals("PT-FILE")) {
 				File fileFrom = shStaticFileUtils.filePath(shPost.getShChannel(), shPostAttrEdit.getStrValue());
 				File fileTo = shStaticFileUtils.filePath(shPost.getShChannel(), shPostAttr.getStrValue());
