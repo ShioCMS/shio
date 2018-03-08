@@ -1,5 +1,10 @@
-shioharaApp.controller('ShWidgetFileCtrl', [ '$scope', 'Upload', '$timeout',
-		'$uibModal', function($scope, Upload, $timeout, $uibModal) {
+shioharaApp.controller('ShWidgetFileCtrl', [
+		'$scope',
+		'Upload',
+		'$timeout',
+		'$uibModal',
+		'shWidgetFileFactory',
+		function($scope, Upload, $timeout, $uibModal, shWidgetFileFactory) {
 			$scope.fileName = null;
 			$scope.uploadNewFile = false;
 			$scope.$watch('shPostAttr.file', function() {
@@ -19,34 +24,16 @@ shioharaApp.controller('ShWidgetFileCtrl', [ '$scope', 'Upload', '$timeout',
 			}
 
 			$scope.selectFile = function(shPost, shPostAttr) {
-				var modalInstance = this.modalSelectFile(shPost);
+				var modalInstance = shWidgetFileFactory
+						.modalSelectFile($scope.channelId);
 				modalInstance.result.then(function(shPostSelected) {
 					// Selected INSERT
 					$scope.uploadNewFile = false;
 					$scope.fileName = shPostSelected.title;
 					shPostAttr.strValue = shPostSelected.id;
-					shPostAttr.referenceObjects=[shPostSelected];
+					shPostAttr.referenceObjects = [ shPostSelected ];
 				}, function() {
 					// Selected CANCEL
-				});
-			}
-
-			$scope.modalSelectFile = function(shPost) {
-				var $ctrl = this;
-				return $uibModal.open({
-					animation : true,
-					ariaLabelledBy : 'modal-title',
-					ariaDescribedBy : 'modal-body',
-					templateUrl : 'template/widget/file/file-select.html',
-					controller : 'ShWidgetFileSelectCtrl',
-					controllerAs : '$ctrl',
-					size : null,
-					appendTo : undefined,
-					resolve : {
-						shPost : function() {
-							return shPost;
-						}
-					}
 				});
 			}
 		} ]);

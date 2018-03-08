@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -51,6 +52,15 @@ public class ShReferenceAPI {
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView({SystemObjectView.ShReference.class})
 	public List<ShReference> to(@PathParam("toId") UUID toId) throws Exception {
+		ShGlobalId shGlobalId = shGlobalIdRepository.findById(toId);
+		return shReferenceRepository.findByShGlobalToId(shGlobalId);
+	}
+	
+	@Path("/to/{toId}/replace/{otherId}")
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({SystemObjectView.ShReference.class})
+	public List<ShReference> toReplace(@PathParam("toId") UUID toId) throws Exception {
 		ShGlobalId shGlobalId = shGlobalIdRepository.findById(toId);
 		return shReferenceRepository.findByShGlobalToId(shGlobalId);
 	}

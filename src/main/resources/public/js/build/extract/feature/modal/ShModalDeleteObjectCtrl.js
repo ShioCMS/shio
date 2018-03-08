@@ -3,7 +3,9 @@ shioharaApp.controller('ShModalDeleteObjectCtrl', [
 		"$http",
 		"shObject",
 		"shAPIServerService",
-		function($uibModalInstance, $http, shObject, shAPIServerService) {
+		"shWidgetFileFactory",
+		function($uibModalInstance, $http, shObject, shAPIServerService,
+				shWidgetFileFactory) {
 			var $ctrl = this;
 			$ctrl.removeInstance = false;
 			$ctrl.shObject = shObject;
@@ -32,4 +34,14 @@ shioharaApp.controller('ShModalDeleteObjectCtrl', [
 				$ctrl.removeInstance = false;
 				$uibModalInstance.dismiss('cancel');
 			};
+
+			$ctrl.selectFile = function() {
+				var modalInstance = shWidgetFileFactory.modalSelectFile($ctrl.shObject.shChannel.id);
+				modalInstance.result.then(function(shPostSelected) {
+					// Selected INSERT
+					console.log("shPostSelected: " + shPostSelected.id);
+				}, function() {
+					// Selected CANCEL
+				});
+			}
 		} ]);
