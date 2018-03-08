@@ -324,50 +324,149 @@ shioharaApp.factory('shChannelResource', [ '$resource', 'shAPIServerService',
 			});
 		} ]);
 
-shioharaApp.controller('ShChannelChildrenCtrl', [
-		"$scope",
-		"$state",
-		"$stateParams",
-		"$rootScope",
-		"$translate",
-		"$http",
-		"shAPIServerService",
-		'vigLocale',
-		"shChannelFactory",
-		"shPostFactory",
-		function($scope, $state, $stateParams, $rootScope, $translate,$http,
-				shAPIServerService, vigLocale, shChannelFactory, shPostFactory) {
-			$scope.siteId = $stateParams.siteId;
-			$scope.channelId = $stateParams.channelId;
-			$scope.$parent.channelId = $stateParams.channelId;
-			$scope.vigLanguage = vigLocale.getLocale().substring(0, 2);
-			$translate.use($scope.vigLanguage);
+shioharaApp
+		.controller(
+				'ShChannelChildrenCtrl',
+				[
+						"$scope",
+						"$state",
+						"$stateParams",
+						"$rootScope",
+						"$translate",
+						"$http",
+						"shAPIServerService",
+						'vigLocale',
+						"shChannelFactory",
+						"shPostFactory",
+						"ShDialogSelectObject",
+						function($scope, $state, $stateParams, $rootScope,
+								$translate, $http, shAPIServerService,
+								vigLocale, shChannelFactory, shPostFactory, ShDialogSelectObject) {
 
-			$scope.shSite = null;
-			$scope.shChannels = null;
-			$scope.shPosts = null;
-			$scope.breadcrumb = null;
-			$rootScope.$state = $state;
-		
-			$scope.$evalAsync($http.get(
-					shAPIServerService.get().concat(
-							"/channel/" + $scope.channelId + "/list")).then(
-					function(response) {
-						$scope.shChannels = response.data.shChannels;
-						$scope.shPosts = response.data.shPosts;
-						$scope.breadcrumb = response.data.breadcrumb;
-						$scope.$parent.breadcrumb = response.data.breadcrumb;
-						$scope.shSite = response.data.shSite;
-						$scope.$parent.shSite = $scope.shSite;
-					}));
-			$scope.channelDelete = function(shChannel) {
-				shChannelFactory.deleteFromList(shChannel, $scope.shChannels);
-			}
-			
-			$scope.postDelete = function(shPost) {
-				shPostFactory.deleteFromList(shPost, $scope.shPosts);
-			}
-		} ]);
+							$scope.siteId = $stateParams.siteId;
+							$scope.channelId = $stateParams.channelId;
+							$scope.$parent.channelId = $stateParams.channelId;
+							$scope.vigLanguage = vigLocale.getLocale()
+									.substring(0, 2);
+							$translate.use($scope.vigLanguage);
+
+							$scope.shSite = null;
+							$scope.shChannels = null;
+							$scope.shPosts = null;
+							$scope.breadcrumb = null;
+							$rootScope.$state = $state;
+							$scope.shStateObjects = [];
+							$scope.shObjects = [];
+
+							$scope.$watch('$scope.shObjects', function() {
+								console.log("modificou shObjects");
+							});
+
+							$scope.$evalAsync($http.get(
+									shAPIServerService.get().concat(
+											"/channel/" + $scope.channelId
+													+ "/list")).then(
+									function(response) {
+										$scope.processResponse(response);
+									}));
+
+							$scope.processResponse = function(response) {
+								$scope.shChannels = response.data.shChannels;
+								$scope.shPosts = response.data.shPosts;
+								$scope.breadcrumb = response.data.breadcrumb;
+								$scope.$parent.breadcrumb = response.data.breadcrumb;
+								$scope.shSite = response.data.shSite;
+								$scope.$parent.shSite = $scope.shSite;
+								angular
+										.forEach(
+												$scope.shChannels,
+												function(shChannel, key) {
+													$scope.shStateObjects[shChannel.shGlobalId.id] = false;
+													$scope.shObjects[shChannel.shGlobalId.id] = shChannel;
+												});
+								angular
+										.forEach(
+												$scope.shPosts,
+												function(shPost, key) {
+													$scope.shStateObjects[shPost.shGlobalId.id] = false;
+													$scope.shObjects[shPost.shGlobalId.id] = shPost;
+												});
+							}
+							
+							
+							$scope.objectsCopy = function() {
+								for ( var stateKey in $scope.shStateObjects) {
+									if ($scope.shStateObjects[stateKey] === true) {
+										console.log("Copy " + stateKey);
+									}
+								}
+							}
+							
+							$scope.objectsMove = function() {
+								for ( var stateKey in $scope.shStateObjects) {
+									if ($scope.shStateObjects[stateKey] === true) {
+										console.log("Move " + stateKey);
+										
+										var modalInstance = ShDialogSelectObject.dialog($scope.channelId, "shChannel");
+										modalInstance.result.then(function(shPostSelected) {
+											// Selected Replace and Remove it
+											$http.post(
+													shAPIServerService.get().concat(
+															"/reference/to/" + shObject.shGlobalId.id + "/replace/" + shPostSelected.shGlobalId.id))
+													.then(function(response) {
+														$ctrl.objectRefers = response.data;
+													});
+											
+										}, function() {
+											// Selected CANCEL
+										});
+									}
+								}
+							}
+							
+							$scope.objectsClone = function() {
+								for ( var stateKey in $scope.shStateObjects) {
+									if ($scope.shStateObjects[stateKey] === true) {
+										console.log("Clone " + stateKey);
+									}
+								}
+							}
+							
+							$scope.objectsRename = function() {
+								for ( var stateKey in $scope.shStateObjects) {
+									if ($scope.shStateObjects[stateKey] === true) {
+										console.log("Rename " + stateKey);
+									}
+								}
+							}
+							
+							$scope.objectsEdit = function() {
+								for ( var stateKey in $scope.shStateObjects) {
+									if ($scope.shStateObjects[stateKey] === true) {
+										console.log("Edit " + stateKey);
+									}
+								}
+							}
+							$scope.objectsDelete = function() {
+								for ( var stateKey in $scope.shStateObjects) {
+									if ($scope.shStateObjects[stateKey] === true) {
+										shPostFactory.deleteFromList(
+												$scope.shObjects[stateKey],
+												$scope.shPosts);
+									}
+								}
+							}
+							
+							$scope.channelDelete = function(shChannel) {
+								shChannelFactory.deleteFromList(shChannel,
+										$scope.shChannels);
+							}
+
+							$scope.postDelete = function(shPost) {
+								shPostFactory.deleteFromList(shPost,
+										$scope.shPosts);
+							}
+						} ]);
 shioharaApp
 		.controller(
 				'ShChannelEditCtrl',
@@ -542,6 +641,80 @@ shioharaApp
 							}
 
 						} ]);
+shioharaApp.controller('ShComponentExplorerCtrl', [
+		'$scope',
+		'shAPIServerService',
+		'$http',
+		'$uibModalInstance',
+		'channelId',
+		'objectType',
+		'shWidgetFileFactory',
+		function($scope, shAPIServerService, $http, $uibModalInstance,
+				channelId, objectType, shWidgetFileFactory) {
+			var $ctrl = this;
+			$ctrl.objectTypeName = "Object";
+			$ctrl.channelDoubleClick = false;
+			if (angular.equals(objectType, "shChannel")) {
+				$ctrl.objectTypeName = "Channel";
+				$ctrl.channelDoubleClick = true;
+			}
+			$ctrl.enableInsertButton = false;
+			 $ctrl.shChannelSelected == null;
+			$ctrl.shPostSelected = null;
+			$ctrl.ok = function() {
+				$uibModalInstance.close($ctrl.shPostSelected);
+			};
+
+			$ctrl.cancel = function() {
+				$ctrl.shPostSelected = null;
+				$uibModalInstance.dismiss('cancel');
+			};
+			$scope.shSite = null;
+			$scope.shChannels = null;
+			$scope.shPosts = null;
+			$scope.breadcrumb = null;
+
+			// BEGIN Functions
+			$scope.channelList = function(channelId) {
+				$ctrl.enableInsertButton = false;
+				$ctrl.shPostSelected = null;
+				$scope.$evalAsync($http.get(
+						shAPIServerService.get().concat(
+								"/channel/" + channelId + "/list/" + objectType))
+						.then(function(response) {
+							$scope.shChannels = response.data.shChannels;
+							$scope.shPosts = response.data.shPosts;
+							$scope.breadcrumb = response.data.breadcrumb;
+							$scope.shSite = response.data.shSite;							
+						}));
+			}
+
+			$scope.siteList = function(siteId) {
+				$ctrl.shPostSelected = null;
+				$scope.$evalAsync($http.get(
+						shAPIServerService.get().concat(
+								"/site/" + siteId + "/channel")).then(
+						function(response) {
+							$scope.shChannels = response.data.shChannels;
+							$scope.shPosts = response.data.shPosts;
+							$scope.shSite = response.data.shSite;
+						}));
+			}
+
+			$scope.selectedPost = function(shPost) {
+				$ctrl.shPostSelected = shPost;
+				$ctrl.enableInsertButton = true;
+			}
+			
+			$scope.selectedChannel = function(shChannel) {
+				$ctrl.shChannelSelected = shChannel;
+				$ctrl.enableInsertButton = true;
+			}
+			// END Functions
+
+			$scope.channelList(channelId);
+
+		} ]);
 shioharaApp.controller('ShContentChildrenCtrl', [
 		"$scope",
 		"$http",
@@ -605,6 +778,34 @@ shioharaApp.controller('ShContentCtrl', [ "$rootScope", "$scope", "Token",
 			$translate.use($scope.vigLanguage);
 			$scope.accessToken = Token.get();
 
+		} ]);
+shioharaApp.factory('ShDialogSelectObject', [ '$uibModal', 'shPostResource',
+		'Notification', '$filter', "$state",
+		function($uibModal, shPostResource, Notification, $filter, $state) {
+			return {
+				
+				dialog : function(channelId, objectType) {
+					var $ctrl = this;
+					return $uibModal.open({
+						animation : true,
+						ariaLabelledBy : 'modal-title',
+						ariaDescribedBy : 'modal-body',
+						templateUrl : 'template/dialog/select/dialog-object-select.html',
+						controller : 'ShComponentExplorerCtrl',
+						controllerAs : '$ctrl',
+						size : null,
+						appendTo : undefined,
+						resolve : {
+							channelId : function() {
+								return channelId;
+							},
+							objectType : function() {
+								return objectType;
+							}
+						}
+					});
+				}
+			}
 		} ]);
 shioharaApp.controller('ShModalDeleteObjectCtrl', [
 		"$uibModalInstance",
