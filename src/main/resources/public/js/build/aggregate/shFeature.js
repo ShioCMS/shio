@@ -344,7 +344,9 @@ shioharaApp.controller('ShModalDeleteObjectCtrl', [
 		"$http",
 		"shObject",
 		"shAPIServerService",
-		function($uibModalInstance, $http, shObject, shAPIServerService) {
+		"shWidgetFileFactory",
+		function($uibModalInstance, $http, shObject, shAPIServerService,
+				shWidgetFileFactory) {
 			var $ctrl = this;
 			$ctrl.removeInstance = false;
 			$ctrl.shObject = shObject;
@@ -373,6 +375,16 @@ shioharaApp.controller('ShModalDeleteObjectCtrl', [
 				$ctrl.removeInstance = false;
 				$uibModalInstance.dismiss('cancel');
 			};
+
+			$ctrl.selectFile = function() {
+				var modalInstance = shWidgetFileFactory.modalSelectFile($ctrl.shObject.shChannel.id);
+				modalInstance.result.then(function(shPostSelected) {
+					// Selected INSERT
+					console.log("shPostSelected: " + shPostSelected.id);
+				}, function() {
+					// Selected CANCEL
+				});
+			}
 		} ]);
 shioharaApp.controller('ShOAuth2Ctrl', [ "$scope", "$http", "$window",
 		"$state", "$rootScope", "Token",
@@ -1218,8 +1230,37 @@ shioharaApp.factory('shWidgetResource', [ '$resource', 'shAPIServerService', fun
 	});
 } ]);
 
-shioharaApp.controller('ShWidgetFileCtrl', [ '$scope', 'Upload', '$timeout',
-		'$uibModal', function($scope, Upload, $timeout, $uibModal) {
+shioharaApp.factory('shWidgetFileFactory', [ '$uibModal', 'shPostResource',
+		'Notification', '$filter', "$state",
+		function($uibModal, shPostResource, Notification, $filter, $state) {
+			return {
+				modalSelectFile : function(channelId) {
+					var $ctrl = this;
+					return $uibModal.open({
+						animation : true,
+						ariaLabelledBy : 'modal-title',
+						ariaDescribedBy : 'modal-body',
+						templateUrl : 'template/widget/file/file-select.html',
+						controller : 'ShWidgetFileSelectCtrl',
+						controllerAs : '$ctrl',
+						size : null,
+						appendTo : undefined,
+						resolve : {
+							channelId : function() {
+								return channelId;
+							}
+						}
+					});
+				}
+			}
+		} ]);
+shioharaApp.controller('ShWidgetFileCtrl', [
+		'$scope',
+		'Upload',
+		'$timeout',
+		'$uibModal',
+		'shWidgetFileFactory',
+		function($scope, Upload, $timeout, $uibModal, shWidgetFileFactory) {
 			$scope.fileName = null;
 			$scope.uploadNewFile = false;
 			$scope.$watch('shPostAttr.file', function() {
@@ -1239,34 +1280,16 @@ shioharaApp.controller('ShWidgetFileCtrl', [ '$scope', 'Upload', '$timeout',
 			}
 
 			$scope.selectFile = function(shPost, shPostAttr) {
-				var modalInstance = this.modalSelectFile(shPost);
+				var modalInstance = shWidgetFileFactory
+						.modalSelectFile($scope.channelId);
 				modalInstance.result.then(function(shPostSelected) {
 					// Selected INSERT
 					$scope.uploadNewFile = false;
 					$scope.fileName = shPostSelected.title;
 					shPostAttr.strValue = shPostSelected.id;
-					shPostAttr.referenceObjects=[shPostSelected];
+					shPostAttr.referenceObjects = [ shPostSelected ];
 				}, function() {
 					// Selected CANCEL
-				});
-			}
-
-			$scope.modalSelectFile = function(shPost) {
-				var $ctrl = this;
-				return $uibModal.open({
-					animation : true,
-					ariaLabelledBy : 'modal-title',
-					ariaDescribedBy : 'modal-body',
-					templateUrl : 'template/widget/file/file-select.html',
-					controller : 'ShWidgetFileSelectCtrl',
-					controllerAs : '$ctrl',
-					size : null,
-					appendTo : undefined,
-					resolve : {
-						shPost : function() {
-							return shPost;
-						}
-					}
 				});
 			}
 		} ]);
@@ -1274,12 +1297,13 @@ shioharaApp.controller('ShWidgetFileSelectCtrl', [
 		'$scope',
 		'shAPIServerService',
 		'$http',
-		'$uibModalInstance', 
-		'shPost',
-		function($scope, shAPIServerService, $http, $uibModalInstance, shPost) {
+		'$uibModalInstance',
+		'channelId',
+		'shWidgetFileFactory',
+		function($scope, shAPIServerService, $http, $uibModalInstance,
+				channelId,shWidgetFileFactory) {
 			var $ctrl = this;
-			
-			$ctrl.shPost = shPost;
+
 			$ctrl.shPostSelected = null;
 			$ctrl.ok = function() {
 				$uibModalInstance.close($ctrl.shPostSelected);
@@ -1289,8 +1313,6 @@ shioharaApp.controller('ShWidgetFileSelectCtrl', [
 				$ctrl.shPostSelected = null;
 				$uibModalInstance.dismiss('cancel');
 			};
-			
-			$scope.channelId = $ctrl.shPost.shChannel.id;
 			$scope.shSite = null;
 			$scope.shChannels = null;
 			$scope.shPosts = null;
@@ -1301,34 +1323,32 @@ shioharaApp.controller('ShWidgetFileSelectCtrl', [
 				$ctrl.shPostSelected = null;
 				$scope.$evalAsync($http.get(
 						shAPIServerService.get().concat(
-								"/channel/" + channelId + "/list/PT-FILE")).then(
-						function(response) {
+								"/channel/" + channelId + "/list/PT-FILE"))
+						.then(function(response) {
 							$scope.shChannels = response.data.shChannels;
 							$scope.shPosts = response.data.shPosts;
 							$scope.breadcrumb = response.data.breadcrumb;
 							$scope.shSite = response.data.shSite;
 						}));
 			}
-			
-			
+
 			$scope.siteList = function(siteId) {
 				$ctrl.shPostSelected = null;
 				$scope.$evalAsync($http.get(
 						shAPIServerService.get().concat(
-								"/site/" + siteId +"/channel"))
-						.then(function(response) {
+								"/site/" + siteId + "/channel")).then(
+						function(response) {
 							$scope.shChannels = response.data.shChannels;
 							$scope.shPosts = response.data.shPosts;
 							$scope.shSite = response.data.shSite;
 						}));
 			}
-			
+
 			$scope.selectedPost = function(shPost) {
 				$ctrl.shPostSelected = shPost;
 			}
-			//END Functions
-			
-			$scope.channelList($scope.channelId);
-			
-		
+			// END Functions
+
+			$scope.channelList(channelId);
+
 		} ]);
