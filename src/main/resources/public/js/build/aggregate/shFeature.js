@@ -379,8 +379,14 @@ shioharaApp.controller('ShModalDeleteObjectCtrl', [
 			$ctrl.selectFile = function() {
 				var modalInstance = shWidgetFileFactory.modalSelectFile($ctrl.shObject.shChannel.id);
 				modalInstance.result.then(function(shPostSelected) {
-					// Selected INSERT
-					console.log("shPostSelected: " + shPostSelected.id);
+					// Selected Replace and Remove it
+					$http.post(
+							shAPIServerService.get().concat(
+									"/reference/to/" + shObject.shGlobalId.id + "/replace/" + shPostSelected.shGlobalId.id))
+							.then(function(response) {
+								$ctrl.objectRefers = response.data;
+							});
+					
 				}, function() {
 					// Selected CANCEL
 				});

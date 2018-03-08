@@ -92,6 +92,7 @@ public class ShChannelAPI {
 	@Produces(MediaType.APPLICATION_JSON)
 	public boolean delete(@PathParam("channelId") UUID id) throws Exception {
 		ShChannel shChannel = shChannelRepository.findById(id);
+		shGlobalIdRepository.delete(shChannel.getShGlobalId().getId());
 		return shChannelUtils.deleteChannel(shChannel);
 	}
 

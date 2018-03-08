@@ -99,9 +99,11 @@ public class ShSiteAPI {
 		ShSite shSite = shSiteRepository.findById(id);
 
 		for (ShChannel shChannel : shSite.getShChannels()) {
+			shGlobalIdRepository.delete(shChannel.getShGlobalId().getId());
 			shChannelUtils.deleteChannel(shChannel);
 		}
 
+		shGlobalIdRepository.delete(shSite.getShGlobalId().getId());
 		shSiteRepository.delete(id);
 
 		return true;

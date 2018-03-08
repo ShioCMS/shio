@@ -31,11 +31,11 @@ public class ShReference implements Serializable{
 	private UUID id;
 	
 	@ManyToOne
-	@JoinColumn(name = "global_from_id")
+	@JoinColumn(name = "global_from_id" , nullable = false)
 	private ShGlobalId shGlobalFromId;
 	
 	@ManyToOne
-	@JoinColumn(name = "global_to_id")
+	@JoinColumn(name = "global_to_id", nullable = false)
 	private ShGlobalId shGlobalToId;
 
 	public UUID getId() {
