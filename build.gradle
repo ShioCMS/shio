@@ -74,18 +74,20 @@ repositories {
      mavenCentral()
 }
 dependencies {
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version:'1.5.2.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-tomcat', version:'1.5.2.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-jersey', version:'1.5.2.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-activemq', version:'1.5.2.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version:'1.5.6.RELEASE'
+  //  compile group: 'org.springframework.boot', name: 'spring-boot-starter-tomcat', version:'1.5.6.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-parent', version:'1.5.6.RELEASE'
+    
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-jersey', version:'1.5.6.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-activemq', version:'1.5.6.RELEASE'
    
     compile group: 'org.glassfish.jersey.media', name: 'jersey-media-multipart', version:'2.25'
     compile group: 'org.glassfish.jersey.containers', name: 'jersey-container-servlet-core', version:'2.25'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version:'1.5.2.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version:'1.5.6.RELEASE'
     compile group: 'org.thymeleaf', name: 'thymeleaf-spring4', version:'3.0.3.RELEASE'
     compile group: 'org.thymeleaf', name: 'thymeleaf', version:'3.0.3.RELEASE'    
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version:'1.5.2.RELEASE'
-    compile(group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf', version:'1.5.2.RELEASE') {
+    compile(group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf', version:'1.5.6.RELEASE') {
 		exclude(module: 'thymeleaf-layout-dialect')
     }
     compile group: 'com.zaxxer', name: 'HikariCP', version:'2.6.0'
@@ -100,6 +102,8 @@ exclude(module: 'commons-logging')
     compile group: 'commons-lang', name: 'commons-lang', version:'2.6'
     compile group: 'org.apache.logging.log4j', name: 'log4j-core', version:'2.7'
 	compile group: 'org.jsoup', name: 'jsoup', version: '1.8.3'
+	compile group: 'org.hibernate', name: 'hibernate-search-engine', version: '5.6.1.Final'
+	compile group: 'org.hibernate', name: 'hibernate-search-orm', version: '5.6.1.Final'
 	
 	compile 'org.webjars.bower:jquery:1.11.1'
 	compile 'org.webjars:bootstrap:3.3.7-1'
