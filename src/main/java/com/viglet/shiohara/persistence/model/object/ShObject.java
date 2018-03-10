@@ -44,7 +44,6 @@ public class ShObject implements Serializable {
 	@GeneratedValue(generator = "UUID")
 
 	@Column(name = "id", updatable = false, nullable = false)
-	@FieldBridge(impl = ScanResultBridge.class) 
 	private UUID id;
 
 	@OneToOne(mappedBy = "shObject", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
