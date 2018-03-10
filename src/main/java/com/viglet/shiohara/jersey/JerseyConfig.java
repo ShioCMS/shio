@@ -1,9 +1,7 @@
 package com.viglet.shiohara.jersey;
 
 import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.glassfish.jersey.message.filtering.EntityFilteringFeature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -18,6 +16,7 @@ import com.viglet.shiohara.api.post.type.ShPostTypeAPI;
 import com.viglet.shiohara.api.post.type.ShPostTypeAttrAPI;
 import com.viglet.shiohara.api.reference.ShReferenceAPI;
 import com.viglet.shiohara.api.region.ShRegionAPI;
+import com.viglet.shiohara.api.search.ShSearchAPI;
 import com.viglet.shiohara.api.site.ShSiteAPI;
 import com.viglet.shiohara.api.staticfile.ShStaticFileAPI;
 import com.viglet.shiohara.api.user.ShUserAPI;
@@ -55,6 +54,7 @@ public class JerseyConfig extends ResourceConfig {
 		register(ShChannelAPI.class);	
 		register(ShStaticFileAPI.class);
 		register(ShReferenceAPI.class);
+		register(ShSearchAPI.class);
 		register(ShImportAPI.class);
 	}
 

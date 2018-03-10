@@ -21,6 +21,7 @@ import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.search.annotations.FieldBridge;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -30,6 +31,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.viglet.shiohara.api.SystemObjectView;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
+import com.viglet.shiohara.persistence.model.post.type.ScanResultBridge;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -42,6 +44,7 @@ public class ShObject implements Serializable {
 	@GeneratedValue(generator = "UUID")
 
 	@Column(name = "id", updatable = false, nullable = false)
+	@FieldBridge(impl = ScanResultBridge.class) 
 	private UUID id;
 
 	@OneToOne(mappedBy = "shObject", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)

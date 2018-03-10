@@ -3,6 +3,8 @@ package com.viglet.shiohara.persistence.model.post.type;
 import javax.persistence.*;
 
 import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.search.annotations.FieldBridge;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.viglet.shiohara.persistence.model.object.ShObject;
@@ -11,6 +13,7 @@ import com.viglet.shiohara.persistence.model.region.ShRegion;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 
 /**
@@ -22,7 +25,7 @@ import java.util.List;
 @JsonIgnoreProperties({ "shPosts", "shPostAttrs" })
 public class ShPostType extends ShObject {
 	private static final long serialVersionUID = 1L;
-
+	
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date date;
 
