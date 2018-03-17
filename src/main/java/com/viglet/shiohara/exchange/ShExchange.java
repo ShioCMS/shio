@@ -2,6 +2,8 @@ package com.viglet.shiohara.exchange;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+@JsonIgnoreProperties({ "files"})
 public class ShExchange {
 
 	List<ShSiteExchange> sites;
@@ -9,6 +11,8 @@ public class ShExchange {
 	List<ShChannelExchange> channels;
 	
 	List<ShPostExchange> posts;
+	
+	List<ShFileExchange> files;
 	
 	public List<ShSiteExchange> getSites() {
 		return sites;
@@ -32,6 +36,14 @@ public class ShExchange {
 
 	public void setPosts(List<ShPostExchange> posts) {
 		this.posts = posts;
+	}
+
+	public List<ShFileExchange> getFiles() {
+		return files;
+	}
+
+	public void setFiles(List<ShFileExchange> files) {
+		this.files = files;
 	}
 
 	
