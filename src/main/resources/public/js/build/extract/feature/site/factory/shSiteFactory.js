@@ -1,6 +1,6 @@
 shioharaApp.factory('shSiteFactory', [
 	'$uibModal','shSiteResource', 'Notification','$state',
-		function($uibModal,shChannelResource, Notification, $state) {
+		function($uibModal,shSiteResource, Notification, $state) {
 			return {
 				
 				delete : function(shSite) {

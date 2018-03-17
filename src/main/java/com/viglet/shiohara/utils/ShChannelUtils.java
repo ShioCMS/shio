@@ -13,6 +13,7 @@ import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.channel.ShChannelRepository;
+import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 
@@ -24,7 +25,8 @@ public class ShChannelUtils {
 	ShPostRepository shPostRepository;
 	@Autowired
 	ShPostAttrRepository shPostAttrRepository;
-
+	@Autowired
+	ShGlobalIdRepository shGlobalIdRepository;
 	public JSONObject toJSON(ShChannel shChannel) {
 		JSONObject shChannelItemAttrs = new JSONObject();
 
@@ -148,12 +150,13 @@ public class ShChannelUtils {
 			for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
 				shPostAttrRepository.delete(shPostAttr.getId());
 			}
+			shGlobalIdRepository.delete(shPost.getShGlobalId().getId());
 			shPostRepository.delete(shPost.getId());
 		}
 		for (ShChannel shChannelChild : shChannel.getShChannels()) {
 			this.deleteChannel(shChannelChild);
 		}
-
+		shGlobalIdRepository.delete(shChannel.getShGlobalId().getId());
 		shChannelRepository.delete(shChannel.getId());
 		return true;
 	}
