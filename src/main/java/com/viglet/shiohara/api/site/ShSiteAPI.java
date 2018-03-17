@@ -1,11 +1,19 @@
 package com.viglet.shiohara.api.site;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -15,12 +23,16 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viglet.shiohara.api.SystemObjectView;
 import com.viglet.shiohara.api.channel.ShChannelList;
 import com.viglet.shiohara.exchange.ShChannelExchange;
@@ -66,7 +78,7 @@ public class ShSiteAPI {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({SystemObjectView.ShObject.class})	
+	@JsonView({ SystemObjectView.ShObject.class })
 	public List<ShSite> list() throws Exception {
 		return shSiteRepository.findAll();
 	}
@@ -74,7 +86,7 @@ public class ShSiteAPI {
 	@Path("/{siteId}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({SystemObjectView.ShObject.class})	
+	@JsonView({ SystemObjectView.ShObject.class })
 	public ShSite edit(@PathParam("siteId") UUID id) throws Exception {
 		return shSiteRepository.findById(id);
 	}
@@ -82,7 +94,7 @@ public class ShSiteAPI {
 	@Path("/{siteId}")
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({SystemObjectView.ShObject.class})	
+	@JsonView({ SystemObjectView.ShObject.class })
 	public ShSite update(@PathParam("siteId") UUID id, ShSite shSite) throws Exception {
 		ShSite shSiteEdit = shSiteRepository.findById(id);
 		shSiteEdit.setDate(new Date());
@@ -111,7 +123,7 @@ public class ShSiteAPI {
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	@JsonView({SystemObjectView.ShObject.class})	
+	@JsonView({ SystemObjectView.ShObject.class })
 	public ShSite add(ShSite shSite) throws Exception {
 		shSite.setDate(new Date());
 
@@ -184,7 +196,7 @@ public class ShSiteAPI {
 	@Path("/{siteId}/channel")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({SystemObjectView.ShObject.class})	
+	@JsonView({ SystemObjectView.ShObject.class })
 	public ShChannelList rootChannel(@PathParam("siteId") UUID id) throws Exception {
 		ShSite shSite = shSiteRepository.findById(id);
 
@@ -198,9 +210,9 @@ public class ShSiteAPI {
 
 	@Path("/{siteId}/export")
 	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({SystemObjectView.ShObject.class})	
-	public ShExchange siteExport(@PathParam("siteId") UUID id) throws Exception {
+	// @Produces(MediaType.APPLICATION_OCTET_STREAM)
+	// @JsonView({ SystemObjectView.ShObject.class })
+	public Response siteExport(@PathParam("siteId") UUID id) throws Exception {
 		ShExchange shExchange = new ShExchange();
 		ShSite shSite = shSiteRepository.findById(id);
 
@@ -229,13 +241,79 @@ public class ShSiteAPI {
 
 		shExchange.setChannels(shExchangeChannel.getChannels());
 		shExchange.setPosts(shExchangeChannel.getPosts());
-		return shExchange;
+		FileOutputStream fos = null;
+		String folderName = UUID.randomUUID().toString();
+		File userDir = new File(System.getProperty("user.dir"));
+		if (userDir.exists() && userDir.isDirectory()) {
+			File tmpDir = new File(userDir.getAbsolutePath().concat(File.separator + "store" + File.separator + "tmp"));
+			if (!tmpDir.exists()) {
+				tmpDir.mkdirs();
+			}
+
+			File exportDir = new File(tmpDir.getAbsolutePath().concat(File.separator + folderName));
+			if (!exportDir.exists()) {
+				exportDir.mkdirs();
+			}
+			// Object to JSON in file
+			ObjectMapper mapper = new ObjectMapper();
+			mapper.writerWithDefaultPrettyPrinter().writeValue(
+					new File(exportDir.getAbsolutePath().concat(File.separator + "export.json")), shExchange);
+
+			String fileZip = tmpDir.getAbsolutePath().concat(File.separator + folderName + ".zip");
+			fos = new FileOutputStream(fileZip);
+			ZipOutputStream zipOut = new ZipOutputStream(fos);
+			ShSiteAPI.zipFile(exportDir, exportDir.getName(), zipOut);
+			zipOut.close();
+			fos.close();
+
+			StreamingOutput fileStream = new StreamingOutput() {
+				@Override
+				public void write(java.io.OutputStream output) throws IOException, WebApplicationException {
+					try {
+						java.nio.file.Path path = Paths.get(fileZip);
+						byte[] data = Files.readAllBytes(path);
+						output.write(data);
+						output.flush();
+					} catch (Exception e) {
+						throw new WebApplicationException("File Not Found");
+					}
+				}
+			};
+
+			return Response.ok(fileStream, MediaType.APPLICATION_OCTET_STREAM)
+					.header("content-disposition", "attachment; filename = " + folderName + ".zip").build();
+		} else {
+			return null;
+		}
+
+	}
+
+	private static void zipFile(File fileToZip, String fileName, ZipOutputStream zipOut) throws IOException {
+		if (fileToZip.isHidden()) {
+			return;
+		}
+		if (fileToZip.isDirectory()) {
+			File[] children = fileToZip.listFiles();
+			for (File childFile : children) {
+				zipFile(childFile, fileName + "/" + childFile.getName(), zipOut);
+			}
+			return;
+		}
+		FileInputStream fis = new FileInputStream(fileToZip);
+		ZipEntry zipEntry = new ZipEntry(fileName);
+		zipOut.putNextEntry(zipEntry);
+		byte[] bytes = new byte[1024];
+		int length;
+		while ((length = fis.read(bytes)) >= 0) {
+			zipOut.write(bytes, 0, length);
+		}
+		fis.close();
 	}
 
 	@Path("/model")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({SystemObjectView.ShObject.class})	
+	@JsonView({ SystemObjectView.ShObject.class })
 	public ShSite siteStructure() throws Exception {
 		ShSite shSite = new ShSite();
 		return shSite;
