@@ -1,7 +1,6 @@
 package com.viglet.shiohara.api.site;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.Consumes;
@@ -57,6 +55,7 @@ import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
 import com.viglet.shiohara.utils.ShChannelUtils;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
+import com.viglet.shiohara.utils.ShUtils;
 
 @Component
 @Path("/site")
@@ -80,7 +79,9 @@ public class ShSiteAPI {
 	ShPostAttrRepository shPostAttrRepository;
 	@Autowired
 	ShGlobalIdRepository shGlobalIdRepository;
-
+	@Autowired
+	ShUtils shUtils;
+	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView({ SystemObjectView.ShObject.class })
@@ -115,8 +116,7 @@ public class ShSiteAPI {
 	public boolean delete(@PathParam("siteId") UUID id) throws Exception {
 		ShSite shSite = shSiteRepository.findById(id);
 
-		for (ShChannel shChannel : shSite.getShChannels()) {
-			shGlobalIdRepository.delete(shChannel.getShGlobalId().getId());
+		for (ShChannel shChannel : shSite.getShChannels()) {			
 			shChannelUtils.deleteChannel(shChannel);
 		}
 
@@ -272,7 +272,7 @@ public class ShSiteAPI {
 			String fileZip = tmpDir.getAbsolutePath().concat(File.separator + folderName + ".zip");
 			fos = new FileOutputStream(fileZip);
 			ZipOutputStream zipOut = new ZipOutputStream(fos);
-			ShSiteAPI.zipFile(exportDir, exportDir.getName(), zipOut);
+			shUtils.zipFile(exportDir, exportDir.getName(), zipOut);
 			zipOut.close();
 			fos.close();
 
@@ -296,28 +296,6 @@ public class ShSiteAPI {
 			return null;
 		}
 
-	}
-
-	private static void zipFile(File fileToZip, String fileName, ZipOutputStream zipOut) throws IOException {
-		if (fileToZip.isHidden()) {
-			return;
-		}
-		if (fileToZip.isDirectory()) {
-			File[] children = fileToZip.listFiles();
-			for (File childFile : children) {
-				zipFile(childFile, fileName + "/" + childFile.getName(), zipOut);
-			}
-			return;
-		}
-		FileInputStream fis = new FileInputStream(fileToZip);
-		ZipEntry zipEntry = new ZipEntry(fileName);
-		zipOut.putNextEntry(zipEntry);
-		byte[] bytes = new byte[1024];
-		int length;
-		while ((length = fis.read(bytes)) >= 0) {
-			zipOut.write(bytes, 0, length);
-		}
-		fis.close();
 	}
 
 	@Path("/model")

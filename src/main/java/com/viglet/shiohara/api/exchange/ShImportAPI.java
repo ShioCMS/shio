@@ -3,18 +3,14 @@ package com.viglet.shiohara.api.exchange;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 import java.util.Map.Entry;
 
 import javax.ws.rs.Consumes;
@@ -26,6 +22,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -38,6 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viglet.shiohara.api.SystemObjectView;
 import com.viglet.shiohara.exchange.ShChannelExchange;
 import com.viglet.shiohara.exchange.ShExchange;
+import com.viglet.shiohara.exchange.ShFileExchange;
 import com.viglet.shiohara.exchange.ShPostExchange;
 import com.viglet.shiohara.exchange.ShSiteExchange;
 import com.viglet.shiohara.persistence.model.channel.ShChannel;
@@ -53,6 +51,8 @@ import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
+import com.viglet.shiohara.utils.ShStaticFileUtils;
+import com.viglet.shiohara.utils.ShUtils;
 
 @Component
 @Path("/import")
@@ -72,7 +72,10 @@ public class ShImportAPI {
 	ShPostAttrRepository shPostAttrRepository;
 	@Autowired
 	ShGlobalIdRepository shGlobalIdRepository;
-
+	@Autowired
+	ShStaticFileUtils shStaticFileUtils;
+	@Autowired
+	ShUtils shUtils;
 	Map<UUID, Object> shObjects = new HashMap<UUID, Object>();
 	Map<UUID, List<UUID>> shChildObjects = new HashMap<UUID, List<UUID>>();
 
@@ -90,26 +93,19 @@ public class ShImportAPI {
 				tmpDir.mkdirs();
 			}
 
-			// StringWriter writer = new StringWriter();
-			// IOUtils.copy(inputStream, writer, "UTF-8");
-			// System.out.println(writer.toString());
-
-			byte[] buffer = new byte[inputStream.available()];
-
 			File zipFile = new File(
 					tmpDir.getAbsolutePath().concat(File.separator + "imp_" + fileDetail.getFileName()));
-			System.out.println(zipFile.getAbsolutePath());
-			System.out.println(buffer.toString());
 
 			OutputStream outputStream = new FileOutputStream(zipFile);
 			IOUtils.copy(inputStream, outputStream);
 			outputStream.close();
 			File outputFolder = new File(tmpDir.getAbsolutePath().concat(File.separator + "imp_" + UUID.randomUUID()));
-			this.unZipIt(zipFile, outputFolder);
+			shUtils.unZipIt(zipFile, outputFolder);
 			ObjectMapper mapper = new ObjectMapper();
+			File extractFolder = new File(outputFolder.getAbsolutePath()
+					.concat(File.separator + fileDetail.getFileName().replaceAll(".zip", "")));
 			ShExchange shExchange = mapper.readValue(
-					new FileInputStream(outputFolder.getAbsolutePath().concat(File.separator
-							+ fileDetail.getFileName().replaceAll(".zip", "") + File.separator + "export.json")),
+					new FileInputStream(extractFolder.getAbsolutePath().concat(File.separator + "export.json")),
 					ShExchange.class);
 			for (ShSiteExchange shSiteExchange : shExchange.getSites()) {
 				shObjects.put(shSiteExchange.getId(), shSiteExchange);
@@ -170,7 +166,7 @@ public class ShImportAPI {
 						}
 					}
 				}
-				this.shChannelImportNested(shSiteExchange.getId());
+				this.shChannelImportNested(shSiteExchange.getId(), extractFolder);
 			}
 			return shExchange;
 		} else {
@@ -178,62 +174,7 @@ public class ShImportAPI {
 		}
 	}
 
-	/**
-	 * Unzip it
-	 * 
-	 * @param zipFile
-	 *            input zip file
-	 * @param output
-	 *            zip file output folder
-	 */
-	public void unZipIt(File zipFile, File outputFolder) {
-
-		byte[] buffer = new byte[1024];
-
-		try {
-
-			// create output directory is not exists
-			File folder = outputFolder;
-			if (!folder.exists()) {
-				folder.mkdir();
-			}
-
-			// get the zip file content
-			ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile));
-			// get the zipped file list entry
-			ZipEntry ze = zis.getNextEntry();
-
-			while (ze != null) {
-
-				String fileName = ze.getName();
-				File newFile = new File(outputFolder + File.separator + fileName);
-
-				// create all non exists folders
-				// else you will hit FileNotFoundException for compressed folder
-				new File(newFile.getParent()).mkdirs();
-
-				FileOutputStream fos = new FileOutputStream(newFile);
-
-				int len;
-				while ((len = zis.read(buffer)) > 0) {
-					fos.write(buffer, 0, len);
-				}
-
-				fos.close();
-				ze = zis.getNextEntry();
-			}
-
-			zis.closeEntry();
-			zis.close();
-
-			System.out.println("Done");
-
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		}
-	}
-
-	public void shChannelImportNested(UUID shObject) {
+	public void shChannelImportNested(UUID shObject, File extractFolder) throws IOException {
 		if (shChildObjects.containsKey(shObject)) {
 			for (UUID objectId : shChildObjects.get(shObject)) {
 				if (shObjects.get(objectId) instanceof ShChannelExchange) {
@@ -265,7 +206,7 @@ public class ShImportAPI {
 
 					shGlobalIdRepository.save(shGlobalId);
 
-					this.shChannelImportNested(shChannelChild.getId());
+					this.shChannelImportNested(shChannelChild.getId(), extractFolder);
 				}
 
 				if (shObjects.get(objectId) instanceof ShPostExchange) {
@@ -283,6 +224,14 @@ public class ShImportAPI {
 							shPost.setTitle(StringUtils.abbreviate((String) shPostField.getValue(), 255));
 						} else if (shPostTypeAttr.getIsSummary() == (byte) 1) {
 							shPost.setSummary(StringUtils.abbreviate((String) shPostField.getValue(), 255));
+						}
+						if (shPostTypeAttr.getName().equals("FILE") && shPostExchange.getPostType().equals("PT-FILE")) {
+							String fileName = (String) shPostField.getValue();
+							File directoryPath = shStaticFileUtils.dirPath(shPost.getShChannel());
+							File fileSource = new File(extractFolder.getAbsolutePath()
+									.concat(File.separator + shPostExchange.getGlobalId()));
+							File fileDest = new File(directoryPath.getAbsolutePath().concat(File.separator + fileName));
+							FileUtils.copyFile(fileSource, fileDest);
 						}
 					}
 					shPostRepository.save(shPost);
