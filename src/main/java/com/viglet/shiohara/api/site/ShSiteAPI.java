@@ -28,6 +28,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -37,6 +38,7 @@ import com.viglet.shiohara.api.SystemObjectView;
 import com.viglet.shiohara.api.channel.ShChannelList;
 import com.viglet.shiohara.exchange.ShChannelExchange;
 import com.viglet.shiohara.exchange.ShExchange;
+import com.viglet.shiohara.exchange.ShFileExchange;
 import com.viglet.shiohara.exchange.ShPostExchange;
 import com.viglet.shiohara.exchange.ShSiteExchange;
 import com.viglet.shiohara.persistence.model.channel.ShChannel;
@@ -54,6 +56,7 @@ import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrReposi
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
 import com.viglet.shiohara.utils.ShChannelUtils;
+import com.viglet.shiohara.utils.ShStaticFileUtils;
 
 @Component
 @Path("/site")
@@ -67,6 +70,8 @@ public class ShSiteAPI {
 	ShPostRepository shPostRepository;
 	@Autowired
 	ShChannelUtils shChannelUtils;
+	@Autowired
+	ShStaticFileUtils shStaticFileUtils;
 	@Autowired
 	ShPostTypeRepository shPostTypeRepository;
 	@Autowired
@@ -210,37 +215,9 @@ public class ShSiteAPI {
 
 	@Path("/{siteId}/export")
 	@GET
-	// @Produces(MediaType.APPLICATION_OCTET_STREAM)
-	// @JsonView({ SystemObjectView.ShObject.class })
+	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	@JsonView({ SystemObjectView.ShObject.class })
 	public Response siteExport(@PathParam("siteId") UUID id) throws Exception {
-		ShExchange shExchange = new ShExchange();
-		ShSite shSite = shSiteRepository.findById(id);
-
-		List<ShChannel> rootChannels = shChannelRepository.findByShSiteAndRootChannel(shSite, (byte) 1);
-
-		List<UUID> rootChannelsUUID = new ArrayList<UUID>();
-		for (ShChannel shChannel : rootChannels) {
-			rootChannelsUUID.add(shChannel.getId());
-		}
-
-		ShSiteExchange shSiteExchange = new ShSiteExchange();
-		shSiteExchange.setId(shSite.getId());
-		shSiteExchange.setName(shSite.getName());
-		shSiteExchange.setUrl(shSite.getUrl());
-		shSiteExchange.setDescription(shSite.getDescription());
-		shSiteExchange.setPostTypeLayout(shSite.getPostTypeLayout());
-		shSiteExchange.setDate(shSite.getDate());
-		shSiteExchange.setRootChannels(rootChannelsUUID);
-		shSiteExchange.setGlobalId(shSite.getShGlobalId().getId());
-
-		List<ShSiteExchange> shSiteExchanges = new ArrayList<ShSiteExchange>();
-		shSiteExchanges.add(shSiteExchange);
-		shExchange.setSites(shSiteExchanges);
-
-		ShExchange shExchangeChannel = this.shChannelExchangeIterate(rootChannels);
-
-		shExchange.setChannels(shExchangeChannel.getChannels());
-		shExchange.setPosts(shExchangeChannel.getPosts());
 		FileOutputStream fos = null;
 		String folderName = UUID.randomUUID().toString();
 		File userDir = new File(System.getProperty("user.dir"));
@@ -250,9 +227,42 @@ public class ShSiteAPI {
 				tmpDir.mkdirs();
 			}
 
+			ShExchange shExchange = new ShExchange();
+			ShSite shSite = shSiteRepository.findById(id);
+
+			List<ShChannel> rootChannels = shChannelRepository.findByShSiteAndRootChannel(shSite, (byte) 1);
+
+			List<UUID> rootChannelsUUID = new ArrayList<UUID>();
+			for (ShChannel shChannel : rootChannels) {
+				rootChannelsUUID.add(shChannel.getId());
+			}
+
+			ShSiteExchange shSiteExchange = new ShSiteExchange();
+			shSiteExchange.setId(shSite.getId());
+			shSiteExchange.setName(shSite.getName());
+			shSiteExchange.setUrl(shSite.getUrl());
+			shSiteExchange.setDescription(shSite.getDescription());
+			shSiteExchange.setPostTypeLayout(shSite.getPostTypeLayout());
+			shSiteExchange.setDate(shSite.getDate());
+			shSiteExchange.setRootChannels(rootChannelsUUID);
+			shSiteExchange.setGlobalId(shSite.getShGlobalId().getId());
+
+			List<ShSiteExchange> shSiteExchanges = new ArrayList<ShSiteExchange>();
+			shSiteExchanges.add(shSiteExchange);
+			shExchange.setSites(shSiteExchanges);
+
+			ShExchange shExchangeChannel = this.shChannelExchangeIterate(rootChannels);
+
+			shExchange.setChannels(shExchangeChannel.getChannels());
+			shExchange.setPosts(shExchangeChannel.getPosts());
 			File exportDir = new File(tmpDir.getAbsolutePath().concat(File.separator + folderName));
 			if (!exportDir.exists()) {
 				exportDir.mkdirs();
+			}
+
+			for (ShFileExchange fileExchange : shExchangeChannel.getFiles()) {
+				FileUtils.copyFile(fileExchange.getFile(),
+						new File(exportDir.getAbsolutePath().concat(File.separator + fileExchange.getGlobalId())));
 			}
 			// Object to JSON in file
 			ObjectMapper mapper = new ObjectMapper();
@@ -329,6 +339,8 @@ public class ShSiteAPI {
 		ShExchange shExchange = new ShExchange();
 		List<ShChannelExchange> shChannelExchanges = new ArrayList<ShChannelExchange>();
 		List<ShPostExchange> shPostExchanges = new ArrayList<ShPostExchange>();
+		List<ShFileExchange> files = new ArrayList<ShFileExchange>();
+
 		for (ShChannel shChannel : shChannels) {
 			for (ShPost shPost : shChannel.getShPosts()) {
 				ShPostExchange shPostExchange = new ShPostExchange();
@@ -342,6 +354,17 @@ public class ShSiteAPI {
 				for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
 					if (shPostAttr != null && shPostAttr.getShPostTypeAttr() != null) {
 						fields.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
+						if (shPostAttr.getShPostTypeAttr().getName().equals("FILE")
+								&& shPost.getShPostType().getName().equals("PT-FILE")) {
+							String fileName = shPostAttr.getStrValue();
+							File directoryPath = shStaticFileUtils.dirPath(shPost.getShChannel());
+							File file = new File(directoryPath.getAbsolutePath().concat(File.separator + fileName));
+							ShFileExchange shFileExchange = new ShFileExchange();
+							shFileExchange.setGlobalId(shPost.getShGlobalId().getId());
+							shFileExchange.setId(shPost.getId());
+							shFileExchange.setFile(file);
+							files.add(shFileExchange);
+						}
 					}
 				}
 
@@ -361,9 +384,11 @@ public class ShSiteAPI {
 			ShExchange shExchangeChild = this.shChannelExchangeNested(shChannel);
 			shChannelExchanges.addAll(shExchangeChild.getChannels());
 			shPostExchanges.addAll(shExchangeChild.getPosts());
+			files.addAll(shExchangeChild.getFiles());
 		}
 		shExchange.setChannels(shChannelExchanges);
 		shExchange.setPosts(shPostExchanges);
+		shExchange.setFiles(files);
 		return shExchange;
 	}
 
