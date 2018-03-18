@@ -130,6 +130,13 @@ shioharaApp.config([
 				data : {
 					pageTitle : 'Edit Site | Viglet Shiohara'
 				}
+			}).state('content.site-import', {
+				url : '/site/import',
+				templateUrl : 'template/site/site-import.html',
+				controller : 'ShSiteImportCtrl',
+				data : {
+					pageTitle : 'Import Site | Viglet Shiohara'
+				}
 			}).state('content.channel.channel-new', {
 				url : '/channel',
 				templateUrl : 'template/channel/channel-new.html',
