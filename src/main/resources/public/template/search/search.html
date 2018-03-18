@@ -1,0 +1,30 @@
+
+<div style="height: 60px"></div>
+
+<div ui-view>
+	<div style="margin-bottom: 25px;">
+		<ul class="breadcrumb" style="margin-top: 5px; margin-bottom: 25px;">
+			<li><a ui-sref="content" ui-sref-opts="{reload:true}">Content</a></li>
+			<li>Search</li>
+		</ul>
+	</div>
+	<div class="settings">
+		<section class="content no-padding">
+
+			<fieldset class="user-details-top" style="margin-bottom: 30px">
+
+				<div class="form-group">
+					<h3>Search</h3>
+				</div>
+			</fieldset>
+		</section>
+	</div>
+	<div class="row">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+			<div ng-repeat="shPost in shPosts" style="margin:10px">
+				<div><a ui-sref="content.post-type-item.post-item({postTypeId: shPost.shPostType.id, postId: shPost.id})">{{shPost.title}}</a></div>
+				<div>{{shPost.summary}}</div>
+			</div>
+		</div>
+	</div>
+</div>

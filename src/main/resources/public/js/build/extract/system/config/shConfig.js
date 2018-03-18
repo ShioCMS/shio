@@ -72,6 +72,13 @@ shioharaApp.config([
 				data : {
 					pageTitle : 'Content | Viglet Shiohara'
 				}
+			}).state('content.search', {
+				url : '/search',
+				templateUrl : 'template/search/search.html',
+				controller : 'ShSearchCtrl',
+				data : {
+					pageTitle : 'Search | Viglet Shiohara'
+				}
 			}).state('content.post-type-editor', {
 				url : '/post/type/editor',
 				templateUrl : 'template/post/type/editor.html',
