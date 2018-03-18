@@ -175,17 +175,16 @@ public class ShSiteAPI {
 
 		shGlobalIdRepository.save(shGlobalId);
 
-		ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "title");
+		ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "TITLE");
 
 		ShPostAttr shPostAttr = new ShPostAttr();
 		shPostAttr.setShPost(shPost);
 		shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 		shPostAttr.setStrValue(shPost.getTitle());
 		shPostAttr.setType(1);
-
 		shPostAttrRepository.save(shPostAttr);
 
-		shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "Description");
+		shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "DESCRIPTION");
 
 		shPostAttr = new ShPostAttr();
 		shPostAttr.setShPost(shPost);

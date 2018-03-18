@@ -9,6 +9,10 @@ shioharaApp.controller('ShSiteEditCtrl', [
 			$scope.siteSave = function() {
 				shSiteFactory.save($scope.shSite);
 			}
+
+			$scope.siteExport = function() {
+				shSiteFactory.export($scope.shSite);
+			}
 			
 			$scope.siteDelete = function() {
 				shSiteFactory.delete($scope.shSite);

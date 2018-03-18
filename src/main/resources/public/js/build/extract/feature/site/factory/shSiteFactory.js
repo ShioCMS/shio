@@ -1,8 +1,14 @@
 shioharaApp.factory('shSiteFactory', [
-	'$uibModal','shSiteResource', 'Notification','$state',
-		function($uibModal,shSiteResource, Notification, $state) {
+	'$uibModal','shSiteResource', 'shAPIServerService', 'Notification','$state',
+		function($uibModal,shSiteResource, shAPIServerService, Notification, $state) {
 			return {
-				
+				export : function(shSite) {
+					
+					 window.open(shAPIServerService
+								.get()
+								.concat(
+										"/site/" + shSite.id + "/export"), '_self', '');				
+				}, 		
 				delete : function(shSite) {
 					var modalInstance = this.modalDelete(shSite);
 					modalInstance.result.then(function(removeInstance) {
@@ -28,7 +34,7 @@ shioharaApp.factory('shSiteFactory', [
 						});
 					} else {
 						var saveMessage = 'The ' + shSite.name +' Site was updated.';
-						delete $scope.shSite.id;
+						delete shSite.id;
 						shSiteResource.save(shSite, function(response){
 							Notification.warning(saveMessage);
 							$state.go('content.children.site-children',{siteId: response.id});
