@@ -13,9 +13,9 @@
 	background: #F8F8F8;
 	border: 5px dashed #DDD;
 	width: 200px;
-	height: 65px;
+	height: 400px;
 	text-align: center;
-	padding-top: 25px;
+	padding-top: 180px;
 	margin: 10px;
 }
 
@@ -23,37 +23,39 @@
 	border: 5px dashed blue;
 }
 </style>
-<div class="panel panel-default"
-	style='font-family: "Raleway", sans-serif; font-weight: 400; margin-bottom: 0px; padding-bottom: 0px;'>
-	<div class="panel-title"
-		style="padding: 10px; border-bottom-color: rgb(217, 217, 217); border-bottom-style: solid; border-bottom-width: thin;">
-		<p style="font-size: 18px; color: #FF874B; margin: 0px;">Site
-			Import</p>
-		<p style="font-size: 14px; color: rgb(182, 182, 182); margin: 0px;">Import
-			a Site Zip File.</p>
-	</div>
-	<div class="panel-body">
-		<div ng-if="shImport.file != null">
-			<div class="row">
-				<div class="col-lg-9 col-md-8 col-sm-7 col-xs-6">
-					<input type='text' class='form-control'
-						ng-model="shImport.file.name"></input>
-				</div>
-				<div class="col-lg-3 col-md-4 col-sm-5 col-xs-6">
-					<button class="btn btn-viglet" ng-click="importFile()">Import</button>
-					<button class="btn btn-default" ng-click="clearFile()">Clear</button>
-				</div>
+<ul class="breadcrumb" style="margin-top: 5px; margin-bottom: 25px;">
+	<li><a ui-sref="content" ui-sref-opts="{reload:true}">Content</a></li>
+	<li>Import</li>
+</ul>
+<div class="settings">
+	<section class="content no-padding">
+
+		<fieldset class="user-details-top" style="margin-bottom: 30px">
+
+			<div class="form-group">
+				<h3>Import a Site</h3>
 			</div>
+		</fieldset>
+	</section>
+</div>
+<div ng-if="shImport.file != null">
+	<div class="row">
+		<div class="col-lg-9 col-md-8 col-sm-7 col-xs-6">
+			<input type='text' class='form-control' ng-model="shImport.file.name"></input>
 		</div>
-		<div ng-if="shImport.file == null || uploadNewFile" class="row">
-			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-				<div ngf-drop ngf-select ng-model="shImport.file" class="drop-box"
-					ngf-drag-over-class="'dragover'" ngf-multiple="false"
-					ngf-allow-dir="true" accept="*/*" ngf-pattern="'*/*'"
-					style="width: 100%">Drop files here or click to upload</div>
-				<div ngf-no-file-drop>File Drag/Drop is not supported for this
-					browser</div>
-			</div>			
+		<div class="col-lg-3 col-md-4 col-sm-5 col-xs-6">
+			<button class="btn btn-viglet" ng-click="importFile()">Import</button>
+			<button class="btn btn-default" ng-click="clearFile()">Clear</button>
 		</div>
+	</div>
+</div>
+<div ng-if="shImport.file == null || uploadNewFile" class="row" style="margin-right:5px;">
+	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+		<div ngf-drop ngf-select ng-model="shImport.file" class="drop-box"
+			ngf-drag-over-class="'dragover'" ngf-multiple="false"
+			ngf-allow-dir="true" accept="application/zip, application/octet-stream" ngf-pattern="'application/zip, application/octet-stream'"
+			style="width: 100%">Drop the import file here or click to upload</div>
+		<div ngf-no-file-drop>File Drag/Drop is not supported for this
+			browser</div>
 	</div>
 </div>
