@@ -52,18 +52,7 @@
 								style="margin-top: 17px; margin-left: 20px; color: #444; font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif; font-size: 20px; line-height: 1; letter-spacing: .02em; font-weight: 400;">Shiohara</div></a>
 					</div>
 					<div class="col-lg-9 col-md-9 col-sm-8 col-xs-7"
-						style="padding-top: 7px">
-						<form method="get" action="">
-							<div class="input-group">
-								<input id="q" name="q" type="text" class="form-control"
-									placeholder="{{ 'SEARCH_FOR' | translate }}..."> <span
-									class="input-group-btn">
-									<button class="btn btn-viglet" type="submit">{{
-										'SEARCH' | translate}}</button>
-								</span>
-							</div>
-
-						</form>
+						style="padding-top: 7px"  ng-include="'/template/search/search-box.html'">						
 					</div>
 				</div>
 
