@@ -38,22 +38,22 @@ tasks.withType(JavaCompile) {
 
 // Combine JS files
 task combineSystemJs(type: com.eriwen.gradle.js.tasks.CombineJsTask) {
-    source = "${projectDir}/src/main/resources/public/js/build/extract/system"
-    dest = "${projectDir}/src/main/resources/public/js/build/aggregate/shSystem.js"
+    source = "${projectDir}/src/main/resources/js/client-side/src/system"
+    dest = "${projectDir}/src/main/resources/js/client-side/build/shSystem.js"
 }
 
 task combineFeatureJs(dependsOn: ':combineSystemJs', type: com.eriwen.gradle.js.tasks.CombineJsTask) {
-    source = "${projectDir}/src/main/resources/public/js/build/extract/feature"
-    dest = "${projectDir}/src/main/resources/public/js/build/aggregate/shFeature.js"
+    source = "${projectDir}/src/main/resources/js/client-side/src/feature"
+    dest = "${projectDir}/src/main/resources/js/client-side/build/shFeature.js"
 }
 
 task combineAllJs(dependsOn: ':combineFeatureJs', type: com.eriwen.gradle.js.tasks.CombineJsTask) {
-    source = ["${projectDir}/src/main/resources/public/js/build/extract/main/__shFactory.js", "${projectDir}/src/main/resources/public/js/build/aggregate/shSystem.js", "${projectDir}/src/main/resources/public/js/build/aggregate/shFeature.js"]
-    dest = "${projectDir}/src/main/resources/public/js/build/aggregate/shiohara.js"
+    source = ["${projectDir}/src/main/resources/js/client-side/src/main/__shFactory.js", "${projectDir}/src/main/resources/js/client-side/build/shSystem.js", "${projectDir}/src/main/resources/js/client-side/build/shFeature.js"]
+    dest = "${projectDir}/src/main/resources/js/client-side/build/shiohara.js"
 }
 
 task minifyAllJs(dependsOn: ':combineAllJs', type: com.eriwen.gradle.js.tasks.MinifyJsTask) {
- 	source = "${projectDir}/src/main/resources/public/js/build/aggregate/shiohara.js"
+ 	source = "${projectDir}/src/main/resources/js/client-side/build/shiohara.js"
     dest = file("${projectDir}/src/main/resources/public/js/dist/shiohara.min.js")
     closure {
         warningLevel = 'QUIET'

@@ -69,7 +69,7 @@ public class ShSitesContext {
 			@PathVariable(value = "shSiteName") String shSiteName, @PathVariable(value = "shFormat") String shFormat,
 			@PathVariable(value = "shLocale") String shLocale) throws IOException, ScriptException {
 
-		InputStreamReader isr = new InputStreamReader(resourceloader.getResource("classpath:/js/shObject.js").getInputStream());
+		InputStreamReader isr = new InputStreamReader(resourceloader.getResource("classpath:/js/server-side/shObject.js").getInputStream());
 
 		StringBuilder shObjectJS = new StringBuilder();
 		try (Reader reader = new BufferedReader(isr)) {

@@ -26,9 +26,11 @@ import com.viglet.shiohara.persistence.model.reference.ShReference;
 import com.viglet.shiohara.persistence.model.user.ShUser;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.SystemObjectView;
+import com.viglet.shiohara.persistence.model.channel.ShChannel;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
+import com.viglet.shiohara.persistence.repository.channel.ShChannelRepository;
 import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
@@ -44,6 +46,8 @@ public class ShPostAPI {
 	private ShPostRepository shPostRepository;
 	@Autowired
 	private ShPostAttrRepository shPostAttrRepository;
+	@Autowired
+	private ShChannelRepository shChannelRepository;
 	@Autowired
 	private ShUserRepository shUserRepository;
 	@Autowired
@@ -65,6 +69,18 @@ public class ShPostAPI {
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView({ SystemObjectView.ShObject.class })
 	public ShPost edit(@PathParam("postId") UUID id) throws Exception {
+		return shPostRepository.findById(id);
+	}
+
+	@Path("/{postId}/moveto/{channelId}")
+	@PUT
+	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({ SystemObjectView.ShObject.class })
+	public ShPost moveTo(@PathParam("postId") UUID id, @PathParam("channelId") UUID channelId) throws Exception {
+		ShPost shPost = shPostRepository.findById(id);
+		ShChannel shChannel = shChannelRepository.findById(channelId);
+		shPost.setShChannel(shChannel);
+		shPostRepository.save(shPost);
 		return shPostRepository.findById(id);
 	}
 
@@ -160,10 +176,10 @@ public class ShPostAPI {
 
 			if (shPostAttr.getShPostTypeAttr().getIsSummary() == 1)
 				summary = StringUtils.abbreviate(shPostAttr.getStrValue(), 255);
-			
+
 			if (shPostAttr != null) {
 				shPostAttr.setReferenceObjects(null);
-				
+
 			}
 		}
 		shPost.setDate(new Date());
@@ -175,7 +191,7 @@ public class ShPostAPI {
 		ShGlobalId shGlobalId = new ShGlobalId();
 		shGlobalId.setShObject(shPost);
 		shGlobalId.setType("POST");
-		
+
 		shGlobalIdRepository.saveAndFlush(shGlobalId);
 
 		ShPost shPostWithGlobalId = shPostRepository.findById(shPost.getId());
@@ -187,7 +203,7 @@ public class ShPostAPI {
 		}
 
 		shPostRepository.saveAndFlush(shPost);
-		
+
 		ShUser shUser = shUserRepository.findById(1);
 		shUser.setLastPostType(String.valueOf(shPost.getShPostType().getId()));
 		shUserRepository.saveAndFlush(shUser);
@@ -198,7 +214,7 @@ public class ShPostAPI {
 
 	public void referencedFile(ShPostAttr shPostAttrEdit, ShPostAttr shPostAttr, ShPost shPost) {
 		if (shPostAttrEdit.getShPostTypeAttr().getName().equals("FILE")) {
-			
+
 			if (shPost.getShPostType().getName().equals("PT-FILE")) {
 				File fileFrom = shStaticFileUtils.filePath(shPost.getShChannel(), shPostAttrEdit.getStrValue());
 				File fileTo = shStaticFileUtils.filePath(shPost.getShChannel(), shPostAttr.getStrValue());
