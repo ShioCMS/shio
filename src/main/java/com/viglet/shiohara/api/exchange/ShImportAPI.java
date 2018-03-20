@@ -167,6 +167,14 @@ public class ShImportAPI {
 				}
 				this.shChannelImportNested(shSiteExchange.getId(), extractFolder);
 			}
+			
+			 try {
+		            FileUtils.deleteDirectory(outputFolder);
+		            FileUtils.deleteQuietly(zipFile);
+		        } catch (IOException ex) {
+		            ex.printStackTrace();
+		        }
+			 
 			return shExchange;
 		} else {
 			return null;

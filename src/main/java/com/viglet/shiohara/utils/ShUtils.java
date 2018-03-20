@@ -1,13 +1,20 @@
 package com.viglet.shiohara.utils;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
+import java.io.OutputStream;
+import java.util.Collection;
 
+import org.apache.commons.compress.archivers.ArchiveException;
+import org.apache.commons.compress.archivers.ArchiveOutputStream;
+import org.apache.commons.compress.archivers.ArchiveStreamFactory;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
+import org.apache.commons.compress.utils.IOUtils;
+import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,73 +26,79 @@ public class ShUtils {
 	 *            input zip file
 	 * @param output
 	 *            zip file output folder
+	 * @throws ArchiveException
+	 * @throws IOException
 	 */
-	public void unZipIt(File zipFile, File outputFolder) {
+	public void unZipIt(File zipFile, File outputFolder) throws ArchiveException, IOException {
 
-		byte[] buffer = new byte[1024];
-
-		try {
-
-			// create output directory is not exists
-			File folder = outputFolder;
-			if (!folder.exists()) {
-				folder.mkdir();
-			}
-
-			// get the zip file content
-			ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile));
-			// get the zipped file list entry
-			ZipEntry ze = zis.getNextEntry();
-
-			while (ze != null) {
-
-				String fileName = ze.getName();
-				File newFile = new File(outputFolder + File.separator + fileName);
-
-				// create all non exists folders
-				// else you will hit FileNotFoundException for compressed folder
-				new File(newFile.getParent()).mkdirs();
-
-				FileOutputStream fos = new FileOutputStream(newFile);
-
-				int len;
-				while ((len = zis.read(buffer)) > 0) {
-					fos.write(buffer, 0, len);
+		try (ZipArchiveInputStream zin = new ZipArchiveInputStream(new FileInputStream(zipFile))) {
+			ZipArchiveEntry entry;
+			while ((entry = zin.getNextZipEntry()) != null) {
+				if (entry.isDirectory()) {
+					continue;
 				}
-
-				fos.close();
-				ze = zis.getNextEntry();
+				File curfile = new File(outputFolder, entry.getName());
+				File parent = curfile.getParentFile();
+				if (!parent.exists()) {
+					if (!parent.mkdirs()) {
+						throw new RuntimeException("could not create directory: " + parent.getPath());
+					}
+				}
+				IOUtils.copy(zin, new FileOutputStream(curfile));
 			}
-
-			zis.closeEntry();
-			zis.close();
-
-			System.out.println("Done");
-
-		} catch (IOException ex) {
-			ex.printStackTrace();
 		}
 	}
-	
-	public void zipFile(File fileToZip, String fileName, ZipOutputStream zipOut) throws IOException {
-		if (fileToZip.isHidden()) {
-			return;
+
+	/**
+	 * Add all files from the source directory to the destination zip file
+	 *
+	 * @param source
+	 *            the directory with files to add
+	 * @param destination
+	 *            the zip file that should contain the files
+	 * @throws IOException
+	 *             if the io fails
+	 * @throws ArchiveException
+	 *             if creating or adding to the archive fails
+	 */
+	public void addFilesToZip(File source, File destination) throws IOException, ArchiveException {
+		OutputStream archiveStream = new FileOutputStream(destination);
+		ArchiveOutputStream archive = new ArchiveStreamFactory().createArchiveOutputStream(ArchiveStreamFactory.ZIP,
+				archiveStream);
+
+		Collection<File> fileList = FileUtils.listFiles(source, null, true);
+
+		for (File file : fileList) {
+			String entryName = getEntryName(source, file);
+			ZipArchiveEntry entry = new ZipArchiveEntry(entryName);
+			archive.putArchiveEntry(entry);
+
+			BufferedInputStream input = new BufferedInputStream(new FileInputStream(file));
+
+			IOUtils.copy(input, archive);
+			input.close();
+			archive.closeArchiveEntry();
 		}
-		if (fileToZip.isDirectory()) {
-			File[] children = fileToZip.listFiles();
-			for (File childFile : children) {
-				zipFile(childFile, fileName + "/" + childFile.getName(), zipOut);
-			}
-			return;
-		}
-		FileInputStream fis = new FileInputStream(fileToZip);
-		ZipEntry zipEntry = new ZipEntry(fileName);
-		zipOut.putNextEntry(zipEntry);
-		byte[] bytes = new byte[1024];
-		int length;
-		while ((length = fis.read(bytes)) >= 0) {
-			zipOut.write(bytes, 0, length);
-		}
-		fis.close();
+
+		archive.finish();
+		archiveStream.close();
+	}
+
+	/**
+	 * Remove the leading part of each entry that contains the source directory name
+	 *
+	 * @param source
+	 *            the directory where the file entry is found
+	 * @param file
+	 *            the file that is about to be added
+	 * @return the name of an archive entry
+	 * @throws IOException
+	 *             if the io fails
+	 */
+	private String getEntryName(File source, File file) throws IOException {
+		int index = source.getAbsolutePath().length() + 1;
+		String path = file.getCanonicalPath();
+
+		return path.substring(index);
 	}
 }

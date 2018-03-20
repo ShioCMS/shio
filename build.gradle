@@ -94,6 +94,7 @@ dependencies {
     compile group: 'org.hsqldb', name: 'hsqldb', version:'2.4.0'
     compile group: 'commons-logging', name: 'commons-logging', version:'1.2'
     compile group: 'org.json', name: 'json', version:'20140107'
+    compile group: 'org.apache.commons', name: 'commons-compress', version:'1.9'
     compile(group: 'org.apache.httpcomponents', name: 'httpclient', version:'4.5.2') {
 exclude(module: 'commons-logging')
     }

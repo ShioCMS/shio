@@ -1,7 +1,6 @@
 package com.viglet.shiohara.api.site;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -11,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -81,7 +79,7 @@ public class ShSiteAPI {
 	ShGlobalIdRepository shGlobalIdRepository;
 	@Autowired
 	ShUtils shUtils;
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView({ SystemObjectView.ShObject.class })
@@ -116,7 +114,7 @@ public class ShSiteAPI {
 	public boolean delete(@PathParam("siteId") UUID id) throws Exception {
 		ShSite shSite = shSiteRepository.findById(id);
 
-		for (ShChannel shChannel : shSite.getShChannels()) {			
+		for (ShChannel shChannel : shSite.getShChannels()) {
 			shChannelUtils.deleteChannel(shChannel);
 		}
 
@@ -217,7 +215,6 @@ public class ShSiteAPI {
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
 	@JsonView({ SystemObjectView.ShObject.class })
 	public Response siteExport(@PathParam("siteId") UUID id) throws Exception {
-		FileOutputStream fos = null;
 		String folderName = UUID.randomUUID().toString();
 		File userDir = new File(System.getProperty("user.dir"));
 		if (userDir.exists() && userDir.isDirectory()) {
@@ -268,21 +265,24 @@ public class ShSiteAPI {
 			mapper.writerWithDefaultPrettyPrinter().writeValue(
 					new File(exportDir.getAbsolutePath().concat(File.separator + "export.json")), shExchange);
 
-			String fileZip = tmpDir.getAbsolutePath().concat(File.separator + folderName + ".zip");
-			fos = new FileOutputStream(fileZip);
-			ZipOutputStream zipOut = new ZipOutputStream(fos);
-			shUtils.zipFile(exportDir, exportDir.getName(), zipOut);
-			zipOut.close();
-			fos.close();
+			File zipFile = new File(tmpDir.getAbsolutePath().concat(File.separator + folderName + ".zip"));
+
+			shUtils.addFilesToZip(exportDir, zipFile);
 
 			StreamingOutput fileStream = new StreamingOutput() {
 				@Override
 				public void write(java.io.OutputStream output) throws IOException, WebApplicationException {
 					try {
-						java.nio.file.Path path = Paths.get(fileZip);
+						java.nio.file.Path path = Paths.get(zipFile.getAbsolutePath());
 						byte[] data = Files.readAllBytes(path);
 						output.write(data);
 						output.flush();
+
+						FileUtils.deleteDirectory(exportDir);
+						FileUtils.deleteQuietly(zipFile);
+						
+					} catch (IOException ex) {
+						ex.printStackTrace();
 					} catch (Exception e) {
 						throw new WebApplicationException("File Not Found");
 					}
