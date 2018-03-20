@@ -1,5 +1,6 @@
 package com.viglet.shiohara.utils;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,9 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.persistence.model.channel.ShChannel;
+import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
-import com.viglet.shiohara.persistence.model.site.ShSite;
+import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
+import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 
 @Component
@@ -21,6 +24,10 @@ public class ShPostUtils {
 	ShChannelUtils shChannelUtils;
 	@Autowired
 	ShPostRepository shPostRepository;
+	@Autowired
+	ShPostAttrRepository shPostAttrRepository;
+	@Autowired
+	ShGlobalIdRepository shGlobalIdRepository;
 
 	public JSONObject toJSON(ShPost shPost) {
 		JSONObject shPostItemAttrs = new JSONObject();
@@ -56,6 +63,37 @@ public class ShPostUtils {
 
 		return shPostMap;
 
+	}
+
+	public ShPost clone(ShPost shPost, ShChannel shChannel) {
+
+		ShPost shPostClone = new ShPost();
+		shPostClone.setDate(new Date());
+		shPostClone.setShChannel(shChannel);
+		shPostClone.setShPostType(shPost.getShPostType());
+		shPostClone.setSummary(shPost.getSummary());
+		shPostClone.setTitle(shPost.getTitle());
+		shPostRepository.save(shPostClone);
+
+		ShGlobalId shGlobalId = new ShGlobalId();
+		shGlobalId.setShObject(shPostClone);
+		shGlobalId.setType("POST");
+
+		shGlobalIdRepository.saveAndFlush(shGlobalId);
+
+		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
+			ShPostAttr shPostAttrClone = new ShPostAttr();
+			shPostAttrClone.setDateValue(shPostAttr.getDateValue());
+			shPostAttrClone.setIntValue(shPostAttr.getIntValue());
+			shPostAttrClone.setReferenceObjects(shPostAttr.getReferenceObjects());
+			shPostAttrClone.setShPost(shPostClone);
+			shPostAttrClone.setShPostTypeAttr(shPostAttr.getShPostTypeAttr());
+			shPostAttrClone.setStrValue(shPostAttr.getStrValue());
+			shPostAttrClone.setType(shPostAttr.getType());
+			shPostAttrRepository.save(shPostAttrClone);
+		}
+
+		return shPostClone;
 	}
 
 	public String generatePostLink(String postID) {

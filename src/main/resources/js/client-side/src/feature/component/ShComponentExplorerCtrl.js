@@ -16,14 +16,13 @@ shioharaApp.controller('ShComponentExplorerCtrl', [
 				$ctrl.channelDoubleClick = true;
 			}
 			$ctrl.enableInsertButton = false;
-			 $ctrl.shChannelSelected == null;
-			$ctrl.shPostSelected = null;
+			$ctrl.shObjectSelected = null;
 			$ctrl.ok = function() {
-				$uibModalInstance.close($ctrl.shPostSelected);
+				$uibModalInstance.close($ctrl.shObjectSelected);
 			};
 
 			$ctrl.cancel = function() {
-				$ctrl.shPostSelected = null;
+				$ctrl.shObjectSelected = null;
 				$uibModalInstance.dismiss('cancel');
 			};
 			$scope.shSite = null;
@@ -59,12 +58,12 @@ shioharaApp.controller('ShComponentExplorerCtrl', [
 			}
 
 			$scope.selectedPost = function(shPost) {
-				$ctrl.shPostSelected = shPost;
+				$ctrl.shObjectSelected = shPost;
 				$ctrl.enableInsertButton = true;
 			}
 			
 			$scope.selectedChannel = function(shChannel) {
-				$ctrl.shChannelSelected = shChannel;
+				$ctrl.shObjectSelected = shChannel;
 				$ctrl.enableInsertButton = true;
 			}
 			// END Functions
