@@ -2,16 +2,19 @@ shioharaApp.controller('ShSearchCtrl', [
 		"$scope",
 		"$http",
 		"$state",
+		"$stateParams",
+		"$location",
 		"$rootScope",
 		"shAPIServerService",
-		function($scope, $http, $state, $rootScope,shAPIServerService) {
+		function($scope, $http, $state, $stateParams, $location, $rootScope,
+				shAPIServerService) {
+			$scope.shQuery = $stateParams.query;
 			$rootScope.$state = $state;
 			$scope.shPosts = null;
-			$scope.q = "Index";
 			$scope.$evalAsync($http.get(
 					shAPIServerService.get().concat(
-							"/search?q=" + $scope.q)).then(
+							"/search?q=" + $scope.shQuery)).then(
 					function(response) {
-						$scope.shPosts = response.data;
+						$scope.shPostsWithBreadCrumb = response.data;
 					}));
 		} ]);

@@ -6,7 +6,8 @@ shioharaApp.config([
 		'$translateProvider',
 		'NotificationProvider',
 		function($stateProvider, $urlRouterProvider, TokenProvider,
-				$locationProvider, $translateProvider, NotificationProvider) {
+				$locationProvider, $translateProvider, NotificationProvider) {			
+			$translateProvider.useSanitizeValueStrategy('escaped');
 			
 			NotificationProvider.setOptions({
 				delay : 5000,
@@ -23,7 +24,6 @@ shioharaApp.config([
 				scopes : [ "https://www.googleapis.com/auth/userinfo.email" ]
 			});
 
-			$translateProvider.useSanitizeValueStrategy('escaped');
 			$translateProvider.translations('en', {
 				SEARCH : "Search",
 				SEARCH_FOR : "Search for"
@@ -74,6 +74,13 @@ shioharaApp.config([
 				}
 			}).state('content.search', {
 				url : '/search',
+				templateUrl : 'template/search/search.html',
+				controller : 'ShSearchCtrl',
+				data : {
+					pageTitle : 'Search | Viglet Shiohara'
+				}
+			}).state('content.search-query', {
+				url : '/search/:query',
 				templateUrl : 'template/search/search.html',
 				controller : 'ShSearchCtrl',
 				data : {

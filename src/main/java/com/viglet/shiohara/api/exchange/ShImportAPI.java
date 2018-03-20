@@ -102,8 +102,7 @@ public class ShImportAPI {
 			File outputFolder = new File(tmpDir.getAbsolutePath().concat(File.separator + "imp_" + UUID.randomUUID()));
 			shUtils.unZipIt(zipFile, outputFolder);
 			ObjectMapper mapper = new ObjectMapper();
-			File extractFolder = new File(outputFolder.getAbsolutePath()
-					.concat(File.separator + fileDetail.getFileName().replaceAll(".zip", "")));
+			File extractFolder = outputFolder;
 			ShExchange shExchange = mapper.readValue(
 					new FileInputStream(extractFolder.getAbsolutePath().concat(File.separator + "export.json")),
 					ShExchange.class);
