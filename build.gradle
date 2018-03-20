@@ -1,6 +1,10 @@
 buildscript {
 	ext {
-		springBootVersion = '1.5.7.RELEASE'
+		springBootVersion = '1.5.10.RELEASE'
+		thymeleafVersion = '3.0.3.RELEASE'
+		hibernateVersion = '5.6.1.Final'
+		jerseyVersion = '2.25.1'
+		httpClientVersion = '4.5.2'
 	}
 	repositories {
 		mavenCentral()
@@ -17,6 +21,7 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 apply plugin: 'com.eriwen.gradle.js'
 
 group = 'com.viglet.shiohara'
@@ -74,38 +79,57 @@ repositories {
      mavenCentral()
 }
 dependencies {
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version:'1.5.6.RELEASE'
-  //  compile group: 'org.springframework.boot', name: 'spring-boot-starter-tomcat', version:'1.5.6.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-parent', version:'1.5.6.RELEASE'
-    
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-jersey', version:'1.5.6.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-activemq', version:'1.5.6.RELEASE'
-   
-    compile group: 'org.glassfish.jersey.media', name: 'jersey-media-multipart', version:'2.25'
-    compile group: 'org.glassfish.jersey.containers', name: 'jersey-container-servlet-core', version:'2.25'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version:'1.5.6.RELEASE'
-    compile group: 'org.thymeleaf', name: 'thymeleaf-spring4', version:'3.0.3.RELEASE'
-    compile group: 'org.thymeleaf', name: 'thymeleaf', version:'3.0.3.RELEASE'    
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version:'1.5.2.RELEASE'
-    compile(group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf', version:'1.5.6.RELEASE') {
+
+	// Spring Boot
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version:"${springBootVersion}"
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-parent', version:"${springBootVersion}"
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-jersey', version:"${springBootVersion}"
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-activemq', version:"${springBootVersion}"
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: "${springBootVersion}"
+    compile(group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf', version: "${springBootVersion}") {
 		exclude(module: 'thymeleaf-layout-dialect')
     }
+   
+    // Glassfish
+    compile group: 'org.glassfish.jersey.media', name: 'jersey-media-multipart', version:"${jerseyVersion}"
+    compile group: 'org.glassfish.jersey.containers', name: 'jersey-container-servlet-core', version:"${jerseyVersion}"
+    
+    // Thymeleaf
+    compile group: 'org.thymeleaf', name: 'thymeleaf-spring4', version:"${thymeleafVersion}"
+    compile group: 'org.thymeleaf', name: 'thymeleaf', version:"${thymeleafVersion}"
+    
+    // HikariCP   
     compile group: 'com.zaxxer', name: 'HikariCP', version:'2.6.0'
+    
+    // HSQLDB
     compile group: 'org.hsqldb', name: 'hsqldb', version:'2.4.0'
-    compile group: 'commons-logging', name: 'commons-logging', version:'1.2'
+    
+    // JSON
     compile group: 'org.json', name: 'json', version:'20140107'
-    compile group: 'org.apache.commons', name: 'commons-compress', version:'1.9'
-    compile(group: 'org.apache.httpcomponents', name: 'httpclient', version:'4.5.2') {
-exclude(module: 'commons-logging')
-    }
-    compile group: 'org.apache.httpcomponents', name: 'httpmime', version:'4.5.2'
+    
+    // Apache Commons
+    compile group: 'commons-logging', name: 'commons-logging', version:'1.2'
+    compile group: 'org.apache.commons', name: 'commons-compress', version: '1.16.1'   
     compile group: 'commons-io', name: 'commons-io', version:'2.5'
     compile group: 'commons-lang', name: 'commons-lang', version:'2.6'
+    
+    // HTTP Client
+    compile(group: 'org.apache.httpcomponents', name: 'httpclient', version:"${httpClientVersion}") {
+		exclude(module: 'commons-logging')
+    }
+    compile group: 'org.apache.httpcomponents', name: 'httpmime', version:"${httpClientVersion}"
+    
+    // Log4J
     compile group: 'org.apache.logging.log4j', name: 'log4j-core', version:'2.7'
+    
+    // JSoup
 	compile group: 'org.jsoup', name: 'jsoup', version: '1.8.3'
-	compile group: 'org.hibernate', name: 'hibernate-search-engine', version: '5.6.1.Final'
-	compile group: 'org.hibernate', name: 'hibernate-search-orm', version: '5.6.1.Final'
 	
+	// Hibernate
+	compile group: 'org.hibernate', name: 'hibernate-search-engine', version: "${hibernateVersion}"
+	compile group: 'org.hibernate', name: 'hibernate-search-orm', version: "${hibernateVersion}"
+	
+	// WebJars
 	compile 'org.webjars.bower:jquery:1.11.1'
 	compile 'org.webjars:bootstrap:3.3.7-1'
 	compile 'org.webjars.bower:moment:2.20.1'
@@ -125,10 +149,4 @@ exclude(module: 'commons-logging')
 	compile 'org.webjars.bower:ng-file-upload:12.2.13'
 	compile 'org.webjars.bower:angular-ui-notification:0.3.6'
 	compile 'org.webjars.bower:angular-ui-tinymce:0.0.19'
-	
-    runtime group: 'org.springframework.boot', name: 'spring-boot-devtools', version:'1.5.2.RELEASE'
-    testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version:'1.5.2.RELEASE') {
-exclude(module: 'commons-logging')
-    }
-    compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version:'3.1.0'
 }
