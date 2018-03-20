@@ -16,3 +16,4 @@ hs_err_pid*
 /logs/
 /build/
 
+src/main/resources/js/client-side/build
