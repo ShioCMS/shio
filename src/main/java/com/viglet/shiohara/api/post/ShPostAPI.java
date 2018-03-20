@@ -1,6 +1,7 @@
 package com.viglet.shiohara.api.post;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -30,12 +31,12 @@ import com.viglet.shiohara.persistence.model.channel.ShChannel;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
-import com.viglet.shiohara.persistence.repository.channel.ShChannelRepository;
 import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.reference.ShReferenceRepository;
 import com.viglet.shiohara.persistence.repository.user.ShUserRepository;
+import com.viglet.shiohara.utils.ShPostUtils;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
 
 @Component
@@ -47,8 +48,6 @@ public class ShPostAPI {
 	@Autowired
 	private ShPostAttrRepository shPostAttrRepository;
 	@Autowired
-	private ShChannelRepository shChannelRepository;
-	@Autowired
 	private ShUserRepository shUserRepository;
 	@Autowired
 	private ShStaticFileUtils shStaticFileUtils;
@@ -56,6 +55,8 @@ public class ShPostAPI {
 	private ShGlobalIdRepository shGlobalIdRepository;
 	@Autowired
 	private ShReferenceRepository shReferenceRepository;
+	@Autowired
+	private ShPostUtils shPostUtils;
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -72,18 +73,42 @@ public class ShPostAPI {
 		return shPostRepository.findById(id);
 	}
 
-	@Path("/{postId}/moveto/{channelId}")
+	@Path("/moveto/{channeGloballId}")
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView({ SystemObjectView.ShObject.class })
-	public ShPost moveTo(@PathParam("postId") UUID id, @PathParam("channelId") UUID channelId) throws Exception {
-		ShPost shPost = shPostRepository.findById(id);
-		ShChannel shChannel = shChannelRepository.findById(channelId);
-		shPost.setShChannel(shChannel);
-		shPostRepository.save(shPost);
-		return shPostRepository.findById(id);
+	public List<ShPost> moveTo(@PathParam("channeGloballId") UUID channeGloballId, List<UUID> postGlobalIds)
+			throws Exception {
+		List<ShPost> shPosts = new ArrayList<ShPost>();
+		for (UUID postGlobalId : postGlobalIds) {
+			ShGlobalId shPostGlobalId = shGlobalIdRepository.findById(postGlobalId);
+			ShGlobalId shChannelGlobalId = shGlobalIdRepository.findById(channeGloballId);
+			ShPost shPost = (ShPost) shPostGlobalId.getShObject();
+			ShChannel shChannel = (ShChannel) shChannelGlobalId.getShObject();
+			shPost.setShChannel(shChannel);
+			shPostRepository.save(shPost);
+			shPosts.add(shPost);
+		}
+		return shPosts;
 	}
 
+	@Path("/copyto/{channeGloballId}")
+	@PUT
+	@Produces(MediaType.APPLICATION_JSON)
+	@JsonView({ SystemObjectView.ShObject.class })
+	public List<ShPost> copyTo(@PathParam("channeGloballId") UUID channeGloballId, List<UUID> postGlobalIds)
+			throws Exception {
+		List<ShPost> shPosts = new ArrayList<ShPost>();
+		for (UUID postGlobalId : postGlobalIds) {
+			ShGlobalId shPostGlobalId = shGlobalIdRepository.findById(postGlobalId);
+			ShGlobalId shChannelGlobalId = shGlobalIdRepository.findById(channeGloballId);
+			ShPost shPost = (ShPost) shPostGlobalId.getShObject();
+			ShChannel shChannel = (ShChannel) shChannelGlobalId.getShObject();			
+			shPosts.add(shPostUtils.clone(shPost, shChannel));
+		}
+		return shPosts;
+	}
+	
 	@Path("/{postId}")
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
