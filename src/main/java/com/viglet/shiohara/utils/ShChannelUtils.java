@@ -27,6 +27,7 @@ public class ShChannelUtils {
 	ShPostAttrRepository shPostAttrRepository;
 	@Autowired
 	ShGlobalIdRepository shGlobalIdRepository;
+
 	public JSONObject toJSON(ShChannel shChannel) {
 		JSONObject shChannelItemAttrs = new JSONObject();
 
@@ -146,14 +147,14 @@ public class ShChannelUtils {
 	}
 
 	public boolean deleteChannel(ShChannel shChannel) {
-		for (ShPost shPost : shChannel.getShPosts()) {
-			for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
-				shPostAttrRepository.delete(shPostAttr.getId());
-			}
+
+		for (ShPost shPost : shPostRepository.findByShChannel(shChannel)) {
+			shPostAttrRepository.deleteInBatch(shPost.getShPostAttrs());
 			shGlobalIdRepository.delete(shPost.getShGlobalId().getId());
-			shPostRepository.delete(shPost.getId());
 		}
-		for (ShChannel shChannelChild : shChannel.getShChannels()) {
+		shPostRepository.deleteInBatch(shPostRepository.findByShChannel(shChannel));
+
+		for (ShChannel shChannelChild : shChannelRepository.findByParentChannel(shChannel)) {
 			this.deleteChannel(shChannelChild);
 		}
 		shGlobalIdRepository.delete(shChannel.getShGlobalId().getId());
