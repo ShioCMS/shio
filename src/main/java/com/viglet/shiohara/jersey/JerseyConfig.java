@@ -15,7 +15,6 @@ import com.viglet.shiohara.api.post.ShPostAPI;
 import com.viglet.shiohara.api.post.type.ShPostTypeAPI;
 import com.viglet.shiohara.api.post.type.ShPostTypeAttrAPI;
 import com.viglet.shiohara.api.reference.ShReferenceAPI;
-import com.viglet.shiohara.api.region.ShRegionAPI;
 import com.viglet.shiohara.api.search.ShSearchAPI;
 import com.viglet.shiohara.api.site.ShSiteAPI;
 import com.viglet.shiohara.api.staticfile.ShStaticFileAPI;
@@ -47,7 +46,6 @@ public class JerseyConfig extends ResourceConfig {
 		register(ShPostTypeAPI.class);
 		register(MultiPartFeature.class);
 		register(ShPostTypeAttrAPI.class);
-		register(ShRegionAPI.class);
 		register(ShSiteAPI.class);
 		register(ShUserAPI.class);
 		register(ShWidgetAPI.class);	

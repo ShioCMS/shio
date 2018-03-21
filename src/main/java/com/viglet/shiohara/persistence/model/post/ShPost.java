@@ -13,7 +13,6 @@ import com.viglet.shiohara.persistence.model.channel.ShChannel;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.type.ScanResultBridge;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
-import com.viglet.shiohara.persistence.model.region.ShRegion;
 
 import java.util.Date;
 import java.util.List;
@@ -55,17 +54,10 @@ public class ShPost extends ShObject {
 
 	// bi-directional many-to-one association to ShPostAttr
 	@Field(store = Store.NO)
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "shPost", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "shPost", cascade = CascadeType.ALL)
 	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
 	@FieldBridge(impl = ScanResultBridge.class) 
 	private List<ShPostAttr> shPostAttrs;
-
-	// bi-directional many-to-one association to ShRegion
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "shPost", cascade = CascadeType.ALL)
-	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
-	@Field(store = Store.NO)
-	@FieldBridge(impl = ScanResultBridge.class) 
-	private List<ShRegion> shRegions;
 
 	public ShPost() {
 	}
@@ -123,28 +115,6 @@ public class ShPost extends ShObject {
 		shPostAttr.setShPost(null);
 
 		return shPostAttr;
-	}
-
-	public List<ShRegion> getShRegions() {
-		return this.shRegions;
-	}
-
-	public void setShRegions(List<ShRegion> shRegions) {
-		this.shRegions = shRegions;
-	}
-
-	public ShRegion addShRegion(ShRegion shRegion) {
-		getShRegions().add(shRegion);
-		shRegion.setShPost(this);
-
-		return shRegion;
-	}
-
-	public ShRegion removeShRegion(ShRegion shRegion) {
-		getShRegions().remove(shRegion);
-		shRegion.setShPost(null);
-
-		return shRegion;
 	}
 
 	public ShChannel getShChannel() {

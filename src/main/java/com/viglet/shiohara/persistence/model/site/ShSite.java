@@ -33,7 +33,7 @@ public class ShSite extends ShObject {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date date;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "shSite", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "shSite", cascade = CascadeType.ALL)
 	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
 	private List<ShChannel> shChannels;
 

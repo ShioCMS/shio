@@ -7,12 +7,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 
 public interface ShPostAttrRepository extends JpaRepository<ShPostAttr, UUID> {
 
 	List<ShPostAttr> findAll();
 
+	List<ShPostAttr> findByShPost(ShPost shPost);
+	
 	ShPostAttr findById(UUID id);
 
 	ShPostAttr save(ShPostAttr shPostAttr);

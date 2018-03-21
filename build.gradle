@@ -89,6 +89,7 @@ dependencies {
     compile(group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf', version: "${springBootVersion}") {
 		exclude(module: 'thymeleaf-layout-dialect')
     }
+   compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.9.4'
    
     // Glassfish
     compile group: 'org.glassfish.jersey.media', name: 'jersey-media-multipart', version:"${jerseyVersion}"

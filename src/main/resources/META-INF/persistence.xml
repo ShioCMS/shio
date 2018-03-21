@@ -13,7 +13,6 @@
 		<class>com.viglet.shiohara.persistence.model.post.type.ShPostType</class>
 		<class>com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr</class>
 		<class>com.viglet.shiohara.persistence.model.reference.ShReference</class>
-		<class>com.viglet.shiohara.persistence.model.region.ShRegion</class>
 		<class>com.viglet.shiohara.persistence.model.site.ShSite</class>
 		<class>com.viglet.shiohara.persistence.model.system.ShConfigVar</class>
 		<class>com.viglet.shiohara.persistence.model.system.ShLocale</class>

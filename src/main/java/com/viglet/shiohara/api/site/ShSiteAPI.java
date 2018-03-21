@@ -319,7 +319,8 @@ public class ShSiteAPI {
 		List<ShFileExchange> files = new ArrayList<ShFileExchange>();
 
 		for (ShChannel shChannel : shChannels) {
-			for (ShPost shPost : shChannel.getShPosts()) {
+			
+			for (ShPost shPost : shPostRepository.findByShChannel(shChannel)) {
 				ShPostExchange shPostExchange = new ShPostExchange();
 				shPostExchange.setId(shPost.getId());
 				shPostExchange.setChannel(shPost.getShChannel().getId());
@@ -328,7 +329,8 @@ public class ShSiteAPI {
 
 				shPostExchange.setGlobalId(shPost.getShGlobalId().getId());
 				Map<String, Object> fields = new HashMap<String, Object>();
-				for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
+				
+				for (ShPostAttr shPostAttr : shPostAttrRepository.findByShPost(shPost)) {
 					if (shPostAttr != null && shPostAttr.getShPostTypeAttr() != null) {
 						fields.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
 						if (shPostAttr.getShPostTypeAttr().getName().equals("FILE")

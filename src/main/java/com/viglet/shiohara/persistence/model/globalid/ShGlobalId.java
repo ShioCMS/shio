@@ -36,7 +36,7 @@ public class ShGlobalId implements Serializable {
 	private String type;
 
 	//@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
-	@OneToOne(fetch = FetchType.EAGER)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "object_id")	
 	@JsonView({SystemObjectView.ShReference.class})
 	private ShObject shObject;
