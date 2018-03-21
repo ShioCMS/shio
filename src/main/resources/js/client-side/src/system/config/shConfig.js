@@ -45,16 +45,20 @@ shioharaApp.config([
 					pageTitle : 'OAuth2 | Viglet Shiohara'
 				}
 			}).state('content', {
-				url : '/content',
+				url : '/content'	,
+				redirectTo: 'content.home'
+			}).state('content.home', {
+				url : '/home',
 				templateUrl : 'template/content.html',
-				controller : 'ShContentCtrl',
+				controller : 'ShContentHomeCtrl',
 				data : {
 					pageTitle : 'Content | Viglet Shiohara'
 				}
-			}).state('content.children', {
+			})
+			.state('content.children', {
 				url : '/list',
 				templateUrl : 'template/content/content-children.html',
-				controller : 'ShContentChildrenCtrl',
+				controller : 'ShContentCtrl',				
 				data : {
 					pageTitle : 'Content | Viglet Shiohara'
 				}

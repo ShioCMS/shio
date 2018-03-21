@@ -1,13 +1,5 @@
-<div style="margin-bottom: 30px;">
-	<ul class="breadcrumb" style="margin-top: 5px; margin-bottom: 5px;">
-		<li><a
-		ui-sref="content"
-		ui-sref-opts="{reload:true}">Content</a></li>
-		<li><a ng-if="breadcrumb != null"
-			ui-sref="content.children.site-children({siteId: shSite.id})"
-			ui-sref-opts="{reload:true}">{{shSite.name}} (Site)</a><span
-			ng-if="breadcrumb == null">{{shSite.name}} (Site)</span></li>
-	</ul>
+
+<div  ng-include="'/template/breadcrumb/breadcrumb.html'">
 </div>
 <!-- <div class="settings">
 	<section class="content no-padding">

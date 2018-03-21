@@ -34,6 +34,7 @@ shioharaApp.controller('ShSiteChildrenCtrl', [
 						$scope.shChannels = response.data.shChannels;
 						$scope.shPosts = response.data.shPosts;
 						$scope.shSite = response.data.shSite;
+						$scope.$parent.shSite = $scope.shSite;
 					}));
 			
 			$scope.shUser = shUserResource.get({

@@ -40,12 +40,12 @@ public class ShChannel extends ShObject {
 	private ShSite shSite;
 
 	// bi-directional many-to-one association to ShChannel
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "parentChannel", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parentChannel", cascade = CascadeType.ALL)
 	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
 	private List<ShChannel> shChannels;
 
 	// bi-directional many-to-one association to ShChannel
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "shChannel", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "shChannel", cascade = CascadeType.ALL)
 	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
 	private List<ShPost> shPosts;
 
