@@ -7,9 +7,10 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.search.annotations.FieldBridge;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.viglet.shiohara.api.SystemObjectView;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
-import com.viglet.shiohara.persistence.model.region.ShRegion;
 
 import java.util.Date;
 import java.util.List;
@@ -38,19 +39,16 @@ public class ShPostType extends ShObject {
 	private byte system;
 
 	//bi-directional many-to-one association to ShPost
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "shPostType", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "shPostType", cascade = CascadeType.ALL)
 	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
 	private List<ShPost> shPosts;
 
 	//bi-directional many-to-one association to ShPostTypeAttr
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "shPostType", cascade = CascadeType.ALL)
-	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "shPostType", cascade = CascadeType.ALL)
+	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
+	//@JsonView({SystemObjectView.ShPostType.class})
 	private List<ShPostTypeAttr> shPostTypeAttrs;
 
-	//bi-directional many-to-one association to ShRegion
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "shPostType", cascade = CascadeType.ALL)
-	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
-	private List<ShRegion> shRegions;
 
 	public ShPostType() {
 	}
@@ -129,28 +127,6 @@ public class ShPostType extends ShObject {
 		shPostTypeAttr.setShPostType(null);
 
 		return shPostTypeAttr;
-	}
-
-	public List<ShRegion> getShRegions() {
-		return this.shRegions;
-	}
-
-	public void setShRegions(List<ShRegion> shRegions) {
-		this.shRegions = shRegions;
-	}
-
-	public ShRegion addShregion(ShRegion shRegion) {
-		getShRegions().add(shRegion);
-		shRegion.setShpostType(this);
-
-		return shRegion;
-	}
-
-	public ShRegion removeShregion(ShRegion shRegion) {
-		getShRegions().remove(shRegion);
-		shRegion.setShpostType(null);
-
-		return shRegion;
 	}
 
 	public byte getSystem() {

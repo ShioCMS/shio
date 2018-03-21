@@ -41,7 +41,7 @@ public class ShPostAttr implements Serializable {
 	@Column(name = "str_value", length = 5 * 1024 * 1024) // 5Mb
 	private String strValue;
 
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "object_post_attr", 
 	joinColumns = @JoinColumn(name = "post_attr_id", referencedColumnName = "id"), 
 	inverseJoinColumns = @JoinColumn(name = "object_id", referencedColumnName = "id"))
