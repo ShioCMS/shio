@@ -54,8 +54,9 @@ public class ShPost extends ShObject {
 
 	// bi-directional many-to-one association to ShPostAttr
 	@Field(store = Store.NO)
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "shPost", cascade = CascadeType.ALL)
-	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
+	@OneToMany(mappedBy = "shPost", cascade = CascadeType.ALL)
+	//@OneToMany(fetch = FetchType.LAZY, mappedBy = "shPost", cascade = CascadeType.ALL)
+	//@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
 	@FieldBridge(impl = ScanResultBridge.class) 
 	private List<ShPostAttr> shPostAttrs;
 
