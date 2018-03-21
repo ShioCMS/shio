@@ -1,4 +1,4 @@
-shioharaApp.controller('ShContentCtrl', [ "$rootScope", "$scope", "Token",
+shioharaApp.controller('ShContentHomeCtrl', [ "$rootScope", "$scope", "Token",
 		'vigLocale', "$translate",
 		function($rootScope, $scope, Token, vigLocale, $translate) {
 			$scope.vigLanguage = vigLocale.getLocale().substring(0, 2);

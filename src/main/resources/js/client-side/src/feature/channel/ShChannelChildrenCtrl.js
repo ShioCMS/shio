@@ -34,7 +34,6 @@ shioharaApp.controller('ShChannelChildrenCtrl', [
 			$scope.$watch('$scope.shObjects', function() {
 				//
 			});
-
 			$scope.$evalAsync($http.get(
 					shAPIServerService.get().concat(
 							"/channel/" + $scope.channelId + "/list")).then(
@@ -42,7 +41,7 @@ shioharaApp.controller('ShChannelChildrenCtrl', [
 						$scope.processResponse(response);
 					}));
 
-			$scope.processResponse = function(response) {
+			$scope.processResponse = function(response) {			
 				$scope.shChannels = response.data.shChannels;
 				$scope.shPosts = response.data.shPosts;
 				$scope.breadcrumb = response.data.breadcrumb;				

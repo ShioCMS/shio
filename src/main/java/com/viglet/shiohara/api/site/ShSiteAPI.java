@@ -201,12 +201,12 @@ public class ShSiteAPI {
 	@JsonView({ SystemObjectView.ShObject.class })
 	public ShChannelList rootChannel(@PathParam("siteId") UUID id) throws Exception {
 		ShSite shSite = shSiteRepository.findById(id);
-
+		List<ShChannel> shChannels = shChannelRepository.findByShSiteAndRootChannel(shSite, (byte) 1);
 		ShChannelList shChannelList = new ShChannelList();
-		shChannelList.setShChannels(shChannelRepository.findByShSiteAndRootChannel(shSite, (byte) 1));
-		shChannelList.setShPosts(shPostRepository.findByShChannel(null));
+		shChannelList.setShChannels(shChannels);
 		shChannelList.setShSite(shSite);
 		return shChannelList;
+
 
 	}
 
