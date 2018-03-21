@@ -70,7 +70,9 @@ public class ShPostAPI {
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView({ SystemObjectView.ShObject.class })
 	public ShPost edit(@PathParam("postId") UUID id) throws Exception {
-		return shPostRepository.findById(id);
+		ShPost shPost = shPostRepository.findById(id);
+		shPost.setShPostAttrs(shPostAttrRepository.findByShPost(shPost));
+		return shPost;
 	}
 
 	@Path("/moveto/{channeGloballId}")
@@ -238,7 +240,7 @@ public class ShPostAPI {
 	}
 
 	public void referencedFile(ShPostAttr shPostAttrEdit, ShPostAttr shPostAttr, ShPost shPost) {
-		if (shPostAttrEdit.getShPostTypeAttr().getName().equals("FILE")) {
+		if (shPostAttrEdit.getShPostTypeAttr().getShWidget().getName().equals("File")) {
 
 			if (shPost.getShPostType().getName().equals("PT-FILE")) {
 				File fileFrom = shStaticFileUtils.filePath(shPost.getShChannel(), shPostAttrEdit.getStrValue());

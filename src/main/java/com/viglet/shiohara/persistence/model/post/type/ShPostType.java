@@ -46,7 +46,6 @@ public class ShPostType extends ShObject {
 	//bi-directional many-to-one association to ShPostTypeAttr
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "shPostType", cascade = CascadeType.ALL)
 	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
-	//@JsonView({SystemObjectView.ShPostType.class})
 	private List<ShPostTypeAttr> shPostTypeAttrs;
 
 
