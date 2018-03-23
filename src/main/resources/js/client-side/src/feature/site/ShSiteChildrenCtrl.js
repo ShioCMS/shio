@@ -22,19 +22,26 @@ shioharaApp.controller('ShSiteChildrenCtrl', [
 			$scope.accessToken = Token.get();
 			$scope.shUser = null;
 			$scope.shSite = null;
-			$scope.shPosts = null;
 			$scope.shLastPostType = null;
 			$scope.shChannels = null;		
 			$rootScope.$state = $state;
-			$scope.breadcrumb = null;			
+			$scope.breadcrumb = null;	
+			$scope.shStateObjects = [];
+			$scope.shObjects = [];
+			$scope.actions = [];
+			
 			$scope.$evalAsync($http.get(
 					shAPIServerService.get().concat(
 							"/site/" + $scope.siteId +"/channel"))
 					.then(function(response) {
 						$scope.shChannels = response.data.shChannels;
-						$scope.shPosts = response.data.shPosts;
 						$scope.shSite = response.data.shSite;
 						$scope.$parent.shSite = $scope.shSite;
+						angular.forEach($scope.shChannels, function(shChannel, key) {
+							$scope.shStateObjects[shChannel.shGlobalId.id] = false;
+							$scope.shObjects[shChannel.shGlobalId.id] = shChannel;
+							$scope.actions[shChannel.shGlobalId.id] = false ;
+						});
 					}));
 			
 			$scope.shUser = shUserResource.get({
@@ -46,11 +53,12 @@ shioharaApp.controller('ShSiteChildrenCtrl', [
 				});
 				
 			});
-			$scope.channelDelete = function(shChannel) {
-				shChannelFactory.deleteFromList(shChannel, $scope.shChannels);
+			
+			$scope.updateAction = function(shGlobalId, value) {
+				$scope.actions[shGlobalId.id]=value;
 			}
 			
-			$scope.postDelete = function(shPost) {
-				shPostFactory.deleteFromList(shPost, $scope.shPosts);
+			$scope.channelDelete = function(shChannel) {
+				shChannelFactory.deleteFromList(shChannel, $scope.shChannels);
 			}
 		} ]);

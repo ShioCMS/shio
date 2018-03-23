@@ -1,24 +1,19 @@
 <div style="margin-bottom: 10px;">
-	<button type="button" class="btn btn-viglet btn-xs" ng-click="objectsCopy()">
+	<button type="button" class="btn btn-viglet btn-xs"
+		ng-click="objectsCopy()">
 		<i class="fa fa-files-o" aria-hidden="true"></i> Copy
 	</button>
-	<button type="button" class="btn btn-viglet btn-xs" ng-click="objectsMove()">
+	<button type="button" class="btn btn-viglet btn-xs"
+		ng-click="objectsMove()">
 		<i class="fa fa-share" aria-hidden="true"></i> Move
 	</button>
-	<button type="button" class="btn btn-viglet btn-xs" ng-click="objectsClone()">
+	<button type="button" class="btn btn-viglet btn-xs"
+		ng-click="objectsClone()">
 		<i class="fa fa-clone" aria-hidden="true"></i> Clone
 	</button>
-	<button type="button" class="btn btn-viglet btn-xs" ng-click="objectsDelete()">
+	<button type="button" class="btn btn-viglet btn-xs"
+		ng-click="objectsDelete()">
 		<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
-	</button>
-	<button type="button" class="btn btn-viglet btn-xs" ng-click="objectsEdit()">
-		<i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit
-	</button>
-	<button type="button" class="btn btn-viglet btn-xs" ng-click="objectsRename()">
-		<i class="fa fa-pencil" aria-hidden="true"></i> Rename
-	</button>
-	<button type="button" class="btn btn-viglet btn-xs" ng-click="objectsPreview()">
-		<i class="fa fa-eye" aria-hidden="true"></i> Preview
 	</button>
 </div>
 <div>
@@ -35,72 +30,88 @@
 			ng-if="$last">{{breacrumbItem.name}}</span></li>
 	</ul>
 </div>
-<table class="table table-hover">
+<div class="list-group">
 	<!--  Channels  -->
-	<tr ng-repeat="shChannel in shChannels">
-		<td style="width: 120px; white-space: nowrap; text-align: left">
-			<div class="row" style="width: 90px; margin: 0px; margin-right: 10px">
-				<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"
-					style="font-size: 14px; margin: 5px; padding: 0px; width: 10px">
-					<input type="checkbox" ng-model="shStateObjects[shChannel.shGlobalId.id]">
-				</div>
-				<div ng-click="channelDelete(shChannel)"
-					class="glyphicon glyphicon-trash close col-lg-1 col-md-1 col-sm-1 col-xs-1"
-					style="font-size: 14px; margin: 5px; padding: 0px; width: 10px"></div>
-				<div
-					class="glyphicon glyphicon-star-empty close col-lg-1 col-md-1 col-sm-1 col-xs-1"
-					style="font-size: 14px; margin: 5px; padding: 0px; width: 10px"></div>
-				<a ui-sref="content.channel.edit({channelId: shChannel.id})"><div
-						class="glyphicon glyphicon-pencil close col-lg-1 col-md-1 col-sm-1 col-xs-1"
-						style="font-size: 14px; margin: 5px; padding: 0px; width: 10px"></div></a>
+	<div ng-repeat="shChannel in shChannels"
+		ng-mouseenter="updateAction(shChannel.shGlobalId,true)"
+		ng-mouseleave="updateAction(shChannel.shGlobalId,false)"
+		class="list-group-item">
+		<div class="row">
+			<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1" style="width: 10px">
+				<input type="checkbox"
+					ng-model="shStateObjects[shChannel.shGlobalId.id]">
 			</div>
-		</td>
-		<td><a
-			ui-sref="content.children.channel-children({channelId: shChannel.id})"><i
-				class="fa fa-folder-open fa-2x" aria-hidden="true"></i></a></td>
-		<td><div style="width: 300px">
-				<a
-					ui-sref="content.children.channel-children({channelId: shChannel.id})">
-
-					{{shChannel.name}}</a>
-			</div></td>
-		<td style="width: 100px;"><span class="label label-primary">Channel</span></td>
-		<td style="width: 100%;" class="hidden-md hidden-sm hidden-xs">{{shChannel.summary}}</td>
-		<td style="width: 120px; white-space: nowrap;"
-			class="hidden-sm hidden-xs"><span am-time-ago="shChannel.date"></span></td>
-	</tr>
+			<div class="col-lg-4 col-md-7 col-sm-9 col-xs-9">
+				<a type="button" class="btn btn-link"
+					ui-sref="content.children.channel-children({channelId: shChannel.id})"><i
+					class="fa fa-folder-open fa-2x" aria-hidden="true"
+					style="margin-right: 10px"></i> {{shChannel.name}}</a>
+			</div>
+			<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+				<span class="label label-primary">Channel</span>
+			</div>
+			<div class="col-lg-3 hidden-md hidden-sm hidden-xs">{{shChannel.summary}}</div>
+			<div class="col-lg-2 col-md-2 hidden-sm hidden-xs"
+				style="white-space: nowrap;" class="">
+				<span am-time-ago="shChannel.date"></span>
+			</div>
+		</div>
+		<div class="row" style="height: 20px; margin: 0px; margin-right: 10px">
+			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"
+				ng-show="actions[shChannel.shGlobalId.id]">
+				<a type="button" class="btn btn-link"
+					ui-sref="content.channel.edit({channelId: shChannel.id})"> <i
+					class="fa fa-pencil-square-o" aria-hidden="true"> </i> Edit
+				</a> <a type="button" class="btn btn-link" href><i
+					class="fa fa-files-o" aria-hidden="true"></i> Copy</a> <a type="button"
+					class="btn btn-link" href><i class="fa fa-share"
+					aria-hidden="true"></i> Move</a> <a type="button" class="btn btn-link"
+					href ng-click="channelDelete(shChannel)"><i
+					class="fa fa-trash-o" aria-hidden="true"></i> Delete</a> <a
+					type="button" class="btn btn-link" href ng-click="channelPreview(shChannel)"><i class="fa fa-eye"
+					aria-hidden="true"></i> Preview</a>
+			</div>
+		</div>
+	</div>
 	<!--  Posts  -->
-	<tr ng-repeat="shPost in shPosts">
-		<td style="width: 120px; white-space: nowrap; text-align: left">
-			<div class="row" style="width: 90px; margin: 0px; margin-right: 10px">
-				<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"
-					style="font-size: 14px; margin: 5px; padding: 0px; width: 10px">
-					<input type="checkbox" ng-model="shStateObjects[shPost.shGlobalId.id]">
-				</div>
-				<div ng-click="postDelete(shPost)"
-					class="glyphicon glyphicon-trash close col-lg-1 col-md-1 col-sm-1 col-xs-1"
-					style="font-size: 14px; margin: 5px; padding: 0px; width: 10px"></div>
-				<div
-					class="glyphicon glyphicon-star-empty close col-lg-1 col-md-1 col-sm-1 col-xs-1"
-					style="font-size: 14px; margin: 5px; padding: 0px; width: 10px"></div>
-				<a
-					ui-sref="content.post-type-item.post-item({postTypeId: shPost.shPostType.id, postId: shPost.id})"><div
-						class="glyphicon glyphicon-pencil close col-lg-1 col-md-1 col-sm-1 col-xs-1"
-						style="font-size: 14px; margin: 5px; padding: 0px; width: 10px"></div></a>
+
+	<div ng-repeat="shPost in shPosts"
+		ng-mouseenter="updateAction(shPost.shGlobalId,true)"
+		ng-mouseleave="updateAction(shPost.shGlobalId,false)"
+		class="list-group-item">
+		<div class="row">
+			<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1" style="width: 10px">
+				<input type="checkbox"
+					ng-model="shStateObjects[shPost.shGlobalId.id]">
 			</div>
-		</td>
-		<td><a
-			ui-sref="content.post-type-item.post-item({postTypeId: shPost.shPostType.id, postId: shPost.id})"><i
-				class="fa fa-file-o fa-2x" aria-hidden="true"></i></a></td>
-		<td><div style="width: 300px">
-				<a
-					ui-sref="content.post-type-item.post-item({postTypeId: shPost.shPostType.id, postId: shPost.id})">
-					{{shPost.title}}</a>
-			</div></td>
-		<td style="width: 100px;"><span class="label label-warning">
-				{{shPost.shPostType.title}}</span></td>
-		<td style="width: 100%;" class="hidden-md hidden-sm hidden-xs">{{shPost.summary}}</td>
-		<td style="width: 120px; white-space: nowrap;"
-			class="hidden-sm hidden-xs"><span am-time-ago="shPost.date"></span></td>
-	</tr>
-</table>
+			<div class="col-lg-4 col-md-7 col-sm-9 col-xs-9">
+				<a type="button" class="btn btn-link"
+					ui-sref="content.post-type-item.post-item({postTypeId: shPost.shPostType.id, postId: shPost.id})"><i
+					class="fa fa-file-o fa-2x" aria-hidden="true"
+					style="margin-right: 10px"></i> {{shPost.title}}</a>
+			</div>
+			<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+				<span class="label label-warning">
+					{{shPost.shPostType.title}}</span>
+			</div>
+			<div class="col-lg-3 hidden-md hidden-sm hidden-xs">{{shPost.summary}}</div>
+			<div class="col-lg-2 col-md-2 hidden-sm hidden-xs"
+				style="white-space: nowrap;">
+				<span am-time-ago="shPost.date"></span>
+			</div>
+		</div>
+		<div class="row" style="height: 20px; margin: 0px; margin-right: 10px">
+			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"
+				ng-show="actions[shPost.shGlobalId.id]">
+				</a> <a type="button" class="btn btn-link" href><i
+					class="fa fa-files-o" aria-hidden="true"></i> Copy</a> <a type="button"
+					class="btn btn-link" href><i class="fa fa-share"
+					aria-hidden="true"></i> Move</a> <a type="button" class="btn btn-link"
+					href ng-click="postDelete(shPost)"><i class="fa fa-trash-o"
+					aria-hidden="true"></i> Delete</a> <button type="button"
+					class="btn btn-link" ng-click="postPreview(shPost)"><i class="fa fa-eye"
+					aria-hidden="true"></i> Preview</button>
+			</div>
+		</div>
+	</div>
+</div>

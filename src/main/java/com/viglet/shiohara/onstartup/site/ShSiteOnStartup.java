@@ -18,7 +18,7 @@ public class ShSiteOnStartup {
 	ShSiteRepository shSiteRepository;
 	@Autowired
 	ShGlobalIdRepository shGlobalIdRepository;
-	
+
 	public void createDefaultRows() {
 
 		if (shSiteRepository.findAll().isEmpty()) {
@@ -29,18 +29,17 @@ public class ShSiteOnStartup {
 			shSite.setName("Sample");
 			shSite.setDescription("Sample Site");
 			shSite.setUrl("http://example.com");
-			shSite.setPostTypeLayout(
-					"{\"PT-ARTICLE\" :  \"Post Page Layout\", \n" + "\"PT-TEXT\": \"Post Page Layout\"}");
+			shSite.setPostTypeLayout("{\"PT-ARTICLE\" :  \"Post Page Layout\", \n"
+					+ "\"PT-TEXT\": \"Post Page Layout\",\n" + "\"PT-TEXT-AREA\": \"Post Page Layout\"}");
 			shSite.setDate(new Date());
 
 			shSiteRepository.saveAndFlush(shSite);
-			
+
 			ShGlobalId shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shSite);
 			shGlobalId.setType("SITE");
-			
-			shGlobalIdRepository.save(shGlobalId);			
 
+			shGlobalIdRepository.save(shGlobalId);
 
 		}
 
