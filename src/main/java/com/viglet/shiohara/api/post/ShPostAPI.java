@@ -152,7 +152,10 @@ public class ShPostAPI {
 		ShUser shUser = shUserRepository.findById(1);
 		shUser.setLastPostType(String.valueOf(shPostEdit.getShPostType().getId()));
 		shUserRepository.saveAndFlush(shUser);
-
+		
+		// Lazy
+		shPostEdit.setShPostAttrs(shPostAttrRepository.findByShPost(shPostEdit));
+		
 		return shPostEdit;
 	}
 
@@ -162,16 +165,17 @@ public class ShPostAPI {
 	public boolean delete(@PathParam("postId") UUID id) throws Exception {
 
 		ShPost shPost = shPostRepository.findById(id);
-
-		if (shPost.getShPostType().getName().equals("PT-FILE") && shPost.getShPostAttrs().size() > 0) {
-			File file = shStaticFileUtils.filePath(shPost.getShChannel(), shPost.getShPostAttrs().get(0).getStrValue());
+		List<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
+		if (shPost.getShPostType().getName().equals("PT-FILE") && shPostAttrs.size() > 0) {
+			File file = shStaticFileUtils.filePath(shPost.getShChannel(), shPostAttrs.get(0).getStrValue());
 			if (file != null) {
 				if (file.exists()) {
 					file.delete();
 				}
 			}
 		}
-		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
+		
+		for (ShPostAttr shPostAttr : shPostAttrs) {
 			shPostAttrRepository.delete(shPostAttr.getId());
 		}
 

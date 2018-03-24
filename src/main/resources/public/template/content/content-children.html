@@ -1,27 +1,6 @@
 
 <div  ng-include="'/template/breadcrumb/breadcrumb.html'">
 </div>
-<!-- <div class="settings">
-	<section class="content no-padding">
-		<fieldset class="user-details-top">
-			<div class="pull-right" style="margin: -40px 0 0;">
-				<div class="input-group">
-					0-{{(shPosts|filter:query).length}} of
-					{{(shPosts|filter:query).length}} posts&nbsp;&nbsp;
-					<button type="button" class="btn btn-default">
-						<i class="fa fa-viglet fa-angle-left"></i>
-					</button>
-					<button type="button" class="btn btn-default">
-						<i class="fa fa-viglet fa-angle-right"></i>
-					</button>
-				</div>
- 		
-			</div>
-		</fieldset>
-	</section>
-</div>
-	-->
-	
 <div class="settings">
 	<section class="content no-padding">
 
@@ -32,8 +11,7 @@
 			</div>
 			<div class="pull-right" style="margin: -40px 0 0;">
 				<a ng-if="channelId != null" ui-sref="content.channel.channel-new({channelId: channelId})" class="btn btn-viglet">New
-					Channel</a>
-
+					Channel</a>	
 			</div>
 		</fieldset>
 	</section>
@@ -50,7 +28,7 @@
 					class="glyphicon glyphicon-th"></span></a>
 			</div>
 			<div ng-if="channelId.length == null" class="btn-group">
-				<a ui-sref="content.site.channel-new({siteId: siteId})"
+				<a ui-sref="content.site.channel-new({siteId: shSite.id})"
 					class="btn btn-viglet">New Channel</a>
 			</div>
 			<ul class="nav nav-pills nav-stacked">
