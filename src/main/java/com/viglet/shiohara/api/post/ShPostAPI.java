@@ -27,7 +27,7 @@ import com.viglet.shiohara.persistence.model.reference.ShReference;
 import com.viglet.shiohara.persistence.model.user.ShUser;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.SystemObjectView;
-import com.viglet.shiohara.persistence.model.channel.ShChannel;
+import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
@@ -84,10 +84,10 @@ public class ShPostAPI {
 		List<ShPost> shPosts = new ArrayList<ShPost>();
 		for (UUID postGlobalId : postGlobalIds) {
 			ShGlobalId shPostGlobalId = shGlobalIdRepository.findById(postGlobalId);
-			ShGlobalId shChannelGlobalId = shGlobalIdRepository.findById(channeGloballId);
+			ShGlobalId shFolderGlobalId = shGlobalIdRepository.findById(channeGloballId);
 			ShPost shPost = (ShPost) shPostGlobalId.getShObject();
-			ShChannel shChannel = (ShChannel) shChannelGlobalId.getShObject();
-			shPost.setShChannel(shChannel);
+			ShFolder shFolder = (ShFolder) shFolderGlobalId.getShObject();
+			shPost.setShFolder(shFolder);
 			shPostRepository.save(shPost);
 			shPosts.add(shPost);
 		}
@@ -103,10 +103,10 @@ public class ShPostAPI {
 		List<ShPost> shPosts = new ArrayList<ShPost>();
 		for (UUID postGlobalId : postGlobalIds) {
 			ShGlobalId shPostGlobalId = shGlobalIdRepository.findById(postGlobalId);
-			ShGlobalId shChannelGlobalId = shGlobalIdRepository.findById(channeGloballId);
+			ShGlobalId shFolderGlobalId = shGlobalIdRepository.findById(channeGloballId);
 			ShPost shPost = (ShPost) shPostGlobalId.getShObject();
-			ShChannel shChannel = (ShChannel) shChannelGlobalId.getShObject();			
-			shPosts.add(shPostUtils.clone(shPost, shChannel));
+			ShFolder shFolder = (ShFolder) shFolderGlobalId.getShObject();			
+			shPosts.add(shPostUtils.clone(shPost, shFolder));
 		}
 		return shPosts;
 	}
@@ -167,7 +167,7 @@ public class ShPostAPI {
 		ShPost shPost = shPostRepository.findById(id);
 		List<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
 		if (shPost.getShPostType().getName().equals("PT-FILE") && shPostAttrs.size() > 0) {
-			File file = shStaticFileUtils.filePath(shPost.getShChannel(), shPostAttrs.get(0).getStrValue());
+			File file = shStaticFileUtils.filePath(shPost.getShFolder(), shPostAttrs.get(0).getStrValue());
 			if (file != null) {
 				if (file.exists()) {
 					file.delete();
@@ -247,8 +247,8 @@ public class ShPostAPI {
 		if (shPostAttrEdit.getShPostTypeAttr().getShWidget().getName().equals("File")) {
 
 			if (shPost.getShPostType().getName().equals("PT-FILE")) {
-				File fileFrom = shStaticFileUtils.filePath(shPost.getShChannel(), shPostAttrEdit.getStrValue());
-				File fileTo = shStaticFileUtils.filePath(shPost.getShChannel(), shPostAttr.getStrValue());
+				File fileFrom = shStaticFileUtils.filePath(shPost.getShFolder(), shPostAttrEdit.getStrValue());
+				File fileTo = shStaticFileUtils.filePath(shPost.getShFolder(), shPostAttr.getStrValue());
 				if (fileFrom != null && fileTo != null) {
 					if (fileFrom.exists()) {
 						fileFrom.renameTo(fileTo);

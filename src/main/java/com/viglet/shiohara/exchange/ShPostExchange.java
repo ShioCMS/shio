@@ -15,7 +15,7 @@ public class ShPostExchange {
 	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm'Z'")
 	private Date date;
 
-	private UUID channel;
+	private UUID folder;
 
 	private String postType;
 
@@ -46,12 +46,12 @@ public class ShPostExchange {
 		this.date = date;
 	}
 
-	public UUID getChannel() {
-		return channel;
+	public UUID getFolder() {
+		return folder;
 	}
 
-	public void setChannel(UUID channel) {
-		this.channel = channel;
+	public void setFolder(UUID folder) {
+		this.folder = folder;
 	}
 
 	public Map<String, Object> getFields() {

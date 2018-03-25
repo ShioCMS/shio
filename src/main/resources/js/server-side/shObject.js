@@ -2,8 +2,8 @@ var shNavigationComponent = spring.getBean('shNavigationComponent', Java
 		.type('com.viglet.shiohara.component.ShNavigationComponent'));
 var shQueryComponent = spring.getBean('shQueryComponent', Java
 		.type('com.viglet.shiohara.component.ShQueryComponent'));
-var shChannelUtils = spring.getBean('shChannelUtils', Java
-		.type('com.viglet.shiohara.utils.ShChannelUtils'));
+var shFolderUtils = spring.getBean('shFolderUtils', Java
+		.type('com.viglet.shiohara.utils.ShFolderUtils'));
 var shPostUtils = spring.getBean('shPostUtils', Java
 		.type('com.viglet.shiohara.utils.ShPostUtils'));
 var viglet = this.viglet || {};
@@ -18,11 +18,11 @@ viglet.shiohara = viglet.shiohara || {};
 viglet.shiohara.shObject = function() {
 
 	/**
-	 * @desc Returns Channel Navigation Component
+	 * @desc Returns Folder Navigation Component
 	 * @param siteName,
 	 *            Site Name.
 	 * @param home,
-	 *            true or false to show the Home channel.
+	 *            true or false to show the Home folder.
 	 * @public
 	 */
 	this.navigation = function(siteName, home) {
@@ -31,14 +31,14 @@ viglet.shiohara.shObject = function() {
 
 	/**
 	 * @desc Returns Query Component
-	 * @param channelId,
-	 *            Channel Id.
+	 * @param folderId,
+	 *            Folder Id.
 	 * @param postTypeName,
 	 *            Post Type Name.
 	 * @public
 	 */
-	this.query = function(channelId, postTypeName) {
-		return Java.from(shQueryComponent.findByChannelName(channelId,
+	this.query = function(folderId, postTypeName) {
+		return Java.from(shQueryComponent.findByFolderName(folderId,
 				postTypeName));
 	}
 
@@ -53,13 +53,13 @@ viglet.shiohara.shObject = function() {
 	}
 
 	/**
-	 * @desc Generate Channel Link
-	 * @param channelId,
-	 *            Channel Id.
+	 * @desc Generate Folder Link
+	 * @param folderId,
+	 *            Folder Id.
 	 * @public
 	 */
-	this.generateChannelLink = function(channelId) {
-		return shChannelUtils.generateChannelLink(channelId);
+	this.generateFolderLink = function(folderId) {
+		return shFolderUtils.generateFolderLink(folderId);
 	}
 
 };

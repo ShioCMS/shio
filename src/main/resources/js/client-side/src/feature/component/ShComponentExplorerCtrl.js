@@ -3,17 +3,17 @@ shioharaApp.controller('ShComponentExplorerCtrl', [
 		'shAPIServerService',
 		'$http',
 		'$uibModalInstance',
-		'channelId',
+		'folderId',
 		'objectType',
 		'shWidgetFileFactory',
 		function($scope, shAPIServerService, $http, $uibModalInstance,
-				channelId, objectType, shWidgetFileFactory) {
+				folderId, objectType, shWidgetFileFactory) {
 			var $ctrl = this;
 			$ctrl.objectTypeName = "Object";
-			$ctrl.channelDoubleClick = false;
-			if (angular.equals(objectType, "shChannel")) {
-				$ctrl.objectTypeName = "Channel";
-				$ctrl.channelDoubleClick = true;
+			$ctrl.folderDoubleClick = false;
+			if (angular.equals(objectType, "shFolder")) {
+				$ctrl.objectTypeName = "Folder";
+				$ctrl.folderDoubleClick = true;
 			}
 			$ctrl.enableInsertButton = false;
 			$ctrl.shObjectSelected = null;
@@ -26,19 +26,19 @@ shioharaApp.controller('ShComponentExplorerCtrl', [
 				$uibModalInstance.dismiss('cancel');
 			};
 			$scope.shSite = null;
-			$scope.shChannels = null;
+			$scope.shFolders = null;
 			$scope.shPosts = null;
 			$scope.breadcrumb = null;
 
 			// BEGIN Functions
-			$scope.channelList = function(channelId) {
+			$scope.folderList = function(folderId) {
 				$ctrl.enableInsertButton = false;
 				$ctrl.shPostSelected = null;
 				$scope.$evalAsync($http.get(
 						shAPIServerService.get().concat(
-								"/channel/" + channelId + "/list/" + objectType))
+								"/folder/" + folderId + "/list/" + objectType))
 						.then(function(response) {
-							$scope.shChannels = response.data.shChannels;
+							$scope.shFolders = response.data.shFolders;
 							$scope.shPosts = response.data.shPosts;
 							$scope.breadcrumb = response.data.breadcrumb;
 							$scope.shSite = response.data.shSite;							
@@ -49,9 +49,9 @@ shioharaApp.controller('ShComponentExplorerCtrl', [
 				$ctrl.shPostSelected = null;
 				$scope.$evalAsync($http.get(
 						shAPIServerService.get().concat(
-								"/site/" + siteId + "/channel")).then(
+								"/site/" + siteId + "/folder")).then(
 						function(response) {
-							$scope.shChannels = response.data.shChannels;
+							$scope.shFolders = response.data.shFolders;
 							$scope.shPosts = response.data.shPosts;
 							$scope.shSite = response.data.shSite;
 						}));
@@ -62,12 +62,12 @@ shioharaApp.controller('ShComponentExplorerCtrl', [
 				$ctrl.enableInsertButton = true;
 			}
 			
-			$scope.selectedChannel = function(shChannel) {
-				$ctrl.shObjectSelected = shChannel;
+			$scope.selectedFolder = function(shFolder) {
+				$ctrl.shObjectSelected = shFolder;
 				$ctrl.enableInsertButton = true;
 			}
 			// END Functions
 
-			$scope.channelList(channelId);
+			$scope.folderList(folderId);
 
 		} ]);

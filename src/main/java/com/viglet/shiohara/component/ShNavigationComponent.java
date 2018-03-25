@@ -6,9 +6,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.viglet.shiohara.persistence.model.channel.ShChannel;
+import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.site.ShSite;
-import com.viglet.shiohara.persistence.repository.channel.ShChannelRepository;
+import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
 
 @Component
@@ -16,16 +16,16 @@ public class ShNavigationComponent {
 	@Autowired
 	ShSiteRepository shSiteRepository;
 	@Autowired
-	ShChannelRepository shChannelRepository;
+	ShFolderRepository shFolderRepository;
 
-	public List<ShChannel> navigation(String siteName, boolean home) {
+	public List<ShFolder> navigation(String siteName, boolean home) {
 		ShSite shSite = shSiteRepository.findByName(siteName);
-		ShChannel homeChannel = shChannelRepository.findByShSiteAndName(shSite, "Home");
-		List<ShChannel> shChannels = new ArrayList<ShChannel>();
+		ShFolder homeFolder = shFolderRepository.findByShSiteAndName(shSite, "Home");
+		List<ShFolder> shFolders = new ArrayList<ShFolder>();
 		if (home) {
-			shChannels.add(homeChannel);
+			shFolders.add(homeFolder);
 		}
-		shChannels.addAll(shChannelRepository.findByParentChannel(homeChannel));
-		return shChannels;
+		shFolders.addAll(shFolderRepository.findByParentFolder(homeFolder));
+		return shFolders;
 	}
 }

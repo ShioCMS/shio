@@ -5,7 +5,7 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
-import com.viglet.shiohara.onstartup.channel.ShChannelOnStartup;
+import com.viglet.shiohara.onstartup.folder.ShFolderOnStartup;
 import com.viglet.shiohara.onstartup.post.ShPostOnStartup;
 import com.viglet.shiohara.onstartup.post.type.ShPostTypeOnStartup;
 import com.viglet.shiohara.onstartup.site.ShSiteOnStartup;
@@ -36,7 +36,7 @@ public class ShOnStartup implements ApplicationRunner {
 	@Autowired
 	private ShUserOnStartup shUserOnStartup;
 	@Autowired
-	private ShChannelOnStartup shChannelOnStartup;
+	private ShFolderOnStartup shFolderOnStartup;
 	
 	@Override
 	public void run(ApplicationArguments arg0) throws Exception {
@@ -51,7 +51,7 @@ public class ShOnStartup implements ApplicationRunner {
 			shWidgetOnStartup.createDefaultRows();
 			shPostTypeOnStartup.createDefaultRows();
 			shUserOnStartup.createDefaultRows();
-			shChannelOnStartup.createDefaultRows();
+			shFolderOnStartup.createDefaultRows();
 			shPostOnStartup.createDefaultRows();
 			shConfigVarOnStartup.createDefaultRows();
 			

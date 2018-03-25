@@ -2,7 +2,7 @@ shioharaApp.factory('shStaticFileFactory', [
 	'$q','Upload', 'shAPIServerService','$timeout',
 		function($q,Upload, shAPIServerService,$timeout) {
 			return {
-				uploadFile : function(channelId, shPostAttr, key, postType, shPost, numberOfFileWidgets ) {
+				uploadFile : function(folderId, shPostAttr, key, postType, shPost, numberOfFileWidgets ) {
 					var deferredFile = $q.defer();
 					if (shPostAttr.shPostTypeAttr.shWidget.name == "File"
 							&& shPostAttr.file != null) {
@@ -22,7 +22,7 @@ shioharaApp.factory('shStaticFileFactory', [
 																'/staticfile/upload'),
 												data : {
 													file : file,
-													channelId : channelId,
+													folderId : folderId,
 													createPost : createPost
 												}
 											})

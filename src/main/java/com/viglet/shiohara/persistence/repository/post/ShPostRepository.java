@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-import com.viglet.shiohara.persistence.model.channel.ShChannel;
+import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 
@@ -18,15 +18,15 @@ public interface ShPostRepository extends JpaRepository<ShPost, UUID> {
 	
 	List<ShPost> findAll();
 
-	List<ShPost> findByShChannel(ShChannel shChannel);
+	List<ShPost> findByShFolder(ShFolder shFolder);
 	
-	List<ShPost> findByShChannelAndShPostType(ShChannel shChannel, ShPostType shPostType);
+	List<ShPost> findByShFolderAndShPostType(ShFolder shFolder, ShPostType shPostType);
 	
 	ShPost findById(UUID id);
 	
 	ShPost findByTitle(String title);
 	
-	ShPost findByShChannelAndTitle(ShChannel shChannel, String title);
+	ShPost findByShFolderAndTitle(ShFolder shFolder, String title);
 	
 	ShPost save(ShPost shPost);
 

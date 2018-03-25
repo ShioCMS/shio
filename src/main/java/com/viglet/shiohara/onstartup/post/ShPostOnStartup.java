@@ -7,13 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
-import com.viglet.shiohara.persistence.model.channel.ShChannel;
+import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.model.site.ShSite;
-import com.viglet.shiohara.persistence.repository.channel.ShChannelRepository;
+import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
@@ -35,7 +35,7 @@ public class ShPostOnStartup {
 	@Autowired
 	private ShSiteRepository shSiteRepository;
 	@Autowired
-	private ShChannelRepository shChannelRepository;
+	private ShFolderRepository shFolderRepository;
 	@Autowired
 	private ShGlobalIdRepository shGlobalIdRepository;
 
@@ -44,19 +44,19 @@ public class ShPostOnStartup {
 
 		if (shPostRepository.findAll().isEmpty()) {
 
-			ShChannel shChannelHome = shChannelRepository.findByShSiteAndName(shSite, "Home");
-			ShChannel shChannelArticle = shChannelRepository.findByShSiteAndName(shSite, "Article");
-			ShChannel shChannelNews = shChannelRepository.findByShSiteAndName(shSite, "News");
-			ShChannel shChannelTemplates = shChannelRepository.findByShSiteAndName(shSite, "Templates");
-			ShChannel shChannelLayouts = shChannelRepository.findByShSiteAndName(shSite, "Layouts");
-			ShChannel shChannelText = shChannelRepository.findByShSiteAndName(shSite, "Text");
-			ShChannel shChannelThemes = shChannelRepository.findByShSiteAndName(shSite, "Themes");
+			ShFolder shFolderHome = shFolderRepository.findByShSiteAndName(shSite, "Home");
+			ShFolder shFolderArticle = shFolderRepository.findByShSiteAndName(shSite, "Article");
+			ShFolder shFolderNews = shFolderRepository.findByShSiteAndName(shSite, "News");
+			ShFolder shFolderTemplates = shFolderRepository.findByShSiteAndName(shSite, "Templates");
+			ShFolder shFolderLayouts = shFolderRepository.findByShSiteAndName(shSite, "Layouts");
+			ShFolder shFolderText = shFolderRepository.findByShSiteAndName(shSite, "Text");
+			ShFolder shFolderThemes = shFolderRepository.findByShSiteAndName(shSite, "Themes");
 
 			ShPostType shPostRegion = shPostTypeRepository.findByName("PT-REGION");
 			ShPostType shPostType = shPostTypeRepository.findByName("PT-TEXT");
 			ShPostType shPostTypeArea = shPostTypeRepository.findByName("PT-TEXT-AREA");
 			ShPostType shPostArticle = shPostTypeRepository.findByName("PT-ARTICLE");
-			ShPostType shPostChannelIndex = shPostTypeRepository.findByName("PT-CHANNEL-INDEX");
+			ShPostType shPostFolderIndex = shPostTypeRepository.findByName("PT-CHANNEL-INDEX");
 
 			// Post Text
 
@@ -66,7 +66,7 @@ public class ShPostOnStartup {
 			shPost.setShPostType(shPostType);
 			shPost.setSummary(null);
 			shPost.setTitle("Post01");
-			shPost.setShChannel(shChannelHome);
+			shPost.setShFolder(shFolderHome);
 			shPostRepository.save(shPost);
 
 			ShGlobalId shGlobalId = new ShGlobalId();
@@ -92,7 +92,7 @@ public class ShPostOnStartup {
 			shPost.setShPostType(shPostTypeArea);
 			shPost.setSummary(null);
 			shPost.setTitle("Post Text Area 01");
-			shPost.setShChannel(shChannelHome);
+			shPost.setShFolder(shFolderHome);
 
 			shPostRepository.save(shPost);
 
@@ -119,7 +119,7 @@ public class ShPostOnStartup {
 			shPost.setShPostType(shPostArticle);
 			shPost.setSummary("A short description");
 			shPost.setTitle("Post Article Title");
-			shPost.setShChannel(shChannelArticle);
+			shPost.setShFolder(shFolderArticle);
 
 			shPostRepository.save(shPost);
 
@@ -159,14 +159,14 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			// Post Article (Same Name, but different channel)
+			// Post Article (Same Name, but different folder)
 
 			shPost = new ShPost();
 			shPost.setDate(new Date());
 			shPost.setShPostType(shPostArticle);
 			shPost.setSummary("A short description 2");
 			shPost.setTitle("Post Article Title");
-			shPost.setShChannel(shChannelNews);
+			shPost.setShFolder(shFolderNews);
 
 			shPostRepository.save(shPost);
 
@@ -213,7 +213,7 @@ public class ShPostOnStartup {
 			shPost.setShPostType(shPostTheme);
 			shPost.setSummary("Sample Theme");
 			shPost.setTitle("Sample Theme");
-			shPost.setShChannel(shChannelThemes);
+			shPost.setShFolder(shFolderThemes);
 
 			shPostRepository.save(shPost);
 
@@ -270,14 +270,14 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			// Post Channel Index Home
+			// Post Folder Index Home
 
 			shPost = new ShPost();
 			shPost.setDate(new Date());
-			shPost.setShPostType(shPostChannelIndex);
-			shPost.setSummary("Channel Index");
+			shPost.setShPostType(shPostFolderIndex);
+			shPost.setSummary("Folder Index");
 			shPost.setTitle("index");
-			shPost.setShChannel(shChannelHome);
+			shPost.setShFolder(shFolderHome);
 
 			shPostRepository.save(shPost);
 
@@ -287,7 +287,7 @@ public class ShPostOnStartup {
 
 			shGlobalIdRepository.save(shGlobalId);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "TITLE");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex, "TITLE");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -297,7 +297,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "DESCRIPTION");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex, "DESCRIPTION");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -307,23 +307,23 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "PAGE-LAYOUT");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex, "PAGE-LAYOUT");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-			shPostAttr.setStrValue("Channel Page Layout");
+			shPostAttr.setStrValue("Folder Page Layout");
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
 
-			// Post Channel Index Article
+			// Post Folder Index Article
 			shPost = new ShPost();
 			shPost.setDate(new Date());
-			shPost.setShPostType(shPostChannelIndex);
-			shPost.setSummary("Channel Index");
+			shPost.setShPostType(shPostFolderIndex);
+			shPost.setSummary("Folder Index");
 			shPost.setTitle("index");
-			shPost.setShChannel(shChannelArticle);
+			shPost.setShFolder(shFolderArticle);
 
 			shPostRepository.save(shPost);
 
@@ -333,7 +333,7 @@ public class ShPostOnStartup {
 
 			shGlobalIdRepository.save(shGlobalId);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "TITLE");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex, "TITLE");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -343,7 +343,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "DESCRIPTION");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex, "DESCRIPTION");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -353,23 +353,23 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "PAGE-LAYOUT");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex, "PAGE-LAYOUT");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-			shPostAttr.setStrValue("Channel Page Layout");
+			shPostAttr.setStrValue("Folder Page Layout");
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
 
-			// Post Channel Index News
+			// Post Folder Index News
 			shPost = new ShPost();
 			shPost.setDate(new Date());
-			shPost.setShPostType(shPostChannelIndex);
-			shPost.setSummary("Channel Index");
+			shPost.setShPostType(shPostFolderIndex);
+			shPost.setSummary("Folder Index");
 			shPost.setTitle("index");
-			shPost.setShChannel(shChannelNews);
+			shPost.setShFolder(shFolderNews);
 
 			shPostRepository.save(shPost);
 
@@ -379,7 +379,7 @@ public class ShPostOnStartup {
 
 			shGlobalIdRepository.save(shGlobalId);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "TITLE");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex, "TITLE");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -389,7 +389,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "DESCRIPTION");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex, "DESCRIPTION");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -399,23 +399,23 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "PAGE-LAYOUT");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex, "PAGE-LAYOUT");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-			shPostAttr.setStrValue("Channel Page Layout");
+			shPostAttr.setStrValue("Folder Page Layout");
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
 
-			// Post Channel Index Text
+			// Post Folder Index Text
 			shPost = new ShPost();
 			shPost.setDate(new Date());
-			shPost.setShPostType(shPostChannelIndex);
-			shPost.setSummary("Channel Index");
+			shPost.setShPostType(shPostFolderIndex);
+			shPost.setSummary("Folder Index");
 			shPost.setTitle("index");
-			shPost.setShChannel(shChannelText);
+			shPost.setShFolder(shFolderText);
 
 			shPostRepository.save(shPost);
 
@@ -425,7 +425,7 @@ public class ShPostOnStartup {
 
 			shGlobalIdRepository.save(shGlobalId);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "TITLE");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex, "TITLE");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -435,7 +435,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "DESCRIPTION");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex, "DESCRIPTION");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -445,12 +445,12 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "PAGE-LAYOUT");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex, "PAGE-LAYOUT");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-			shPostAttr.setStrValue("Channel Page Layout");
+			shPostAttr.setStrValue("Folder Page Layout");
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
@@ -463,7 +463,7 @@ public class ShPostOnStartup {
 			shPost.setShPostType(shPostTypePageLayout);
 			shPost.setSummary("Post Page Layout");
 			shPost.setTitle("Post Page Layout");
-			shPost.setShChannel(shChannelLayouts);
+			shPost.setShFolder(shFolderLayouts);
 
 			shPostRepository.save(shPost);
 
@@ -538,7 +538,7 @@ public class ShPostOnStartup {
 			shPost.setShPostType(shPostRegion);
 			shPost.setSummary("Navigation Template");
 			shPost.setTitle("Navigation");
-			shPost.setShChannel(shChannelTemplates);
+			shPost.setShFolder(shFolderTemplates);
 
 			shPostRepository.save(shPost);
 
@@ -608,7 +608,7 @@ public class ShPostOnStartup {
 			shPost.setShPostType(shPostRegion);
 			shPost.setSummary("Content Template");
 			shPost.setTitle("Content");
-			shPost.setShChannel(shChannelTemplates);
+			shPost.setShFolder(shFolderTemplates);
 
 			shPostRepository.save(shPost);
 
@@ -673,14 +673,14 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			// Channel Page Layout
+			// Folder Page Layout
 
 			shPost = new ShPost();
 			shPost.setDate(new Date());
 			shPost.setShPostType(shPostTypePageLayout);
-			shPost.setSummary("Channel Page Layout");
-			shPost.setTitle("Channel Page Layout");
-			shPost.setShChannel(shChannelLayouts);
+			shPost.setSummary("Folder Page Layout");
+			shPost.setTitle("Folder Page Layout");
+			shPost.setShFolder(shFolderLayouts);
 
 			shPostRepository.save(shPost);
 
@@ -740,21 +740,21 @@ public class ShPostOnStartup {
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttr.setStrValue("<!DOCTYPE html>\n" + "<html>\n" + "    <head>\n" + "        <title>\n"
 					+ "            Sample Site | Viglet Shiohara\n" + "        </title>\n" + "        {{{theme.css}}}\n"
-					+ "    </head>\n" + "    <body>\n" + "        <div sh-region=\"NavigationChannel\">\n"
+					+ "    </head>\n" + "    <body>\n" + "        <div sh-region=\"NavigationFolder\">\n"
 					+ "            Navigation Placeholder\n" + "        </div>\n"
-					+ "        <div sh-region=\"ContentChannel\">\n" + "            Content Placeholder\n"
+					+ "        <div sh-region=\"ContentFolder\">\n" + "            Content Placeholder\n"
 					+ "        </div>\n" + "    </body>\n" + "    {{{theme.javascript}}}\n" + "</html>");
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
-			// Page Template NavigationChannel
+			// Page Template NavigationFolder
 
 			shPost = new ShPost();
 			shPost.setDate(new Date());
 			shPost.setShPostType(shPostRegion);
-			shPost.setSummary("Navigation Channel Template");
-			shPost.setTitle("NavigationChannel");
-			shPost.setShChannel(shChannelTemplates);
+			shPost.setSummary("Navigation Folder Template");
+			shPost.setTitle("NavigationFolder");
+			shPost.setShFolder(shFolderTemplates);
 
 			shPostRepository.save(shPost);
 
@@ -809,26 +809,26 @@ public class ShPostOnStartup {
 					+ "        <button class=\"navbar-toggler\" type=\"button\" data-toggle=\"collapse\" data-target=\"#navbarResponsive\" aria-controls=\"navbarResponsive\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">\n"
 					+ "          <span class=\"navbar-toggler-icon\"></span>\n" + "        </button>\n"
 					+ "        <div class=\"collapse navbar-collapse\" id=\"navbarResponsive\">\n"
-					+ "          <ul class=\"navbar-nav ml-auto\">\n" + "                {{#each channels}}\n"
+					+ "          <ul class=\"navbar-nav ml-auto\">\n" + "                {{#each folders}}\n"
 					+ "                    <li class=\"nav-item\">\n"
 					+ "                    <a class=\"nav-link\" href=\"{{../site.system.link}}{{this.system.link}}\">{{this.system.title}}</a>\n"
 					+ "                    </li>\n" + "                {{/each}}\n"
 					+ "            <li class=\"nav-item\">\n"
-					+ "              <a class=\"nav-link\" href=\"/#!/content/list/channel/{{system.id}}\">Come back to Channel</a>\n"
+					+ "              <a class=\"nav-link\" href=\"/#!/content/list/folder/{{system.id}}\">Come back to Folder</a>\n"
 					+ "            </li>\n" + "          </ul>\n" + "        </div>\n" + "      </div>\n"
 					+ "    </nav>");
 			shPostAttr.setType(1);
 
 			shPostAttrRepository.save(shPostAttr);
 
-			// Page Template ContentChannel
+			// Page Template ContentFolder
 
 			shPost = new ShPost();
 			shPost.setDate(new Date());
 			shPost.setShPostType(shPostRegion);
-			shPost.setSummary("Content Channel Template");
-			shPost.setTitle("ContentChannel");
-			shPost.setShChannel(shChannelTemplates);
+			shPost.setSummary("Content Folder Template");
+			shPost.setTitle("ContentFolder");
+			shPost.setShFolder(shFolderTemplates);
 
 			shPostRepository.save(shPost);
 

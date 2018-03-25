@@ -64,15 +64,15 @@ shioharaApp.config([
 				}
 			}).state('content.children.site-children', {
 				url : '/site/:siteId',
-				templateUrl : 'template/channel/channel-children.html',
+				templateUrl : 'template/folder/folder-children.html',
 				controller : 'ShSiteChildrenCtrl',
 				data : {
 					pageTitle : 'Content | Viglet Shiohara'
 				}
-			}).state('content.children.channel-children', {
-				url : '/channel/:channelId',
-				templateUrl : 'template/channel/channel-children.html',
-				controller : 'ShChannelChildrenCtrl',
+			}).state('content.children.folder-children', {
+				url : '/folder/:folderId',
+				templateUrl : 'template/folder/folder-children.html',
+				controller : 'ShFolderChildrenCtrl',
 				data : {
 					pageTitle : 'Content | Viglet Shiohara'
 				}
@@ -112,7 +112,7 @@ shioharaApp.config([
 					pageTitle : 'Post Type Editor | Viglet Shiohara'
 				}
 			}).state('content.post-type-item.post-item-new', {
-				url : '/channel/:channelId',
+				url : '/folder/:folderId',
 				templateUrl : 'template/post/item.html',
 				controller : 'ShPostNewCtrl',
 				data : {
@@ -130,14 +130,14 @@ shioharaApp.config([
 				templateUrl : 'template/post/form.html',
 				controller : 'ShPostFormCtrl',
 				data : {}
-			}).state('content.channel', {
-				url : '/channel/:channelId'
-			}).state('content.channel.edit', {
+			}).state('content.folder', {
+				url : '/folder/:folderId'
+			}).state('content.folder.edit', {
 				url : '/edit',
-				templateUrl : 'template/channel/channel-edit.html',
-				controller : 'ShChannelEditCtrl',
+				templateUrl : 'template/folder/folder-edit.html',
+				controller : 'ShFolderEditCtrl',
 				data : {
-					pageTitle : 'Edit Channel | Viglet Shiohara'
+					pageTitle : 'Edit Folder | Viglet Shiohara'
 				}
 			}).state('content.site', {
 				url : '/site/:siteId'
@@ -155,24 +155,24 @@ shioharaApp.config([
 				data : {
 					pageTitle : 'Import Site | Viglet Shiohara'
 				}
-			}).state('content.channel.channel-new', {
-				url : '/channel',
-				templateUrl : 'template/channel/channel-new.html',
-				controller : 'ShChannelNewCtrl',
+			}).state('content.folder.folder-new', {
+				url : '/folder',
+				templateUrl : 'template/folder/folder-new.html',
+				controller : 'ShFolderNewCtrl',
 				data : {
-					pageTitle : 'New Channel | Viglet Shiohara'
+					pageTitle : 'New Folder | Viglet Shiohara'
 				}
-			}).state('content.site.channel-new', {
-				url : '/channel',
-				templateUrl : 'template/channel/channel-new.html',
-				controller : 'ShChannelNewCtrl',
+			}).state('content.site.folder-new', {
+				url : '/folder',
+				templateUrl : 'template/folder/folder-new.html',
+				controller : 'ShFolderNewCtrl',
 				data : {
-					pageTitle : 'New Channel | Viglet Shiohara'
+					pageTitle : 'New Folder | Viglet Shiohara'
 				}
-			}).state('content.channel.post-type-select', {
+			}).state('content.folder.post-type-select', {
 				url : '/post/type',
-				templateUrl : 'template/post/type/select-with-channel.html',
-				controller : 'ShPostTypeSelectWithChannelCtrl',
+				templateUrl : 'template/post/type/select-with-folder.html',
+				controller : 'ShPostTypeSelectWithFolderCtrl',
 				data : {
 					pageTitle : 'Post Type Selection | Viglet Shiohara'
 				}

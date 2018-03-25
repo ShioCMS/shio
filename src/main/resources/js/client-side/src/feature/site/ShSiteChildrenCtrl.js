@@ -10,20 +10,20 @@ shioharaApp.controller('ShSiteChildrenCtrl', [
 		"shAPIServerService",
 		'vigLocale',
 		'$translate',
-		"shChannelFactory",
+		"shFolderFactory",
 		"shPostFactory",
 		function($scope, $http, $state, $stateParams, $rootScope, Token,
 				shUserResource, shPostTypeResource, shAPIServerService, vigLocale,
-				$translate, shChannelFactory, shPostFactory) {
+				$translate, shFolderFactory, shPostFactory) {
 			$scope.vigLanguage = vigLocale.getLocale().substring(0, 2);
 			$translate.use($scope.vigLanguage);
 			$scope.siteId = $stateParams.siteId;
-			$scope.channelId = null;
+			$scope.folderId = null;
 			$scope.accessToken = Token.get();
 			$scope.shUser = null;
 			$scope.shSite = null;
 			$scope.shLastPostType = null;
-			$scope.shChannels = null;		
+			$scope.shFolders = null;		
 			$rootScope.$state = $state;
 			$scope.breadcrumb = null;	
 			$scope.shStateObjects = [];
@@ -32,15 +32,15 @@ shioharaApp.controller('ShSiteChildrenCtrl', [
 			
 			$scope.$evalAsync($http.get(
 					shAPIServerService.get().concat(
-							"/site/" + $scope.siteId +"/channel"))
+							"/site/" + $scope.siteId +"/folder"))
 					.then(function(response) {
-						$scope.shChannels = response.data.shChannels;
+						$scope.shFolders = response.data.shFolders;
 						$scope.shSite = response.data.shSite;
 						$scope.$parent.shSite = $scope.shSite;
-						angular.forEach($scope.shChannels, function(shChannel, key) {
-							$scope.shStateObjects[shChannel.shGlobalId.id] = false;
-							$scope.shObjects[shChannel.shGlobalId.id] = shChannel;
-							$scope.actions[shChannel.shGlobalId.id] = false ;
+						angular.forEach($scope.shFolders, function(shFolder, key) {
+							$scope.shStateObjects[shFolder.shGlobalId.id] = false;
+							$scope.shObjects[shFolder.shGlobalId.id] = shFolder;
+							$scope.actions[shFolder.shGlobalId.id] = false ;
 						});
 					}));
 			
@@ -58,7 +58,7 @@ shioharaApp.controller('ShSiteChildrenCtrl', [
 				$scope.actions[shGlobalId.id]=value;
 			}
 			
-			$scope.channelDelete = function(shChannel) {
-				shChannelFactory.deleteFromList(shChannel, $scope.shChannels);
+			$scope.folderDelete = function(shFolder) {
+				shFolderFactory.deleteFromList(shFolder, $scope.shFolders);
 			}
 		} ]);

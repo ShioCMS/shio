@@ -36,7 +36,7 @@ shioharaApp.controller('ShModalDeleteObjectCtrl', [
 			};
 
 			$ctrl.selectFile = function() {
-				var modalInstance = shWidgetFileFactory.modalSelectFile($ctrl.shObject.shChannel.id);
+				var modalInstance = shWidgetFileFactory.modalSelectFile($ctrl.shObject.shFolder.id);
 				modalInstance.result.then(function(shPostSelected) {
 					// Selected Replace and Remove it
 					$http.post(

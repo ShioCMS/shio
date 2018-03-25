@@ -2,7 +2,7 @@ package com.viglet.shiohara.api.post;
 
 import java.util.ArrayList;
 
-import com.viglet.shiohara.persistence.model.channel.ShChannel;
+import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 
@@ -10,7 +10,7 @@ public class ShPostWIthBreadcrumb {
 
 	ShPost shPost;
 	
-	ArrayList<ShChannel> breadcrumb;
+	ArrayList<ShFolder> breadcrumb;
 	
 	ShSite shSite;
 
@@ -22,11 +22,11 @@ public class ShPostWIthBreadcrumb {
 		this.shPost = shPost;
 	}
 
-	public ArrayList<ShChannel> getBreadcrumb() {
+	public ArrayList<ShFolder> getBreadcrumb() {
 		return breadcrumb;
 	}
 
-	public void setBreadcrumb(ArrayList<ShChannel> breadcrumb) {
+	public void setBreadcrumb(ArrayList<ShFolder> breadcrumb) {
 		this.breadcrumb = breadcrumb;
 	}
 
