@@ -209,7 +209,7 @@ public class ShImportAPI {
 					ShGlobalId shGlobalId = new ShGlobalId();
 					shGlobalId.setId(shFolderExchange.getGlobalId());
 					shGlobalId.setShObject(shFolderChild);
-					shGlobalId.setType("CHANNEL");
+					shGlobalId.setType("FOLDER");
 
 					shGlobalIdRepository.save(shGlobalId);
 

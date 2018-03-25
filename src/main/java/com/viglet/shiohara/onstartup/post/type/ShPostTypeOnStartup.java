@@ -562,7 +562,7 @@ public class ShPostTypeOnStartup {
 			// Folder Index
 
 			shPostType = new ShPostType();
-			shPostType.setName("PT-CHANNEL-INDEX");
+			shPostType.setName("PT-FOLDER-INDEX");
 			shPostType.setTitle("Folder Index");
 			shPostType.setDate(Calendar.getInstance().getTime());
 			shPostType.setDescription("Folder Index Post Type");

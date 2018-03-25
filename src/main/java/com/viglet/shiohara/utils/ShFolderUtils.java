@@ -2,6 +2,7 @@ package com.viglet.shiohara.utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
+import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.site.ShSite;
@@ -163,4 +165,26 @@ public class ShFolderUtils {
 		shFolderRepository.delete(shFolder.getId());
 		return true;
 	}
+	
+	public ShFolder copy(ShFolder shFolder, ShFolder shFolderDest) {
+		// TODO: Save as Root Folder (into Site)
+		// TODO: Copy objects into Folder
+		ShFolder shFolderCopy = new ShFolder();
+		shFolderCopy.setDate(new Date());
+		shFolderCopy.setParentFolder(shFolderDest);
+		shFolderCopy.setName(shFolder.getName());
+		shFolderCopy.setRootFolder((byte) 0);
+		shFolderCopy.setShSite(null);		
+		shFolderRepository.save(shFolderCopy);
+
+		ShGlobalId shGlobalId = new ShGlobalId();
+		shGlobalId.setShObject(shFolderCopy);
+		shGlobalId.setType("FOLDER");
+
+		shGlobalIdRepository.saveAndFlush(shGlobalId);
+		shFolderCopy.setShGlobalId(shGlobalId);
+		
+		return shFolderCopy;
+	}
+
 }

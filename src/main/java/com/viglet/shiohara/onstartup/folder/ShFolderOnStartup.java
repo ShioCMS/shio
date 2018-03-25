@@ -40,7 +40,7 @@ public class ShFolderOnStartup {
 
 			ShGlobalId shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shFolderSystem);
-			shGlobalId.setType("CHANNEL");
+			shGlobalId.setType("FOLDER");
 
 			shGlobalIdRepository.save(shGlobalId);
 
@@ -56,7 +56,7 @@ public class ShFolderOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shFolderSystemTemplates);
-			shGlobalId.setType("CHANNEL");
+			shGlobalId.setType("FOLDER");
 
 			shGlobalIdRepository.save(shGlobalId);
 
@@ -72,7 +72,7 @@ public class ShFolderOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shFolderSystemLayouts);
-			shGlobalId.setType("CHANNEL");
+			shGlobalId.setType("FOLDER");
 
 			shGlobalIdRepository.save(shGlobalId);
 
@@ -88,7 +88,7 @@ public class ShFolderOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shFolderSystemThemes);
-			shGlobalId.setType("CHANNEL");
+			shGlobalId.setType("FOLDER");
 
 			shGlobalIdRepository.save(shGlobalId);
 
@@ -104,7 +104,7 @@ public class ShFolderOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shFolderHome);
-			shGlobalId.setType("CHANNEL");
+			shGlobalId.setType("FOLDER");
 
 			shGlobalIdRepository.save(shGlobalId);
 
@@ -120,7 +120,7 @@ public class ShFolderOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shFolderArticle);
-			shGlobalId.setType("CHANNEL");
+			shGlobalId.setType("FOLDER");
 
 			shGlobalIdRepository.save(shGlobalId);
 
@@ -136,7 +136,7 @@ public class ShFolderOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shFolderText);
-			shGlobalId.setType("CHANNEL");
+			shGlobalId.setType("FOLDER");
 
 			shGlobalIdRepository.save(shGlobalId);
 
@@ -152,7 +152,7 @@ public class ShFolderOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shFolderNews);
-			shGlobalId.setType("CHANNEL");
+			shGlobalId.setType("FOLDER");
 
 			shGlobalIdRepository.save(shGlobalId);
 

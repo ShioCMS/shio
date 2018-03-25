@@ -56,7 +56,7 @@ public class ShPostOnStartup {
 			ShPostType shPostType = shPostTypeRepository.findByName("PT-TEXT");
 			ShPostType shPostTypeArea = shPostTypeRepository.findByName("PT-TEXT-AREA");
 			ShPostType shPostArticle = shPostTypeRepository.findByName("PT-ARTICLE");
-			ShPostType shPostFolderIndex = shPostTypeRepository.findByName("PT-CHANNEL-INDEX");
+			ShPostType shPostFolderIndex = shPostTypeRepository.findByName("PT-FOLDER-INDEX");
 
 			// Post Text
 
