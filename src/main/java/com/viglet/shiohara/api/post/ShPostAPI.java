@@ -74,42 +74,6 @@ public class ShPostAPI {
 		shPost.setShPostAttrs(shPostAttrRepository.findByShPost(shPost));
 		return shPost;
 	}
-
-	@Path("/moveto/{channeGloballId}")
-	@PUT
-	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({ SystemObjectView.ShObject.class })
-	public List<ShPost> moveTo(@PathParam("channeGloballId") UUID channeGloballId, List<UUID> postGlobalIds)
-			throws Exception {
-		List<ShPost> shPosts = new ArrayList<ShPost>();
-		for (UUID postGlobalId : postGlobalIds) {
-			ShGlobalId shPostGlobalId = shGlobalIdRepository.findById(postGlobalId);
-			ShGlobalId shFolderGlobalId = shGlobalIdRepository.findById(channeGloballId);
-			ShPost shPost = (ShPost) shPostGlobalId.getShObject();
-			ShFolder shFolder = (ShFolder) shFolderGlobalId.getShObject();
-			shPost.setShFolder(shFolder);
-			shPostRepository.save(shPost);
-			shPosts.add(shPost);
-		}
-		return shPosts;
-	}
-
-	@Path("/copyto/{channeGloballId}")
-	@PUT
-	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({ SystemObjectView.ShObject.class })
-	public List<ShPost> copyTo(@PathParam("channeGloballId") UUID channeGloballId, List<UUID> postGlobalIds)
-			throws Exception {
-		List<ShPost> shPosts = new ArrayList<ShPost>();
-		for (UUID postGlobalId : postGlobalIds) {
-			ShGlobalId shPostGlobalId = shGlobalIdRepository.findById(postGlobalId);
-			ShGlobalId shFolderGlobalId = shGlobalIdRepository.findById(channeGloballId);
-			ShPost shPost = (ShPost) shPostGlobalId.getShObject();
-			ShFolder shFolder = (ShFolder) shFolderGlobalId.getShObject();			
-			shPosts.add(shPostUtils.clone(shPost, shFolder));
-		}
-		return shPosts;
-	}
 	
 	@Path("/{postId}")
 	@PUT

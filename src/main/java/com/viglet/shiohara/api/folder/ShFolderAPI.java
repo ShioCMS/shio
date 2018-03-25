@@ -105,13 +105,13 @@ public class ShFolderAPI {
 
 		ShGlobalId shGlobalId = new ShGlobalId();
 		shGlobalId.setShObject(shFolder);
-		shGlobalId.setType("CHANNEL");
+		shGlobalId.setType("FOLDER");
 
 		shGlobalIdRepository.save(shGlobalId);
 
 		// Folder Index
 
-		ShPostType shPostFolderIndex = shPostTypeRepository.findByName("PT-CHANNEL-INDEX");
+		ShPostType shPostFolderIndex = shPostTypeRepository.findByName("PT-FOLDER-INDEX");
 
 		ShPost shPost = new ShPost();
 		shPost.setDate(new Date());

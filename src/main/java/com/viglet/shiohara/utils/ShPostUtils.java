@@ -65,35 +65,37 @@ public class ShPostUtils {
 
 	}
 
-	public ShPost clone(ShPost shPost, ShFolder shFolder) {
+	public ShPost copy(ShPost shPost, ShFolder shFolderDest) {
 
-		ShPost shPostClone = new ShPost();
-		shPostClone.setDate(new Date());
-		shPostClone.setShFolder(shFolder);
-		shPostClone.setShPostType(shPost.getShPostType());
-		shPostClone.setSummary(shPost.getSummary());
-		shPostClone.setTitle(shPost.getTitle());
-		shPostRepository.save(shPostClone);
+		ShPost shPostCopy = new ShPost();
+		shPostCopy.setDate(new Date());
+		shPostCopy.setShFolder(shFolderDest);
+		shPostCopy.setShPostType(shPost.getShPostType());
+		shPostCopy.setSummary(shPost.getSummary());
+		shPostCopy.setTitle(shPost.getTitle());
+		shPostRepository.save(shPostCopy);
 
 		ShGlobalId shGlobalId = new ShGlobalId();
-		shGlobalId.setShObject(shPostClone);
+		shGlobalId.setShObject(shPostCopy);
 		shGlobalId.setType("POST");
 
 		shGlobalIdRepository.saveAndFlush(shGlobalId);
-
-		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
+		List<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
+		for (ShPostAttr shPostAttr : shPostAttrs) {
 			ShPostAttr shPostAttrClone = new ShPostAttr();
 			shPostAttrClone.setDateValue(shPostAttr.getDateValue());
 			shPostAttrClone.setIntValue(shPostAttr.getIntValue());
 			shPostAttrClone.setReferenceObjects(shPostAttr.getReferenceObjects());
-			shPostAttrClone.setShPost(shPostClone);
+			shPostAttrClone.setShPost(shPostCopy);
 			shPostAttrClone.setShPostTypeAttr(shPostAttr.getShPostTypeAttr());
 			shPostAttrClone.setStrValue(shPostAttr.getStrValue());
 			shPostAttrClone.setType(shPostAttr.getType());
 			shPostAttrRepository.save(shPostAttrClone);
 		}
-
-		return shPostClone;
+		
+		shPostCopy.setShGlobalId(shGlobalId);
+		
+		return shPostCopy;
 	}
 
 	public String generatePostLink(String postID) {

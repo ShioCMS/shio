@@ -155,9 +155,9 @@ public class ShSitesContext {
 		String pageLayoutHTML = null;
 		String pageLayoutJS = null;
 		// Folder
-		if (isFolder || shPostItem.getShPostType().getName().equals("PT-CHANNEL-INDEX")) {
+		if (isFolder || shPostItem.getShPostType().getName().equals("PT-FOLDER-INDEX")) {
 
-			if (shPostItem.getShPostType().getName().equals("PT-CHANNEL-INDEX")) {
+			if (shPostItem.getShPostType().getName().equals("PT-FOLDER-INDEX")) {
 				shFolderItem = shPostItem.getShFolder();
 			}
 
@@ -206,7 +206,7 @@ public class ShSitesContext {
 			List<ShPost> shPosts = shPostRepository.findByShFolder(shFolderItem);
 
 			for (ShPost shPost : shPosts) {
-				if (!shPost.getShPostType().getName().equals("PT-CHANNEL-INDEX")) {
+				if (!shPost.getShPostType().getName().equals("PT-FOLDER-INDEX")) {
 					JSONObject shPostItemAttrs = shPostUtils.toJSON(shPost);
 					shPostItems.put(shPostItemAttrs);
 				}
