@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.viglet.shiohara.api.SystemObjectView;
+import com.viglet.shiohara.api.ShJsonView;
 import com.viglet.shiohara.api.folder.ShFolderList;
 import com.viglet.shiohara.exchange.ShFolderExchange;
 import com.viglet.shiohara.exchange.ShExchange;
@@ -82,7 +82,7 @@ public class ShSiteAPI {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({ SystemObjectView.ShObject.class })
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShSite> list() throws Exception {
 		return shSiteRepository.findAll();
 	}
@@ -90,7 +90,7 @@ public class ShSiteAPI {
 	@Path("/{siteId}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({ SystemObjectView.ShObject.class })
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShSite edit(@PathParam("siteId") UUID id) throws Exception {
 		return shSiteRepository.findById(id);
 	}
@@ -98,7 +98,7 @@ public class ShSiteAPI {
 	@Path("/{siteId}")
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({ SystemObjectView.ShObject.class })
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShSite update(@PathParam("siteId") UUID id, ShSite shSite) throws Exception {
 		ShSite shSiteEdit = shSiteRepository.findById(id);
 		shSiteEdit.setDate(new Date());
@@ -128,7 +128,7 @@ public class ShSiteAPI {
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	@JsonView({ SystemObjectView.ShObject.class })
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShSite add(ShSite shSite) throws Exception {
 		shSite.setDate(new Date());
 
@@ -200,7 +200,7 @@ public class ShSiteAPI {
 	@Path("/{siteId}/folder")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({ SystemObjectView.ShObject.class })
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShFolderList rootFolder(@PathParam("siteId") UUID id) throws Exception {
 		ShSite shSite = shSiteRepository.findById(id);
 		List<ShFolder> shFolders = shFolderRepository.findByShSiteAndRootFolder(shSite, (byte) 1);
@@ -214,7 +214,7 @@ public class ShSiteAPI {
 	@Path("/{siteId}/export")
 	@GET
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
-	@JsonView({ SystemObjectView.ShObject.class })
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public Response siteExport(@PathParam("siteId") UUID id) throws Exception {
 		String folderName = UUID.randomUUID().toString();
 		File userDir = new File(System.getProperty("user.dir"));
@@ -301,7 +301,7 @@ public class ShSiteAPI {
 	@Path("/model")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({ SystemObjectView.ShObject.class })
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShSite siteStructure() throws Exception {
 		ShSite shSite = new ShSite();
 		return shSite;

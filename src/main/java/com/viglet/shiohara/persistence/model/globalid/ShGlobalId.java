@@ -15,8 +15,7 @@ import javax.persistence.OneToOne;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonView;
-
-import com.viglet.shiohara.api.SystemObjectView;
+import com.viglet.shiohara.api.ShJsonView;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 
 @Entity
@@ -38,7 +37,7 @@ public class ShGlobalId implements Serializable {
 	//@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
 	@OneToOne
 	@JoinColumn(name = "object_id")	
-	@JsonView({SystemObjectView.ShReference.class})
+	@JsonView({ShJsonView.ShJsonViewReference.class})
 	private ShObject shObject;
 
 	public UUID getId() {

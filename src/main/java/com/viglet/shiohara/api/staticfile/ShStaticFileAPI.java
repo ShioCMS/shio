@@ -24,7 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.viglet.shiohara.api.SystemObjectView;
+import com.viglet.shiohara.api.ShJsonView;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.post.ShPost;
@@ -62,7 +62,7 @@ public class ShStaticFileAPI {
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces("application/json")
 	@Path("upload")
-	@JsonView({ SystemObjectView.ShObject.class })	
+	@JsonView({ ShJsonView.ShJsonViewObject.class })	
 	public ShPost fileUpload(@DefaultValue("true") @FormDataParam("enabled") boolean enabled,
 			@FormDataParam("file") InputStream inputStream, @FormDataParam("folderId") UUID folderId,
 			@FormDataParam("createPost") boolean createPost,

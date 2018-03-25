@@ -28,11 +28,7 @@ shioharaApp
 											},
 											function(response) {
 												$scope.shPostNewItem = angular
-														.copy($scope.shPostType);
-												for (var i = 0; i < $scope.shPostNewItem.shPostTypeAttrs.length; i++) {
-													$scope.shPostNewItem.shPostTypeAttrs[i]['value'] = 'Novo Valor'
-															+ i;
-												}
+														.copy($scope.shPostType);												
 											});
 
 							$scope.shPostTypeAttrModel = null;

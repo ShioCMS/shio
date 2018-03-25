@@ -3,18 +3,15 @@ package com.viglet.shiohara.persistence.model.post.type;
 import javax.persistence.*;
 
 import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.search.annotations.FieldBridge;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.viglet.shiohara.api.SystemObjectView;
+import com.viglet.shiohara.api.ShJsonView;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 
 /**
@@ -39,13 +36,14 @@ public class ShPostType extends ShObject {
 	private byte system;
 
 	//bi-directional many-to-one association to ShPost
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "shPostType", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "shPostType")
 	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
 	private List<ShPost> shPosts;
 
 	//bi-directional many-to-one association to ShPostTypeAttr
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "shPostType", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "shPostType")
 	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
+	@JsonView({ShJsonView.ShJsonViewPostType.class})
 	private List<ShPostTypeAttr> shPostTypeAttrs;
 
 

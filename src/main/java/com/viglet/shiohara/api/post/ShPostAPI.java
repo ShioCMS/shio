@@ -1,7 +1,6 @@
 package com.viglet.shiohara.api.post;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -26,8 +25,7 @@ import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.reference.ShReference;
 import com.viglet.shiohara.persistence.model.user.ShUser;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.viglet.shiohara.api.SystemObjectView;
-import com.viglet.shiohara.persistence.model.folder.ShFolder;
+import com.viglet.shiohara.api.ShJsonView;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
@@ -36,7 +34,6 @@ import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.reference.ShReferenceRepository;
 import com.viglet.shiohara.persistence.repository.user.ShUserRepository;
-import com.viglet.shiohara.utils.ShPostUtils;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
 
 @Component
@@ -55,12 +52,10 @@ public class ShPostAPI {
 	private ShGlobalIdRepository shGlobalIdRepository;
 	@Autowired
 	private ShReferenceRepository shReferenceRepository;
-	@Autowired
-	private ShPostUtils shPostUtils;
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({ SystemObjectView.ShObject.class })
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShPost> list() throws Exception {
 		return shPostRepository.findAll();
 	}
@@ -68,7 +63,7 @@ public class ShPostAPI {
 	@Path("/{postId}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({ SystemObjectView.ShObject.class })
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShPost edit(@PathParam("postId") UUID id) throws Exception {
 		ShPost shPost = shPostRepository.findById(id);
 		shPost.setShPostAttrs(shPostAttrRepository.findByShPost(shPost));
@@ -78,7 +73,7 @@ public class ShPostAPI {
 	@Path("/{postId}")
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({ SystemObjectView.ShObject.class })
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShPost update(@PathParam("postId") UUID id, ShPost shPost) throws Exception {
 
 		ShPost shPostEdit = shPostRepository.findById(id);
@@ -159,12 +154,13 @@ public class ShPostAPI {
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	@JsonView({ SystemObjectView.ShObject.class })
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShPost add(ShPost shPost) throws Exception {
 
 		String title = shPost.getTitle();
 		String summary = shPost.getSummary();
-
+		// Get PostAttrs before save, because JPA Lazy
+		List<ShPostAttr> shPostAttrs = shPost.getShPostAttrs();
 		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
 			if (shPostAttr.getShPostTypeAttr().getIsTitle() == 1)
 				title = StringUtils.abbreviate(shPostAttr.getStrValue(), 255);
@@ -191,8 +187,9 @@ public class ShPostAPI {
 
 		ShPost shPostWithGlobalId = shPostRepository.findById(shPost.getId());
 
-		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
-			shPostAttr.setShPost(shPost);
+		
+		for (ShPostAttr shPostAttr : shPostAttrs) {
+			shPostAttr.setShPost(shPostWithGlobalId);
 			this.referencedFile(shPostAttr, shPostAttr, shPostWithGlobalId);
 			shPostAttrRepository.saveAndFlush(shPostAttr);
 		}
@@ -203,6 +200,9 @@ public class ShPostAPI {
 		shUser.setLastPostType(String.valueOf(shPost.getShPostType().getId()));
 		shUserRepository.saveAndFlush(shUser);
 
+		// Lazy
+
+		
 		return shPost;
 
 	}

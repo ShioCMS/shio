@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.viglet.shiohara.api.SystemObjectView;
+import com.viglet.shiohara.api.ShJsonView;
 import com.viglet.shiohara.api.post.ShPostWIthBreadcrumb;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.post.ShPost;
@@ -32,7 +32,7 @@ public class ShSearchAPI {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({ SystemObjectView.ShObject.class })
+	@JsonView({  ShJsonView.ShJsonViewObject.class })
 	public List<ShPostWIthBreadcrumb> search(@QueryParam("q") String q) throws Exception {
 		List<ShPostWIthBreadcrumb> searchResults = new ArrayList<ShPostWIthBreadcrumb>();
 		for (ShPost shPost : searchservice.fuzzySearch(q)) {
