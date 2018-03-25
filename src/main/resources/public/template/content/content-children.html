@@ -10,8 +10,8 @@
 				<h3 ng-show="shSite">{{shSite.name}} Site</h3>				
 			</div>
 			<div class="pull-right" style="margin: -40px 0 0;">
-				<a ng-if="channelId != null" ui-sref="content.channel.channel-new({channelId: channelId})" class="btn btn-viglet">New
-					Channel</a>	
+				<a ng-if="folderId != null" ui-sref="content.folder.folder-new({folderId: folderId})" class="btn btn-viglet">New
+					Folder</a>	
 			</div>
 		</fieldset>
 	</section>
@@ -19,17 +19,17 @@
 <div>
 	<div class="row">
 		<div class="col-lg-2 col-md-3 col-sm-3 col-xs-12">
-			<div ng-if="channelId.length != null" class="btn-group">
+			<div ng-if="folderId.length != null" class="btn-group">
 				<a
-					ui-sref="content.post-type-item.post-item-new({channelId: channelId, postTypeId: shUser.lastPostType})"
+					ui-sref="content.post-type-item.post-item-new({folderId: folderId, postTypeId: shUser.lastPostType})"
 					class="btn btn-viglet">New {{shLastPostType.title}}</a> <a
 					class="btn btn-viglet"
-					ui-sref="content.channel.post-type-select({channelId: channelId})"><span
+					ui-sref="content.folder.post-type-select({folderId: folderId})"><span
 					class="glyphicon glyphicon-th"></span></a>
 			</div>
-			<div ng-if="channelId.length == null" class="btn-group">
-				<a ui-sref="content.site.channel-new({siteId: shSite.id})"
-					class="btn btn-viglet">New Channel</a>
+			<div ng-if="folderId.length == null" class="btn-group">
+				<a ui-sref="content.site.folder-new({siteId: shSite.id})"
+					class="btn btn-viglet">New Folder</a>
 			</div>
 			<ul class="nav nav-pills nav-stacked">
 				<li><a ui-sref="content.site.edit({siteId: shSite.id})">Site Properties</a></li>

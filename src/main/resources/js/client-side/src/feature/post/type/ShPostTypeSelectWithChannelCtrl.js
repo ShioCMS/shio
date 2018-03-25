@@ -1,4 +1,4 @@
-shioharaApp.controller('ShPostTypeSelectWithChannelCtrl', [
+shioharaApp.controller('ShPostTypeSelectWithFolderCtrl', [
 		"$scope",
 		"$http",
 		"$window",
@@ -11,18 +11,18 @@ shioharaApp.controller('ShPostTypeSelectWithChannelCtrl', [
 		function($scope, $http, $window, $state, $stateParams, $rootScope,
 				shPostTypeResource, shSiteResource, shAPIServerService) {
 			$scope.siteId = $stateParams.siteId;
-			$scope.channelId = $stateParams.channelId;
+			$scope.folderId = $stateParams.folderId;
 			$rootScope.$state = $state;
 			$scope.shPostTypes = shPostTypeResource.query();
 			$scope.shSite = null;
 			$scope.breadcrumb = null;
-			if ($scope.channelId != null) {
+			if ($scope.folderId != null) {
 				$scope.$evalAsync($http.get(
 						shAPIServerService.get().concat(
-								"/channel/" + $scope.channelId + "/path"))
+								"/folder/" + $scope.folderId + "/path"))
 						.then(function(response) {
 							$scope.breadcrumb = response.data.breadcrumb;
-							$scope.shSite = response.data.currentChannel.shSite;
+							$scope.shSite = response.data.currentFolder.shSite;
 						}));
 			} else {
 				$scope.shSite = shSiteResource.get({

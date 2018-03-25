@@ -31,15 +31,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.HandlerMapping;
 
-import com.viglet.shiohara.persistence.model.channel.ShChannel;
+import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.site.ShSite;
-import com.viglet.shiohara.persistence.repository.channel.ShChannelRepository;
+import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
-import com.viglet.shiohara.utils.ShChannelUtils;
+import com.viglet.shiohara.utils.ShFolderUtils;
 import com.viglet.shiohara.utils.ShPostUtils;
 import com.viglet.shiohara.utils.ShSiteUtils;
 
@@ -52,9 +52,9 @@ public class ShSitesContext {
 	@Autowired
 	ShPostAttrRepository shPostAttrRepository;
 	@Autowired
-	ShChannelRepository shChannelRepository;
+	ShFolderRepository shFolderRepository;
 	@Autowired
-	ShChannelUtils shChannelUtils;
+	ShFolderUtils shFolderUtils;
 	@Autowired
 	ShPostUtils shPostUtils;
 	@Autowired
@@ -112,37 +112,37 @@ public class ShSitesContext {
 		int lastPosition = contentPath.size() - 1;
 		String postName = contentPath.get(lastPosition).replaceAll("-", " ");
 
-		ArrayList<String> channelPathArray = contentPath;
+		ArrayList<String> folderPathArray = contentPath;
 
-		channelPathArray.remove(channelPathArray.size() - 1);
-		String channelPath = "/";
-		for (String path : channelPathArray) {
-			channelPath = channelPath + path + "/";
+		folderPathArray.remove(folderPathArray.size() - 1);
+		String folderPath = "/";
+		for (String path : folderPathArray) {
+			folderPath = folderPath + path + "/";
 		}
 
-		ShChannel shChannel = shChannelUtils.channelFromPath(shSite, channelPath);
-		ShChannel shChannelItem = null;
-		boolean isChannel = false;
+		ShFolder shFolder = shFolderUtils.folderFromPath(shSite, folderPath);
+		ShFolder shFolderItem = null;
+		boolean isFolder = false;
 
-		ShPost shPostItem = shPostRepository.findByShChannelAndTitle(shChannel, postName);
+		ShPost shPostItem = shPostRepository.findByShFolderAndTitle(shFolder, postName);
 		if (shPostItem == null) {
-			String channelPathCurrent = channelPath + postName.replaceAll(" ", "-") + "/";
+			String folderPathCurrent = folderPath + postName.replaceAll(" ", "-") + "/";
 
-			shChannelItem = shChannelUtils.channelFromPath(shSite, channelPathCurrent);
-			if (shChannelItem != null) {
-				// System.out.println("shChannelItem is not null");
-				ShPost shChannelIndex = shPostRepository.findByShChannelAndTitle(shChannelItem, "index");
+			shFolderItem = shFolderUtils.folderFromPath(shSite, folderPathCurrent);
+			if (shFolderItem != null) {
+				// System.out.println("shFolderItem is not null");
+				ShPost shFolderIndex = shPostRepository.findByShFolderAndTitle(shFolderItem, "index");
 
-				if (shChannelIndex != null) {
-					shPostItem = shChannelIndex;
-					isChannel = true;
+				if (shFolderIndex != null) {
+					shPostItem = shFolderIndex;
+					isFolder = true;
 				}
 			} else {
-				// System.out.println("shChannelItem is null");
+				// System.out.println("shFolderItem is null");
 
 			}
 			// System.out.println(shSite.getName());
-			// System.out.println(channelPathCurrent);
+			// System.out.println(folderPathCurrent);
 		}
 
 		// Nashorn Engine
@@ -154,30 +154,30 @@ public class ShSitesContext {
 		String javascriptVar = null;
 		String pageLayoutHTML = null;
 		String pageLayoutJS = null;
-		// Channel
-		if (isChannel || shPostItem.getShPostType().getName().equals("PT-CHANNEL-INDEX")) {
+		// Folder
+		if (isFolder || shPostItem.getShPostType().getName().equals("PT-CHANNEL-INDEX")) {
 
 			if (shPostItem.getShPostType().getName().equals("PT-CHANNEL-INDEX")) {
-				shChannelItem = shPostItem.getShChannel();
+				shFolderItem = shPostItem.getShFolder();
 			}
 
-			// Channel Index
+			// Folder Index
 
-			Map<String, ShPostAttr> shChannelIndexMap = shPostUtils.postToMap(shPostItem);
+			Map<String, ShPostAttr> shFolderIndexMap = shPostUtils.postToMap(shPostItem);
 
 			// Page Layout
-			String pageLayoutName = shChannelIndexMap.get("PAGE-LAYOUT").getStrValue();
+			String pageLayoutName = shFolderIndexMap.get("PAGE-LAYOUT").getStrValue();
 
-			ShPost shChannelPageLayout = shPostRepository.findByTitle(pageLayoutName);
+			ShPost shFolderPageLayout = shPostRepository.findByTitle(pageLayoutName);
 
-			Map<String, ShPostAttr> shChannelPageLayoutMap = shPostUtils.postToMap(shChannelPageLayout);
+			Map<String, ShPostAttr> shFolderPageLayoutMap = shPostUtils.postToMap(shFolderPageLayout);
 
-			pageLayoutHTML = shChannelPageLayoutMap.get("HTML").getStrValue();
-			pageLayoutJS = shChannelPageLayoutMap.get("JAVASCRIPT").getStrValue();
+			pageLayoutHTML = shFolderPageLayoutMap.get("HTML").getStrValue();
+			pageLayoutJS = shFolderPageLayoutMap.get("JAVASCRIPT").getStrValue();
 
 			// Theme
 
-			String themeName = shChannelPageLayoutMap.get("THEME").getStrValue();
+			String themeName = shFolderPageLayoutMap.get("THEME").getStrValue();
 
 			ShPost shTheme = shPostRepository.findByTitle(themeName);
 
@@ -187,23 +187,23 @@ public class ShSitesContext {
 			shThemeAttrs.put("javascript", shThemeMap.get("JAVASCRIPT").getStrValue());
 			shThemeAttrs.put("css", shThemeMap.get("CSS").getStrValue());
 
-			// Channel converted to JSON
+			// Folder converted to JSON
 		
 			JSONArray shPostItems = new JSONArray();
-			JSONArray shChildChannelItems = new JSONArray();
+			JSONArray shChildFolderItems = new JSONArray();
 
-			JSONObject shChannelItemAttrs = shChannelUtils.toJSON(shChannelItem);
+			JSONObject shFolderItemAttrs = shFolderUtils.toJSON(shFolderItem);
 
-			shChannelItemAttrs.put("theme", shThemeAttrs);
+			shFolderItemAttrs.put("theme", shThemeAttrs);
 
 			JSONObject shSiteItemAttrs = shSiteUtils.toJSON(shSite, shContext);
 
-			List<ShChannel> shChannels = shChannelRepository.findByParentChannel(shChannelItem);
+			List<ShFolder> shFolders = shFolderRepository.findByParentFolder(shFolderItem);
 
-			for (ShChannel shChildChannel : shChannels) {
-				shChildChannelItems.put(shChannelUtils.toJSON(shChildChannel));
+			for (ShFolder shChildFolder : shFolders) {
+				shChildFolderItems.put(shFolderUtils.toJSON(shChildFolder));
 			}
-			List<ShPost> shPosts = shPostRepository.findByShChannel(shChannelItem);
+			List<ShPost> shPosts = shPostRepository.findByShFolder(shFolderItem);
 
 			for (ShPost shPost : shPosts) {
 				if (!shPost.getShPostType().getName().equals("PT-CHANNEL-INDEX")) {
@@ -216,12 +216,12 @@ public class ShSitesContext {
 			JSONObject shPostItemAttrs = shPostUtils.toJSON(shPostItem);
 			shPostItemAttrs.put("theme", shThemeAttrs);
 
-			shChannelItemAttrs.put("posts", shPostItems);
-			shChannelItemAttrs.put("channels", shChildChannelItems);
-			shChannelItemAttrs.put("post", shPostItemAttrs);
-			shChannelItemAttrs.put("site", shSiteItemAttrs);
-			// Channel Attribs
-			javascriptVar = "var shContent = " + shChannelItemAttrs.toString() + ";";
+			shFolderItemAttrs.put("posts", shPostItems);
+			shFolderItemAttrs.put("folders", shChildFolderItems);
+			shFolderItemAttrs.put("post", shPostItemAttrs);
+			shFolderItemAttrs.put("site", shSiteItemAttrs);
+			// Folder Attribs
+			javascriptVar = "var shContent = " + shFolderItemAttrs.toString() + ";";
 			javascript = javascriptVar + javascript;
 
 		} else {

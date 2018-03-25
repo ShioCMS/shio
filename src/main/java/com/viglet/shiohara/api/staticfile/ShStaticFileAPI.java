@@ -25,13 +25,13 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.SystemObjectView;
-import com.viglet.shiohara.persistence.model.channel.ShChannel;
+import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
-import com.viglet.shiohara.persistence.repository.channel.ShChannelRepository;
+import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
@@ -44,7 +44,7 @@ import com.viglet.shiohara.utils.ShStaticFileUtils;
 public class ShStaticFileAPI {
 
 	@Autowired
-	private ShChannelRepository shChannelRepository;
+	private ShFolderRepository shFolderRepository;
 	@Autowired
 	private ShStaticFileUtils shStaticFileUtils;
 	@Autowired
@@ -64,13 +64,13 @@ public class ShStaticFileAPI {
 	@Path("upload")
 	@JsonView({ SystemObjectView.ShObject.class })	
 	public ShPost fileUpload(@DefaultValue("true") @FormDataParam("enabled") boolean enabled,
-			@FormDataParam("file") InputStream inputStream, @FormDataParam("channelId") UUID channelId,
+			@FormDataParam("file") InputStream inputStream, @FormDataParam("folderId") UUID folderId,
 			@FormDataParam("createPost") boolean createPost,
 			@FormDataParam("file") FormDataContentDisposition fileDetail, @Context UriInfo uriInfo)
 			throws URISyntaxException {
 
-		ShChannel shChannel = shChannelRepository.findById(channelId);
-		File directoryPath = shStaticFileUtils.dirPath(shChannel);
+		ShFolder shFolder = shFolderRepository.findById(folderId);
+		File directoryPath = shStaticFileUtils.dirPath(shFolder);
 		ShPost shPost = new ShPost();
 		String filePath = null;
 		if (directoryPath != null) {
@@ -103,7 +103,7 @@ public class ShStaticFileAPI {
 					shPost.setShPostType(shPostType);
 					shPost.setSummary(null);
 					shPost.setTitle(filePath);
-					shPost.setShChannel(shChannel);
+					shPost.setShFolder(shFolder);
 
 					shPostRepository.save(shPost);
 

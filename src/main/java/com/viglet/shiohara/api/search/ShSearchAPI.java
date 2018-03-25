@@ -15,11 +15,11 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.SystemObjectView;
 import com.viglet.shiohara.api.post.ShPostWIthBreadcrumb;
-import com.viglet.shiohara.persistence.model.channel.ShChannel;
+import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.search.HibernateSearchService;
-import com.viglet.shiohara.utils.ShChannelUtils;
+import com.viglet.shiohara.utils.ShFolderUtils;
 
 @Component
 @Path("/search")
@@ -28,7 +28,7 @@ public class ShSearchAPI {
 	@Autowired
 	private HibernateSearchService searchservice;
 	@Autowired
-	private ShChannelUtils shChannelUtils;
+	private ShFolderUtils shFolderUtils;
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -36,7 +36,7 @@ public class ShSearchAPI {
 	public List<ShPostWIthBreadcrumb> search(@QueryParam("q") String q) throws Exception {
 		List<ShPostWIthBreadcrumb> searchResults = new ArrayList<ShPostWIthBreadcrumb>();
 		for (ShPost shPost : searchservice.fuzzySearch(q)) {
-			ArrayList<ShChannel> breadcrumb = shChannelUtils.breadcrumb(shPost.getShChannel());
+			ArrayList<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shPost.getShFolder());
 			ShSite shSite = breadcrumb.get(0).getShSite();
 			ShPostWIthBreadcrumb shPostWIthBreadcrumb = new ShPostWIthBreadcrumb();
 			shPostWIthBreadcrumb.setShPost(shPost);

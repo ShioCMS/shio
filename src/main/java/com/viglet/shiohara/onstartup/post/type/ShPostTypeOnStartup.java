@@ -559,13 +559,13 @@ public class ShPostTypeOnStartup {
 
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
-			// Channel Index
+			// Folder Index
 
 			shPostType = new ShPostType();
 			shPostType.setName("PT-CHANNEL-INDEX");
-			shPostType.setTitle("Channel Index");
+			shPostType.setTitle("Folder Index");
 			shPostType.setDate(Calendar.getInstance().getTime());
-			shPostType.setDescription("Channel Index Post Type");
+			shPostType.setDescription("Folder Index Post Type");
 			shPostType.setSystem((byte) 1);
 
 			shPostTypeRepository.save(shPostType);

@@ -10,7 +10,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.viglet.shiohara.persistence.model.channel.ShChannel;
+import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
@@ -21,7 +21,7 @@ import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 @Component
 public class ShPostUtils {
 	@Autowired
-	ShChannelUtils shChannelUtils;
+	ShFolderUtils shFolderUtils;
 	@Autowired
 	ShPostRepository shPostRepository;
 	@Autowired
@@ -38,7 +38,7 @@ public class ShPostUtils {
 		shPostObject.put("title", shPost.getTitle());
 		shPostObject.put("summary", shPost.getSummary());
 		shPostObject.put("link",
-				shChannelUtils.channelPath(shPost.getShChannel()) + shPost.getTitle().replaceAll(" ", "-"));
+				shFolderUtils.folderPath(shPost.getShFolder()) + shPost.getTitle().replaceAll(" ", "-"));
 		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
 			if (shPostAttr.getShPostTypeAttr().getName() != null) {
 				shPostItemAttrs.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
@@ -65,11 +65,11 @@ public class ShPostUtils {
 
 	}
 
-	public ShPost clone(ShPost shPost, ShChannel shChannel) {
+	public ShPost clone(ShPost shPost, ShFolder shFolder) {
 
 		ShPost shPostClone = new ShPost();
 		shPostClone.setDate(new Date());
-		shPostClone.setShChannel(shChannel);
+		shPostClone.setShFolder(shFolder);
 		shPostClone.setShPostType(shPost.getShPostType());
 		shPostClone.setSummary(shPost.getSummary());
 		shPostClone.setTitle(shPost.getTitle());
@@ -98,8 +98,8 @@ public class ShPostUtils {
 
 	public String generatePostLink(String postID) {
 		ShPost shPost = shPostRepository.findById(UUID.fromString(postID));
-		ShChannel shChannel = shPost.getShChannel();
-		String link = shChannelUtils.generateChannelLink(shChannel.getId().toString());
+		ShFolder shFolder = shPost.getShFolder();
+		String link = shFolderUtils.generateFolderLink(shFolder.getId().toString());
 		link = link + shPost.getTitle().replaceAll(" ", "-");
 		return link;
 	}

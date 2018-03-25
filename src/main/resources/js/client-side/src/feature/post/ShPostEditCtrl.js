@@ -19,33 +19,33 @@ shioharaApp.controller('ShPostEditCtrl', [
 				    plugins: 'link image code',
 				    toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code'
 				  };
-			var channelURL = null;
+			var folderURL = null;
 			var folderPath = null;
-			$scope.channelId = null;
+			$scope.folderId = null;
 			$scope.postId = $stateParams.postId;
 			$scope.breadcrumb = null;
 			$scope.shSite = null;
 			$scope.shPost = shPostResource.get({
 				id : $scope.postId
 			}, function() {
-				if ( $scope.shPost.shChannel != null) {
-					$scope.channelId = $scope.shPost.shChannel.id;
+				if ( $scope.shPost.shFolder != null) {
+					$scope.folderId = $scope.shPost.shFolder.id;
 				$scope
 				.$evalAsync($http
 						.get(
 								shAPIServerService
 										.get()
 										.concat(
-												"/channel/" + $scope.channelId + "/path")
+												"/folder/" + $scope.folderId + "/path")
 												)
 						.then(
 								function(response) {
 									$scope.breadcrumb = response.data.breadcrumb;
 									$scope.shSite = response.data.shSite;
-									folderPath =  shAPIServerService.server().concat("/store/file_source/" + $scope.shSite.name + response.data.channelPath);
-									channelURL = shAPIServerService.server().concat(
+									folderPath =  shAPIServerService.server().concat("/store/file_source/" + $scope.shSite.name + response.data.folderPath);
+									folderURL = shAPIServerService.server().concat(
 											"/sites/" + $scope.shSite.name.replace(new RegExp(" ",
-											'g'), "-") + "/default/pt-br" + response.data.channelPath.replace(new RegExp(" ",
+											'g'), "-") + "/default/pt-br" + response.data.folderPath.replace(new RegExp(" ",
 															'g'), "-"));
 								}
 								));
@@ -60,10 +60,10 @@ shioharaApp.controller('ShPostEditCtrl', [
 					var previewURL = folderPath + $scope.shPost.title;
 				}
 				else if ($scope.shPost.shPostType.name == 'PT-CHANNEL-INDEX') {
-						var previewURL = channelURL;
+						var previewURL = folderURL;
 					}
 					else {
-					   var previewURL = channelURL
+					   var previewURL = folderURL
 									+ $scope.shPost.title.replace(new RegExp(" ",
 											'g'), "-");
 					}
@@ -103,7 +103,7 @@ shioharaApp.controller('ShPostEditCtrl', [
 			
 			var uploadFile = function(shPostAttr, key, postType) {
 				return shStaticFileFactory.uploadFile(
-						$scope.channelId, shPostAttr, key,
+						$scope.folderId, shPostAttr, key,
 						postType, $scope.shPost,
 						$scope.numberOfFileWidgets);
 			}

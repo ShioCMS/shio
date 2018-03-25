@@ -11,16 +11,16 @@ import javax.ws.rs.core.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.viglet.shiohara.persistence.model.channel.ShChannel;
+import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.post.ShPost;
-import com.viglet.shiohara.persistence.repository.channel.ShChannelRepository;
+import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
-import com.viglet.shiohara.utils.ShChannelUtils;
+import com.viglet.shiohara.utils.ShFolderUtils;
 import com.viglet.shiohara.utils.ShPostUtils;
 
 @Component
@@ -28,13 +28,13 @@ import com.viglet.shiohara.utils.ShPostUtils;
 public class ShObjectAPI {
 
 	@Autowired
-	ShChannelRepository shChannelRepository;
+	ShFolderRepository shFolderRepository;
 	@Autowired
 	ShPostRepository shPostRepository;
 	@Autowired
 	ShPostAttrRepository shPostAttrRepository;
 	@Autowired
-	ShChannelUtils shChannelUtils;
+	ShFolderUtils shFolderUtils;
 	@Autowired
 	ShPostTypeRepository shPostTypeRepository;
 	@Autowired
@@ -53,8 +53,8 @@ public class ShObjectAPI {
 			ShPost shPost = shPostRepository.findById(shGlobalId.getShObject().getId());
 			redirect = shPostUtils.generatePostLink(shPost.getId().toString());
 		} else if (shGlobalId.getType().equals("CHANNEL")) {
-			ShChannel shChannel = shChannelRepository.findById(shGlobalId.getShObject().getId());
-			redirect = shChannelUtils.generateChannelLink(shChannel.getId().toString());
+			ShFolder shFolder = shFolderRepository.findById(shGlobalId.getShObject().getId());
+			redirect = shFolderUtils.generateFolderLink(shFolder.getId().toString());
 		}
 		  URI targetURIForRedirection = new URI(redirect);
 		

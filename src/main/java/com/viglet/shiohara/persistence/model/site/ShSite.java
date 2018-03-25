@@ -8,7 +8,7 @@ import javax.persistence.*;
 import org.hibernate.annotations.Fetch;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.viglet.shiohara.persistence.model.channel.ShChannel;
+import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 
 /**
@@ -17,7 +17,7 @@ import com.viglet.shiohara.persistence.model.object.ShObject;
  */
 @Entity
 @NamedQuery(name = "ShSite.findAll", query = "SELECT s FROM ShSite s")
-@JsonIgnoreProperties({ "shChannels", "shPosts" })
+@JsonIgnoreProperties({ "shFolders", "shPosts" })
 public class ShSite extends ShObject {
 	private static final long serialVersionUID = 1L;
 
@@ -35,7 +35,7 @@ public class ShSite extends ShObject {
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "shSite", cascade = CascadeType.ALL)
 	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
-	private List<ShChannel> shChannels;
+	private List<ShFolder> shFolders;
 
 	public ShSite() {
 	}
@@ -64,12 +64,12 @@ public class ShSite extends ShObject {
 		this.name = name;
 	}
 	
-	public List<ShChannel> getShChannels() {
-		return this.shChannels;
+	public List<ShFolder> getShFolders() {
+		return this.shFolders;
 	}
 
-	public void setShChannels(List<ShChannel> shChannels) {
-		this.shChannels = shChannels;
+	public void setShFolders(List<ShFolder> shFolders) {
+		this.shFolders = shFolders;
 	}
 
 	public Date getDate() {

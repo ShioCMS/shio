@@ -23,7 +23,7 @@ public class ShSiteExchange {
 
 	private String postTypeLayout;
 	
-	private List<UUID> rootChannels;
+	private List<UUID> rootFolders;
 
 	public UUID getGlobalId() {
 		return globalId;
@@ -73,12 +73,12 @@ public class ShSiteExchange {
 		this.url = url;
 	}
 
-	public List<UUID> getRootChannels() {
-		return rootChannels;
+	public List<UUID> getRootFolders() {
+		return rootFolders;
 	}
 
-	public void setRootChannels(List<UUID> rootChannels) {
-		this.rootChannels = rootChannels;
+	public void setRootFolders(List<UUID> rootFolders) {
+		this.rootFolders = rootFolders;
 	}
 
 	public String getPostTypeLayout() {

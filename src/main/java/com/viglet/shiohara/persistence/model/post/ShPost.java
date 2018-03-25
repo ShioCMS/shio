@@ -9,7 +9,7 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.Store;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.viglet.shiohara.persistence.model.channel.ShChannel;
+import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.type.ScanResultBridge;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
@@ -45,12 +45,12 @@ public class ShPost extends ShObject {
 	@FieldBridge(impl = ScanResultBridge.class) 
 	private ShPostType shPostType;
 
-	// bi-directional many-to-one association to ShChannel
+	// bi-directional many-to-one association to ShFolder
 	@ManyToOne
-	@JoinColumn(name = "channel_id")
+	@JoinColumn(name = "folder_id")
 	@Field(store = Store.NO)
 	@FieldBridge(impl = ScanResultBridge.class) 
-	private ShChannel shChannel;
+	private ShFolder shFolder;
 
 	// bi-directional many-to-one association to ShPostAttr
 	@Field(store = Store.NO)
@@ -118,12 +118,12 @@ public class ShPost extends ShObject {
 		return shPostAttr;
 	}
 
-	public ShChannel getShChannel() {
-		return shChannel;
+	public ShFolder getShFolder() {
+		return shFolder;
 	}
 
-	public void setShChannel(ShChannel shChannel) {
-		this.shChannel = shChannel;
+	public void setShFolder(ShFolder shFolder) {
+		this.shFolder = shFolder;
 	}
 
 }

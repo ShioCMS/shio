@@ -5,34 +5,34 @@ import java.io.File;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.viglet.shiohara.persistence.model.channel.ShChannel;
+import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.site.ShSite;
-import com.viglet.shiohara.persistence.repository.channel.ShChannelRepository;
+import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 
 @Component
 public class ShStaticFileUtils {
 	@Autowired
-	ShChannelRepository shChannelRepository;
+	ShFolderRepository shFolderRepository;
 	@Autowired
-	ShChannelUtils shChannelUtils;
+	ShFolderUtils shFolderUtils;
 	String fileSourceBase = File.separator + "store" + File.separator +"file_source";
 
-	public File dirPath(ShChannel shChannel) {
+	public File dirPath(ShFolder shFolder) {
 		File directoryPath = null;
-		ShSite shSite = shChannelUtils.getSite(shChannel);
-		String channelPath = shChannelUtils.channelPath(shChannel, File.separator);
-		String channelPathFile = fileSourceBase.concat(File.separator + shSite.getName() + channelPath);
+		ShSite shSite = shFolderUtils.getSite(shFolder);
+		String folderPath = shFolderUtils.folderPath(shFolder, File.separator);
+		String folderPathFile = fileSourceBase.concat(File.separator + shSite.getName() + folderPath);
 		File userDir = new File(System.getProperty("user.dir"));
 		if (userDir.exists() && userDir.isDirectory()) {
-			directoryPath = new File(userDir.getAbsolutePath().concat(channelPathFile));
+			directoryPath = new File(userDir.getAbsolutePath().concat(folderPathFile));
 
 		}
 		return directoryPath;
 	}
 
-	public File filePath(ShChannel shChannel, String fileName) {
+	public File filePath(ShFolder shFolder, String fileName) {
 		File file = null;
-		File directoryPath = this.dirPath(shChannel);
+		File directoryPath = this.dirPath(shFolder);
 
 		if (directoryPath != null) {
 			file = new File(directoryPath.getAbsolutePath().concat(File.separator + fileName));

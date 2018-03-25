@@ -8,7 +8,7 @@ public class ShExchange {
 
 	List<ShSiteExchange> sites;
 
-	List<ShChannelExchange> channels;
+	List<ShFolderExchange> folders;
 	
 	List<ShPostExchange> posts;
 	
@@ -22,12 +22,12 @@ public class ShExchange {
 		this.sites = sites;
 	}
 
-	public List<ShChannelExchange> getChannels() {
-		return channels;
+	public List<ShFolderExchange> getFolders() {
+		return folders;
 	}
 
-	public void setChannels(List<ShChannelExchange> channels) {
-		this.channels = channels;
+	public void setFolders(List<ShFolderExchange> folders) {
+		this.folders = folders;
 	}
 
 	public List<ShPostExchange> getPosts() {

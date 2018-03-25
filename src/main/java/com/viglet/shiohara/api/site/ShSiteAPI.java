@@ -31,27 +31,27 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viglet.shiohara.api.SystemObjectView;
-import com.viglet.shiohara.api.channel.ShChannelList;
-import com.viglet.shiohara.exchange.ShChannelExchange;
+import com.viglet.shiohara.api.folder.ShFolderList;
+import com.viglet.shiohara.exchange.ShFolderExchange;
 import com.viglet.shiohara.exchange.ShExchange;
 import com.viglet.shiohara.exchange.ShFileExchange;
 import com.viglet.shiohara.exchange.ShPostExchange;
 import com.viglet.shiohara.exchange.ShSiteExchange;
-import com.viglet.shiohara.persistence.model.channel.ShChannel;
+import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.model.site.ShSite;
-import com.viglet.shiohara.persistence.repository.channel.ShChannelRepository;
+import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
-import com.viglet.shiohara.utils.ShChannelUtils;
+import com.viglet.shiohara.utils.ShFolderUtils;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
 import com.viglet.shiohara.utils.ShUtils;
 
@@ -62,11 +62,11 @@ public class ShSiteAPI {
 	@Autowired
 	ShSiteRepository shSiteRepository;
 	@Autowired
-	ShChannelRepository shChannelRepository;
+	ShFolderRepository shFolderRepository;
 	@Autowired
 	ShPostRepository shPostRepository;
 	@Autowired
-	ShChannelUtils shChannelUtils;
+	ShFolderUtils shFolderUtils;
 	@Autowired
 	ShStaticFileUtils shStaticFileUtils;
 	@Autowired
@@ -114,8 +114,10 @@ public class ShSiteAPI {
 	public boolean delete(@PathParam("siteId") UUID id) throws Exception {
 		ShSite shSite = shSiteRepository.findById(id);
 
-		for (ShChannel shChannel : shSite.getShChannels()) {
-			shChannelUtils.deleteChannel(shChannel);
+		List<ShFolder> shFolders = shFolderRepository.findByShSiteAndRootFolder(shSite, (byte) 1);
+		
+		for (ShFolder shFolder : shFolders) {
+			shFolderUtils.deleteFolder(shFolder);
 		}
 
 		shGlobalIdRepository.delete(shSite.getShGlobalId().getId());
@@ -138,32 +140,32 @@ public class ShSiteAPI {
 
 		shGlobalIdRepository.save(shGlobalId);
 
-		// Home Channel
-		ShChannel shChannelHome = new ShChannel();
-		shChannelHome.setName("Home");
-		shChannelHome.setParentChannel(null);
-		shChannelHome.setShSite(shSite);
-		shChannelHome.setDate(new Date());
-		shChannelHome.setRootChannel((byte) 1);
+		// Home Folder
+		ShFolder shFolderHome = new ShFolder();
+		shFolderHome.setName("Home");
+		shFolderHome.setParentFolder(null);
+		shFolderHome.setShSite(shSite);
+		shFolderHome.setDate(new Date());
+		shFolderHome.setRootFolder((byte) 1);
 
-		shChannelRepository.save(shChannelHome);
+		shFolderRepository.save(shFolderHome);
 
 		shGlobalId = new ShGlobalId();
-		shGlobalId.setShObject(shChannelHome);
+		shGlobalId.setShObject(shFolderHome);
 		shGlobalId.setType("CHANNEL");
 
 		shGlobalIdRepository.save(shGlobalId);
 
-		// Channel Index
+		// Folder Index
 
-		ShPostType shPostChannelIndex = shPostTypeRepository.findByName("PT-CHANNEL-INDEX");
+		ShPostType shPostFolderIndex = shPostTypeRepository.findByName("PT-CHANNEL-INDEX");
 
 		ShPost shPost = new ShPost();
 		shPost.setDate(new Date());
-		shPost.setShPostType(shPostChannelIndex);
-		shPost.setSummary("Channel Index");
+		shPost.setShPostType(shPostFolderIndex);
+		shPost.setSummary("Folder Index");
 		shPost.setTitle("index");
-		shPost.setShChannel(shChannelHome);
+		shPost.setShFolder(shFolderHome);
 
 		shPostRepository.save(shPost);
 
@@ -173,7 +175,7 @@ public class ShSiteAPI {
 
 		shGlobalIdRepository.save(shGlobalId);
 
-		ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "TITLE");
+		ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex, "TITLE");
 
 		ShPostAttr shPostAttr = new ShPostAttr();
 		shPostAttr.setShPost(shPost);
@@ -182,7 +184,7 @@ public class ShSiteAPI {
 		shPostAttr.setType(1);
 		shPostAttrRepository.save(shPostAttr);
 
-		shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostChannelIndex, "DESCRIPTION");
+		shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex, "DESCRIPTION");
 
 		shPostAttr = new ShPostAttr();
 		shPostAttr.setShPost(shPost);
@@ -195,18 +197,17 @@ public class ShSiteAPI {
 
 	}
 
-	@Path("/{siteId}/channel")
+	@Path("/{siteId}/folder")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@JsonView({ SystemObjectView.ShObject.class })
-	public ShChannelList rootChannel(@PathParam("siteId") UUID id) throws Exception {
+	public ShFolderList rootFolder(@PathParam("siteId") UUID id) throws Exception {
 		ShSite shSite = shSiteRepository.findById(id);
-		List<ShChannel> shChannels = shChannelRepository.findByShSiteAndRootChannel(shSite, (byte) 1);
-		ShChannelList shChannelList = new ShChannelList();
-		shChannelList.setShChannels(shChannels);
-		shChannelList.setShSite(shSite);
-		return shChannelList;
-
+		List<ShFolder> shFolders = shFolderRepository.findByShSiteAndRootFolder(shSite, (byte) 1);
+		ShFolderList shFolderList = new ShFolderList();
+		shFolderList.setShFolders(shFolders);
+		shFolderList.setShSite(shSite);
+		return shFolderList;
 
 	}
 
@@ -226,11 +227,11 @@ public class ShSiteAPI {
 			ShExchange shExchange = new ShExchange();
 			ShSite shSite = shSiteRepository.findById(id);
 
-			List<ShChannel> rootChannels = shChannelRepository.findByShSiteAndRootChannel(shSite, (byte) 1);
+			List<ShFolder> rootFolders = shFolderRepository.findByShSiteAndRootFolder(shSite, (byte) 1);
 
-			List<UUID> rootChannelsUUID = new ArrayList<UUID>();
-			for (ShChannel shChannel : rootChannels) {
-				rootChannelsUUID.add(shChannel.getId());
+			List<UUID> rootFoldersUUID = new ArrayList<UUID>();
+			for (ShFolder shFolder : rootFolders) {
+				rootFoldersUUID.add(shFolder.getId());
 			}
 
 			ShSiteExchange shSiteExchange = new ShSiteExchange();
@@ -240,23 +241,23 @@ public class ShSiteAPI {
 			shSiteExchange.setDescription(shSite.getDescription());
 			shSiteExchange.setPostTypeLayout(shSite.getPostTypeLayout());
 			shSiteExchange.setDate(shSite.getDate());
-			shSiteExchange.setRootChannels(rootChannelsUUID);
+			shSiteExchange.setRootFolders(rootFoldersUUID);
 			shSiteExchange.setGlobalId(shSite.getShGlobalId().getId());
 
 			List<ShSiteExchange> shSiteExchanges = new ArrayList<ShSiteExchange>();
 			shSiteExchanges.add(shSiteExchange);
 			shExchange.setSites(shSiteExchanges);
 
-			ShExchange shExchangeChannel = this.shChannelExchangeIterate(rootChannels);
+			ShExchange shExchangeFolder = this.shFolderExchangeIterate(rootFolders);
 
-			shExchange.setChannels(shExchangeChannel.getChannels());
-			shExchange.setPosts(shExchangeChannel.getPosts());
+			shExchange.setFolders(shExchangeFolder.getFolders());
+			shExchange.setPosts(shExchangeFolder.getPosts());
 			File exportDir = new File(tmpDir.getAbsolutePath().concat(File.separator + folderName));
 			if (!exportDir.exists()) {
 				exportDir.mkdirs();
 			}
 
-			for (ShFileExchange fileExchange : shExchangeChannel.getFiles()) {
+			for (ShFileExchange fileExchange : shExchangeFolder.getFiles()) {
 				FileUtils.copyFile(fileExchange.getFile(),
 						new File(exportDir.getAbsolutePath().concat(File.separator + fileExchange.getGlobalId())));
 			}
@@ -280,7 +281,7 @@ public class ShSiteAPI {
 
 						FileUtils.deleteDirectory(exportDir);
 						FileUtils.deleteQuietly(zipFile);
-						
+
 					} catch (IOException ex) {
 						ex.printStackTrace();
 					} catch (Exception e) {
@@ -307,36 +308,36 @@ public class ShSiteAPI {
 
 	}
 
-	public ShExchange shChannelExchangeNested(ShChannel shChannel) {
-		List<ShChannel> childChannels = shChannelRepository.findByParentChannel(shChannel);
-		return this.shChannelExchangeIterate(childChannels);
+	public ShExchange shFolderExchangeNested(ShFolder shFolder) {
+		List<ShFolder> childFolders = shFolderRepository.findByParentFolder(shFolder);
+		return this.shFolderExchangeIterate(childFolders);
 	}
 
-	public ShExchange shChannelExchangeIterate(List<ShChannel> shChannels) {
+	public ShExchange shFolderExchangeIterate(List<ShFolder> shFolders) {
 		ShExchange shExchange = new ShExchange();
-		List<ShChannelExchange> shChannelExchanges = new ArrayList<ShChannelExchange>();
+		List<ShFolderExchange> shFolderExchanges = new ArrayList<ShFolderExchange>();
 		List<ShPostExchange> shPostExchanges = new ArrayList<ShPostExchange>();
 		List<ShFileExchange> files = new ArrayList<ShFileExchange>();
 
-		for (ShChannel shChannel : shChannels) {
-			
-			for (ShPost shPost : shPostRepository.findByShChannel(shChannel)) {
+		for (ShFolder shFolder : shFolders) {
+
+			for (ShPost shPost : shPostRepository.findByShFolder(shFolder)) {
 				ShPostExchange shPostExchange = new ShPostExchange();
 				shPostExchange.setId(shPost.getId());
-				shPostExchange.setChannel(shPost.getShChannel().getId());
+				shPostExchange.setFolder(shPost.getShFolder().getId());
 				shPostExchange.setDate(shPost.getDate());
 				shPostExchange.setPostType(shPost.getShPostType().getName());
 
 				shPostExchange.setGlobalId(shPost.getShGlobalId().getId());
 				Map<String, Object> fields = new HashMap<String, Object>();
-				
+
 				for (ShPostAttr shPostAttr : shPostAttrRepository.findByShPost(shPost)) {
 					if (shPostAttr != null && shPostAttr.getShPostTypeAttr() != null) {
 						fields.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
 						if (shPostAttr.getShPostTypeAttr().getName().equals("FILE")
 								&& shPost.getShPostType().getName().equals("PT-FILE")) {
 							String fileName = shPostAttr.getStrValue();
-							File directoryPath = shStaticFileUtils.dirPath(shPost.getShChannel());
+							File directoryPath = shStaticFileUtils.dirPath(shPost.getShFolder());
 							File file = new File(directoryPath.getAbsolutePath().concat(File.separator + fileName));
 							ShFileExchange shFileExchange = new ShFileExchange();
 							shFileExchange.setGlobalId(shPost.getShGlobalId().getId());
@@ -351,21 +352,21 @@ public class ShSiteAPI {
 
 				shPostExchanges.add(shPostExchange);
 			}
-			ShChannelExchange shChannelExchangeChild = new ShChannelExchange();
-			shChannelExchangeChild.setId(shChannel.getId());
-			shChannelExchangeChild.setGlobalId(shChannel.getShGlobalId().getId());
-			shChannelExchangeChild.setDate(shChannel.getDate());
-			shChannelExchangeChild.setName(shChannel.getName());
-			if (shChannel.getParentChannel() != null) {
-				shChannelExchangeChild.setParentChannel(shChannel.getParentChannel().getId());
+			ShFolderExchange shFolderExchangeChild = new ShFolderExchange();
+			shFolderExchangeChild.setId(shFolder.getId());
+			shFolderExchangeChild.setGlobalId(shFolder.getShGlobalId().getId());
+			shFolderExchangeChild.setDate(shFolder.getDate());
+			shFolderExchangeChild.setName(shFolder.getName());
+			if (shFolder.getParentFolder() != null) {
+				shFolderExchangeChild.setParentFolder(shFolder.getParentFolder().getId());
 			}
-			shChannelExchanges.add(shChannelExchangeChild);
-			ShExchange shExchangeChild = this.shChannelExchangeNested(shChannel);
-			shChannelExchanges.addAll(shExchangeChild.getChannels());
+			shFolderExchanges.add(shFolderExchangeChild);
+			ShExchange shExchangeChild = this.shFolderExchangeNested(shFolder);
+			shFolderExchanges.addAll(shExchangeChild.getFolders());
 			shPostExchanges.addAll(shExchangeChild.getPosts());
 			files.addAll(shExchangeChild.getFiles());
 		}
-		shExchange.setChannels(shChannelExchanges);
+		shExchange.setFolders(shFolderExchanges);
 		shExchange.setPosts(shPostExchanges);
 		shExchange.setFiles(files);
 		return shExchange;

@@ -35,8 +35,8 @@ shioharaApp.factory('shPostFactory', [
                         id: shPost.id
                     }, function () {
                         Notification.error(deletedMessage);
-                        $state.go('content.children.channel-children', {
-                            channelId: shPost.shChannel.id
+                        $state.go('content.children.folder-children', {
+                            folderId: shPost.shFolder.id
                         });
                     });
                 }, function () {

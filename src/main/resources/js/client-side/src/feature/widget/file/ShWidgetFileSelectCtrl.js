@@ -3,10 +3,10 @@ shioharaApp.controller('ShWidgetFileSelectCtrl', [
 		'shAPIServerService',
 		'$http',
 		'$uibModalInstance',
-		'channelId',
+		'folderId',
 		'shWidgetFileFactory',
 		function($scope, shAPIServerService, $http, $uibModalInstance,
-				channelId,shWidgetFileFactory) {
+				folderId,shWidgetFileFactory) {
 			var $ctrl = this;
 
 			$ctrl.shPostSelected = null;
@@ -19,18 +19,18 @@ shioharaApp.controller('ShWidgetFileSelectCtrl', [
 				$uibModalInstance.dismiss('cancel');
 			};
 			$scope.shSite = null;
-			$scope.shChannels = null;
+			$scope.shFolders = null;
 			$scope.shPosts = null;
 			$scope.breadcrumb = null;
 
 			// BEGIN Functions
-			$scope.channelList = function(channelId) {
+			$scope.folderList = function(folderId) {
 				$ctrl.shPostSelected = null;
 				$scope.$evalAsync($http.get(
 						shAPIServerService.get().concat(
-								"/channel/" + channelId + "/list/PT-FILE"))
+								"/folder/" + folderId + "/list/PT-FILE"))
 						.then(function(response) {
-							$scope.shChannels = response.data.shChannels;
+							$scope.shFolders = response.data.shFolders;
 							$scope.shPosts = response.data.shPosts;
 							$scope.breadcrumb = response.data.breadcrumb;
 							$scope.shSite = response.data.shSite;
@@ -41,9 +41,9 @@ shioharaApp.controller('ShWidgetFileSelectCtrl', [
 				$ctrl.shPostSelected = null;
 				$scope.$evalAsync($http.get(
 						shAPIServerService.get().concat(
-								"/site/" + siteId + "/channel")).then(
+								"/site/" + siteId + "/folder")).then(
 						function(response) {
-							$scope.shChannels = response.data.shChannels;
+							$scope.shFolders = response.data.shFolders;
 							$scope.shPosts = response.data.shPosts;
 							$scope.shSite = response.data.shSite;
 						}));
@@ -54,6 +54,6 @@ shioharaApp.controller('ShWidgetFileSelectCtrl', [
 			}
 			// END Functions
 
-			$scope.channelList(channelId);
+			$scope.folderList(folderId);
 
 		} ]);

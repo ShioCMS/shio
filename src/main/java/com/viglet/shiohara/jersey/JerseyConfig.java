@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viglet.shiohara.api.ShAPI;
-import com.viglet.shiohara.api.channel.ShChannelAPI;
+import com.viglet.shiohara.api.folder.ShFolderAPI;
 import com.viglet.shiohara.api.exchange.ShImportAPI;
 import com.viglet.shiohara.api.filter.ShCORSFilter;
 import com.viglet.shiohara.api.object.ShObjectAPI;
@@ -50,7 +50,7 @@ public class JerseyConfig extends ResourceConfig {
 		register(ShSiteAPI.class);
 		register(ShUserAPI.class);
 		register(ShWidgetAPI.class);	
-		register(ShChannelAPI.class);	
+		register(ShFolderAPI.class);	
 		register(ShStaticFileAPI.class);
 		register(ShReferenceAPI.class);
 		register(ShSearchAPI.class);

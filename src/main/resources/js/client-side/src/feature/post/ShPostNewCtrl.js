@@ -23,25 +23,25 @@ shioharaApp
 								plugins : 'link image code',
 								toolbar : 'undo redo | bold italic | alignleft aligncenter alignright | code'
 							};
-							$scope.channelId = $stateParams.channelId;
+							$scope.folderId = $stateParams.folderId;
 							$scope.postTypeId = $stateParams.postTypeId;
 							$scope.breadcrumb = null;
 							$scope.shPost = null;
-							$scope.shChannel = null;
+							$scope.shFolder = null;
 							$scope.shSite = null;
-							var channelURL = null;
+							var folderURL = null;
 							$scope
 									.$evalAsync($http
 											.get(
 													shAPIServerService
 															.get()
 															.concat(
-																	"/channel/"
-																			+ $scope.channelId
+																	"/folder/"
+																			+ $scope.folderId
 																			+ "/path"))
 											.then(
 													function(response) {
-														$scope.shChannel = response.data.currentChannel
+														$scope.shFolder = response.data.currentFolder
 														$scope.breadcrumb = response.data.breadcrumb;
 														$scope.shSite = response.data.shSite;
 														folderPath = shAPIServerService
@@ -49,8 +49,8 @@ shioharaApp
 																.concat(
 																		"/store/file_source/"
 																				+ $scope.shSite.name
-																				+ response.data.channelPath);
-														channelURL = shAPIServerService
+																				+ response.data.folderPath);
+														folderURL = shAPIServerService
 																.server()
 																.concat(
 																		"/sites/"
@@ -61,7 +61,7 @@ shioharaApp
 																										'g'),
 																								"-")
 																				+ "/default/pt-br"
-																				+ response.data.channelPath
+																				+ response.data.folderPath
 																						.replace(
 																								new RegExp(
 																										" ",
@@ -82,9 +82,9 @@ shioharaApp
 									var previewURL = folderPath
 											+ $scope.shPost.title;
 								} else if ($scope.shPost.shPostType.name == 'PT-CHANNEL-INDEX') {
-									var previewURL = channelURL;
+									var previewURL = folderURL;
 								} else {
-									var previewURL = channelURL
+									var previewURL = folderURL
 											+ $scope.shPost.title.replace(
 													new RegExp(" ", 'g'), "-");
 								}
@@ -93,7 +93,7 @@ shioharaApp
 
 							var uploadFile = function(shPostAttr, key, postType) {
 								return shStaticFileFactory.uploadFile(
-										$scope.channelId, shPostAttr, key,
+										$scope.folderId, shPostAttr, key,
 										postType, $scope.shPost,
 										$scope.numberOfFileWidgets);
 							}
@@ -129,7 +129,7 @@ shioharaApp
 																});
 													} else {
 														delete $scope.shPost.id;
-														$scope.shPost.shChannel = $scope.shChannel;
+														$scope.shPost.shFolder = $scope.shFolder;
 														shPostResource
 																.save(
 																		$scope.shPost,

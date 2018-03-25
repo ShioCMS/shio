@@ -13,7 +13,7 @@
 	<div class="list-group">
 		<a ng-repeat="objectRefer in $ctrl.objectRefers"
 			class="list-group-item" ng-click="$ctrl.cancel()"
-			ui-sref="content.children.channel-children({channelId: objectRefer.shGlobalFromId.shObject.id})"
+			ui-sref="content.children.folder-children({folderId: objectRefer.shGlobalFromId.shObject.id})"
 			style="color: #337ab7;"
 			ng-if="objectRefer.shGlobalFromId.type === 'CHANNEL'">
 			<div class="row">

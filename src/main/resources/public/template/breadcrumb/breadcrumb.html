@@ -6,6 +6,6 @@
 		ui-sref="content.children.site-children({siteId: shSite.id})"
 		ui-sref-opts="{reload:true}">{{shSite.name}} (Site)</a></li>
 	<li ng-repeat="breacrumbItem in breadcrumb"><a
-		ui-sref="content.children.channel-children({channelId: breacrumbItem.id})"
+		ui-sref="content.children.folder-children({folderId: breacrumbItem.id})"
 		ui-sref-opts="{reload:true}">{{breacrumbItem.name}}</a></li>
 </ul>

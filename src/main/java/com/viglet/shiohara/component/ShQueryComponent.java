@@ -8,11 +8,11 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.viglet.shiohara.persistence.model.channel.ShChannel;
+import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
-import com.viglet.shiohara.persistence.repository.channel.ShChannelRepository;
+import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.utils.ShPostUtils;
@@ -21,7 +21,7 @@ import com.viglet.shiohara.utils.ShPostUtils;
 public class ShQueryComponent {
 
 	@Autowired
-	ShChannelRepository shChannelRepository;
+	ShFolderRepository shFolderRepository;
 	@Autowired
 	ShPostRepository shPostRepository;
 	@Autowired
@@ -29,11 +29,11 @@ public class ShQueryComponent {
 	@Autowired
 	ShPostUtils shPostUtils;
 
-	public List<Map<String, ShPostAttr>> findByChannelName(String channelId, String postTypeName ) {
+	public List<Map<String, ShPostAttr>> findByFolderName(String folderId, String postTypeName ) {
 
 		ShPostType shPostType = shPostTypeRepository.findByName(postTypeName);
-		ShChannel shChannel = shChannelRepository.findById(UUID.fromString(channelId));
-		List<ShPost> shPostList = shPostRepository.findByShChannelAndShPostType(shChannel, shPostType);
+		ShFolder shFolder = shFolderRepository.findById(UUID.fromString(folderId));
+		List<ShPost> shPostList = shPostRepository.findByShFolderAndShPostType(shFolder, shPostType);
 
 		List<Map<String, ShPostAttr>> shPosts = new ArrayList<Map<String, ShPostAttr>>();
 		for (ShPost shPost : shPostList) {
