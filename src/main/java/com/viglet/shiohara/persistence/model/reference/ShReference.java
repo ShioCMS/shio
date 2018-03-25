@@ -13,9 +13,6 @@ import javax.persistence.NamedQuery;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonView;
-import com.viglet.shiohara.api.SystemObjectView;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 
 

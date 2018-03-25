@@ -19,7 +19,8 @@ import java.util.UUID;
  */
 @Entity
 @NamedQuery(name = "ShPostTypeAttr.findAll", query = "SELECT s FROM ShPostTypeAttr s")
-@JsonIgnoreProperties({ "shPostType", "shPostAttrs" })
+@JsonIgnoreProperties({"shPostAttrs" })
+//Removed shPostType ignore, because it is used in JSON from new Post 
 public class ShPostTypeAttr implements Serializable {
 	private static final long serialVersionUID = 1L;
 

@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.viglet.shiohara.api.SystemObjectView;
+import com.viglet.shiohara.api.ShJsonView;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.post.ShPost;
@@ -56,7 +56,7 @@ public class ShFolderAPI {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({SystemObjectView.ShObject.class})	
+	@JsonView({ShJsonView.ShJsonViewObject.class})	
 	public List<ShFolder> list() throws Exception {
 		return shFolderRepository.findAll();
 	}
@@ -64,7 +64,7 @@ public class ShFolderAPI {
 	@Path("/{folderId}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({SystemObjectView.ShObject.class})
+	@JsonView({ShJsonView.ShJsonViewObject.class})
 	public ShFolder edit(@PathParam("folderId") UUID id) throws Exception {
 		return shFolderRepository.findById(id);
 	}
@@ -72,7 +72,7 @@ public class ShFolderAPI {
 	@Path("/{folderId}")
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({SystemObjectView.ShObject.class})
+	@JsonView({ShJsonView.ShJsonViewObject.class})
 	public ShFolder update(@PathParam("folderId") UUID id, ShFolder shFolder) throws Exception {
 
 		ShFolder shFolderEdit = shFolderRepository.findById(id);
@@ -98,7 +98,7 @@ public class ShFolderAPI {
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	@JsonView({SystemObjectView.ShObject.class})
+	@JsonView({ShJsonView.ShJsonViewObject.class})
 	public ShFolder add(ShFolder shFolder) throws Exception {
 		shFolder.setDate(new Date());
 		shFolderRepository.save(shFolder);
@@ -164,7 +164,7 @@ public class ShFolderAPI {
 	@Path("/{folderId}/list")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({SystemObjectView.ShObject.class})	
+	@JsonView({ShJsonView.ShJsonViewObject.class})	
 	public ShFolderList list(@PathParam("folderId") UUID id) throws Exception {
 		ShFolder shFolder = shFolderRepository.findById(id);
 
@@ -183,7 +183,7 @@ public class ShFolderAPI {
 	@Path("/{folderId}/list/{postTypeName}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({SystemObjectView.ShObject.class})	
+	@JsonView({ShJsonView.ShJsonViewObject.class})	
 	public ShFolderList listByPostType(@PathParam("folderId") UUID id, @PathParam("postTypeName") String postTypeName)
 			throws Exception {
 		ShFolder shFolder = shFolderRepository.findById(id);
@@ -203,7 +203,7 @@ public class ShFolderAPI {
 	@Path("/{folderId}/path")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({SystemObjectView.ShObject.class})	
+	@JsonView({ShJsonView.ShJsonViewObject.class})	
 	public ShFolderPath path(@PathParam("folderId") UUID id) throws Exception {
 		ShFolder shFolder = shFolderRepository.findById(id);
 		if (shFolder != null) {
@@ -224,7 +224,7 @@ public class ShFolderAPI {
 	@Path("/model")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({SystemObjectView.ShObject.class})	
+	@JsonView({ShJsonView.ShJsonViewObject.class})	
 	public ShFolder folderStructure() throws Exception {
 		ShFolder shFolder = new ShFolder();
 		return shFolder;

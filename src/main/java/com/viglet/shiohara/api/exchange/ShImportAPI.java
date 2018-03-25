@@ -32,7 +32,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.viglet.shiohara.api.SystemObjectView;
+import com.viglet.shiohara.api.ShJsonView;
 import com.viglet.shiohara.exchange.ShFolderExchange;
 import com.viglet.shiohara.exchange.ShExchange;
 import com.viglet.shiohara.exchange.ShFileExchange;
@@ -82,7 +82,7 @@ public class ShImportAPI {
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces("application/json")
-	@JsonView({ SystemObjectView.ShObject.class })
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShExchange siteImport(@DefaultValue("true") @FormDataParam("enabled") boolean enabled,
 			@FormDataParam("file") InputStream inputStream,
 			@FormDataParam("file") FormDataContentDisposition fileDetail, @Context UriInfo uriInfo) throws Exception {

@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.viglet.shiohara.api.SystemObjectView;
+import com.viglet.shiohara.api.ShJsonView;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.object.ShObject;
@@ -72,7 +72,7 @@ public class ShObjectAPI {
 	@Path("/moveto/{channeGloballId}")
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({ SystemObjectView.ShObject.class })
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShObject> moveTo(@PathParam("channeGloballId") UUID channeGloballId, List<UUID> globalIds)
 			throws Exception {
 		List<ShObject> shObjects = new ArrayList<ShObject>();
@@ -98,7 +98,7 @@ public class ShObjectAPI {
 	@Path("/copyto/{channeGloballId}")
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
-	@JsonView({ SystemObjectView.ShObject.class })
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShObject> copyTo(@PathParam("channeGloballId") UUID channeGloballId, List<UUID> globalIds)
 			throws Exception {
 		List<ShObject> shObjects = new ArrayList<ShObject>();
