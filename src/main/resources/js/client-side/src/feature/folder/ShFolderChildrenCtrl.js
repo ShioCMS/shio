@@ -13,9 +13,10 @@ shioharaApp.controller('ShFolderChildrenCtrl', [
 						, "ShDialogSelectObject"
 						, "ShDialogDeleteFactory"
 						, "shPostResource"
+						, "shFolderResource"
 						, "$filter"
 						, "Notification"    
-    , function ($scope, $state, $stateParams, $rootScope, $translate, $http, $window, shAPIServerService, vigLocale, shFolderFactory, shPostFactory, ShDialogSelectObject, ShDialogDeleteFactory, shPostResource, $filter, Notification) {
+    , function ($scope, $state, $stateParams, $rootScope, $translate, $http, $window, shAPIServerService, vigLocale, shFolderFactory, shPostFactory, ShDialogSelectObject, ShDialogDeleteFactory, shPostResource, shFolderResource, $filter, Notification) {
         $scope.siteId = $stateParams.siteId;
         $scope.folderId = $stateParams.folderId;
         $scope.$parent.folderId = $stateParams.folderId;
@@ -180,7 +181,8 @@ shioharaApp.controller('ShFolderChildrenCtrl', [
         $scope.objectsDeleteDialog = function (shSelectedObjects) {
             var modalInstance = ShDialogDeleteFactory.dialog(shSelectedObjects);
             modalInstance.result.then(function () {
-            	angular.forEach(shSelectedObjects, function(value, key) {                             
+            	angular.forEach(shSelectedObjects, function(value, key) {  
+            		if (value.shGlobalId.type === "POST") {
             		shPost = value;
             		var deletedMessage = 'The ' + shPost.title + ' Post was deleted.';
                     shPostResource.delete({
@@ -196,6 +198,23 @@ shioharaApp.controller('ShFolderChildrenCtrl', [
                         $scope.shPosts.splice(index, 1);
                         Notification.error(deletedMessage);
                     });
+            	} else if (value.shGlobalId.type === "FOLDER") {
+            		shFolder = value;
+            		var deletedMessage = 'The ' + shFolder.name + ' Folder was deleted.';
+                    shFolderResource.delete({
+                        id: shFolder.id
+                    }, function () {
+                        // filter the array
+                        var foundItem = $filter('filter')($scope.shFolders, {
+                            id: shFolder.id
+                        }, true)[0];
+                        // get the index
+                        var index = $scope.shFolders.indexOf(foundItem);
+                        // remove the item from array
+                        $scope.shFolders.splice(index, 1);
+                        Notification.error(deletedMessage);
+                    });
+            	}
             	});
             }, function () {
                 // Selected CANCEL
