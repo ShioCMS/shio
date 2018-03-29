@@ -1,10 +1,6 @@
 shioharaApp.factory('shPostFactory', [
 	'$uibModal', 'shPostResource', 'Notification', '$filter', "$state"
-
-
-
-    
-    , function ($uibModal, shPostResource, Notification, $filter, $state) {
+, function ($uibModal, shPostResource, Notification, $filter, $state) {
         return {
             deleteFromList: function (shPost, shPosts) {
                 var modalInstance = this.modalDelete(shPost);

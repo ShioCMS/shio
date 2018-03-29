@@ -11,9 +11,11 @@ shioharaApp.controller('ShFolderChildrenCtrl', [
 						, "shFolderFactory"
 						, "shPostFactory"
 						, "ShDialogSelectObject"
+						, "ShDialogDeleteFactory"
+						, "shPostResource"
 						, "$filter"
 						, "Notification"    
-    , function ($scope, $state, $stateParams, $rootScope, $translate, $http, $window, shAPIServerService, vigLocale, shFolderFactory, shPostFactory, ShDialogSelectObject, $filter, Notification) {
+    , function ($scope, $state, $stateParams, $rootScope, $translate, $http, $window, shAPIServerService, vigLocale, shFolderFactory, shPostFactory, ShDialogSelectObject, ShDialogDeleteFactory, shPostResource, $filter, Notification) {
         $scope.siteId = $stateParams.siteId;
         $scope.folderId = $stateParams.folderId;
         $scope.$parent.folderId = $stateParams.folderId;
@@ -142,7 +144,7 @@ shioharaApp.controller('ShFolderChildrenCtrl', [
             var objectGlobalIds = [];
             objectGlobalIds.push(shObject.shGlobalId.id);
             var parameter = JSON.stringify(objectGlobalIds);
-            $http.put(shAPIServerService.get().concat("/post/copyto/" + $scope.shCurrentFolder.shGlobalId.id), parameter).then(function (response) {
+            $http.put(shAPIServerService.get().concat("/object/copyto/" + $scope.shCurrentFolder.shGlobalId.id), parameter).then(function (response) {
                 var shClonedPosts = response.data;
                 for (i = 0; i < shClonedPosts.length; i++) {
                     shClonedPost = shClonedPosts[i];
@@ -159,18 +161,47 @@ shioharaApp.controller('ShFolderChildrenCtrl', [
             }
         }
         $scope.objectsDelete = function () {
-            for (var stateKey in $scope.shStateObjects) {
-                if ($scope.shStateObjects[stateKey] === true) {
-                    shPostFactory.deleteFromList($scope.shObjects[stateKey], $scope.shPosts);
-                }
-            }
+        	 var shSelectedObjects = [];
+             for (var stateKey in $scope.shStateObjects) {
+                 if ($scope.shStateObjects[stateKey] === true) {                     
+                	 shSelectedObjects.push($scope.shObjects[stateKey]);
+                 }
+             }
+             $scope.objectsDeleteDialog(shSelectedObjects);
         }
         $scope.folderDelete = function (shFolder) {
             shFolderFactory.deleteFromList(shFolder, $scope.shFolders);
         }
-        $scope.postDelete = function (shPost) {
+        $scope.postDelete = function (shPost) {         
             shPostFactory.deleteFromList(shPost, $scope.shPosts);
         }
+        
+        
+        $scope.objectsDeleteDialog = function (shSelectedObjects) {
+            var modalInstance = ShDialogDeleteFactory.dialog(shSelectedObjects);
+            modalInstance.result.then(function () {
+            	angular.forEach(shSelectedObjects, function(value, key) {                             
+            		shPost = value;
+            		var deletedMessage = 'The ' + shPost.title + ' Post was deleted.';
+                    shPostResource.delete({
+                        id: shPost.id
+                    }, function () {
+                        // filter the array
+                        var foundItem = $filter('filter')($scope.shPosts, {
+                            id: shPost.id
+                        }, true)[0];
+                        // get the index
+                        var index = $scope.shPosts.indexOf(foundItem);
+                        // remove the item from array
+                        $scope.shPosts.splice(index, 1);
+                        Notification.error(deletedMessage);
+                    });
+            	});
+            }, function () {
+                // Selected CANCEL
+            });
+        }
+        
         $scope.postPreview = function (shPost) {
             var link = shAPIServerService.get().concat("/object/" + shPost.shGlobalId.id + "/preview");
             $window.open(link);
