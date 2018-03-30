@@ -108,55 +108,7 @@ public class ShFolderAPI {
 		shGlobalId.setType("FOLDER");
 
 		shGlobalIdRepository.save(shGlobalId);
-
-		// Folder Index
-
-		ShPostType shPostFolderIndex = shPostTypeRepository.findByName("PT-FOLDER-INDEX");
-
-		ShPost shPost = new ShPost();
-		shPost.setDate(new Date());
-		shPost.setShPostType(shPostFolderIndex);
-		shPost.setSummary("Folder Index");
-		shPost.setTitle("index");
-		shPost.setShFolder(shFolder);
-
-		shPostRepository.save(shPost);
-
-		shGlobalId = new ShGlobalId();
-		shGlobalId.setShObject(shPost);
-		shGlobalId.setType("POST");
-
-		shGlobalIdRepository.save(shGlobalId);
-
-		ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex, "TITLE");
-
-		ShPostAttr shPostAttr = new ShPostAttr();
-		shPostAttr.setShPost(shPost);
-		shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-		shPostAttr.setStrValue(shPost.getTitle());
-		shPostAttr.setType(1);
-
-		shPostAttrRepository.save(shPostAttr);
-
-		shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex, "DESCRIPTION");
-
-		shPostAttr = new ShPostAttr();
-		shPostAttr.setShPost(shPost);
-		shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-		shPostAttr.setStrValue(shPost.getSummary());
-		shPostAttr.setType(1);
-
-		shPostAttrRepository.save(shPostAttr);
-
-		shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex, "PAGE-LAYOUT");
-
-		shPostAttr = new ShPostAttr();
-		shPostAttr.setShPost(shPost);
-		shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-		shPostAttr.setStrValue("");
-		shPostAttr.setType(1);
-
-		shPostAttrRepository.save(shPostAttr);
+		
 		return shFolder;
 
 	}
