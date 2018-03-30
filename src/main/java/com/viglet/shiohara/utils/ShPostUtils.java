@@ -52,7 +52,8 @@ public class ShPostUtils {
 
 	public Map<String, ShPostAttr> postToMap(ShPost shPost) {
 
-		List<ShPostAttr> shPostAttrList = shPost.getShPostAttrs();
+		
+		List<ShPostAttr> shPostAttrList = shPostAttrRepository.findByShPost(shPost);
 
 		Map<String, ShPostAttr> shPostMap = new HashMap<String, ShPostAttr>();
 		ShPostAttr shPostAttrId = new ShPostAttr();
