@@ -54,6 +54,52 @@ shioharaApp.controller('ShFolderChildrenCtrl', [
                 $scope.actions[shPost.shGlobalId.id] = false;
             });
         }
+        
+        $scope.selectContents = function () {	
+       	 for (var stateKey in $scope.shStateObjects) {
+       		 if ($scope.shObjects[stateKey].shGlobalId.type === "POST") {
+       			 $scope.shStateObjects[stateKey] = true;
+       		 }
+       		 else {
+       			$scope.shStateObjects[stateKey] = false;
+       		 }
+       	 }
+        }
+        
+        $scope.selectFolders = function () {	
+        	 for (var stateKey in $scope.shStateObjects) {
+        		 if ($scope.shObjects[stateKey].shGlobalId.type === "FOLDER") {
+        			 $scope.shStateObjects[stateKey] = true;
+        		 }
+        		 else {
+        			 $scope.shStateObjects[stateKey] = false;
+        		 }
+        	 }
+        }
+        
+        $scope.selectEverything = function () {	
+          	 for (var stateKey in $scope.shStateObjects) {          		
+          			 $scope.shStateObjects[stateKey] = true;
+          	 }
+        }
+        
+        $scope.selectNothing = function () {	
+         	 for (var stateKey in $scope.shStateObjects) {          		
+         			 $scope.shStateObjects[stateKey] = false;
+         	 }
+        }
+        
+        $scope.selectInverted = function () {	
+        	 for (var stateKey in $scope.shStateObjects) {  
+        		 if ($scope.shStateObjects[stateKey]) {
+        			 $scope.shStateObjects[stateKey] = false;
+        		 } else {
+        			 $scope.shStateObjects[stateKey] = true;
+        		 }
+        		 
+        	 }
+       }
+
         $scope.updateAction = function (shGlobalId, value) {
             $scope.actions[shGlobalId.id] = value;
         }
