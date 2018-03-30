@@ -15,8 +15,9 @@ shioharaApp.controller('ShFolderChildrenCtrl', [
 						, "shPostResource"
 						, "shFolderResource"
 						, "$filter"
-						, "Notification"    
-    , function ($scope, $state, $stateParams, $rootScope, $translate, $http, $window, shAPIServerService, vigLocale, shFolderFactory, shPostFactory, ShDialogSelectObject, ShDialogDeleteFactory, shPostResource, shFolderResource, $filter, Notification) {
+						, "Notification"
+						, "moment"
+    , function ($scope, $state, $stateParams, $rootScope, $translate, $http, $window, shAPIServerService, vigLocale, shFolderFactory, shPostFactory, ShDialogSelectObject, ShDialogDeleteFactory, shPostResource, shFolderResource, $filter, Notification, moment) {
         $scope.siteId = $stateParams.siteId;
         $scope.folderId = $stateParams.folderId;
         $scope.$parent.folderId = $stateParams.folderId;
@@ -55,6 +56,19 @@ shioharaApp.controller('ShFolderChildrenCtrl', [
         }
         $scope.updateAction = function (shGlobalId, value) {
             $scope.actions[shGlobalId.id] = value;
+        }
+        $scope.isRecent = function (date) {
+        	var momentDate = moment(date);
+        	var now = new moment();
+        	var duration = moment.duration(momentDate.diff(now))        
+        	if (duration.as('minutes') >= -5) {        		
+        		return true;
+        	}
+        	else {
+        		return false;
+        	}
+        	
+            return false;
         }
         $scope.objectsCopy = function () {
             var objectGlobalIds = [];

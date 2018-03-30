@@ -67,7 +67,7 @@ shioharaApp
 													.go(
 															'content.children.folder-children',
 															{
-																folderId : $scope.shFolder.id
+																folderId : $scope.shFolder.parentFolder.id
 															});
 										});
 							}

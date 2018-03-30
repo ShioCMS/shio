@@ -66,7 +66,7 @@ shioharaApp
 										&& $scope.shFolder.id > 0) {
 									$scope.shFolder.$update(function() {
 										 Notification.warning('The ' + $scope.shFolder.name +' Folder was created.');
-										$state.go('content.children.folder-children', {folderId: $scope.shFolder.id});
+										$state.go('content.children.folder-children', {folderId: $scope.shFolder.parentFolder.id});
 									});
 								} else {
 									delete $scope.shFolder.id;
@@ -79,7 +79,7 @@ shioharaApp
 														function(response) {
 															$scope.shFolder = response;
 															Notification.warning('The ' + $scope.shFolder.name +' Folder was created.');
-															$state.go('content.children.folder-children', {folderId: $scope.shFolder.id});
+															$state.go('content.children.site-children', {siteId: $scope.shSite.id});
 														});
 
 									} else {
@@ -90,7 +90,7 @@ shioharaApp
 														function(response) {
 															$scope.shFolder = response;
 															Notification.warning('The ' + $scope.shFolder.name +' Folder was created.');
-															$state.go('content.children.folder-children', {folderId: $scope.shFolder.id});
+															$state.go('content.children.folder-children', {folderId: $scope.shFolder.parentFolder.id});
 														});
 									}
 								}
