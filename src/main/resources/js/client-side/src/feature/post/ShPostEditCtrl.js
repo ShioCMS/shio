@@ -36,15 +36,15 @@ shioharaApp.controller('ShPostEditCtrl', [
 								shAPIServerService
 										.get()
 										.concat(
-												"/folder/" + $scope.folderId + "/path")
+												"/v1/folder/" + $scope.folderId + "/path")
 												)
 						.then(
 								function(response) {
 									$scope.breadcrumb = response.data.breadcrumb;
 									$scope.shSite = response.data.shSite;
-									folderPath =  shAPIServerService.server().concat("/store/file_source/" + $scope.shSite.name + response.data.folderPath);
+									folderPath =  shAPIServerService.server().concat("/v1/store/file_source/" + $scope.shSite.name + response.data.folderPath);
 									folderURL = shAPIServerService.server().concat(
-											"/sites/" + $scope.shSite.name.replace(new RegExp(" ",
+											"/v1/sites/" + $scope.shSite.name.replace(new RegExp(" ",
 											'g'), "-") + "/default/pt-br" + response.data.folderPath.replace(new RegExp(" ",
 															'g'), "-"));
 								}
@@ -56,18 +56,8 @@ shioharaApp.controller('ShPostEditCtrl', [
 			
 							
 			$scope.openPreviewURL = function() {
-				if ($scope.shPost.shPostType.name == 'PT-FILE') {
-					var previewURL = folderPath + $scope.shPost.title;
-				}
-				else if ($scope.shPost.shPostType.name == 'PT-CHANNEL-INDEX') {
-						var previewURL = folderURL;
-					}
-					else {
-					   var previewURL = folderURL
-									+ $scope.shPost.title.replace(new RegExp(" ",
-											'g'), "-");
-					}
-					 $window.open(previewURL,"_self");
+				 var link = shAPIServerService.get().concat("/v1/object/" + $scope.shPost.shGlobalId.id + "/preview");
+		            $window.open(link,"_self");
 			}
 	
 			$scope.postEditForm = "template/post/form.html";

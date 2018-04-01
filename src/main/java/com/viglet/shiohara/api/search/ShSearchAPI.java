@@ -11,6 +11,11 @@ import javax.ws.rs.core.MediaType;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
@@ -22,7 +27,8 @@ import com.viglet.shiohara.search.HibernateSearchService;
 import com.viglet.shiohara.utils.ShFolderUtils;
 
 @Component
-@Path("/search")
+@RestController
+@RequestMapping("/api/v2/search")
 public class ShSearchAPI {
 
 	@Autowired
@@ -30,10 +36,9 @@ public class ShSearchAPI {
 	@Autowired
 	private ShFolderUtils shFolderUtils;
 
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
+	@RequestMapping(method = RequestMethod.GET)
 	@JsonView({  ShJsonView.ShJsonViewObject.class })
-	public List<ShPostWIthBreadcrumb> search(@QueryParam("q") String q) throws Exception {
+	public List<ShPostWIthBreadcrumb> search(@RequestParam(value = "q") String q) throws Exception {
 		List<ShPostWIthBreadcrumb> searchResults = new ArrayList<ShPostWIthBreadcrumb>();
 		for (ShPost shPost : searchservice.fuzzySearch(q)) {
 			ArrayList<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shPost.getShFolder());

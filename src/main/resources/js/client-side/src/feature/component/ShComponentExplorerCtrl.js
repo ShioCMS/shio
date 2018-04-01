@@ -36,7 +36,7 @@ shioharaApp.controller('ShComponentExplorerCtrl', [
 				$ctrl.shPostSelected = null;
 				$scope.$evalAsync($http.get(
 						shAPIServerService.get().concat(
-								"/folder/" + folderId + "/list/" + objectType))
+								"/v1/folder/" + folderId + "/list/" + objectType))
 						.then(function(response) {
 							$scope.shFolders = response.data.shFolders;
 							$scope.shPosts = response.data.shPosts;
@@ -49,7 +49,7 @@ shioharaApp.controller('ShComponentExplorerCtrl', [
 				$ctrl.shPostSelected = null;
 				$scope.$evalAsync($http.get(
 						shAPIServerService.get().concat(
-								"/site/" + siteId + "/folder")).then(
+								"/v1/site/" + siteId + "/folder")).then(
 						function(response) {
 							$scope.shFolders = response.data.shFolders;
 							$scope.shPosts = response.data.shPosts;

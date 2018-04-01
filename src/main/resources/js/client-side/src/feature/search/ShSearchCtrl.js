@@ -13,7 +13,7 @@ shioharaApp.controller('ShSearchCtrl', [
 			$scope.shPosts = null;
 			$scope.$evalAsync($http.get(
 					shAPIServerService.get().concat(
-							"/search?q=" + $scope.shQuery)).then(
+							"/v2/search?q=" + $scope.shQuery)).then(
 					function(response) {
 						$scope.shPostsWithBreadCrumb = response.data;
 					}));
