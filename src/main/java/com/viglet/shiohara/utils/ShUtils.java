@@ -24,10 +24,12 @@ public class ShUtils {
 	 * 
 	 * @param zipFile
 	 *            input zip file
-	 * @param output
-	 *            zip file output folder
+	 * @param outputFolder
+	 *            output Folder
 	 * @throws ArchiveException
+	 *             if creating or adding to the archive fails
 	 * @throws IOException
+	 *             if the io fails
 	 */
 	public void unZipIt(File zipFile, File outputFolder) throws ArchiveException, IOException {
 

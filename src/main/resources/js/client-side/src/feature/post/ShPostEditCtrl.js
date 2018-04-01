@@ -36,7 +36,7 @@ shioharaApp.controller('ShPostEditCtrl', [
 								shAPIServerService
 										.get()
 										.concat(
-												"/v1/folder/" + $scope.folderId + "/path")
+												"/v2/folder/" + $scope.folderId + "/path")
 												)
 						.then(
 								function(response) {
@@ -57,7 +57,7 @@ shioharaApp.controller('ShPostEditCtrl', [
 							
 			$scope.openPreviewURL = function() {
 				 var link = shAPIServerService.get().concat("/v1/object/" + $scope.shPost.shGlobalId.id + "/preview");
-		            $window.open(link,"_self");
+		         $window.open(link,"_self");
 			}
 	
 			$scope.postEditForm = "template/post/form.html";

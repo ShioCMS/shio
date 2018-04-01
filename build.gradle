@@ -75,6 +75,11 @@ springBoot {
     executable = true
 }
 
+javadoc {
+    source = sourceSets.main.allJava
+    classpath = configurations.compile
+    destinationDir = file("store/doc/javadoc")
+}
 repositories {   
      mavenCentral()
 }

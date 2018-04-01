@@ -19,7 +19,7 @@ shioharaApp.controller('ShPostTypeSelectWithFolderCtrl', [
 			if ($scope.folderId != null) {
 				$scope.$evalAsync($http.get(
 						shAPIServerService.get().concat(
-								"/v1/folder/" + $scope.folderId + "/path"))
+								"/v2/folder/" + $scope.folderId + "/path"))
 						.then(function(response) {
 							$scope.breadcrumb = response.data.breadcrumb;
 							$scope.shSite = response.data.currentFolder.shSite;

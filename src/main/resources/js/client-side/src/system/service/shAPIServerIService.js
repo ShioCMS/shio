@@ -6,7 +6,7 @@ shioharaApp.service('shAPIServerService', [
 			var shProtocol = $location.protocol();
 			var shHostname = $location.host();
 			var shPort = $location.port();
-			var shAPIContext = "/api/v1";
+			var shAPIContext = "/api";
 			var shEmbServer = shProtocol + "://" + shHostname + ":"
 					+ shPort;
 			
@@ -20,7 +20,7 @@ shioharaApp.service('shAPIServerService', [
 				else {
 					$http({
 						method : 'GET',
-						url : shEmbAPIServer
+						url : shEmbAPIServer + "/v2"
 					}).then(function successCallback(response) {
 						$cookies.put('shServer', shEmbServer);
 					}, function errorCallback(response) {
