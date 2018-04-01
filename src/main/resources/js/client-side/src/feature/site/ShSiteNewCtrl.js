@@ -6,7 +6,7 @@ shioharaApp.controller('ShSiteNewCtrl', [
 		function($scope, $http, shAPIServerService, shSiteFactory) {
 			$scope.shSite = null;
 			$scope.$evalAsync($http.get(
-					shAPIServerService.get().concat("/site/model")).then(
+					shAPIServerService.get().concat("/v1/site/model")).then(
 					function(response) {
 						$scope.shSite = response.data;
 					}));

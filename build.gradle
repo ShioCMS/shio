@@ -130,6 +130,10 @@ dependencies {
 	compile group: 'org.hibernate', name: 'hibernate-search-engine', version: "${hibernateVersion}"
 	compile group: 'org.hibernate', name: 'hibernate-search-orm', version: "${hibernateVersion}"
 	
+	// Swagger 2
+	compile 'io.springfox:springfox-swagger2:2.7.0'
+	compile 'io.springfox:springfox-swagger-ui:2.7.0'
+	
 	// WebJars
 	compile 'org.webjars.bower:jquery:1.11.1'
 	compile 'org.webjars:bootstrap:3.3.7-1'

@@ -16,7 +16,6 @@ import com.viglet.shiohara.api.post.ShPostAPI;
 import com.viglet.shiohara.api.post.type.ShPostTypeAPI;
 import com.viglet.shiohara.api.post.type.ShPostTypeAttrAPI;
 import com.viglet.shiohara.api.reference.ShReferenceAPI;
-import com.viglet.shiohara.api.search.ShSearchAPI;
 import com.viglet.shiohara.api.site.ShSiteAPI;
 import com.viglet.shiohara.api.staticfile.ShStaticFileAPI;
 import com.viglet.shiohara.api.user.ShUserAPI;
@@ -28,7 +27,7 @@ import javax.ws.rs.ext.Provider;
 
 @Profile("production")
 @Component
-@ApplicationPath("/api")
+@ApplicationPath("/api/v1")
 public class JerseyConfig extends ResourceConfig {
 	@Autowired
 	public JerseyConfig(ObjectMapper objectMapper) {
@@ -53,7 +52,7 @@ public class JerseyConfig extends ResourceConfig {
 		register(ShFolderAPI.class);	
 		register(ShStaticFileAPI.class);
 		register(ShReferenceAPI.class);
-		register(ShSearchAPI.class);
+		//register(ShSearchAPI.class);
 		register(ShObjectAPI.class);
 		register(ShImportAPI.class);
 	}

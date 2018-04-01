@@ -36,7 +36,7 @@ shioharaApp
 							$rootScope.$state = $state;
 							$scope.$evalAsync($http.get(
 									shAPIServerService.get().concat(
-											"/folder/model")).then(
+											"/v1/folder/model")).then(
 									function(response) {
 										$scope.shFolder = response.data;
 									}));
@@ -47,7 +47,7 @@ shioharaApp
 														shAPIServerService
 																.get()
 																.concat(
-																		"/folder/"
+																		"/v1/folder/"
 																				+ $scope.folderId
 																				+ "/path"))
 												.then(

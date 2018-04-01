@@ -24,28 +24,21 @@ shioharaApp.controller('ShPostNewCtrl', [
         $scope.shFolder = null;
         $scope.shSite = null;
         var folderURL = null;
-        $scope.$evalAsync($http.get(shAPIServerService.get().concat("/folder/" + $scope.folderId + "/path")).then(function (response) {
+        $scope.$evalAsync($http.get(shAPIServerService.get().concat("/v1/folder/" + $scope.folderId + "/path")).then(function (response) {
             $scope.shFolder = response.data.currentFolder
             $scope.breadcrumb = response.data.breadcrumb;
             $scope.shSite = response.data.shSite;
-            folderPath = shAPIServerService.server().concat("/store/file_source/" + $scope.shSite.name + response.data.folderPath);
-            folderURL = shAPIServerService.server().concat("/sites/" + $scope.shSite.name.replace(new RegExp(" ", 'g'), "-") + "/default/pt-br" + response.data.folderPath.replace(new RegExp(" ", 'g'), "-"));
+            folderPath = shAPIServerService.server().concat("/v1/store/file_source/" + $scope.shSite.name + response.data.folderPath);
+            folderURL = shAPIServerService.server().concat("/v1/sites/" + $scope.shSite.name.replace(new RegExp(" ", 'g'), "-") + "/default/pt-br" + response.data.folderPath.replace(new RegExp(" ", 'g'), "-"));
         }));
-        $scope.$evalAsync($http.get(shAPIServerService.get().concat("/post/type/" + $scope.postTypeId + "/post/model")).then(function (response) {
+        $scope.$evalAsync($http.get(shAPIServerService.get().concat("/v1/post/type/" + $scope.postTypeId + "/post/model")).then(function (response) {
             $scope.shPost = response.data;
         }));
         $scope.postEditForm = "template/post/form.html";
         $scope.openPreviewURL = function () {
-            if ($scope.shPost.shPostType.name == 'PT-FILE') {
-                var previewURL = folderPath + $scope.shPost.title;
-            }
-            else if ($scope.shPost.shPostType.name == 'PT-CHANNEL-INDEX') {
-                var previewURL = folderURL;
-            }
-            else {
-                var previewURL = folderURL + $scope.shPost.title.replace(new RegExp(" ", 'g'), "-");
-            }
-            $window.open(previewURL, "_self");
+			 var link = shAPIServerService.get().concat("/v1/object/" + $scope.shPost.shGlobalId.id + "/preview");
+	         $window.open(link,"_self");
+
         }
         var uploadFile = function (shPostAttr, key, postType) {
             return shStaticFileFactory.uploadFile($scope.folderId, shPostAttr, key, postType, $scope.shPost, $scope.numberOfFileWidgets);

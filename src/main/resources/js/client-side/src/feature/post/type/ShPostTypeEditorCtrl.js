@@ -12,7 +12,7 @@ shioharaApp.controller('ShPostTypeEditorCtrl', [
 			$rootScope.$state = $state;
 			$scope.shPostType = null;
 			$scope.$evalAsync($http.get(
-					shAPIServerService.get().concat("/post/type/model")).then(
+					shAPIServerService.get().concat("/v1/post/type/model")).then(
 					function(response) {
 						$scope.shPostType = response.data;
 					}));

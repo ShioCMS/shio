@@ -6,7 +6,7 @@ shioharaApp.service('shAPIServerService', [
 			var shProtocol = $location.protocol();
 			var shHostname = $location.host();
 			var shPort = $location.port();
-			var shAPIContext = "/api";
+			var shAPIContext = "/api/v1";
 			var shEmbServer = shProtocol + "://" + shHostname + ":"
 					+ shPort;
 			

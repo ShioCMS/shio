@@ -32,7 +32,7 @@ shioharaApp.controller('ShFolderChildrenCtrl', [
         $scope.shStateObjects = [];
         $scope.shObjects = [];
         $scope.actions = [];
-        $scope.$evalAsync($http.get(shAPIServerService.get().concat("/folder/" + $scope.folderId + "/list")).then(function (response) {
+        $scope.$evalAsync($http.get(shAPIServerService.get().concat("/v1/folder/" + $scope.folderId + "/list")).then(function (response) {
             $scope.processResponse(response);
         }));
         $scope.processResponse = function (response) {
@@ -135,7 +135,7 @@ shioharaApp.controller('ShFolderChildrenCtrl', [
             var modalInstance = ShDialogSelectObject.dialog($scope.folderId, "shFolder");
             modalInstance.result.then(function (shObjectSelected) {
                 var parameter = JSON.stringify(objectGlobalIds);
-                $http.put(shAPIServerService.get().concat("/object/copyto/" + shObjectSelected.shGlobalId.id), parameter).then(function (response) {
+                $http.put(shAPIServerService.get().concat("/v1/object/copyto/" + shObjectSelected.shGlobalId.id), parameter).then(function (response) {
                     var shObjects = response.data;
                     for (i = 0; i < shObjects.length; i++) {
                     	shObject = shObjects[i];
@@ -172,7 +172,7 @@ shioharaApp.controller('ShFolderChildrenCtrl', [
             var modalInstance = ShDialogSelectObject.dialog($scope.folderId, "shFolder");
             modalInstance.result.then(function (shObjectSelected) {
                 var parameter = JSON.stringify(objectGlobalIds);
-                $http.put(shAPIServerService.get().concat("/object/moveto/" + shObjectSelected.shGlobalId.id), parameter).then(function (response) {
+                $http.put(shAPIServerService.get().concat("/v1/object/moveto/" + shObjectSelected.shGlobalId.id), parameter).then(function (response) {
                     var shObjects = response.data;
                     for (i = 0; i < shObjects.length; i++) {
                     	shObject = shObjects[i];
@@ -205,7 +205,7 @@ shioharaApp.controller('ShFolderChildrenCtrl', [
             var objectGlobalIds = [];
             objectGlobalIds.push(shObject.shGlobalId.id);
             var parameter = JSON.stringify(objectGlobalIds);
-            $http.put(shAPIServerService.get().concat("/object/copyto/" + $scope.shCurrentFolder.shGlobalId.id), parameter).then(function (response) {
+            $http.put(shAPIServerService.get().concat("/v1/object/copyto/" + $scope.shCurrentFolder.shGlobalId.id), parameter).then(function (response) {
                 var shClonedPosts = response.data;
                 for (i = 0; i < shClonedPosts.length; i++) {
                     shClonedPost = shClonedPosts[i];
@@ -282,11 +282,11 @@ shioharaApp.controller('ShFolderChildrenCtrl', [
         }
         
         $scope.postPreview = function (shPost) {
-            var link = shAPIServerService.get().concat("/object/" + shPost.shGlobalId.id + "/preview");
+            var link = shAPIServerService.get().concat("/v1/object/" + shPost.shGlobalId.id + "/preview");
             $window.open(link);
         }
         $scope.folderPreview = function (shFolder) {
-            var link = shAPIServerService.get().concat("/object/" + shFolder.shGlobalId.id + "/preview");
+            var link = shAPIServerService.get().concat("/v1/object/" + shFolder.shGlobalId.id + "/preview");
             $window.open(link);
         }
 						}]);
