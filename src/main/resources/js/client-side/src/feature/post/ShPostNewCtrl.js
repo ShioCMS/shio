@@ -24,7 +24,7 @@ shioharaApp.controller('ShPostNewCtrl', [
         $scope.shFolder = null;
         $scope.shSite = null;
         var folderURL = null;
-        $scope.$evalAsync($http.get(shAPIServerService.get().concat("/v1/folder/" + $scope.folderId + "/path")).then(function (response) {
+        $scope.$evalAsync($http.get(shAPIServerService.get().concat("/v2/folder/" + $scope.folderId + "/path")).then(function (response) {
             $scope.shFolder = response.data.currentFolder
             $scope.breadcrumb = response.data.breadcrumb;
             $scope.shSite = response.data.shSite;

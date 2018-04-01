@@ -32,7 +32,7 @@ shioharaApp.controller('ShFolderChildrenCtrl', [
         $scope.shStateObjects = [];
         $scope.shObjects = [];
         $scope.actions = [];
-        $scope.$evalAsync($http.get(shAPIServerService.get().concat("/v1/folder/" + $scope.folderId + "/list")).then(function (response) {
+        $scope.$evalAsync($http.get(shAPIServerService.get().concat("/v2/folder/" + $scope.folderId + "/list")).then(function (response) {
             $scope.processResponse(response);
         }));
         $scope.processResponse = function (response) {

@@ -45,7 +45,7 @@ shioharaApp
 														shAPIServerService
 																.get()
 																.concat(
-																		"/v1/folder/"
+																		"/v2/folder/"
 																				+ $scope.folderId
 																				+ "/path"))
 												.then(

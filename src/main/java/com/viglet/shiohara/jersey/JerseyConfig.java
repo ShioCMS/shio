@@ -7,8 +7,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.viglet.shiohara.api.ShAPI;
-import com.viglet.shiohara.api.folder.ShFolderAPI;
 import com.viglet.shiohara.api.exchange.ShImportAPI;
 import com.viglet.shiohara.api.filter.ShCORSFilter;
 import com.viglet.shiohara.api.object.ShObjectAPI;
@@ -31,8 +29,6 @@ import javax.ws.rs.ext.Provider;
 public class JerseyConfig extends ResourceConfig {
 	@Autowired
 	public JerseyConfig(ObjectMapper objectMapper) {
-		// register endpoints
-		packages("com.shengwang.demo");
 		// register jackson for json
 		register(new ObjectMapperContextResolver(objectMapper));
 		//register(EntityFilteringFeature.class);
@@ -41,7 +37,6 @@ public class JerseyConfig extends ResourceConfig {
  
         //register(JacksonFeature.class);
 		register(ShCORSFilter.class);
-		register(ShAPI.class);
 		register(ShPostAPI.class);
 		register(ShPostTypeAPI.class);
 		register(MultiPartFeature.class);
@@ -49,10 +44,8 @@ public class JerseyConfig extends ResourceConfig {
 		register(ShSiteAPI.class);
 		register(ShUserAPI.class);
 		register(ShWidgetAPI.class);	
-		register(ShFolderAPI.class);	
 		register(ShStaticFileAPI.class);
 		register(ShReferenceAPI.class);
-		//register(ShSearchAPI.class);
 		register(ShObjectAPI.class);
 		register(ShImportAPI.class);
 	}
