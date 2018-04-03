@@ -7,19 +7,13 @@ import java.util.List;
 import java.util.UUID;
 import java.util.Set;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.reference.ShReference;
@@ -36,8 +30,8 @@ import com.viglet.shiohara.persistence.repository.reference.ShReferenceRepositor
 import com.viglet.shiohara.persistence.repository.user.ShUserRepository;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
 
-@Component
-@Path("/post")
+@RestController
+@RequestMapping("/api/v2/post")
 public class ShPostAPI {
 
 	@Autowired
@@ -53,28 +47,23 @@ public class ShPostAPI {
 	@Autowired
 	private ShReferenceRepository shReferenceRepository;
 
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
+	@RequestMapping(method = RequestMethod.GET)
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public List<ShPost> list() throws Exception {
+	public List<ShPost> shPostList() throws Exception {
 		return shPostRepository.findAll();
 	}
 
-	@Path("/{postId}")
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
+	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShPost edit(@PathParam("postId") UUID id) throws Exception {
+	public ShPost shPostEdit(@PathVariable UUID id) throws Exception {
 		ShPost shPost = shPostRepository.findById(id);
 		shPost.setShPostAttrs(shPostAttrRepository.findByShPost(shPost));
 		return shPost;
 	}
 	
-	@Path("/{postId}")
-	@PUT
-	@Produces(MediaType.APPLICATION_JSON)
+	@RequestMapping(method = RequestMethod.PUT, value = "/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShPost update(@PathParam("postId") UUID id, ShPost shPost) throws Exception {
+	public ShPost shPostUpdate(@PathVariable UUID id, @RequestBody ShPost shPost) throws Exception {
 
 		ShPost shPostEdit = shPostRepository.findById(id);
 
@@ -118,10 +107,8 @@ public class ShPostAPI {
 		return shPostEdit;
 	}
 
-	@Path("/{postId}")
-	@DELETE
-	@Produces(MediaType.APPLICATION_JSON)
-	public boolean delete(@PathParam("postId") UUID id) throws Exception {
+	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
+	public boolean shPostDelete(@PathVariable UUID id) throws Exception {
 
 		ShPost shPost = shPostRepository.findById(id);
 		List<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
@@ -152,10 +139,9 @@ public class ShPostAPI {
 		return true;
 	}
 
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
+	@RequestMapping(method = RequestMethod.POST)
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShPost add(ShPost shPost) throws Exception {
+	public ShPost shPostAdd(@RequestBody ShPost shPost) throws Exception {
 
 		String title = shPost.getTitle();
 		String summary = shPost.getSummary();

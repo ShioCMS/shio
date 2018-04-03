@@ -20,7 +20,7 @@ shioharaApp.controller('ShModalDeleteObjectCtrl', [
 
 			$http.get(
 					shAPIServerService.get().concat(
-							"/v1/reference/to/" + $ctrl.shObject.shGlobalId.id))
+							"/v2/reference/to/" + $ctrl.shObject.shGlobalId.id))
 					.then(function(response) {
 						$ctrl.objectRefers = response.data;
 					});
@@ -41,7 +41,7 @@ shioharaApp.controller('ShModalDeleteObjectCtrl', [
 					// Selected Replace and Remove it
 					$http.post(
 							shAPIServerService.get().concat(
-									"/v1/reference/to/" + shObject.shGlobalId.id + "/replace/" + shPostSelected.shGlobalId.id))
+									"/v2/reference/to/" + shObject.shGlobalId.id + "/replace/" + shPostSelected.shGlobalId.id))
 							.then(function(response) {
 								$ctrl.objectRefers = response.data;
 							});

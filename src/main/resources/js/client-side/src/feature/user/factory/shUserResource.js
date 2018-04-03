@@ -1,5 +1,5 @@
 shioharaApp.factory('shUserResource', [ '$resource', 'shAPIServerService', function($resource, shAPIServerService) {
-	return $resource(shAPIServerService.get().concat('/v1/user/:id'), {
+	return $resource(shAPIServerService.get().concat('/v2/user/:id'), {
 		id : '@id'
 	}, {
 		update : {

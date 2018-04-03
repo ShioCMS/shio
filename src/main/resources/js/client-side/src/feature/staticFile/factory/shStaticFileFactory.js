@@ -13,7 +13,7 @@ shioharaApp.factory('shStaticFileFactory', [
                     file = shPostAttr.file;
                     if (!file.$error) {
                         Upload.upload({
-                            url: shAPIServerService.get().concat('/v1/staticfile/upload')
+                            url: shAPIServerService.get().concat('/v2/staticfile/upload')
                             , data: {
                                 file: file
                                 , folderId: folderId

@@ -44,7 +44,7 @@ shioharaApp.controller('ShPostEditCtrl', [
 									$scope.shSite = response.data.shSite;
 									folderPath =  shAPIServerService.server().concat("/v1/store/file_source/" + $scope.shSite.name + response.data.folderPath);
 									folderURL = shAPIServerService.server().concat(
-											"/v1/sites/" + $scope.shSite.name.replace(new RegExp(" ",
+											"/v2/sites/" + $scope.shSite.name.replace(new RegExp(" ",
 											'g'), "-") + "/default/pt-br" + response.data.folderPath.replace(new RegExp(" ",
 															'g'), "-"));
 								}
@@ -56,7 +56,7 @@ shioharaApp.controller('ShPostEditCtrl', [
 			
 							
 			$scope.openPreviewURL = function() {
-				 var link = shAPIServerService.get().concat("/v1/object/" + $scope.shPost.shGlobalId.id + "/preview");
+				 var link = shAPIServerService.get().concat("/v2/object/" + $scope.shPost.shGlobalId.id + "/preview");
 		         $window.open(link,"_self");
 			}
 	

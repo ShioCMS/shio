@@ -29,14 +29,14 @@ shioharaApp.controller('ShPostNewCtrl', [
             $scope.breadcrumb = response.data.breadcrumb;
             $scope.shSite = response.data.shSite;
             folderPath = shAPIServerService.server().concat("/v1/store/file_source/" + $scope.shSite.name + response.data.folderPath);
-            folderURL = shAPIServerService.server().concat("/v1/sites/" + $scope.shSite.name.replace(new RegExp(" ", 'g'), "-") + "/default/pt-br" + response.data.folderPath.replace(new RegExp(" ", 'g'), "-"));
+            folderURL = shAPIServerService.server().concat("/v2/sites/" + $scope.shSite.name.replace(new RegExp(" ", 'g'), "-") + "/default/pt-br" + response.data.folderPath.replace(new RegExp(" ", 'g'), "-"));
         }));
-        $scope.$evalAsync($http.get(shAPIServerService.get().concat("/v1/post/type/" + $scope.postTypeId + "/post/model")).then(function (response) {
+        $scope.$evalAsync($http.get(shAPIServerService.get().concat("/v2/post/type/" + $scope.postTypeId + "/post/model")).then(function (response) {
             $scope.shPost = response.data;
         }));
         $scope.postEditForm = "template/post/form.html";
         $scope.openPreviewURL = function () {
-			 var link = shAPIServerService.get().concat("/v1/object/" + $scope.shPost.shGlobalId.id + "/preview");
+			 var link = shAPIServerService.get().concat("/v2/object/" + $scope.shPost.shGlobalId.id + "/preview");
 	         $window.open(link,"_self");
 
         }

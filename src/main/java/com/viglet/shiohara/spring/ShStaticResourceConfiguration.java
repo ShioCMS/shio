@@ -32,5 +32,8 @@ public class ShStaticResourceConfiguration extends WebMvcConfigurerAdapter {
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/thirdparty/**").allowedOrigins("*").allowedMethods("PUT", "DELETE", "GET", "POST")
 				.allowCredentials(false).maxAge(3600);
+		registry.addMapping("/api/**").allowedOrigins("*").allowedMethods("PUT", "DELETE", "GET", "POST")
+				.allowCredentials(false).maxAge(3600);
 	}
+
 }

@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,7 +26,6 @@ import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrReposi
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.utils.ShFolderUtils;
 
-@Component
 @RestController
 @RequestMapping("/api/v2/folder")
 public class ShFolderAPI {
@@ -49,19 +47,19 @@ public class ShFolderAPI {
 
 	@RequestMapping(method = RequestMethod.GET)
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public List<ShFolder> list() throws Exception {
+	public List<ShFolder> shFolderList() throws Exception {
 		return shFolderRepository.findAll();
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShFolder edit(@PathVariable UUID id) throws Exception {
+	public ShFolder shFolderEdit(@PathVariable UUID id) throws Exception {
 		return shFolderRepository.findById(id);
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShFolder update(@PathVariable UUID id, @RequestBody ShFolder shFolder) throws Exception {
+	public ShFolder shFolderUpdate(@PathVariable UUID id, @RequestBody ShFolder shFolder) throws Exception {
 
 		ShFolder shFolderEdit = shFolderRepository.findById(id);
 
@@ -76,7 +74,7 @@ public class ShFolderAPI {
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
-	public boolean delete(@PathVariable UUID id) throws Exception {
+	public boolean shFolderDelete(@PathVariable UUID id) throws Exception {
 		ShFolder shFolder = shFolderRepository.findById(id);
 		shGlobalIdRepository.delete(shFolder.getShGlobalId().getId());
 		return shFolderUtils.deleteFolder(shFolder);
@@ -84,7 +82,7 @@ public class ShFolderAPI {
 
 	@RequestMapping(method = RequestMethod.POST)
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShFolder add(@RequestBody ShFolder shFolder) throws Exception {
+	public ShFolder shFolderAdd(@RequestBody ShFolder shFolder) throws Exception {
 		shFolder.setDate(new Date());
 		shFolderRepository.save(shFolder);
 
@@ -100,7 +98,7 @@ public class ShFolderAPI {
 
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}/list")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShFolderList list(@PathVariable UUID id) throws Exception {
+	public ShFolderList shFolderListItem(@PathVariable UUID id) throws Exception {
 		ShFolder shFolder = shFolderRepository.findById(id);
 
 		String folderPath = shFolderUtils.folderPath(shFolder);
@@ -117,7 +115,7 @@ public class ShFolderAPI {
 
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}/list/{postTypeName}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShFolderList listByPostType(@PathVariable UUID id, @PathVariable String postTypeName) throws Exception {
+	public ShFolderList shFolderListByPostType(@PathVariable UUID id, @PathVariable String postTypeName) throws Exception {
 		ShFolder shFolder = shFolderRepository.findById(id);
 		ShPostType shPostType = shPostTypeRepository.findByName(postTypeName);
 		String folderPath = shFolderUtils.folderPath(shFolder);
@@ -134,7 +132,7 @@ public class ShFolderAPI {
 
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}/path")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShFolderPath path(@PathVariable UUID id) throws Exception {
+	public ShFolderPath shFolderPath(@PathVariable UUID id) throws Exception {
 		ShFolder shFolder = shFolderRepository.findById(id);
 		if (shFolder != null) {
 			ShFolderPath shFolderPath = new ShFolderPath();
@@ -153,7 +151,7 @@ public class ShFolderAPI {
 
 	@RequestMapping(method = RequestMethod.GET, value = "/model")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShFolder folderStructure() throws Exception {
+	public ShFolder shFolderStructure() throws Exception {
 		ShFolder shFolder = new ShFolder();
 		return shFolder;
 

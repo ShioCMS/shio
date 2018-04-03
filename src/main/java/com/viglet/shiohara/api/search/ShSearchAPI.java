@@ -3,9 +3,7 @@ package com.viglet.shiohara.api.search;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,7 +21,6 @@ import com.viglet.shiohara.utils.ShFolderUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Component
 @RestController
 @RequestMapping("/api/v2/search")
 @Api(value="onlinestore", description="Operations pertaining to products in Online Store")
@@ -37,7 +34,7 @@ public class ShSearchAPI {
 	@ApiOperation(value = "View a list of available products",response = Iterable.class)    
 	@RequestMapping(method = RequestMethod.GET)
 	@JsonView({  ShJsonView.ShJsonViewObject.class })
-	public List<ShPostWIthBreadcrumb> search(@RequestParam(value = "q") String q) throws Exception {
+	public List<ShPostWIthBreadcrumb> shSearch(@RequestParam(value = "q") String q) throws Exception {
 		List<ShPostWIthBreadcrumb> searchResults = new ArrayList<ShPostWIthBreadcrumb>();
 		for (ShPost shPost : searchservice.fuzzySearch(q)) {
 			ArrayList<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shPost.getShFolder());

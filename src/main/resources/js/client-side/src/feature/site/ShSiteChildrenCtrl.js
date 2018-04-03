@@ -32,7 +32,7 @@ shioharaApp.controller('ShSiteChildrenCtrl', [
 			
 			$scope.$evalAsync($http.get(
 					shAPIServerService.get().concat(
-							"/v1/site/" + $scope.siteId +"/folder"))
+							"/v2/site/" + $scope.siteId +"/folder"))
 					.then(function(response) {
 						$scope.shFolders = response.data.shFolders;
 						$scope.shSite = response.data.shSite;

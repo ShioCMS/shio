@@ -7,6 +7,8 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.viglet.shiohara.api.ShJsonView;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.widget.ShWidget;
 
@@ -55,6 +57,7 @@ public class ShPostTypeAttr implements Serializable {
 	// bi-directional many-to-one association to ShPostType
 	@ManyToOne
 	@JoinColumn(name = "postType_id")
+	@JsonView({ShJsonView.ShJsonViewPostTypeAttr.class})
 	private ShPostType shPostType;
 
 	// bi-directional many-to-one association to ShWidget

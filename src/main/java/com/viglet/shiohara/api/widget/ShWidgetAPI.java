@@ -3,47 +3,35 @@ package com.viglet.shiohara.api.widget;
 import java.util.List;
 import java.util.UUID;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.viglet.shiohara.persistence.model.widget.ShWidget;
 import com.viglet.shiohara.persistence.repository.widget.ShWidgetRepository;
 
-@Component
-@Path("/widget")
+@RestController
+@RequestMapping("/api/v2/widget")
 public class ShWidgetAPI {
 	
 	@Autowired
 	ShWidgetRepository shWidgetRepository;
 
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public List<ShWidget> list() throws Exception {
+	@RequestMapping(method = RequestMethod.GET)
+	public List<ShWidget> shWidgetList() throws Exception {
 		return shWidgetRepository.findAll();
 	}
-
-	@Path("/{widgetId}")
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public ShWidget edit(@PathParam("widgetId") UUID id) throws Exception {
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
+	public ShWidget shWidgetEdit(@PathVariable UUID id) throws Exception {
 		return shWidgetRepository.findById(id);
 	}
 
-	@Path("/{widgetId}")
-	@PUT
-	@Produces(MediaType.APPLICATION_JSON)
-	public ShWidget update(@PathParam("widgetId") UUID id, ShWidget shWidget) throws Exception {
+	@RequestMapping(method = RequestMethod.PUT, value = "/{id}")
+	public ShWidget shWidgetUpdate(@PathVariable UUID id, @RequestBody ShWidget shWidget) throws Exception {
 		ShWidget shWidgetEdit = shWidgetRepository.findById(id);
 		shWidgetEdit.setName(shWidget.getName());
 		shWidgetEdit.setType(shWidget.getType());
@@ -54,17 +42,14 @@ public class ShWidgetAPI {
 		return shWidgetEdit;
 	}
 
-	@Path("/{widgetId}")
-	@DELETE
-	@Produces(MediaType.APPLICATION_JSON)
-	public boolean delete(@PathParam("widgetId") UUID id) throws Exception {
+	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
+	public boolean shWidgetDelete(@PathVariable UUID id) throws Exception {
 		shWidgetRepository.delete(id);
 		return true;
 	}
 
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	public ShWidget add(ShWidget shWidget) throws Exception {
+	@RequestMapping(method = RequestMethod.POST)
+	public ShWidget shWidgetAdd(@RequestBody ShWidget shWidget) throws Exception {
 		shWidgetRepository.save(shWidget);
 		return shWidget;
 

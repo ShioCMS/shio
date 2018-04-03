@@ -2,6 +2,7 @@ package com.viglet.shiohara.utils;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
+import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
@@ -86,7 +88,7 @@ public class ShPostUtils {
 			ShPostAttr shPostAttrClone = new ShPostAttr();
 			shPostAttrClone.setDateValue(shPostAttr.getDateValue());
 			shPostAttrClone.setIntValue(shPostAttr.getIntValue());
-			shPostAttrClone.setReferenceObjects(shPostAttr.getReferenceObjects());
+			shPostAttrClone.setReferenceObjects(new HashSet<ShObject>(shPostAttr.getReferenceObjects()));
 			shPostAttrClone.setShPost(shPostCopy);
 			shPostAttrClone.setShPostTypeAttr(shPostAttr.getShPostTypeAttr());
 			shPostAttrClone.setStrValue(shPostAttr.getStrValue());

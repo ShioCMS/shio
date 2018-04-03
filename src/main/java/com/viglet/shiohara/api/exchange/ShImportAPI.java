@@ -2,10 +2,7 @@ package com.viglet.shiohara.api.exchange;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,29 +10,20 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.Map.Entry;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.UriInfo;
-
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viglet.shiohara.api.ShJsonView;
 import com.viglet.shiohara.exchange.ShFolderExchange;
 import com.viglet.shiohara.exchange.ShExchange;
-import com.viglet.shiohara.exchange.ShFileExchange;
 import com.viglet.shiohara.exchange.ShPostExchange;
 import com.viglet.shiohara.exchange.ShSiteExchange;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
@@ -54,8 +42,8 @@ import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
 import com.viglet.shiohara.utils.ShUtils;
 
-@Component
-@Path("/import")
+@RestController
+@RequestMapping("/api/v2/import")
 public class ShImportAPI {
 
 	@Autowired
@@ -79,13 +67,9 @@ public class ShImportAPI {
 	Map<UUID, Object> shObjects = new HashMap<UUID, Object>();
 	Map<UUID, List<UUID>> shChildObjects = new HashMap<UUID, List<UUID>>();
 
-	@POST
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	@Produces("application/json")
+	@PostMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShExchange siteImport(@DefaultValue("true") @FormDataParam("enabled") boolean enabled,
-			@FormDataParam("file") InputStream inputStream,
-			@FormDataParam("file") FormDataContentDisposition fileDetail, @Context UriInfo uriInfo) throws Exception {
+	public ShExchange shImport(@RequestParam("file") MultipartFile file) throws Exception {
 		File userDir = new File(System.getProperty("user.dir"));
 		if (userDir.exists() && userDir.isDirectory()) {
 			File tmpDir = new File(userDir.getAbsolutePath().concat(File.separator + "store" + File.separator + "tmp"));
@@ -94,11 +78,9 @@ public class ShImportAPI {
 			}
 
 			File zipFile = new File(
-					tmpDir.getAbsolutePath().concat(File.separator + "imp_" + fileDetail.getFileName()));
+					tmpDir.getAbsolutePath().concat(File.separator + "imp_" + file.getOriginalFilename()));
 
-			OutputStream outputStream = new FileOutputStream(zipFile);
-			IOUtils.copy(inputStream, outputStream);
-			outputStream.close();
+			file.transferTo(zipFile);
 			File outputFolder = new File(tmpDir.getAbsolutePath().concat(File.separator + "imp_" + UUID.randomUUID()));
 			shUtils.unZipIt(zipFile, outputFolder);
 			ObjectMapper mapper = new ObjectMapper();
@@ -167,14 +149,14 @@ public class ShImportAPI {
 				}
 				this.shFolderImportNested(shSiteExchange.getId(), extractFolder);
 			}
-			
-			 try {
-		            FileUtils.deleteDirectory(outputFolder);
-		            FileUtils.deleteQuietly(zipFile);
-		        } catch (IOException ex) {
-		            ex.printStackTrace();
-		        }
-			 
+
+			try {
+				FileUtils.deleteDirectory(outputFolder);
+				FileUtils.deleteQuietly(zipFile);
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+
 			return shExchange;
 		} else {
 			return null;

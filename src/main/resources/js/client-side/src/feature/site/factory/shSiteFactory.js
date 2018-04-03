@@ -7,7 +7,7 @@ shioharaApp.factory('shSiteFactory', [
 					 window.open(shAPIServerService
 								.get()
 								.concat(
-										"/v1/site/" + shSite.id + "/export"), '_self', '');				
+										"/v2/site/" + shSite.id + "/export"), '_self', '');				
 				}, 		
 				delete : function(shSite) {
 					var modalInstance = this.modalDelete(shSite);
