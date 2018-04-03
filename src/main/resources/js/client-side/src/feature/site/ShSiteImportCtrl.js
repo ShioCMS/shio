@@ -21,7 +21,7 @@ shioharaApp.controller('ShSiteImportCtrl', [
 			$scope.importFile = function() {
 				if (!$scope.shImport.file.$error) {
 					Upload.upload({
-						url : shAPIServerService.get().concat('/v1/import'),
+						url : shAPIServerService.get().concat('/v2/import'),
 						data : {
 							file : $scope.shImport.file
 						}

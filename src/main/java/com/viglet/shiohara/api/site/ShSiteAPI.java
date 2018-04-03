@@ -11,22 +11,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.StreamingOutput;
-
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -55,8 +48,8 @@ import com.viglet.shiohara.utils.ShFolderUtils;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
 import com.viglet.shiohara.utils.ShUtils;
 
-@Component
-@Path("/site")
+@RestController
+@RequestMapping("/api/v2/site")
 public class ShSiteAPI {
 
 	@Autowired
@@ -80,26 +73,21 @@ public class ShSiteAPI {
 	@Autowired
 	ShUtils shUtils;
 
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
+	@RequestMapping(method = RequestMethod.GET)
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public List<ShSite> list() throws Exception {
+	public List<ShSite> shSiteList() throws Exception {
 		return shSiteRepository.findAll();
 	}
 
-	@Path("/{siteId}")
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
+	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShSite edit(@PathParam("siteId") UUID id) throws Exception {
+	public ShSite shSiteEdit(@PathVariable UUID id) throws Exception {
 		return shSiteRepository.findById(id);
 	}
 
-	@Path("/{siteId}")
-	@PUT
-	@Produces(MediaType.APPLICATION_JSON)
+	@RequestMapping(method = RequestMethod.PUT, value = "/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShSite update(@PathParam("siteId") UUID id, ShSite shSite) throws Exception {
+	public ShSite shSiteUpdate(@PathVariable UUID id, @RequestBody ShSite shSite) throws Exception {
 		ShSite shSiteEdit = shSiteRepository.findById(id);
 		shSiteEdit.setDate(new Date());
 		shSiteEdit.setName(shSite.getName());
@@ -108,14 +96,12 @@ public class ShSiteAPI {
 		return shSiteEdit;
 	}
 
-	@Path("/{siteId}")
-	@DELETE
-	@Produces(MediaType.APPLICATION_JSON)
-	public boolean delete(@PathParam("siteId") UUID id) throws Exception {
+	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
+	public boolean shSiteDelete(@PathVariable UUID id) throws Exception {
 		ShSite shSite = shSiteRepository.findById(id);
 
 		List<ShFolder> shFolders = shFolderRepository.findByShSiteAndRootFolder(shSite, (byte) 1);
-		
+
 		for (ShFolder shFolder : shFolders) {
 			shFolderUtils.deleteFolder(shFolder);
 		}
@@ -126,10 +112,9 @@ public class ShSiteAPI {
 		return true;
 	}
 
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
+	@RequestMapping(method = RequestMethod.POST)
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShSite add(ShSite shSite) throws Exception {
+	public ShSite shSiteAdd(@RequestBody ShSite shSite) throws Exception {
 		shSite.setDate(new Date());
 
 		shSiteRepository.save(shSite);
@@ -197,11 +182,9 @@ public class ShSiteAPI {
 
 	}
 
-	@Path("/{siteId}/folder")
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
+	@RequestMapping(method = RequestMethod.GET, value = "/{id}/folder")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShFolderList rootFolder(@PathParam("siteId") UUID id) throws Exception {
+	public ShFolderList shSiteRootFolder(@PathVariable UUID id) throws Exception {
 		ShSite shSite = shSiteRepository.findById(id);
 		List<ShFolder> shFolders = shFolderRepository.findByShSiteAndRootFolder(shSite, (byte) 1);
 		ShFolderList shFolderList = new ShFolderList();
@@ -211,11 +194,10 @@ public class ShSiteAPI {
 
 	}
 
-	@Path("/{siteId}/export")
-	@GET
-	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	@ResponseBody
+	@RequestMapping(method = RequestMethod.GET, value = "/{id}/export", produces = "application/zip")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public Response siteExport(@PathParam("siteId") UUID id) throws Exception {
+	public StreamingResponseBody shSiteExport(@PathVariable UUID id) throws Exception {
 		String folderName = UUID.randomUUID().toString();
 		File userDir = new File(System.getProperty("user.dir"));
 		if (userDir.exists() && userDir.isDirectory()) {
@@ -270,9 +252,10 @@ public class ShSiteAPI {
 
 			shUtils.addFilesToZip(exportDir, zipFile);
 
-			StreamingOutput fileStream = new StreamingOutput() {
+			return new StreamingResponseBody() {
 				@Override
-				public void write(java.io.OutputStream output) throws IOException, WebApplicationException {
+				public void writeTo(java.io.OutputStream output) throws IOException {
+
 					try {
 						java.nio.file.Path path = Paths.get(zipFile.getAbsolutePath());
 						byte[] data = Files.readAllBytes(path);
@@ -285,24 +268,19 @@ public class ShSiteAPI {
 					} catch (IOException ex) {
 						ex.printStackTrace();
 					} catch (Exception e) {
-						throw new WebApplicationException("File Not Found");
+						e.printStackTrace();
 					}
 				}
 			};
-
-			return Response.ok(fileStream, MediaType.APPLICATION_OCTET_STREAM)
-					.header("content-disposition", "attachment; filename = " + folderName + ".zip").build();
 		} else {
 			return null;
 		}
 
 	}
 
-	@Path("/model")
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
+	@RequestMapping(method = RequestMethod.GET, value = "/model")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShSite siteStructure() throws Exception {
+	public ShSite shSiteStructure() throws Exception {
 		ShSite shSite = new ShSite();
 		return shSite;
 

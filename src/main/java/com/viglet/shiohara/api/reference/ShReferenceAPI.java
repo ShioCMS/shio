@@ -5,15 +5,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
@@ -27,9 +23,8 @@ import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.reference.ShReferenceRepository;
 
-@Component
-@Path("/reference")
-
+@RestController
+@RequestMapping("/api/v2/reference")
 public class ShReferenceAPI {
 
 	@Autowired
@@ -41,36 +36,28 @@ public class ShReferenceAPI {
 	@Autowired
 	ShPostAttrRepository shPostAttrRepository;
 
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
+	@RequestMapping(method = RequestMethod.GET)
 	@JsonView({ ShJsonView.ShJsonViewReference.class })
-	public List<ShReference> list() throws Exception {
+	public List<ShReference> shReferenceList() throws Exception {
 		return shReferenceRepository.findAll();
 	}
 
-	@Path("/from/{fromId}")
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
+	@RequestMapping(method = RequestMethod.GET, value = "/from/{fromId}")
 	@JsonView({  ShJsonView.ShJsonViewReference.class })
-	public List<ShReference> from(@PathParam("fromId") UUID fromId) throws Exception {
+	public List<ShReference> shReferenceFrom(@PathVariable UUID fromId) throws Exception {
 		ShGlobalId shGlobalId = shGlobalIdRepository.findById(fromId);
 		return shReferenceRepository.findByShGlobalFromId(shGlobalId);
 	}
-
-	@Path("/to/{toId}")
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
+	@RequestMapping(method = RequestMethod.GET, value = "/to/{toId}")
 	@JsonView({  ShJsonView.ShJsonViewReference.class })
-	public List<ShReference> to(@PathParam("toId") UUID toId) throws Exception {
+	public List<ShReference> shReferenceTo(@PathVariable UUID toId) throws Exception {
 		ShGlobalId shGlobalId = shGlobalIdRepository.findById(toId);
 		return shReferenceRepository.findByShGlobalToId(shGlobalId);
 	}
 
-	@Path("/to/{toId}/replace/{otherId}")
-	@POST
-	@Produces(MediaType.APPLICATION_JSON)
+	@RequestMapping(method = RequestMethod.POST, value = "/to/{toId}/replace/{otherId}")
 	@JsonView({  ShJsonView.ShJsonViewReference.class })
-	public List<ShReference> toReplace(@PathParam("toId") UUID toId, @PathParam("otherId") UUID otherId)
+	public List<ShReference> shReferenceToReplace(@PathVariable UUID toId, @PathVariable UUID otherId)
 			throws Exception {
 		ShGlobalId shGlobalId = shGlobalIdRepository.findById(toId);
 		ShGlobalId shGlobaOtherlId = shGlobalIdRepository.findById(otherId);

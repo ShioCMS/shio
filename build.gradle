@@ -3,7 +3,6 @@ buildscript {
 		springBootVersion = '1.5.10.RELEASE'
 		thymeleafVersion = '3.0.3.RELEASE'
 		hibernateVersion = '5.6.1.Final'
-		jerseyVersion = '2.25.1'
 		httpClientVersion = '4.5.2'
 	}
 	repositories {
@@ -88,7 +87,6 @@ dependencies {
 	// Spring Boot
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version:"${springBootVersion}"
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-parent', version:"${springBootVersion}"
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-jersey', version:"${springBootVersion}"
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-activemq', version:"${springBootVersion}"
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: "${springBootVersion}"
     compile(group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf', version: "${springBootVersion}") {
@@ -96,10 +94,6 @@ dependencies {
     }
    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.9.4'
    
-    // Glassfish
-    compile group: 'org.glassfish.jersey.media', name: 'jersey-media-multipart', version:"${jerseyVersion}"
-    compile group: 'org.glassfish.jersey.containers', name: 'jersey-container-servlet-core', version:"${jerseyVersion}"
-    
     // Thymeleaf
     compile group: 'org.thymeleaf', name: 'thymeleaf-spring4', version:"${thymeleafVersion}"
     compile group: 'org.thymeleaf', name: 'thymeleaf', version:"${thymeleafVersion}"

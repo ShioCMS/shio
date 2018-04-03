@@ -39,7 +39,7 @@ shioharaApp
 													shAPIServerService
 															.get()
 															.concat(
-																	"/v1/post/type/attr/model"))
+																	"/v2/post/type/attr/model"))
 											.then(
 													function(response) {
 														$scope.shPostTypeAttrModel = response.data;

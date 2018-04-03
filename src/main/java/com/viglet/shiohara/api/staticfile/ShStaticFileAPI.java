@@ -3,25 +3,17 @@ package com.viglet.shiohara.api.staticfile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.UUID;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.UriInfo;
-
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
@@ -39,8 +31,8 @@ import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrReposi
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
 
-@Component
-@Path("/staticfile")
+@RestController
+@RequestMapping("/api/v2/staticfile")
 public class ShStaticFileAPI {
 
 	@Autowired
@@ -57,17 +49,11 @@ public class ShStaticFileAPI {
 	private ShPostAttrRepository shPostAttrRepository;
 	@Autowired
 	private ShGlobalIdRepository shGlobalIdRepository;
-	
-	@POST
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	@Produces("application/json")
-	@Path("upload")
-	@JsonView({ ShJsonView.ShJsonViewObject.class })	
-	public ShPost fileUpload(@DefaultValue("true") @FormDataParam("enabled") boolean enabled,
-			@FormDataParam("file") InputStream inputStream, @FormDataParam("folderId") UUID folderId,
-			@FormDataParam("createPost") boolean createPost,
-			@FormDataParam("file") FormDataContentDisposition fileDetail, @Context UriInfo uriInfo)
-			throws URISyntaxException {
+
+	@PostMapping("/upload")
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
+	public ShPost shStaticFileUpload(@RequestParam("file") MultipartFile file, @RequestParam("folderId") UUID folderId,
+			@RequestParam("createPost") boolean createPost) throws URISyntaxException, IOException {
 
 		ShFolder shFolder = shFolderRepository.findById(folderId);
 		File directoryPath = shStaticFileUtils.dirPath(shFolder);
@@ -77,28 +63,19 @@ public class ShStaticFileAPI {
 			if (!directoryPath.exists()) {
 				directoryPath.mkdirs();
 			}
-			OutputStream outputStream = null;
-			
+
 			try {
 
-				// write the inputStream to a FileOutputStream
-				String destFile = directoryPath.getAbsolutePath().concat("/" + fileDetail.getFileName());
+				filePath = file.getOriginalFilename();
 
-				outputStream = new FileOutputStream(new File(destFile));
+				String destFile = directoryPath.getAbsolutePath().concat("/" + filePath);
 
-				int read = 0;
-				byte[] bytes = new byte[1024];
+				file.transferTo(new File(destFile));
 
-				while ((read = inputStream.read(bytes)) != -1) {
-					outputStream.write(bytes, 0, read);
-				}
-
-				filePath = fileDetail.getFileName();
-				
 				if (createPost) {
 					// Post File
 					ShPostType shPostType = shPostTypeRepository.findByName("PT-FILE");
-					
+
 					shPost.setDate(new Date());
 					shPost.setShPostType(shPostType);
 					shPost.setSummary(null);
@@ -112,7 +89,7 @@ public class ShStaticFileAPI {
 					shGlobalId.setType("POST");
 
 					shGlobalIdRepository.saveAndFlush(shGlobalId);
-					
+
 					ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType,
 							"FILE");
 
@@ -124,29 +101,11 @@ public class ShStaticFileAPI {
 
 					shPostAttrRepository.save(shPostAttr);
 
-				}
-				else {
+				} else {
 					shPost.setTitle(filePath);
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
-			} finally {
-				if (inputStream != null) {
-					try {
-						inputStream.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-				if (outputStream != null) {
-					try {
-						// outputStream.flush();
-						outputStream.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-
-				}
 			}
 		}
 		return shPost;

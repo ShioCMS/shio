@@ -1,20 +1,17 @@
 package com.viglet.shiohara.api.object;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
@@ -31,8 +28,8 @@ import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository
 import com.viglet.shiohara.utils.ShFolderUtils;
 import com.viglet.shiohara.utils.ShPostUtils;
 
-@Component
-@Path("/object")
+@RestController
+@RequestMapping("/api/v2/object")
 public class ShObjectAPI {
 
 	@Autowired
@@ -52,9 +49,8 @@ public class ShObjectAPI {
 	@Autowired
 	private ShPostUtils shPostUtils;
 
-	@Path("/{globalId}/preview")
-	@GET
-	public Response edit(@PathParam("globalId") UUID id) throws Exception {
+	@RequestMapping(method = RequestMethod.GET, value = "/{id}/preview")
+	public void shObjectPreview(@PathVariable UUID id, HttpServletResponse response) throws Exception {
 		String redirect = null;
 		ShGlobalId shGlobalId = shGlobalIdRepository.findById(id);
 		if (shGlobalId.getType().equals("POST")) {
@@ -64,16 +60,12 @@ public class ShObjectAPI {
 			ShFolder shFolder = shFolderRepository.findById(shGlobalId.getShObject().getId());
 			redirect = shFolderUtils.generateFolderLink(shFolder.getId().toString());
 		}
-		URI targetURIForRedirection = new URI(redirect);
-
-		return Response.temporaryRedirect(targetURIForRedirection).build();
+		response.sendRedirect(redirect);
 	}
 
-	@Path("/moveto/{channeGloballId}")
-	@PUT
-	@Produces(MediaType.APPLICATION_JSON)
+	@RequestMapping(method = RequestMethod.PUT, value = "/moveto/{channeGloballId}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public List<ShObject> moveTo(@PathParam("channeGloballId") UUID channeGloballId, List<UUID> globalIds)
+	public List<ShObject> shObjectMoveTo(@PathVariable UUID channeGloballId, @RequestBody List<UUID> globalIds)
 			throws Exception {
 		List<ShObject> shObjects = new ArrayList<ShObject>();
 		for (UUID globalId : globalIds) {
@@ -95,11 +87,9 @@ public class ShObjectAPI {
 		return shObjects;
 	}
 
-	@Path("/copyto/{channeGloballId}")
-	@PUT
-	@Produces(MediaType.APPLICATION_JSON)
+	@RequestMapping(method = RequestMethod.PUT, value = "/copyto/{channeGloballId}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public List<ShObject> copyTo(@PathParam("channeGloballId") UUID channeGloballId, List<UUID> globalIds)
+	public List<ShObject> shObjectCopyTo(@PathVariable UUID channeGloballId, @RequestBody List<UUID> globalIds)
 			throws Exception {
 		List<ShObject> shObjects = new ArrayList<ShObject>();
 		for (UUID globalId : globalIds) {

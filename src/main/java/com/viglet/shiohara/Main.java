@@ -20,15 +20,15 @@ public class Main {
 	@Autowired
 	DataSource dataSource;
 
-
 	public static void main(String[] args) throws Exception {
 		SpringApplication.run(Main.class, args);
 	}
+
 	@Bean
-	public Module hibernate5Module()
-	{
-	    return new Hibernate5Module();
+	public Module hibernate5Module() {
+		return new Hibernate5Module();
 	}
+
 	@RequestMapping("/")
 	String index() {
 		return "index";

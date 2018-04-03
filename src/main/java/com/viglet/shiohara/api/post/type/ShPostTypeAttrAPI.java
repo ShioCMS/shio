@@ -3,49 +3,38 @@ package com.viglet.shiohara.api.post.type;
 import java.util.List;
 import java.util.UUID;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
 
-@Component
-@Path("/post/type/attr")
+@RestController
+@RequestMapping("/api/v2/post/type/attr")
 public class ShPostTypeAttrAPI {
 	@Autowired
 	ShPostTypeAttrRepository shPostTypeAttrRepository;
 	@Autowired
 	ShPostAttrRepository shPostAttrRepository;
 	
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public List<ShPostTypeAttr> list() throws Exception {
+	@RequestMapping(method = RequestMethod.GET)
+	public List<ShPostTypeAttr>  shPostTypeAttrList() throws Exception {
 		return shPostTypeAttrRepository.findAll();
 	}
 
-	@Path("/{postTypeAttrId}")
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public ShPostTypeAttr edit(@PathParam("postTypeAttrId") UUID id) throws Exception {
+	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
+	public ShPostTypeAttr  shPostTypeAttrEdit(@PathVariable UUID id) throws Exception {
 		return shPostTypeAttrRepository.findById(id);
 	}
 
-	@Path("/{postTypeAttrId}")
-	@PUT
-	@Produces(MediaType.APPLICATION_JSON)
-	public ShPostTypeAttr update(@PathParam("postTypeAttrId") UUID id, ShPostTypeAttr shPostTypeAttr) throws Exception {
+	@RequestMapping(method = RequestMethod.PUT, value = "/{id}")
+	public ShPostTypeAttr  shPostTypeAttrUpdate(@PathVariable UUID id, @RequestBody ShPostTypeAttr shPostTypeAttr) throws Exception {
 		ShPostTypeAttr shPostTypeAttrEdit = shPostTypeAttrRepository.findById(id);
 		shPostTypeAttrEdit.setIsSummary(shPostTypeAttr.getIsSummary());
 		shPostTypeAttrEdit.setIsTitle(shPostTypeAttr.getIsTitle());
@@ -60,10 +49,8 @@ public class ShPostTypeAttrAPI {
 		return shPostTypeAttrEdit;
 	}
 
-	@Path("/{postTypeAttrId}")
-	@DELETE
-	@Produces(MediaType.APPLICATION_JSON)
-	public boolean delete(@PathParam("postTypeAttrId") UUID id) throws Exception {
+	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
+	public boolean  shPostTypeAttrDelete(@PathVariable UUID id) throws Exception {
 		ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findById(id);
 		for ( ShPostAttr shPostAttr : shPostTypeAttr.getShPostAttrs()) {
 			shPostAttrRepository.delete(shPostAttr.getId());
@@ -73,18 +60,15 @@ public class ShPostTypeAttrAPI {
 	}
 
 	@Deprecated
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	public ShPostTypeAttr post(ShPostTypeAttr shPostTypeAttr) throws Exception {
+	@RequestMapping(method = RequestMethod.POST)
+	public ShPostTypeAttr  shPostTypeAttrPost(@RequestBody ShPostTypeAttr shPostTypeAttr) throws Exception {
 		shPostTypeAttrRepository.save(shPostTypeAttr);
 		return shPostTypeAttr;
 
 	}
 	
-	@Path("/model")
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public ShPostTypeAttr postTypeAttrStructure() throws Exception {
+	@RequestMapping(method = RequestMethod.GET, value = "/model")
+	public ShPostTypeAttr  shPostTypeAttrStructure() throws Exception {
 		ShPostTypeAttr shPostTypeAttr = new ShPostTypeAttr();
 		return shPostTypeAttr;
 
