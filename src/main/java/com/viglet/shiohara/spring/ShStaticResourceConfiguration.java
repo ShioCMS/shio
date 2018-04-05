@@ -21,10 +21,10 @@ public class ShStaticResourceConfiguration extends WebMvcConfigurerAdapter {
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 
 		String resourceLocation = "file:" + shStaticFileUtils.getFileSource().getAbsolutePath();
-		registry.addResourceHandler("/store/**").addResourceLocations(resourceLocation);
+		registry.addResourceHandler("/store/**").addResourceLocations(resourceLocation).setCachePeriod(3600 * 24);
 		if (!registry.hasMappingForPattern("/thirdparty/**")) {
-			registry.addResourceHandler("/thirdparty/**")
-					.addResourceLocations("classpath:/META-INF/resources/webjars/");
+			registry.addResourceHandler("/thirdparty/**").addResourceLocations("classpath:/META-INF/resources/webjars/")
+					.setCachePeriod(3600 * 24);
 		}
 	}
 
