@@ -8,19 +8,19 @@ public class ScanResultBridge implements TwoWayFieldBridge {
 
 	@Override
 	public void set(String name, Object value, Document document, LuceneOptions luceneOptions) {
-		// TODO Auto-generated method stub
+		// 
 		
 	}
 
 	@Override
 	public Object get(String name, Document document) {
-		// TODO Auto-generated method stub
+		// 
 		return null;
 	}
 
 	@Override
 	public String objectToString(Object object) {
-		// TODO Auto-generated method stub
+		// 
 		return null;
 	}
 	
