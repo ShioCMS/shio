@@ -30,8 +30,11 @@ import com.viglet.shiohara.persistence.repository.reference.ShReferenceRepositor
 import com.viglet.shiohara.persistence.repository.user.ShUserRepository;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
 
+import io.swagger.annotations.Api;
+
 @RestController
 @RequestMapping("/api/v2/post")
+@Api(tags="Post", description="Post API")
 public class ShPostAPI {
 
 	@Autowired

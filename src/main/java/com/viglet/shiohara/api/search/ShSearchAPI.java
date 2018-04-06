@@ -23,7 +23,7 @@ import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("/api/v2/search")
-@Api(value="onlinestore", description="Operations pertaining to products in Online Store")
+@Api(tags="Search", description="Search for Shiohara Objects")
 public class ShSearchAPI {
 
 	@Autowired
@@ -31,7 +31,7 @@ public class ShSearchAPI {
 	@Autowired
 	private ShFolderUtils shFolderUtils;
 
-	@ApiOperation(value = "View a list of available products",response = Iterable.class)    
+	@ApiOperation(value = "Search for Shiohara Objects")    
 	@RequestMapping(method = RequestMethod.GET)
 	@JsonView({  ShJsonView.ShJsonViewObject.class })
 	public List<ShPostWIthBreadcrumb> shSearch(@RequestParam(value = "q") String q) throws Exception {

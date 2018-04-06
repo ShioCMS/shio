@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.viglet.shiohara.persistence.model.user.ShUser;
 import com.viglet.shiohara.persistence.repository.user.ShUserRepository;
 
+import io.swagger.annotations.Api;
+
 @RestController
 @RequestMapping("/api/v2/user")
+@Api(tags="User", description="User API")
 public class ShUserAPI {
 	
 	@Autowired

@@ -1,9 +1,7 @@
 package com.viglet.shiohara.api.staticfile;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.UUID;
@@ -31,8 +29,11 @@ import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrReposi
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
 
+import io.swagger.annotations.Api;
+
 @RestController
 @RequestMapping("/api/v2/staticfile")
+@Api(tags="Static File", description="Static File API")
 public class ShStaticFileAPI {
 
 	@Autowired

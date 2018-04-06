@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.viglet.shiohara.persistence.model.widget.ShWidget;
 import com.viglet.shiohara.persistence.repository.widget.ShWidgetRepository;
 
+import io.swagger.annotations.Api;
+
 @RestController
 @RequestMapping("/api/v2/widget")
+@Api(tags="Widget", description="Widget API")
 public class ShWidgetAPI {
 	
 	@Autowired

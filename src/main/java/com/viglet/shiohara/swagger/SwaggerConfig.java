@@ -15,24 +15,21 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Configuration
 @EnableSwagger2
-public class SwaggerConfig {                                    
-    @Bean
-    public Docket api() { 
-        return new Docket(DocumentationType.SWAGGER_2)  
-          .select()                                  
-          .apis(RequestHandlerSelectors.basePackage("com.viglet.shiohara.api"))              
-          .paths(PathSelectors.any())                          
-          .build()
-          .apiInfo(apiInfo());
-    }
-    private ApiInfo apiInfo() {
-        return new ApiInfo(
-          "My REST API", 
-          "Some custom description of API.", 
-          "API TOS", 
-          "Terms of service", 
-          new Contact("John Doe", "www.example.com", "myeaddress@company.com"), 
-          "License of API", "API license URL", Collections.emptyList());
-   }
+public class SwaggerConfig {
+	@Bean
+	public Docket api() {
+		ShCustomPathPrivider pathProvider = new ShCustomPathPrivider();
+
+		return new Docket(DocumentationType.SWAGGER_2).pathProvider(pathProvider).select()
+				.apis(RequestHandlerSelectors.basePackage("com.viglet.shiohara.api")).paths(PathSelectors.any()).build()
+				.apiInfo(apiInfo());
+	}
+
+	private ApiInfo apiInfo() {
+		return new ApiInfo("Viglet Shiohara", "An intuitive and simple Web Content Management", "2.0",
+				"Terms of service",
+				new Contact("Viglet Team", "http://www.viglet.com", "alexandre.oliveira@viglet.com"), "License of API",
+				"API license URL", Collections.emptyList());
+	}
 
 }

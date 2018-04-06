@@ -31,8 +31,11 @@ import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository
 import com.viglet.shiohara.utils.ShFolderUtils;
 import com.viglet.shiohara.utils.ShPostUtils;
 
+import io.swagger.annotations.Api;
+
 @RestController
 @RequestMapping("/api/v2/object")
+@Api(tags="Object", description="Object API")
 public class ShObjectAPI {
 
 	@Autowired

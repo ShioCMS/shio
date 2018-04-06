@@ -36,30 +36,7 @@
 </style>
 <body data-target=".navbar-default">
 	<div id="wrap" style="margin-bottom: 15px;">
-		<nav class="navbar navbar-default navbar-fixed-top row  row-centered"
-			role="navigation">
-			<div
-				class="container-fluid col-centered col-lg-12 col-md-12 col-sm-12 col-xs-12"
-				style="margin-left: 30px; margin-right: 30px">
-				<!-- Brand and toggle get grouped for better mobile display -->
-				<div class="row">
-					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
-						<a class="navbar-brand" ui-sref="content"
-							ui-sref-opts="{reload:true}"><img
-							style="margin: 5px; padding: 0px; width: 40px; height: 40px"
-							src="img/viglet_logo_sm.png"></img> </a> <a class="navbar-brand"
-							ui-sref="content" ui-sref-opts="{reload:true}"><div
-								class="hidden-xs"
-								style="margin-top: 17px; margin-left: 20px; color: #444; font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif; font-size: 20px; line-height: 1; letter-spacing: .02em; font-weight: 400;">Shiohara</div></a>
-					</div>
-					<div class="col-lg-9 col-md-9 col-sm-8 col-xs-7"
-						style="padding-top: 7px" ng-include="'/template/search/search-box.html'">					
-					</div>
-				</div>
-
-			</div>
-			<!-- /.container-fluid -->
-		</nav>
+	    <div ng-include="'template/navigation/navigation.html'"></div>
 		<div class="container" style="margin-top: 60px;">
 			<div ui-view></div>
 		</div>

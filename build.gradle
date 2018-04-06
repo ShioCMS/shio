@@ -4,6 +4,7 @@ buildscript {
 		thymeleafVersion = '3.0.3.RELEASE'
 		hibernateVersion = '5.6.1.Final'
 		httpClientVersion = '4.5.2'
+		swaggerVersion = '2.8.0'
 	}
 	repositories {
 		mavenCentral()
@@ -132,8 +133,8 @@ dependencies {
 	compile group: 'org.hibernate', name: 'hibernate-search-orm', version: "${hibernateVersion}"
 	
 	// Swagger 2
-	compile 'io.springfox:springfox-swagger2:2.7.0'
-	compile 'io.springfox:springfox-swagger-ui:2.7.0'
+	compile group: 'io.springfox', name: 'springfox-swagger2', version: "${swaggerVersion}"
+	compile group: 'io.springfox', name: 'springfox-swagger-ui', version: "${swaggerVersion}"
 	
 	// WebJars
 	compile 'org.webjars.bower:jquery:1.12.4'

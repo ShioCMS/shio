@@ -23,8 +23,11 @@ import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.reference.ShReferenceRepository;
 
+import io.swagger.annotations.Api;
+
 @RestController
 @RequestMapping("/api/v2/reference")
+@Api(tags="Reference", description="Reference API")
 public class ShReferenceAPI {
 
 	@Autowired
