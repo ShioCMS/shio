@@ -13,6 +13,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		// Prevent the HTTP response header of "Pragma: no-cache".
 		http.headers().cacheControl().disable();
+		// TODO: Enable CSRF
+		http.csrf().disable();
 	}
 
 	@Override

@@ -15,10 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
+import com.viglet.shiohara.api.folder.ShFolderList;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
+import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
@@ -63,14 +65,14 @@ public class ShObjectAPI {
 		response.sendRedirect(redirect);
 	}
 
-	@RequestMapping(method = RequestMethod.PUT, value = "/moveto/{channeGloballId}")
+	@RequestMapping(method = RequestMethod.PUT, value = "/moveto/{folderGloballId}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public List<ShObject> shObjectMoveTo(@PathVariable UUID channeGloballId, @RequestBody List<UUID> globalIds)
+	public List<ShObject> shObjectMoveTo(@PathVariable UUID folderGloballId, @RequestBody List<UUID> globalIds)
 			throws Exception {
 		List<ShObject> shObjects = new ArrayList<ShObject>();
 		for (UUID globalId : globalIds) {
 			ShGlobalId shGlobalId = shGlobalIdRepository.findById(globalId);
-			ShGlobalId shFolderGlobalId = shGlobalIdRepository.findById(channeGloballId);
+			ShGlobalId shFolderGlobalId = shGlobalIdRepository.findById(folderGloballId);
 			ShFolder shFolderDest = (ShFolder) shFolderGlobalId.getShObject();
 			if (shGlobalId.getType().equals("POST")) {
 				ShPost shPost = (ShPost) shGlobalId.getShObject();
@@ -87,14 +89,14 @@ public class ShObjectAPI {
 		return shObjects;
 	}
 
-	@RequestMapping(method = RequestMethod.PUT, value = "/copyto/{channeGloballId}")
+	@RequestMapping(method = RequestMethod.PUT, value = "/copyto/{folderGloballId}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public List<ShObject> shObjectCopyTo(@PathVariable UUID channeGloballId, @RequestBody List<UUID> globalIds)
+	public List<ShObject> shObjectCopyTo(@PathVariable UUID folderGloballId, @RequestBody List<UUID> globalIds)
 			throws Exception {
 		List<ShObject> shObjects = new ArrayList<ShObject>();
 		for (UUID globalId : globalIds) {
 			ShGlobalId shGlobalId = shGlobalIdRepository.findById(globalId);
-			ShGlobalId shFolderGlobalId = shGlobalIdRepository.findById(channeGloballId);
+			ShGlobalId shFolderGlobalId = shGlobalIdRepository.findById(folderGloballId);
 			ShFolder shFolderDest = (ShFolder) shFolderGlobalId.getShObject();
 			if (shGlobalId.getType().equals("POST")) {
 				ShPost shPost = (ShPost) shGlobalId.getShObject();
@@ -107,4 +109,31 @@ public class ShObjectAPI {
 		return shObjects;
 	}
 
+	@RequestMapping(method = RequestMethod.GET, value = "/{id}/list")
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
+	public ShFolderList shObjectListItem(@PathVariable UUID id) throws Exception {
+		ShGlobalId shGlobalId = shGlobalIdRepository.findById(id);
+		if (shGlobalId.getType().equals("FOLDER")) {
+			ShFolder shFolder = (ShFolder) shGlobalId.getShObject();
+			String folderPath = shFolderUtils.folderPath(shFolder);
+			ArrayList<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shFolder);
+			ShSite shSite = breadcrumb.get(0).getShSite();
+			ShFolderList shFolderList = new ShFolderList();
+			shFolderList.setShFolders(shFolderRepository.findByParentFolder(shFolder));
+			shFolderList.setShPosts(shPostRepository.findByShFolder(shFolder));
+			shFolderList.setFolderPath(folderPath);
+			shFolderList.setBreadcrumb(breadcrumb);
+			shFolderList.setShSite(shSite);
+			return shFolderList;
+		} else if (shGlobalId.getType().equals("SITE")) {
+			ShSite shSite = (ShSite) shGlobalId.getShObject();
+			List<ShFolder> shFolders = shFolderRepository.findByShSiteAndRootFolder(shSite, (byte) 1);
+			ShFolderList shFolderList = new ShFolderList();
+			shFolderList.setShFolders(shFolders);
+			shFolderList.setShSite(shSite);
+			return shFolderList;
+		} else {
+			return null;
+		}
+	}
 }

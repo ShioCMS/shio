@@ -65,9 +65,9 @@ shioharaApp
 													+ ' Folder was updated.');
 											$state
 													.go(
-															'content.children.folder-children',
+															'content.children',
 															{
-																folderId : $scope.shFolder.parentFolder.id
+																objectId : $scope.shFolder.parentFolder.shGlobalId.id
 															});
 										});
 							}
