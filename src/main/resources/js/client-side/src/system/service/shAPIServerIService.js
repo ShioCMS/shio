@@ -25,7 +25,6 @@ shioharaApp.service('shAPIServerService', [
 						$cookies.put('shServer', shEmbServer);
 					}, function errorCallback(response) {
 						$cookies.put('shServer', 'http://localhost:2710');
-
 					});
 					return shEmbServer;
 				}
@@ -42,7 +41,6 @@ shioharaApp.service('shAPIServerService', [
 						$cookies.put('shAPIServer', shEmbAPIServer);
 					}, function errorCallback(response) {
 						$cookies.put('shAPIServer', 'http://localhost:2710' + shAPIContext);
-
 					});
 					return shEmbAPIServer;
 				}
