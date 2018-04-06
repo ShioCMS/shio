@@ -18,7 +18,8 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
 						, "Notification"
 						, "moment"
 						, "shUserResource"
-    , function ($scope, $state, $stateParams, $rootScope, $translate, $http, $window, shAPIServerService, vigLocale, shFolderFactory, shPostFactory, ShDialogSelectObject, ShDialogDeleteFactory, shPostResource, shFolderResource, $filter, Notification, moment, shUserResource) {
+						, "shPostTypeResource"
+    , function ($scope, $state, $stateParams, $rootScope, $translate, $http, $window, shAPIServerService, vigLocale, shFolderFactory, shPostFactory, ShDialogSelectObject, ShDialogDeleteFactory, shPostResource, shFolderResource, $filter, Notification, moment, shUserResource, shPostTypeResource) {
         
 		$scope.objectId = $stateParams.objectId;
         $scope.vigLanguage = vigLocale.getLocale().substring(0, 2);
@@ -140,11 +141,13 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
             }
             $scope.objectsCopyDialog(objectGlobalIds);
         }
+        
         $scope.objectCopy = function (shObject) {
             var objectGlobalIds = [];
             objectGlobalIds.push(shObject.shGlobalId.id);
             $scope.objectsCopyDialog(objectGlobalIds);
         }
+        
         $scope.objectsCopyDialog = function (objectGlobalIds) {
             var modalInstance = ShDialogSelectObject.dialog($scope.objectId, "shFolder");
             modalInstance.result.then(function (shObjectSelected) {
@@ -177,11 +180,13 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
             }
             $scope.objectsMoveDialog(objectGlobalIds);
         }
+        
         $scope.objectMove = function (shObject) {
             var objectGlobalIds = [];
             objectGlobalIds.push(shObject.shGlobalId.id);
             $scope.objectsMoveDialog(objectGlobalIds);
         }
+        
         $scope.objectsMoveDialog = function (objectGlobalIds) {
             var modalInstance = ShDialogSelectObject.dialog($scope.objectId, "shFolder");
             modalInstance.result.then(function (shObjectSelected) {
@@ -215,16 +220,29 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
                 // Selected CANCEL
             });
         }
+        
         $scope.objectClone = function (shObject) {
             var objectGlobalIds = [];
             objectGlobalIds.push(shObject.shGlobalId.id);
             var parameter = JSON.stringify(objectGlobalIds);
-            $http.put(shAPIServerService.get().concat("/v2/object/copyto/" + $scope.shCurrentFolder.shGlobalId.id), parameter).then(function (response) {
-                var shClonedPosts = response.data;
-                for (i = 0; i < shClonedPosts.length; i++) {
-                    shClonedPost = shClonedPosts[i];
-                    var clonedMessage = 'The ' + shClonedPost.title + ' Post was cloned.';
-                    Notification.warning(clonedMessage);
+            var parentObjectId = null;
+            if ($scope.shCurrentFolder == null) {
+            	parentObjectId = $scope.shSite.shGlobalId.id;
+            }
+            else {
+            	parentObjectId = $scope.shCurrentFolder.shGlobalId.id;
+            }
+            $http.put(shAPIServerService.get().concat("/v2/object/copyto/" + parentObjectId), parameter).then(function (response) {
+                var shObjects = response.data;
+                for (i = 0; i < shObjects.length; i++) {
+                	shObject = shObjects[i];
+                	var clonedMessage = null;
+                	if (shObject.shGlobalId.type == "POST") {
+                		clonedMessage = 'The ' + shObject.title + ' Post was cloned.';                	
+                	} else if (shObject.shGlobalId.type == "FOLDER") {
+                		clonedMessage = 'The ' + shObject.name + ' Folder was cloned.';                		
+                	}
+                	Notification.warning(clonedMessage);
                 }
             });
         }       

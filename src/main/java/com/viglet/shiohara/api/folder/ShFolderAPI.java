@@ -96,42 +96,7 @@ public class ShFolderAPI {
 
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/{globalId}/list")
-	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShFolderList shFolderListItem(@PathVariable UUID globalId) throws Exception {
-		ShGlobalId shGlobalId = shGlobalIdRepository.findById(globalId);
-		ShFolder shFolder = (ShFolder) shGlobalId.getShObject();
-
-		String folderPath = shFolderUtils.folderPath(shFolder);
-		ArrayList<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shFolder);
-		ShSite shSite = breadcrumb.get(0).getShSite();
-		ShFolderList shFolderList = new ShFolderList();
-		shFolderList.setShFolders(shFolderRepository.findByParentFolder(shFolder));
-		shFolderList.setShPosts(shPostRepository.findByShFolder(shFolder));
-		shFolderList.setFolderPath(folderPath);
-		shFolderList.setBreadcrumb(breadcrumb);
-		shFolderList.setShSite(shSite);
-		return shFolderList;
-	}
-
-	@RequestMapping(method = RequestMethod.GET, value = "/{globalId}/list/{postTypeName}")
-	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShFolderList shFolderListByPostType(@PathVariable UUID globalId, @PathVariable String postTypeName) throws Exception {
-		ShGlobalId shGlobalId = shGlobalIdRepository.findById(globalId);
-		ShFolder shFolder = (ShFolder) shGlobalId.getShObject();
-		ShPostType shPostType = shPostTypeRepository.findByName(postTypeName);
-		String folderPath = shFolderUtils.folderPath(shFolder);
-		ArrayList<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shFolder);
-		ShSite shSite = breadcrumb.get(0).getShSite();
-		ShFolderList shFolderList = new ShFolderList();
-		shFolderList.setShFolders(shFolderRepository.findByParentFolder(shFolder));
-		shFolderList.setShPosts(shPostRepository.findByShFolderAndShPostType(shFolder, shPostType));
-		shFolderList.setFolderPath(folderPath);
-		shFolderList.setBreadcrumb(breadcrumb);
-		shFolderList.setShSite(shSite);
-		return shFolderList;
-	}
-
+	
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}/path")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShFolderPath shFolderPath(@PathVariable UUID id) throws Exception {
@@ -142,7 +107,7 @@ public class ShFolderAPI {
 			ArrayList<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shFolder);
 			ShSite shSite = breadcrumb.get(0).getShSite();
 			shFolderPath.setFolderPath(folderPath);
-			shFolderPath.setCurrentFolder(shFolderUtils.folderFromPath(shSite, folderPath));
+			shFolderPath.setCurrentFolder(shFolder);
 			shFolderPath.setBreadcrumb(breadcrumb);
 			shFolderPath.setShSite(shSite);
 			return shFolderPath;

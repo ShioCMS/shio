@@ -3,7 +3,7 @@ shioharaApp.factory('ShDialogSelectObject', [ '$uibModal', 'shPostResource',
 		function($uibModal, shPostResource, Notification, $filter, $state) {
 			return {
 				
-				dialog : function(folderId, objectType) {
+				dialog : function(objectId, objectType) {
 					var $ctrl = this;
 					return $uibModal.open({
 						animation : true,
@@ -15,8 +15,8 @@ shioharaApp.factory('ShDialogSelectObject', [ '$uibModal', 'shPostResource',
 						size : null,
 						appendTo : undefined,
 						resolve : {
-							folderId : function() {
-								return folderId;
+							objectId : function() {
+								return objectId;
 							},
 							objectType : function() {
 								return objectType;
