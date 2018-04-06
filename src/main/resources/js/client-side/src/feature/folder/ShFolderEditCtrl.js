@@ -63,12 +63,15 @@ shioharaApp
 											Notification.warning('The '
 													+ $scope.shFolder.name
 													+ ' Folder was updated.');
-											$state
-													.go(
-															'content.children',
-															{
-																objectId : $scope.shFolder.parentFolder.shGlobalId.id
-															});
+											var parentObjectId = null;
+											if ($scope.shFolder.parentFolder == null) {
+												parentObjectId = $scope.shSite.shGlobalId.id;
+											} else {
+												parentObjectId = $scope.shFolder.parentFolder.shGlobalId.id;
+											}
+											$state.go('content.children', {
+												objectId : parentObjectId
+											});
 										});
 							}
 

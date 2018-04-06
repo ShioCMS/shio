@@ -3,11 +3,11 @@ shioharaApp.controller('ShComponentExplorerCtrl', [
 		'shAPIServerService',
 		'$http',
 		'$uibModalInstance',
-		'folderId',
+		'objectId',
 		'objectType',
 		'shWidgetFileFactory',
 		function($scope, shAPIServerService, $http, $uibModalInstance,
-				folderId, objectType, shWidgetFileFactory) {
+				objectId, objectType, shWidgetFileFactory) {
 			var $ctrl = this;
 			$ctrl.objectTypeName = "Object";
 			$ctrl.folderDoubleClick = false;
@@ -31,29 +31,17 @@ shioharaApp.controller('ShComponentExplorerCtrl', [
 			$scope.breadcrumb = null;
 
 			// BEGIN Functions
-			$scope.folderList = function(folderId) {
+			$scope.objectList = function(objectList) {
 				$ctrl.enableInsertButton = false;
 				$ctrl.shPostSelected = null;
 				$scope.$evalAsync($http.get(
 						shAPIServerService.get().concat(
-								"/v2/folder/" + folderId + "/list/" + objectType))
+								"/v2/object/" + objectId + "/list/" + objectType))
 						.then(function(response) {
 							$scope.shFolders = response.data.shFolders;
 							$scope.shPosts = response.data.shPosts;
 							$scope.breadcrumb = response.data.breadcrumb;
 							$scope.shSite = response.data.shSite;							
-						}));
-			}
-
-			$scope.siteList = function(siteId) {
-				$ctrl.shPostSelected = null;
-				$scope.$evalAsync($http.get(
-						shAPIServerService.get().concat(
-								"/v2/site/" + siteId + "/folder")).then(
-						function(response) {
-							$scope.shFolders = response.data.shFolders;
-							$scope.shPosts = response.data.shPosts;
-							$scope.shSite = response.data.shSite;
 						}));
 			}
 
@@ -68,6 +56,6 @@ shioharaApp.controller('ShComponentExplorerCtrl', [
 			}
 			// END Functions
 
-			$scope.folderList(folderId);
+			$scope.objectList(objectId);
 
 		} ]);

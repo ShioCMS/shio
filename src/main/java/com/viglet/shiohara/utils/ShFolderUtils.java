@@ -165,16 +165,27 @@ public class ShFolderUtils {
 		shFolderRepository.delete(shFolder.getId());
 		return true;
 	}
-	
-	public ShFolder copy(ShFolder shFolder, ShFolder shFolderDest) {
-		// TODO: Save as Root Folder (into Site)
+
+	public ShFolder copy(ShFolder shFolder, ShGlobalId shGlobalIdDest) {
 		// TODO: Copy objects into Folder
 		ShFolder shFolderCopy = new ShFolder();
+		if (shGlobalIdDest.getType().equals("FOLDER")) {
+			ShFolder shFolderDest = (ShFolder) shGlobalIdDest.getShObject();
+			shFolderCopy.setParentFolder(shFolderDest);
+			shFolderCopy.setShSite(null);
+			shFolderCopy.setRootFolder((byte) 0);
+		} else if (shGlobalIdDest.getType().equals("SITE")) {
+			ShSite shSiteDest = (ShSite) shGlobalIdDest.getShObject();
+			shFolderCopy.setParentFolder(null);
+			shFolderCopy.setShSite(shSiteDest);
+			shFolderCopy.setRootFolder((byte) 1);
+		} else {
+			return null;
+		}
 		shFolderCopy.setDate(new Date());
-		shFolderCopy.setParentFolder(shFolderDest);
 		shFolderCopy.setName(shFolder.getName());
-		shFolderCopy.setRootFolder((byte) 0);
-		shFolderCopy.setShSite(null);		
+		
+
 		shFolderRepository.save(shFolderCopy);
 
 		ShGlobalId shGlobalId = new ShGlobalId();
@@ -183,7 +194,7 @@ public class ShFolderUtils {
 
 		shGlobalIdRepository.saveAndFlush(shGlobalId);
 		shFolderCopy.setShGlobalId(shGlobalId);
-		
+
 		return shFolderCopy;
 	}
 
