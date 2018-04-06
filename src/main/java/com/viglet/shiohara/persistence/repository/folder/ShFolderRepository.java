@@ -1,6 +1,7 @@
 package com.viglet.shiohara.persistence.repository.folder;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,7 +23,7 @@ public interface ShFolderRepository extends JpaRepository<ShFolder, UUID> {
 	
 	List<ShFolder> findByParentFolder(ShFolder parentFolder);
 	
-	ShFolder findById(UUID id);
+	Optional<ShFolder> findById(UUID id);
 
 	ShFolder save(ShFolder shFolder);
 

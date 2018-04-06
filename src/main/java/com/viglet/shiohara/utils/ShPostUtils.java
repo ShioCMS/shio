@@ -102,7 +102,7 @@ public class ShPostUtils {
 	}
 
 	public String generatePostLink(String postID) {
-		ShPost shPost = shPostRepository.findById(UUID.fromString(postID));
+		ShPost shPost = shPostRepository.findById(UUID.fromString(postID)).get();
 		ShFolder shFolder = shPost.getShFolder();
 		String link = shFolderUtils.generateFolderLink(shFolder.getId().toString());
 		link = link + shPost.getTitle().replaceAll(" ", "-");

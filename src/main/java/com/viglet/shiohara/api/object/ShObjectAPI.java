@@ -58,12 +58,12 @@ public class ShObjectAPI {
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}/preview")
 	public void shObjectPreview(@PathVariable UUID id, HttpServletResponse response) throws Exception {
 		String redirect = null;
-		ShGlobalId shGlobalId = shGlobalIdRepository.findById(id);
+		ShGlobalId shGlobalId = shGlobalIdRepository.findById(id).get();
 		if (shGlobalId.getType().equals("POST")) {
-			ShPost shPost = shPostRepository.findById(shGlobalId.getShObject().getId());
+			ShPost shPost = shPostRepository.findById(shGlobalId.getShObject().getId()).get();
 			redirect = shPostUtils.generatePostLink(shPost.getId().toString());
 		} else if (shGlobalId.getType().equals("FOLDER")) {
-			ShFolder shFolder = shFolderRepository.findById(shGlobalId.getShObject().getId());
+			ShFolder shFolder = shFolderRepository.findById(shGlobalId.getShObject().getId()).get();
 			redirect = shFolderUtils.generateFolderLink(shFolder.getId().toString());
 		}
 		response.sendRedirect(redirect);
@@ -75,8 +75,8 @@ public class ShObjectAPI {
 			throws Exception {
 		List<ShObject> shObjects = new ArrayList<ShObject>();
 		for (UUID globalId : globalIds) {
-			ShGlobalId shGlobalId = shGlobalIdRepository.findById(globalId);
-			ShGlobalId shGlobalIdDest = shGlobalIdRepository.findById(globallIdDest);
+			ShGlobalId shGlobalId = shGlobalIdRepository.findById(globalId).get();
+			ShGlobalId shGlobalIdDest = shGlobalIdRepository.findById(globallIdDest).get();
 			if (shGlobalIdDest.getType().equals("FOLDER")) {
 				ShFolder shFolderDest = (ShFolder) shGlobalIdDest.getShObject();
 				if (shGlobalId.getType().equals("POST")) {
@@ -113,8 +113,8 @@ public class ShObjectAPI {
 			throws Exception {
 		List<ShObject> shObjects = new ArrayList<ShObject>();
 		for (UUID globalId : globalIds) {
-			ShGlobalId shGlobalId = shGlobalIdRepository.findById(globalId);
-			ShGlobalId shGlobalIdDest = shGlobalIdRepository.findById(globallIdDest);
+			ShGlobalId shGlobalId = shGlobalIdRepository.findById(globalId).get();
+			ShGlobalId shGlobalIdDest = shGlobalIdRepository.findById(globallIdDest).get();
 			if (shGlobalIdDest.getType().equals("FOLDER")) {
 				ShFolder shFolderDest = (ShFolder) shGlobalIdDest.getShObject();
 				if (shGlobalId.getType().equals("POST")) {
@@ -137,7 +137,7 @@ public class ShObjectAPI {
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}/list")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShFolderList shObjectListItem(@PathVariable UUID id) throws Exception {
-		ShGlobalId shGlobalId = shGlobalIdRepository.findById(id);
+		ShGlobalId shGlobalId = shGlobalIdRepository.findById(id).get();
 		if (shGlobalId.getType().equals("FOLDER")) {
 			ShFolder shFolder = (ShFolder) shGlobalId.getShObject();
 			String folderPath = shFolderUtils.folderPath(shFolder);
@@ -166,7 +166,7 @@ public class ShObjectAPI {
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShFolderList shFolderListByPostType(@PathVariable UUID id, @PathVariable String postTypeName)
 			throws Exception {
-		ShGlobalId shGlobalId = shGlobalIdRepository.findById(id);
+		ShGlobalId shGlobalId = shGlobalIdRepository.findById(id).get();
 		ShPostType shPostType = shPostTypeRepository.findByName(postTypeName);
 		if (shGlobalId.getType().equals("FOLDER")) {
 			ShFolder shFolder = (ShFolder) shGlobalId.getShObject();

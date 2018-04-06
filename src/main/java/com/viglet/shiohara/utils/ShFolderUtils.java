@@ -140,7 +140,7 @@ public class ShFolderUtils {
 
 	public String generateFolderLink(String folderID) {
 		String shContext = "sites";
-		ShFolder shFolder = shFolderRepository.findById(UUID.fromString(folderID));
+		ShFolder shFolder = shFolderRepository.findById(UUID.fromString(folderID)).get();
 		ShSite shSite = this.getSite(shFolder);
 		String link = "/" + shContext + "/";
 		link = link + shSite.getName().replaceAll(" ", "-");

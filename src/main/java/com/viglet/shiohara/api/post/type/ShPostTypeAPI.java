@@ -51,7 +51,7 @@ public class ShPostTypeAPI {
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
 	@JsonView({ShJsonView.ShJsonViewPostType.class})
 	public ShPostType  shPostTypeEdit(@PathVariable UUID id) throws Exception {
-		return shPostTypeRepository.findById(id);
+		return shPostTypeRepository.findById(id).get();
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/model")	
@@ -66,7 +66,7 @@ public class ShPostTypeAPI {
 	@JsonView({ShJsonView.ShJsonViewPostType.class})
 	public ShPost  shPostTypePostStructure(@PathVariable UUID id) throws Exception {
 		ShPost shPost = new ShPost();
-		shPost.setShPostType(shPostTypeRepository.findById(id));
+		shPost.setShPostType(shPostTypeRepository.findById(id).get());
 		List<ShPostAttr> shPostAttrs = new ArrayList<ShPostAttr>();
 		for (ShPostTypeAttr shPostTypeAttr : shPost.getShPostType().getShPostTypeAttrs()) {
 			ShPostAttr shPostAttr = new ShPostAttr();
@@ -82,11 +82,11 @@ public class ShPostTypeAPI {
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id}")
 	@JsonView({ShJsonView.ShJsonViewPostType.class})
 	public ShPostType  shPostTypeUpdate(@PathVariable UUID id, @RequestBody ShPostType shPostType) throws Exception {
-		ShPostType shPostTypeEdit = shPostTypeRepository.findById(id);
+		ShPostType shPostTypeEdit = shPostTypeRepository.findById(id).get();
 
 		for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs()) {
 
-			ShPostTypeAttr shPostTypeAttrEdit = shPostTypeAttrRepository.findById(shPostTypeAttr.getId());
+			ShPostTypeAttr shPostTypeAttrEdit = shPostTypeAttrRepository.findById(shPostTypeAttr.getId()).get();
 
 			if (shPostTypeAttrEdit != null) {
 				shPostTypeAttrEdit.setDescription(shPostTypeAttr.getDescription());
@@ -108,7 +108,7 @@ public class ShPostTypeAPI {
 			}
 		}
 
-		shPostTypeEdit = shPostTypeRepository.findById(id);
+		shPostTypeEdit = shPostTypeRepository.findById(id).get();
 		shPostTypeEdit.setDate(shPostType.getDate());
 		shPostTypeEdit.setTitle(shPostType.getTitle());
 		shPostTypeEdit.setDescription(shPostType.getDescription());
@@ -120,7 +120,7 @@ public class ShPostTypeAPI {
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
 	public boolean  shPostTypeDelete(@PathVariable UUID id) throws Exception {
-		ShPostType shPostType = shPostTypeRepository.findById(id);
+		ShPostType shPostType = shPostTypeRepository.findById(id).get();
 
 		for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs()) {
 			for (ShPostAttr shPostAttr : shPostTypeAttr.getShPostAttrs()) {
@@ -161,7 +161,7 @@ public class ShPostTypeAPI {
 
 	@RequestMapping(method = RequestMethod.POST, value = "/{id}/attr")
 	public ShPostTypeAttr  shPostTypeAttrAdd(@PathVariable UUID id, @RequestBody ShPostTypeAttr shPostTypeAttr) throws Exception {
-		ShPostType shPostType = shPostTypeRepository.findById(id);
+		ShPostType shPostType = shPostTypeRepository.findById(id).get();
 		if (shPostType != null) {
 			shPostTypeAttr.setShPostType(shPostType);
 			shPostTypeAttrRepository.save(shPostTypeAttr);

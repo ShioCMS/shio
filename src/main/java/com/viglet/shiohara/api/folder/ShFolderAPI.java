@@ -60,7 +60,7 @@ public class ShFolderAPI {
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShFolder shFolderGet(@PathVariable UUID id) throws Exception {
-		return shFolderRepository.findById(id);
+		return shFolderRepository.findById(id).get();
 	}
 
 	@ApiOperation(value = "Update a folder")
@@ -68,7 +68,7 @@ public class ShFolderAPI {
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShFolder shFolderUpdate(@PathVariable UUID id, @RequestBody ShFolder shFolder) throws Exception {
 
-		ShFolder shFolderEdit = shFolderRepository.findById(id);
+		ShFolder shFolderEdit = shFolderRepository.findById(id).get();
 
 		shFolderEdit.setDate(new Date());
 		shFolderEdit.setName(shFolder.getName());
@@ -83,7 +83,7 @@ public class ShFolderAPI {
 	@ApiOperation(value = "Delete a folder")
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
 	public boolean shFolderDelete(@PathVariable UUID id) throws Exception {
-		ShFolder shFolder = shFolderRepository.findById(id);
+		ShFolder shFolder = shFolderRepository.findById(id).get();
 		shGlobalIdRepository.delete(shFolder.getShGlobalId().getId());
 		return shFolderUtils.deleteFolder(shFolder);
 	}
@@ -109,7 +109,7 @@ public class ShFolderAPI {
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}/path")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShFolderPath shFolderPath(@PathVariable UUID id) throws Exception {
-		ShFolder shFolder = shFolderRepository.findById(id);
+		ShFolder shFolder = shFolderRepository.findById(id).get();
 		if (shFolder != null) {
 			ShFolderPath shFolderPath = new ShFolderPath();
 			String folderPath = shFolderUtils.folderPath(shFolder);

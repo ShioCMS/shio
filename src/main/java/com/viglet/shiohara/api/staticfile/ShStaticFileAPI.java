@@ -56,7 +56,7 @@ public class ShStaticFileAPI {
 	public ShPost shStaticFileUpload(@RequestParam("file") MultipartFile file, @RequestParam("folderId") UUID folderId,
 			@RequestParam("createPost") boolean createPost) throws URISyntaxException, IOException {
 
-		ShFolder shFolder = shFolderRepository.findById(folderId);
+		ShFolder shFolder = shFolderRepository.findById(folderId).get();
 		File directoryPath = shStaticFileUtils.dirPath(shFolder);
 		ShPost shPost = new ShPost();
 		String filePath = null;

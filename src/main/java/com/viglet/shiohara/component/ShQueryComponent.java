@@ -32,7 +32,7 @@ public class ShQueryComponent {
 	public List<Map<String, ShPostAttr>> findByFolderName(String folderId, String postTypeName ) {
 
 		ShPostType shPostType = shPostTypeRepository.findByName(postTypeName);
-		ShFolder shFolder = shFolderRepository.findById(UUID.fromString(folderId));
+		ShFolder shFolder = shFolderRepository.findById(UUID.fromString(folderId)).get();
 		List<ShPost> shPostList = shPostRepository.findByShFolderAndShPostType(shFolder, shPostType);
 
 		List<Map<String, ShPostAttr>> shPosts = new ArrayList<Map<String, ShPostAttr>>();

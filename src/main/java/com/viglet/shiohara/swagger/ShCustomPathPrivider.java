@@ -6,7 +6,7 @@ public class ShCustomPathPrivider extends AbstractPathProvider {
 
 	@Override
 	protected String applicationPath() {
-		return "/api/v2";
+		return "/";
 	}
 
 	@Override

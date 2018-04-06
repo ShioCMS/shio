@@ -1,6 +1,7 @@
 package com.viglet.shiohara.persistence.repository.post;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
@@ -22,7 +23,7 @@ public interface ShPostRepository extends JpaRepository<ShPost, UUID> {
 	
 	List<ShPost> findByShFolderAndShPostType(ShFolder shFolder, ShPostType shPostType);
 	
-	ShPost findById(UUID id);
+	Optional<ShPost> findById(UUID id);
 	
 	ShPost findByTitle(String title);
 	

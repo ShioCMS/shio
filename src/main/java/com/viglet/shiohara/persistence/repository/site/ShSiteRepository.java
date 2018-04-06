@@ -1,6 +1,7 @@
 package com.viglet.shiohara.persistence.repository.site;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,7 +14,7 @@ public interface ShSiteRepository extends JpaRepository<ShSite, UUID> {
 
 	List<ShSite> findAll();
 
-	ShSite findById(UUID id);
+	Optional<ShSite> findById(UUID id);
 
 	ShSite findByName(String name);
 

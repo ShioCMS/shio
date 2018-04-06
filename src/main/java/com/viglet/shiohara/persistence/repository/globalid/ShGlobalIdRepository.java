@@ -1,6 +1,7 @@
 package com.viglet.shiohara.persistence.repository.globalid;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,7 +14,7 @@ public interface ShGlobalIdRepository extends JpaRepository<ShGlobalId, UUID> {
 
 	List<ShGlobalId> findAll();
 
-	ShGlobalId findById(UUID id);
+	Optional<ShGlobalId> findById(UUID id);
 	
 	//ShGlobalId findByObjectId(UUID objectId);
 

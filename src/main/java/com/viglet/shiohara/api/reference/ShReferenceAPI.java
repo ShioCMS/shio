@@ -48,13 +48,13 @@ public class ShReferenceAPI {
 	@RequestMapping(method = RequestMethod.GET, value = "/from/{fromId}")
 	@JsonView({  ShJsonView.ShJsonViewReference.class })
 	public List<ShReference> shReferenceFrom(@PathVariable UUID fromId) throws Exception {
-		ShGlobalId shGlobalId = shGlobalIdRepository.findById(fromId);
+		ShGlobalId shGlobalId = shGlobalIdRepository.findById(fromId).get();
 		return shReferenceRepository.findByShGlobalFromId(shGlobalId);
 	}
 	@RequestMapping(method = RequestMethod.GET, value = "/to/{toId}")
 	@JsonView({  ShJsonView.ShJsonViewReference.class })
 	public List<ShReference> shReferenceTo(@PathVariable UUID toId) throws Exception {
-		ShGlobalId shGlobalId = shGlobalIdRepository.findById(toId);
+		ShGlobalId shGlobalId = shGlobalIdRepository.findById(toId).get();
 		return shReferenceRepository.findByShGlobalToId(shGlobalId);
 	}
 
@@ -62,9 +62,9 @@ public class ShReferenceAPI {
 	@JsonView({  ShJsonView.ShJsonViewReference.class })
 	public List<ShReference> shReferenceToReplace(@PathVariable UUID toId, @PathVariable UUID otherId)
 			throws Exception {
-		ShGlobalId shGlobalId = shGlobalIdRepository.findById(toId);
-		ShGlobalId shGlobaOtherlId = shGlobalIdRepository.findById(otherId);
-		ShPost shPostOther = shPostRepository.findById(shGlobaOtherlId.getShObject().getId());
+		ShGlobalId shGlobalId = shGlobalIdRepository.findById(toId).get();
+		ShGlobalId shGlobaOtherlId = shGlobalIdRepository.findById(otherId).get();
+		ShPost shPostOther = shPostRepository.findById(shGlobaOtherlId.getShObject().getId()).get();
 		List<ShReference> shReferences = shReferenceRepository.findByShGlobalToId(shGlobalId);
 
 		for (ShReference shReference : shReferences) {

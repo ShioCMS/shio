@@ -33,12 +33,12 @@ public class ShPostTypeAttrAPI {
 
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
 	public ShPostTypeAttr  shPostTypeAttrEdit(@PathVariable UUID id) throws Exception {
-		return shPostTypeAttrRepository.findById(id);
+		return shPostTypeAttrRepository.findById(id).get();
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id}")
 	public ShPostTypeAttr  shPostTypeAttrUpdate(@PathVariable UUID id, @RequestBody ShPostTypeAttr shPostTypeAttr) throws Exception {
-		ShPostTypeAttr shPostTypeAttrEdit = shPostTypeAttrRepository.findById(id);
+		ShPostTypeAttr shPostTypeAttrEdit = shPostTypeAttrRepository.findById(id).get();
 		shPostTypeAttrEdit.setIsSummary(shPostTypeAttr.getIsSummary());
 		shPostTypeAttrEdit.setIsTitle(shPostTypeAttr.getIsTitle());
 		shPostTypeAttrEdit.setLabel(shPostTypeAttr.getLabel());
@@ -54,7 +54,7 @@ public class ShPostTypeAttrAPI {
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
 	public boolean  shPostTypeAttrDelete(@PathVariable UUID id) throws Exception {
-		ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findById(id);
+		ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findById(id).get();
 		for ( ShPostAttr shPostAttr : shPostTypeAttr.getShPostAttrs()) {
 			shPostAttrRepository.delete(shPostAttr.getId());
 		}
