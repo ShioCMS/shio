@@ -30,12 +30,12 @@ public class ShWidgetAPI {
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
 	public ShWidget shWidgetEdit(@PathVariable UUID id) throws Exception {
-		return shWidgetRepository.findById(id);
+		return shWidgetRepository.findById(id).get();
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id}")
 	public ShWidget shWidgetUpdate(@PathVariable UUID id, @RequestBody ShWidget shWidget) throws Exception {
-		ShWidget shWidgetEdit = shWidgetRepository.findById(id);
+		ShWidget shWidgetEdit = shWidgetRepository.findById(id).get();
 		shWidgetEdit.setName(shWidget.getName());
 		shWidgetEdit.setType(shWidget.getType());
 		shWidgetEdit.setClassName(shWidget.getClassName());

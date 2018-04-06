@@ -1,6 +1,7 @@
 package com.viglet.shiohara.api.user;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -57,7 +58,7 @@ public class ShUserAPI {
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
-	public boolean shUserDelete(@PathVariable int id) throws Exception {
+	public boolean shUserDelete(@PathVariable UUID id) throws Exception { 
 		shUserRepository.delete(id);
 		return true;
 	}

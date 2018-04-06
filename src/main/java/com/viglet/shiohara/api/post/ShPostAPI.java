@@ -59,7 +59,7 @@ public class ShPostAPI {
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShPost shPostEdit(@PathVariable UUID id) throws Exception {
-		ShPost shPost = shPostRepository.findById(id);
+		ShPost shPost = shPostRepository.findById(id).get();
 		shPost.setShPostAttrs(shPostAttrRepository.findByShPost(shPost));
 		return shPost;
 	}
@@ -68,7 +68,7 @@ public class ShPostAPI {
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShPost shPostUpdate(@PathVariable UUID id, @RequestBody ShPost shPost) throws Exception {
 
-		ShPost shPostEdit = shPostRepository.findById(id);
+		ShPost shPostEdit = shPostRepository.findById(id).get();
 
 		String title = shPostEdit.getTitle();
 		String summary = shPostEdit.getSummary();
@@ -81,7 +81,7 @@ public class ShPostAPI {
 			if (shPostAttr.getShPostTypeAttr().getIsSummary() == 1)
 				summary = StringUtils.abbreviate(shPostAttr.getStrValue(), 255);
 
-			ShPostAttr shPostAttrEdit = shPostAttrRepository.findById(shPostAttr.getId());
+			ShPostAttr shPostAttrEdit = shPostAttrRepository.findById(shPostAttr.getId()).get();
 			this.referencedFile(shPostAttrEdit, shPostAttr, shPost);
 
 			if (shPostAttrEdit != null) {
@@ -92,7 +92,7 @@ public class ShPostAPI {
 				shPostAttrRepository.saveAndFlush(shPostAttrEdit);
 			}
 		}
-		shPostEdit = shPostRepository.findById(id);
+		shPostEdit = shPostRepository.findById(id).get();
 
 		shPostEdit.setDate(new Date());
 		shPostEdit.setTitle(title);
@@ -113,7 +113,7 @@ public class ShPostAPI {
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
 	public boolean shPostDelete(@PathVariable UUID id) throws Exception {
 
-		ShPost shPost = shPostRepository.findById(id);
+		ShPost shPost = shPostRepository.findById(id).get();
 		List<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
 		if (shPost.getShPostType().getName().equals("PT-FILE") && shPostAttrs.size() > 0) {
 			File file = shStaticFileUtils.filePath(shPost.getShFolder(), shPostAttrs.get(0).getStrValue());
@@ -174,7 +174,7 @@ public class ShPostAPI {
 
 		shGlobalIdRepository.saveAndFlush(shGlobalId);
 
-		ShPost shPostWithGlobalId = shPostRepository.findById(shPost.getId());
+		ShPost shPostWithGlobalId = shPostRepository.findById(shPost.getId()).get();
 
 		
 		for (ShPostAttr shPostAttr : shPostAttrs) {
@@ -212,7 +212,7 @@ public class ShPostAPI {
 				if (shPostAttr.getStrValue() == null) {
 					shPostAttr.setReferenceObjects(null);
 				} else {
-					ShPost shPostFile = shPostRepository.findById(UUID.fromString(shPostAttr.getStrValue()));
+					ShPost shPostFile = shPostRepository.findById(UUID.fromString(shPostAttr.getStrValue())).get();
 					// TODO Two or more attributes with FILE Widget and same file, it cannot remove
 					// a valid reference
 					// Remove old references

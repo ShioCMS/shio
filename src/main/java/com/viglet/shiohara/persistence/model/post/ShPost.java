@@ -3,10 +3,10 @@ package com.viglet.shiohara.persistence.model.post;
 import javax.persistence.*;
 
 import org.hibernate.annotations.Fetch;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.Store;
+//import org.hibernate.search.annotations.Field;
+//import org.hibernate.search.annotations.FieldBridge;
+//import org.hibernate.search.annotations.Indexed;
+//import org.hibernate.search.annotations.Store;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
@@ -22,42 +22,42 @@ import java.util.List;
  * 
  */
 @Configurable(preConstruction = true)
-@Indexed
+//@Indexed
 @Entity
 @NamedQuery(name = "ShPost.findAll", query = "SELECT s FROM ShPost s")
 public class ShPost extends ShObject {
 	private static final long serialVersionUID = 1L;
 	
 	@Temporal(TemporalType.TIMESTAMP)
-	@Field(store = Store.NO)
+//	@Field(store = Store.NO)
 	private Date date;
 
-	@Field(store = Store.YES)
+//	@Field(store = Store.YES)
 	private String summary;
 
-	@Field(store = Store.YES)
+//	@Field(store = Store.YES)
 	private String title;
 
 	// bi-directional many-to-one association to ShPostType
 	@ManyToOne
 	@JoinColumn(name = "post_type_id")
-	@Field(store = Store.NO)
-	@FieldBridge(impl = ScanResultBridge.class) 
+//	@Field(store = Store.NO)
+//	@FieldBridge(impl = ScanResultBridge.class) 
 	private ShPostType shPostType;
 
 	// bi-directional many-to-one association to ShFolder
 	@ManyToOne
 	@JoinColumn(name = "folder_id")
-	@Field(store = Store.NO)
-	@FieldBridge(impl = ScanResultBridge.class) 
+//	@Field(store = Store.NO)
+	//@FieldBridge(impl = ScanResultBridge.class) 
 	private ShFolder shFolder;
 
 	// bi-directional many-to-one association to ShPostAttr
-	@Field(store = Store.NO)
+//	@Field(store = Store.NO)
 	@OneToMany(mappedBy = "shPost", cascade = CascadeType.ALL)
 	//@OneToMany(fetch = FetchType.LAZY, mappedBy = "shPost", cascade = CascadeType.ALL)
 	//@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
-	@FieldBridge(impl = ScanResultBridge.class) 
+//	@FieldBridge(impl = ScanResultBridge.class) 
 	private List<ShPostAttr> shPostAttrs;
 
 	public ShPost() {

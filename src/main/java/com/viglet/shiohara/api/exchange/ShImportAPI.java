@@ -176,7 +176,7 @@ public class ShImportAPI {
 					shFolderChild.setDate(shFolderExchange.getDate());
 					shFolderChild.setName(shFolderExchange.getName());
 					if (shFolderExchange.getParentFolder() != null) {
-						ShFolder parentFolder = shFolderRepository.findById(shFolderExchange.getParentFolder());
+						ShFolder parentFolder = shFolderRepository.findById(shFolderExchange.getParentFolder()).get();
 						shFolderChild.setParentFolder(parentFolder);
 						shFolderChild.setRootFolder((byte) 0);
 					} else {
@@ -184,7 +184,7 @@ public class ShImportAPI {
 							ShSiteExchange shSiteExchange = (ShSiteExchange) shObjects.get(shObject);
 							if (shSiteExchange.getRootFolders().contains(shFolderExchange.getId())) {
 								shFolderChild.setRootFolder((byte) 1);
-								ShSite parentSite = shSiteRepository.findById(shSiteExchange.getId());
+								ShSite parentSite = shSiteRepository.findById(shSiteExchange.getId()).get();
 								shFolderChild.setShSite(parentSite);
 							}
 						}
@@ -206,7 +206,7 @@ public class ShImportAPI {
 					ShPost shPost = new ShPost();
 					shPost.setId(shPostExchange.getId());
 					shPost.setDate(shPostExchange.getDate());
-					shPost.setShFolder(shFolderRepository.findById(shPostExchange.getFolder()));
+					shPost.setShFolder(shFolderRepository.findById(shPostExchange.getFolder()).get());
 					shPost.setShPostType(shPostTypeRepository.findByName(shPostExchange.getPostType()));
 
 					for (Entry<String, Object> shPostField : shPostExchange.getFields().entrySet()) {

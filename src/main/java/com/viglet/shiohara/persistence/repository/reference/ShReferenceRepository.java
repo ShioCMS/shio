@@ -1,6 +1,7 @@
 package com.viglet.shiohara.persistence.repository.reference;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,7 +15,7 @@ public interface ShReferenceRepository extends JpaRepository<ShReference, UUID> 
 
 	List<ShReference> findAll();
 
-	ShReference findById(UUID id);
+	Optional<ShReference> findById(UUID id);
 	
 	List<ShReference> findByShGlobalFromId(ShGlobalId shGlobalFromId);
 	

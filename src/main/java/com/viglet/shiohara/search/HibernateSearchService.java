@@ -1,9 +1,9 @@
 package com.viglet.shiohara.search;
 
-import org.apache.lucene.search.Query;
+/*import org.apache.lucene.search.Query;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
-import org.hibernate.search.query.dsl.QueryBuilder;
+import org.hibernate.search.query.dsl.QueryBuilder;*/
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,18 +31,18 @@ public class HibernateSearchService {
 
     public void initializeHibernateSearch() {
 
-        try {
+  /*      try {
             FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(centityManager);
             fullTextEntityManager.createIndexer().startAndWait();
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     @Transactional
     public List<ShPost> fuzzySearch(String searchTerm) {
 
-        FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(centityManager);
+   /*     FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(centityManager);
         QueryBuilder qb = fullTextEntityManager.getSearchFactory().buildQueryBuilder().forEntity(ShPost.class).get();
         Query luceneQuery = qb.keyword().fuzzy().withEditDistanceUpTo(1).withPrefixLength(1).onFields("title", "summary")
                 .matching(searchTerm).createQuery();
@@ -59,7 +59,9 @@ public class HibernateSearchService {
 
         }
 
-        return BaseballCardList;
+        return BaseballCardList;*/
+    	
+    	return null;
 
 
     }

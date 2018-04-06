@@ -10,7 +10,7 @@ import io.swagger.annotations.Api;
 
 @RestController
 @RequestMapping("/api/v2")
-@Api(tags="Heartbeat", description="Heartbeat")
+@Api(value="/", tags="Heartbeat", description="Heartbeat")
 public class ShAPI {
 
 	@Autowired

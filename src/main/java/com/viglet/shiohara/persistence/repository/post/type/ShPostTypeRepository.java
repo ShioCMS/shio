@@ -1,6 +1,7 @@
 package com.viglet.shiohara.persistence.repository.post.type;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,7 +14,7 @@ public interface ShPostTypeRepository extends JpaRepository<ShPostType, UUID> {
 
 	List<ShPostType> findAll();
 
-	ShPostType findById(UUID id);
+	Optional<ShPostType> findById(UUID id);
 	
 	ShPostType findByName(String name);
 

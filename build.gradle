@@ -1,21 +1,17 @@
 buildscript {
-	ext {
-		springBootVersion = '1.5.10.RELEASE'
-		thymeleafVersion = '3.0.3.RELEASE'
-		hibernateVersion = '5.6.1.Final'
-		httpClientVersion = '4.5.2'
-		swaggerVersion = '2.8.0'
-	}
-	repositories {
-		mavenCentral()
-		 jcenter()
-	}
-	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-		classpath "com.eriwen:gradle-js-plugin:2.12.0"
-	}
+    ext { springBootVersion = '2.0.1.RELEASE'
+	      thymeleafVersion = '3.0.9.RELEASE'
+	 //     hibernateVersion = '5.9.1.Final'
+		  httpClientVersion = '4.5.2'
+		  swaggerVersion = '2.8.0'
+		 }
+    repositories { mavenCentral()
+    			   jcenter() }
+    dependencies { classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    			   classpath("com.eriwen:gradle-js-plugin:2.12.0") }
 }
 
+ext { springBootVersion = '2.0.1.RELEASE' }
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
@@ -24,17 +20,17 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'com.eriwen.gradle.js'
 
-group = 'com.viglet.shiohara'
-version = '1.0-SNAPSHOT'
+jar {
+    baseName = 'com.viglet.shiohara'
+    version =  '0.1.0'
+}
 
-description = "viglet-shiohara"
+repositories {
+    mavenCentral()
+}
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-
-tasks.withType(JavaCompile) {
-	options.encoding = 'UTF-8'
-}
 
 // Combine JS files
 task combineSystemJs(type: com.eriwen.gradle.js.tasks.CombineJsTask) {
@@ -66,26 +62,15 @@ compileJava.dependsOn(minifyAllJs)
 
 build.mustRunAfter clean
 
-jar {
-    baseName = 'shiohara'
-    version =  '0.1.0'
-}
-
-springBoot {
-    executable = true
-}
-
 javadoc {
     source = sourceSets.main.allJava
     classpath = configurations.compile
     destinationDir = file("store/doc/javadoc")
 }
-repositories {   
-     mavenCentral()
-}
 dependencies {
-
-	// Spring Boot
+    
+    // Spring Boot
+	compile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version:"${springBootVersion}"
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-undertow', version:"${springBootVersion}"
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version:"${springBootVersion}"
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-parent', version:"${springBootVersion}"
@@ -98,7 +83,7 @@ dependencies {
    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.9.4'
    
     // Thymeleaf
-    compile group: 'org.thymeleaf', name: 'thymeleaf-spring4', version:"${thymeleafVersion}"
+    compile group: 'org.thymeleaf', name: 'thymeleaf-spring5', version:"${thymeleafVersion}"
     compile group: 'org.thymeleaf', name: 'thymeleaf', version:"${thymeleafVersion}"
     
     // HikariCP   
@@ -129,8 +114,8 @@ dependencies {
 	compile group: 'org.jsoup', name: 'jsoup', version: '1.8.3'
 	
 	// Hibernate
-	compile group: 'org.hibernate', name: 'hibernate-search-engine', version: "${hibernateVersion}"
-	compile group: 'org.hibernate', name: 'hibernate-search-orm', version: "${hibernateVersion}"
+//	compile group: 'org.hibernate', name: 'hibernate-search-engine', version: "${hibernateVersion}"
+//	compile group: 'org.hibernate', name: 'hibernate-search-orm', version: "${hibernateVersion}"
 	
 	// Swagger 2
 	compile group: 'io.springfox', name: 'springfox-swagger2', version: "${swaggerVersion}"
@@ -156,4 +141,16 @@ dependencies {
 	compile 'org.webjars.bower:ng-file-upload:12.2.13'
 	compile 'org.webjars.bower:angular-ui-notification:0.3.6'
 	compile 'org.webjars.bower:angular-ui-tinymce:0.0.19'
+	
+    // tag::test[]
+    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version:"${springBootVersion}"
+    // end::test[]
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.6'
+}
+test {
+    useJUnit {
+    }
 }
