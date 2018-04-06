@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -197,7 +199,7 @@ public class ShSiteAPI {
 	@ResponseBody
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}/export", produces = "application/zip")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public StreamingResponseBody shSiteExport(@PathVariable UUID id) throws Exception {
+	public StreamingResponseBody shSiteExport(@PathVariable UUID id, HttpServletResponse response) throws Exception {
 		String folderName = UUID.randomUUID().toString();
 		File userDir = new File(System.getProperty("user.dir"));
 		if (userDir.exists() && userDir.isDirectory()) {
@@ -252,6 +254,10 @@ public class ShSiteAPI {
 
 			shUtils.addFilesToZip(exportDir, zipFile);
 
+			response.addHeader("Content-disposition", "attachment;filename=" + folderName + ".zip");
+		    response.setContentType("application/octet-stream");
+		    response.setStatus(HttpServletResponse.SC_OK);
+		    
 			return new StreamingResponseBody() {
 				@Override
 				public void writeTo(java.io.OutputStream output) throws IOException {
