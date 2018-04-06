@@ -1,24 +1,20 @@
 package com.viglet.shiohara.spring;
 
-import javax.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.viglet.shiohara.search.HibernateSearchService;
+import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 
 @EnableAutoConfiguration
 @Configuration
 public class HibernateSearchConfiguration {
-
 	@Autowired
-	private EntityManager bentityManager;
+	private ShPostRepository shPostRepository;
 
 	@Bean
-	HibernateSearchService hibernateSearchService() {
-		HibernateSearchService hibernateSearchService = new HibernateSearchService(bentityManager);
-		hibernateSearchService.initializeHibernateSearch();
-		return hibernateSearchService;
+	boolean hibernateSearchService() {
+		return shPostRepository.initializeHibernateSearch();
 	}
 }

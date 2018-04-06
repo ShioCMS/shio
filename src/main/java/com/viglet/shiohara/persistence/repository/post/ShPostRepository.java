@@ -15,7 +15,7 @@ import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 
-public interface ShPostRepository extends JpaRepository<ShPost, UUID> {
+public interface ShPostRepository extends JpaRepository<ShPost, UUID>, ShPostRepositoryCustom {
 	
 	List<ShPost> findAll();
 

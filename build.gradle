@@ -1,7 +1,7 @@
 buildscript {
     ext { springBootVersion = '2.0.1.RELEASE'
 	      thymeleafVersion = '3.0.9.RELEASE'
-	 //     hibernateVersion = '5.9.1.Final'
+	      hibernateVersion = '5.9.1.Final'
 		  httpClientVersion = '4.5.2'
 		  swaggerVersion = '2.8.0'
 		 }
@@ -70,13 +70,12 @@ javadoc {
 dependencies {
     
     // Spring Boot
-	compile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version:"${springBootVersion}"
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: "${springBootVersion}"
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-undertow', version:"${springBootVersion}"
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version:"${springBootVersion}"
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-parent', version:"${springBootVersion}"
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version:"${springBootVersion}"
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-activemq', version:"${springBootVersion}"
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: "${springBootVersion}"
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-activemq', version:"${springBootVersion}"   
     compile(group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf', version: "${springBootVersion}") {
 		exclude(module: 'thymeleaf-layout-dialect')
     }
@@ -85,10 +84,7 @@ dependencies {
     // Thymeleaf
     compile group: 'org.thymeleaf', name: 'thymeleaf-spring5', version:"${thymeleafVersion}"
     compile group: 'org.thymeleaf', name: 'thymeleaf', version:"${thymeleafVersion}"
-    
-    // HikariCP   
-    compile group: 'com.zaxxer', name: 'HikariCP', version:'2.6.0'
-    
+
     // HSQLDB
     compile group: 'org.hsqldb', name: 'hsqldb', version:'2.4.0'
     
@@ -114,8 +110,8 @@ dependencies {
 	compile group: 'org.jsoup', name: 'jsoup', version: '1.8.3'
 	
 	// Hibernate
-//	compile group: 'org.hibernate', name: 'hibernate-search-engine', version: "${hibernateVersion}"
-//	compile group: 'org.hibernate', name: 'hibernate-search-orm', version: "${hibernateVersion}"
+	compile group: 'org.hibernate', name: 'hibernate-search-engine', version: "${hibernateVersion}"
+	compile group: 'org.hibernate', name: 'hibernate-search-orm', version: "${hibernateVersion}"
 	
 	// Swagger 2
 	compile group: 'io.springfox', name: 'springfox-swagger2', version: "${swaggerVersion}"
@@ -141,16 +137,8 @@ dependencies {
 	compile 'org.webjars.bower:ng-file-upload:12.2.13'
 	compile 'org.webjars.bower:angular-ui-notification:0.3.6'
 	compile 'org.webjars.bower:angular-ui-tinymce:0.0.19'
-	
-    // tag::test[]
-    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version:"${springBootVersion}"
-    // end::test[]
 }
 
 task wrapper(type: Wrapper) {
     gradleVersion = '4.6'
-}
-test {
-    useJUnit {
-    }
 }
