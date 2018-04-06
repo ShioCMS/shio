@@ -1,4 +1,4 @@
-shioharaApp.controller('ShFolderChildrenCtrl', [
+shioharaApp.controller('ShObjectChildrenCtrl', [
 						"$scope"
 						, "$state"
 						, "$stateParams"
@@ -17,10 +17,10 @@ shioharaApp.controller('ShFolderChildrenCtrl', [
 						, "$filter"
 						, "Notification"
 						, "moment"
-    , function ($scope, $state, $stateParams, $rootScope, $translate, $http, $window, shAPIServerService, vigLocale, shFolderFactory, shPostFactory, ShDialogSelectObject, ShDialogDeleteFactory, shPostResource, shFolderResource, $filter, Notification, moment) {
-        $scope.siteId = $stateParams.siteId;
-        $scope.folderId = $stateParams.folderId;
-        $scope.$parent.folderId = $stateParams.folderId;
+						, "shUserResource"
+    , function ($scope, $state, $stateParams, $rootScope, $translate, $http, $window, shAPIServerService, vigLocale, shFolderFactory, shPostFactory, ShDialogSelectObject, ShDialogDeleteFactory, shPostResource, shFolderResource, $filter, Notification, moment, shUserResource) {
+        
+		$scope.objectId = $stateParams.objectId;
         $scope.vigLanguage = vigLocale.getLocale().substring(0, 2);
         $translate.use($scope.vigLanguage);
         $scope.shCurrentFolder = null;
@@ -32,17 +32,31 @@ shioharaApp.controller('ShFolderChildrenCtrl', [
         $scope.shStateObjects = [];
         $scope.shObjects = [];
         $scope.actions = [];
-        $scope.$evalAsync($http.get(shAPIServerService.get().concat("/v2/folder/" + $scope.folderId + "/list")).then(function (response) {
+        $scope.shUser = null;
+        $scope.shLastPostType = null;
+        
+    	$scope.shUser = shUserResource.get({
+			id : 1,
+			access_token : $scope.accessToken
+		}, function() {
+			$scope.shLastPostType = shPostTypeResource.get({
+				id : $scope.shUser.lastPostType
+			});
+			
+		});
+    	
+        $scope.$evalAsync($http.get(shAPIServerService.get().concat("/v2/object/" + $scope.objectId + "/list")).then(function (response) {
             $scope.processResponse(response);
         }));
         $scope.processResponse = function (response) {
             $scope.shFolders = response.data.shFolders;
             $scope.shPosts = response.data.shPosts;
-            $scope.breadcrumb = response.data.breadcrumb;
-            $scope.$parent.breadcrumb = response.data.breadcrumb;
-            $scope.shCurrentFolder = $scope.breadcrumb.slice(-1).pop();
-            $scope.shSite = response.data.shSite;
-            $scope.$parent.shSite = $scope.shSite;
+            $scope.breadcrumb = response.data.breadcrumb;         
+            $scope.shCurrentFolder = null;
+            if ($scope.breadcrumb != null) {	
+            	$scope.shCurrentFolder = $scope.breadcrumb.slice(-1).pop();
+            }
+            $scope.shSite = response.data.shSite;         
             angular.forEach($scope.shFolders, function (shFolder, key) {
                 $scope.shStateObjects[shFolder.shGlobalId.id] = false;
                 $scope.shObjects[shFolder.shGlobalId.id] = shFolder;
@@ -132,7 +146,7 @@ shioharaApp.controller('ShFolderChildrenCtrl', [
             $scope.objectsCopyDialog(objectGlobalIds);
         }
         $scope.objectsCopyDialog = function (objectGlobalIds) {
-            var modalInstance = ShDialogSelectObject.dialog($scope.folderId, "shFolder");
+            var modalInstance = ShDialogSelectObject.dialog($scope.objectId, "shFolder");
             modalInstance.result.then(function (shObjectSelected) {
                 var parameter = JSON.stringify(objectGlobalIds);
                 $http.put(shAPIServerService.get().concat("/v2/object/copyto/" + shObjectSelected.shGlobalId.id), parameter).then(function (response) {
@@ -169,7 +183,7 @@ shioharaApp.controller('ShFolderChildrenCtrl', [
             $scope.objectsMoveDialog(objectGlobalIds);
         }
         $scope.objectsMoveDialog = function (objectGlobalIds) {
-            var modalInstance = ShDialogSelectObject.dialog($scope.folderId, "shFolder");
+            var modalInstance = ShDialogSelectObject.dialog($scope.objectId, "shFolder");
             modalInstance.result.then(function (shObjectSelected) {
                 var parameter = JSON.stringify(objectGlobalIds);
                 $http.put(shAPIServerService.get().concat("/v2/object/moveto/" + shObjectSelected.shGlobalId.id), parameter).then(function (response) {

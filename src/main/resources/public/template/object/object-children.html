@@ -1,0 +1,240 @@
+
+<div ng-include="'/template/breadcrumb/breadcrumb.html'"></div>
+<div class="settings">
+	<section class="content no-padding">
+
+		<fieldset class="user-details-top" style="margin-bottom: 30px">
+
+			<div class="form-group" style="text-align: center">
+				<h3 ng-show="shSite">{{shSite.name}} Site</h3>
+			</div>
+			<div class="pull-right" style="margin: -40px 0 0;">
+				<a ng-if="folderId != null"
+					ui-sref="content.folder.folder-new({folderId: folderId})"
+					class="btn btn-viglet">New Folder</a>
+			</div>
+		</fieldset>
+	</section>
+</div>
+<div class="row">
+	<div class="col-lg-2 col-md-3 col-sm-3 col-xs-12">
+		<div ng-if="folderId.length != null" class="btn-group">
+			<a
+				ui-sref="content.post-type-item.post-item-new({folderId: folderId, postTypeId: shUser.lastPostType})"
+				class="btn btn-viglet">New {{shLastPostType.title}}</a> <a
+				class="btn btn-viglet"
+				ui-sref="content.folder.post-type-select({folderId: folderId})"><span
+				class="glyphicon glyphicon-th"></span></a>
+		</div>
+		<div ng-if="folderId.length == null" class="btn-group">
+			<a ui-sref="content.site.folder-new({siteId: shSite.id})"
+				class="btn btn-viglet">New Folder</a>
+		</div>
+		<ul class="nav nav-pills nav-stacked">
+			<li><a ui-sref="content.site.edit({siteId: shSite.id})">Site
+					Properties</a></li>
+			<li><a href="#">Starred <i class="glyphicon glyphicon-star"></i></a></li>
+			<li><a href="#">All Posts</a></li>
+			<li><a href="#">Trash <i class="glyphicon glyphicon-trash"></i></a></li>
+		</ul>
+		<ul class="nav nav-pills nav-stacked">
+			<li class="nav-header">Tag</li>
+			<li ng-repeat="label in labels | filter:query | orderBy:orderProp">
+				<a href="#"> {{label.title}} </a>
+			</li>
+		</ul>
+	</div>
+	<div class="col-lg-10 col-md-9 col-sm-9 col-xs-12">
+		<div style="margin-bottom: 10px; height: 40px">
+			<div class="btn-group" uib-dropdown>
+				<button id="select-button" type="button" class="btn btn-default"
+					uib-dropdown-toggle ng-disabled="disabled">
+					Select <span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" uib-dropdown-menu role="menu"
+					aria-labelledby="select-button">
+					<li role="menuitem"><a ng-click="selectContents()" href><i
+							class="fa fa-files-o" aria-hidden="true"></i> Content</a></li>
+					<li role="menuitem"><a ng-click="selectFolders()" href><i
+							class="fa fa-folder-open" aria-hidden="true"></i> Folder</a></li>
+					<li role="menuitem"><a ng-click="selectEverything()" href><i
+							class="fa fa-check-square" aria-hidden="true"></i> Everything</a></li>
+					<li role="menuitem"><a ng-click="selectInverted()" href><i
+							class="fa fa-undo" aria-hidden="true"></i> Invert Selection</a></li>
+					<li role="menuitem"><a ng-click="selectNothing()" href><i
+							class="fa fa-ban" aria-hidden="true"></i> Nothing</a></li>
+				</ul>
+			</div>
+
+			<div class="btn-group" uib-dropdown>
+				<button id="batch-button" type="button" class="btn btn-default"
+					uib-dropdown-toggle ng-disabled="disabled">
+					Action in Batch <span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" uib-dropdown-menu role="menu"
+					aria-labelledby="batch-button">
+					<li role="menuitem"><a ng-click="objectsCopy()" href><i
+							class="fa fa-files-o" aria-hidden="true"></i> Copy</a></li>
+					<li role="menuitem"><a ng-click="objectsMove()" href><i
+							class="fa fa-share" aria-hidden="true"></i> Move</a></li>
+					<li role="menuitem"><a ng-click="objectsDelete()" href><i
+							class="fa fa-trash-o" aria-hidden="true"></i> Delete</a></li>
+				</ul>
+			</div>
+		</div>
+		<div>
+			<ul class="breadcrumb" style="margin-top: 0px; margin-bottom: 5px;">
+				<li><a ng-if="breadcrumb != null"
+					ui-sref="content.children({objectId: shSite.shGlobalId.id})"
+					ui-sref-opts="{reload:true}"><i class="fa fa-sitemap"
+						aria-hidden="true"></i></a><span ng-if="breadcrumb == null"><i
+						class="fa fa-sitemap" aria-hidden="true"></i></span></li>
+				<li ng-repeat="breacrumbItem in breadcrumb"
+					ng-class="{'active':$last}"><a ng-if="!$last"
+					ui-sref="content.children({objectId: breacrumbItem.shGlobalId.id})"
+					ui-sref-opts="{reload:true}">{{breacrumbItem.name}}</a> <span
+					ng-if="$last">{{breacrumbItem.name}}</span></li>
+			</ul>
+		</div>
+		<div class="list-group">
+			<!--  Folders  -->
+			<div ng-repeat="shFolder in shFolders | orderBy: '-date'"
+				ng-mouseenter="updateAction(shFolder.shGlobalId,true)"
+				ng-mouseleave="updateAction(shFolder.shGlobalId,false)"
+				class="list-group-item">
+				<div class="row">
+					<div class="col-lg-10 col-md-9 col-sm-8 col-xs-6">
+						<div style="display: inline">
+							<input type="checkbox"
+								ng-model="shStateObjects[shFolder.shGlobalId.id]">
+						</div>
+						<div style="display: inline">
+							<a type="button" class="btn btn-link"
+								ui-sref="content.children({objectId: shFolder.shGlobalId.id})"><i
+								class="fa fa-folder-open" aria-hidden="true"
+								style="margin-right: 5px"></i> {{shFolder.name}}</a> <span
+								ng-if="isRecent(shFolder.date)" class="label label-default"
+								style="display: inline-block; margin-top: 12px">Recent</span>
+
+							<div style="font-size: 12px; margin-left: 28px">
+								<div style="display: table-row">
+									<div>
+										<span am-time-ago="shFolder.date" style="color: gray"></span><span
+											ng-if="shFolder.summary != null"> - </span>
+										{{shFolder.summary}}
+									</div>
+								</div>
+								<div>
+									<div style="display: inline;">
+										<span class="label label-warning">Folder</span> <span
+											class="label label-warning">{{shSite.name}} Site</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6"
+						ng-show="actions[shFolder.shGlobalId.id]">
+						<div class="row">
+							<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+								<a type="button" class="btn btn-link btn-xs"
+									ui-sref="content.folder.edit({folderId: shFolder.id})"> <i
+									class="fa fa-pencil-square-o" aria-hidden="true"> </i> Edit
+								</a>
+								<button type="button" class="btn btn-link btn-xs"
+									style="display: block;" ng-click="objectCopy(shFolder)">
+									<i class="fa fa-files-o" aria-hidden="true"></i> Copy
+								</button>
+								<button type="button" class="btn btn-link btn-xs"
+									style="display: block;" ng-click="objectMove(shFolder)">
+									<i class="fa fa-share" aria-hidden="true"></i> Move
+								</button>
+							</div>
+							<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+								<button type="button" class="btn btn-link btn-xs"
+									style="display: block;" ng-click="objectClone(shFolder)">
+									<i class="fa fa-clone" aria-hidden="true"></i> Clone
+								</button>
+								<button type="button" class="btn btn-link btn-xs"
+									style="display: block;" ng-click="folderDelete(shFolder)">
+									<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+								</button>
+								<button type="button" class="btn btn-link btn-xs"
+									style="display: block;" ng-click="folderPreview(shFolder)">
+									<i class="fa fa-eye" aria-hidden="true"></i> Look
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--  Posts  -->
+			<div ng-repeat="shPost in shPosts | orderBy: '-date'"
+				ng-mouseenter="updateAction(shPost.shGlobalId,true)"
+				ng-mouseleave="updateAction(shPost.shGlobalId,false)"
+				class="list-group-item">
+				<div class="row">
+					<div class="col-lg-10 col-md-9 col-sm-8 col-xs-6">
+						<div style="display: inline">
+							<input type="checkbox"
+								ng-model="shStateObjects[shPost.shGlobalId.id]">
+						</div>
+						<div style="display: inline">
+							<a type="button" class="btn btn-link"
+								ui-sref="content.post-type-item.post-item({postTypeId: shPost.shPostType.id, postId: shPost.id})"><i
+								class="fa fa-newspaper-o" aria-hidden="true"
+								style="margin-right: 5px"></i> {{shPost.title}}</a> <span
+								ng-if="isRecent(shPost.date)" class="label label-default"
+								style="display: inline-block; margin-top: 12px">Recent</span>
+							<div style="font-size: 12px; margin-left: 28px">
+								<div style="display: table-row">
+									<div>
+										<span am-time-ago="shPost.date" style="color: gray"></span><span
+											ng-if="shPost.summary != null"> - </span> {{shPost.summary}}
+									</div>
+								</div>
+								<div>
+									<div style="display: inline;">
+										<span class="label label-warning">Post</span> <span
+											class="label label-warning">{{shSite.name}} Site</span> <span
+											class="label label-warning">
+											{{shPost.shPostType.title}}</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6"
+						ng-show="actions[shPost.shGlobalId.id]">
+						<div class="row">
+							<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+								<button type="button" class="btn btn-link btn-xs "
+									ng-click="objectCopy(shPost)">
+									<i class="fa fa-files-o" aria-hidden="true"></i> Copy
+								</button>
+								<button type="button" class="btn btn-link btn-xs"
+									ng-click="objectMove(shPost)">
+									<i class="fa fa-share" aria-hidden="true"></i> Move
+								</button>
+								<button type="button" class="btn btn-link btn-xs"
+									ng-click="objectClone(shPost)">
+									<i class="fa fa-clone" aria-hidden="true"></i> Clone
+								</button>
+							</div>
+							<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+								<button type="button" class="btn btn-link btn-xs"
+									ng-click="postDelete(shPost)">
+									<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+								</button>
+								<button type="button" class="btn btn-link btn-xs"
+									ng-click="postPreview(shPost)">
+									<i class="fa fa-eye" aria-hidden="true"></i> Look
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -56,23 +56,9 @@ shioharaApp.config([
 				}
 			})
 			.state('content.children', {
-				url : '/list',
-				templateUrl : 'template/content/content-children.html',
-				controller : 'ShContentCtrl',				
-				data : {
-					pageTitle : 'Content | Viglet Shiohara'
-				}
-			}).state('content.children.site-children', {
-				url : '/site/:siteId',
-				templateUrl : 'template/folder/folder-children.html',
-				controller : 'ShSiteChildrenCtrl',
-				data : {
-					pageTitle : 'Content | Viglet Shiohara'
-				}
-			}).state('content.children.folder-children', {
-				url : '/folder/:folderId',
-				templateUrl : 'template/folder/folder-children.html',
-				controller : 'ShFolderChildrenCtrl',
+				url : '/list/:objectId',
+				templateUrl : 'template/object/object-children.html',
+				controller :'ShObjectChildrenCtrl',				
 				data : {
 					pageTitle : 'Content | Viglet Shiohara'
 				}

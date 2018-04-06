@@ -96,10 +96,11 @@ public class ShFolderAPI {
 
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/{id}/list")
+	@RequestMapping(method = RequestMethod.GET, value = "/{globalId}/list")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShFolderList shFolderListItem(@PathVariable UUID id) throws Exception {
-		ShFolder shFolder = shFolderRepository.findById(id);
+	public ShFolderList shFolderListItem(@PathVariable UUID globalId) throws Exception {
+		ShGlobalId shGlobalId = shGlobalIdRepository.findById(globalId);
+		ShFolder shFolder = (ShFolder) shGlobalId.getShObject();
 
 		String folderPath = shFolderUtils.folderPath(shFolder);
 		ArrayList<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shFolder);
@@ -113,10 +114,11 @@ public class ShFolderAPI {
 		return shFolderList;
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/{id}/list/{postTypeName}")
+	@RequestMapping(method = RequestMethod.GET, value = "/{globalId}/list/{postTypeName}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShFolderList shFolderListByPostType(@PathVariable UUID id, @PathVariable String postTypeName) throws Exception {
-		ShFolder shFolder = shFolderRepository.findById(id);
+	public ShFolderList shFolderListByPostType(@PathVariable UUID globalId, @PathVariable String postTypeName) throws Exception {
+		ShGlobalId shGlobalId = shGlobalIdRepository.findById(globalId);
+		ShFolder shFolder = (ShFolder) shGlobalId.getShObject();
 		ShPostType shPostType = shPostTypeRepository.findByName(postTypeName);
 		String folderPath = shFolderUtils.folderPath(shFolder);
 		ArrayList<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shFolder);
