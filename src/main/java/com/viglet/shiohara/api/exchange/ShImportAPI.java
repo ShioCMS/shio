@@ -42,8 +42,11 @@ import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
 import com.viglet.shiohara.utils.ShUtils;
 
+import io.swagger.annotations.Api;
+
 @RestController
 @RequestMapping("/api/v2/import")
+@Api(tags="Import", description="Import objects into Viglet Shiohara")
 public class ShImportAPI {
 
 	@Autowired

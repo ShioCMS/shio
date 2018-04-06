@@ -26,8 +26,12 @@ import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrReposi
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.utils.ShFolderUtils;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
 @RestController
 @RequestMapping("/api/v2/folder")
+@Api(tags="Folder", description="Folder API")
 public class ShFolderAPI {
 
 	@Autowired
@@ -45,18 +49,21 @@ public class ShFolderAPI {
 	@Autowired
 	private ShGlobalIdRepository shGlobalIdRepository;
 
+	@ApiOperation(value = "Folder list")    
 	@RequestMapping(method = RequestMethod.GET)
-	@JsonView({ ShJsonView.ShJsonViewObject.class })
+	@JsonView({ ShJsonView.ShJsonViewObject.class })	
 	public List<ShFolder> shFolderList() throws Exception {
 		return shFolderRepository.findAll();
 	}
 
+	@ApiOperation(value = "Show a folder")
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShFolder shFolderEdit(@PathVariable UUID id) throws Exception {
+	public ShFolder shFolderGet(@PathVariable UUID id) throws Exception {
 		return shFolderRepository.findById(id);
 	}
 
+	@ApiOperation(value = "Update a folder")
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShFolder shFolderUpdate(@PathVariable UUID id, @RequestBody ShFolder shFolder) throws Exception {
@@ -73,6 +80,7 @@ public class ShFolderAPI {
 		return shFolderEdit;
 	}
 
+	@ApiOperation(value = "Delete a folder")
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
 	public boolean shFolderDelete(@PathVariable UUID id) throws Exception {
 		ShFolder shFolder = shFolderRepository.findById(id);
@@ -80,6 +88,7 @@ public class ShFolderAPI {
 		return shFolderUtils.deleteFolder(shFolder);
 	}
 
+	@ApiOperation(value = "Create a folder")
 	@RequestMapping(method = RequestMethod.POST)
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShFolder shFolderAdd(@RequestBody ShFolder shFolder) throws Exception {
@@ -96,7 +105,7 @@ public class ShFolderAPI {
 
 	}
 
-	
+	@ApiOperation(value = "Folder path")
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}/path")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShFolderPath shFolderPath(@PathVariable UUID id) throws Exception {
@@ -116,6 +125,7 @@ public class ShFolderAPI {
 		}
 	}
 
+	@ApiOperation(value = "Folder model")
 	@RequestMapping(method = RequestMethod.GET, value = "/model")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShFolder shFolderStructure() throws Exception {

@@ -25,8 +25,11 @@ import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 
+import io.swagger.annotations.Api;
+
 @RestController
 @RequestMapping("/api/v2/post/type")
+@Api(tags="Post Type", description="PostType API")
 public class ShPostTypeAPI {
 	@Autowired
 	private ShPostTypeRepository shPostTypeRepository;

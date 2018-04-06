@@ -50,8 +50,11 @@ import com.viglet.shiohara.utils.ShFolderUtils;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
 import com.viglet.shiohara.utils.ShUtils;
 
+import io.swagger.annotations.Api;
+
 @RestController
 @RequestMapping("/api/v2/site")
+@Api(tags="Site", description="Site API")
 public class ShSiteAPI {
 
 	@Autowired
