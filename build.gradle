@@ -21,7 +21,7 @@ apply plugin: 'io.spring.dependency-management'
 apply plugin: 'com.eriwen.gradle.js'
 
 jar {
-    baseName = 'com.viglet.shiohara'
+    baseName = 'viglet-shiohara'
     version =  '0.1.0'
 }
 
