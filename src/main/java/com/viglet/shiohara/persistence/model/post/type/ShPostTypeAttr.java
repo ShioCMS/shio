@@ -51,7 +51,6 @@ public class ShPostTypeAttr implements Serializable {
 
 	// bi-directional many-to-one association to ShPostAttr
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "shPostTypeAttr", cascade = CascadeType.ALL)
-	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
 	private List<ShPostAttr> shPostAttrs;
 
 	// bi-directional many-to-one association to ShPostType
