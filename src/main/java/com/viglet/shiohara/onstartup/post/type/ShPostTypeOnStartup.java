@@ -35,7 +35,7 @@ public class ShPostTypeOnStartup {
 			ShWidget shWidgetFile = shWidgetRepository.findByName("File");
 			ShWidget shWidgetAceEditorJS = shWidgetRepository.findByName("Ace Editor - Javascript");
 			ShWidget shWidgetAceEditorHTML = shWidgetRepository.findByName("Ace Editor - HTML");
-
+			ShWidget shWidgetHTMLEditor = shWidgetRepository.findByName("HTML Editor");
 			// Text
 
 			ShPostType shPostType = new ShPostType();
@@ -308,7 +308,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setOrdinal(3);
 			shPostTypeAttr.setRequired((byte) 0);
 			shPostTypeAttr.setShPostType(shPostType);
-			shPostTypeAttr.setShWidget(shWidgetText);
+			shPostTypeAttr.setShWidget(shWidgetFile);
 
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
@@ -322,7 +322,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setOrdinal(4);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
-			shPostTypeAttr.setShWidget(shWidgetTextArea);
+			shPostTypeAttr.setShWidget(shWidgetHTMLEditor);
 
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 

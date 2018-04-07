@@ -18,7 +18,7 @@ public class ShConfigVarOnStartup {
 
 		ShConfigVar shConfigVar = new ShConfigVar();
 
-		if (shConfigVarRepository.findById(FIRST_TIME) == null) {
+		if (!shConfigVarRepository.findById(FIRST_TIME).isPresent()) {
 
 			shConfigVar.setId(FIRST_TIME);
 			shConfigVar.setPath("/system");

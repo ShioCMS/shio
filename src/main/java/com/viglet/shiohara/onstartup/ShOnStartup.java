@@ -41,8 +41,8 @@ public class ShOnStartup implements ApplicationRunner {
 	@Override
 	public void run(ApplicationArguments arg0) throws Exception {
 		final String FIRST_TIME = "FIRST_TIME";
-		
-		if (shConfigVarRepository.findById(FIRST_TIME) == null) {
+	
+		if (!shConfigVarRepository.findById(FIRST_TIME).isPresent()) {
 			
 			System.out.println("First Time Configuration ...");
 
