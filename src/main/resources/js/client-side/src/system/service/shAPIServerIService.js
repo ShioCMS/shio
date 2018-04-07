@@ -36,7 +36,7 @@ shioharaApp.service('shAPIServerService', [
 				else {
 					$http({
 						method : 'GET',
-						url : shEmbAPIServer
+						url : shEmbAPIServer + "/v2"
 					}).then(function successCallback(response) {
 						$cookies.put('shAPIServer', shEmbAPIServer);
 					}, function errorCallback(response) {
