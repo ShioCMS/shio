@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,7 +35,7 @@ import io.swagger.annotations.Api;
 
 @RestController
 @RequestMapping("/api/v2/post")
-@Api(tags="Post", description="Post API")
+@Api(tags = "Post", description = "Post API")
 public class ShPostAPI {
 
 	@Autowired
@@ -60,10 +61,12 @@ public class ShPostAPI {
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShPost shPostEdit(@PathVariable UUID id) throws Exception {
 		ShPost shPost = shPostRepository.findById(id).get();
-		shPost.setShPostAttrs(shPostAttrRepository.findByShPost(shPost));
+		List<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
+		shPost.setShPostAttrs(shPostAttrs);
+
 		return shPost;
 	}
-	
+
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShPost shPostUpdate(@PathVariable UUID id, @RequestBody ShPost shPost) throws Exception {
@@ -103,13 +106,14 @@ public class ShPostAPI {
 		ShUser shUser = shUserRepository.findById(1);
 		shUser.setLastPostType(String.valueOf(shPostEdit.getShPostType().getId()));
 		shUserRepository.saveAndFlush(shUser);
-		
+
 		// Lazy
 		shPostEdit.setShPostAttrs(shPostAttrRepository.findByShPost(shPostEdit));
-		
+
 		return shPostEdit;
 	}
 
+	@Transactional
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
 	public boolean shPostDelete(@PathVariable UUID id) throws Exception {
 
@@ -123,17 +127,12 @@ public class ShPostAPI {
 				}
 			}
 		}
-		
-		for (ShPostAttr shPostAttr : shPostAttrs) {
-			shPostAttrRepository.delete(shPostAttr.getId());
-		}
 
-		for (ShReference shReference : shReferenceRepository.findByShGlobalFromId(shPost.getShGlobalId())) {
-			shReferenceRepository.delete(shReference.getId());
-		}
-		for (ShReference shReference : shReferenceRepository.findByShGlobalToId(shPost.getShGlobalId())) {
-			shReferenceRepository.delete(shReference.getId());
-		}
+		shPostAttrRepository.deleteInBatch(shPostAttrs);
+
+		shReferenceRepository.deleteInBatch(shReferenceRepository.findByShGlobalFromId(shPost.getShGlobalId()));
+
+		shReferenceRepository.deleteInBatch(shReferenceRepository.findByShGlobalToId(shPost.getShGlobalId()));
 
 		shGlobalIdRepository.delete(shPost.getShGlobalId().getId());
 
@@ -174,12 +173,12 @@ public class ShPostAPI {
 
 		shGlobalIdRepository.saveAndFlush(shGlobalId);
 
-		ShPost shPostWithGlobalId = shPostRepository.findById(shPost.getId()).get();
+		ShPost shPostWithGlobalId = shPost;
+		shPostWithGlobalId.setShGlobalId(shGlobalId);
 
-		
 		for (ShPostAttr shPostAttr : shPostAttrs) {
 			shPostAttr.setShPost(shPostWithGlobalId);
-			this.referencedFile(shPostAttr, shPostAttr, shPostWithGlobalId);
+			this.referencedFile(shPostAttr, shPostWithGlobalId);
 			shPostAttrRepository.saveAndFlush(shPostAttr);
 		}
 
@@ -189,11 +188,58 @@ public class ShPostAPI {
 		shUser.setLastPostType(String.valueOf(shPost.getShPostType().getId()));
 		shUserRepository.saveAndFlush(shUser);
 
-		// Lazy
-
-		
 		return shPost;
 
+	}
+
+	public void referencedFile(ShPostAttr shPostAttr, ShPost shPost) {
+		if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals("File")) {
+			if (shPost.getShPostType().getName().equals("PT-FILE")) {
+				File fileFrom = shStaticFileUtils.filePath(shPost.getShFolder(), shPostAttr.getStrValue());
+				File fileTo = shStaticFileUtils.filePath(shPost.getShFolder(), shPostAttr.getStrValue());
+				if (fileFrom != null && fileTo != null) {
+					if (fileFrom.exists()) {
+						fileFrom.renameTo(fileTo);
+					}
+				}
+
+			} else {
+				if (shPostAttr.getStrValue() == null) {
+					shPostAttr.setReferenceObjects(null);
+				} else {
+					ShPost shPostFile = shPostRepository.findById(UUID.fromString(shPostAttr.getStrValue())).get();
+					// TODO Two or more attributes with FILE Widget and same file, it cannot remove
+					// a valid reference
+					// Remove old references
+					List<ShReference> shOldReferences = shReferenceRepository
+							.findByShGlobalFromId(shPost.getShGlobalId());
+					if (shOldReferences.size() > 0) {
+						for (ShReference shOldReference : shOldReferences) {
+							if (shPostAttr.getReferenceObjects() != null) {
+								for (ShObject shObject : shPostAttr.getReferenceObjects()) {
+									if (shOldReference.getShGlobalToId().getId().toString()
+											.equals(shObject.getShGlobalId().getId().toString())) {
+										shReferenceRepository.delete(shOldReference);
+										break;
+									}
+								}
+							}
+						}
+					}
+
+					// Create new reference
+					ShReference shReference = new ShReference();
+					shReference.setShGlobalFromId(shPost.getShGlobalId());
+					shReference.setShGlobalToId(shPostFile.getShGlobalId());
+					shReferenceRepository.saveAndFlush(shReference);
+
+					Set<ShObject> referenceObjects = new HashSet<ShObject>();
+					referenceObjects.add(shPostFile);
+					shPostAttr.setReferenceObjects(referenceObjects);
+				}
+			}
+
+		}
 	}
 
 	public void referencedFile(ShPostAttr shPostAttrEdit, ShPostAttr shPostAttr, ShPost shPost) {
@@ -219,19 +265,12 @@ public class ShPostAPI {
 					List<ShReference> shOldReferences = shReferenceRepository
 							.findByShGlobalFromId(shPost.getShGlobalId());
 					if (shOldReferences.size() > 0) {
-						// System.out.println("Removing old references");
 						for (ShReference shOldReference : shOldReferences) {
-							// System.out.println("Old Reference: " +
-							// shOldReference.getShGlobalFromId().getId() + ", "
-							// + shOldReference.getShGlobalToId().getId());
 							if (shPostAttrEdit.getReferenceObjects() != null) {
 								for (ShObject shObject : shPostAttrEdit.getReferenceObjects()) {
-									// System.out.println("shObject: " +
-									// shObject.getShGlobalId().getId().toString());
 									if (shOldReference.getShGlobalToId().getId().toString()
 											.equals(shObject.getShGlobalId().getId().toString())) {
 										shReferenceRepository.delete(shOldReference);
-										// System.out.println("Reference removed");
 										break;
 									}
 								}
@@ -239,7 +278,6 @@ public class ShPostAPI {
 						}
 					}
 
-					// Create new reference
 					ShReference shReference = new ShReference();
 					shReference.setShGlobalFromId(shPost.getShGlobalId());
 					shReference.setShGlobalToId(shPostFile.getShGlobalId());
