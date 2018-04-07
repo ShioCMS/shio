@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.viglet.shiohara.api.ShJsonView;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
@@ -32,11 +34,13 @@ public class ShPostTypeAttrAPI {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
+	@JsonView({ShJsonView.ShJsonViewPostTypeAttr.class})
 	public ShPostTypeAttr  shPostTypeAttrEdit(@PathVariable UUID id) throws Exception {
 		return shPostTypeAttrRepository.findById(id).get();
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id}")
+	@JsonView({ShJsonView.ShJsonViewPostTypeAttr.class})
 	public ShPostTypeAttr  shPostTypeAttrUpdate(@PathVariable UUID id, @RequestBody ShPostTypeAttr shPostTypeAttr) throws Exception {
 		ShPostTypeAttr shPostTypeAttrEdit = shPostTypeAttrRepository.findById(id).get();
 		shPostTypeAttrEdit.setIsSummary(shPostTypeAttr.getIsSummary());
@@ -61,16 +65,9 @@ public class ShPostTypeAttrAPI {
 		shPostTypeAttrRepository.delete(id);
 		return true;
 	}
-
-	@Deprecated
-	@RequestMapping(method = RequestMethod.POST)
-	public ShPostTypeAttr  shPostTypeAttrPost(@RequestBody ShPostTypeAttr shPostTypeAttr) throws Exception {
-		shPostTypeAttrRepository.save(shPostTypeAttr);
-		return shPostTypeAttr;
-
-	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/model")
+	@JsonView({ShJsonView.ShJsonViewPostTypeAttr.class})
 	public ShPostTypeAttr  shPostTypeAttrStructure() throws Exception {
 		ShPostTypeAttr shPostTypeAttr = new ShPostTypeAttr();
 		return shPostTypeAttr;

@@ -43,7 +43,7 @@ public class ShPostTypeAPI {
 	private ShGlobalIdRepository shGlobalIdRepository;
 	
 	@RequestMapping(method = RequestMethod.GET)
-	@JsonView({ShJsonView.ShJsonViewObject.class})
+	@JsonView({ShJsonView.ShJsonViewPostType.class})
 	public List<ShPostType> shPostTypeList() throws Exception {
 		return shPostTypeRepository.findAll();
 	}
