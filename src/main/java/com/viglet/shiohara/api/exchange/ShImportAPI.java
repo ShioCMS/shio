@@ -73,6 +73,9 @@ public class ShImportAPI {
 	@PostMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShExchange shImport(@RequestParam("file") MultipartFile file) throws Exception {
+		shObjects.clear();
+		shChildObjects.clear();
+		
 		File userDir = new File(System.getProperty("user.dir"));
 		if (userDir.exists() && userDir.isDirectory()) {
 			File tmpDir = new File(userDir.getAbsolutePath().concat(File.separator + "store" + File.separator + "tmp"));

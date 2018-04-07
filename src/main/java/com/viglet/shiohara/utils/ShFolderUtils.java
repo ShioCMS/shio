@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
@@ -149,6 +150,7 @@ public class ShFolderUtils {
 		return link;
 	}
 
+	@Transactional
 	public boolean deleteFolder(ShFolder shFolder) {
 
 		for (ShPost shPost : shPostRepository.findByShFolder(shFolder)) {

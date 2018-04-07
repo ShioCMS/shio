@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -102,6 +103,7 @@ public class ShSiteAPI {
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
+	@Transactional
 	public boolean shSiteDelete(@PathVariable UUID id) throws Exception {
 		ShSite shSite = shSiteRepository.findById(id).get();
 

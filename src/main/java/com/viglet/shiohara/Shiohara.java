@@ -16,10 +16,10 @@ import io.undertow.UndertowOptions;
 @SpringBootApplication
 @EnableJms
 @EnableCaching
-public class ShApplication {
+public class Shiohara {
 
 	public static void main(String[] args) throws Exception {
-		SpringApplication.run(ShApplication.class, args);
+		SpringApplication.run(Shiohara.class, args);
 	}
 
 	@Bean
