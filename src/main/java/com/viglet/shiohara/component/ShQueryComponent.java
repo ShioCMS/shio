@@ -21,13 +21,13 @@ import com.viglet.shiohara.utils.ShPostUtils;
 public class ShQueryComponent {
 
 	@Autowired
-	ShFolderRepository shFolderRepository;
+	private ShFolderRepository shFolderRepository;
 	@Autowired
-	ShPostRepository shPostRepository;
+	private ShPostRepository shPostRepository;
 	@Autowired
-	ShPostTypeRepository shPostTypeRepository;
+	private ShPostTypeRepository shPostTypeRepository;
 	@Autowired
-	ShPostUtils shPostUtils;
+	private ShPostUtils shPostUtils;
 
 	public List<Map<String, ShPostAttr>> findByFolderName(String folderId, String postTypeName ) {
 

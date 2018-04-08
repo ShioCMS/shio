@@ -23,13 +23,13 @@ import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 @Component
 public class ShPostUtils {
 	@Autowired
-	ShFolderUtils shFolderUtils;
+	private ShFolderUtils shFolderUtils;
 	@Autowired
-	ShPostRepository shPostRepository;
+	private ShPostRepository shPostRepository;
 	@Autowired
-	ShPostAttrRepository shPostAttrRepository;
+	private ShPostAttrRepository shPostAttrRepository;
 	@Autowired
-	ShGlobalIdRepository shGlobalIdRepository;
+	private ShGlobalIdRepository shGlobalIdRepository;
 
 	public JSONObject toJSON(ShPost shPost) {
 		JSONObject shPostItemAttrs = new JSONObject();
@@ -108,7 +108,6 @@ public class ShPostUtils {
 			link = "/store/file_source/" + shFolderUtils.getSite(shFolder).getName() + shFolderUtils.folderPath(shFolder)
 					+ shPost.getTitle();
 		} else {
-
 			link = shFolderUtils.generateFolderLink(shFolder.getId().toString());
 			link = link + shPost.getTitle().replaceAll(" ", "-");
 		}

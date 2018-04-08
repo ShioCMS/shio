@@ -14,9 +14,9 @@ import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
 @Component
 public class ShNavigationComponent {
 	@Autowired
-	ShSiteRepository shSiteRepository;
+	private ShSiteRepository shSiteRepository;
 	@Autowired
-	ShFolderRepository shFolderRepository;
+	private ShFolderRepository shFolderRepository;
 
 	public List<ShFolder> navigation(String siteName, boolean home) {
 		ShSite shSite = shSiteRepository.findByName(siteName);

@@ -6,9 +6,10 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
@@ -31,34 +32,34 @@ import io.swagger.annotations.Api;
 public class ShReferenceAPI {
 
 	@Autowired
-	ShReferenceRepository shReferenceRepository;
+	private ShReferenceRepository shReferenceRepository;
 	@Autowired
-	ShGlobalIdRepository shGlobalIdRepository;
+	private ShGlobalIdRepository shGlobalIdRepository;
 	@Autowired
-	ShPostRepository shPostRepository;
+	private ShPostRepository shPostRepository;
 	@Autowired
-	ShPostAttrRepository shPostAttrRepository;
+	private ShPostAttrRepository shPostAttrRepository;
 
-	@RequestMapping(method = RequestMethod.GET)
+	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewReference.class })
 	public List<ShReference> shReferenceList() throws Exception {
 		return shReferenceRepository.findAll();
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/from/{fromId}")
+	@GetMapping("/from/{fromId}")
 	@JsonView({  ShJsonView.ShJsonViewReference.class })
 	public List<ShReference> shReferenceFrom(@PathVariable UUID fromId) throws Exception {
 		ShGlobalId shGlobalId = shGlobalIdRepository.findById(fromId).get();
 		return shReferenceRepository.findByShGlobalFromId(shGlobalId);
 	}
-	@RequestMapping(method = RequestMethod.GET, value = "/to/{toId}")
+	@GetMapping("/to/{toId}")
 	@JsonView({  ShJsonView.ShJsonViewReference.class })
 	public List<ShReference> shReferenceTo(@PathVariable UUID toId) throws Exception {
 		ShGlobalId shGlobalId = shGlobalIdRepository.findById(toId).get();
 		return shReferenceRepository.findByShGlobalToId(shGlobalId);
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/to/{toId}/replace/{otherId}")
+	@PostMapping("/to/{toId}/replace/{otherId}")
 	@JsonView({  ShJsonView.ShJsonViewReference.class })
 	public List<ShReference> shReferenceToReplace(@PathVariable UUID toId, @PathVariable UUID otherId)
 			throws Exception {

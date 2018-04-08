@@ -10,7 +10,7 @@ import com.viglet.shiohara.persistence.repository.system.ShConfigVarRepository;
 public class ShConfigVarOnStartup {
 
 	@Autowired
-	ShConfigVarRepository shConfigVarRepository;
+	private ShConfigVarRepository shConfigVarRepository;
 
 	public void createDefaultRows() {
 

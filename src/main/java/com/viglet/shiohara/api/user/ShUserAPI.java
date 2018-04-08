@@ -4,10 +4,13 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,24 +25,24 @@ import io.swagger.annotations.Api;
 public class ShUserAPI {
 	
 	@Autowired
-	ShUserRepository shUserRepository;
+	private ShUserRepository shUserRepository;
 	
-	@RequestMapping(method = RequestMethod.GET)
+	@GetMapping
 	public List<ShUser> shUserList() throws Exception {
 		return shUserRepository.findAll();
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/current")
+	@GetMapping("/current")
 	public ShUser shUserCurrent(@RequestParam(value = "access_token") int accessToken) throws Exception {
 		return shUserRepository.findById(accessToken);
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
+	@GetMapping("/{id}")
 	public ShUser shUserEdit(@PathVariable int id) throws Exception {	
 		return shUserRepository.findById(id);
 	}
 
-	@RequestMapping(method = RequestMethod.PUT, value = "/{id}")
+	@PutMapping("/{id}")
 	public ShUser shUserUpdate(@PathVariable int id, @RequestBody ShUser shUser) throws Exception {
 		ShUser shUserEdit = shUserRepository.findById(id);
 		shUserEdit.setConfirmEmail(shUser.getConfirmEmail());
@@ -57,13 +60,13 @@ public class ShUserAPI {
 		return shUserEdit;
 	}
 
-	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
+	@DeleteMapping("/{id}")
 	public boolean shUserDelete(@PathVariable UUID id) throws Exception { 
 		shUserRepository.delete(id);
 		return true;
 	}
 
-	@RequestMapping(method = RequestMethod.POST)
+	@PostMapping
 	public ShUser shUserAdd(@RequestBody ShUser shUser) throws Exception {
 		shUserRepository.save(shUser);
 		return shUser;

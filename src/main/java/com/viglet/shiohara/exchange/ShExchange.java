@@ -6,13 +6,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties({ "files"})
 public class ShExchange {
 
-	List<ShSiteExchange> sites;
+	private List<ShSiteExchange> sites;
 
-	List<ShFolderExchange> folders;
+	private List<ShFolderExchange> folders;
 	
-	List<ShPostExchange> posts;
+	private List<ShPostExchange> posts;
 	
-	List<ShFileExchange> files;
+	private List<ShFileExchange> files;
 	
 	public List<ShSiteExchange> getSites() {
 		return sites;

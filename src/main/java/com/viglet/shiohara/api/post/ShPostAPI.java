@@ -10,10 +10,13 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
@@ -51,13 +54,13 @@ public class ShPostAPI {
 	@Autowired
 	private ShReferenceRepository shReferenceRepository;
 
-	@RequestMapping(method = RequestMethod.GET)
+	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShPost> shPostList() throws Exception {
 		return shPostRepository.findAll();
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
+	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShPost shPostEdit(@PathVariable UUID id) throws Exception {
 		ShPost shPost = shPostRepository.findById(id).get();
@@ -67,7 +70,7 @@ public class ShPostAPI {
 		return shPost;
 	}
 
-	@RequestMapping(method = RequestMethod.PUT, value = "/{id}")
+	@PutMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShPost shPostUpdate(@PathVariable UUID id, @RequestBody ShPost shPost) throws Exception {
 
@@ -114,7 +117,7 @@ public class ShPostAPI {
 	}
 
 	@Transactional
-	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
+	@DeleteMapping("/{id}")
 	public boolean shPostDelete(@PathVariable UUID id) throws Exception {
 
 		ShPost shPost = shPostRepository.findById(id).get();
@@ -141,7 +144,7 @@ public class ShPostAPI {
 		return true;
 	}
 
-	@RequestMapping(method = RequestMethod.POST)
+	@PostMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShPost shPostAdd(@RequestBody ShPost shPost) throws Exception {
 

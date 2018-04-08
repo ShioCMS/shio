@@ -15,9 +15,9 @@ import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
 public class ShSiteOnStartup {
 
 	@Autowired
-	ShSiteRepository shSiteRepository;
+	private ShSiteRepository shSiteRepository;
 	@Autowired
-	ShGlobalIdRepository shGlobalIdRepository;
+	private ShGlobalIdRepository shGlobalIdRepository;
 
 	public void createDefaultRows() {
 

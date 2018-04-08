@@ -24,13 +24,13 @@ import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 @Component
 public class ShFolderUtils {
 	@Autowired
-	ShFolderRepository shFolderRepository;
+	private ShFolderRepository shFolderRepository;
 	@Autowired
-	ShPostRepository shPostRepository;
+	private ShPostRepository shPostRepository;
 	@Autowired
-	ShPostAttrRepository shPostAttrRepository;
+	private ShPostAttrRepository shPostAttrRepository;
 	@Autowired
-	ShGlobalIdRepository shGlobalIdRepository;
+	private ShGlobalIdRepository shGlobalIdRepository;
 
 	public JSONObject toJSON(ShFolder shFolder) {
 		JSONObject shFolderItemAttrs = new JSONObject();

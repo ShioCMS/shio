@@ -7,13 +7,13 @@ import com.viglet.shiohara.persistence.model.site.ShSite;
 
 public class ShFolderPath {
 
-	String folderPath;
+	private String folderPath;
 	
-	ShFolder currentFolder;
+	private ShFolder currentFolder;
 	
-	ArrayList<ShFolder> breadcrumb;
+	private ArrayList<ShFolder> breadcrumb;
 	
-	ShSite shSite;
+	private ShSite shSite;
 
 	public String getFolderPath() {
 		return folderPath;

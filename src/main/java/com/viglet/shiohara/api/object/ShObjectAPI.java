@@ -7,10 +7,11 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
@@ -24,9 +25,7 @@ import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
-import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
-import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.utils.ShFolderUtils;
 import com.viglet.shiohara.utils.ShPostUtils;
@@ -39,23 +38,19 @@ import io.swagger.annotations.Api;
 public class ShObjectAPI {
 
 	@Autowired
-	ShFolderRepository shFolderRepository;
+	private ShFolderRepository shFolderRepository;
 	@Autowired
-	ShPostRepository shPostRepository;
+	private ShPostRepository shPostRepository;
 	@Autowired
-	ShPostAttrRepository shPostAttrRepository;
+	private ShFolderUtils shFolderUtils;
 	@Autowired
-	ShFolderUtils shFolderUtils;
-	@Autowired
-	ShPostTypeRepository shPostTypeRepository;
-	@Autowired
-	ShPostTypeAttrRepository shPostTypeAttrRepository;
+	private ShPostTypeRepository shPostTypeRepository;
 	@Autowired
 	private ShGlobalIdRepository shGlobalIdRepository;
 	@Autowired
 	private ShPostUtils shPostUtils;
 
-	@RequestMapping(method = RequestMethod.GET, value = "/{id}/preview")
+	@GetMapping("/{id}/preview")
 	public void shObjectPreview(@PathVariable UUID id, HttpServletResponse response) throws Exception {
 		String redirect = null;
 		ShGlobalId shGlobalId = shGlobalIdRepository.findById(id).get();
@@ -69,7 +64,7 @@ public class ShObjectAPI {
 		response.sendRedirect(redirect);
 	}
 
-	@RequestMapping(method = RequestMethod.PUT, value = "/moveto/{globallIdDest}")
+	@PutMapping("/moveto/{globallIdDest}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShObject> shObjectMoveTo(@PathVariable UUID globallIdDest, @RequestBody List<UUID> globalIds)
 			throws Exception {
@@ -107,7 +102,7 @@ public class ShObjectAPI {
 		return shObjects;
 	}
 
-	@RequestMapping(method = RequestMethod.PUT, value = "/copyto/{globallIdDest}")
+	@PutMapping("/copyto/{globallIdDest}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShObject> shObjectCopyTo(@PathVariable UUID globallIdDest, @RequestBody List<UUID> globalIds)
 			throws Exception {
@@ -134,7 +129,7 @@ public class ShObjectAPI {
 		return shObjects;
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/{id}/list")
+	@GetMapping("/{id}/list")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShFolderList shObjectListItem(@PathVariable UUID id) throws Exception {
 		ShGlobalId shGlobalId = shGlobalIdRepository.findById(id).get();
@@ -162,7 +157,7 @@ public class ShObjectAPI {
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/{id}/list/{postTypeName}")
+	@GetMapping("/{id}/list/{postTypeName}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShFolderList shFolderListByPostType(@PathVariable UUID id, @PathVariable String postTypeName)
 			throws Exception {

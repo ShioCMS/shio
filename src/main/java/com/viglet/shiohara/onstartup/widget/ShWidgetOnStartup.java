@@ -10,7 +10,7 @@ import com.viglet.shiohara.persistence.repository.widget.ShWidgetRepository;
 public class ShWidgetOnStartup {
 
 	@Autowired
-	ShWidgetRepository shWidgetRepository;
+	private ShWidgetRepository shWidgetRepository;
 
 	public void createDefaultRows() {
 

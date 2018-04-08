@@ -50,25 +50,25 @@ import io.swagger.annotations.Api;
 public class ShImportAPI {
 
 	@Autowired
-	ShSiteRepository shSiteRepository;
+	private ShSiteRepository shSiteRepository;
 	@Autowired
-	ShFolderRepository shFolderRepository;
+	private ShFolderRepository shFolderRepository;
 	@Autowired
-	ShPostRepository shPostRepository;
+	private ShPostRepository shPostRepository;
 	@Autowired
-	ShPostTypeRepository shPostTypeRepository;
+	private ShPostTypeRepository shPostTypeRepository;
 	@Autowired
-	ShPostTypeAttrRepository shPostTypeAttrRepository;
+	private ShPostTypeAttrRepository shPostTypeAttrRepository;
 	@Autowired
-	ShPostAttrRepository shPostAttrRepository;
+	private ShPostAttrRepository shPostAttrRepository;
 	@Autowired
-	ShGlobalIdRepository shGlobalIdRepository;
+	private ShGlobalIdRepository shGlobalIdRepository;
 	@Autowired
-	ShStaticFileUtils shStaticFileUtils;
+	private ShStaticFileUtils shStaticFileUtils;
 	@Autowired
-	ShUtils shUtils;
-	Map<UUID, Object> shObjects = new HashMap<UUID, Object>();
-	Map<UUID, List<UUID>> shChildObjects = new HashMap<UUID, List<UUID>>();
+	private ShUtils shUtils;
+	private Map<UUID, Object> shObjects = new HashMap<UUID, Object>();
+	private Map<UUID, List<UUID>> shChildObjects = new HashMap<UUID, List<UUID>>();
 
 	@PostMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
