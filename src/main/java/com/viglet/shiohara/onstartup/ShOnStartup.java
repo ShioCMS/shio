@@ -20,7 +20,6 @@ public class ShOnStartup implements ApplicationRunner {
 
 	@Autowired
 	private ShConfigVarRepository shConfigVarRepository;
-
 	@Autowired
 	private ShLocaleOnStartup shLocaleOnStartup;
 	@Autowired

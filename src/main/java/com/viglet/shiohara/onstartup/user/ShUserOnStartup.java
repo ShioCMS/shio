@@ -14,9 +14,9 @@ import com.viglet.shiohara.persistence.repository.user.ShUserRepository;
 public class ShUserOnStartup {
 
 	@Autowired
-	ShUserRepository shUserRepository;
+	private ShUserRepository shUserRepository;
 	@Autowired
-	ShPostTypeRepository shPostTypeRepository;
+	private ShPostTypeRepository shPostTypeRepository;
 
 	public void createDefaultRows() {
 

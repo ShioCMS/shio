@@ -8,11 +8,11 @@ import com.viglet.shiohara.persistence.model.site.ShSite;
 
 public class ShPostWIthBreadcrumb {
 
-	ShPost shPost;
+	private ShPost shPost;
 	
-	ArrayList<ShFolder> breadcrumb;
+	private ArrayList<ShFolder> breadcrumb;
 	
-	ShSite shSite;
+	private ShSite shSite;
 
 	public ShPost getShPost() {
 		return shPost;

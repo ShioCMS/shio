@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 public class ShAPIBean {
 
-	String product;
+	private String product;
 
 	public String getProduct() {
 		return product;

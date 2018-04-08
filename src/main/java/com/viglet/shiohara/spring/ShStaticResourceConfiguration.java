@@ -15,7 +15,7 @@ import com.viglet.shiohara.utils.ShStaticFileUtils;
 @AutoConfigureAfter(DispatcherServletAutoConfiguration.class)
 public class ShStaticResourceConfiguration extends WebMvcConfigurerAdapter {
 	@Autowired
-	ShStaticFileUtils shStaticFileUtils;
+	private ShStaticFileUtils shStaticFileUtils;
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {

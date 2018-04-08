@@ -22,9 +22,9 @@ public class ShPostTypeOnStartup {
 	@Autowired
 	private ShPostTypeAttrRepository shPostTypeAttrRepository;
 	@Autowired
-	ShWidgetRepository shWidgetRepository;
+	private ShWidgetRepository shWidgetRepository;
 	@Autowired
-	ShGlobalIdRepository shGlobalIdRepository;
+	private ShGlobalIdRepository shGlobalIdRepository;
 
 	public void createDefaultRows() {
 

@@ -9,15 +9,15 @@ import com.viglet.shiohara.persistence.model.site.ShSite;
 
 public class ShFolderList {
 
-	List<ShFolder> shFolders;
+	private List<ShFolder> shFolders;
 
-	List<ShPost> shPosts;
+	private List<ShPost> shPosts;
 	
-	String folderPath;
+	private String folderPath;
 	
-	ArrayList<ShFolder> breadcrumb;
+	private ArrayList<ShFolder> breadcrumb;
 	
-	ShSite shSite;
+	private ShSite shSite;
 	
 	public List<ShFolder> getShFolders() {
 		return shFolders;

@@ -7,15 +7,11 @@ import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.site.ShSite;
-import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
-
 @Component
 public class ShStaticFileUtils {
 	@Autowired
-	ShFolderRepository shFolderRepository;
-	@Autowired
-	ShFolderUtils shFolderUtils;
-	String fileSourceBase = File.separator + "store" + File.separator +"file_source";
+	private ShFolderUtils shFolderUtils;
+	private String fileSourceBase = File.separator + "store" + File.separator +"file_source";
 
 	public File dirPath(ShFolder shFolder) {
 		File directoryPath = null;

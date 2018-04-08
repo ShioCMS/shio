@@ -16,10 +16,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
@@ -59,39 +62,39 @@ import io.swagger.annotations.Api;
 public class ShSiteAPI {
 
 	@Autowired
-	ShSiteRepository shSiteRepository;
+	private ShSiteRepository shSiteRepository;
 	@Autowired
-	ShFolderRepository shFolderRepository;
+	private ShFolderRepository shFolderRepository;
 	@Autowired
-	ShPostRepository shPostRepository;
+	private ShPostRepository shPostRepository;
 	@Autowired
-	ShFolderUtils shFolderUtils;
+	private ShFolderUtils shFolderUtils;
 	@Autowired
-	ShStaticFileUtils shStaticFileUtils;
+	private ShStaticFileUtils shStaticFileUtils;
 	@Autowired
-	ShPostTypeRepository shPostTypeRepository;
+	private ShPostTypeRepository shPostTypeRepository;
 	@Autowired
-	ShPostTypeAttrRepository shPostTypeAttrRepository;
+	private ShPostTypeAttrRepository shPostTypeAttrRepository;
 	@Autowired
-	ShPostAttrRepository shPostAttrRepository;
+	private ShPostAttrRepository shPostAttrRepository;
 	@Autowired
-	ShGlobalIdRepository shGlobalIdRepository;
+	private ShGlobalIdRepository shGlobalIdRepository;
 	@Autowired
-	ShUtils shUtils;
+	private ShUtils shUtils;
 
-	@RequestMapping(method = RequestMethod.GET)
+	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShSite> shSiteList() throws Exception {
 		return shSiteRepository.findAll();
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
+	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShSite shSiteEdit(@PathVariable UUID id) throws Exception {
 		return shSiteRepository.findById(id).get();
 	}
 
-	@RequestMapping(method = RequestMethod.PUT, value = "/{id}")
+	@PutMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShSite shSiteUpdate(@PathVariable UUID id, @RequestBody ShSite shSite) throws Exception {
 		ShSite shSiteEdit = shSiteRepository.findById(id).get();
@@ -102,7 +105,7 @@ public class ShSiteAPI {
 		return shSiteEdit;
 	}
 
-	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
+	@DeleteMapping("/{id}")
 	@Transactional
 	public boolean shSiteDelete(@PathVariable UUID id) throws Exception {
 		ShSite shSite = shSiteRepository.findById(id).get();
@@ -119,7 +122,7 @@ public class ShSiteAPI {
 		return true;
 	}
 
-	@RequestMapping(method = RequestMethod.POST)
+	@PostMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShSite shSiteAdd(@RequestBody ShSite shSite) throws Exception {
 		shSite.setDate(new Date());
@@ -189,7 +192,7 @@ public class ShSiteAPI {
 
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/{id}/folder")
+	@GetMapping("/{id}/folder")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShFolderList shSiteRootFolder(@PathVariable UUID id) throws Exception {
 		ShSite shSite = shSiteRepository.findById(id).get();
@@ -202,7 +205,7 @@ public class ShSiteAPI {
 	}
 
 	@ResponseBody
-	@RequestMapping(method = RequestMethod.GET, value = "/{id}/export", produces = "application/zip")
+	@GetMapping(value = "/{id}/export", produces = "application/zip")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public StreamingResponseBody shSiteExport(@PathVariable UUID id, HttpServletResponse response) throws Exception {
 		String folderName = UUID.randomUUID().toString();
@@ -289,7 +292,7 @@ public class ShSiteAPI {
 
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/model")
+	@GetMapping("/model")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShSite shSiteStructure() throws Exception {
 		ShSite shSite = new ShSite();

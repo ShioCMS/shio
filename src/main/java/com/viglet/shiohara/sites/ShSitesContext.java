@@ -1,7 +1,6 @@
 package com.viglet.shiohara.sites;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -36,7 +35,6 @@ import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
-import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
 import com.viglet.shiohara.utils.ShFolderUtils;
@@ -46,21 +44,19 @@ import com.viglet.shiohara.utils.ShSiteUtils;
 @Controller
 public class ShSitesContext {
 	@Autowired
-	ShPostRepository shPostRepository;
+	private ShPostRepository shPostRepository;
 	@Autowired
-	ShSiteRepository shSiteRepository;
+	private ShSiteRepository shSiteRepository;
 	@Autowired
-	ShPostAttrRepository shPostAttrRepository;
+	private ShFolderRepository shFolderRepository;
 	@Autowired
-	ShFolderRepository shFolderRepository;
+	private ShFolderUtils shFolderUtils;
 	@Autowired
-	ShFolderUtils shFolderUtils;
+	private ShPostUtils shPostUtils;
 	@Autowired
-	ShPostUtils shPostUtils;
+	private ShSiteUtils shSiteUtils;
 	@Autowired
-	ShSiteUtils shSiteUtils;
-	@Autowired
-	ResourceLoader resourceloader;
+	private ResourceLoader resourceloader;
 
 	@Resource
 	private ApplicationContext context;
