@@ -54,7 +54,6 @@ public class ShPostUtils {
 
 	public Map<String, ShPostAttr> postToMap(ShPost shPost) {
 
-		
 		List<ShPostAttr> shPostAttrList = shPostAttrRepository.findByShPost(shPost);
 
 		Map<String, ShPostAttr> shPostMap = new HashMap<String, ShPostAttr>();
@@ -95,17 +94,24 @@ public class ShPostUtils {
 			shPostAttrClone.setType(shPostAttr.getType());
 			shPostAttrRepository.save(shPostAttrClone);
 		}
-		
+
 		shPostCopy.setShGlobalId(shGlobalId);
-		
+
 		return shPostCopy;
 	}
 
 	public String generatePostLink(String postID) {
 		ShPost shPost = shPostRepository.findById(UUID.fromString(postID)).get();
 		ShFolder shFolder = shPost.getShFolder();
-		String link = shFolderUtils.generateFolderLink(shFolder.getId().toString());
-		link = link + shPost.getTitle().replaceAll(" ", "-");
+		String link = null;
+		if (shPost.getShPostType().getName().equals("PT-FILE")) {
+			link = "/store/file_source/" + shFolderUtils.getSite(shFolder).getName() + shFolderUtils.folderPath(shFolder)
+					+ shPost.getTitle();
+		} else {
+
+			link = shFolderUtils.generateFolderLink(shFolder.getId().toString());
+			link = link + shPost.getTitle().replaceAll(" ", "-");
+		}
 		return link;
 	}
 }
