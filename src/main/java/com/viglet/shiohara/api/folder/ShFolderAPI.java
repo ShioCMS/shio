@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +18,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
-import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
@@ -31,7 +32,7 @@ import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("/api/v2/folder")
-@Api(tags="Folder", description="Folder API")
+@Api(tags = "Folder", description = "Folder API")
 public class ShFolderAPI {
 
 	@Autowired
@@ -49,9 +50,9 @@ public class ShFolderAPI {
 	@Autowired
 	private ShGlobalIdRepository shGlobalIdRepository;
 
-	@ApiOperation(value = "Folder list")    
+	@ApiOperation(value = "Folder list")
 	@RequestMapping(method = RequestMethod.GET)
-	@JsonView({ ShJsonView.ShJsonViewObject.class })	
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShFolder> shFolderList() throws Exception {
 		return shFolderRepository.findAll();
 	}
@@ -80,12 +81,18 @@ public class ShFolderAPI {
 		return shFolderEdit;
 	}
 
+	@Transactional
 	@ApiOperation(value = "Delete a folder")
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
 	public boolean shFolderDelete(@PathVariable UUID id) throws Exception {
-		ShFolder shFolder = shFolderRepository.findById(id).get();
-		shGlobalIdRepository.delete(shFolder.getShGlobalId().getId());
-		return shFolderUtils.deleteFolder(shFolder);
+		shFolderRepository.findById(id).ifPresent(new Consumer<ShFolder>() {
+			@Override
+			public void accept(ShFolder shFolder) {
+				shGlobalIdRepository.delete(shFolder.getShGlobalId().getId());
+				shFolderUtils.deleteFolder(shFolder);
+			}
+		});
+		return true;
 	}
 
 	@ApiOperation(value = "Create a folder")
