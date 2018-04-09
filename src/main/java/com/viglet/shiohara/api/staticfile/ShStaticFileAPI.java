@@ -29,6 +29,7 @@ import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.post.type.ShSystemPostType;
+import com.viglet.shiohara.post.type.ShSystemPostTypeAttr;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
 
 import io.swagger.annotations.Api;
@@ -77,7 +78,7 @@ public class ShStaticFileAPI {
 
 				if (createPost) {
 					// Post File
-					ShPostType shPostType = shPostTypeRepository.findByName(ShSystemPostType.FILE.toString());
+					ShPostType shPostType = shPostTypeRepository.findByName(ShSystemPostType.FILE);
 
 					shPost.setDate(new Date());
 					shPost.setShPostType(shPostType);
@@ -94,7 +95,7 @@ public class ShStaticFileAPI {
 					shGlobalIdRepository.saveAndFlush(shGlobalId);
 
 					ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType,
-							"FILE");
+							ShSystemPostTypeAttr.FILE);
 
 					ShPostAttr shPostAttr = new ShPostAttr();
 					shPostAttr.setShPost(shPost);

@@ -25,6 +25,7 @@ import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +39,7 @@ import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
 import com.viglet.shiohara.post.type.ShSystemPostType;
+import com.viglet.shiohara.post.type.ShSystemPostTypeAttr;
 import com.viglet.shiohara.utils.ShFolderUtils;
 import com.viglet.shiohara.utils.ShPostUtils;
 import com.viglet.shiohara.utils.ShSiteUtils;
@@ -154,9 +156,9 @@ public class ShSitesContext {
 		String pageLayoutHTML = null;
 		String pageLayoutJS = null;
 		// Folder
-		if (isFolder || shPostItem.getShPostType().getName().equals(ShSystemPostType.FOLDER_INDEX.toString())) {
+		if (isFolder || shPostItem.getShPostType().getName().equals(ShSystemPostType.FOLDER_INDEX)) {
 
-			if (shPostItem.getShPostType().getName().equals(ShSystemPostType.FOLDER_INDEX.toString())) {
+			if (shPostItem.getShPostType().getName().equals(ShSystemPostType.FOLDER_INDEX)) {
 				shFolderItem = shPostItem.getShFolder();
 			}
 
@@ -165,26 +167,26 @@ public class ShSitesContext {
 			Map<String, ShPostAttr> shFolderIndexMap = shPostUtils.postToMap(shPostItem);
 
 			// Page Layout
-			String pageLayoutName = shFolderIndexMap.get("PAGE-LAYOUT").getStrValue();
+			String pageLayoutName = shFolderIndexMap.get(ShSystemPostTypeAttr.PAGE_LAYOUT).getStrValue();
 
 			ShPost shFolderPageLayout = shPostRepository.findByTitle(pageLayoutName);
 
 			Map<String, ShPostAttr> shFolderPageLayoutMap = shPostUtils.postToMap(shFolderPageLayout);
 
-			pageLayoutHTML = shFolderPageLayoutMap.get("HTML").getStrValue();
-			pageLayoutJS = shFolderPageLayoutMap.get("JAVASCRIPT").getStrValue();
+			pageLayoutHTML = shFolderPageLayoutMap.get(ShSystemPostTypeAttr.HTML).getStrValue();
+			pageLayoutJS = shFolderPageLayoutMap.get(ShSystemPostTypeAttr.JAVASCRIPT).getStrValue();
 
 			// Theme
 
-			String themeName = shFolderPageLayoutMap.get("THEME").getStrValue();
+			String themeName = shFolderPageLayoutMap.get(ShSystemPostTypeAttr.THEME).getStrValue();
 
 			ShPost shTheme = shPostRepository.findByTitle(themeName);
 
 			Map<String, ShPostAttr> shThemeMap = shPostUtils.postToMap(shTheme);
 
 			JSONObject shThemeAttrs = new JSONObject();
-			shThemeAttrs.put("javascript", shThemeMap.get("JAVASCRIPT").getStrValue());
-			shThemeAttrs.put("css", shThemeMap.get("CSS").getStrValue());
+			shThemeAttrs.put("javascript", shThemeMap.get(ShSystemPostTypeAttr.JAVASCRIPT).getStrValue());
+			shThemeAttrs.put("css", shThemeMap.get(ShSystemPostTypeAttr.CSS).getStrValue());
 
 			// Folder converted to JSON
 
@@ -205,7 +207,7 @@ public class ShSitesContext {
 			List<ShPost> shPosts = shPostRepository.findByShFolder(shFolderItem);
 
 			for (ShPost shPost : shPosts) {
-				if (!shPost.getShPostType().getName().equals(ShSystemPostType.FOLDER_INDEX.toString())) {
+				if (!shPost.getShPostType().getName().equals(ShSystemPostType.FOLDER_INDEX)) {
 					JSONObject shPostItemAttrs = shPostUtils.toJSON(shPost);
 					shPostItems.put(shPostItemAttrs);
 				}
@@ -232,18 +234,18 @@ public class ShSitesContext {
 
 			Map<String, ShPostAttr> shPostPageLayoutMap = shPostUtils.postToMap(shPostPageLayout);
 
-			pageLayoutHTML = shPostPageLayoutMap.get("HTML").getStrValue();
-			pageLayoutJS = shPostPageLayoutMap.get("JAVASCRIPT").getStrValue();
+			pageLayoutHTML = shPostPageLayoutMap.get(ShSystemPostTypeAttr.HTML).getStrValue();
+			pageLayoutJS = shPostPageLayoutMap.get(ShSystemPostTypeAttr.JAVASCRIPT).getStrValue();
 
 			// Theme
-			String themeName = shPostPageLayoutMap.get("THEME").getStrValue();
+			String themeName = shPostPageLayoutMap.get(ShSystemPostTypeAttr.THEME).getStrValue();
 			ShPost shTheme = shPostRepository.findByTitle(themeName);
 
 			Map<String, ShPostAttr> shThemeMap = shPostUtils.postToMap(shTheme);
 
 			JSONObject shThemeAttrs = new JSONObject();
-			shThemeAttrs.put("javascript", shThemeMap.get("JAVASCRIPT").getStrValue());
-			shThemeAttrs.put("css", shThemeMap.get("CSS").getStrValue());
+			shThemeAttrs.put("javascript", shThemeMap.get(ShSystemPostTypeAttr.JAVASCRIPT).getStrValue());
+			shThemeAttrs.put("css", shThemeMap.get(ShSystemPostTypeAttr.CSS).getStrValue());
 
 			JSONObject shSiteItemAttrs = shSiteUtils.toJSON(shSite, shContext);
 
@@ -276,8 +278,8 @@ public class ShSitesContext {
 
 			Map<String, ShPostAttr> shRegionPostMap = shPostUtils.postToMap(shRegionPost);
 
-			String shRegionJS = shRegionPostMap.get("JAVASCRIPT").getStrValue();
-			String shRegionHTML = shRegionPostMap.get("HTML").getStrValue();
+			String shRegionJS = shRegionPostMap.get(ShSystemPostTypeAttr.JAVASCRIPT).getStrValue();
+			String shRegionHTML = shRegionPostMap.get(ShSystemPostTypeAttr.HTML).getStrValue();
 			javascript = javascriptVar + shRegionJS;
 
 			bindings.put("html", shRegionHTML);
@@ -289,7 +291,7 @@ public class ShSitesContext {
 		}
 
 		// End Page Layout
-		response.setContentType("text/html");
+		response.setContentType(MediaType.TEXT_HTML_VALUE);
 		response.getWriter().write(doc.html());
 	}
 

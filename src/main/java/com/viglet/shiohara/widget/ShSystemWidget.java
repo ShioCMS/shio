@@ -1,21 +1,10 @@
 package com.viglet.shiohara.widget;
 
-public enum ShSystemWidget {
-	TEXT("Text"), 
-	ACE_JS("Ace Editor - Javascript"), 
-	ACE_HTML("Ace Editor - HTML"), 
-	HTML_EDITOR("HTML Editor"), 
-	FILE("File"), 
-	TEXT_AREA("Text Area");
-
-	private String systemWidget;
-
-	ShSystemWidget(String systemWidget) {
-		this.systemWidget = systemWidget;
-	}
-
-	public String id() {
-		return systemWidget;
-	}
-
+public class ShSystemWidget {
+	public static final String TEXT = "Text";
+	public static final String ACE_JS = "Ace Editor - Javascript";
+	public static final String ACE_HTML = "Ace Editor - HTML";
+	public static final String HTML_EDITOR = "HTML Editor";
+	public static final String FILE = "File";
+	public static final String TEXT_AREA = "Text Area";
 }

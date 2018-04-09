@@ -9,6 +9,7 @@ import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.user.ShUser;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.persistence.repository.user.ShUserRepository;
+import com.viglet.shiohara.post.type.ShSystemPostType;
 
 @Component
 public class ShUserOnStartup {
@@ -21,7 +22,7 @@ public class ShUserOnStartup {
 	public void createDefaultRows() {
 
 		if (shUserRepository.findAll().isEmpty()) {
-			ShPostType shPostType = shPostTypeRepository.findByName("PT-TEXT");
+			ShPostType shPostType = shPostTypeRepository.findByName(ShSystemPostType.TEXT.toString());
 
 			ShUser shUser = new ShUser();
 
