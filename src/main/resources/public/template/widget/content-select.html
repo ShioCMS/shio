@@ -1,0 +1,53 @@
+<style>
+    .button {
+        -moz-appearance: button;
+        /* Firefox */
+        -webkit-appearance: button;
+        /* Safari and Chrome */
+        padding: 10px;
+        margin: 10px;
+        width: 70px;
+    }
+    
+    .drop-box {
+        background: #F8F8F8;
+        border: 5px dashed #DDD;
+        width: 200px;
+        height: 65px;
+        text-align: center;
+        padding-top: 25px;
+        margin: 10px;
+    }
+    
+    .dragover {
+        border: 5px dashed blue;
+    }
+</style>
+<div ng-controller="ShWidgetFileCtrl">
+    <div ng-if="shPostAttr.strValue != null">
+        <div class="row" ng-if="shPostType.name == 'PT-FILE'">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <input type='text' class='form-control' ng-model="shPostAttr.strValue" />
+            </div>
+        </div>
+        <div class="row" ng-if="shPostType.name != 'PT-FILE' && !uploadNewFile">
+            <div class="col-lg-9 col-md-8 col-sm-7 col-xs-6">
+                <input ng-if="fileName != null" type='text' class='form-control' ng-model="fileName" />
+                <input ng-if="fileName == null" type='text' class='form-control' ng-model="shPostAttr.referenceObjects[0].title" /> </div>
+            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-6">
+                <button class="btn btn-viglet" ng-click="clearFile(shPostAttr)">Clear</button>
+                <button class="btn btn-viglet" ng-click="newFile()">New File</button>
+                <button class="btn btn-viglet" ng-click="selectFile(shPost, shPostAttr)">Select a File</button>
+            </div>
+        </div>
+    </div>
+    <div ng-if="shPostAttr.strValue == null || uploadNewFile" class="row">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+            <div ngf-drop ngf-select ng-model="shPostAttr.file" class="drop-box" ngf-drag-over-class="'dragover'" ngf-multiple="false" ngf-allow-dir="true" accept="*/*" ngf-pattern="'*/*'" style="width: 100%">Drop files here or click to upload</div>
+            <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" ng-if="shPostType.name != 'PT-FILE'" style="height: 40px; margin-top: 25px;">
+            <button class="btn btn-viglet" ng-click="selectFile(shPost, shPostAttr)">Or Select a File</button>
+        </div>
+    </div>
+</div>

@@ -198,7 +198,7 @@ public class ShSitesContext {
 			shFolderItemAttrs.put("theme", shThemeAttrs);
 
 			JSONObject shSiteItemAttrs = shSiteUtils.toJSON(shSite, shContext);
-
+			
 			List<ShFolder> shFolders = shFolderRepository.findByParentFolder(shFolderItem);
 
 			for (ShFolder shChildFolder : shFolders) {
