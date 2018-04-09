@@ -41,6 +41,7 @@ import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrReposi
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
 import com.viglet.shiohara.post.type.ShSystemPostType;
+import com.viglet.shiohara.post.type.ShSystemPostTypeAttr;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
 import com.viglet.shiohara.utils.ShUtils;
 
@@ -222,7 +223,7 @@ public class ShImportAPI {
 						} else if (shPostTypeAttr.getIsSummary() == (byte) 1) {
 							shPost.setSummary(StringUtils.abbreviate((String) shPostField.getValue(), 255));
 						}
-						if (shPostTypeAttr.getName().equals("FILE") && shPostExchange.getPostType().equals(ShSystemPostType.FILE.toString())) {
+						if (shPostTypeAttr.getName().equals(ShSystemPostTypeAttr.FILE) && shPostExchange.getPostType().equals(ShSystemPostType.FILE)) {
 							String fileName = (String) shPostField.getValue();
 							File directoryPath = shStaticFileUtils.dirPath(shPost.getShFolder());
 							File fileSource = new File(extractFolder.getAbsolutePath()

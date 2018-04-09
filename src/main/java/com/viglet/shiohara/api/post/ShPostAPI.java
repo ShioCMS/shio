@@ -125,7 +125,7 @@ public class ShPostAPI {
 
 		ShPost shPost = shPostRepository.findById(id).get();
 		List<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
-		if (shPost.getShPostType().getName().equals("PT-FILE") && shPostAttrs.size() > 0) {
+		if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE) && shPostAttrs.size() > 0) {
 			File file = shStaticFileUtils.filePath(shPost.getShFolder(), shPostAttrs.get(0).getStrValue());
 			if (file != null) {
 				if (file.exists()) {
@@ -199,7 +199,7 @@ public class ShPostAPI {
 	}
 
 	public void referencedFile(ShPostAttr shPostAttr, ShPost shPost) {
-		if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.FILE.toString())) {
+		if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.FILE)) {
 			if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE.toString())) {
 				File fileFrom = shStaticFileUtils.filePath(shPost.getShFolder(), shPostAttr.getStrValue());
 				File fileTo = shStaticFileUtils.filePath(shPost.getShFolder(), shPostAttr.getStrValue());
@@ -249,9 +249,9 @@ public class ShPostAPI {
 	}
 
 	public void referencedFile(ShPostAttr shPostAttrEdit, ShPostAttr shPostAttr, ShPost shPost) {
-		if (shPostAttrEdit.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.FILE.toString())) {
+		if (shPostAttrEdit.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.FILE)) {
 
-			if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE.toString())) {
+			if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE)) {
 				File fileFrom = shStaticFileUtils.filePath(shPost.getShFolder(), shPostAttrEdit.getStrValue());
 				File fileTo = shStaticFileUtils.filePath(shPost.getShFolder(), shPostAttr.getStrValue());
 				if (fileFrom != null && fileTo != null) {
