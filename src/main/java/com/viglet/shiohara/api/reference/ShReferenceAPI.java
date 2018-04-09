@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
+import com.viglet.shiohara.object.ShObjectType;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
@@ -70,7 +71,7 @@ public class ShReferenceAPI {
 
 		for (ShReference shReference : shReferences) {
 			if (shReference != null && shReference.getShGlobalFromId() != null
-					&& shReference.getShGlobalFromId().getType().equals("POST")) {
+					&& shReference.getShGlobalFromId().getType().equals(ShObjectType.POST)) {
 				ShPost shPost = (ShPost) shReference.getShGlobalFromId().getShObject();
 				for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
 					Set<ShObject> newReferences = new HashSet<ShObject>();

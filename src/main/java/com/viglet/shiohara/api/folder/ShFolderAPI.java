@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
+import com.viglet.shiohara.object.ShObjectType;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.site.ShSite;
@@ -95,7 +96,7 @@ public class ShFolderAPI {
 
 		ShGlobalId shGlobalId = new ShGlobalId();
 		shGlobalId.setShObject(shFolder);
-		shGlobalId.setType("FOLDER");
+		shGlobalId.setType(ShObjectType.FOLDER);
 
 		shGlobalIdRepository.save(shGlobalId);
 

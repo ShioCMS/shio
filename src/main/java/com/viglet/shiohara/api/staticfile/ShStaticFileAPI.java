@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
+import com.viglet.shiohara.object.ShObjectType;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.post.ShPost;
@@ -27,6 +28,7 @@ import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
+import com.viglet.shiohara.post.type.ShSystemPostType;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
 
 import io.swagger.annotations.Api;
@@ -75,7 +77,7 @@ public class ShStaticFileAPI {
 
 				if (createPost) {
 					// Post File
-					ShPostType shPostType = shPostTypeRepository.findByName("PT-FILE");
+					ShPostType shPostType = shPostTypeRepository.findByName(ShSystemPostType.FILE.toString());
 
 					shPost.setDate(new Date());
 					shPost.setShPostType(shPostType);
@@ -87,7 +89,7 @@ public class ShStaticFileAPI {
 
 					ShGlobalId shGlobalId = new ShGlobalId();
 					shGlobalId.setShObject(shPost);
-					shGlobalId.setType("POST");
+					shGlobalId.setType(ShObjectType.POST);
 
 					shGlobalIdRepository.saveAndFlush(shGlobalId);
 

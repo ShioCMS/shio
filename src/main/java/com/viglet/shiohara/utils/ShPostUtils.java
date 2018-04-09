@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.viglet.shiohara.object.ShObjectType;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.object.ShObject;
@@ -19,6 +20,7 @@ import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
+import com.viglet.shiohara.post.type.ShSystemPostType;
 
 @Component
 public class ShPostUtils {
@@ -79,7 +81,7 @@ public class ShPostUtils {
 
 		ShGlobalId shGlobalId = new ShGlobalId();
 		shGlobalId.setShObject(shPostCopy);
-		shGlobalId.setType("POST");
+		shGlobalId.setType(ShObjectType.POST);
 
 		shGlobalIdRepository.saveAndFlush(shGlobalId);
 		List<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
@@ -104,7 +106,7 @@ public class ShPostUtils {
 		ShPost shPost = shPostRepository.findById(UUID.fromString(postID)).get();
 		ShFolder shFolder = shPost.getShFolder();
 		String link = null;
-		if (shPost.getShPostType().getName().equals("PT-FILE")) {
+		if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE.toString())) {
 			link = "/store/file_source/" + shFolderUtils.getSite(shFolder).getName() + shFolderUtils.folderPath(shFolder)
 					+ shPost.getTitle();
 		} else {

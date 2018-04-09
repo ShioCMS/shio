@@ -37,6 +37,7 @@ import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
+import com.viglet.shiohara.post.type.ShSystemPostType;
 import com.viglet.shiohara.utils.ShFolderUtils;
 import com.viglet.shiohara.utils.ShPostUtils;
 import com.viglet.shiohara.utils.ShSiteUtils;
@@ -60,12 +61,14 @@ public class ShSitesContext {
 
 	@Resource
 	private ApplicationContext context;
+
 	@RequestMapping("/sites/{shSiteName}/{shFormat}/{shLocale}/**")
 	private void sitesFull(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable(value = "shSiteName") String shSiteName, @PathVariable(value = "shFormat") String shFormat,
 			@PathVariable(value = "shLocale") String shLocale) throws IOException, ScriptException {
 
-		InputStreamReader isr = new InputStreamReader(resourceloader.getResource("classpath:/js/server-side/shObject.js").getInputStream());
+		InputStreamReader isr = new InputStreamReader(
+				resourceloader.getResource("classpath:/js/server-side/shObject.js").getInputStream());
 
 		StringBuilder shObjectJS = new StringBuilder();
 		try (Reader reader = new BufferedReader(isr)) {
@@ -151,9 +154,9 @@ public class ShSitesContext {
 		String pageLayoutHTML = null;
 		String pageLayoutJS = null;
 		// Folder
-		if (isFolder || shPostItem.getShPostType().getName().equals("PT-FOLDER-INDEX")) {
+		if (isFolder || shPostItem.getShPostType().getName().equals(ShSystemPostType.FOLDER_INDEX.toString())) {
 
-			if (shPostItem.getShPostType().getName().equals("PT-FOLDER-INDEX")) {
+			if (shPostItem.getShPostType().getName().equals(ShSystemPostType.FOLDER_INDEX.toString())) {
 				shFolderItem = shPostItem.getShFolder();
 			}
 
@@ -184,7 +187,7 @@ public class ShSitesContext {
 			shThemeAttrs.put("css", shThemeMap.get("CSS").getStrValue());
 
 			// Folder converted to JSON
-		
+
 			JSONArray shPostItems = new JSONArray();
 			JSONArray shChildFolderItems = new JSONArray();
 
@@ -202,7 +205,7 @@ public class ShSitesContext {
 			List<ShPost> shPosts = shPostRepository.findByShFolder(shFolderItem);
 
 			for (ShPost shPost : shPosts) {
-				if (!shPost.getShPostType().getName().equals("PT-FOLDER-INDEX")) {
+				if (!shPost.getShPostType().getName().equals(ShSystemPostType.FOLDER_INDEX.toString())) {
 					JSONObject shPostItemAttrs = shPostUtils.toJSON(shPost);
 					shPostItems.put(shPostItemAttrs);
 				}
@@ -222,11 +225,11 @@ public class ShSitesContext {
 
 		} else {
 			// Post
-			// Page Layout			
+			// Page Layout
 			JSONObject postTypeLayout = new JSONObject(shSite.getPostTypeLayout());
 			String pageLayoutName = (String) postTypeLayout.get(shPostItem.getShPostType().getName());
 			ShPost shPostPageLayout = shPostRepository.findByTitle(pageLayoutName);
-			
+
 			Map<String, ShPostAttr> shPostPageLayoutMap = shPostUtils.postToMap(shPostPageLayout);
 
 			pageLayoutHTML = shPostPageLayoutMap.get("HTML").getStrValue();
@@ -241,7 +244,7 @@ public class ShSitesContext {
 			JSONObject shThemeAttrs = new JSONObject();
 			shThemeAttrs.put("javascript", shThemeMap.get("JAVASCRIPT").getStrValue());
 			shThemeAttrs.put("css", shThemeMap.get("CSS").getStrValue());
-	
+
 			JSONObject shSiteItemAttrs = shSiteUtils.toJSON(shSite, shContext);
 
 			JSONObject shPostItemAttrs = shPostUtils.toJSON(shPostItem);
@@ -263,12 +266,12 @@ public class ShSitesContext {
 
 		Document doc = Jsoup.parse(pageLayoutHTMLMod);
 		Elements elements = doc.getElementsByAttribute("sh-region");
-		
+
 		// Regions
 		for (Element element : elements) {
 
 			String regionAttr = element.attr("sh-region");
-			
+
 			ShPost shRegionPost = shPostRepository.findByTitle(regionAttr);
 
 			Map<String, ShPostAttr> shRegionPostMap = shPostUtils.postToMap(shRegionPost);
@@ -290,5 +293,4 @@ public class ShSitesContext {
 		response.getWriter().write(doc.html());
 	}
 
-	
 }

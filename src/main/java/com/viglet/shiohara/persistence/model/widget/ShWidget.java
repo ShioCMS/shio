@@ -7,6 +7,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
+import com.viglet.shiohara.widget.ShSystemWidget;
 
 import java.util.List;
 import java.util.UUID;
@@ -86,6 +87,9 @@ public class ShWidget implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	public void setName(ShSystemWidget shSystemWidget) {
+		this.name = shSystemWidget.toString();
 	}
 
 	public String getType() {

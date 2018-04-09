@@ -24,6 +24,7 @@ import com.viglet.shiohara.persistence.model.reference.ShReference;
 import com.viglet.shiohara.persistence.model.user.ShUser;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
+import com.viglet.shiohara.object.ShObjectType;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
@@ -32,7 +33,9 @@ import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.reference.ShReferenceRepository;
 import com.viglet.shiohara.persistence.repository.user.ShUserRepository;
+import com.viglet.shiohara.post.type.ShSystemPostType;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
+import com.viglet.shiohara.widget.ShSystemWidget;
 
 import io.swagger.annotations.Api;
 
@@ -172,7 +175,7 @@ public class ShPostAPI {
 
 		ShGlobalId shGlobalId = new ShGlobalId();
 		shGlobalId.setShObject(shPost);
-		shGlobalId.setType("POST");
+		shGlobalId.setType(ShObjectType.POST);
 
 		shGlobalIdRepository.saveAndFlush(shGlobalId);
 
@@ -196,8 +199,8 @@ public class ShPostAPI {
 	}
 
 	public void referencedFile(ShPostAttr shPostAttr, ShPost shPost) {
-		if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals("File")) {
-			if (shPost.getShPostType().getName().equals("PT-FILE")) {
+		if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.FILE.toString())) {
+			if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE.toString())) {
 				File fileFrom = shStaticFileUtils.filePath(shPost.getShFolder(), shPostAttr.getStrValue());
 				File fileTo = shStaticFileUtils.filePath(shPost.getShFolder(), shPostAttr.getStrValue());
 				if (fileFrom != null && fileTo != null) {
@@ -246,9 +249,9 @@ public class ShPostAPI {
 	}
 
 	public void referencedFile(ShPostAttr shPostAttrEdit, ShPostAttr shPostAttr, ShPost shPost) {
-		if (shPostAttrEdit.getShPostTypeAttr().getShWidget().getName().equals("File")) {
+		if (shPostAttrEdit.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.FILE.toString())) {
 
-			if (shPost.getShPostType().getName().equals("PT-FILE")) {
+			if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE.toString())) {
 				File fileFrom = shStaticFileUtils.filePath(shPost.getShFolder(), shPostAttrEdit.getStrValue());
 				File fileTo = shStaticFileUtils.filePath(shPost.getShFolder(), shPostAttr.getStrValue());
 				if (fileFrom != null && fileTo != null) {
