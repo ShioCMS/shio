@@ -5,6 +5,7 @@ import java.util.Calendar;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.viglet.shiohara.object.ShObjectType;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
@@ -13,6 +14,8 @@ import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.persistence.repository.widget.ShWidgetRepository;
+import com.viglet.shiohara.post.type.ShSystemPostType;
+import com.viglet.shiohara.widget.ShSystemWidget;
 
 @Component
 public class ShPostTypeOnStartup {
@@ -30,16 +33,16 @@ public class ShPostTypeOnStartup {
 
 		if (shPostTypeRepository.findAll().isEmpty()) {
 
-			ShWidget shWidgetText = shWidgetRepository.findByName("Text");
-			ShWidget shWidgetTextArea = shWidgetRepository.findByName("Text Area");
-			ShWidget shWidgetFile = shWidgetRepository.findByName("File");
-			ShWidget shWidgetAceEditorJS = shWidgetRepository.findByName("Ace Editor - Javascript");
-			ShWidget shWidgetAceEditorHTML = shWidgetRepository.findByName("Ace Editor - HTML");
-			ShWidget shWidgetHTMLEditor = shWidgetRepository.findByName("HTML Editor");
+			ShWidget shWidgetText = shWidgetRepository.findByName(ShSystemWidget.TEXT.toString());
+			ShWidget shWidgetTextArea = shWidgetRepository.findByName(ShSystemWidget.TEXT_AREA.toString());
+			ShWidget shWidgetFile = shWidgetRepository.findByName(ShSystemWidget.FILE.toString());
+			ShWidget shWidgetAceEditorJS = shWidgetRepository.findByName(ShSystemWidget.ACE_JS.toString());
+			ShWidget shWidgetAceEditorHTML = shWidgetRepository.findByName(ShSystemWidget.ACE_HTML.toString());
+			ShWidget shWidgetHTMLEditor = shWidgetRepository.findByName(ShSystemWidget.HTML_EDITOR.toString());
 			// Text
 
 			ShPostType shPostType = new ShPostType();
-			shPostType.setName("PT-TEXT");
+			shPostType.setName(ShSystemPostType.TEXT);
 			shPostType.setTitle("Text");
 			shPostType.setDate(Calendar.getInstance().getTime());
 			shPostType.setDescription("Text Post Type");
@@ -49,7 +52,7 @@ public class ShPostTypeOnStartup {
 
 			ShGlobalId shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shPostType);
-			shGlobalId.setType("POST_TYPE");
+			shGlobalId.setType(ShObjectType.POST_TYPE);
 
 			shGlobalIdRepository.save(shGlobalId);
 
@@ -70,7 +73,7 @@ public class ShPostTypeOnStartup {
 			// Photo
 
 			shPostType = new ShPostType();
-			shPostType.setName("PT-PHOTO");
+			shPostType.setName(ShSystemPostType.PHOTO);
 			shPostType.setTitle("Photo");
 			shPostType.setDate(Calendar.getInstance().getTime());
 			shPostType.setDescription("Photo Post Type");
@@ -80,7 +83,7 @@ public class ShPostTypeOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shPostType);
-			shGlobalId.setType("POST_TYPE");
+			shGlobalId.setType(ShObjectType.POST_TYPE);
 
 			shGlobalIdRepository.save(shGlobalId);
 
@@ -101,7 +104,7 @@ public class ShPostTypeOnStartup {
 			// Video
 
 			shPostType = new ShPostType();
-			shPostType.setName("PT-VIDEO");
+			shPostType.setName(ShSystemPostType.VIDEO);
 			shPostType.setTitle("Video");
 			shPostType.setDate(Calendar.getInstance().getTime());
 			shPostType.setDescription("Video Post Type");
@@ -111,7 +114,7 @@ public class ShPostTypeOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shPostType);
-			shGlobalId.setType("POST_TYPE");
+			shGlobalId.setType(ShObjectType.POST_TYPE);
 
 			shGlobalIdRepository.save(shGlobalId);
 
@@ -132,7 +135,7 @@ public class ShPostTypeOnStartup {
 			// Quote
 
 			shPostType = new ShPostType();
-			shPostType.setName("PT-QUOTE");
+			shPostType.setName(ShSystemPostType.QUOTE);
 			shPostType.setTitle("Quote");
 			shPostType.setDate(Calendar.getInstance().getTime());
 			shPostType.setDescription("Quote Post Type");
@@ -142,7 +145,7 @@ public class ShPostTypeOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shPostType);
-			shGlobalId.setType("POST_TYPE");
+			shGlobalId.setType(ShObjectType.POST_TYPE);
 
 			shGlobalIdRepository.save(shGlobalId);
 
@@ -163,7 +166,7 @@ public class ShPostTypeOnStartup {
 			// Link
 
 			shPostType = new ShPostType();
-			shPostType.setName("PT-LINK");
+			shPostType.setName(ShSystemPostType.LINK);
 			shPostType.setTitle("Link");
 			shPostType.setDate(Calendar.getInstance().getTime());
 			shPostType.setDescription("Link Post Type");
@@ -173,7 +176,7 @@ public class ShPostTypeOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shPostType);
-			shGlobalId.setType("POST_TYPE");
+			shGlobalId.setType(ShObjectType.POST_TYPE);
 
 			shGlobalIdRepository.save(shGlobalId);
 
@@ -194,7 +197,7 @@ public class ShPostTypeOnStartup {
 			// File
 
 			shPostType = new ShPostType();
-			shPostType.setName("PT-FILE");
+			shPostType.setName(ShSystemPostType.FILE);
 			shPostType.setTitle("File");
 			shPostType.setDate(Calendar.getInstance().getTime());
 			shPostType.setDescription("File Post Type");
@@ -204,7 +207,7 @@ public class ShPostTypeOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shPostType);
-			shGlobalId.setType("POST_TYPE");
+			shGlobalId.setType(ShObjectType.POST_TYPE);
 
 			shGlobalIdRepository.save(shGlobalId);
 
@@ -225,7 +228,7 @@ public class ShPostTypeOnStartup {
 			// Text Area
 
 			shPostType = new ShPostType();
-			shPostType.setName("PT-TEXT-AREA");
+			shPostType.setName(ShSystemPostType.TEXT_AREA);
 			shPostType.setTitle("Text Area");
 			shPostType.setDate(Calendar.getInstance().getTime());
 			shPostType.setDescription("Text Area Post Type");
@@ -235,7 +238,7 @@ public class ShPostTypeOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shPostType);
-			shGlobalId.setType("POST_TYPE");
+			shGlobalId.setType(ShObjectType.POST_TYPE);
 
 			shGlobalIdRepository.save(shGlobalId);
 
@@ -256,7 +259,7 @@ public class ShPostTypeOnStartup {
 			// Article
 
 			shPostType = new ShPostType();
-			shPostType.setName("PT-ARTICLE");
+			shPostType.setName(ShSystemPostType.ARTICLE);
 			shPostType.setTitle("Article");
 			shPostType.setDate(Calendar.getInstance().getTime());
 			shPostType.setDescription("Article Post Type");
@@ -266,7 +269,7 @@ public class ShPostTypeOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shPostType);
-			shGlobalId.setType("POST_TYPE");
+			shGlobalId.setType(ShObjectType.POST_TYPE);
 
 			shGlobalIdRepository.save(shGlobalId);
 
@@ -329,7 +332,7 @@ public class ShPostTypeOnStartup {
 			// Region
 
 			shPostType = new ShPostType();
-			shPostType.setName("PT-REGION");
+			shPostType.setName(ShSystemPostType.REGION);
 			shPostType.setTitle("Region");
 			shPostType.setDate(Calendar.getInstance().getTime());
 			shPostType.setDescription("Region Post Type");
@@ -339,7 +342,7 @@ public class ShPostTypeOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shPostType);
-			shGlobalId.setType("POST_TYPE");
+			shGlobalId.setType(ShObjectType.POST_TYPE);
 
 			shGlobalIdRepository.save(shGlobalId);
 
@@ -402,7 +405,7 @@ public class ShPostTypeOnStartup {
 			// Theme
 
 			shPostType = new ShPostType();
-			shPostType.setName("PT-THEME");
+			shPostType.setName(ShSystemPostType.THEME);
 			shPostType.setTitle("Theme");
 			shPostType.setDate(Calendar.getInstance().getTime());
 			shPostType.setDescription("Theme Post Type");
@@ -412,7 +415,7 @@ public class ShPostTypeOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shPostType);
-			shGlobalId.setType("POST_TYPE");
+			shGlobalId.setType(ShObjectType.POST_TYPE);
 
 			shGlobalIdRepository.save(shGlobalId);
 
@@ -475,7 +478,7 @@ public class ShPostTypeOnStartup {
 			// Page Layout
 
 			shPostType = new ShPostType();
-			shPostType.setName("PT-PAGE-LAYOUT");
+			shPostType.setName(ShSystemPostType.PAGE_LAYOUT);
 			shPostType.setTitle("Page Layout");
 			shPostType.setDate(Calendar.getInstance().getTime());
 			shPostType.setDescription("Page Layout Post Type");
@@ -485,7 +488,7 @@ public class ShPostTypeOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shPostType);
-			shGlobalId.setType("POST_TYPE");
+			shGlobalId.setType(ShObjectType.POST_TYPE);
 
 			shGlobalIdRepository.save(shGlobalId);
 
@@ -562,7 +565,7 @@ public class ShPostTypeOnStartup {
 			// Folder Index
 
 			shPostType = new ShPostType();
-			shPostType.setName("PT-FOLDER-INDEX");
+			shPostType.setName(ShSystemPostType.FOLDER_INDEX);
 			shPostType.setTitle("Folder Index");
 			shPostType.setDate(Calendar.getInstance().getTime());
 			shPostType.setDescription("Folder Index Post Type");
@@ -572,7 +575,7 @@ public class ShPostTypeOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shPostType);
-			shGlobalId.setType("POST_TYPE");
+			shGlobalId.setType(ShObjectType.POST_TYPE);
 
 			shGlobalIdRepository.save(shGlobalId);
 

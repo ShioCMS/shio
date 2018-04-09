@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.viglet.shiohara.object.ShObjectType;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.post.ShPost;
@@ -171,12 +172,12 @@ public class ShFolderUtils {
 	public ShFolder copy(ShFolder shFolder, ShGlobalId shGlobalIdDest) {
 		// TODO: Copy objects into Folder
 		ShFolder shFolderCopy = new ShFolder();
-		if (shGlobalIdDest.getType().equals("FOLDER")) {
+		if (shGlobalIdDest.getType().equals(ShObjectType.FOLDER)) {
 			ShFolder shFolderDest = (ShFolder) shGlobalIdDest.getShObject();
 			shFolderCopy.setParentFolder(shFolderDest);
 			shFolderCopy.setShSite(null);
 			shFolderCopy.setRootFolder((byte) 0);
-		} else if (shGlobalIdDest.getType().equals("SITE")) {
+		} else if (shGlobalIdDest.getType().equals(ShObjectType.SITE)) {
 			ShSite shSiteDest = (ShSite) shGlobalIdDest.getShObject();
 			shFolderCopy.setParentFolder(null);
 			shFolderCopy.setShSite(shSiteDest);
@@ -192,7 +193,7 @@ public class ShFolderUtils {
 
 		ShGlobalId shGlobalId = new ShGlobalId();
 		shGlobalId.setShObject(shFolderCopy);
-		shGlobalId.setType("FOLDER");
+		shGlobalId.setType(ShObjectType.FOLDER);
 
 		shGlobalIdRepository.saveAndFlush(shGlobalId);
 		shFolderCopy.setShGlobalId(shGlobalId);

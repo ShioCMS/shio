@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
+import com.viglet.shiohara.object.ShObjectType;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
@@ -154,7 +155,7 @@ public class ShPostTypeAPI {
 		
 		ShGlobalId shGlobalId = new ShGlobalId();
 		shGlobalId.setShObject(shPostType);
-		shGlobalId.setType("POST_TYPE");
+		shGlobalId.setType(ShObjectType.POST_TYPE);
 
 		shGlobalIdRepository.save(shGlobalId);
 		

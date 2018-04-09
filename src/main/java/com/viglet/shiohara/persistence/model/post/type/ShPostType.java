@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
+import com.viglet.shiohara.post.type.ShSystemPostType;
 
 import java.util.Date;
 import java.util.List;
@@ -72,6 +73,10 @@ public class ShPostType extends ShObject {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public void setName(ShSystemPostType shSystemPostType) {
+		this.name = shSystemPostType.toString();
 	}
 
 	public String getTitle() {

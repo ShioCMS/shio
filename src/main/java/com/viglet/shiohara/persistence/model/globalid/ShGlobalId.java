@@ -16,6 +16,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
+import com.viglet.shiohara.object.ShObjectType;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 
 @Entity
@@ -32,7 +33,7 @@ public class ShGlobalId implements Serializable {
 	private UUID id;
 
 	@Column(name = "type", length = 20)
-	private String type;
+	private ShObjectType type;
 
 	//@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
 	@OneToOne
@@ -48,11 +49,11 @@ public class ShGlobalId implements Serializable {
 		this.id = id;
 	}
 
-	public String getType() {
+	public ShObjectType getType() {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(ShObjectType type) {
 		this.type = type;
 	}
 

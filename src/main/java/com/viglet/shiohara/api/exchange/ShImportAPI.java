@@ -26,6 +26,7 @@ import com.viglet.shiohara.exchange.ShFolderExchange;
 import com.viglet.shiohara.exchange.ShExchange;
 import com.viglet.shiohara.exchange.ShPostExchange;
 import com.viglet.shiohara.exchange.ShSiteExchange;
+import com.viglet.shiohara.object.ShObjectType;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.post.ShPost;
@@ -39,6 +40,7 @@ import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
+import com.viglet.shiohara.post.type.ShSystemPostType;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
 import com.viglet.shiohara.utils.ShUtils;
 
@@ -111,7 +113,7 @@ public class ShImportAPI {
 				ShGlobalId shGlobalId = new ShGlobalId();
 				shGlobalId.setId(shSiteExchange.getGlobalId());
 				shGlobalId.setShObject(shSite);
-				shGlobalId.setType("SITE");
+				shGlobalId.setType(ShObjectType.SITE);
 
 				shGlobalIdRepository.save(shGlobalId);
 
@@ -197,7 +199,7 @@ public class ShImportAPI {
 					ShGlobalId shGlobalId = new ShGlobalId();
 					shGlobalId.setId(shFolderExchange.getGlobalId());
 					shGlobalId.setShObject(shFolderChild);
-					shGlobalId.setType("FOLDER");
+					shGlobalId.setType(ShObjectType.FOLDER);
 
 					shGlobalIdRepository.save(shGlobalId);
 
@@ -220,7 +222,7 @@ public class ShImportAPI {
 						} else if (shPostTypeAttr.getIsSummary() == (byte) 1) {
 							shPost.setSummary(StringUtils.abbreviate((String) shPostField.getValue(), 255));
 						}
-						if (shPostTypeAttr.getName().equals("FILE") && shPostExchange.getPostType().equals("PT-FILE")) {
+						if (shPostTypeAttr.getName().equals("FILE") && shPostExchange.getPostType().equals(ShSystemPostType.FILE.toString())) {
 							String fileName = (String) shPostField.getValue();
 							File directoryPath = shStaticFileUtils.dirPath(shPost.getShFolder());
 							File fileSource = new File(extractFolder.getAbsolutePath()
@@ -234,7 +236,7 @@ public class ShImportAPI {
 					ShGlobalId shGlobalId = new ShGlobalId();
 					shGlobalId.setId(shPostExchange.getGlobalId());
 					shGlobalId.setShObject(shPost);
-					shGlobalId.setType("POST");
+					shGlobalId.setType(ShObjectType.POST);
 
 					shGlobalIdRepository.save(shGlobalId);
 

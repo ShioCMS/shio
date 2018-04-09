@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
+import com.viglet.shiohara.object.ShObjectType;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.post.ShPost;
@@ -20,6 +21,7 @@ import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
+import com.viglet.shiohara.post.type.ShSystemPostType;
 
 @Component
 public class ShPostOnStartup {
@@ -52,18 +54,19 @@ public class ShPostOnStartup {
 			ShFolder shFolderText = shFolderRepository.findByShSiteAndName(shSite, "Text");
 			ShFolder shFolderThemes = shFolderRepository.findByShSiteAndName(shSite, "Themes");
 
-			ShPostType shPostRegion = shPostTypeRepository.findByName("PT-REGION");
-			ShPostType shPostType = shPostTypeRepository.findByName("PT-TEXT");
-			ShPostType shPostTypeArea = shPostTypeRepository.findByName("PT-TEXT-AREA");
-			ShPostType shPostArticle = shPostTypeRepository.findByName("PT-ARTICLE");
-			ShPostType shPostFolderIndex = shPostTypeRepository.findByName("PT-FOLDER-INDEX");
-
+			ShPostType shPostTypeRegion = shPostTypeRepository.findByName(ShSystemPostType.REGION.toString());
+			ShPostType shPostTypeText = shPostTypeRepository.findByName(ShSystemPostType.TEXT.toString());
+			ShPostType shPostTypeTextArea = shPostTypeRepository.findByName(ShSystemPostType.TEXT_AREA.toString());
+			ShPostType shPostTypeArticle = shPostTypeRepository.findByName(ShSystemPostType.ARTICLE.toString());
+			ShPostType shPostTypeFolderIndex = shPostTypeRepository.findByName(ShSystemPostType.FOLDER_INDEX.toString());
+			ShPostType shPostTypeTheme = shPostTypeRepository.findByName(ShSystemPostType.THEME.toString());
+			
 			// Post Text
 
 			ShPost shPost = new ShPost();
 			shPost.setId(UUID.fromString("990e5c4b-3369-4718-b8dc-5efde982c4b7"));
 			shPost.setDate(new Date());
-			shPost.setShPostType(shPostType);
+			shPost.setShPostType(shPostTypeText);
 			shPost.setSummary(null);
 			shPost.setTitle("Post01");
 			shPost.setShFolder(shFolderHome);
@@ -71,11 +74,11 @@ public class ShPostOnStartup {
 
 			ShGlobalId shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shPost);
-			shGlobalId.setType("POST");
+			shGlobalId.setType(ShObjectType.POST);
 
 			shGlobalIdRepository.save(shGlobalId);
 
-			ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType, "TEXT");
+			ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeText, "TEXT");
 
 			ShPostAttr shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -89,7 +92,7 @@ public class ShPostOnStartup {
 
 			shPost = new ShPost();
 			shPost.setDate(new Date());
-			shPost.setShPostType(shPostTypeArea);
+			shPost.setShPostType(shPostTypeTextArea);
 			shPost.setSummary(null);
 			shPost.setTitle("Post Text Area 01");
 			shPost.setShFolder(shFolderHome);
@@ -98,11 +101,11 @@ public class ShPostOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shPost);
-			shGlobalId.setType("POST");
+			shGlobalId.setType(ShObjectType.POST);
 
 			shGlobalIdRepository.save(shGlobalId);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeArea, "TEXT");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeTextArea, "TEXT");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -116,7 +119,7 @@ public class ShPostOnStartup {
 
 			shPost = new ShPost();
 			shPost.setDate(new Date());
-			shPost.setShPostType(shPostArticle);
+			shPost.setShPostType(shPostTypeArticle);
 			shPost.setSummary("A short description");
 			shPost.setTitle("Post Article Title");
 			shPost.setShFolder(shFolderArticle);
@@ -125,11 +128,11 @@ public class ShPostOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shPost);
-			shGlobalId.setType("POST");
+			shGlobalId.setType(ShObjectType.POST);
 
 			shGlobalIdRepository.save(shGlobalId);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostArticle, "TITLE");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeArticle, "TITLE");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -139,7 +142,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostArticle, "DESCRIPTION");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeArticle, "DESCRIPTION");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -149,7 +152,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostArticle, "TEXT");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeArticle, "TEXT");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -163,7 +166,7 @@ public class ShPostOnStartup {
 
 			shPost = new ShPost();
 			shPost.setDate(new Date());
-			shPost.setShPostType(shPostArticle);
+			shPost.setShPostType(shPostTypeArticle);
 			shPost.setSummary("A short description 2");
 			shPost.setTitle("Post Article Title");
 			shPost.setShFolder(shFolderNews);
@@ -172,11 +175,11 @@ public class ShPostOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shPost);
-			shGlobalId.setType("POST");
+			shGlobalId.setType(ShObjectType.POST);
 
 			shGlobalIdRepository.save(shGlobalId);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostArticle, "TITLE");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeArticle, "TITLE");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -186,7 +189,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostArticle, "DESCRIPTION");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeArticle, "DESCRIPTION");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -196,7 +199,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostArticle, "TEXT");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeArticle, "TEXT");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -206,11 +209,9 @@ public class ShPostOnStartup {
 
 			// Sample Theme
 
-			ShPostType shPostTheme = shPostTypeRepository.findByName("PT-THEME");
-
 			shPost = new ShPost();
 			shPost.setDate(new Date());
-			shPost.setShPostType(shPostTheme);
+			shPost.setShPostType(shPostTypeTheme);
 			shPost.setSummary("Sample Theme");
 			shPost.setTitle("Sample Theme");
 			shPost.setShFolder(shFolderThemes);
@@ -219,11 +220,11 @@ public class ShPostOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shPost);
-			shGlobalId.setType("POST");
+			shGlobalId.setType(ShObjectType.POST);
 
 			shGlobalIdRepository.save(shGlobalId);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTheme, "TITLE");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeTheme, "TITLE");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -233,7 +234,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTheme, "DESCRIPTION");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeTheme, "DESCRIPTION");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -243,7 +244,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTheme, "CSS");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeTheme, "CSS");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -257,7 +258,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTheme, "JAVASCRIPT");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeTheme, "JAVASCRIPT");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -274,7 +275,7 @@ public class ShPostOnStartup {
 
 			shPost = new ShPost();
 			shPost.setDate(new Date());
-			shPost.setShPostType(shPostFolderIndex);
+			shPost.setShPostType(shPostTypeFolderIndex);
 			shPost.setSummary("Folder Index");
 			shPost.setTitle("index");
 			shPost.setShFolder(shFolderHome);
@@ -283,11 +284,11 @@ public class ShPostOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shPost);
-			shGlobalId.setType("POST");
+			shGlobalId.setType(ShObjectType.POST);
 
 			shGlobalIdRepository.save(shGlobalId);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex, "TITLE");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeFolderIndex, "TITLE");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -297,7 +298,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex, "DESCRIPTION");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeFolderIndex, "DESCRIPTION");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -307,7 +308,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex, "PAGE-LAYOUT");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeFolderIndex, "PAGE-LAYOUT");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -320,7 +321,7 @@ public class ShPostOnStartup {
 			// Post Folder Index Article
 			shPost = new ShPost();
 			shPost.setDate(new Date());
-			shPost.setShPostType(shPostFolderIndex);
+			shPost.setShPostType(shPostTypeFolderIndex);
 			shPost.setSummary("Folder Index");
 			shPost.setTitle("index");
 			shPost.setShFolder(shFolderArticle);
@@ -329,11 +330,11 @@ public class ShPostOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shPost);
-			shGlobalId.setType("POST");
+			shGlobalId.setType(ShObjectType.POST);
 
 			shGlobalIdRepository.save(shGlobalId);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex, "TITLE");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeFolderIndex, "TITLE");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -343,7 +344,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex, "DESCRIPTION");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeFolderIndex, "DESCRIPTION");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -353,7 +354,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex, "PAGE-LAYOUT");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeFolderIndex, "PAGE-LAYOUT");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -366,7 +367,7 @@ public class ShPostOnStartup {
 			// Post Folder Index News
 			shPost = new ShPost();
 			shPost.setDate(new Date());
-			shPost.setShPostType(shPostFolderIndex);
+			shPost.setShPostType(shPostTypeFolderIndex);
 			shPost.setSummary("Folder Index");
 			shPost.setTitle("index");
 			shPost.setShFolder(shFolderNews);
@@ -375,11 +376,11 @@ public class ShPostOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shPost);
-			shGlobalId.setType("POST");
+			shGlobalId.setType(ShObjectType.POST);
 
 			shGlobalIdRepository.save(shGlobalId);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex, "TITLE");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeFolderIndex, "TITLE");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -389,7 +390,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex, "DESCRIPTION");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeFolderIndex, "DESCRIPTION");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -399,7 +400,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex, "PAGE-LAYOUT");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeFolderIndex, "PAGE-LAYOUT");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -412,7 +413,7 @@ public class ShPostOnStartup {
 			// Post Folder Index Text
 			shPost = new ShPost();
 			shPost.setDate(new Date());
-			shPost.setShPostType(shPostFolderIndex);
+			shPost.setShPostType(shPostTypeFolderIndex);
 			shPost.setSummary("Folder Index");
 			shPost.setTitle("index");
 			shPost.setShFolder(shFolderText);
@@ -421,11 +422,11 @@ public class ShPostOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shPost);
-			shGlobalId.setType("POST");
+			shGlobalId.setType(ShObjectType.POST);
 
 			shGlobalIdRepository.save(shGlobalId);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex, "TITLE");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeFolderIndex, "TITLE");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -435,7 +436,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex, "DESCRIPTION");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeFolderIndex, "DESCRIPTION");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -445,7 +446,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex, "PAGE-LAYOUT");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeFolderIndex, "PAGE-LAYOUT");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -469,7 +470,7 @@ public class ShPostOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shPost);
-			shGlobalId.setType("POST");
+			shGlobalId.setType(ShObjectType.POST);
 
 			shGlobalIdRepository.save(shGlobalId);
 
@@ -503,7 +504,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "JAVASCRIPT");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeRegion, "JAVASCRIPT");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -535,7 +536,7 @@ public class ShPostOnStartup {
 
 			shPost = new ShPost();
 			shPost.setDate(new Date());
-			shPost.setShPostType(shPostRegion);
+			shPost.setShPostType(shPostTypeRegion);
 			shPost.setSummary("Navigation Template");
 			shPost.setTitle("Navigation");
 			shPost.setShFolder(shFolderTemplates);
@@ -544,11 +545,11 @@ public class ShPostOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shPost);
-			shGlobalId.setType("POST");
+			shGlobalId.setType(ShObjectType.POST);
 
 			shGlobalIdRepository.save(shGlobalId);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "TITLE");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeRegion, "TITLE");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -558,7 +559,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "DESCRIPTION");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeRegion, "DESCRIPTION");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -568,7 +569,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "JAVASCRIPT");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeRegion, "JAVASCRIPT");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -581,7 +582,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "HTML");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeRegion, "HTML");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -605,7 +606,7 @@ public class ShPostOnStartup {
 
 			shPost = new ShPost();
 			shPost.setDate(new Date());
-			shPost.setShPostType(shPostRegion);
+			shPost.setShPostType(shPostTypeRegion);
 			shPost.setSummary("Content Template");
 			shPost.setTitle("Content");
 			shPost.setShFolder(shFolderTemplates);
@@ -614,11 +615,11 @@ public class ShPostOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shPost);
-			shGlobalId.setType("POST");
+			shGlobalId.setType(ShObjectType.POST);
 
 			shGlobalIdRepository.save(shGlobalId);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "TITLE");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeRegion, "TITLE");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -628,7 +629,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "DESCRIPTION");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeRegion, "DESCRIPTION");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -638,7 +639,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "JAVASCRIPT");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeRegion, "JAVASCRIPT");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -651,7 +652,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "HTML");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeRegion, "HTML");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -686,7 +687,7 @@ public class ShPostOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shPost);
-			shGlobalId.setType("POST");
+			shGlobalId.setType(ShObjectType.POST);
 
 			shGlobalIdRepository.save(shGlobalId);
 
@@ -720,7 +721,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "JAVASCRIPT");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeRegion, "JAVASCRIPT");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -751,7 +752,7 @@ public class ShPostOnStartup {
 
 			shPost = new ShPost();
 			shPost.setDate(new Date());
-			shPost.setShPostType(shPostRegion);
+			shPost.setShPostType(shPostTypeRegion);
 			shPost.setSummary("Navigation Folder Template");
 			shPost.setTitle("NavigationFolder");
 			shPost.setShFolder(shFolderTemplates);
@@ -760,11 +761,11 @@ public class ShPostOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shPost);
-			shGlobalId.setType("POST");
+			shGlobalId.setType(ShObjectType.POST);
 
 			shGlobalIdRepository.save(shGlobalId);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "TITLE");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeRegion, "TITLE");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -774,7 +775,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "DESCRIPTION");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeRegion, "DESCRIPTION");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -784,7 +785,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "JAVASCRIPT");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeRegion, "JAVASCRIPT");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -797,7 +798,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "HTML");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeRegion, "HTML");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -825,7 +826,7 @@ public class ShPostOnStartup {
 
 			shPost = new ShPost();
 			shPost.setDate(new Date());
-			shPost.setShPostType(shPostRegion);
+			shPost.setShPostType(shPostTypeRegion);
 			shPost.setSummary("Content Folder Template");
 			shPost.setTitle("ContentFolder");
 			shPost.setShFolder(shFolderTemplates);
@@ -834,11 +835,11 @@ public class ShPostOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shPost);
-			shGlobalId.setType("POST");
+			shGlobalId.setType(ShObjectType.POST);
 
 			shGlobalIdRepository.save(shGlobalId);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "TITLE");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeRegion, "TITLE");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -848,7 +849,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "DESCRIPTION");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeRegion, "DESCRIPTION");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -858,7 +859,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "JAVASCRIPT");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeRegion, "JAVASCRIPT");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);
@@ -871,7 +872,7 @@ public class ShPostOnStartup {
 
 			shPostAttrRepository.save(shPostAttr);
 
-			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostRegion, "HTML");
+			shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostTypeRegion, "HTML");
 
 			shPostAttr = new ShPostAttr();
 			shPostAttr.setShPost(shPost);

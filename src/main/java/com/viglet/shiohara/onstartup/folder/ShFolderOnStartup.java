@@ -5,6 +5,7 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.viglet.shiohara.object.ShObjectType;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.site.ShSite;
@@ -40,7 +41,7 @@ public class ShFolderOnStartup {
 
 			ShGlobalId shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shFolderSystem);
-			shGlobalId.setType("FOLDER");
+			shGlobalId.setType(ShObjectType.FOLDER);
 
 			shGlobalIdRepository.save(shGlobalId);
 
@@ -56,7 +57,7 @@ public class ShFolderOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shFolderSystemTemplates);
-			shGlobalId.setType("FOLDER");
+			shGlobalId.setType(ShObjectType.FOLDER);
 
 			shGlobalIdRepository.save(shGlobalId);
 
@@ -72,7 +73,7 @@ public class ShFolderOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shFolderSystemLayouts);
-			shGlobalId.setType("FOLDER");
+			shGlobalId.setType(ShObjectType.FOLDER);
 
 			shGlobalIdRepository.save(shGlobalId);
 
@@ -88,7 +89,7 @@ public class ShFolderOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shFolderSystemThemes);
-			shGlobalId.setType("FOLDER");
+			shGlobalId.setType(ShObjectType.FOLDER);
 
 			shGlobalIdRepository.save(shGlobalId);
 
@@ -104,7 +105,7 @@ public class ShFolderOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shFolderHome);
-			shGlobalId.setType("FOLDER");
+			shGlobalId.setType(ShObjectType.FOLDER);
 
 			shGlobalIdRepository.save(shGlobalId);
 
@@ -120,7 +121,7 @@ public class ShFolderOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shFolderArticle);
-			shGlobalId.setType("FOLDER");
+			shGlobalId.setType(ShObjectType.FOLDER);
 
 			shGlobalIdRepository.save(shGlobalId);
 
@@ -136,7 +137,7 @@ public class ShFolderOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shFolderText);
-			shGlobalId.setType("FOLDER");
+			shGlobalId.setType(ShObjectType.FOLDER);
 
 			shGlobalIdRepository.save(shGlobalId);
 
@@ -152,7 +153,7 @@ public class ShFolderOnStartup {
 
 			shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shFolderNews);
-			shGlobalId.setType("FOLDER");
+			shGlobalId.setType(ShObjectType.FOLDER);
 
 			shGlobalIdRepository.save(shGlobalId);
 

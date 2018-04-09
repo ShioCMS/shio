@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.persistence.model.widget.ShWidget;
 import com.viglet.shiohara.persistence.repository.widget.ShWidgetRepository;
+import com.viglet.shiohara.widget.ShSystemWidget;
 
 @Component
 public class ShWidgetOnStartup {
@@ -17,7 +18,7 @@ public class ShWidgetOnStartup {
 		if (shWidgetRepository.findAll().isEmpty()) {
 
 			ShWidget shWidget = new ShWidget();
-			shWidget.setName("Text");
+			shWidget.setName(ShSystemWidget.TEXT);
 			shWidget.setDescription("Text Widget");
 			shWidget.setClassName("com.viglet.shiohara.widget.ShTextWidget");
 			shWidget.setImplementationCode("template/widget/text.html");
@@ -26,7 +27,7 @@ public class ShWidgetOnStartup {
 			shWidgetRepository.save(shWidget);
 
 			shWidget = new ShWidget();
-			shWidget.setName("Text Area");
+			shWidget.setName(ShSystemWidget.TEXT_AREA);
 			shWidget.setDescription("Text Area Widget");
 			shWidget.setClassName("com.viglet.shiohara.widget.ShTextAreaWidget");
 			shWidget.setImplementationCode("template/widget/textarea.html");
@@ -35,7 +36,7 @@ public class ShWidgetOnStartup {
 			shWidgetRepository.save(shWidget);
 			
 			shWidget = new ShWidget();
-			shWidget.setName("File");
+			shWidget.setName(ShSystemWidget.FILE);
 			shWidget.setDescription("File Widget");
 			shWidget.setClassName("com.viglet.shiohara.widget.ShFileWidget");
 			shWidget.setImplementationCode("template/widget/file.html");
@@ -44,7 +45,7 @@ public class ShWidgetOnStartup {
 			shWidgetRepository.save(shWidget);
 			
 			shWidget = new ShWidget();
-			shWidget.setName("Ace Editor - Javascript");
+			shWidget.setName(ShSystemWidget.ACE_JS);
 			shWidget.setDescription("Ace Editor Widget");
 			shWidget.setClassName("com.viglet.shiohara.widget.ShAceEditorWidget");
 			shWidget.setImplementationCode("template/widget/ace-editor-js.html");
@@ -53,7 +54,7 @@ public class ShWidgetOnStartup {
 			shWidgetRepository.save(shWidget);
 
 			shWidget = new ShWidget();
-			shWidget.setName("Ace Editor - HTML");
+			shWidget.setName(ShSystemWidget.ACE_HTML);
 			shWidget.setDescription("Ace Editor Widget");
 			shWidget.setClassName("com.viglet.shiohara.widget.ShAceEditorWidget");
 			shWidget.setImplementationCode("template/widget/ace-editor-html.html");
@@ -62,7 +63,7 @@ public class ShWidgetOnStartup {
 			shWidgetRepository.save(shWidget);
 			
 			shWidget = new ShWidget();
-			shWidget.setName("HTML Editor");
+			shWidget.setName(ShSystemWidget.HTML_EDITOR);
 			shWidget.setDescription("HTML Editor Widget");
 			shWidget.setClassName("com.viglet.shiohara.widget.ShHTMLWidget");
 			shWidget.setImplementationCode("template/widget/html-editor.html");

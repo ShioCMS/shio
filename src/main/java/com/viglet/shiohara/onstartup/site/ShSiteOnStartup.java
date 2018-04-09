@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.viglet.shiohara.object.ShObjectType;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
@@ -37,7 +38,7 @@ public class ShSiteOnStartup {
 
 			ShGlobalId shGlobalId = new ShGlobalId();
 			shGlobalId.setShObject(shSite);
-			shGlobalId.setType("SITE");
+			shGlobalId.setType(ShObjectType.SITE);
 
 			shGlobalIdRepository.save(shGlobalId);
 

@@ -36,6 +36,7 @@ import com.viglet.shiohara.exchange.ShExchange;
 import com.viglet.shiohara.exchange.ShFileExchange;
 import com.viglet.shiohara.exchange.ShPostExchange;
 import com.viglet.shiohara.exchange.ShSiteExchange;
+import com.viglet.shiohara.object.ShObjectType;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.post.ShPost;
@@ -50,6 +51,7 @@ import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
+import com.viglet.shiohara.post.type.ShSystemPostType;
 import com.viglet.shiohara.utils.ShFolderUtils;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
 import com.viglet.shiohara.utils.ShUtils;
@@ -131,7 +133,7 @@ public class ShSiteAPI {
 
 		ShGlobalId shGlobalId = new ShGlobalId();
 		shGlobalId.setShObject(shSite);
-		shGlobalId.setType("SITE");
+		shGlobalId.setType(ShObjectType.SITE);
 
 		shGlobalIdRepository.save(shGlobalId);
 
@@ -147,13 +149,13 @@ public class ShSiteAPI {
 
 		shGlobalId = new ShGlobalId();
 		shGlobalId.setShObject(shFolderHome);
-		shGlobalId.setType("FOLDER");
+		shGlobalId.setType(ShObjectType.FOLDER);
 
 		shGlobalIdRepository.save(shGlobalId);
 
 		// Folder Index
 
-		ShPostType shPostFolderIndex = shPostTypeRepository.findByName("PT-FOLDER-INDEX");
+		ShPostType shPostFolderIndex = shPostTypeRepository.findByName(ShSystemPostType.FOLDER_INDEX.toString());
 
 		ShPost shPost = new ShPost();
 		shPost.setDate(new Date());
@@ -166,7 +168,7 @@ public class ShSiteAPI {
 
 		shGlobalId = new ShGlobalId();
 		shGlobalId.setShObject(shPost);
-		shGlobalId.setType("POST");
+		shGlobalId.setType(ShObjectType.POST);
 
 		shGlobalIdRepository.save(shGlobalId);
 
@@ -327,7 +329,7 @@ public class ShSiteAPI {
 					if (shPostAttr != null && shPostAttr.getShPostTypeAttr() != null) {
 						fields.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
 						if (shPostAttr.getShPostTypeAttr().getName().equals("FILE")
-								&& shPost.getShPostType().getName().equals("PT-FILE")) {
+								&& shPost.getShPostType().getName().equals(ShSystemPostType.FILE.toString())) {
 							String fileName = shPostAttr.getStrValue();
 							File directoryPath = shStaticFileUtils.dirPath(shPost.getShFolder());
 							File file = new File(directoryPath.getAbsolutePath().concat(File.separator + fileName));
