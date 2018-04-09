@@ -15,6 +15,7 @@ import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrReposi
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.persistence.repository.widget.ShWidgetRepository;
 import com.viglet.shiohara.post.type.ShSystemPostType;
+import com.viglet.shiohara.post.type.ShSystemPostTypeAttr;
 import com.viglet.shiohara.widget.ShSystemWidget;
 
 @Component
@@ -33,12 +34,14 @@ public class ShPostTypeOnStartup {
 
 		if (shPostTypeRepository.findAll().isEmpty()) {
 
-			ShWidget shWidgetText = shWidgetRepository.findByName(ShSystemWidget.TEXT.toString());
-			ShWidget shWidgetTextArea = shWidgetRepository.findByName(ShSystemWidget.TEXT_AREA.toString());
-			ShWidget shWidgetFile = shWidgetRepository.findByName(ShSystemWidget.FILE.toString());
-			ShWidget shWidgetAceEditorJS = shWidgetRepository.findByName(ShSystemWidget.ACE_JS.toString());
-			ShWidget shWidgetAceEditorHTML = shWidgetRepository.findByName(ShSystemWidget.ACE_HTML.toString());
-			ShWidget shWidgetHTMLEditor = shWidgetRepository.findByName(ShSystemWidget.HTML_EDITOR.toString());
+			ShWidget shWidgetText = shWidgetRepository.findByName(ShSystemWidget.TEXT);
+			ShWidget shWidgetTextArea = shWidgetRepository.findByName(ShSystemWidget.TEXT_AREA);
+			ShWidget shWidgetFile = shWidgetRepository.findByName(ShSystemWidget.FILE);
+			ShWidget shWidgetAceEditorJS = shWidgetRepository.findByName(ShSystemWidget.ACE_JS);
+			ShWidget shWidgetAceEditorHTML = shWidgetRepository.findByName(ShSystemWidget.ACE_HTML);
+			ShWidget shWidgetHTMLEditor = shWidgetRepository.findByName(ShSystemWidget.HTML_EDITOR);
+			ShWidget shWidgetContentSelect = shWidgetRepository.findByName(ShSystemWidget.CONTENT_SELECT);
+
 			// Text
 
 			ShPostType shPostType = new ShPostType();
@@ -57,7 +60,7 @@ public class ShPostTypeOnStartup {
 			shGlobalIdRepository.save(shGlobalId);
 
 			ShPostTypeAttr shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("TEXT");
+			shPostTypeAttr.setName(ShSystemPostTypeAttr.TEXT);
 			shPostTypeAttr.setLabel("Text");
 			shPostTypeAttr.setDescription("Text");
 			shPostTypeAttr.setIsSummary((byte) 0);
@@ -88,7 +91,7 @@ public class ShPostTypeOnStartup {
 			shGlobalIdRepository.save(shGlobalId);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("PHOTO");
+			shPostTypeAttr.setName(ShSystemPostTypeAttr.PHOTO);
 			shPostTypeAttr.setLabel("Photo Path");
 			shPostTypeAttr.setDescription("Photo Path");
 			shPostTypeAttr.setIsSummary((byte) 0);
@@ -119,7 +122,7 @@ public class ShPostTypeOnStartup {
 			shGlobalIdRepository.save(shGlobalId);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("VIDEO");
+			shPostTypeAttr.setName(ShSystemPostTypeAttr.VIDEO);
 			shPostTypeAttr.setLabel("Video Path");
 			shPostTypeAttr.setDescription("Video Path");
 			shPostTypeAttr.setIsSummary((byte) 0);
@@ -150,7 +153,7 @@ public class ShPostTypeOnStartup {
 			shGlobalIdRepository.save(shGlobalId);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("QUOTE");
+			shPostTypeAttr.setName(ShSystemPostTypeAttr.TEXT);
 			shPostTypeAttr.setLabel("Quote");
 			shPostTypeAttr.setDescription("Quote Text");
 			shPostTypeAttr.setIsSummary((byte) 0);
@@ -181,7 +184,7 @@ public class ShPostTypeOnStartup {
 			shGlobalIdRepository.save(shGlobalId);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("LINK");
+			shPostTypeAttr.setName(ShSystemPostTypeAttr.LINK);
 			shPostTypeAttr.setLabel("Link");
 			shPostTypeAttr.setDescription("Link");
 			shPostTypeAttr.setIsSummary((byte) 0);
@@ -212,7 +215,7 @@ public class ShPostTypeOnStartup {
 			shGlobalIdRepository.save(shGlobalId);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("FILE");
+			shPostTypeAttr.setName(ShSystemPostTypeAttr.FILE);
 			shPostTypeAttr.setLabel("File Path");
 			shPostTypeAttr.setDescription("File Path");
 			shPostTypeAttr.setIsSummary((byte) 0);
@@ -243,7 +246,7 @@ public class ShPostTypeOnStartup {
 			shGlobalIdRepository.save(shGlobalId);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("TEXT");
+			shPostTypeAttr.setName(ShSystemPostTypeAttr.TEXT);
 			shPostTypeAttr.setLabel("Text");
 			shPostTypeAttr.setDescription("Text");
 			shPostTypeAttr.setIsSummary((byte) 0);
@@ -274,7 +277,7 @@ public class ShPostTypeOnStartup {
 			shGlobalIdRepository.save(shGlobalId);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("TITLE");
+			shPostTypeAttr.setName(ShSystemPostTypeAttr.TITLE);
 			shPostTypeAttr.setLabel("Title");
 			shPostTypeAttr.setDescription("Title");
 			shPostTypeAttr.setIsSummary((byte) 0);
@@ -288,7 +291,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("DESCRIPTION");
+			shPostTypeAttr.setName(ShSystemPostTypeAttr.DESCRIPTION);
 			shPostTypeAttr.setLabel("Description");
 			shPostTypeAttr.setDescription("Description");
 			shPostTypeAttr.setIsSummary((byte) 1);
@@ -302,7 +305,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("FILE");
+			shPostTypeAttr.setName(ShSystemPostTypeAttr.FILE);
 			shPostTypeAttr.setLabel("File Path");
 			shPostTypeAttr.setDescription("File Path");
 			shPostTypeAttr.setIsSummary((byte) 0);
@@ -316,7 +319,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("TEXT");
+			shPostTypeAttr.setName(ShSystemPostTypeAttr.TEXT);
 			shPostTypeAttr.setLabel("Text");
 			shPostTypeAttr.setDescription("Text");
 			shPostTypeAttr.setIsSummary((byte) 0);
@@ -347,7 +350,7 @@ public class ShPostTypeOnStartup {
 			shGlobalIdRepository.save(shGlobalId);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("TITLE");
+			shPostTypeAttr.setName(ShSystemPostTypeAttr.TITLE);
 			shPostTypeAttr.setLabel("Title");
 			shPostTypeAttr.setDescription("Title");
 			shPostTypeAttr.setIsSummary((byte) 0);
@@ -361,7 +364,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("DESCRIPTION");
+			shPostTypeAttr.setName(ShSystemPostTypeAttr.DESCRIPTION);
 			shPostTypeAttr.setLabel("Description");
 			shPostTypeAttr.setDescription("Description");
 			shPostTypeAttr.setIsSummary((byte) 1);
@@ -375,7 +378,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("JAVASCRIPT");
+			shPostTypeAttr.setName(ShSystemPostTypeAttr.JAVASCRIPT);
 			shPostTypeAttr.setLabel("Javascript");
 			shPostTypeAttr.setDescription("Javascript");
 			shPostTypeAttr.setIsSummary((byte) 0);
@@ -389,7 +392,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("HTML");
+			shPostTypeAttr.setName(ShSystemPostTypeAttr.HTML);
 			shPostTypeAttr.setLabel("HTML");
 			shPostTypeAttr.setDescription("HTML");
 			shPostTypeAttr.setIsSummary((byte) 0);
@@ -420,7 +423,7 @@ public class ShPostTypeOnStartup {
 			shGlobalIdRepository.save(shGlobalId);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("TITLE");
+			shPostTypeAttr.setName(ShSystemPostTypeAttr.TITLE);
 			shPostTypeAttr.setLabel("Title");
 			shPostTypeAttr.setDescription("Title");
 			shPostTypeAttr.setIsSummary((byte) 0);
@@ -434,7 +437,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("DESCRIPTION");
+			shPostTypeAttr.setName(ShSystemPostTypeAttr.DESCRIPTION);
 			shPostTypeAttr.setLabel("Description");
 			shPostTypeAttr.setDescription("Description");
 			shPostTypeAttr.setIsSummary((byte) 1);
@@ -448,7 +451,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("CSS");
+			shPostTypeAttr.setName(ShSystemPostTypeAttr.CSS);
 			shPostTypeAttr.setLabel("CSS");
 			shPostTypeAttr.setDescription("CSS");
 			shPostTypeAttr.setIsSummary((byte) 0);
@@ -462,7 +465,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("JAVASCRIPT");
+			shPostTypeAttr.setName(ShSystemPostTypeAttr.JAVASCRIPT);
 			shPostTypeAttr.setLabel("Javascript");
 			shPostTypeAttr.setDescription("Javascript");
 			shPostTypeAttr.setIsSummary((byte) 0);
@@ -493,7 +496,7 @@ public class ShPostTypeOnStartup {
 			shGlobalIdRepository.save(shGlobalId);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("TITLE");
+			shPostTypeAttr.setName(ShSystemPostTypeAttr.TITLE);
 			shPostTypeAttr.setLabel("Title");
 			shPostTypeAttr.setDescription("Title");
 			shPostTypeAttr.setIsSummary((byte) 0);
@@ -507,7 +510,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("DESCRIPTION");
+			shPostTypeAttr.setName(ShSystemPostTypeAttr.DESCRIPTION);
 			shPostTypeAttr.setLabel("Description");
 			shPostTypeAttr.setDescription("Description");
 			shPostTypeAttr.setIsSummary((byte) 1);
@@ -521,7 +524,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("THEME");
+			shPostTypeAttr.setName(ShSystemPostTypeAttr.THEME);
 			shPostTypeAttr.setLabel("Theme");
 			shPostTypeAttr.setDescription("Theme");
 			shPostTypeAttr.setIsSummary((byte) 0);
@@ -535,7 +538,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("JAVASCRIPT");
+			shPostTypeAttr.setName(ShSystemPostTypeAttr.JAVASCRIPT);
 			shPostTypeAttr.setLabel("Javascript");
 			shPostTypeAttr.setDescription("Javascript");
 			shPostTypeAttr.setIsSummary((byte) 0);
@@ -549,7 +552,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("HTML");
+			shPostTypeAttr.setName(ShSystemPostTypeAttr.HTML);
 			shPostTypeAttr.setLabel("HTML");
 			shPostTypeAttr.setDescription("HTML");
 			shPostTypeAttr.setIsSummary((byte) 0);
@@ -580,7 +583,7 @@ public class ShPostTypeOnStartup {
 			shGlobalIdRepository.save(shGlobalId);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("TITLE");
+			shPostTypeAttr.setName(ShSystemPostTypeAttr.TITLE);
 			shPostTypeAttr.setLabel("Title");
 			shPostTypeAttr.setDescription("Title");
 			shPostTypeAttr.setIsSummary((byte) 0);
@@ -594,7 +597,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("DESCRIPTION");
+			shPostTypeAttr.setName(ShSystemPostTypeAttr.DESCRIPTION);
 			shPostTypeAttr.setLabel("Description");
 			shPostTypeAttr.setDescription("Description");
 			shPostTypeAttr.setIsSummary((byte) 1);
@@ -608,7 +611,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("PAGE-LAYOUT");
+			shPostTypeAttr.setName(ShSystemPostTypeAttr.PAGE_LAYOUT);
 			shPostTypeAttr.setLabel("Page Layout");
 			shPostTypeAttr.setDescription("Page Layout");
 			shPostTypeAttr.setIsSummary((byte) 0);
@@ -620,7 +623,50 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setShWidget(shWidgetText);
 
 			shPostTypeAttrRepository.save(shPostTypeAttr);
+			// Alias
 
+			shPostType = new ShPostType();
+			shPostType.setName(ShSystemPostType.ALIAS);
+			shPostType.setTitle("Alias");
+			shPostType.setDate(Calendar.getInstance().getTime());
+			shPostType.setDescription("Alias Post Type");
+			shPostType.setSystem((byte) 1);
+
+			shPostTypeRepository.save(shPostType);
+
+			shGlobalId = new ShGlobalId();
+			shGlobalId.setShObject(shPostType);
+			shGlobalId.setType(ShObjectType.POST_TYPE);
+
+			shGlobalIdRepository.save(shGlobalId);
+
+			shPostTypeAttr = new ShPostTypeAttr();
+			shPostTypeAttr.setName(ShSystemPostTypeAttr.TITLE);
+			shPostTypeAttr.setLabel("Title");
+			shPostTypeAttr.setDescription("Title");
+			shPostTypeAttr.setIsSummary((byte) 0);
+			shPostTypeAttr.setIsTitle((byte) 1);
+			shPostTypeAttr.setMany((byte) 0);
+			shPostTypeAttr.setOrdinal(1);
+			shPostTypeAttr.setRequired((byte) 1);
+			shPostTypeAttr.setShPostType(shPostType);
+			shPostTypeAttr.setShWidget(shWidgetText);
+
+			shPostTypeAttrRepository.save(shPostTypeAttr);
+
+			shPostTypeAttr = new ShPostTypeAttr();
+			shPostTypeAttr.setName(ShSystemPostTypeAttr.CONTENT);
+			shPostTypeAttr.setLabel("Content Select");
+			shPostTypeAttr.setDescription("Content Select");
+			shPostTypeAttr.setIsSummary((byte) 1);
+			shPostTypeAttr.setIsTitle((byte) 0);
+			shPostTypeAttr.setMany((byte) 0);
+			shPostTypeAttr.setOrdinal(2);
+			shPostTypeAttr.setRequired((byte) 1);
+			shPostTypeAttr.setShPostType(shPostType);
+			shPostTypeAttr.setShWidget(shWidgetContentSelect);
+
+			shPostTypeAttrRepository.save(shPostTypeAttr);
 		}
 
 	}

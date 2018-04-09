@@ -10,4 +10,8 @@ public class ShSystemPostTypeAttr {
 	public static final String HTML = "HTML";
 	public static final String PAGE_LAYOUT = "PAGE-LAYOUT";
 	public static final String THEME = "THEME";
+	public static final String CONTENT = "CONTENT";
+	public static final String PHOTO = "PHOTO";
+	public static final String VIDEO = "VIDEO";
+	public static final String LINK = "LINK";
 }

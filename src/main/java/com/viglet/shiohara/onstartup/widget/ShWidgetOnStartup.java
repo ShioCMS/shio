@@ -71,6 +71,14 @@ public class ShWidgetOnStartup {
 
 			shWidgetRepository.save(shWidget);
 
+			shWidget = new ShWidget();
+			shWidget.setName(ShSystemWidget.CONTENT_SELECT);
+			shWidget.setDescription("Content Select Widget");
+			shWidget.setClassName("com.viglet.shiohara.widget.ShContentSelectWidget");
+			shWidget.setImplementationCode("template/widget/content-select.html");
+			shWidget.setType("TEXT,TEXTAREA");
+
+			shWidgetRepository.save(shWidget);
 		}
 
 	}

@@ -7,4 +7,5 @@ public class ShSystemWidget {
 	public static final String HTML_EDITOR = "HTML Editor";
 	public static final String FILE = "File";
 	public static final String TEXT_AREA = "Text Area";
+	public static final String CONTENT_SELECT = "Content Select";
 }

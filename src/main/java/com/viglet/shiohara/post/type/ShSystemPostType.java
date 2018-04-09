@@ -13,5 +13,6 @@ public class ShSystemPostType {
 	public static final String THEME = "PT-THEME";
 	public static final String PAGE_LAYOUT = "PT-PAGE-LAYOUT";
 	public static final String FOLDER_INDEX = "PT-FOLDER-INDEX";
+	public static final String ALIAS = "PT-ALIAS";
 
 }
