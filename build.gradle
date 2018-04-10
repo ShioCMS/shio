@@ -84,6 +84,7 @@ dependencies {
     // Thymeleaf
     compile group: 'org.thymeleaf', name: 'thymeleaf-spring5', version:"${thymeleafVersion}"
     compile group: 'org.thymeleaf', name: 'thymeleaf', version:"${thymeleafVersion}"
+    
 
     // HSQLDB
     compile group: 'org.hsqldb', name: 'hsqldb', version:'2.4.0'

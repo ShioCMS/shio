@@ -5,8 +5,12 @@ shioharaApp.config([
 		'$locationProvider',
 		'$translateProvider',
 		'NotificationProvider',
+		'$httpProvider',
 		function($stateProvider, $urlRouterProvider, TokenProvider,
-				$locationProvider, $translateProvider, NotificationProvider) {			
+				$locationProvider, $translateProvider, NotificationProvider,$httpProvider) {	
+			
+			$httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
+			 
 			$translateProvider.useSanitizeValueStrategy('escaped');
 			
 			NotificationProvider.setOptions({
@@ -35,7 +39,7 @@ shioharaApp.config([
 
 			$translateProvider.fallbackLanguage('en');
 
-			$urlRouterProvider.otherwise('/content');
+			$urlRouterProvider.otherwise('');
 
 			$stateProvider.state('oauth2', {
 				url : '/oauth2',
@@ -44,8 +48,9 @@ shioharaApp.config([
 				data : {
 					pageTitle : 'OAuth2 | Viglet Shiohara'
 				}
-			}).state('content', {
-				url : '/content'	,
+			}).state('content', {	
+				url : '',
+				controller : 'ShContentCtrl',
 				redirectTo: 'content.home'
 			}).state('content.home', {
 				url : '/home',

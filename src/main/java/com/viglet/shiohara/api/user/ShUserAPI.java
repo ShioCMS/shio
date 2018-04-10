@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,24 +24,30 @@ import io.swagger.annotations.Api;
 
 @RestController
 @RequestMapping("/api/v2/user")
-@Api(tags="User", description="User API")
+@Api(tags = "User", description = "User API")
 public class ShUserAPI {
-	
+
 	@Autowired
 	private ShUserRepository shUserRepository;
-	
+
 	@GetMapping
 	public List<ShUser> shUserList() throws Exception {
 		return shUserRepository.findAll();
 	}
 
 	@GetMapping("/current")
-	public ShUser shUserCurrent(@RequestParam(value = "access_token") int accessToken) throws Exception {
-		return shUserRepository.findById(accessToken);
+	public ShUser shUserCurrent() throws Exception {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (!(authentication instanceof AnonymousAuthenticationToken)) {
+			String currentUserName = authentication.getName();
+			return shUserRepository.findByUsername(currentUserName);
+		}
+
+		return null;
 	}
 
 	@GetMapping("/{id}")
-	public ShUser shUserEdit(@PathVariable int id) throws Exception {	
+	public ShUser shUserEdit(@PathVariable int id) throws Exception {
 		return shUserRepository.findById(id);
 	}
 
@@ -61,7 +70,7 @@ public class ShUserAPI {
 	}
 
 	@DeleteMapping("/{id}")
-	public boolean shUserDelete(@PathVariable UUID id) throws Exception { 
+	public boolean shUserDelete(@PathVariable UUID id) throws Exception {
 		shUserRepository.delete(id);
 		return true;
 	}

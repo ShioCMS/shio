@@ -18,8 +18,8 @@
 	href="http://localhost:2710/thirdparty/font-awesome/4.7.0/css/font-awesome.min.css"
 	rel="stylesheet"></link>
 
-<link href="https://viglet.ai/ui/css/viglet.css" rel="stylesheet"></link>
-
+<!-- <link href="https://viglet.ai/ui/css/viglet.css" rel="stylesheet"></link> -->
+<link href="css/login.css" rel="stylesheet"></link>
 <link href="https://viglet.ai/ui/favicon.ico" rel="shortcut icon"
 	type="image/x-icon"></link>
 </head>
@@ -34,13 +34,14 @@
 	height: 200px;
 }
 </style>
-<body data-target=".navbar-default">
+<body>
 	<div id="wrap" style="margin-bottom: 15px;">
-	    <div ng-include="'template/navigation/navigation.html'"></div>
+		<div ng-include="'template/navigation/navigation.html'"></div>
 		<div class="container" style="margin-top: 60px;">
 			<div ui-view></div>
 		</div>
-		<script
+	</div>
+	<script
 			src="http://localhost:2710/thirdparty/jquery/1.12.4/dist/jquery.min.js"></script>
 		<script
 			src="http://localhost:2710/thirdparty/tinymce/4.5.8/tinymce.min.js"></script>
