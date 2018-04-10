@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.model.user.ShUser;
 
 public interface ShUserRepository extends JpaRepository<ShUser, Integer> {
@@ -16,6 +17,8 @@ public interface ShUserRepository extends JpaRepository<ShUser, Integer> {
 	ShUser findById(int id);
 
 	ShUser save(ShUser shUser);
+	
+	ShUser findByUsername(String username);
 	
 	@Modifying
 	@Query("delete from ShUser p where p.id = ?1")

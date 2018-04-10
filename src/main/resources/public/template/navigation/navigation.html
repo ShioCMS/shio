@@ -15,7 +15,11 @@
 						style="margin-top: 17px; margin-left: 20px; color: #444; font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif; font-size: 20px; line-height: 1; letter-spacing: .02em; font-weight: 400;">Shiohara</div></a>
 			</div>
 
-			<div class="col-lg-3 col-md-3 col-sm-4 hidden-xs"
+
+			<div class="col-lg-5 col-md-5 col-sm-3 col-xs-7"
+				style="padding-top: 7px"
+				ng-include="'/template/search/search-box.html'"></div>
+			<div class="col-lg-4 col-md-4 col-sm-5 hidden-xs"
 				style="padding-top: 7px">
 				<nav class="collapse navbar-collapse bs-navbar-collapse"
 					role="navigation">
@@ -24,12 +28,13 @@
 							style="padding-top: 8px; padding-bottom: 14px; padding-right: 18px; padding-left: 18px;">Modeling</a></li>
 						<li><a href="/swagger-ui.html" target="_blank"
 							style="padding-top: 8px; padding-bottom: 14px; padding-right: 18px; padding-left: 18px;">Documentation</a></li>
+						<li><a href
+							ng-click="logout()"
+							style="padding-top: 8px; padding-bottom: 14px; padding-right: 18px; padding-left: 18px;"><i
+								class="fa fa-sign-out" aria-hidden="true"></i> Logout</a></li>
 					</ul>
 				</nav>
 			</div>
-			<div class="col-lg-6 col-md-6 col-sm-4 col-xs-7"
-				style="padding-top: 7px"
-				ng-include="'/template/search/search-box.html'"></div>
 		</div>
 
 	</div>
