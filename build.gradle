@@ -4,6 +4,7 @@ buildscript {
 	      hibernateVersion = '5.9.1.Final'
 		  httpClientVersion = '4.5.2'
 		  swaggerVersion = '2.8.0'
+		  jgitVersion = '4.11.0.201803080745-r'
 		 }
     repositories { mavenCentral()
     			   jcenter() }
@@ -79,13 +80,18 @@ dependencies {
     compile(group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf', version: "${springBootVersion}") {
 		exclude(module: 'thymeleaf-layout-dialect')
     }
+    
+    // JGit
+    compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: "${jgitVersion}"
+    compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit.archive', version: "${jgitVersion}"
+    
+    // Jackson
    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.9.4'
    
     // Thymeleaf
     compile group: 'org.thymeleaf', name: 'thymeleaf-spring5', version:"${thymeleafVersion}"
     compile group: 'org.thymeleaf', name: 'thymeleaf', version:"${thymeleafVersion}"
     
-
     // HSQLDB
     compile group: 'org.hsqldb', name: 'hsqldb', version:'2.4.0'
     

@@ -52,8 +52,8 @@ h1 {
   border-radius: 4px;
 }
 .form-control:focus, .form-control:focus + .fa {
-  border-color: #10CE88;
-  color: #10CE88;
+  border-color: #fb6210;
+  color: #fb6210;
 }
 
 .form-group .fa {
