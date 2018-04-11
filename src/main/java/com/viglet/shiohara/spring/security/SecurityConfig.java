@@ -44,7 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/thirdparty/**", "/js/**","/css/**", "/template/**","/img/**","/sites/**");
+		web.ignoring().antMatchers("/thirdparty/**", "/js/**","/css/**", "/template/**","/img/**","/sites/**","/swagger-resources/**");
 	}
 
 	// create two users, admin and user
