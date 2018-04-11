@@ -313,12 +313,8 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
             });
         }
         
-        $scope.postPreview = function (shPost) {
-            var link = shAPIServerService.get().concat("/v2/object/" + shPost.shGlobalId.id + "/preview");
-            $window.open(link);
-        }
-        $scope.folderPreview = function (shFolder) {
-            var link = shAPIServerService.get().concat("/v2/object/" + shFolder.shGlobalId.id + "/preview");
+        $scope.objectPreview = function (shObject) {
+            var link = shAPIServerService.get().concat("/v2/object/" + shObject.shGlobalId.id + "/preview");
             $window.open(link);
         }
 						}]);

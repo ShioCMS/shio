@@ -36,10 +36,5 @@ public class Shiohara {
 		factory.addBuilderCustomizers(builder -> builder.setServerOption(UndertowOptions.ENABLE_HTTP2, true));
 		return factory;
 	}
-
-	@RequestMapping("/")
-	String index() {
-		return "index";
-	}
 	
 }

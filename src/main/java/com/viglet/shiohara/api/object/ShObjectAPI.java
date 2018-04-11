@@ -28,20 +28,26 @@ import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
+import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
 import com.viglet.shiohara.utils.ShFolderUtils;
 import com.viglet.shiohara.utils.ShPostUtils;
+import com.viglet.shiohara.utils.ShSiteUtils;
 
 import io.swagger.annotations.Api;
 
 @RestController
 @RequestMapping("/api/v2/object")
-@Api(tags="Object", description="Object API")
+@Api(tags = "Object", description = "Object API")
 public class ShObjectAPI {
 
 	@Autowired
 	private ShFolderRepository shFolderRepository;
 	@Autowired
+	private ShSiteRepository shSiteRepository;
+	@Autowired
 	private ShPostRepository shPostRepository;
+	@Autowired
+	private ShSiteUtils shSiteUtils;
 	@Autowired
 	private ShFolderUtils shFolderUtils;
 	@Autowired
@@ -55,7 +61,10 @@ public class ShObjectAPI {
 	public void shObjectPreview(@PathVariable UUID id, HttpServletResponse response) throws Exception {
 		String redirect = null;
 		ShGlobalId shGlobalId = shGlobalIdRepository.findById(id).get();
-		if (shGlobalId.getType().equals(ShObjectType.POST)) {
+		if (shGlobalId.getType().equals(ShObjectType.SITE)) {
+			ShSite shSite = shSiteRepository.findById(shGlobalId.getShObject().getId()).get();
+			redirect = shSiteUtils.generatePostLink(shSite);
+		} else if (shGlobalId.getType().equals(ShObjectType.POST)) {
 			ShPost shPost = shPostRepository.findById(shGlobalId.getShObject().getId()).get();
 			redirect = shPostUtils.generatePostLink(shPost.getId().toString());
 		} else if (shGlobalId.getType().equals(ShObjectType.FOLDER)) {

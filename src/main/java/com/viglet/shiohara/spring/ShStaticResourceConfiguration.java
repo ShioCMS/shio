@@ -7,13 +7,14 @@ import org.springframework.context.annotation.Configuration;
 
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.viglet.shiohara.utils.ShStaticFileUtils;
 
 @Configuration
 @AutoConfigureAfter(DispatcherServletAutoConfiguration.class)
-public class ShStaticResourceConfiguration extends WebMvcConfigurerAdapter {
+public class ShStaticResourceConfiguration implements WebMvcConfigurer {
 	@Autowired
 	private ShStaticFileUtils shStaticFileUtils;
 
@@ -35,5 +36,8 @@ public class ShStaticResourceConfiguration extends WebMvcConfigurerAdapter {
 		registry.addMapping("/api/**").allowedOrigins("*").allowedMethods("PUT", "DELETE", "GET", "POST")
 				.allowCredentials(false).maxAge(3600);
 	}
-
+	@Override
+	public void addViewControllers(ViewControllerRegistry registry) {
+	    registry.addViewController("/content").setViewName("forward:/content/index.html");
+	}
 }
