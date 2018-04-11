@@ -1,6 +1,5 @@
 buildscript {
     ext { springBootVersion = '2.0.1.RELEASE'
-	      thymeleafVersion = '3.0.9.RELEASE'
 	      hibernateVersion = '5.9.1.Final'
 		  httpClientVersion = '4.5.2'
 		  swaggerVersion = '2.8.0'
@@ -91,10 +90,6 @@ dependencies {
     
     // Jackson
    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.9.4'
-   
-    // Thymeleaf
-    compile group: 'org.thymeleaf', name: 'thymeleaf-spring5', version:"${thymeleafVersion}"
-    compile group: 'org.thymeleaf', name: 'thymeleaf', version:"${thymeleafVersion}"
     
     // HSQLDB
     compile group: 'org.hsqldb', name: 'hsqldb', version:'2.4.0'

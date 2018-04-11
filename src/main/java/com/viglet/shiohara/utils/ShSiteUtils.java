@@ -1,9 +1,14 @@
 package com.viglet.shiohara.utils;
 
+import java.util.UUID;
+
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 
+import com.viglet.shiohara.persistence.model.folder.ShFolder;
+import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.site.ShSite;
+import com.viglet.shiohara.post.type.ShSystemPostType;
 
 @Component
 public class ShSiteUtils {
@@ -19,6 +24,15 @@ public class ShSiteUtils {
 
 		shSiteItemAttrs.put("system", shSiteItemSystemAttrs);
 		return shSiteItemAttrs;
+	}
+	
+	public String generatePostLink(ShSite shSite) {	
+		String shContext = "sites";
+		String link = "/" + shContext + "/";
+		link = link + shSite.getName().replaceAll(" ", "-");
+		link = link + "/default/pt-br";
+		link = link + "/Home";
+		return link;
 	}
 
 }

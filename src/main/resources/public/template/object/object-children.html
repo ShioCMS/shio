@@ -1,86 +1,77 @@
 
 <div ng-include="'/template/breadcrumb/breadcrumb.html'"></div>
-<div class="settings">
+<div class="settings" style="height: 85px">
 	<section class="content no-padding">
 
-		<fieldset class="user-details-top" style="margin-bottom: 30px">
-
+		<fieldset class="user-details-top">
+			<div class="form-group"></div>
 			<div class="form-group" style="text-align: center">
-				<h3 ng-show="shSite">{{shSite.name}} Site</h3>
+				<h3 class="hidden-lg hidden-md hidden-sm">&nbsp;</h3><h3 ng-show="shSite" class="hidden-xs">{{shSite.name}} Site</h3>
 			</div>
 			<div class="pull-right" style="margin: -40px 0 0;">
-				<a ng-if="shCurrentFolder != null"
-					ui-sref="content.folder.folder-new({folderId: shCurrentFolder.id})"
-					class="btn btn-viglet">New Folder</a>
+				<a ng-click="objectPreview(shSite)" class="btn btn-viglet"><i
+					class="fa fa-eye" aria-hidden="true"></i> Look</a> <a
+					ui-sref="content.site.edit({siteId: shSite.id})"
+					class="btn btn-default">Site Properties</a>
 			</div>
 		</fieldset>
 	</section>
 </div>
 <div class="row">
-	<div class="col-lg-2 col-md-3 col-sm-3 col-xs-12">
-		<div ng-if="shCurrentFolder != null" class="btn-group">
-			<a
-				ui-sref="content.post-type-item.post-item-new({folderId: shCurrentFolder.id, postTypeId: shUser.lastPostType})"
-				class="btn btn-viglet">New {{shLastPostType.title}}</a> <a
-				class="btn btn-viglet"
-				ui-sref="content.folder.post-type-select({folderId: shCurrentFolder.id})"><span
-				class="glyphicon glyphicon-th"></span></a>
-		</div>
-		<div ng-if="shCurrentFolder == null" class="btn-group">
-			<a ui-sref="content.site.folder-new({siteId: shSite.id})"
-				class="btn btn-viglet">New Folder</a>
-		</div>
-		<ul class="nav nav-pills nav-stacked">
-			<li><a ui-sref="content.site.edit({siteId: shSite.id})">Site
-					Properties</a></li>
-			<li><a href="#">Starred <i class="glyphicon glyphicon-star"></i></a></li>
-			<li><a href="#">All Posts</a></li>
-			<li><a href="#">Trash <i class="glyphicon glyphicon-trash"></i></a></li>
-		</ul>
-		<ul class="nav nav-pills nav-stacked">
-			<li class="nav-header">Tag</li>
-			<li ng-repeat="label in labels | filter:query | orderBy:orderProp">
-				<a href="#"> {{label.title}} </a>
-			</li>
-		</ul>
-	</div>
-	<div class="col-lg-10 col-md-9 col-sm-9 col-xs-12">
+	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 		<div style="margin-bottom: 10px; height: 40px">
-			<div class="btn-group" uib-dropdown>
-				<button id="select-button" type="button" class="btn btn-default"
-					uib-dropdown-toggle ng-disabled="disabled">
-					Select <span class="caret"></span>
-				</button>
-				<ul class="dropdown-menu" uib-dropdown-menu role="menu"
-					aria-labelledby="select-button">
-					<li role="menuitem"><a ng-click="selectContents()" href><i
-							class="fa fa-files-o" aria-hidden="true"></i> Content</a></li>
-					<li role="menuitem"><a ng-click="selectFolders()" href><i
-							class="fa fa-folder-open" aria-hidden="true"></i> Folder</a></li>
-					<li role="menuitem"><a ng-click="selectEverything()" href><i
-							class="fa fa-check-square" aria-hidden="true"></i> Everything</a></li>
-					<li role="menuitem"><a ng-click="selectInverted()" href><i
-							class="fa fa-undo" aria-hidden="true"></i> Invert Selection</a></li>
-					<li role="menuitem"><a ng-click="selectNothing()" href><i
-							class="fa fa-ban" aria-hidden="true"></i> Nothing</a></li>
-				</ul>
+			<div class="pull-left">
+				<div ng-if="shCurrentFolder != null" class="btn-group">
+					<a
+						ui-sref="content.post-type-item.post-item-new({folderId: shCurrentFolder.id, postTypeId: shUser.lastPostType})"
+						class="btn btn-default">New {{shLastPostType.title}}</a> <a
+						class="btn btn-default"
+						ui-sref="content.folder.post-type-select({folderId: shCurrentFolder.id})"><span
+						class="glyphicon glyphicon-th"></span></a>
+				</div>
+				<a
+					ui-sref="content.folder.folder-new({folderId: shCurrentFolder.id})"
+					class="btn btn-default">New Folder</a>
+
+			</div>
+			<div class="pull-right hidden-xs">
+				<div class="btn-group" uib-dropdown>
+					<button id="select-button" type="button" class="btn btn-default"
+						uib-dropdown-toggle ng-disabled="disabled">
+						Select <span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu" uib-dropdown-menu role="menu"
+						aria-labelledby="select-button">
+						<li role="menuitem"><a ng-click="selectContents()" href><i
+								class="fa fa-files-o" aria-hidden="true"></i> Content</a></li>
+						<li role="menuitem"><a ng-click="selectFolders()" href><i
+								class="fa fa-folder-open" aria-hidden="true"></i> Folder</a></li>
+						<li role="menuitem"><a ng-click="selectEverything()" href><i
+								class="fa fa-check-square" aria-hidden="true"></i> Everything</a></li>
+						<li role="menuitem"><a ng-click="selectInverted()" href><i
+								class="fa fa-undo" aria-hidden="true"></i> Invert Selection</a></li>
+						<li role="menuitem"><a ng-click="selectNothing()" href><i
+								class="fa fa-ban" aria-hidden="true"></i> Nothing</a></li>
+					</ul>
+				</div>
+
+				<div class="btn-group" uib-dropdown>
+					<button id="batch-button" type="button" class="btn btn-default"
+						uib-dropdown-toggle ng-disabled="disabled">
+						Action in Batch <span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu" uib-dropdown-menu role="menu"
+						aria-labelledby="batch-button">
+						<li role="menuitem"><a ng-click="objectsCopy()" href><i
+								class="fa fa-files-o" aria-hidden="true"></i> Copy</a></li>
+						<li role="menuitem"><a ng-click="objectsMove()" href><i
+								class="fa fa-share" aria-hidden="true"></i> Move</a></li>
+						<li role="menuitem"><a ng-click="objectsDelete()" href><i
+								class="fa fa-trash-o" aria-hidden="true"></i> Delete</a></li>
+					</ul>
+				</div>
 			</div>
 
-			<div class="btn-group" uib-dropdown>
-				<button id="batch-button" type="button" class="btn btn-default"
-					uib-dropdown-toggle ng-disabled="disabled">
-					Action in Batch <span class="caret"></span>
-				</button>
-				<ul class="dropdown-menu" uib-dropdown-menu role="menu"
-					aria-labelledby="batch-button">
-					<li role="menuitem"><a ng-click="objectsCopy()" href><i
-							class="fa fa-files-o" aria-hidden="true"></i> Copy</a></li>
-					<li role="menuitem"><a ng-click="objectsMove()" href><i
-							class="fa fa-share" aria-hidden="true"></i> Move</a></li>
-					<li role="menuitem"><a ng-click="objectsDelete()" href><i
-							class="fa fa-trash-o" aria-hidden="true"></i> Delete</a></li>
-				</ul>
-			</div>
 		</div>
 		<div>
 			<ul class="breadcrumb" style="margin-top: 0px; margin-bottom: 5px;">
@@ -160,7 +151,7 @@
 									<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
 								</button>
 								<button type="button" class="btn btn-link btn-xs"
-									style="display: block;" ng-click="folderPreview(shFolder)">
+									style="display: block;" ng-click="objectPreview(shFolder)">
 									<i class="fa fa-eye" aria-hidden="true"></i> Look
 								</button>
 							</div>
@@ -227,7 +218,7 @@
 									<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
 								</button>
 								<button type="button" class="btn btn-link btn-xs"
-									ng-click="postPreview(shPost)">
+									ng-click="objectPreview(shPost)">
 									<i class="fa fa-eye" aria-hidden="true"></i> Look
 								</button>
 							</div>
