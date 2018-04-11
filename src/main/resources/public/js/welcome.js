@@ -32,7 +32,8 @@ shioharaWelcome.service('shAPIServerService', [
 				}).then(function successCallback(response) {
 					$cookies.put('shServer', shEmbServer);
 				}, function errorCallback(response) {
-					$cookies.put('shServer', 'http://localhost:2710');
+					//$cookies.put('shServer', 'http://localhost:2710');
+					$cookies.put('shServer', shEmbServer);
 				});
 				return shEmbServer;
 			}
@@ -48,7 +49,8 @@ shioharaWelcome.service('shAPIServerService', [
 				}).then(function successCallback(response) {
 					$cookies.put('shAPIServer', shEmbAPIServer);
 				}, function errorCallback(response) {
-					$cookies.put('shAPIServer', 'http://localhost:2710' + shAPIContext);
+					//$cookies.put('shAPIServer', 'http://localhost:2710' + shAPIContext);
+					$cookies.put('shAPIServer', shEmbAPIServer);
 				});
 				return shEmbAPIServer;
 			}
