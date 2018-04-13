@@ -64,12 +64,6 @@ public class ShSitesContext {
 	@Resource
 	private ApplicationContext context;
 
-	@RequestMapping("/")
-	private void index(HttpServletRequest request, HttpServletResponse response) throws IOException, ScriptException {
-		response.sendRedirect("/welcome");
-
-	}
-
 	@RequestMapping("/Home/**")
 	private void home(HttpServletRequest request, HttpServletResponse response) throws IOException, ScriptException {
 		String shSiteName = request.getHeader("x-sh-site");
