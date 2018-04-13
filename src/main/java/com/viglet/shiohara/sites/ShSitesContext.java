@@ -64,11 +64,33 @@ public class ShSitesContext {
 	@Resource
 	private ApplicationContext context;
 
+	@RequestMapping("/")
+	private void index(HttpServletRequest request, HttpServletResponse response) throws IOException, ScriptException {
+		response.sendRedirect("/welcome");
+
+	}
+
+	@RequestMapping("/Home/**")
+	private void home(HttpServletRequest request, HttpServletResponse response) throws IOException, ScriptException {
+		String shSiteName = request.getHeader("x-sh-site");
+		if (shSiteName != null) {
+			this.siteContext(shSiteName, "default", "pt-br", 1, request, response);
+		} else {
+			response.sendRedirect("/");
+		}
+
+	}
+
 	@RequestMapping("/sites/{shSiteName}/{shFormat}/{shLocale}/**")
 	private void sitesFull(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable(value = "shSiteName") String shSiteName, @PathVariable(value = "shFormat") String shFormat,
 			@PathVariable(value = "shLocale") String shLocale) throws IOException, ScriptException {
+		this.siteContext(shSiteName, shFormat, shLocale, 5, request, response);
 
+	}
+
+	private void siteContext(String shSiteName, String shFormat, String shLocale, int contextPathPosition,
+			HttpServletRequest request, HttpServletResponse response) throws IOException, ScriptException {
 		InputStreamReader isr = new InputStreamReader(
 				resourceloader.getResource("classpath:/js/server-side/shObject.js").getInputStream());
 
@@ -85,24 +107,11 @@ public class ShSitesContext {
 		String[] contexts = url.split("/");
 		ArrayList<String> contentPath = new ArrayList<String>();
 
-		for (int i = 1; i < contexts.length; i++) {
-			switch (i) {
-			case 1:
-				shContext = contexts[i];
-				break;
-			case 2:
-				shSiteName = contexts[i];
-				break;
-			case 3:
-				shFormat = contexts[i];
-				break;
-			case 4:
-				shLocale = contexts[i];
-				break;
-			default:
-				contentPath.add(contexts[i]);
-				break;
-			}
+		if (contextPathPosition > 1) {
+			shContext = contexts[1];
+		}
+		for (int i = contextPathPosition; i < contexts.length; i++) {
+			contentPath.add(contexts[i]);
 		}
 
 		ShSite shSite = shSiteRepository.findByName(shSiteName.replaceAll("-", " "));
@@ -111,24 +120,33 @@ public class ShSitesContext {
 		// + " " + contentPath.toString());
 
 		int lastPosition = contentPath.size() - 1;
-		String postName = contentPath.get(lastPosition).replaceAll("-", " ");
-
-		ArrayList<String> folderPathArray = contentPath;
-
-		folderPathArray.remove(folderPathArray.size() - 1);
+		String postName = null;
 		String folderPath = "/";
-		for (String path : folderPathArray) {
-			folderPath = folderPath + path + "/";
-		}
+		if (contentPath.size() >= 1) {
+			postName = contentPath.get(lastPosition).replaceAll("-", " ");
 
+			ArrayList<String> folderPathArray = contentPath;
+
+			folderPathArray.remove(folderPathArray.size() - 1);
+
+			for (String path : folderPathArray) {
+				folderPath = folderPath + path + "/";
+			}
+		}
 		ShFolder shFolder = shFolderUtils.folderFromPath(shSite, folderPath);
 		ShFolder shFolderItem = null;
 		boolean isFolder = false;
 
-		ShPost shPostItem = shPostRepository.findByShFolderAndTitle(shFolder, postName);
-		if (shPostItem == null) {
-			String folderPathCurrent = folderPath + postName.replaceAll(" ", "-") + "/";
+		ShPost shPostItem = null;
+		if (postName != null) {
+			shPostItem = shPostRepository.findByShFolderAndTitle(shFolder, postName);
+		}
 
+		if (shPostItem == null) {
+			String folderPathCurrent = folderPath;
+			if (postName != null) {
+				folderPathCurrent = folderPathCurrent + postName.replaceAll(" ", "-") + "/";
+			}
 			shFolderItem = shFolderUtils.folderFromPath(shSite, folderPathCurrent);
 			if (shFolderItem != null) {
 				// System.out.println("shFolderItem is not null");
@@ -198,7 +216,7 @@ public class ShSitesContext {
 			shFolderItemAttrs.put("theme", shThemeAttrs);
 
 			JSONObject shSiteItemAttrs = shSiteUtils.toJSON(shSite, shContext);
-			
+
 			List<ShFolder> shFolders = shFolderRepository.findByParentFolder(shFolderItem);
 
 			for (ShFolder shChildFolder : shFolders) {
