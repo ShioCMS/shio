@@ -21,6 +21,7 @@ import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
+import com.viglet.shiohara.url.ShURLScheme;
 
 @Component
 public class ShFolderUtils {
@@ -32,6 +33,8 @@ public class ShFolderUtils {
 	private ShPostAttrRepository shPostAttrRepository;
 	@Autowired
 	private ShGlobalIdRepository shGlobalIdRepository;
+	@Autowired
+	private ShURLScheme shURLScheme;
 
 	public JSONObject toJSON(ShFolder shFolder) {
 		JSONObject shFolderItemAttrs = new JSONObject();
@@ -141,12 +144,8 @@ public class ShFolderUtils {
 	}
 
 	public String generateFolderLink(String folderID) {
-		String shContext = "sites";
 		ShFolder shFolder = shFolderRepository.findById(UUID.fromString(folderID)).get();
-		ShSite shSite = this.getSite(shFolder);
-		String link = "/" + shContext + "/";
-		link = link + shSite.getName().replaceAll(" ", "-");
-		link = link + "/default/pt-br";
+		String link = shURLScheme.get().toString();
 		link = link + this.folderPath(shFolder);
 		return link;
 	}

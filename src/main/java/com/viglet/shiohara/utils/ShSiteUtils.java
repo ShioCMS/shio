@@ -1,17 +1,17 @@
 package com.viglet.shiohara.utils;
 
-import java.util.UUID;
-
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.viglet.shiohara.persistence.model.folder.ShFolder;
-import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.site.ShSite;
-import com.viglet.shiohara.post.type.ShSystemPostType;
+import com.viglet.shiohara.url.ShURLScheme;
 
 @Component
 public class ShSiteUtils {
+	@Autowired
+	ShURLScheme shURLScheme;
+	
 	public JSONObject toJSON(ShSite shSite, String shContext) {
 		JSONObject shSiteItemSystemAttrs = new JSONObject();
 		shSiteItemSystemAttrs.put("id", shSite.getId());
@@ -27,10 +27,7 @@ public class ShSiteUtils {
 	}
 	
 	public String generatePostLink(ShSite shSite) {	
-		String shContext = "sites";
-		String link = "/" + shContext + "/";
-		link = link + shSite.getName().replaceAll(" ", "-");
-		link = link + "/default/pt-br";
+		String link =  shURLScheme.get().toString();
 		link = link + "/Home";
 		return link;
 	}
