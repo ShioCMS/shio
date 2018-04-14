@@ -25,7 +25,7 @@ shioharaApp.controller('ShWidgetFileCtrl', [
 
 			$scope.selectFile = function(shPost, shPostAttr) {
 				var modalInstance = shWidgetFileFactory
-						.modalSelectFile($scope.folderId);
+						.modalSelectFile($scope.shFolder);
 				modalInstance.result.then(function(shPostSelected) {
 					// Selected INSERT
 					$scope.uploadNewFile = false;

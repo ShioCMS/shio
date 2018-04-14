@@ -3,10 +3,10 @@ shioharaApp.controller('ShWidgetFileSelectCtrl', [
 		'shAPIServerService',
 		'$http',
 		'$uibModalInstance',
-		'folderId',
+		'shFolder',
 		'shWidgetFileFactory',
 		function($scope, shAPIServerService, $http, $uibModalInstance,
-				folderId,shWidgetFileFactory) {
+				shFolder,shWidgetFileFactory) {
 			var $ctrl = this;
 
 			$ctrl.shPostSelected = null;
@@ -24,11 +24,11 @@ shioharaApp.controller('ShWidgetFileSelectCtrl', [
 			$scope.breadcrumb = null;
 
 			// BEGIN Functions
-			$scope.folderList = function(folderId) {
+			$scope.folderList = function(shFolder) {
 				$ctrl.shPostSelected = null;
 				$scope.$evalAsync($http.get(
 						shAPIServerService.get().concat(
-								"/v2/folder/" + folderId + "/list/PT-FILE"))
+								"/v2/object/" + shFolder.shGlobalId.id + "/list/PT-FILE"))
 						.then(function(response) {
 							$scope.shFolders = response.data.shFolders;
 							$scope.shPosts = response.data.shPosts;
@@ -54,6 +54,6 @@ shioharaApp.controller('ShWidgetFileSelectCtrl', [
 			}
 			// END Functions
 
-			$scope.folderList(folderId);
+			$scope.folderList(shFolder);
 
 		} ]);

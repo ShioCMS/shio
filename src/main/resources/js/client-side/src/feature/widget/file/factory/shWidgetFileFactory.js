@@ -2,7 +2,7 @@ shioharaApp.factory('shWidgetFileFactory', [ '$uibModal', 'shPostResource',
 		'Notification', '$filter', "$state",
 		function($uibModal, shPostResource, Notification, $filter, $state) {
 			return {
-				modalSelectFile : function(folderId) {
+				modalSelectFile : function(shFolder) {
 					var $ctrl = this;
 					return $uibModal.open({
 						animation : true,
@@ -14,8 +14,8 @@ shioharaApp.factory('shWidgetFileFactory', [ '$uibModal', 'shPostResource',
 						size : null,
 						appendTo : undefined,
 						resolve : {
-							folderId : function() {
-								return folderId;
+							shFolder : function() {
+								return shFolder;
 							}
 						}
 					});
