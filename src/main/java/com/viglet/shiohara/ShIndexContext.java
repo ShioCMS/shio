@@ -10,7 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-public class ShIndex {
+public class ShIndexContext {
 
 	@RequestMapping("/")
 	private void index(HttpServletRequest request, HttpServletResponse response, final Principal principal)

@@ -25,6 +25,7 @@ shioharaApp.controller('ShPostEditCtrl', [
 			$scope.postId = $stateParams.postId;
 			$scope.breadcrumb = null;
 			$scope.shSite = null;
+			$scope.shFolder = null;
 			$scope.shPost = shPostResource.get({
 				id : $scope.postId
 			}, function() {
@@ -39,8 +40,9 @@ shioharaApp.controller('ShPostEditCtrl', [
 												"/v2/folder/" + $scope.folderId + "/path")
 												)
 						.then(
-								function(response) {
+								function(response) {									
 									$scope.breadcrumb = response.data.breadcrumb;
+									$scope.shFolder = response.data.currentFolder;
 									$scope.shSite = response.data.shSite;
 									folderPath =  shAPIServerService.server().concat("/v1/store/file_source/" + $scope.shSite.name + response.data.folderPath);
 									folderURL = shAPIServerService.server().concat(

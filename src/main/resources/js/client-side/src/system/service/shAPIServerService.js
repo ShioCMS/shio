@@ -11,22 +11,12 @@ shioharaApp.service('shAPIServerService', [
 					+ shPort;
 			
 			var shEmbAPIServer = shEmbServer + shAPIContext;
-			console.log(shEmbServer);
-
 			this.server = function() {
 
 				if ($cookies.get('shServer') != null)
 					return $cookies.get('shServer');
 				else {
-					$http({
-						method : 'GET',
-						url : shEmbAPIServer + "/v2"
-					}).then(function successCallback(response) {
-						$cookies.put('shServer', shEmbServer);
-					}, function errorCallback(response) {
-						//$cookies.put('shServer', 'http://localhost:2710');
-						$cookies.put('shServer', shEmbServer);
-					});
+					$cookies.put('shServer', shEmbServer);
 					return shEmbServer;
 				}
 			}
@@ -35,15 +25,7 @@ shioharaApp.service('shAPIServerService', [
 				if ($cookies.get('shAPIServer') != null)
 					return $cookies.get('shAPIServer');
 				else {
-					$http({
-						method : 'GET',
-						url : shEmbAPIServer + "/v2"
-					}).then(function successCallback(response) {
-						$cookies.put('shAPIServer', shEmbAPIServer);
-					}, function errorCallback(response) {
-						//$cookies.put('shAPIServer', 'http://localhost:2710' + shAPIContext);
-						$cookies.put('shAPIServer', shEmbAPIServer);
-					});
+					$cookies.put('shAPIServer', shEmbAPIServer);
 					return shEmbAPIServer;
 				}
 			}
