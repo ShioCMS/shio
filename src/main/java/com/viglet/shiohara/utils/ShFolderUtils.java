@@ -143,11 +143,15 @@ public class ShFolderUtils {
 		return currentFolder;
 	}
 
-	public String generateFolderLink(String folderID) {
-		ShFolder shFolder = shFolderRepository.findById(UUID.fromString(folderID)).get();
-		String link = shURLScheme.get().toString();
+	public String generateFolderLink(ShFolder shFolder) {
+		String link = shURLScheme.get(shFolder).toString();
 		link = link + this.folderPath(shFolder);
 		return link;
+	}
+	
+	public String generateFolderLink(String folderID) {
+		ShFolder shFolder = shFolderRepository.findById(UUID.fromString(folderID)).get();
+		return this.generateFolderLink(shFolder);
 	}
 
 	@Transactional

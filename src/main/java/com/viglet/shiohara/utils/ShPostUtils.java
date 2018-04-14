@@ -102,17 +102,20 @@ public class ShPostUtils {
 		return shPostCopy;
 	}
 
-	public String generatePostLink(String postID) {
-		ShPost shPost = shPostRepository.findById(UUID.fromString(postID)).get();
+	public String generatePostLink(ShPost shPost) {
 		ShFolder shFolder = shPost.getShFolder();
 		String link = null;
 		if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE.toString())) {
 			link = "/store/file_source/" + shFolderUtils.getSite(shFolder).getName() + shFolderUtils.folderPath(shFolder)
 					+ shPost.getTitle();
 		} else {
-			link = shFolderUtils.generateFolderLink(shFolder.getId().toString());
+			link = shFolderUtils.generateFolderLink(shFolder);
 			link = link + shPost.getTitle().replaceAll(" ", "-");
 		}
 		return link;
+	}
+	public String generatePostLink(String postID) {
+		ShPost shPost = shPostRepository.findById(UUID.fromString(postID)).get();
+		return this.generatePostLink(shPost);
 	}
 }
