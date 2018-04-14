@@ -27,7 +27,7 @@ public class ShSiteUtils {
 	}
 	
 	public String generatePostLink(ShSite shSite) {	
-		String link =  shURLScheme.get().toString();
+		String link =  shURLScheme.get(shSite).toString();
 		link = link + "/Home";
 		return link;
 	}

@@ -66,11 +66,12 @@ public class ShObjectAPI {
 			redirect = shSiteUtils.generatePostLink(shSite);
 		} else if (shGlobalId.getType().equals(ShObjectType.POST)) {
 			ShPost shPost = shPostRepository.findById(shGlobalId.getShObject().getId()).get();
-			redirect = shPostUtils.generatePostLink(shPost.getId().toString());
+			redirect = shPostUtils.generatePostLink(shPost);
 		} else if (shGlobalId.getType().equals(ShObjectType.FOLDER)) {
 			ShFolder shFolder = shFolderRepository.findById(shGlobalId.getShObject().getId()).get();
-			redirect = shFolderUtils.generateFolderLink(shFolder.getId().toString());
+			redirect = shFolderUtils.generateFolderLink(shFolder);
 		}
+		System.out.println(redirect);
 		response.sendRedirect(redirect);
 	}
 
