@@ -59,6 +59,8 @@ shioharaApp.config([
 				data : {
 					pageTitle : 'Content | Viglet Shiohara'
 				}
+			}).state('content.object', {
+				url : '/:objectId'
 			})
 			.state('content.children', {
 				url : '/list/:objectId',
@@ -146,14 +148,7 @@ shioharaApp.config([
 				data : {
 					pageTitle : 'Import Site | Viglet Shiohara'
 				}
-			}).state('content.folder.folder-new', {
-				url : '/folder',
-				templateUrl : '/template/folder/folder-new.html',
-				controller : 'ShFolderNewCtrl',
-				data : {
-					pageTitle : 'New Folder | Viglet Shiohara'
-				}
-			}).state('content.site.folder-new', {
+			}).state('content.object.folder-new', {
 				url : '/folder',
 				templateUrl : '/template/folder/folder-new.html',
 				controller : 'ShFolderNewCtrl',

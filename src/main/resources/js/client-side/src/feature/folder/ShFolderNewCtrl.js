@@ -20,12 +20,7 @@ shioharaApp
 								$rootScope, Token, shFolderResource,
 								shSiteResource, shAPIServerService, vigLocale,
 								$location, $translate, Notification) {
-							$scope.siteId = $stateParams.siteId;
-							$scope.folderId = $stateParams.folderId;
-							rootFolder = false;
-							if ($scope.siteId != null) {
-								rootFolder = true;
-							}
+							$scope.objectId = $stateParams.objectId;
 							$scope.vigLanguage = vigLocale.getLocale()
 									.substring(0, 2);
 							$translate.use($scope.vigLanguage);
@@ -40,59 +35,21 @@ shioharaApp
 									function(response) {
 										$scope.shFolder = response.data;
 									}));
-							if (!rootFolder) {
-								$scope
-										.$evalAsync($http
-												.get(
-														shAPIServerService
-																.get()
-																.concat(
-																		"/v2/folder/"
-																				+ $scope.folderId
-																				+ "/path"))
-												.then(
-														function(response) {
-															$scope.shParentFolder = response.data.currentFolder
-															$scope.breadcrumb = response.data.breadcrumb;
-															$scope.shSite = response.data.shSite;
-														}));
-							} else {
-								$scope.shSite = shSiteResource.get({
-									id : $scope.siteId
-								});
-							}
 							$scope.folderSave = function() {
-								if ($scope.shFolder.id != null
-										&& $scope.shFolder.id > 0) {
+								if ($scope.shFolder.id != null) {
 									$scope.shFolder.$update(function() {
 										 Notification.warning('The ' + $scope.shFolder.name +' Folder was created.');
 										$state.go('content.children', {folderId: $scope.shFolder.parentFolder.shGlobalId.id});
 									});
 								} else {
 									delete $scope.shFolder.id;
-									if (rootFolder) {
-										$scope.shFolder.rootFolder = 1;
-										$scope.shFolder.shSite = $scope.shSite;
-										shFolderResource
-												.save(
-														$scope.shFolder,
-														function(response) {
-															$scope.shFolder = response;
-															Notification.warning('The ' + $scope.shFolder.name +' Folder was created.');
-															$state.go('content.children', {objectId: $scope.shSite.shGlobalId.id});
-														});
-
-									} else {
-										$scope.shFolder.parentFolder = $scope.shParentFolder;
-										shFolderResource
-												.save(
-														$scope.shFolder,
-														function(response) {
-															$scope.shFolder = response;
-															Notification.warning('The ' + $scope.shFolder.name +' Folder was created.');
-															$state.go('content.children', {objectId: $scope.shFolder.parentFolder.shGlobalId.id});
-														});
-									}
+									$http.post(
+									shAPIServerService.get().concat(
+											"/v2/folder/object/" + $scope.objectId), $scope.shFolder).then(
+									function(response) {
+										$scope.shFolder = response.data;
+										$state.go('content.children', {objectId: $scope.objectId});
+									});						
 								}
 							}
 

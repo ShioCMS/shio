@@ -71,7 +71,6 @@ public class ShObjectAPI {
 			ShFolder shFolder = shFolderRepository.findById(shGlobalId.getShObject().getId()).get();
 			redirect = shFolderUtils.generateFolderLink(shFolder);
 		}
-		System.out.println(redirect);
 		response.sendRedirect(redirect);
 	}
 
