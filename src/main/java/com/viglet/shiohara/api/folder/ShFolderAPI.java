@@ -104,6 +104,42 @@ public class ShFolderAPI {
 
 	}
 
+	@ApiOperation(value = "Create a folder from Parent Object")
+	@PostMapping("/object/{objectId}")
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
+	public ShFolder shFolderAddFromParentObject(@RequestBody ShFolder shFolder, @PathVariable UUID objectId)
+			throws Exception {
+
+		ShFolder shNewFolder = new ShFolder();
+		shNewFolder.setDate(new Date());
+		shNewFolder.setName(shFolder.getName());
+
+		ShGlobalId shParentGlobalId = shGlobalIdRepository.findById(objectId).get();
+		if (shParentGlobalId.getType().equals(ShObjectType.FOLDER)) {
+			ShFolder shParentFolder = (ShFolder) shParentGlobalId.getShObject();
+			shNewFolder.setParentFolder(shParentFolder);
+			shNewFolder.setRootFolder((byte) 0);
+			shNewFolder.setShSite(null);
+
+		} else if (shParentGlobalId.getType().equals(ShObjectType.SITE)) {
+			ShSite shSite = (ShSite) shParentGlobalId.getShObject();
+			shNewFolder.setParentFolder(null);
+			shNewFolder.setRootFolder((byte) 1);
+			shNewFolder.setShSite(shSite);
+		}
+
+		shFolderRepository.save(shNewFolder);
+
+		ShGlobalId shGlobalId = new ShGlobalId();
+		shGlobalId.setShObject(shNewFolder);
+		shGlobalId.setType(ShObjectType.FOLDER);
+
+		shGlobalIdRepository.save(shGlobalId);
+
+		return shFolder;
+
+	}
+
 	@ApiOperation(value = "Folder path")
 	@GetMapping("/{id}/path")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
