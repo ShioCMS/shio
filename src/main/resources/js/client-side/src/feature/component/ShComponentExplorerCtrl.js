@@ -29,15 +29,18 @@ shioharaApp.controller('ShComponentExplorerCtrl', [
 			$scope.shFolders = null;
 			$scope.shPosts = null;
 			$scope.breadcrumb = null;
+			$scope.isSiteList = false;
 
 			// BEGIN Functions
-			$scope.objectList = function(objectList) {
+			$scope.objectList = function(selectedObjectId) {
+				$scope.isSiteList = false;
 				$ctrl.enableInsertButton = false;
 				$ctrl.shPostSelected = null;
 				$scope.$evalAsync($http.get(
 						shAPIServerService.get().concat(
-								"/v2/object/" + objectId + "/list/" + objectType))
+								"/v2/object/" + selectedObjectId + "/list/" + objectType))
 						.then(function(response) {
+							$scope.shSites = null;	
 							$scope.shFolders = response.data.shFolders;
 							$scope.shPosts = response.data.shPosts;
 							$scope.breadcrumb = response.data.breadcrumb;
@@ -45,15 +48,25 @@ shioharaApp.controller('ShComponentExplorerCtrl', [
 						}));
 			}
 
-			$scope.selectedPost = function(shPost) {
-				$ctrl.shObjectSelected = shPost;
+			$scope.siteList = function() {
+				$scope.isSiteList = true;
+				$ctrl.enableInsertButton = false;
+				$ctrl.shPostSelected = null;
+				$scope.$evalAsync($http.get(
+						shAPIServerService.get().concat(
+								"/v2/site/"))
+						.then(function(response) {
+							$scope.shSites = response.data;	
+							$scope.shFolders = null;
+							$scope.shPosts = null;
+							$scope.breadcrumb = null;
+						}));
+			}
+			$scope.selectedObject = function(shObject) {
+				$ctrl.shObjectSelected = shObject;
 				$ctrl.enableInsertButton = true;
 			}
 			
-			$scope.selectedFolder = function(shFolder) {
-				$ctrl.shObjectSelected = shFolder;
-				$ctrl.enableInsertButton = true;
-			}
 			// END Functions
 
 			$scope.objectList(objectId);
