@@ -1,0 +1,25 @@
+
+<div class="panel panel-default"
+	style="font-weight: 400; min-height: 175px; margin-bottom: 0px; padding-bottom: 0px;">
+	<div class="panel-title"
+		style="padding: 10px; border-bottom-color: rgb(217, 217, 217); border-bottom-style: solid; border-bottom-width: thin;">
+		<p style="font-size: 18px; color: #f0ad4e; margin: 0px;"
+			class="ng-binding">New Role</p>
+		<p style="font-size: 14px; color: rgb(182, 182, 182); margin: 0px;"
+			class="ng-binding">Add new Role</p>
+
+	</div>
+	<div class="panel-body">
+		<div class="form-group">
+			<label for="name">Role Name</label> <input type="input"
+				class="form-control" id="name" ng-model="role.name"
+				placeholder="Role Name">
+		</div>
+		<div class="form-group">
+			<label for="firstName">Description</label> <input type="input"
+				class="form-control" id="description" ng-model="role.description"
+				placeholder="Description">
+		</div>
+		<button type="submit" ng-click="roleSave()" class="btn btn-warning">Save</button>
+	</div>
+</div>

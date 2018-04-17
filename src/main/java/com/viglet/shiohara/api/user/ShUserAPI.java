@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.viglet.shiohara.api.ShJsonView;
+import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.model.user.ShUser;
 import com.viglet.shiohara.persistence.repository.user.ShUserRepository;
 
@@ -26,6 +30,9 @@ import io.swagger.annotations.Api;
 @RequestMapping("/api/v2/user")
 @Api(tags = "User", description = "User API")
 public class ShUserAPI {
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	@Autowired
 	private ShUserRepository shUserRepository;
@@ -40,7 +47,9 @@ public class ShUserAPI {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (!(authentication instanceof AnonymousAuthenticationToken)) {
 			String currentUserName = authentication.getName();
-			return shUserRepository.findByUsername(currentUserName);
+			ShUser shUser = shUserRepository.findByUsername(currentUserName);
+			shUser.setPassword(null);
+			return shUser;
 		}
 
 		return null;
@@ -48,6 +57,8 @@ public class ShUserAPI {
 
 	@GetMapping("/{id}")
 	public ShUser shUserEdit(@PathVariable int id) throws Exception {
+		ShUser shUser = shUserRepository.findById(id);
+		shUser.setPassword(null);
 		return shUserRepository.findById(id);
 	}
 
@@ -61,7 +72,9 @@ public class ShUserAPI {
 		shUserEdit.setLastName(shUser.getLastName());
 		shUserEdit.setLastPostType(shUser.getLastPostType());
 		shUserEdit.setLoginTimes(shUser.getLoginTimes());
-		shUserEdit.setPassword(shUser.getPassword());
+		if (shUser.getPassword() != null) {
+			shUserEdit.setPassword(passwordEncoder.encode(shUser.getPassword()));
+		}
 		shUserEdit.setRealm(shUser.getRealm());
 		shUserEdit.setRecoverPassword(shUser.getRecoverPassword());
 		shUserEdit.setUsername(shUser.getUsername());
@@ -77,7 +90,17 @@ public class ShUserAPI {
 
 	@PostMapping
 	public ShUser shUserAdd(@RequestBody ShUser shUser) throws Exception {
+		if (shUser.getPassword() != null) {
+			shUser.setPassword(passwordEncoder.encode(shUser.getPassword()));
+		}
 		shUserRepository.save(shUser);
+		return shUser;
+
+	}
+
+	@GetMapping("/model")
+	public ShUser shUserStructure() throws Exception {
+		ShUser shUser = new ShUser();
 		return shUser;
 
 	}

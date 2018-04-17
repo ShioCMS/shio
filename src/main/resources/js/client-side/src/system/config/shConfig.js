@@ -30,11 +30,25 @@ shioharaApp.config([
 
 			$translateProvider.translations('en', {
 				SEARCH : "Search",
-				SEARCH_FOR : "Search for"
+				SEARCH_FOR : "Search for",
+				USERNAME: "Username",
+				FIRST_NAME: "First Name",
+				LAST_NAME: "Last Name",
+				PASSWORD: "Password",
+				SETTINGS_ACCOUNT_TITLE : "Account",
+				SETTINGS_ACCOUNT_SUBTITLE : "Change your basic account and language settings.",
+				SETTINGS_SAVE_CHANGES : "Save Changes"	
 			});
 			$translateProvider.translations('pt', {
 				SEARCH : "Pesquisar",
-				SEARCH_FOR : "Pesquisar por"
+				SEARCH_FOR : "Pesquisar por",
+				USERNAME: "Nome do Usuário",
+				FIRST_NAME: "Nome",
+				LAST_NAME: "Sobrenome",
+				PASSWORD: "Senha",		
+				SETTINGS_ACCOUNT_TITLE : "Conta",
+				SETTINGS_ACCOUNT_SUBTITLE : "Altere suas configurações básicas da conta e de idioma.",
+				SETTINGS_SAVE_CHANGES : "Salvar Alterações"
 			});
 
 			$translateProvider.fallbackLanguage('en');
@@ -43,7 +57,7 @@ shioharaApp.config([
 
 			$stateProvider.state('oauth2', {
 				url : '/oauth2',
-				templateUrl : '/template/oauth2.html',
+				templateUrl : 'template/oauth2.html',
 				controller : 'ShOAuth2Ctrl',
 				data : {
 					pageTitle : 'OAuth2 | Viglet Shiohara'
@@ -54,7 +68,7 @@ shioharaApp.config([
 				redirectTo: 'content.home'
 			}).state('content.home', {
 				url : '/home',
-				templateUrl : '/template/content.html',
+				templateUrl : 'template/content.html',
 				controller : 'ShContentHomeCtrl',
 				data : {
 					pageTitle : 'Content | Viglet Shiohara'
@@ -64,7 +78,7 @@ shioharaApp.config([
 			})
 			.state('content.children', {
 				url : '/list/:objectId',
-				templateUrl : '/template/object/object-children.html',
+				templateUrl : 'template/object/object-children.html',
 				controller :'ShObjectChildrenCtrl',				
 				data : {
 					pageTitle : 'Content | Viglet Shiohara'
@@ -78,49 +92,49 @@ shioharaApp.config([
 				}
 			}).state('content.search-query', {
 				url : '/search/:query',
-				templateUrl : '/template/search/search.html',
+				templateUrl : 'template/search/search.html',
 				controller : 'ShSearchCtrl',
 				data : {
 					pageTitle : 'Search | Viglet Shiohara'
 				}
 			}).state('content.post-type-editor', {
 				url : '/post/type/editor',
-				templateUrl : '/template/post/type/editor.html',
+				templateUrl : 'template/post/type/editor.html',
 				controller : 'ShPostTypeEditorCtrl',
 				data : {
 					pageTitle : 'Post Type Editor | Viglet Shiohara'
 				}
 			}).state('content.post-type-item', {
 				url : '/post/type/:postTypeId',
-				templateUrl : '/template/post/type/item.html',
+				templateUrl : 'template/post/type/item.html',
 				controller : 'ShPostTypeItemCtrl',
 				data : {
 					pageTitle : 'Post Type Editor | Viglet Shiohara'
 				}
 			}).state('content.post-type-item.attribute', {
 				url : '/attrib/:postTypeAttrId',
-				templateUrl : '/template/post/type/attribute.html',
+				templateUrl : 'template/post/type/attribute.html',
 				controller : 'ShPostTypeAttrCtrl',
 				data : {
 					pageTitle : 'Post Type Editor | Viglet Shiohara'
 				}
 			}).state('content.post-type-item.post-item-new', {
 				url : '/folder/:folderId',
-				templateUrl : '/template/post/item.html',
+				templateUrl : 'template/post/item.html',
 				controller : 'ShPostNewCtrl',
 				data : {
 					pageTitle : 'New Post | Viglet Shiohara'
 				}
 			}).state('content.post-type-item.post-item', {
 				url : '/post/:postId',
-				templateUrl : '/template/post/item.html',
+				templateUrl : 'template/post/item.html',
 				controller : 'ShPostEditCtrl',
 				data : {
 					pageTitle : 'Edit Post | Viglet Shiohara'
 				}
 			}).state('post-item-form', {
 				url : '/post/type/:postTypeId/post/form',
-				templateUrl : '/template/post/form.html',
+				templateUrl : 'template/post/form.html',
 				controller : 'ShPostFormCtrl',
 				data : {}
 			}).state('content.folder', {
@@ -136,53 +150,102 @@ shioharaApp.config([
 				url : '/site/:siteId'
 			}).state('content.site.edit', {
 				url : '/edit',
-				templateUrl : '/template/site/site-edit.html',
+				templateUrl : 'template/site/site-edit.html',
 				controller : 'ShSiteEditCtrl',
 				data : {
 					pageTitle : 'Edit Site | Viglet Shiohara'
 				}
 			}).state('content.site-import', {
 				url : '/site/import',
-				templateUrl : '/template/site/site-import.html',
+				templateUrl : 'template/site/site-import.html',
 				controller : 'ShSiteImportCtrl',
 				data : {
 					pageTitle : 'Import Site | Viglet Shiohara'
 				}
 			}).state('content.object.folder-new', {
 				url : '/folder',
-				templateUrl : '/template/folder/folder-new.html',
+				templateUrl : 'template/folder/folder-new.html',
 				controller : 'ShFolderNewCtrl',
 				data : {
 					pageTitle : 'New Folder | Viglet Shiohara'
 				}
 			}).state('content.folder.post-type-select', {
 				url : '/post/type',
-				templateUrl : '/template/post/type/select-with-folder.html',
+				templateUrl : 'template/post/type/select-with-folder.html',
 				controller : 'ShPostTypeSelectWithFolderCtrl',
 				data : {
 					pageTitle : 'Post Type Selection | Viglet Shiohara'
 				}
 			}).state('content.post-type-select', {
 				url : '/post/type',
-				templateUrl : '/template/post/type/select.html',
+				templateUrl : 'template/post/type/select.html',
 				controller : 'ShPostTypeSelectCtrl',
 				data : {
 					pageTitle : 'Post Type Selection | Viglet Shiohara'
 				}
 			}).state('content.site.post-type-select', {
 				url : '/post/type',
-				templateUrl : '/template/post/type/select.html',
+				templateUrl : 'template/post/type/select.html',
 				controller : 'ShPostTypeSelectCtrl',
 				data : {
 					pageTitle : 'Post Type Selection | Viglet Shiohara'
 				}
 			}).state('content.site-new', {
 				url : '/site/new',
-				templateUrl : '/template/site/site-new.html',
+				templateUrl : 'template/site/site-new.html',
 				controller : 'ShSiteNewCtrl',
 				data : {
 					pageTitle : 'New Site | Viglet Shiohara'
 				}
+			}).state('organization', {
+				url: '/org',
+				templateUrl: 'template/organization/organization.html',
+				data : { pageTitle: 'Organization | Viglet Shiohara' }
+			}).state('organization.user', {
+				url: '/user',
+				templateUrl: 'template/organization/user/user.html',
+				controller: 'ShUserCtrl',
+				data : { pageTitle: 'Users | Viglet Shiohara' }
+			}).state('organization.user-new', {
+				url: '/user/new',
+				templateUrl: 'template/organization/user/user-item.html',
+				controller: 'ShUserNewCtrl',
+				data : { pageTitle: 'New User | Viglet Shiohara' }
+			}).state('organization.user-edit', {
+				url: '/user/:userId',
+				templateUrl: 'template/organization/user/user-item.html',
+				controller: 'ShUserEditCtrl',
+				data : { pageTitle: 'Edit User | Viglet Shiohara' }
+			}).state('organization.role', {
+				url: '/role',
+				templateUrl: 'template/organization/role/role.html',
+				controller: 'ShRoleCtrl',
+				data : { pageTitle: 'Roles | Viglet Shiohara' }
+			}).state('organization.role-new', {
+				url: '/role/new',
+				templateUrl: 'template/organization/role/role-item.html',
+				controller: 'ShRoleNewCtrl',
+				data : { pageTitle: 'New Role | Viglet Shiohara' }
+			}).state('organization.role-edit', {
+				url: '/role/:roleId',
+				templateUrl: 'template/organization/role/role-item.html',
+				controller: 'ShRoleEditCtrl',
+				data : { pageTitle: 'Edit Role | Viglet Shiohara' }
+			}).state('organization.group', {
+				url: '/group',
+				templateUrl: 'template/organization/group/group.html',
+				controller: 'ShGroupCtrl',
+				data : { pageTitle: 'Groups | Viglet Shiohara' }
+			}).state('organization.group-new', {
+				url: '/group/new',
+				templateUrl: 'template/organization/group/group-item.html',
+				controller: 'ShGroupNewCtrl',
+				data : { pageTitle: 'New Group | Viglet Shiohara' }
+			}).state('organization.group-edit', {
+				url: '/group/:groupId',
+				templateUrl: 'template/organization/group/group-item.html',
+				controller: 'ShGroupEditCtrl',
+				data : { pageTitle: 'Edit Group | Viglet Shiohara' }
 			})
 
 		} ]);
