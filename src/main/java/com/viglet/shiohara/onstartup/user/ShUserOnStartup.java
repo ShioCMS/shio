@@ -14,13 +14,12 @@ import com.viglet.shiohara.post.type.ShSystemPostType;
 
 @Component
 public class ShUserOnStartup {
-
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	@Autowired
 	private ShUserRepository shUserRepository;
 	@Autowired
 	private ShPostTypeRepository shPostTypeRepository;
-	@Autowired
-	private PasswordEncoder passwordEncoder;
 	
 	public void createDefaultRows() {
 

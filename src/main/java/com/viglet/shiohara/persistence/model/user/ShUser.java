@@ -4,6 +4,9 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import com.viglet.shiohara.utils.MD5Util;
@@ -26,7 +29,7 @@ public class ShUser implements Serializable {
 	private int id;
 
 	private String confirmEmail;
-	
+
 	@Column(name = "email")
 	private String email;
 
@@ -40,17 +43,17 @@ public class ShUser implements Serializable {
 	private String lastPostType;
 
 	private int loginTimes;
-	
+
 	@Column(name = "password")
 	private String password;
 
 	private String realm;
 
 	private String recoverPassword;
-	
+
 	@Column(name = "username")
 	private String username;
-	
+
 	@Column(name = "enabled")
 	private int enabled;
 
@@ -164,8 +167,12 @@ public class ShUser implements Serializable {
 
 	@JsonProperty("gravatar")
 	private String getGravatar() {
-		String imageUrl = "https://www.gravatar.com/avatar/" + MD5Util.md5Hex(email);
-		return imageUrl;
+		if (this.email != null) {
+			String imageUrl = "https://www.gravatar.com/avatar/" + MD5Util.md5Hex(this.email);
+			return imageUrl;
+		} else {
+			return null;
+		}
 	}
 
 	public int getEnabled() {
