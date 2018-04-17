@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -61,7 +62,7 @@ import io.swagger.annotations.Api;
 
 @RestController
 @RequestMapping("/api/v2/site")
-@Api(tags="Site", description="Site API")
+@Api(tags = "Site", description = "Site API")
 public class ShSiteAPI {
 
 	@Autowired
@@ -87,8 +88,8 @@ public class ShSiteAPI {
 
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public List<ShSite> shSiteList() throws Exception {
-		return shSiteRepository.findAll();
+	public List<ShSite> shSiteList(final Principal principal) throws Exception {
+		return shSiteRepository.findByOwner(principal.getName());
 	}
 
 	@GetMapping("/{id}")
@@ -103,7 +104,7 @@ public class ShSiteAPI {
 		ShSite shSiteEdit = shSiteRepository.findById(id).get();
 		shSiteEdit.setDate(new Date());
 		shSiteEdit.setName(shSite.getName());
-		shSiteEdit.setPostTypeLayout(shSite.getPostTypeLayout());
+		shSiteEdit.setPostTypeLayout(shSite.getPostTypeLayout());		
 		shSiteRepository.save(shSiteEdit);
 		return shSiteEdit;
 	}
@@ -127,9 +128,9 @@ public class ShSiteAPI {
 
 	@PostMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShSite shSiteAdd(@RequestBody ShSite shSite) throws Exception {
+	public ShSite shSiteAdd(@RequestBody ShSite shSite, final Principal principal) throws Exception {
 		shSite.setDate(new Date());
-
+		shSite.setOwner(principal.getName());
 		shSiteRepository.save(shSite);
 
 		ShGlobalId shGlobalId = new ShGlobalId();
@@ -145,7 +146,7 @@ public class ShSiteAPI {
 		shFolderHome.setShSite(shSite);
 		shFolderHome.setDate(new Date());
 		shFolderHome.setRootFolder((byte) 1);
-
+		shFolderHome.setOwner(principal.getName());
 		shFolderRepository.save(shFolderHome);
 
 		shGlobalId = new ShGlobalId();
@@ -164,7 +165,8 @@ public class ShSiteAPI {
 		shPost.setSummary("Folder Index");
 		shPost.setTitle("index");
 		shPost.setShFolder(shFolderHome);
-
+		shPost.setOwner(principal.getName());
+		
 		shPostRepository.save(shPost);
 
 		shGlobalId = new ShGlobalId();
@@ -173,7 +175,8 @@ public class ShSiteAPI {
 
 		shGlobalIdRepository.save(shGlobalId);
 
-		ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex, ShSystemPostTypeAttr.TITLE);
+		ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex,
+				ShSystemPostTypeAttr.TITLE);
 
 		ShPostAttr shPostAttr = new ShPostAttr();
 		shPostAttr.setShPost(shPost);
@@ -182,7 +185,8 @@ public class ShSiteAPI {
 		shPostAttr.setType(1);
 		shPostAttrRepository.save(shPostAttr);
 
-		shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex, ShSystemPostTypeAttr.DESCRIPTION);
+		shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex,
+				ShSystemPostTypeAttr.DESCRIPTION);
 
 		shPostAttr = new ShPostAttr();
 		shPostAttr.setShPost(shPost);
@@ -237,6 +241,7 @@ public class ShSiteAPI {
 			shSiteExchange.setPostTypeLayout(shSite.getPostTypeLayout());
 			shSiteExchange.setDate(shSite.getDate());
 			shSiteExchange.setRootFolders(rootFoldersUUID);
+			shSiteExchange.setOwner(shSite.getOwner());
 			shSiteExchange.setGlobalId(shSite.getShGlobalId().getId());
 
 			List<ShSiteExchange> shSiteExchanges = new ArrayList<ShSiteExchange>();
@@ -266,9 +271,9 @@ public class ShSiteAPI {
 			shUtils.addFilesToZip(exportDir, zipFile);
 
 			response.addHeader("Content-disposition", "attachment;filename=" + folderName + ".zip");
-		    response.setContentType("application/octet-stream");
-		    response.setStatus(HttpServletResponse.SC_OK);
-		    
+			response.setContentType("application/octet-stream");
+			response.setStatus(HttpServletResponse.SC_OK);
+
 			return new StreamingResponseBody() {
 				@Override
 				public void writeTo(java.io.OutputStream output) throws IOException {
@@ -322,7 +327,8 @@ public class ShSiteAPI {
 				shPostExchange.setFolder(shPost.getShFolder().getId());
 				shPostExchange.setDate(shPost.getDate());
 				shPostExchange.setPostType(shPost.getShPostType().getName());
-
+				shPostExchange.setOwner(shPost.getOwner());
+				
 				shPostExchange.setGlobalId(shPost.getShGlobalId().getId());
 				Map<String, Object> fields = new HashMap<String, Object>();
 
@@ -352,6 +358,8 @@ public class ShSiteAPI {
 			shFolderExchangeChild.setGlobalId(shFolder.getShGlobalId().getId());
 			shFolderExchangeChild.setDate(shFolder.getDate());
 			shFolderExchangeChild.setName(shFolder.getName());
+			shFolderExchangeChild.setOwner(shFolder.getOwner());
+			
 			if (shFolder.getParentFolder() != null) {
 				shFolderExchangeChild.setParentFolder(shFolder.getParentFolder().getId());
 			}

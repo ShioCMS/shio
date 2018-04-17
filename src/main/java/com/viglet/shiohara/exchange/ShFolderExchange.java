@@ -17,6 +17,8 @@ public class ShFolderExchange {
 
 	private UUID parentFolder;
 
+	private String owner;
+	
 	public UUID getGlobalId() {
 		return globalId;
 	}
@@ -56,5 +58,12 @@ public class ShFolderExchange {
 	public void setParentFolder(UUID parentFolder) {
 		this.parentFolder = parentFolder;
 	}
+	
+	public String getOwner() {
+		return owner;
+	}
 
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
 }

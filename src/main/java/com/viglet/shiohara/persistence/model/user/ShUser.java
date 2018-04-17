@@ -21,10 +21,13 @@ public class ShUser implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+
+	@Column(name = "id")
 	private int id;
 
 	private String confirmEmail;
-
+	
+	@Column(name = "email")
 	private String email;
 
 	private String firstName;
@@ -37,16 +40,30 @@ public class ShUser implements Serializable {
 	private String lastPostType;
 
 	private int loginTimes;
-
+	
+	@Column(name = "password")
 	private String password;
 
 	private String realm;
 
 	private String recoverPassword;
-
+	
+	@Column(name = "username")
 	private String username;
+	
+	@Column(name = "enabled")
+	private int enabled;
 
 	public ShUser() {
+
+	}
+
+	public ShUser(ShUser shUser) {
+		this.id = shUser.id;
+		this.username = shUser.username;
+		this.email = shUser.email;
+		this.password = shUser.password;
+		this.enabled = shUser.enabled;
 	}
 
 	public int getId() {
@@ -149,6 +166,14 @@ public class ShUser implements Serializable {
 	private String getGravatar() {
 		String imageUrl = "https://www.gravatar.com/avatar/" + MD5Util.md5Hex(email);
 		return imageUrl;
+	}
+
+	public int getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(int enabled) {
+		this.enabled = enabled;
 	}
 
 }

@@ -3,6 +3,7 @@ package com.viglet.shiohara.onstartup.user;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
@@ -18,7 +19,9 @@ public class ShUserOnStartup {
 	private ShUserRepository shUserRepository;
 	@Autowired
 	private ShPostTypeRepository shPostTypeRepository;
-
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
 	public void createDefaultRows() {
 
 		if (shUserRepository.findAll().isEmpty()) {
@@ -32,10 +35,26 @@ public class ShUserOnStartup {
 			shUser.setLastName("Administrator");
 			shUser.setLastPostType(String.valueOf(shPostType.getId()));
 			shUser.setLoginTimes(0);
-			shUser.setPassword("admin");
+			shUser.setPassword(passwordEncoder.encode("admin"));
 			shUser.setRealm("default");
 			shUser.setUsername("admin");
+			shUser.setEnabled(1);
+			
+			shUserRepository.save(shUser);
+			
+			shUser = new ShUser();
 
+			shUser.setEmail("sample@localhost.local");
+			shUser.setFirstName("Sample user");
+			shUser.setLastLogin(new Date());
+			shUser.setLastName("Sample");
+			shUser.setLastPostType(String.valueOf(shPostType.getId()));
+			shUser.setLoginTimes(0);
+			shUser.setPassword(passwordEncoder.encode("sample123"));
+			shUser.setRealm("default");
+			shUser.setUsername("sample");
+			shUser.setEnabled(1);
+			
 			shUserRepository.save(shUser);
 
 		}

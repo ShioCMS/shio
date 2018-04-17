@@ -21,6 +21,7 @@ public class ShPostExchange {
 
 	private Map<String, Object> fields;
 
+	private String owner;
 	
 	public UUID getGlobalId() {
 		return globalId;
@@ -69,5 +70,11 @@ public class ShPostExchange {
 	public void setPostType(String postType) {
 		this.postType = postType;
 	}
+	public String getOwner() {
+		return owner;
+	}
 
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
 }

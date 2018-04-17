@@ -87,5 +87,4 @@ public class ShSite extends ShObject {
 	public void setPostTypeLayout(String postTypeLayout) {
 		this.postTypeLayout = postTypeLayout;
 	}
-
 }
