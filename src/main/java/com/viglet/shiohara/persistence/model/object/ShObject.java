@@ -45,12 +45,8 @@ public class ShObject implements Serializable {
 	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
 	private Set<ShPostAttr> shPostAttrRefs;
 
-	/*
-	 * public Set<ShPostAttr> getShPostAttrRefs() { return this.shPostAttrRefs; }
-	 * 
-	 * public void setShPostAttrRefs(Set<ShPostAttr> shPostAttrs) {
-	 * this.shPostAttrRefs = shPostAttrs; }
-	 */
+	private String owner;
+	
 	public UUID getId() {
 		return this.id;
 	}
@@ -65,6 +61,14 @@ public class ShObject implements Serializable {
 
 	public void setShGlobalId(ShGlobalId shGlobalId) {
 		this.shGlobalId = shGlobalId;
+	}
+
+	public String getOwner() {
+		return owner;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
 	}
 
 }

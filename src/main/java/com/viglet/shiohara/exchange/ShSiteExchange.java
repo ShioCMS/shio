@@ -23,6 +23,8 @@ public class ShSiteExchange {
 
 	private String postTypeLayout;
 	
+	private String owner;
+	
 	private List<UUID> rootFolders;
 
 	public UUID getGlobalId() {
@@ -87,6 +89,14 @@ public class ShSiteExchange {
 
 	public void setPostTypeLayout(String postTypeLayout) {
 		this.postTypeLayout = postTypeLayout;
+	}
+
+	public String getOwner() {
+		return owner;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
 	}
 
 }

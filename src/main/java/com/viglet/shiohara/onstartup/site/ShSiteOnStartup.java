@@ -32,6 +32,7 @@ public class ShSiteOnStartup {
 			shSite.setUrl("http://example.com");
 			shSite.setPostTypeLayout("{\"PT-ARTICLE\" :  \"Post Page Layout\", \n"
 					+ "\"PT-TEXT\": \"Post Page Layout\",\n" + "\"PT-TEXT-AREA\": \"Post Page Layout\"}");
+			shSite.setOwner("admin");
 			shSite.setDate(new Date());
 
 			shSiteRepository.saveAndFlush(shSite);

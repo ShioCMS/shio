@@ -17,6 +17,7 @@
 		<class>com.viglet.shiohara.persistence.model.system.ShConfigVar</class>
 		<class>com.viglet.shiohara.persistence.model.system.ShLocale</class>
 		<class>com.viglet.shiohara.persistence.model.user.ShUser</class>
+		<class>com.viglet.shiohara.persistence.model.user.ShUserRole</class>
 		<class>com.viglet.shiohara.persistence.model.widget.ShWidget</class>
 		<properties>
 			<property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema" />
