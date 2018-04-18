@@ -29,6 +29,8 @@ public interface ShPostRepository extends JpaRepository<ShPost, UUID>, ShPostRep
 	
 	ShPost findByShFolderAndTitle(ShFolder shFolder, String title);
 	
+	ShPost findByShFolderAndFurl(ShFolder shFolder, String furl);
+	
 	ShPost save(ShPost shPost);
 
 	@Modifying

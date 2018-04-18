@@ -11,6 +11,7 @@ import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
+import com.viglet.shiohara.url.ShURLFormatter;
 import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 
 @Component
@@ -22,7 +23,9 @@ public class ShFolderOnStartup {
 	private ShSiteRepository shSiteRepository;
 	@Autowired
 	private ShGlobalIdRepository shGlobalIdRepository;
-
+	@Autowired
+	private ShURLFormatter shURLFormatter;
+	
 	public void createDefaultRows() {
 
 		if (shFolderRepository.findAll().isEmpty()) {
@@ -36,7 +39,9 @@ public class ShFolderOnStartup {
 			shFolderSystem.setShSite(shSite);
 			shFolderSystem.setDate(new Date());
 			shFolderSystem.setRootFolder((byte) 1);
-
+			shFolderSystem.setOwner("admin");
+			shFolderSystem.setFurl(shURLFormatter.format(shFolderSystem.getName()));
+			
 			shFolderRepository.save(shFolderSystem);
 
 			ShGlobalId shGlobalId = new ShGlobalId();
@@ -52,7 +57,9 @@ public class ShFolderOnStartup {
 			shFolderSystemTemplates.setShSite(shSite);
 			shFolderSystemTemplates.setDate(new Date());
 			shFolderSystemTemplates.setRootFolder((byte) 0);
-
+			shFolderSystemTemplates.setOwner("admin");
+			shFolderSystemTemplates.setFurl(shURLFormatter.format(shFolderSystemTemplates.getName()));
+			
 			shFolderRepository.save(shFolderSystemTemplates);
 
 			shGlobalId = new ShGlobalId();
@@ -68,7 +75,9 @@ public class ShFolderOnStartup {
 			shFolderSystemLayouts.setShSite(shSite);
 			shFolderSystemLayouts.setDate(new Date());
 			shFolderSystemLayouts.setRootFolder((byte) 0);
-
+			shFolderSystemLayouts.setOwner("admin");
+			shFolderSystemLayouts.setFurl(shURLFormatter.format(shFolderSystemLayouts.getName()));
+			
 			shFolderRepository.save(shFolderSystemLayouts);
 
 			shGlobalId = new ShGlobalId();
@@ -84,7 +93,9 @@ public class ShFolderOnStartup {
 			shFolderSystemThemes.setShSite(shSite);
 			shFolderSystemThemes.setDate(new Date());
 			shFolderSystemThemes.setRootFolder((byte) 0);
-
+			shFolderSystemThemes.setOwner("admin");
+			shFolderSystemThemes.setFurl(shURLFormatter.format(shFolderSystemThemes.getName()));
+			
 			shFolderRepository.save(shFolderSystemThemes);
 
 			shGlobalId = new ShGlobalId();
@@ -100,6 +111,8 @@ public class ShFolderOnStartup {
 			shFolderHome.setShSite(shSite);
 			shFolderHome.setDate(new Date());
 			shFolderHome.setRootFolder((byte) 1);
+			shFolderHome.setOwner("admin");
+			shFolderHome.setFurl(shURLFormatter.format(shFolderHome.getName()));
 
 			shFolderRepository.save(shFolderHome);
 
@@ -116,7 +129,9 @@ public class ShFolderOnStartup {
 			shFolderArticle.setShSite(shSite);
 			shFolderArticle.setDate(new Date());
 			shFolderArticle.setRootFolder((byte) 0);
-
+			shFolderArticle.setOwner("admin");
+			shFolderArticle.setFurl(shURLFormatter.format(shFolderArticle.getName()));
+			
 			shFolderRepository.save(shFolderArticle);
 
 			shGlobalId = new ShGlobalId();
@@ -132,7 +147,9 @@ public class ShFolderOnStartup {
 			shFolderText.setShSite(shSite);
 			shFolderText.setDate(new Date());
 			shFolderText.setRootFolder((byte) 0);
-
+			shFolderText.setOwner("admin");
+			shFolderText.setFurl(shURLFormatter.format(shFolderText.getName()));
+			
 			shFolderRepository.save(shFolderText);
 
 			shGlobalId = new ShGlobalId();
@@ -148,7 +165,9 @@ public class ShFolderOnStartup {
 			shFolderNews.setShSite(shSite);
 			shFolderNews.setDate(new Date());
 			shFolderNews.setRootFolder((byte) 0);
-
+			shFolderNews.setOwner("admin");
+			shFolderNews.setFurl(shURLFormatter.format(shFolderNews.getName()));
+			
 			shFolderRepository.save(shFolderNews);
 
 			shGlobalId = new ShGlobalId();

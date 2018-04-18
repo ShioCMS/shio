@@ -23,6 +23,8 @@ public class ShPostExchange {
 
 	private String owner;
 	
+	private String furl;
+	
 	public UUID getGlobalId() {
 		return globalId;
 	}
@@ -77,4 +79,15 @@ public class ShPostExchange {
 	public void setOwner(String owner) {
 		this.owner = owner;
 	}
+
+	public String getFurl() {
+		return furl;
+	}
+
+	public void setFurl(String furl) {
+		this.furl = furl;
+	}
+
+	
+	
 }

@@ -42,7 +42,7 @@ public class ShPostUtils {
 		shPostObject.put("title", shPost.getTitle());
 		shPostObject.put("summary", shPost.getSummary());
 		shPostObject.put("link",
-				shFolderUtils.folderPath(shPost.getShFolder()) + shPost.getTitle().replaceAll(" ", "-"));
+				shFolderUtils.folderPath(shPost.getShFolder()) + shPost.getFurl());
 		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
 			if (shPostAttr.getShPostTypeAttr().getName() != null) {
 				shPostItemAttrs.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
@@ -110,7 +110,7 @@ public class ShPostUtils {
 					+ shPost.getTitle();
 		} else {
 			link = shFolderUtils.generateFolderLink(shFolder);
-			link = link + shPost.getTitle().replaceAll(" ", "-");
+			link = link + shPost.getFurl();
 		}
 		return link;
 	}

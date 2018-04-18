@@ -15,12 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.viglet.shiohara.api.ShJsonView;
-import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.model.user.ShUser;
 import com.viglet.shiohara.persistence.repository.user.ShUserRepository;
 

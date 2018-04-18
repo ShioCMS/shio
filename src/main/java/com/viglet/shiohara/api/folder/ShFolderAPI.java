@@ -25,6 +25,7 @@ import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
+import com.viglet.shiohara.url.ShURLFormatter;
 import com.viglet.shiohara.utils.ShFolderUtils;
 
 import io.swagger.annotations.Api;
@@ -41,7 +42,9 @@ public class ShFolderAPI {
 	private ShFolderUtils shFolderUtils;
 	@Autowired
 	private ShGlobalIdRepository shGlobalIdRepository;
-
+	@Autowired
+	private ShURLFormatter shURLFormatter;
+	
 	@ApiOperation(value = "Folder list")
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
@@ -67,6 +70,7 @@ public class ShFolderAPI {
 		shFolderEdit.setName(shFolder.getName());
 		shFolderEdit.setParentFolder(shFolder.getParentFolder());
 		shFolderEdit.setShSite(shFolder.getShSite());
+		shFolderEdit.setFurl(shURLFormatter.format(shFolderEdit.getName()));
 
 		shFolderRepository.saveAndFlush(shFolderEdit);
 
@@ -92,6 +96,7 @@ public class ShFolderAPI {
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShFolder shFolderAdd(@RequestBody ShFolder shFolder) throws Exception {
 		shFolder.setDate(new Date());
+		shFolder.setFurl(shURLFormatter.format(shFolder.getName()));
 		shFolderRepository.save(shFolder);
 
 		ShGlobalId shGlobalId = new ShGlobalId();
@@ -113,7 +118,8 @@ public class ShFolderAPI {
 		ShFolder shNewFolder = new ShFolder();
 		shNewFolder.setDate(new Date());
 		shNewFolder.setName(shFolder.getName());
-
+		shNewFolder.setFurl(shURLFormatter.format(shNewFolder.getName()));
+		
 		ShGlobalId shParentGlobalId = shGlobalIdRepository.findById(objectId).get();
 		if (shParentGlobalId.getType().equals(ShObjectType.FOLDER)) {
 			ShFolder shParentFolder = (ShFolder) shParentGlobalId.getShObject();

@@ -3,6 +3,7 @@ package com.viglet.shiohara.api.exchange;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.UUID;
 import java.util.Map.Entry;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,6 +43,7 @@ import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
 import com.viglet.shiohara.post.type.ShSystemPostType;
 import com.viglet.shiohara.post.type.ShSystemPostTypeAttr;
+import com.viglet.shiohara.url.ShURLFormatter;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
 import com.viglet.shiohara.utils.ShUtils;
 
@@ -49,7 +51,7 @@ import io.swagger.annotations.Api;
 
 @RestController
 @RequestMapping("/api/v2/import")
-@Api(tags="Import", description="Import objects into Viglet Shiohara")
+@Api(tags = "Import", description = "Import objects into Viglet Shiohara")
 public class ShImportAPI {
 
 	@Autowired
@@ -70,15 +72,18 @@ public class ShImportAPI {
 	private ShStaticFileUtils shStaticFileUtils;
 	@Autowired
 	private ShUtils shUtils;
+	@Autowired
+	private ShURLFormatter shURLFormatter;
+
 	private Map<UUID, Object> shObjects = new HashMap<UUID, Object>();
 	private Map<UUID, List<UUID>> shChildObjects = new HashMap<UUID, List<UUID>>();
 
 	@PostMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShExchange shImport(@RequestParam("file") MultipartFile file) throws Exception {
+	public ShExchange shImport(@RequestParam("file") MultipartFile file, final Principal principal) throws Exception {
 		shObjects.clear();
 		shChildObjects.clear();
-		
+
 		File userDir = new File(System.getProperty("user.dir"));
 		if (userDir.exists() && userDir.isDirectory()) {
 			File tmpDir = new File(userDir.getAbsolutePath().concat(File.separator + "store" + File.separator + "tmp"));
@@ -107,7 +112,16 @@ public class ShImportAPI {
 				shSite.setUrl(shSiteExchange.getUrl());
 				shSite.setDescription(shSiteExchange.getDescription());
 				shSite.setPostTypeLayout(shSiteExchange.getPostTypeLayout());
-				shSite.setOwner(shSiteExchange.getOwner());
+				if (shSiteExchange.getOwner() != null) {
+					shSite.setOwner(shSiteExchange.getOwner());
+				} else {
+					shSite.setOwner(principal.getName());
+				}
+				if (shSiteExchange.getFurl() != null) {
+					shSite.setFurl(shSiteExchange.getFurl());
+				} else {
+					shSite.setFurl(shURLFormatter.format(shSiteExchange.getName()));
+				}
 				shSite.setDate(shSiteExchange.getDate());
 
 				shSiteRepository.save(shSite);
@@ -157,7 +171,7 @@ public class ShImportAPI {
 						}
 					}
 				}
-				this.shFolderImportNested(shSiteExchange.getId(), extractFolder);
+				this.shFolderImportNested(shSiteExchange.getId(), extractFolder, principal);
 			}
 
 			try {
@@ -173,7 +187,7 @@ public class ShImportAPI {
 		}
 	}
 
-	public void shFolderImportNested(UUID shObject, File extractFolder) throws IOException {
+	public void shFolderImportNested(UUID shObject, File extractFolder, Principal principal) throws IOException {
 		if (shChildObjects.containsKey(shObject)) {
 			for (UUID objectId : shChildObjects.get(shObject)) {
 				if (shObjects.get(objectId) instanceof ShFolderExchange) {
@@ -182,7 +196,16 @@ public class ShImportAPI {
 					shFolderChild.setId(shFolderExchange.getId());
 					shFolderChild.setDate(shFolderExchange.getDate());
 					shFolderChild.setName(shFolderExchange.getName());
-					shFolderChild.setOwner(shFolderExchange.getOwner());
+					if (shFolderExchange.getOwner() != null) {
+						shFolderChild.setOwner(shFolderExchange.getOwner());
+					} else {
+						shFolderChild.setOwner(principal.getName());
+					}
+					if (shFolderExchange.getFurl() != null) {
+						shFolderChild.setFurl(shFolderExchange.getFurl());
+					} else {
+						shFolderChild.setFurl(shURLFormatter.format(shFolderExchange.getName()));
+					}
 					if (shFolderExchange.getParentFolder() != null) {
 						ShFolder parentFolder = shFolderRepository.findById(shFolderExchange.getParentFolder()).get();
 						shFolderChild.setParentFolder(parentFolder);
@@ -206,7 +229,7 @@ public class ShImportAPI {
 
 					shGlobalIdRepository.save(shGlobalId);
 
-					this.shFolderImportNested(shFolderChild.getId(), extractFolder);
+					this.shFolderImportNested(shFolderChild.getId(), extractFolder, principal);
 				}
 
 				if (shObjects.get(objectId) instanceof ShPostExchange) {
@@ -216,7 +239,12 @@ public class ShImportAPI {
 					shPost.setDate(shPostExchange.getDate());
 					shPost.setShFolder(shFolderRepository.findById(shPostExchange.getFolder()).get());
 					shPost.setShPostType(shPostTypeRepository.findByName(shPostExchange.getPostType()));
-					shPost.setOwner(shPostExchange.getOwner());
+					if (shPostExchange.getOwner() != null) {
+						shPost.setOwner(shPostExchange.getOwner());
+					} else {
+						shPost.setOwner(principal.getName());
+					}
+
 					for (Entry<String, Object> shPostField : shPostExchange.getFields().entrySet()) {
 						ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository
 								.findByShPostTypeAndName(shPost.getShPostType(), shPostField.getKey());
@@ -225,7 +253,8 @@ public class ShImportAPI {
 						} else if (shPostTypeAttr.getIsSummary() == (byte) 1) {
 							shPost.setSummary(StringUtils.abbreviate((String) shPostField.getValue(), 255));
 						}
-						if (shPostTypeAttr.getName().equals(ShSystemPostTypeAttr.FILE) && shPostExchange.getPostType().equals(ShSystemPostType.FILE)) {
+						if (shPostTypeAttr.getName().equals(ShSystemPostTypeAttr.FILE)
+								&& shPostExchange.getPostType().equals(ShSystemPostType.FILE)) {
 							String fileName = (String) shPostField.getValue();
 							File directoryPath = shStaticFileUtils.dirPath(shPost.getShFolder());
 							File fileSource = new File(extractFolder.getAbsolutePath()
@@ -233,6 +262,12 @@ public class ShImportAPI {
 							File fileDest = new File(directoryPath.getAbsolutePath().concat(File.separator + fileName));
 							FileUtils.copyFile(fileSource, fileDest);
 						}
+					}
+
+					if (shPostExchange.getFurl() != null) {
+						shPost.setFurl(shPostExchange.getFurl());
+					} else {
+						shPost.setFurl(shURLFormatter.format(shPost.getTitle()));
 					}
 					shPostRepository.save(shPost);
 

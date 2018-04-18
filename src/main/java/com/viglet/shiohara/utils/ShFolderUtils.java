@@ -79,10 +79,10 @@ public class ShFolderUtils {
 		if (shFolder != null) {
 			boolean rootFolder = false;
 			ArrayList<String> pathContexts = new ArrayList<String>();
-			pathContexts.add(shFolder.getName());
+			pathContexts.add(shFolder.getFurl());
 			ShFolder parentFolder = shFolder.getParentFolder();
 			while (parentFolder != null && !rootFolder) {
-				pathContexts.add(parentFolder.getName());
+				pathContexts.add(parentFolder.getFurl());
 				if ((parentFolder.getRootFolder() == (byte) 1) || (parentFolder.getParentFolder() == null)) {
 					rootFolder = true;
 				} else {
@@ -96,7 +96,7 @@ public class ShFolderUtils {
 				path = context + separator + path;
 			}
 			path = separator + path;
-			return path.replaceAll(" ", "-");
+			return path;
 		} else {
 			return separator;
 		}
@@ -130,13 +130,13 @@ public class ShFolderUtils {
 
 	public ShFolder folderFromPath(ShSite shSite, String folderPath, String separator) {
 		ShFolder currentFolder = null;
-		String[] contexts = folderPath.replaceAll("-", " ").split(separator);
+		String[] contexts = folderPath.split(separator);
 		for (int i = 1; i < contexts.length; i++) {
 			if (currentFolder == null) {
 				// When is null folder, because is rootFolder and it contains shSite attribute
-				currentFolder = shFolderRepository.findByShSiteAndName(shSite, contexts[i]);
+				currentFolder = shFolderRepository.findByShSiteAndFurl(shSite, contexts[i]);
 			} else {
-				currentFolder = shFolderRepository.findByParentFolderAndName(currentFolder, contexts[i]);
+				currentFolder = shFolderRepository.findByParentFolderAndFurl(currentFolder, contexts[i]);
 			}
 
 		}

@@ -47,6 +47,8 @@ public class ShObject implements Serializable {
 
 	private String owner;
 	
+	private String furl;
+	
 	public UUID getId() {
 		return this.id;
 	}
@@ -70,5 +72,14 @@ public class ShObject implements Serializable {
 	public void setOwner(String owner) {
 		this.owner = owner;
 	}
+
+	public String getFurl() {
+		return furl;
+	}
+
+	public void setFurl(String furl) {
+		this.furl = furl;
+	}
+
 
 }

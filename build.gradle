@@ -36,6 +36,10 @@ repositories {
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
+
 // Combine JS files
 task combineSystemJs(type: com.eriwen.gradle.js.tasks.CombineJsTask) {
     source = "${projectDir}/src/main/resources/js/client-side/src/system"
@@ -101,7 +105,7 @@ dependencies {
     compile group: 'commons-logging', name: 'commons-logging', version:'1.2'
     compile group: 'org.apache.commons', name: 'commons-compress', version: '1.16.1'   
     compile group: 'commons-io', name: 'commons-io', version:'2.5'
-    compile group: 'commons-lang', name: 'commons-lang', version:'2.6'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
     
     // HTTP Client
     compile(group: 'org.apache.httpcomponents', name: 'httpclient', version:"${httpClientVersion}") {

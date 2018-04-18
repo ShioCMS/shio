@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,6 +34,7 @@ import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.reference.ShReferenceRepository;
 import com.viglet.shiohara.persistence.repository.user.ShUserRepository;
 import com.viglet.shiohara.post.type.ShSystemPostType;
+import com.viglet.shiohara.url.ShURLFormatter;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
 import com.viglet.shiohara.widget.ShSystemWidget;
 
@@ -56,7 +57,9 @@ public class ShPostAPI {
 	private ShGlobalIdRepository shGlobalIdRepository;
 	@Autowired
 	private ShReferenceRepository shReferenceRepository;
-
+	@Autowired
+	private ShURLFormatter shURLFormatter;
+	
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShPost> shPostList() throws Exception {
@@ -106,7 +109,7 @@ public class ShPostAPI {
 		shPostEdit.setDate(new Date());
 		shPostEdit.setTitle(title);
 		shPostEdit.setSummary(summary);
-
+		shPostEdit.setFurl(shURLFormatter.format(title));
 		shPostRepository.saveAndFlush(shPostEdit);
 
 		ShUser shUser = shUserRepository.findById(1);
@@ -170,7 +173,8 @@ public class ShPostAPI {
 		shPost.setDate(new Date());
 		shPost.setTitle(title);
 		shPost.setSummary(summary);
-
+		shPost.setFurl(shURLFormatter.format(title));
+		
 		shPostRepository.saveAndFlush(shPost);
 
 		ShGlobalId shGlobalId = new ShGlobalId();

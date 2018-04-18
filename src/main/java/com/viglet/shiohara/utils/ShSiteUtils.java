@@ -18,7 +18,7 @@ public class ShSiteUtils {
 		shSiteItemSystemAttrs.put("title", shSite.getName());
 		shSiteItemSystemAttrs.put("summary", shSite.getDescription());
 		shSiteItemSystemAttrs.put("link",
-				"/" + shContext + "/" + shSite.getName().replaceAll(" ", "-") + "/default/pt-br");
+				"/" + shContext + "/" + shSite.getFurl() + "/default/en_US");
 
 		JSONObject shSiteItemAttrs = new JSONObject();
 
@@ -28,7 +28,7 @@ public class ShSiteUtils {
 	
 	public String generatePostLink(ShSite shSite) {	
 		String link =  shURLScheme.get(shSite).toString();
-		link = link + "/Home";
+		link = link + "/home";
 		return link;
 	}
 
