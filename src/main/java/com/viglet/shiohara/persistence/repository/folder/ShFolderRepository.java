@@ -19,7 +19,11 @@ public interface ShFolderRepository extends JpaRepository<ShFolder, UUID> {
 	
 	ShFolder findByShSiteAndName(ShSite shSite, String name);
 	
+	ShFolder findByShSiteAndFurl(ShSite shSite, String furl);
+	
 	ShFolder findByParentFolderAndName(ShFolder parentFolder, String name);
+	
+	ShFolder findByParentFolderAndFurl(ShFolder parentFolder, String furl);
 	
 	List<ShFolder> findByParentFolder(ShFolder parentFolder);
 	

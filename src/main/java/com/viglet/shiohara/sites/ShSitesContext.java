@@ -108,7 +108,7 @@ public class ShSitesContext {
 			contentPath.add(contexts[i]);
 		}
 
-		ShSite shSite = shSiteRepository.findByName(shSiteName.replaceAll("-", " "));
+		ShSite shSite = shSiteRepository.findByFurl(shSiteName);
 
 		// System.out.println(shContext + " " + shSite + " " + shFormat + " " + shLocale
 		// + " " + contentPath.toString());
@@ -117,7 +117,7 @@ public class ShSitesContext {
 		String postName = null;
 		String folderPath = "/";
 		if (contentPath.size() >= 1) {
-			postName = contentPath.get(lastPosition).replaceAll("-", " ");
+			postName = contentPath.get(lastPosition);
 
 			ArrayList<String> folderPathArray = contentPath;
 
@@ -127,24 +127,27 @@ public class ShSitesContext {
 				folderPath = folderPath + path + "/";
 			}
 		}
-		ShFolder shFolder = shFolderUtils.folderFromPath(shSite, folderPath);
+	
+		ShFolder shParentFolder = shFolderUtils.folderFromPath(shSite, folderPath);
 		ShFolder shFolderItem = null;
 		boolean isFolder = false;
 
 		ShPost shPostItem = null;
+		
+		//If shPostItem is not null, so is a Post, otherwise is a Folder
 		if (postName != null) {
-			shPostItem = shPostRepository.findByShFolderAndTitle(shFolder, postName);
+			shPostItem = shPostRepository.findByShFolderAndFurl(shParentFolder, postName);
 		}
 
 		if (shPostItem == null) {
 			String folderPathCurrent = folderPath;
 			if (postName != null) {
-				folderPathCurrent = folderPathCurrent + postName.replaceAll(" ", "-") + "/";
+				folderPathCurrent = folderPathCurrent + postName + "/";
 			}
 			shFolderItem = shFolderUtils.folderFromPath(shSite, folderPathCurrent);
 			if (shFolderItem != null) {
 				// System.out.println("shFolderItem is not null");
-				ShPost shFolderIndex = shPostRepository.findByShFolderAndTitle(shFolderItem, "index");
+				ShPost shFolderIndex = shPostRepository.findByShFolderAndFurl(shFolderItem, "index");
 
 				if (shFolderIndex != null) {
 					shPostItem = shFolderIndex;

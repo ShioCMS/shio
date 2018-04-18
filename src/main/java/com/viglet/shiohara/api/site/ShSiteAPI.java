@@ -54,6 +54,7 @@ import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
 import com.viglet.shiohara.post.type.ShSystemPostType;
 import com.viglet.shiohara.post.type.ShSystemPostTypeAttr;
+import com.viglet.shiohara.url.ShURLFormatter;
 import com.viglet.shiohara.utils.ShFolderUtils;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
 import com.viglet.shiohara.utils.ShUtils;
@@ -85,7 +86,9 @@ public class ShSiteAPI {
 	private ShGlobalIdRepository shGlobalIdRepository;
 	@Autowired
 	private ShUtils shUtils;
-
+	@Autowired
+	private ShURLFormatter shURLFormatter;
+	
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShSite> shSiteList(final Principal principal) throws Exception {
@@ -104,7 +107,8 @@ public class ShSiteAPI {
 		ShSite shSiteEdit = shSiteRepository.findById(id).get();
 		shSiteEdit.setDate(new Date());
 		shSiteEdit.setName(shSite.getName());
-		shSiteEdit.setPostTypeLayout(shSite.getPostTypeLayout());		
+		shSiteEdit.setPostTypeLayout(shSite.getPostTypeLayout());	
+		shSiteEdit.setFurl(shURLFormatter.format(shSite.getName()));
 		shSiteRepository.save(shSiteEdit);
 		return shSiteEdit;
 	}
@@ -131,6 +135,7 @@ public class ShSiteAPI {
 	public ShSite shSiteAdd(@RequestBody ShSite shSite, final Principal principal) throws Exception {
 		shSite.setDate(new Date());
 		shSite.setOwner(principal.getName());
+		shSite.setFurl(shURLFormatter.format(shSite.getName()));
 		shSiteRepository.save(shSite);
 
 		ShGlobalId shGlobalId = new ShGlobalId();
@@ -147,6 +152,8 @@ public class ShSiteAPI {
 		shFolderHome.setDate(new Date());
 		shFolderHome.setRootFolder((byte) 1);
 		shFolderHome.setOwner(principal.getName());
+		shFolderHome.setFurl(shURLFormatter.format(shFolderHome.getName()));
+		
 		shFolderRepository.save(shFolderHome);
 
 		shGlobalId = new ShGlobalId();
@@ -166,6 +173,7 @@ public class ShSiteAPI {
 		shPost.setTitle("index");
 		shPost.setShFolder(shFolderHome);
 		shPost.setOwner(principal.getName());
+		shPost.setFurl(shURLFormatter.format(shPost.getTitle()));
 		
 		shPostRepository.save(shPost);
 
@@ -242,6 +250,7 @@ public class ShSiteAPI {
 			shSiteExchange.setDate(shSite.getDate());
 			shSiteExchange.setRootFolders(rootFoldersUUID);
 			shSiteExchange.setOwner(shSite.getOwner());
+			shSiteExchange.setFurl(shSite.getFurl());
 			shSiteExchange.setGlobalId(shSite.getShGlobalId().getId());
 
 			List<ShSiteExchange> shSiteExchanges = new ArrayList<ShSiteExchange>();
@@ -328,6 +337,7 @@ public class ShSiteAPI {
 				shPostExchange.setDate(shPost.getDate());
 				shPostExchange.setPostType(shPost.getShPostType().getName());
 				shPostExchange.setOwner(shPost.getOwner());
+				shPostExchange.setFurl(shPost.getFurl());
 				
 				shPostExchange.setGlobalId(shPost.getShGlobalId().getId());
 				Map<String, Object> fields = new HashMap<String, Object>();
@@ -359,6 +369,7 @@ public class ShSiteAPI {
 			shFolderExchangeChild.setDate(shFolder.getDate());
 			shFolderExchangeChild.setName(shFolder.getName());
 			shFolderExchangeChild.setOwner(shFolder.getOwner());
+			shFolderExchangeChild.setFurl(shFolder.getFurl());
 			
 			if (shFolder.getParentFolder() != null) {
 				shFolderExchangeChild.setParentFolder(shFolder.getParentFolder().getId());

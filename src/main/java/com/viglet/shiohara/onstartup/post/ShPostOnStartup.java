@@ -23,6 +23,7 @@ import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
 import com.viglet.shiohara.post.type.ShSystemPostType;
 import com.viglet.shiohara.post.type.ShSystemPostTypeAttr;
+import com.viglet.shiohara.url.ShURLFormatter;
 
 @Component
 public class ShPostOnStartup {
@@ -41,7 +42,9 @@ public class ShPostOnStartup {
 	private ShFolderRepository shFolderRepository;
 	@Autowired
 	private ShGlobalIdRepository shGlobalIdRepository;
-
+	@Autowired
+	private ShURLFormatter shURLFormatter;
+	
 	public void createDefaultRows() {
 		ShSite shSite = shSiteRepository.findByName("Sample");
 
@@ -72,6 +75,9 @@ public class ShPostOnStartup {
 			shPost.setSummary(null);
 			shPost.setTitle("Post01");
 			shPost.setShFolder(shFolderHome);
+			shPost.setOwner("admin");
+			shPost.setFurl(shURLFormatter.format(shPost.getTitle()));
+			
 			shPostRepository.save(shPost);
 
 			ShGlobalId shGlobalId = new ShGlobalId();
@@ -98,7 +104,9 @@ public class ShPostOnStartup {
 			shPost.setSummary(null);
 			shPost.setTitle("Post Text Area 01");
 			shPost.setShFolder(shFolderHome);
-
+			shPost.setOwner("admin");
+			shPost.setFurl(shURLFormatter.format(shPost.getTitle()));
+			
 			shPostRepository.save(shPost);
 
 			shGlobalId = new ShGlobalId();
@@ -125,7 +133,9 @@ public class ShPostOnStartup {
 			shPost.setSummary("A short description");
 			shPost.setTitle("Post Article Title");
 			shPost.setShFolder(shFolderArticle);
-
+			shPost.setOwner("admin");
+			shPost.setFurl(shURLFormatter.format(shPost.getTitle()));
+			
 			shPostRepository.save(shPost);
 
 			shGlobalId = new ShGlobalId();
@@ -172,7 +182,9 @@ public class ShPostOnStartup {
 			shPost.setSummary("A short description 2");
 			shPost.setTitle("Post Article Title");
 			shPost.setShFolder(shFolderNews);
-
+			shPost.setOwner("admin");
+			shPost.setFurl(shURLFormatter.format(shPost.getTitle()));
+			
 			shPostRepository.save(shPost);
 
 			shGlobalId = new ShGlobalId();
@@ -217,7 +229,9 @@ public class ShPostOnStartup {
 			shPost.setSummary("Sample Theme");
 			shPost.setTitle("Sample Theme");
 			shPost.setShFolder(shFolderThemes);
-
+			shPost.setOwner("admin");
+			shPost.setFurl(shURLFormatter.format(shPost.getTitle()));
+			
 			shPostRepository.save(shPost);
 
 			shGlobalId = new ShGlobalId();
@@ -281,7 +295,9 @@ public class ShPostOnStartup {
 			shPost.setSummary("Folder Index");
 			shPost.setTitle("index");
 			shPost.setShFolder(shFolderHome);
-
+			shPost.setOwner("admin");
+			shPost.setFurl(shURLFormatter.format(shPost.getTitle()));
+			
 			shPostRepository.save(shPost);
 
 			shGlobalId = new ShGlobalId();
@@ -327,7 +343,9 @@ public class ShPostOnStartup {
 			shPost.setSummary("Folder Index");
 			shPost.setTitle("index");
 			shPost.setShFolder(shFolderArticle);
-
+			shPost.setOwner("admin");
+			shPost.setFurl(shURLFormatter.format(shPost.getTitle()));
+			
 			shPostRepository.save(shPost);
 
 			shGlobalId = new ShGlobalId();
@@ -373,7 +391,9 @@ public class ShPostOnStartup {
 			shPost.setSummary("Folder Index");
 			shPost.setTitle("index");
 			shPost.setShFolder(shFolderNews);
-
+			shPost.setOwner("admin");
+			shPost.setFurl(shURLFormatter.format(shPost.getTitle()));
+			
 			shPostRepository.save(shPost);
 
 			shGlobalId = new ShGlobalId();
@@ -419,7 +439,9 @@ public class ShPostOnStartup {
 			shPost.setSummary("Folder Index");
 			shPost.setTitle("index");
 			shPost.setShFolder(shFolderText);
-
+			shPost.setOwner("admin");
+			shPost.setFurl(shURLFormatter.format(shPost.getTitle()));
+			
 			shPostRepository.save(shPost);
 
 			shGlobalId = new ShGlobalId();
@@ -466,7 +488,9 @@ public class ShPostOnStartup {
 			shPost.setSummary("Post Page Layout");
 			shPost.setTitle("Post Page Layout");
 			shPost.setShFolder(shFolderLayouts);
-
+			shPost.setOwner("admin");
+			shPost.setFurl(shURLFormatter.format(shPost.getTitle()));
+			
 			shPostRepository.save(shPost);
 
 			shGlobalId = new ShGlobalId();
@@ -541,7 +565,9 @@ public class ShPostOnStartup {
 			shPost.setSummary("Navigation Template");
 			shPost.setTitle("Navigation");
 			shPost.setShFolder(shFolderTemplates);
-
+			shPost.setOwner("admin");
+			shPost.setFurl(shURLFormatter.format(shPost.getTitle()));
+			
 			shPostRepository.save(shPost);
 
 			shGlobalId = new ShGlobalId();
@@ -611,7 +637,9 @@ public class ShPostOnStartup {
 			shPost.setSummary("Content Template");
 			shPost.setTitle("Content");
 			shPost.setShFolder(shFolderTemplates);
-
+			shPost.setOwner("admin");
+			shPost.setFurl(shURLFormatter.format(shPost.getTitle()));
+			
 			shPostRepository.save(shPost);
 
 			shGlobalId = new ShGlobalId();
@@ -683,7 +711,9 @@ public class ShPostOnStartup {
 			shPost.setSummary("Folder Page Layout");
 			shPost.setTitle("Folder Page Layout");
 			shPost.setShFolder(shFolderLayouts);
-
+			shPost.setOwner("admin");
+			shPost.setFurl(shURLFormatter.format(shPost.getTitle()));
+			
 			shPostRepository.save(shPost);
 
 			shGlobalId = new ShGlobalId();
@@ -757,7 +787,9 @@ public class ShPostOnStartup {
 			shPost.setSummary("Navigation Folder Template");
 			shPost.setTitle("NavigationFolder");
 			shPost.setShFolder(shFolderTemplates);
-
+			shPost.setOwner("admin");
+			shPost.setFurl(shURLFormatter.format(shPost.getTitle()));
+			
 			shPostRepository.save(shPost);
 
 			shGlobalId = new ShGlobalId();
@@ -831,7 +863,9 @@ public class ShPostOnStartup {
 			shPost.setSummary("Content Folder Template");
 			shPost.setTitle("ContentFolder");
 			shPost.setShFolder(shFolderTemplates);
-
+			shPost.setOwner("admin");
+			shPost.setFurl(shURLFormatter.format(shPost.getTitle()));
+			
 			shPostRepository.save(shPost);
 
 			shGlobalId = new ShGlobalId();

@@ -19,7 +19,7 @@ public class ShURLScheme {
 	private HttpServletRequest request;
 	@Autowired
 	private ShFolderUtils shFolderUtils;
-
+	
 	public String get(ShObject shObject) {
 		String shContext = "sites";
 		String shFormat = "default";
@@ -27,17 +27,17 @@ public class ShURLScheme {
 		String shSiteName = null;
 		if (shObject.getShGlobalId().getType().equals(ShObjectType.SITE)) {
 			ShSite shSite = (ShSite) shObject;
-			shSiteName = shSite.getName();
+			shSiteName = shSite.getFurl();
 		} else if (shObject.getShGlobalId().getType().equals(ShObjectType.FOLDER)) {
 			ShFolder shFolder = (ShFolder) shObject;
-			shSiteName = shFolderUtils.getSite(shFolder).getName();
+			shSiteName = shFolderUtils.getSite(shFolder).getFurl();
 		} else if (shObject.getShGlobalId().getType().equals(ShObjectType.POST)) {
 			ShPost shPost = (ShPost) shObject;
 			ShFolder shFolder = shPost.getShFolder();
-			shSiteName = shFolderUtils.getSite(shFolder).getName();
+			shSiteName = shFolderUtils.getSite(shFolder).getFurl();
 		}
 
-		String url = "/" + shContext + "/" + shSiteName.replaceAll(" ", "-") + "/" + shFormat + "/" + shLocale;
+		String url = "/" + shContext + "/" + shSiteName + "/" + shFormat + "/" + shLocale;
 
 		return url;
 	}
@@ -71,7 +71,7 @@ public class ShURLScheme {
 				}
 			}
 
-			url = "/" + shContext + "/" + shSiteName.replaceAll(" ", "-") + "/" + shFormat + "/" + shLocale;
+			url = "/" + shContext + "/" + shSiteName + "/" + shFormat + "/" + shLocale;
 		}
 		return url;
 	}

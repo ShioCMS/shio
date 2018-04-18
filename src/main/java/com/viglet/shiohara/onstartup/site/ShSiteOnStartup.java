@@ -11,6 +11,7 @@ import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
+import com.viglet.shiohara.url.ShURLFormatter;
 
 @Component
 public class ShSiteOnStartup {
@@ -19,7 +20,9 @@ public class ShSiteOnStartup {
 	private ShSiteRepository shSiteRepository;
 	@Autowired
 	private ShGlobalIdRepository shGlobalIdRepository;
-
+	@Autowired
+	private ShURLFormatter shURLFormatter;
+	
 	public void createDefaultRows() {
 
 		if (shSiteRepository.findAll().isEmpty()) {
@@ -34,7 +37,9 @@ public class ShSiteOnStartup {
 					+ "\"PT-TEXT\": \"Post Page Layout\",\n" + "\"PT-TEXT-AREA\": \"Post Page Layout\"}");
 			shSite.setOwner("admin");
 			shSite.setDate(new Date());
-
+			shSite.setOwner("admin");
+			shSite.setFurl(shURLFormatter.format(shSite.getName()));
+			
 			shSiteRepository.saveAndFlush(shSite);
 
 			ShGlobalId shGlobalId = new ShGlobalId();

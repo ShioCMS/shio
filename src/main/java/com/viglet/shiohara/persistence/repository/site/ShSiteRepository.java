@@ -19,6 +19,8 @@ public interface ShSiteRepository extends JpaRepository<ShSite, UUID> {
 	List<ShSite> findByOwner(String owner);
 	
 	ShSite findByName(String name);
+	
+	ShSite findByFurl(String furl);
 
 	ShSite save(ShSite shSite);
 

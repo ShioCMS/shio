@@ -25,6 +25,8 @@ public class ShSiteExchange {
 	
 	private String owner;
 	
+	private String furl;
+	
 	private List<UUID> rootFolders;
 
 	public UUID getGlobalId() {
@@ -97,6 +99,14 @@ public class ShSiteExchange {
 
 	public void setOwner(String owner) {
 		this.owner = owner;
+	}
+
+	public String getFurl() {
+		return furl;
+	}
+
+	public void setFurl(String furl) {
+		this.furl = furl;
 	}
 
 }

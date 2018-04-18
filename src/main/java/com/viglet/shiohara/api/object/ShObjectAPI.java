@@ -1,5 +1,7 @@
 package com.viglet.shiohara.api.object;
 
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -7,12 +9,16 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
@@ -58,7 +64,8 @@ public class ShObjectAPI {
 	private ShPostUtils shPostUtils;
 
 	@GetMapping("/{id}/preview")
-	public void shObjectPreview(@PathVariable UUID id, HttpServletResponse response) throws Exception {
+	public RedirectView shObjectPreview(@PathVariable UUID id, HttpServletResponse response,
+			RedirectAttributes attributes) throws Exception {
 		String redirect = null;
 		ShGlobalId shGlobalId = shGlobalIdRepository.findById(id).get();
 		if (shGlobalId.getType().equals(ShObjectType.SITE)) {
@@ -71,7 +78,10 @@ public class ShObjectAPI {
 			ShFolder shFolder = shFolderRepository.findById(shGlobalId.getShObject().getId()).get();
 			redirect = shFolderUtils.generateFolderLink(shFolder);
 		}
-		response.sendRedirect(redirect);
+		
+		RedirectView redirectView = new RedirectView(new String(redirect.getBytes("UTF-8"), "ISO-8859-1"));
+
+		return redirectView;
 	}
 
 	@PutMapping("/moveto/{globallIdDest}")
