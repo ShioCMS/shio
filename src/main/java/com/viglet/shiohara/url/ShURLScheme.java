@@ -1,8 +1,10 @@
 package com.viglet.shiohara.url;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.HandlerMapping;
 
@@ -19,26 +21,36 @@ public class ShURLScheme {
 	private HttpServletRequest request;
 	@Autowired
 	private ShFolderUtils shFolderUtils;
-	
+
 	public String get(ShObject shObject) {
-		String shContext = "sites";
-		String shFormat = "default";
-		String shLocale = "en_US";
-		String shSiteName = null;
-		if (shObject.getShGlobalId().getType().equals(ShObjectType.SITE)) {
-			ShSite shSite = (ShSite) shObject;
-			shSiteName = shSite.getFurl();
-		} else if (shObject.getShGlobalId().getType().equals(ShObjectType.FOLDER)) {
-			ShFolder shFolder = (ShFolder) shObject;
-			shSiteName = shFolderUtils.getSite(shFolder).getFurl();
-		} else if (shObject.getShGlobalId().getType().equals(ShObjectType.POST)) {
-			ShPost shPost = (ShPost) shObject;
-			ShFolder shFolder = shPost.getShFolder();
-			shSiteName = shFolderUtils.getSite(shFolder).getFurl();
+		String shXSiteName = request.getHeader("x-sh-site");
+		String url = "";
+		if (shXSiteName != null) {
+			String shContext = request.getHeader("x-sh-context");
+			if (shContext != null) {
+				url = "/" + shContext;
+			} else {
+				url = "";
+			}
+		} else {
+			String shContext = "sites";
+			String shFormat = "default";
+			String shLocale = "en-us";
+			String shSiteName = null;
+			if (shObject.getShGlobalId().getType().equals(ShObjectType.SITE)) {
+				ShSite shSite = (ShSite) shObject;
+				shSiteName = shSite.getFurl();
+			} else if (shObject.getShGlobalId().getType().equals(ShObjectType.FOLDER)) {
+				ShFolder shFolder = (ShFolder) shObject;
+				shSiteName = shFolderUtils.getSite(shFolder).getFurl();
+			} else if (shObject.getShGlobalId().getType().equals(ShObjectType.POST)) {
+				ShPost shPost = (ShPost) shObject;
+				ShFolder shFolder = shPost.getShFolder();
+				shSiteName = shFolderUtils.getSite(shFolder).getFurl();
+			}
+			url = "/" + shContext + "/" + shSiteName + "/" + shFormat + "/" + shLocale;
+
 		}
-
-		String url = "/" + shContext + "/" + shSiteName + "/" + shFormat + "/" + shLocale;
-
 		return url;
 	}
 

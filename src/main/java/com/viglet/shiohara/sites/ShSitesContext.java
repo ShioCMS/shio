@@ -66,23 +66,62 @@ public class ShSitesContext {
 
 	@RequestMapping("/Home/**")
 	private void home(HttpServletRequest request, HttpServletResponse response) throws IOException, ScriptException {
-		String shSiteName = request.getHeader("x-sh-site");
-		if (shSiteName != null) {
-			this.siteContext(shSiteName, "default", "pt-br", 1, request, response);
+		String shXSiteName = request.getHeader("x-sh-site");
+		if (shXSiteName != null) {
+			this.siteContext(shXSiteName, "default", "en-us", 1, request, response);
 		} else {
 			response.sendRedirect("/");
 		}
 
 	}
 
+	@RequestMapping("/sites/**")
+	private void sitesFullGeneric(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ScriptException {
+		String shXSiteName = request.getHeader("x-sh-site");
+		if (shXSiteName != null) {
+			this.siteContext(shXSiteName, "default", "en-us", 2, request, response);
+		} else {
+			@SuppressWarnings("unused")
+			String shContext = null;
+			String contextURL = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
+			String shSiteName = null;			
+			String shFormat = null;
+			String shLocale = null;
+			String[] contexts = contextURL.split("/");
+
+			for (int i = 1; i < contexts.length; i++) {
+				switch (i) {
+				case 1:
+					shContext = contexts[i];
+					break;
+				case 2:
+					shSiteName = contexts[i];
+					break;
+				case 3:
+					shFormat = contexts[i];
+					break;
+				case 4:
+					shLocale = contexts[i];
+					break;
+				}
+			}
+			this.siteContext(shSiteName, shFormat, shLocale, 5, request, response);
+		}
+	}
+/*
 	@RequestMapping("/sites/{shSiteName}/{shFormat}/{shLocale}/**")
 	private void sitesFull(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable(value = "shSiteName") String shSiteName, @PathVariable(value = "shFormat") String shFormat,
 			@PathVariable(value = "shLocale") String shLocale) throws IOException, ScriptException {
-		this.siteContext(shSiteName, shFormat, shLocale, 5, request, response);
-
+		String shXSiteName = request.getHeader("x-sh-site");
+		if (shXSiteName != null) {
+			this.siteContext(shXSiteName, "default", "en-us", 1, request, response);
+		} else {
+			this.siteContext(shSiteName, shFormat, shLocale, 5, request, response);
+		}
 	}
-
+*/
 	private void siteContext(String shSiteName, String shFormat, String shLocale, int contextPathPosition,
 			HttpServletRequest request, HttpServletResponse response) throws IOException, ScriptException {
 		InputStreamReader isr = new InputStreamReader(
@@ -110,9 +149,6 @@ public class ShSitesContext {
 
 		ShSite shSite = shSiteRepository.findByFurl(shSiteName);
 
-		// System.out.println(shContext + " " + shSite + " " + shFormat + " " + shLocale
-		// + " " + contentPath.toString());
-
 		int lastPosition = contentPath.size() - 1;
 		String postName = null;
 		String folderPath = "/";
@@ -120,21 +156,22 @@ public class ShSitesContext {
 			postName = contentPath.get(lastPosition);
 
 			ArrayList<String> folderPathArray = contentPath;
-
+			
+			// Remove PostName
 			folderPathArray.remove(folderPathArray.size() - 1);
 
 			for (String path : folderPathArray) {
 				folderPath = folderPath + path + "/";
 			}
 		}
-	
+
 		ShFolder shParentFolder = shFolderUtils.folderFromPath(shSite, folderPath);
 		ShFolder shFolderItem = null;
 		boolean isFolder = false;
 
 		ShPost shPostItem = null;
-		
-		//If shPostItem is not null, so is a Post, otherwise is a Folder
+
+		// If shPostItem is not null, so is a Post, otherwise is a Folder
 		if (postName != null) {
 			shPostItem = shPostRepository.findByShFolderAndFurl(shParentFolder, postName);
 		}

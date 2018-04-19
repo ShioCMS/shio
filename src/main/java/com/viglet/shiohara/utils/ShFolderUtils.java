@@ -79,13 +79,19 @@ public class ShFolderUtils {
 		if (shFolder != null) {
 			boolean rootFolder = false;
 			ArrayList<String> pathContexts = new ArrayList<String>();
-			pathContexts.add(shFolder.getFurl());
+			if (!(shFolder.getFurl().equals("home") && shFolder.getRootFolder() == (byte) 1)) {
+				pathContexts.add(shFolder.getFurl());
+			}
 			ShFolder parentFolder = shFolder.getParentFolder();
 			while (parentFolder != null && !rootFolder) {
-				pathContexts.add(parentFolder.getFurl());
+
 				if ((parentFolder.getRootFolder() == (byte) 1) || (parentFolder.getParentFolder() == null)) {
 					rootFolder = true;
+					if (!parentFolder.getName().toLowerCase().equals("home")) {
+						pathContexts.add(parentFolder.getFurl());
+					}
 				} else {
+					pathContexts.add(parentFolder.getFurl());
 					parentFolder = parentFolder.getParentFolder();
 				}
 			}
@@ -131,14 +137,26 @@ public class ShFolderUtils {
 	public ShFolder folderFromPath(ShSite shSite, String folderPath, String separator) {
 		ShFolder currentFolder = null;
 		String[] contexts = folderPath.split(separator);
-		for (int i = 1; i < contexts.length; i++) {
-			if (currentFolder == null) {
-				// When is null folder, because is rootFolder and it contains shSite attribute
-				currentFolder = shFolderRepository.findByShSiteAndFurl(shSite, contexts[i]);
-			} else {
-				currentFolder = shFolderRepository.findByParentFolderAndFurl(currentFolder, contexts[i]);
-			}
+		if (contexts.length == 0) {
+			// Root Folder (Home)
+			currentFolder = shFolderRepository.findByShSiteAndFurl(shSite, "home");
+		} else {
+			for (int i = 1; i < contexts.length; i++) {
+				if (i == 1) {
+					// When is null folder, because is rootFolder and it contains shSite attribute
+					currentFolder = shFolderRepository.findByShSiteAndFurl(shSite, contexts[i]);
+					if (currentFolder == null) {
 
+						// Is not Root Folder, will try use the Home Folder
+						currentFolder = shFolderRepository.findByShSiteAndFurl(shSite, "home");
+						// Now will try access the first Folder non Root
+						currentFolder = shFolderRepository.findByParentFolderAndFurl(currentFolder, contexts[i]);
+					}
+				} else {
+					currentFolder = shFolderRepository.findByParentFolderAndFurl(currentFolder, contexts[i]);
+				}
+
+			}
 		}
 		return currentFolder;
 	}
@@ -148,7 +166,7 @@ public class ShFolderUtils {
 		link = link + this.folderPath(shFolder);
 		return link;
 	}
-	
+
 	public String generateFolderLink(String folderID) {
 		ShFolder shFolder = shFolderRepository.findById(UUID.fromString(folderID)).get();
 		return this.generateFolderLink(shFolder);
@@ -190,7 +208,6 @@ public class ShFolderUtils {
 		}
 		shFolderCopy.setDate(new Date());
 		shFolderCopy.setName(shFolder.getName());
-		
 
 		shFolderRepository.save(shFolderCopy);
 
