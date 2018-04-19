@@ -39,7 +39,7 @@ public class ShSecurityConfigProduction extends WebSecurityConfigurerAdapter {
 
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/thirdparty/**", "/js/**", "/css/**", "/template/**", "/img/**", "/sites/**",
+		web.ignoring().antMatchers("/store/**", "/thirdparty/**", "/js/**", "/css/**", "/template/**", "/img/**", "/sites/**",
 				"/Home/**", "/swagger-resources/**");
 	}
 
