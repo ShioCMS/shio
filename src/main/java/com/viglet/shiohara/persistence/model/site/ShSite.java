@@ -36,7 +36,7 @@ public class ShSite extends ShObject {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "shSite", cascade = CascadeType.ALL)
 	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
 	private List<ShFolder> shFolders;
-
+		
 	public ShSite() {
 	}
 
@@ -87,4 +87,6 @@ public class ShSite extends ShObject {
 	public void setPostTypeLayout(String postTypeLayout) {
 		this.postTypeLayout = postTypeLayout;
 	}
+
+	
 }
