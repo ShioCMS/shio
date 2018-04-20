@@ -30,8 +30,7 @@
 						ui-sref="content.folder.post-type-select({folderId: shCurrentFolder.id})"><span
 						class="glyphicon glyphicon-th"></span></a>
 				</div>
-				<a
-					ui-sref="content.object.folder-new({objectId: objectId})"
+				<a ui-sref="content.object.folder-new({objectId: objectId})"
 					class="btn btn-default">New Folder</a>
 
 			</div>
@@ -89,17 +88,20 @@
 			</ul>
 		</div>
 		<div class="list-group">
-			<div ng-if="shFolders.length == 0 && shPosts.length == 0" style="padding: 20px; border-style: dashed; border-color: gray;">
+			<div ng-if="shFolders.length == 0 && shPosts.length == 0"
+				style="padding: 20px; border-style: dashed; border-color: gray;">
 				<div style="padding-top: 20px">
 					<h3>Drag and drop to upload files!</h3>
 					<div class="row">
 						<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
 							<img src="/img/help-drop-list-target-96.png"
-								style="float: left; margin: 10px">Drag the files from your desktop and drop them here to load.
+								style="float: left; margin: 10px">Drag the files from your
+							desktop and drop them here to load.
 						</div>
 						<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
 							<img src="/img/help-drop-folder-target-96.png"
-								style="float: left; margin: 10px"> You can drop files into folders.
+								style="float: left; margin: 10px"> You can drop files into
+							folders.
 						</div>
 					</div>
 				</div>
@@ -109,12 +111,14 @@
 					<div style="display: table;">
 						<i class="fa fa-file-o fa-4x" aria-hidden="true"
 							style="float: left; margin: 10px"></i><span
-							style="display: inline-block; margin-top: 20px">Upload files</span>
+							style="display: inline-block; margin-top: 20px">Upload
+							files</span>
 					</div>
 					<div style="display: table;">
 						<i class="fa fa-folder-o fa-4x" aria-hidden="true"
 							style="float: left; margin: 10px"></i> <span
-							style="display: inline-block; margin-top: 20px">Create a folder</span>
+							style="display: inline-block; margin-top: 20px">Create a
+							folder</span>
 					</div>
 				</div>
 			</div>
@@ -201,10 +205,18 @@
 								ng-model="shStateObjects[shPost.shGlobalId.id]">
 						</div>
 						<div style="display: inline">
-							<a type="button" class="btn btn-link"
-								ui-sref="content.post-type-item.post-item({postTypeId: shPost.shPostType.id, postId: shPost.id})"><i
+						<!-- NON ALIAS -->
+							<a ng-if="shPost.shPostType.name !== 'PT-ALIAS'" type="button" class="btn btn-link"
+								ui-sref="content.post-type-item.post-item({postTypeId: shPost.shPostType.id, postId: shPost.id})"><i								
 								class="fa fa-newspaper-o" aria-hidden="true"
-								style="margin-right: 5px"></i> {{shPost.title}}</a> <span
+								style="margin-right: 5px"></i> {{shPost.title}}</a>
+						<!-- ALIAS -->		
+						<a ng-if="shPost.shPostType.name === 'PT-ALIAS'" type="button" class="btn btn-link"
+								ui-sref="content.post-type-item.post-item({postTypeId: shPost.shPostType.id, postId: shPost.id})"><i								
+								class="fa fa-share-square-o" aria-hidden="true"
+								style="margin-right: 5px"></i> {{shPost.title}}</a>		
+																
+								 <span
 								ng-if="isRecent(shPost.date)" class="label label-default"
 								style="display: inline-block; margin-top: 12px">Recent</span>
 							<div style="font-size: 12px; margin-left: 28px">

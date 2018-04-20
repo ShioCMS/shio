@@ -7,6 +7,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 import javax.script.Bindings;
@@ -27,7 +28,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.HandlerMapping;
 
@@ -85,7 +85,7 @@ public class ShSitesContext {
 			@SuppressWarnings("unused")
 			String shContext = null;
 			String contextURL = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
-			String shSiteName = null;			
+			String shSiteName = null;
 			String shFormat = null;
 			String shLocale = null;
 			String[] contexts = contextURL.split("/");
@@ -109,19 +109,7 @@ public class ShSitesContext {
 			this.siteContext(shSiteName, shFormat, shLocale, 5, request, response);
 		}
 	}
-/*
-	@RequestMapping("/sites/{shSiteName}/{shFormat}/{shLocale}/**")
-	private void sitesFull(HttpServletRequest request, HttpServletResponse response,
-			@PathVariable(value = "shSiteName") String shSiteName, @PathVariable(value = "shFormat") String shFormat,
-			@PathVariable(value = "shLocale") String shLocale) throws IOException, ScriptException {
-		String shXSiteName = request.getHeader("x-sh-site");
-		if (shXSiteName != null) {
-			this.siteContext(shXSiteName, "default", "en-us", 1, request, response);
-		} else {
-			this.siteContext(shSiteName, shFormat, shLocale, 5, request, response);
-		}
-	}
-*/
+
 	private void siteContext(String shSiteName, String shFormat, String shLocale, int contextPathPosition,
 			HttpServletRequest request, HttpServletResponse response) throws IOException, ScriptException {
 		InputStreamReader isr = new InputStreamReader(
@@ -156,7 +144,7 @@ public class ShSitesContext {
 			postName = contentPath.get(lastPosition);
 
 			ArrayList<String> folderPathArray = contentPath;
-			
+
 			// Remove PostName
 			folderPathArray.remove(folderPathArray.size() - 1);
 
@@ -174,9 +162,21 @@ public class ShSitesContext {
 		// If shPostItem is not null, so is a Post, otherwise is a Folder
 		if (postName != null) {
 			shPostItem = shPostRepository.findByShFolderAndFurl(shParentFolder, postName);
+
 		}
 
-		if (shPostItem == null) {
+		if (shPostItem != null) {
+			// Alias
+			if (shPostItem.getShPostType().getName().equals(ShSystemPostType.ALIAS)) {
+				List<ShPostAttr> shPostAttrs = shPostItem.getShPostAttrs();
+				for (ShPostAttr shPostAttr : shPostAttrs) {
+					if (shPostAttr.getShPostTypeAttr().getName().equals(ShSystemPostTypeAttr.CONTENT)) {
+						shPostItem = shPostRepository.findById(UUID.fromString(shPostAttr.getStrValue())).get();
+					}
+				}
+			}
+		}
+		else {
 			String folderPathCurrent = folderPath;
 			if (postName != null) {
 				folderPathCurrent = folderPathCurrent + postName + "/";
