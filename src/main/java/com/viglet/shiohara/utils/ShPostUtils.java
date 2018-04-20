@@ -32,6 +32,8 @@ public class ShPostUtils {
 	private ShPostAttrRepository shPostAttrRepository;
 	@Autowired
 	private ShGlobalIdRepository shGlobalIdRepository;
+	@Autowired
+	private ShStaticFileUtils shStaticFileUtils;
 
 	public JSONObject toJSON(ShPost shPost) {
 		JSONObject shPostItemAttrs = new JSONObject();
@@ -41,8 +43,7 @@ public class ShPostUtils {
 		shPostObject.put("post-type-id", shPost.getShPostType().getId());
 		shPostObject.put("title", shPost.getTitle());
 		shPostObject.put("summary", shPost.getSummary());
-		shPostObject.put("link",
-				shFolderUtils.folderPath(shPost.getShFolder()) + shPost.getFurl());
+		shPostObject.put("link", shFolderUtils.folderPath(shPost.getShFolder()) + shPost.getFurl());
 		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
 			if (shPostAttr.getShPostTypeAttr().getName() != null) {
 				shPostItemAttrs.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
@@ -106,16 +107,21 @@ public class ShPostUtils {
 		ShFolder shFolder = shPost.getShFolder();
 		String link = null;
 		if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE.toString())) {
-			link = "/store/file_source/" + shFolderUtils.getSite(shFolder).getName() + shFolderUtils.folderPath(shFolder)
-					+ shPost.getTitle();
+			link = shStaticFileUtils.getFileSourceBase() + "/" + shFolderUtils.getSite(shFolder).getName()
+					+ shFolderUtils.folderPath(shFolder) + shPost.getTitle();
 		} else {
 			link = shFolderUtils.generateFolderLink(shFolder);
 			link = link + shPost.getFurl();
 		}
 		return link;
 	}
-	public String generatePostLink(String postID) {
-		ShPost shPost = shPostRepository.findById(UUID.fromString(postID)).get();
-		return this.generatePostLink(shPost);
+
+	public String generatePostLinkById(String postID) {
+		if (postID != null) {
+			ShPost shPost = shPostRepository.findById(UUID.fromString(postID)).get();
+			return this.generatePostLink(shPost);
+		} else {
+			return null;
+		}
 	}
 }
