@@ -33,9 +33,12 @@ $ ./gradlew build
 To run Viglet Shiohara executable JAR file, just execute the following line:
 
 ```shell
-$ java -jar build/libs/shiohara-0.1.0.jar
+$ java -jar build/libs/viglet-shiohara.jar
 ```
 
 ## Viglet Shiohara
 * Administration Console: [http://localhost:2710](http://localhost:2710).
-* Sample Site: [http://localhost:2710/sites/Sample/default/pt-br/Home](http://localhost:2710/sites/Sample/default/pt-br/Home/).
+
+> login/password: admin/admin
+
+* Sample Site: [http://localhost:2710/sites/sample/default/en-us](http://localhost:2710/sites/sample/default/en-us).
