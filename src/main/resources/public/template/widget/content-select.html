@@ -1,42 +1,51 @@
 <style>
-    .button {
-        -moz-appearance: button;
-        /* Firefox */
-        -webkit-appearance: button;
-        /* Safari and Chrome */
-        padding: 10px;
-        margin: 10px;
-        width: 70px;
-    }
-    
-    .drop-box {
-        background: #F8F8F8;
-        border: 5px dashed #DDD;
-        width: 200px;
-        height: 65px;
-        text-align: center;
-        padding-top: 25px;
-        margin: 10px;
-    }
-    
-    .dragover {
-        border: 5px dashed blue;
-    }
+.button {
+	-moz-appearance: button;
+	/* Firefox */
+	-webkit-appearance: button;
+	/* Safari and Chrome */
+	padding: 10px;
+	margin: 10px;
+	width: 70px;
+}
+
+.drop-box {
+	background: #F8F8F8;
+	border: 5px dashed #DDD;
+	width: 200px;
+	height: 65px;
+	text-align: center;
+	padding-top: 25px;
+	margin: 10px;
+}
+
+.dragover {
+	border: 5px dashed blue;
+}
 </style>
 <div ng-controller="ShWidgetContentSelectCtrl">
-    <div ng-if="shPostAttr.strValue != null">
-        <div class="row">
-            <div class="col-lg-9 col-md-8 col-sm-7 col-xs-6">
-                <input type='text' class='form-control' ng-model="shPostAttr.referenceObjects[0].title" /> </div>
-            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-6">
-                <button class="btn btn-viglet" ng-click="clearContent(shPostAttr)">Clear</button>
-                <button class="btn btn-viglet" ng-click="selectContent(shPost, shPostAttr)">Select a Content</button>
-            </div>
-        </div>
-    </div>
-    <div ng-if="shPostAttr.strValue == null" class="row">
-        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" style="height: 40px; margin-top: 25px;">
-            <button class="btn btn-viglet" ng-click="selectContent(shPost, shPostAttr)">Select a Content</button>
-        </div>
-    </div>
+	<div ng-if="shPostAttr.strValue != null">
+		<div class="row">
+			<div class="col-lg-8 col-md-7 col-sm-6 col-xs-4">
+				<input type='text' class='form-control'
+					ng-model="shPostAttr.referenceObjects[0].title" />
+			</div>
+			<div class="col-lg-4 col-md-5 col-sm-6 col-xs-8">
+				<a class="btn btn-viglet"
+					ui-sref="content.post-type-item.post-item({postTypeId: shPostAttr.referenceObjects[0].shPostType.id, postId: shPostAttr.referenceObjects[0].id})">Edit this Content</a>
+				<button class="btn btn-default" ng-click="clearContent(shPostAttr)">Clear</button>
+				<button class="btn btn-default"
+					ng-click="selectContent(shPost, shPostAttr)">Select a
+					Content</button>
+			</div>
+		</div>
+	</div>
+	<div ng-if="shPostAttr.strValue == null" class="row">
+		<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6"
+			style="height: 40px; margin-top: 25px;">
+			<button class="btn btn-viglet"
+				ng-click="selectContent(shPost, shPostAttr)">Select a
+				Content</button>
+		</div>
+	</div>
 </div>
