@@ -1,17 +1,25 @@
 package com.viglet.shiohara.utils;
 
 import java.io.File;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.site.ShSite;
+import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
+
 @Component
 public class ShStaticFileUtils {
 	@Autowired
 	private ShFolderUtils shFolderUtils;
-	private String fileSourceBase = File.separator + "store" + File.separator +"file_source";
+	@Autowired
+	private ShPostRepository shPostRepository;
+	@Autowired
+	private ShPostUtils shPostUtils;
+
+	private String fileSourceBase = File.separator + "store" + File.separator + "file_source";
 
 	public File dirPath(ShFolder shFolder) {
 		File directoryPath = null;
@@ -49,7 +57,6 @@ public class ShStaticFileUtils {
 		}
 		return file;
 	}
-	
 
 	public File getFileSource() {
 		File file = null;
@@ -61,5 +68,9 @@ public class ShStaticFileUtils {
 
 		}
 		return file;
+	}
+
+	public String getFileSourceBase() {
+		return fileSourceBase;
 	}
 }

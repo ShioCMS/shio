@@ -167,7 +167,7 @@ public class ShFolderUtils {
 		return link;
 	}
 
-	public String generateFolderLink(String folderID) {
+	public String generateFolderLinkById(String folderID) {
 		ShFolder shFolder = shFolderRepository.findById(UUID.fromString(folderID)).get();
 		return this.generateFolderLink(shFolder);
 	}

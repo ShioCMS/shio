@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.Principal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -88,7 +89,7 @@ public class ShSiteAPI {
 	private ShUtils shUtils;
 	@Autowired
 	private ShURLFormatter shURLFormatter;
-	
+
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShSite> shSiteList(final Principal principal) throws Exception {
@@ -107,7 +108,7 @@ public class ShSiteAPI {
 		ShSite shSiteEdit = shSiteRepository.findById(id).get();
 		shSiteEdit.setDate(new Date());
 		shSiteEdit.setName(shSite.getName());
-		shSiteEdit.setPostTypeLayout(shSite.getPostTypeLayout());	
+		shSiteEdit.setPostTypeLayout(shSite.getPostTypeLayout());
 		shSiteEdit.setFurl(shURLFormatter.format(shSite.getName()));
 		shSiteRepository.save(shSiteEdit);
 		return shSiteEdit;
@@ -153,7 +154,7 @@ public class ShSiteAPI {
 		shFolderHome.setRootFolder((byte) 1);
 		shFolderHome.setOwner(principal.getName());
 		shFolderHome.setFurl(shURLFormatter.format(shFolderHome.getName()));
-		
+
 		shFolderRepository.save(shFolderHome);
 
 		shGlobalId = new ShGlobalId();
@@ -174,7 +175,7 @@ public class ShSiteAPI {
 		shPost.setShFolder(shFolderHome);
 		shPost.setOwner(principal.getName());
 		shPost.setFurl(shURLFormatter.format(shPost.getTitle()));
-		
+
 		shPostRepository.save(shPost);
 
 		shGlobalId = new ShGlobalId();
@@ -279,7 +280,10 @@ public class ShSiteAPI {
 
 			shUtils.addFilesToZip(exportDir, zipFile);
 
-			response.addHeader("Content-disposition", "attachment;filename=" + folderName + ".zip");
+			String strDate = new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(new Date());
+			String zipFileName = shSite.getName() + "_" + strDate + ".zip";
+			
+			response.addHeader("Content-disposition", "attachment;filename=" + zipFileName);
 			response.setContentType("application/octet-stream");
 			response.setStatus(HttpServletResponse.SC_OK);
 
@@ -338,7 +342,7 @@ public class ShSiteAPI {
 				shPostExchange.setPostType(shPost.getShPostType().getName());
 				shPostExchange.setOwner(shPost.getOwner());
 				shPostExchange.setFurl(shPost.getFurl());
-				
+
 				shPostExchange.setGlobalId(shPost.getShGlobalId().getId());
 				Map<String, Object> fields = new HashMap<String, Object>();
 
@@ -370,7 +374,7 @@ public class ShSiteAPI {
 			shFolderExchangeChild.setName(shFolder.getName());
 			shFolderExchangeChild.setOwner(shFolder.getOwner());
 			shFolderExchangeChild.setFurl(shFolder.getFurl());
-			
+
 			if (shFolder.getParentFolder() != null) {
 				shFolderExchangeChild.setParentFolder(shFolder.getParentFolder().getId());
 			}

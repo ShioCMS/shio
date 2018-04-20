@@ -48,8 +48,8 @@ viglet.shiohara.shObject = function() {
 	 *            Post Id.
 	 * @public
 	 */
-	this.generatePostLink = function(postId) {
-		return shPostUtils.generatePostLink(postId);
+	this.generatePostLink = function(postId) { 
+		return shPostUtils.generatePostLinkById(postId);
 	}
 
 	/**
@@ -59,7 +59,7 @@ viglet.shiohara.shObject = function() {
 	 * @public
 	 */
 	this.generateFolderLink = function(folderId) {
-		return shFolderUtils.generateFolderLink(folderId);
+		return shFolderUtils.generateFolderLinkById(folderId);
 	}
 
 };
