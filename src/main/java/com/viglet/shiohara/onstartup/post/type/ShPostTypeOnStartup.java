@@ -623,6 +623,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setShWidget(shWidgetText);
 
 			shPostTypeAttrRepository.save(shPostTypeAttr);
+			
 			// Alias
 
 			shPostType = new ShPostType();
@@ -654,6 +655,21 @@ public class ShPostTypeOnStartup {
 
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
+
+			shPostTypeAttr = new ShPostTypeAttr();
+			shPostTypeAttr.setName(ShSystemPostTypeAttr.DESCRIPTION);
+			shPostTypeAttr.setLabel("Description");
+			shPostTypeAttr.setDescription("Description");
+			shPostTypeAttr.setIsSummary((byte) 1);
+			shPostTypeAttr.setIsTitle((byte) 0);
+			shPostTypeAttr.setMany((byte) 0);
+			shPostTypeAttr.setOrdinal(2);
+			shPostTypeAttr.setRequired((byte) 1);
+			shPostTypeAttr.setShPostType(shPostType);
+			shPostTypeAttr.setShWidget(shWidgetTextArea);
+			
+			shPostTypeAttrRepository.save(shPostTypeAttr);
+			
 			shPostTypeAttr = new ShPostTypeAttr();
 			shPostTypeAttr.setName(ShSystemPostTypeAttr.CONTENT);
 			shPostTypeAttr.setLabel("Content Select");
@@ -661,7 +677,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setIsSummary((byte) 1);
 			shPostTypeAttr.setIsTitle((byte) 0);
 			shPostTypeAttr.setMany((byte) 0);
-			shPostTypeAttr.setOrdinal(2);
+			shPostTypeAttr.setOrdinal(3);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
 			shPostTypeAttr.setShWidget(shWidgetContentSelect);

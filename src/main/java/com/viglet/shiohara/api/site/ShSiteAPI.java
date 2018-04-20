@@ -204,6 +204,18 @@ public class ShSiteAPI {
 		shPostAttr.setType(1);
 
 		shPostAttrRepository.save(shPostAttr);
+
+		shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex,
+				ShSystemPostTypeAttr.PAGE_LAYOUT);
+
+		shPostAttr = new ShPostAttr();
+		shPostAttr.setShPost(shPost);
+		shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+		shPostAttr.setStrValue("");
+		shPostAttr.setType(1);
+
+		shPostAttrRepository.save(shPostAttr);
+
 		return shSite;
 
 	}
@@ -282,7 +294,7 @@ public class ShSiteAPI {
 
 			String strDate = new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(new Date());
 			String zipFileName = shSite.getName() + "_" + strDate + ".zip";
-			
+
 			response.addHeader("Content-disposition", "attachment;filename=" + zipFileName);
 			response.setContentType("application/octet-stream");
 			response.setStatus(HttpServletResponse.SC_OK);
