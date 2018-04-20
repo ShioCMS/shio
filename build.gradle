@@ -84,10 +84,7 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-parent', version:"${springBootVersion}"
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version:"${springBootVersion}"
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-activemq', version:"${springBootVersion}"   
-    compile(group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf', version: "${springBootVersion}") {
-		exclude(module: 'thymeleaf-layout-dialect')
-    }
-    
+  
     // JGit
     compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: "${jgitVersion}"
     compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit.archive', version: "${jgitVersion}"
