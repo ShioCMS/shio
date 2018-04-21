@@ -31,6 +31,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.HandlerMapping;
 
+import com.viglet.shiohara.cache.ShCacheManager;
+import com.viglet.shiohara.cache.ShCachedObject;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
@@ -68,9 +70,27 @@ public class ShSitesContext {
 	private void sitesFullGeneric(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ScriptException {
 		String shXSiteName = request.getHeader("x-sh-site");
+		final int cacheMinutes = 1;
 		if (shXSiteName != null) {
-			this.siteContext(shXSiteName, "default", "en-us", 2, request, response);
+			String shFormat = "default";
+			String shLocale = "en-us";
+			String contextURL = "/sites/" + shXSiteName + "/" + shFormat + "/" + shLocale
+					+ ((String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE)).replaceAll("^/sites/", "/");
+			ShCachedObject shCacheObject = (ShCachedObject) ShCacheManager.getCache(contextURL);
+			if (shCacheObject != null) {
+				// End Page Layout
+				//System.out.println("Is cached " + contextURL);
+				response.setContentType(MediaType.TEXT_HTML_VALUE);
+				response.getWriter().write(((String) shCacheObject.object).toString());
+			} else {
+				//System.out.println("Is not cached " + contextURL);
+				String html = this.siteContext(shXSiteName, "default", "en-us", 2, request, response);
+				shCacheObject = new ShCachedObject(html, contextURL, cacheMinutes);
+				/* Place the object into the cache! */
+				ShCacheManager.putCache(shCacheObject);
+			}
 		} else {
+
 			@SuppressWarnings("unused")
 			String shContext = null;
 			String contextURL = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
@@ -79,28 +99,42 @@ public class ShSitesContext {
 			String shLocale = null;
 			String[] contexts = contextURL.split("/");
 
-			for (int i = 1; i < contexts.length; i++) {
-				switch (i) {
-				case 1:
-					shContext = contexts[i];
-					break;
-				case 2:
-					shSiteName = contexts[i];
-					break;
-				case 3:
-					shFormat = contexts[i];
-					break;
-				case 4:
-					shLocale = contexts[i];
-					break;
+			ShCachedObject shCacheObject = (ShCachedObject) ShCacheManager.getCache(contextURL);
+			if (shCacheObject != null) {
+				// End Page Layout
+				//System.out.println("Is cached " + contextURL);
+				response.setContentType(MediaType.TEXT_HTML_VALUE);
+				response.getWriter().write(((String) shCacheObject.object).toString());
+			} else {
+
+				for (int i = 1; i < contexts.length; i++) {
+					switch (i) {
+					case 1:
+						shContext = contexts[i];
+						break;
+					case 2:
+						shSiteName = contexts[i];
+						break;
+					case 3:
+						shFormat = contexts[i];
+						break;
+					case 4:
+						shLocale = contexts[i];
+						break;
+					}
 				}
+				//System.out.println("Is not cached " + contextURL);
+				String html = this.siteContext(shSiteName, shFormat, shLocale, 5, request, response);
+				shCacheObject = new ShCachedObject(html, contextURL, cacheMinutes);
+				/* Place the object into the cache! */
+				ShCacheManager.putCache(shCacheObject);
 			}
-			this.siteContext(shSiteName, shFormat, shLocale, 5, request, response);
 		}
 	}
 
-	private void siteContext(String shSiteName, String shFormat, String shLocale, int contextPathPosition,
+	private String siteContext(String shSiteName, String shFormat, String shLocale, int contextPathPosition,
 			HttpServletRequest request, HttpServletResponse response) throws IOException, ScriptException {
+
 		InputStreamReader isr = new InputStreamReader(
 				resourceloader.getResource("classpath:/js/server-side/shObject.js").getInputStream());
 
@@ -164,8 +198,7 @@ public class ShSitesContext {
 					}
 				}
 			}
-		}
-		else {
+		} else {
 			String folderPathCurrent = folderPath;
 			if (postName != null) {
 				folderPathCurrent = folderPathCurrent + postName + "/";
@@ -334,6 +367,7 @@ public class ShSitesContext {
 		// End Page Layout
 		response.setContentType(MediaType.TEXT_HTML_VALUE);
 		response.getWriter().write(doc.html());
+		return doc.html();
 	}
 
 }
