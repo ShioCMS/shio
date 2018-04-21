@@ -64,17 +64,6 @@ public class ShSitesContext {
 	@Resource
 	private ApplicationContext context;
 
-	@RequestMapping("/Home/**")
-	private void home(HttpServletRequest request, HttpServletResponse response) throws IOException, ScriptException {
-		String shXSiteName = request.getHeader("x-sh-site");
-		if (shXSiteName != null) {
-			this.siteContext(shXSiteName, "default", "en-us", 1, request, response);
-		} else {
-			response.sendRedirect("/");
-		}
-
-	}
-
 	@RequestMapping("/sites/**")
 	private void sitesFullGeneric(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ScriptException {
