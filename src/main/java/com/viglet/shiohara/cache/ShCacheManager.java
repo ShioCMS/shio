@@ -16,7 +16,8 @@ public class ShCacheManager {
 				 * The default time the thread should sleep between scans. The sleep method
 				 * takes in a millisecond value so 5000 = 5 Seconds.
 				 */
-				int milliSecondSleepTime = 5000;
+				// 60 * 60 * 1000 = 1 hour
+				int milliSecondSleepTime = 60 * 60 * 1000;
 
 				public void run() {
 					try {
