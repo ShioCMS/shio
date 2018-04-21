@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,30 +22,22 @@ import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 @ComponentScan(basePackageClasses = ShCustomUserDetailsService.class)
 public class ShSecurityConfigProduction extends WebSecurityConfigurerAdapter {
 	@Autowired
-	ShAccessDenied shAccessDenied;
-	@Autowired
 	UserDetailsService userDetailsService;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		// Prevent the HTTP response header of "Pragma: no-cache".
 		http.headers().cacheControl().disable();
-		http.httpBasic().and().authorizeRequests().antMatchers("/index.html", "/welcome/**", "/").permitAll()
+		http.httpBasic().and().authorizeRequests().antMatchers("/index.html", "/welcome/**", "/", "/store/**","/thirdparty/**", "/js/**", "/css/**", "/template/**", "/img/**",
+				"/sites/**", "/swagger-resources/**").permitAll()
 				.anyRequest().authenticated().and().addFilterAfter(new ShCsrfHeaderFilter(), CsrfFilter.class).csrf()
 				.csrfTokenRepository(csrfTokenRepository()).and().logout();
 
 	}
 
-	@Override
-	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/store/**", "/thirdparty/**", "/js/**", "/css/**", "/template/**", "/img/**", "/sites/**",
-				"/Home/**", "/swagger-resources/**");
-	}
-
-
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		 auth.userDetailsService(userDetailsService).passwordEncoder(passwordencoder());
+		auth.userDetailsService(userDetailsService).passwordEncoder(passwordencoder());
 	}
 
 	private CsrfTokenRepository csrfTokenRepository() {
@@ -54,9 +45,9 @@ public class ShSecurityConfigProduction extends WebSecurityConfigurerAdapter {
 		repository.setHeaderName("X-XSRF-TOKEN");
 		return repository;
 	}
-	
-	 @Bean(name="passwordEncoder")
-	    public PasswordEncoder passwordencoder(){
-	     return new BCryptPasswordEncoder();
-	    }
+
+	@Bean(name = "passwordEncoder")
+	public PasswordEncoder passwordencoder() {
+		return new BCryptPasswordEncoder();
+	}
 }

@@ -8,16 +8,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.csrf.CsrfFilter;
-import org.springframework.security.web.csrf.CsrfTokenRepository;
-import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
 @Configuration
 @EnableWebSecurity
 @Profile("development")
 public class ShSecurityConfigDevelopment extends WebSecurityConfigurerAdapter {
-	@Autowired
-	ShAccessDenied shAccessDenied;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -28,7 +23,8 @@ public class ShSecurityConfigDevelopment extends WebSecurityConfigurerAdapter {
 
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/thirdparty/**", "/js/**","/css/**", "/template/**","/img/**","/sites/**","/swagger-resources/**");
+		web.ignoring().antMatchers("/thirdparty/**", "/js/**", "/css/**", "/template/**", "/img/**", "/sites/**",
+				"/swagger-resources/**");
 	}
 
 	// create two users, admin and user
@@ -38,10 +34,4 @@ public class ShSecurityConfigDevelopment extends WebSecurityConfigurerAdapter {
 		auth.inMemoryAuthentication().withUser("user").password("{noop}user").roles("USER").and().withUser("admin")
 				.password("{noop}admin").roles("ADMIN");
 	}
-
-	private CsrfTokenRepository csrfTokenRepository() {
-		  HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
-		  repository.setHeaderName("X-XSRF-TOKEN");
-		  return repository;
-		}
 }
