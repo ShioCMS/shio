@@ -11,24 +11,22 @@ import com.viglet.shiohara.url.ShURLScheme;
 public class ShSiteUtils {
 	@Autowired
 	ShURLScheme shURLScheme;
-	
-	public JSONObject toJSON(ShSite shSite, String shContext) {
+
+	public JSONObject toJSON(ShSite shSite) {
 		JSONObject shSiteItemSystemAttrs = new JSONObject();
 		shSiteItemSystemAttrs.put("id", shSite.getId());
 		shSiteItemSystemAttrs.put("title", shSite.getName());
 		shSiteItemSystemAttrs.put("summary", shSite.getDescription());
-		shSiteItemSystemAttrs.put("link",
-				"/" + shContext + "/" + shSite.getFurl() + "/default/en_US");
+		shSiteItemSystemAttrs.put("link", shURLScheme.get(shSite).toString());
 
 		JSONObject shSiteItemAttrs = new JSONObject();
 
 		shSiteItemAttrs.put("system", shSiteItemSystemAttrs);
 		return shSiteItemAttrs;
 	}
-	
-	public String generatePostLink(ShSite shSite) {	
-		String link =  shURLScheme.get(shSite).toString();
-		//link = link + "/home";
+
+	public String generatePostLink(ShSite shSite) {
+		String link = shURLScheme.get(shSite).toString();
 		return link;
 	}
 
