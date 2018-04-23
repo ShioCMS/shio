@@ -23,12 +23,13 @@ import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 public class ShSecurityConfigProduction extends WebSecurityConfigurerAdapter {
 	@Autowired
 	UserDetailsService userDetailsService;
-
+	@Autowired 
+	ShAuthenticationEntryPoint shAuthenticationEntryPoint;
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		// Prevent the HTTP response header of "Pragma: no-cache".
 		http.headers().cacheControl().disable();
-		http.httpBasic().and().authorizeRequests().antMatchers("/index.html", "/welcome/**", "/", "/store/**","/thirdparty/**", "/js/**", "/css/**", "/template/**", "/img/**",
+		http.httpBasic().authenticationEntryPoint(shAuthenticationEntryPoint).and().authorizeRequests().antMatchers("/index.html", "/welcome/**", "/", "/store/**","/thirdparty/**", "/js/**", "/css/**", "/template/**", "/img/**",
 				"/sites/**", "/swagger-resources/**").permitAll()
 				.anyRequest().authenticated().and().addFilterAfter(new ShCsrfHeaderFilter(), CsrfFilter.class).csrf()
 				.csrfTokenRepository(csrfTokenRepository()).and().logout();
