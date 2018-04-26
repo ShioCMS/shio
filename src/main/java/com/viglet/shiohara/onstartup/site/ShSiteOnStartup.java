@@ -43,6 +43,8 @@ public class ShSiteOnStartup {
 			shSiteRepository.saveAndFlush(shSite);
 
 			ShGlobalId shGlobalId = new ShGlobalId();
+			UUID uuidGlobalId = UUID.fromString("848db46f-4bf9-4caa-be08-359ba3d93be5");
+			shGlobalId.setId(uuidGlobalId);
 			shGlobalId.setShObject(shSite);
 			shGlobalId.setType(ShObjectType.SITE);
 

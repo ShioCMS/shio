@@ -11,6 +11,7 @@ import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -42,22 +43,21 @@ public class ShPostAttr implements Serializable {
 	private String strValue;
 
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinTable(name = "object_post_attr", 
-	joinColumns = @JoinColumn(name = "post_attr_id", referencedColumnName = "id"), 
-	inverseJoinColumns = @JoinColumn(name = "object_id", referencedColumnName = "id"))
+	@JoinTable(name = "object_post_attr", joinColumns = @JoinColumn(name = "post_attr_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "object_id", referencedColumnName = "id"))
 	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
 	private Set<ShObject> referenceObjects;
 
 	private int type;
 
-	
-	public Set<ShObject> getReferenceObjects() {
-		return referenceObjects;
-	}
+	// bi-directional many-to-one association to ShPostTypeAttr
+	@OneToMany(mappedBy = "shRelatorPostAttr")
+	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
+	private List<ShPostAttr> shRelatorPostAttrs;
 
-	public void setReferenceObjects(Set<ShObject> referenceObjects) {
-		this.referenceObjects = referenceObjects;
-	}
+	// bi-directional many-to-one association to ShPost
+	@ManyToOne
+	@JoinColumn(name = "post_attr_relator_id")
+	private ShPost shRelatorPostAttr;
 
 	// bi-directional many-to-one association to ShPost
 	@ManyToOne
@@ -71,6 +71,14 @@ public class ShPostAttr implements Serializable {
 
 	@Transient
 	private UUID shPostTypeAttrId;
+
+	public Set<ShObject> getReferenceObjects() {
+		return referenceObjects;
+	}
+
+	public void setReferenceObjects(Set<ShObject> referenceObjects) {
+		this.referenceObjects = referenceObjects;
+	}
 
 	public UUID getShPostTypeAttrId() {
 		if (shPostTypeAttr.getId() != null) {
@@ -141,4 +149,22 @@ public class ShPostAttr implements Serializable {
 	public void setShPostTypeAttr(ShPostTypeAttr shPostTypeAttr) {
 		this.shPostTypeAttr = shPostTypeAttr;
 	}
+
+	public List<ShPostAttr> getShRelatorPostAttrs() {
+		return shRelatorPostAttrs;
+	}
+
+	public void setShRelatorPostAttrs(List<ShPostAttr> shRelatorPostAttrs) {
+		this.shRelatorPostAttrs = shRelatorPostAttrs;
+	}
+
+	public ShPost getShRelatorPostAttr() {
+		return shRelatorPostAttr;
+	}
+
+	public void setShRelatorPostAttr(ShPost shRelatorPostAttr) {
+		this.shRelatorPostAttr = shRelatorPostAttr;
+	}
+	
+	
 }
