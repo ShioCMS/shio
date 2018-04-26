@@ -33,7 +33,7 @@ import io.swagger.annotations.Api;
 
 @RestController
 @RequestMapping("/api/v2/post/type")
-@Api(tags="Post Type", description="PostType API")
+@Api(tags = "Post Type", description = "PostType API")
 public class ShPostTypeAPI {
 	@Autowired
 	private ShPostTypeRepository shPostTypeRepository;
@@ -45,30 +45,30 @@ public class ShPostTypeAPI {
 	private ShPostRepository shPostRepository;
 	@Autowired
 	private ShGlobalIdRepository shGlobalIdRepository;
-	
+
 	@GetMapping
-	@JsonView({ShJsonView.ShJsonViewPostType.class})
+	@JsonView({ ShJsonView.ShJsonViewPostType.class })
 	public List<ShPostType> shPostTypeList() throws Exception {
 		return shPostTypeRepository.findAll();
 	}
 
 	@GetMapping("/{id}")
-	@JsonView({ShJsonView.ShJsonViewPostType.class})
-	public ShPostType  shPostTypeEdit(@PathVariable UUID id) throws Exception {
+	@JsonView({ ShJsonView.ShJsonViewPostType.class })
+	public ShPostType shPostTypeEdit(@PathVariable UUID id) throws Exception {
 		return shPostTypeRepository.findById(id).get();
 	}
 
-	@GetMapping("/model")	
-	@JsonView({ShJsonView.ShJsonViewPostType.class})
-	public ShPostType  shPostTypeStructure() throws Exception {
+	@GetMapping("/model")
+	@JsonView({ ShJsonView.ShJsonViewPostType.class })
+	public ShPostType shPostTypeStructure() throws Exception {
 		ShPostType shPostType = new ShPostType();
 		return shPostType;
 
 	}
 
 	@GetMapping("/{id}/post/model")
-	@JsonView({ShJsonView.ShJsonViewPostType.class})
-	public ShPost  shPostTypePostStructure(@PathVariable UUID id) throws Exception {
+	@JsonView({ ShJsonView.ShJsonViewPostType.class })
+	public ShPost shPostTypePostStructure(@PathVariable UUID id) throws Exception {
 		ShPost shPost = new ShPost();
 		shPost.setShPostType(shPostTypeRepository.findById(id).get());
 		List<ShPostAttr> shPostAttrs = new ArrayList<ShPostAttr>();
@@ -84,31 +84,30 @@ public class ShPostTypeAPI {
 	}
 
 	@PutMapping("/{id}")
-	@JsonView({ShJsonView.ShJsonViewPostType.class})
-	public ShPostType  shPostTypeUpdate(@PathVariable UUID id, @RequestBody ShPostType shPostType) throws Exception {
+	@JsonView({ ShJsonView.ShJsonViewPostType.class })
+	public ShPostType shPostTypeUpdate(@PathVariable UUID id, @RequestBody ShPostType shPostType) throws Exception {
 		ShPostType shPostTypeEdit = shPostTypeRepository.findById(id).get();
 
 		for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs()) {
+			ShPostTypeAttr shPostTypeAttrEdit = null;
+			if (shPostTypeAttr.getId() != null) {
+				shPostTypeAttrEdit = shPostTypeAttrRepository.findById(shPostTypeAttr.getId()).get();
+				if (shPostTypeAttrEdit != null) {
+					shPostTypeAttrEdit.setDescription(shPostTypeAttr.getDescription());
+					shPostTypeAttrEdit.setIsSummary(shPostTypeAttr.getIsSummary());
+					shPostTypeAttrEdit.setIsTitle(shPostTypeAttr.getIsTitle());
+					shPostTypeAttrEdit.setLabel(shPostTypeAttr.getLabel());
+					shPostTypeAttrEdit.setMany(shPostTypeAttr.getMany());
+					shPostTypeAttrEdit.setName(shPostTypeAttr.getName());
+					shPostTypeAttrEdit.setOrdinal(shPostTypeAttr.getOrdinal());
+					shPostTypeAttrEdit.setRequired(shPostTypeAttr.getRequired());
+					shPostTypeAttrEdit.setShWidget(shPostTypeAttr.getShWidget());
 
-			ShPostTypeAttr shPostTypeAttrEdit = shPostTypeAttrRepository.findById(shPostTypeAttr.getId()).get();
-
-			if (shPostTypeAttrEdit != null) {
-				shPostTypeAttrEdit.setDescription(shPostTypeAttr.getDescription());
-				shPostTypeAttrEdit.setIsSummary(shPostTypeAttr.getIsSummary());
-				shPostTypeAttrEdit.setIsTitle(shPostTypeAttr.getIsTitle());
-				shPostTypeAttrEdit.setLabel(shPostTypeAttr.getLabel());
-				shPostTypeAttrEdit.setMany(shPostTypeAttr.getMany());
-				shPostTypeAttrEdit.setName(shPostTypeAttr.getName());
-				shPostTypeAttrEdit.setOrdinal(shPostTypeAttr.getOrdinal());
-				shPostTypeAttrEdit.setRequired(shPostTypeAttr.getRequired());
-				shPostTypeAttrEdit.setShWidget(shPostTypeAttr.getShWidget());
-
-				shPostTypeAttrRepository.saveAndFlush(shPostTypeAttrEdit);
-			} else {
-				if (shPostTypeAttr.getId() == null) {
-					shPostTypeAttr.setShPostType(shPostType);
-					shPostTypeAttrRepository.saveAndFlush(shPostTypeAttr);
+					shPostTypeAttrRepository.saveAndFlush(shPostTypeAttrEdit);
 				}
+			} else {
+				shPostTypeAttr.setShPostType(shPostType);
+				shPostTypeAttrRepository.saveAndFlush(shPostTypeAttr);
 			}
 		}
 
@@ -123,7 +122,7 @@ public class ShPostTypeAPI {
 	}
 
 	@DeleteMapping("/{id}")
-	public boolean  shPostTypeDelete(@PathVariable UUID id) throws Exception {
+	public boolean shPostTypeDelete(@PathVariable UUID id) throws Exception {
 		ShPostType shPostType = shPostTypeRepository.findById(id).get();
 
 		for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs()) {
@@ -142,29 +141,30 @@ public class ShPostTypeAPI {
 		}
 
 		shGlobalIdRepository.delete(shPostType.getShGlobalId().getId());
-		
+
 		shPostTypeRepository.delete(id);
 		return true;
 	}
 
 	@PostMapping
-	@JsonView({ShJsonView.ShJsonViewPostType.class})
+	@JsonView({ ShJsonView.ShJsonViewPostType.class })
 	public ShPostType shPostTypeAdd(@RequestBody ShPostType shPostType) throws Exception {
 		shPostTypeRepository.save(shPostType);
 		shPostType.setDate(new Date());
-		
+
 		ShGlobalId shGlobalId = new ShGlobalId();
 		shGlobalId.setShObject(shPostType);
 		shGlobalId.setType(ShObjectType.POST_TYPE);
 
 		shGlobalIdRepository.save(shGlobalId);
-		
+
 		return shPostType;
 
 	}
 
 	@PostMapping("/{id}/attr")
-	public ShPostTypeAttr  shPostTypeAttrAdd(@PathVariable UUID id, @RequestBody ShPostTypeAttr shPostTypeAttr) throws Exception {
+	public ShPostTypeAttr shPostTypeAttrAdd(@PathVariable UUID id, @RequestBody ShPostTypeAttr shPostTypeAttr)
+			throws Exception {
 		ShPostType shPostType = shPostTypeRepository.findById(id).get();
 		if (shPostType != null) {
 			shPostTypeAttr.setShPostType(shPostType);

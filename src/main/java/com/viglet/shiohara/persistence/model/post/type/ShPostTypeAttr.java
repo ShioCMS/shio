@@ -3,7 +3,6 @@ package com.viglet.shiohara.persistence.model.post.type;
 import java.io.Serializable;
 import javax.persistence.*;
 
-import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
