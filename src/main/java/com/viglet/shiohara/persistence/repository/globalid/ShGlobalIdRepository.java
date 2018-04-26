@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
+import com.viglet.shiohara.persistence.model.object.ShObject;
 
 public interface ShGlobalIdRepository extends JpaRepository<ShGlobalId, UUID> {
 
@@ -16,7 +17,7 @@ public interface ShGlobalIdRepository extends JpaRepository<ShGlobalId, UUID> {
 
 	Optional<ShGlobalId> findById(UUID id);
 	
-	//ShGlobalId findByObjectId(UUID objectId);
+	ShGlobalId findByShObject(ShObject shObject);
 
 	ShGlobalId save(ShGlobalId shGlobalObject);
 

@@ -35,6 +35,7 @@ import com.viglet.shiohara.persistence.repository.reference.ShReferenceRepositor
 import com.viglet.shiohara.persistence.repository.user.ShUserRepository;
 import com.viglet.shiohara.post.type.ShSystemPostType;
 import com.viglet.shiohara.url.ShURLFormatter;
+import com.viglet.shiohara.utils.ShPostUtils;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
 import com.viglet.shiohara.widget.ShSystemWidget;
 
@@ -59,7 +60,9 @@ public class ShPostAPI {
 	private ShReferenceRepository shReferenceRepository;
 	@Autowired
 	private ShURLFormatter shURLFormatter;
-
+	@Autowired
+	private ShPostUtils shPostUtils;
+	
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShPost> shPostList() throws Exception {
@@ -94,7 +97,7 @@ public class ShPostAPI {
 				summary = StringUtils.abbreviate(shPostAttr.getStrValue(), 255);
 
 			ShPostAttr shPostAttrEdit = shPostAttrRepository.findById(shPostAttr.getId()).get();
-			this.referencedObject(shPostAttrEdit, shPostAttr, shPost);
+			shPostUtils.referencedObject(shPostAttrEdit, shPostAttr, shPost);
 
 			if (shPostAttrEdit != null) {
 				shPostAttrEdit.setDateValue(shPostAttr.getDateValue());
@@ -158,7 +161,7 @@ public class ShPostAPI {
 		String summary = shPost.getSummary();
 		// Get PostAttrs before save, because JPA Lazy
 		List<ShPostAttr> shPostAttrs = shPost.getShPostAttrs();
-		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
+		for (ShPostAttr shPostAttr : shPostAttrs) {
 			if (shPostAttr.getShPostTypeAttr().getIsTitle() == 1)
 				title = StringUtils.abbreviate(shPostAttr.getStrValue(), 255);
 
@@ -188,7 +191,7 @@ public class ShPostAPI {
 
 		for (ShPostAttr shPostAttr : shPostAttrs) {
 			shPostAttr.setShPost(shPostWithGlobalId);
-			this.referencedObject(shPostAttr, shPostWithGlobalId);
+			shPostUtils.referencedObject(shPostAttr, shPostWithGlobalId);
 			shPostAttrRepository.saveAndFlush(shPostAttr);
 		}
 
@@ -202,120 +205,5 @@ public class ShPostAPI {
 
 	}
 
-	public void referencedFile(ShPostAttr shPostAttr, ShPost shPost) {
-		if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE.toString())) {
-			File fileFrom = shStaticFileUtils.filePath(shPost.getShFolder(), shPostAttr.getStrValue());
-			File fileTo = shStaticFileUtils.filePath(shPost.getShFolder(), shPostAttr.getStrValue());
-			if (fileFrom != null && fileTo != null) {
-				if (fileFrom.exists()) {
-					fileFrom.renameTo(fileTo);
-				}
-			}
-
-		} else {
-			this.referencedPost(shPostAttr, shPost);
-		}
-	}
-
-	public void referencedPost(ShPostAttr shPostAttr, ShPost shPost) {
-
-		if (shPostAttr.getStrValue() == null) {
-			shPostAttr.setReferenceObjects(null);
-		} else {
-			ShPost shPostFile = shPostRepository.findById(UUID.fromString(shPostAttr.getStrValue())).get();
-			// TODO Two or more attributes with FILE Widget and same file, it cannot remove
-			// a valid reference
-			// Remove old references
-			List<ShReference> shOldReferences = shReferenceRepository.findByShGlobalFromId(shPost.getShGlobalId());
-			if (shOldReferences.size() > 0) {
-				for (ShReference shOldReference : shOldReferences) {
-					if (shPostAttr.getReferenceObjects() != null) {
-						for (ShObject shObject : shPostAttr.getReferenceObjects()) {
-							if (shOldReference.getShGlobalToId().getId().toString()
-									.equals(shObject.getShGlobalId().getId().toString())) {
-								shReferenceRepository.delete(shOldReference);
-								break;
-							}
-						}
-					}
-				}
-			}
-
-			// Create new reference
-			ShReference shReference = new ShReference();
-			shReference.setShGlobalFromId(shPost.getShGlobalId());
-			shReference.setShGlobalToId(shPostFile.getShGlobalId());
-			shReferenceRepository.saveAndFlush(shReference);
-
-			Set<ShObject> referenceObjects = new HashSet<ShObject>();
-			referenceObjects.add(shPostFile);
-			shPostAttr.setReferenceObjects(referenceObjects);
-		}
-	}
-
-	public void referencedObject(ShPostAttr shPostAttr, ShPost shPost) {
-		if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.FILE)) {
-			this.referencedFile(shPostAttr, shPost);
-		} else if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.CONTENT_SELECT)) {
-			this.referencedPost(shPostAttr, shPost);
-		}
-	}
-
-	public void referencedObject(ShPostAttr shPostAttrEdit, ShPostAttr shPostAttr, ShPost shPost) {
-		if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.FILE)) {
-			this.referencedFile(shPostAttrEdit, shPostAttr, shPost);
-		} else if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.CONTENT_SELECT)) {
-			this.referencedPost(shPostAttrEdit, shPostAttr, shPost);
-		}
-	}
-
-	public void referencedFile(ShPostAttr shPostAttrEdit, ShPostAttr shPostAttr, ShPost shPost) {
-		if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE)) {
-			File fileFrom = shStaticFileUtils.filePath(shPost.getShFolder(), shPostAttrEdit.getStrValue());
-			File fileTo = shStaticFileUtils.filePath(shPost.getShFolder(), shPostAttr.getStrValue());
-			if (fileFrom != null && fileTo != null) {
-				if (fileFrom.exists()) {
-					fileFrom.renameTo(fileTo);
-				}
-			}
-
-		} else {
-			this.referencedPost(shPostAttrEdit, shPostAttr, shPost);
-		}
-
-	}
-
-	public void referencedPost(ShPostAttr shPostAttrEdit, ShPostAttr shPostAttr, ShPost shPost) {
-		if (shPostAttr.getStrValue() == null) {
-			shPostAttr.setReferenceObjects(null);
-		} else {
-			ShPost shPostFile = shPostRepository.findById(UUID.fromString(shPostAttr.getStrValue())).get();
-			// TODO Two or more attributes with FILE Widget and same file, it cannot remove
-			// a valid reference
-			// Remove old references
-			List<ShReference> shOldReferences = shReferenceRepository.findByShGlobalFromId(shPost.getShGlobalId());
-			if (shOldReferences.size() > 0) {
-				for (ShReference shOldReference : shOldReferences) {
-					if (shPostAttrEdit.getReferenceObjects() != null) {
-						for (ShObject shObject : shPostAttrEdit.getReferenceObjects()) {
-							if (shOldReference.getShGlobalToId().getId().toString()
-									.equals(shObject.getShGlobalId().getId().toString())) {
-								shReferenceRepository.delete(shOldReference);
-								break;
-							}
-						}
-					}
-				}
-			}
-
-			ShReference shReference = new ShReference();
-			shReference.setShGlobalFromId(shPost.getShGlobalId());
-			shReference.setShGlobalToId(shPostFile.getShGlobalId());
-			shReferenceRepository.saveAndFlush(shReference);
-
-			Set<ShObject> referenceObjects = new HashSet<ShObject>();
-			referenceObjects.add(shPostFile);
-			shPostAttr.setReferenceObjects(referenceObjects);
-		}
-	}
+	
 }
