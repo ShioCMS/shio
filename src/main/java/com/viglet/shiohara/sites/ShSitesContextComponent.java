@@ -51,10 +51,10 @@ public class ShSitesContextComponent {
 	private ShPostUtils shPostUtils;
 	@Autowired
 	private ResourceLoader resourceloader;
-	
+
 	@Resource
 	private ApplicationContext context;
-	
+
 	public StringBuilder shObjectJSFactory() throws IOException {
 		InputStreamReader isr = new InputStreamReader(
 				resourceloader.getResource("classpath:/js/server-side/shObject.js").getInputStream());
@@ -200,12 +200,12 @@ public class ShSitesContextComponent {
 		return shPostUtils.postToMap(shFolderPageLayout);
 	}
 
-	public String shPageLayoutFactory(String javascriptVar, String pageLayoutJS,
-			String pageLayoutHTML) throws ScriptException, IOException {
-	
+	public String shPageLayoutFactory(String javascriptVar, String pageLayoutJS, String pageLayoutHTML)
+			throws ScriptException, IOException {
+
 		StringBuilder shObjectJS = this.shObjectJSFactory();
 
-		String javascript = javascriptVar + pageLayoutJS;
+		String javascript = shObjectJS.toString() + javascriptVar + pageLayoutJS;
 
 		// Nashorn Engine
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");

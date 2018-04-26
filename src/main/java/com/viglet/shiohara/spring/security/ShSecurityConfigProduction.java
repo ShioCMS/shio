@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,6 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
+import org.springframework.security.web.firewall.HttpFirewall;
+import org.springframework.security.web.firewall.StrictHttpFirewall;
 
 @Configuration
 @EnableWebSecurity
@@ -23,17 +26,27 @@ import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 public class ShSecurityConfigProduction extends WebSecurityConfigurerAdapter {
 	@Autowired
 	UserDetailsService userDetailsService;
-	@Autowired 
+	@Autowired
 	ShAuthenticationEntryPoint shAuthenticationEntryPoint;
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		// Prevent the HTTP response header of "Pragma: no-cache".
 		http.headers().cacheControl().disable();
-		http.httpBasic().authenticationEntryPoint(shAuthenticationEntryPoint).and().authorizeRequests().antMatchers("/index.html", "/welcome/**", "/", "/store/**","/thirdparty/**", "/js/**", "/css/**", "/template/**", "/img/**",
-				"/sites/**", "/swagger-resources/**").permitAll()
-				.anyRequest().authenticated().and().addFilterAfter(new ShCsrfHeaderFilter(), CsrfFilter.class).csrf()
+		http.httpBasic().authenticationEntryPoint(shAuthenticationEntryPoint).and().authorizeRequests()
+				.antMatchers("/index.html", "/welcome/**", "/", "/store/**", "/thirdparty/**", "/js/**", "/css/**",
+						"/template/**", "/img/**", "/sites/**", "/swagger-resources/**")
+				.permitAll().anyRequest().authenticated().and()
+				.addFilterAfter(new ShCsrfHeaderFilter(), CsrfFilter.class).csrf()
 				.csrfTokenRepository(csrfTokenRepository()).and().logout();
 
+	}
+
+	@Override
+	public void configure(WebSecurity web) throws Exception {
+		// TODO Auto-generated method stub
+		super.configure(web);
+		web.httpFirewall(allowUrlEncodedSlashHttpFirewall());
 	}
 
 	@Autowired
@@ -50,5 +63,13 @@ public class ShSecurityConfigProduction extends WebSecurityConfigurerAdapter {
 	@Bean(name = "passwordEncoder")
 	public PasswordEncoder passwordencoder() {
 		return new BCryptPasswordEncoder();
+	}
+
+	@Bean
+	public HttpFirewall allowUrlEncodedSlashHttpFirewall() {
+		// Allow double slash in URL
+		StrictHttpFirewall firewall = new StrictHttpFirewall();
+		firewall.setAllowUrlEncodedSlash(true);
+		return firewall;
 	}
 }
