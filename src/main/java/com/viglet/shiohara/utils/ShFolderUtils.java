@@ -109,6 +109,34 @@ public class ShFolderUtils {
 
 	}
 
+	public String directoryPath(ShFolder shFolder, String separator) {
+		if (shFolder != null) {
+			boolean rootFolder = false;
+			ArrayList<String> pathContexts = new ArrayList<String>();
+			pathContexts.add(shFolder.getName());
+			ShFolder parentFolder = shFolder.getParentFolder();
+			while (parentFolder != null && !rootFolder) {
+				pathContexts.add(parentFolder.getName());
+				if ((parentFolder.getRootFolder() == (byte) 1) || (parentFolder.getParentFolder() == null)) {
+					rootFolder = true;
+				} else {
+					parentFolder = parentFolder.getParentFolder();
+				}
+			}
+			
+			String path = "";
+
+			for (String context : pathContexts) {
+				path = context + separator + path;
+			}
+			path = separator + path;
+			return path;
+		} else {
+			return separator;
+		}
+
+	}
+
 	public ShSite getSite(ShFolder shFolder) {
 		ShSite shSite = null;
 		if (shFolder != null) {
