@@ -23,6 +23,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
 import com.viglet.shiohara.api.folder.ShFolderList;
+import com.viglet.shiohara.api.folder.ShFolderPath;
 import com.viglet.shiohara.object.ShObjectType;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
@@ -40,6 +41,7 @@ import com.viglet.shiohara.utils.ShPostUtils;
 import com.viglet.shiohara.utils.ShSiteUtils;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("/api/v2/object")
@@ -78,7 +80,7 @@ public class ShObjectAPI {
 			ShFolder shFolder = shFolderRepository.findById(shGlobalId.getShObject().getId()).get();
 			redirect = shFolderUtils.generateFolderLink(shFolder);
 		}
-		
+
 		RedirectView redirectView = new RedirectView(new String(redirect.getBytes("UTF-8"), "ISO-8859-1"));
 
 		return redirectView;
@@ -202,6 +204,59 @@ public class ShObjectAPI {
 			shFolderList.setShFolders(shFolders);
 			shFolderList.setShSite(shSite);
 			return shFolderList;
+		} else {
+			return null;
+		}
+	}
+
+	@ApiOperation(value = "Object path")
+	@GetMapping("/{id}/path")
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
+	public ShFolderPath shObjectPath(@PathVariable UUID id) throws Exception {
+		ShGlobalId shGlobalId = shGlobalIdRepository.findById(id).get();
+		if (shGlobalId.getType().equals(ShObjectType.SITE)) {
+			ShSite shSite = (ShSite) shGlobalId.getShObject();
+			if (shSite != null) {
+				ShFolderPath shFolderPath = new ShFolderPath();
+				shFolderPath.setFolderPath(null);
+				shFolderPath.setCurrentFolder(null);
+				shFolderPath.setBreadcrumb(null);
+				shFolderPath.setShSite(shSite);
+				return shFolderPath;
+			} else {
+				return null;
+			}
+		} else if (shGlobalId.getType().equals(ShObjectType.FOLDER)) {
+			ShFolder shFolder = (ShFolder) shGlobalId.getShObject();
+			if (shFolder != null) {
+				ShFolderPath shFolderPath = new ShFolderPath();
+				String folderPath = shFolderUtils.folderPath(shFolder);
+				ArrayList<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shFolder);
+				ShSite shSite = breadcrumb.get(0).getShSite();
+				shFolderPath.setFolderPath(folderPath);
+				shFolderPath.setCurrentFolder(shFolder);
+				shFolderPath.setBreadcrumb(breadcrumb);
+				shFolderPath.setShSite(shSite);
+				return shFolderPath;
+			} else {
+				return null;
+			}
+		} else if (shGlobalId.getType().equals(ShObjectType.POST)) {
+			ShPost shPost = (ShPost) shGlobalId.getShObject();
+			if (shPost != null) {
+				ShFolder shFolder = shPost.getShFolder();
+				ShFolderPath shFolderPath = new ShFolderPath();
+				String folderPath = shFolderUtils.folderPath(shFolder);
+				ArrayList<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shFolder);
+				ShSite shSite = breadcrumb.get(0).getShSite();
+				shFolderPath.setFolderPath(folderPath);
+				shFolderPath.setCurrentFolder(shFolder);
+				shFolderPath.setBreadcrumb(breadcrumb);
+				shFolderPath.setShSite(shSite);
+				return shFolderPath;
+			} else {
+				return null;
+			}
 		} else {
 			return null;
 		}

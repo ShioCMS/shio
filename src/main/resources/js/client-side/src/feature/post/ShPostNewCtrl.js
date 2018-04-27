@@ -17,12 +17,14 @@ shioharaApp.controller('ShPostNewCtrl', [
             plugins: 'link image code'
             , toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code'
         };
-        $scope.folderId = $stateParams.folderId;
+        $scope.folderId = $stateParams.folderId;        
         $scope.postTypeId = $stateParams.postTypeId;
+        $scope.postTypeName = $stateParams.postTypeName;
         $scope.breadcrumb = null;
         $scope.shPost = null;
         $scope.shFolder = null;
         $scope.shSite = null;
+        $scope.shPostType = null;
         var folderURL = null;
         $scope.$evalAsync($http.get(shAPIServerService.get().concat("/v2/folder/" + $scope.folderId + "/path")).then(function (response) {
             $scope.shFolder = response.data.currentFolder
@@ -31,9 +33,19 @@ shioharaApp.controller('ShPostNewCtrl', [
             folderPath = shAPIServerService.server().concat("/v1/store/file_source/" + $scope.shSite.name + response.data.folderPath);
             folderURL = shAPIServerService.server().concat("/v2/sites/" + $scope.shSite.name.replace(new RegExp(" ", 'g'), "-") + "/default/pt-br" + response.data.folderPath.replace(new RegExp(" ", 'g'), "-"));
         }));
-        $scope.$evalAsync($http.get(shAPIServerService.get().concat("/v2/post/type/" + $scope.postTypeId + "/post/model")).then(function (response) {
-            $scope.shPost = response.data;
-        }));
+        if ($scope.postTypeId != null) {
+        	$scope.$evalAsync($http.get(shAPIServerService.get().concat("/v2/post/type/" + $scope.postTypeId + "/post/model")).then(function (response) {
+        		$scope.shPost = response.data;
+        		$scope.shPostType = response.data.shPostType;
+        	}));
+        }
+        else {
+            $scope.$evalAsync($http.get(shAPIServerService.get().concat("/v2/post/type/name/" + $scope.postTypeName + "/post/model")).then(function (response) {            	 
+                $scope.shPost = response.data;
+                $scope.shPostType = response.data.shPostType;
+            }));
+        	
+        }
         $scope.postEditForm = "template/post/form.html";
         $scope.openPreviewURL = function () {
 			 var link = shAPIServerService.get().concat("/v2/object/" + $scope.shPost.shGlobalId.id + "/preview");

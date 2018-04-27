@@ -111,14 +111,16 @@
 					<div style="display: table;">
 						<i class="fa fa-file-o fa-4x" aria-hidden="true"
 							style="float: left; margin: 10px"></i><span
-							style="display: inline-block; margin-top: 20px">Upload
-							files</span>
+							style="display: inline-block; margin-top: 20px"><a
+						ui-sref="content.post-type-item-by-name.post-item-new({folderId: shCurrentFolder.id, postTypeName: 'PT-FILE'})">Upload
+							file</a></span>
 					</div>
 					<div style="display: table;">
 						<i class="fa fa-folder-o fa-4x" aria-hidden="true"
 							style="float: left; margin: 10px"></i> <span
-							style="display: inline-block; margin-top: 20px">Create a
-							folder</span>
+							style="display: inline-block; margin-top: 20px"> <a
+							ui-sref="content.object.folder-new({objectId: objectId})">Create
+								a folder</a></span>
 					</div>
 				</div>
 			</div>
@@ -205,18 +207,18 @@
 								ng-model="shStateObjects[shPost.shGlobalId.id]">
 						</div>
 						<div style="display: inline">
-						<!-- NON ALIAS -->
-							<a ng-if="shPost.shPostType.name !== 'PT-ALIAS'" type="button" class="btn btn-link"
-								ui-sref="content.post-type-item.post-item({postTypeId: shPost.shPostType.id, postId: shPost.id})"><i								
+							<!-- NON ALIAS -->
+							<a ng-if="shPost.shPostType.name !== 'PT-ALIAS'" type="button"
+								class="btn btn-link"
+								ui-sref="content.post-type-item.post-item({postTypeId: shPost.shPostType.id, postId: shPost.id})"><i
 								class="fa fa-newspaper-o" aria-hidden="true"
 								style="margin-right: 5px"></i> {{shPost.title}}</a>
-						<!-- ALIAS -->		
-						<a ng-if="shPost.shPostType.name === 'PT-ALIAS'" type="button" class="btn btn-link"
-								ui-sref="content.post-type-item.post-item({postTypeId: shPost.shPostType.id, postId: shPost.id})"><i								
+							<!-- ALIAS -->
+							<a ng-if="shPost.shPostType.name === 'PT-ALIAS'" type="button"
+								class="btn btn-link"
+								ui-sref="content.post-type-item.post-item({postTypeId: shPost.shPostType.id, postId: shPost.id})"><i
 								class="fa fa-share-square-o" aria-hidden="true"
-								style="margin-right: 5px"></i> {{shPost.title}}</a>		
-																
-								 <span
+								style="margin-right: 5px"></i> {{shPost.title}}</a> <span
 								ng-if="isRecent(shPost.date)" class="label label-default"
 								style="display: inline-block; margin-top: 12px">Recent</span>
 							<div style="font-size: 12px; margin-left: 28px">
