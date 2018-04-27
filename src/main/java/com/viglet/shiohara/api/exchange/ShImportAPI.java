@@ -341,10 +341,7 @@ public class ShImportAPI {
 						&& shPostFields.getValue() != null && !shPostType.getName().equals(ShSystemPostType.FILE)) {
 					try {
 						UUID shReferencedPostUUID = UUID.fromString((String) shPostFields.getValue());
-
-						ShPost shReferencedPost = shPostRepository.findById(shReferencedPostUUID).get();
-
-						if (shReferencedPost == null) {
+						if (!shPostRepository.findById(shReferencedPostUUID).isPresent()) {
 							// So the referenced Post not exists, need create first
 							if (shObjects.get(shReferencedPostUUID) instanceof ShPostExchange) {
 								ShPostExchange shReferencedPostExchange = (ShPostExchange) shObjects
