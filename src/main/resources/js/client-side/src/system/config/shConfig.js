@@ -104,6 +104,13 @@ shioharaApp.config([
 				data : {
 					pageTitle : 'Post Type Editor | Viglet Shiohara'
 				}
+			}).state('content.post-type-item-by-name', {
+				url : '/post/type-name/:postTypeName',
+				templateUrl : 'template/post/type/item.html',
+				controller : 'ShPostTypeItemCtrl',
+				data : {
+					pageTitle : 'Post Type Editor | Viglet Shiohara'
+				}
 			}).state('content.post-type-item', {
 				url : '/post/type/:postTypeId',
 				templateUrl : 'template/post/type/item.html',
@@ -124,7 +131,14 @@ shioharaApp.config([
 				controller : 'ShPostNewCtrl',
 				data : {
 					pageTitle : 'New Post | Viglet Shiohara'
-				}
+				}			
+			}).state('content.post-type-item-by-name.post-item-new', {
+				url : '/folder/:folderId',
+				templateUrl : 'template/post/item.html',
+				controller : 'ShPostNewCtrl',
+				data : {
+					pageTitle : 'New Post | Viglet Shiohara'
+				}			
 			}).state('content.post-type-item.post-item', {
 				url : '/post/:postId',
 				templateUrl : 'template/post/item.html',

@@ -29,6 +29,12 @@ shioharaApp
 							$scope.shFolder = null;
 							$scope.breadcrumb = null;
 							$rootScope.$state = $state;
+							
+							$scope.$evalAsync($http.get(shAPIServerService.get().concat("/v2/object/" + $scope.objectId + "/path")).then(function (response) {
+						            $scope.breadcrumb = response.data.breadcrumb;
+						            $scope.shSite = response.data.shSite;
+						    }));
+							  
 							$scope.$evalAsync($http.get(
 									shAPIServerService.get().concat(
 											"/v2/folder/model")).then(
