@@ -99,7 +99,7 @@ public class ShImportAPI {
 			}
 
 			File zipFile = new File(
-					tmpDir.getAbsolutePath().concat(File.separator + "imp_" + file.getOriginalFilename()));
+					tmpDir.getAbsolutePath().concat(File.separator + "imp_" + file.getOriginalFilename() + UUID.randomUUID()));
 
 			file.transferTo(zipFile);
 			File outputFolder = new File(tmpDir.getAbsolutePath().concat(File.separator + "imp_" + UUID.randomUUID()));

@@ -7,13 +7,16 @@
 
 			<div class="form-group">
 
-				<h3 ng-if="shPost.id == null">Create your new {{shPostType.title}}
+				<h3 ng-if="shPost.id == null">Create your new
+					{{shPostType.title}} Post</h3>
+				<h3 ng-if="shPost.id != null">Edit your {{shPostType.title}}
 					Post</h3>
-				<h3 ng-if="shPost.id != null">Edit your {{shPostType.title}} Post</h3>
 			</div>
 			<div class="pull-right" style="margin: -40px 0 0;">
-				<a ui-sref="content.folder.post-type-select({folderId: folderId})" class="btn btn-viglet">Create
-					other kind of Post</a>
+				<button ng-if="shPost.id != null" ng-click="openPreviewURL()"
+					class="btn btn-viglet">
+					<i class="fa fa-eye" aria-hidden="true"></i> View Page
+				</button>
 
 			</div>
 		</fieldset>
