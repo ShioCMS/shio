@@ -150,9 +150,7 @@ public class ShPostUtils {
 		if (shPostAttr.getStrValue() == null) {
 			shPostAttr.setReferenceObjects(null);
 		} else {
-			ShPost shPostFile = shPostRepository.findById(UUID.fromString(shPostAttr.getStrValue())).get();
-			// Lazy, need find globalId during Import
-			ShGlobalId shGlobalToId = shGlobalIdRepository.findByShObject(shPostFile);
+
 			// TODO Two or more attributes with FILE Widget and same file, it cannot remove
 			// a valid reference
 			// Remove old references
@@ -169,17 +167,26 @@ public class ShPostUtils {
 						}
 					}
 				}
+
 			}
+			
+			try {
+				ShPost shPostReferenced = shPostRepository.findById(UUID.fromString(shPostAttr.getStrValue())).get();
+				// Lazy, need find globalId during Import
+				ShGlobalId shGlobalToId = shGlobalIdRepository.findByShObject(shPostReferenced);
+				// Create new reference
+				ShReference shReference = new ShReference();
+				shReference.setShGlobalFromId(shPost.getShGlobalId());
+				shReference.setShGlobalToId(shGlobalToId);
+				shReferenceRepository.saveAndFlush(shReference);
 
-			// Create new reference
-			ShReference shReference = new ShReference();
-			shReference.setShGlobalFromId(shPost.getShGlobalId());
-			shReference.setShGlobalToId(shGlobalToId);
-			shReferenceRepository.saveAndFlush(shReference);
-
-			Set<ShObject> referenceObjects = new HashSet<ShObject>();
-			referenceObjects.add(shPostFile);
-			shPostAttr.setReferenceObjects(referenceObjects);
+				Set<ShObject> referenceObjects = new HashSet<ShObject>();
+				referenceObjects.add(shPostReferenced);
+				shPostAttr.setReferenceObjects(referenceObjects);
+			} catch (IllegalArgumentException iae) {
+				// TODO Re-thing about ignore this
+				shPostAttr.setReferenceObjects(null);
+			}
 		}
 	}
 
@@ -220,7 +227,6 @@ public class ShPostUtils {
 		if (shPostAttr.getStrValue() == null) {
 			shPostAttr.setReferenceObjects(null);
 		} else {
-			ShPost shPostFile = shPostRepository.findById(UUID.fromString(shPostAttr.getStrValue())).get();
 			// TODO Two or more attributes with FILE Widget and same file, it cannot remove
 			// a valid reference
 			// Remove old references
@@ -238,15 +244,21 @@ public class ShPostUtils {
 					}
 				}
 			}
+			try {
+				ShPost shPostReferenced = shPostRepository.findById(UUID.fromString(shPostAttr.getStrValue())).get();
 
-			ShReference shReference = new ShReference();
-			shReference.setShGlobalFromId(shPost.getShGlobalId());
-			shReference.setShGlobalToId(shPostFile.getShGlobalId());
-			shReferenceRepository.saveAndFlush(shReference);
+				ShReference shReference = new ShReference();
+				shReference.setShGlobalFromId(shPost.getShGlobalId());
+				shReference.setShGlobalToId(shPostReferenced.getShGlobalId());
+				shReferenceRepository.saveAndFlush(shReference);
 
-			Set<ShObject> referenceObjects = new HashSet<ShObject>();
-			referenceObjects.add(shPostFile);
-			shPostAttr.setReferenceObjects(referenceObjects);
+				Set<ShObject> referenceObjects = new HashSet<ShObject>();
+				referenceObjects.add(shPostReferenced);
+				shPostAttr.setReferenceObjects(referenceObjects);
+			} catch (IllegalArgumentException iae) {
+				// TODO Re-thing about ignore this
+				shPostAttr.setReferenceObjects(null);
+			}
 		}
 	}
 }

@@ -16,11 +16,13 @@ import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
+import com.viglet.shiohara.persistence.model.reference.ShReference;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
+import com.viglet.shiohara.persistence.repository.reference.ShReferenceRepository;
 import com.viglet.shiohara.url.ShURLScheme;
 
 @Component
@@ -33,6 +35,9 @@ public class ShFolderUtils {
 	private ShPostAttrRepository shPostAttrRepository;
 	@Autowired
 	private ShGlobalIdRepository shGlobalIdRepository;
+	@Autowired
+	private ShReferenceRepository shReferenceRepository;
+	
 	@Autowired
 	private ShURLScheme shURLScheme;
 
@@ -204,10 +209,20 @@ public class ShFolderUtils {
 	public boolean deleteFolder(ShFolder shFolder) {
 
 		for (ShPost shPost : shPostRepository.findByShFolder(shFolder)) {
+			// TODO: Check relation and show to user decides.
+			List<ShReference> shGlobalFromId = shReferenceRepository.findByShGlobalFromId(shPost.getShGlobalId());			
+			List<ShReference> shGlobalToId = shReferenceRepository.findByShGlobalToId(shPost.getShGlobalId());
+			shReferenceRepository.deleteInBatch(shGlobalFromId);
+			shReferenceRepository.deleteInBatch(shGlobalToId);
+		}
+		
+		for (ShPost shPost : shPostRepository.findByShFolder(shFolder)) {
 			List<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
+			
 			shPostAttrRepository.deleteInBatch(shPostAttrs);
 			shGlobalIdRepository.delete(shPost.getShGlobalId().getId());
 		}
+		
 		shPostRepository.deleteInBatch(shPostRepository.findByShFolder(shFolder));
 
 		for (ShFolder shFolderChild : shFolderRepository.findByParentFolder(shFolder)) {
