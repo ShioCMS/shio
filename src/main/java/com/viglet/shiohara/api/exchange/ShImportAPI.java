@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.Map.Entry;
 
+import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,7 +88,31 @@ public class ShImportAPI {
 	@PostMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	@Transactional
-	public ShExchange shImport(@RequestParam("file") MultipartFile file, final Principal principal) throws Exception {
+	public ShExchange shImport(@RequestParam("file") MultipartFile file, final Principal principal)
+			throws IllegalStateException, IOException, ArchiveException {
+		File extractFolder = this.extractZipFile(file);
+		if (extractFolder != null) {
+			ObjectMapper mapper = new ObjectMapper();
+
+			ShExchange shExchange = mapper.readValue(
+					new FileInputStream(extractFolder.getAbsolutePath().concat(File.separator + "export.json")),
+					ShExchange.class);
+
+			this.importSite(shExchange, principal, extractFolder);
+
+			try {
+				FileUtils.deleteDirectory(extractFolder);
+
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+			return shExchange;
+		} else {
+			return null;
+		}
+	}
+
+	public File extractZipFile(MultipartFile file) throws IllegalStateException, IOException, ArchiveException {
 		shObjects.clear();
 		shChildObjects.clear();
 
@@ -98,34 +123,27 @@ public class ShImportAPI {
 				tmpDir.mkdirs();
 			}
 
-			File zipFile = new File(
-					tmpDir.getAbsolutePath().concat(File.separator + "imp_" + file.getOriginalFilename() + UUID.randomUUID()));
+			File zipFile = new File(tmpDir.getAbsolutePath()
+					.concat(File.separator + "imp_" + file.getOriginalFilename() + UUID.randomUUID()));
 
 			file.transferTo(zipFile);
-			File outputFolder = new File(tmpDir.getAbsolutePath().concat(File.separator + "imp_" + UUID.randomUUID()));
-			shUtils.unZipIt(zipFile, outputFolder);
-			ObjectMapper mapper = new ObjectMapper();
-			File extractFolder = outputFolder;
-			ShExchange shExchange = mapper.readValue(
-					new FileInputStream(extractFolder.getAbsolutePath().concat(File.separator + "export.json")),
-					ShExchange.class);
-			for (ShSiteExchange shSiteExchange : shExchange.getSites()) {
-				this.prepareImport(shExchange, shSiteExchange);
-				this.createShSite(shSiteExchange, principal);
-				this.shFolderImportNested(shSiteExchange.getId(), extractFolder, principal, true);
-				this.shFolderImportNested(shSiteExchange.getId(), extractFolder, principal, false);
-			}
-
-			try {
-				FileUtils.deleteDirectory(outputFolder);
-				FileUtils.deleteQuietly(zipFile);
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
-
-			return shExchange;
+			File extractFolder = new File(tmpDir.getAbsolutePath().concat(File.separator + "imp_" + UUID.randomUUID()));
+			shUtils.unZipIt(zipFile, extractFolder);
+			FileUtils.deleteQuietly(zipFile);
+			return extractFolder;
 		} else {
 			return null;
+		}
+	}
+
+	public void importSite(ShExchange shExchange, Principal principal, File extractFolder) throws IOException {
+		for (ShSiteExchange shSiteExchange : shExchange.getSites()) {
+			this.prepareImport(shExchange, shSiteExchange);
+			this.createShSite(shSiteExchange, principal);
+			// Create only Folders
+			this.shFolderImportNested(shSiteExchange.getId(), extractFolder, principal, true);
+			// Create all objects
+			this.shFolderImportNested(shSiteExchange.getId(), extractFolder, principal, false);
 		}
 	}
 
