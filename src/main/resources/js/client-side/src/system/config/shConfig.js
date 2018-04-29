@@ -1,12 +1,11 @@
 shioharaApp.config([
 		'$stateProvider',
 		'$urlRouterProvider',
-		'TokenProvider',
 		'$locationProvider',
 		'$translateProvider',
 		'NotificationProvider',
 		'$httpProvider',
-		function($stateProvider, $urlRouterProvider, TokenProvider,
+		function($stateProvider, $urlRouterProvider,
 				$locationProvider, $translateProvider, NotificationProvider,$httpProvider) {	
 			
 			$httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
@@ -21,11 +20,6 @@ shioharaApp.config([
 				horizontalSpacing : 20,
 				positionX : 'right',
 				positionY : 'bottom'
-			});
-			TokenProvider.extendConfig({
-				clientId : 'b0ec29dd6e0c6bd98b37fee1799dc0a8',
-				redirectUri : 'http://localhost:8080/oauth2callback.html',
-				scopes : [ "https://www.googleapis.com/auth/userinfo.email" ]
 			});
 
 			$translateProvider.translations('en', {
@@ -193,6 +187,13 @@ shioharaApp.config([
 			}).state('content.post-type-select', {
 				url : '/post/type',
 				templateUrl : 'template/post/type/select.html',
+				controller : 'ShPostTypeSelectCtrl',
+				data : {
+					pageTitle : 'Post Type Selection | Viglet Shiohara'
+				}
+			}).state('content.post-type-system', {
+				url : '/post/type/system',
+				templateUrl : 'template/post/type/select-system.html',
 				controller : 'ShPostTypeSelectCtrl',
 				data : {
 					pageTitle : 'Post Type Selection | Viglet Shiohara'
