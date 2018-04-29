@@ -146,8 +146,8 @@ public class ShSitesContextComponent {
 		return shPostItem;
 	}
 
-	public JSONObject shThemeFactory(String themeName) {
-		ShPost shTheme = shPostRepository.findByTitle(themeName);
+	public JSONObject shThemeFactory(UUID postThemeId) {
+		ShPost shTheme = shPostRepository.findById(postThemeId).get();
 
 		Map<String, ShPostAttr> shThemeMap = shPostUtils.postToMap(shTheme);
 
@@ -194,8 +194,9 @@ public class ShSitesContextComponent {
 	public Map<String, ShPostAttr> shFolderPageLayoutMapFactory(ShPost shPostItem) {
 		Map<String, ShPostAttr> shFolderIndexMap = shPostUtils.postToMap(shPostItem);
 
+		UUID shPostFolderPageLayoutId = UUID.fromString(shFolderIndexMap.get(ShSystemPostTypeAttr.PAGE_LAYOUT).getStrValue());
 		ShPost shFolderPageLayout = shPostRepository
-				.findByTitle(shFolderIndexMap.get(ShSystemPostTypeAttr.PAGE_LAYOUT).getStrValue());
+				.findById(shPostFolderPageLayoutId).get();
 
 		return shPostUtils.postToMap(shFolderPageLayout);
 	}

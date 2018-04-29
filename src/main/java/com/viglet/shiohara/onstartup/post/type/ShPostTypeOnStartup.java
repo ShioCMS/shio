@@ -547,7 +547,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setOrdinal(3);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
-			shPostTypeAttr.setShWidget(shWidgetText);
+			shPostTypeAttr.setShWidget(shWidgetContentSelect);
 
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
@@ -634,7 +634,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setOrdinal(2);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
-			shPostTypeAttr.setShWidget(shWidgetText);
+			shPostTypeAttr.setShWidget(shWidgetContentSelect);
 
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 			
