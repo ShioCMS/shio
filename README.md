@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/openviglet/shiohara.svg?branch=master)](https://travis-ci.org/openviglet/shiohara)
+
 ![banner_shiohara.jpg](https://openviglet.github.io/shiohara/img/banner_shiohara.jpg)
 ------
 **Viglet Shiohara** is a simple and intuitive Web Content Management.
