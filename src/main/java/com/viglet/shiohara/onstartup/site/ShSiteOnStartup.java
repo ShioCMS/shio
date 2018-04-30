@@ -1,17 +1,16 @@
 package com.viglet.shiohara.onstartup.site;
 
-import java.util.Date;
-import java.util.UUID;
+import java.io.File;
+import java.io.IOException;
 
+import org.apache.commons.compress.archivers.ArchiveException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
-import com.viglet.shiohara.object.ShObjectType;
-import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
-import com.viglet.shiohara.persistence.model.site.ShSite;
-import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
+import com.viglet.shiohara.exchange.ShImportExchange;
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
-import com.viglet.shiohara.url.ShURLFormatter;
 
 @Component
 public class ShSiteOnStartup {
@@ -19,37 +18,28 @@ public class ShSiteOnStartup {
 	@Autowired
 	private ShSiteRepository shSiteRepository;
 	@Autowired
-	private ShGlobalIdRepository shGlobalIdRepository;
-	@Autowired
-	private ShURLFormatter shURLFormatter;
-	
+	private ShImportExchange shImportExchange;
+
 	public void createDefaultRows() {
 
 		if (shSiteRepository.findAll().isEmpty()) {
+			Resource resource = new ClassPathResource("/imports" + File.separator + "sample-site.zip");
+			try {
+				File sampleSite;
 
-			ShSite shSite = new ShSite();
-			UUID uuid = UUID.fromString("858db46f-4bf9-4caa-be08-359ba3d93be9");
-			shSite.setId(uuid);
-			shSite.setName("Sample");
-			shSite.setDescription("Sample Site");
-			shSite.setUrl("http://example.com");
-			shSite.setPostTypeLayout("{\"PT-ARTICLE\" :  \"Post Page Layout\", \n"
-					+ "\"PT-TEXT\": \"Post Page Layout\",\n" + "\"PT-TEXT-AREA\": \"Post Page Layout\"}");
-			shSite.setOwner("admin");
-			shSite.setDate(new Date());
-			shSite.setOwner("admin");
-			shSite.setFurl(shURLFormatter.format(shSite.getName()));
-			
-			shSiteRepository.saveAndFlush(shSite);
+				sampleSite = new File(resource.getURI());
 
-			ShGlobalId shGlobalId = new ShGlobalId();
-			UUID uuidGlobalId = UUID.fromString("848db46f-4bf9-4caa-be08-359ba3d93be5");
-			shGlobalId.setId(uuidGlobalId);
-			shGlobalId.setShObject(shSite);
-			shGlobalId.setType(ShObjectType.SITE);
-
-			shGlobalIdRepository.save(shGlobalId);
-
+				shImportExchange.importFromFile(sampleSite, "admin");
+			} catch (ArchiveException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalStateException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (IOException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
 		}
 
 	}

@@ -1,7 +1,5 @@
 package com.viglet.shiohara;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.embedded.undertow.UndertowServletWebServerFactory;
@@ -22,11 +20,11 @@ import io.undertow.UndertowOptions;
 @EnableJms
 @EnableCaching
 public class Shiohara {
-	private static final Logger logger = LoggerFactory.getLogger(Shiohara.class);
 
 	public static void main(String[] args) throws Exception {
+		System.out.println("Viglet Shiohara starting...");
 		SpringApplication.run(Shiohara.class, args);
-		logger.info("Viglet Shiohara started");
+		System.out.println("Viglet Shiohara started");
 	}
 
 	@Bean
