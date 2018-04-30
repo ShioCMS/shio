@@ -90,6 +90,11 @@ public class ShImportAPI {
 	@Transactional
 	public ShExchange shImport(@RequestParam("file") MultipartFile file, final Principal principal)
 			throws IllegalStateException, IOException, ArchiveException {
+		return this.importFromMultipartFile(file, principal);
+	}
+
+	public ShExchange importFromMultipartFile(MultipartFile file, Principal principal)
+			throws IllegalStateException, IOException, ArchiveException {
 		File extractFolder = this.extractZipFile(file);
 		if (extractFolder != null) {
 			ObjectMapper mapper = new ObjectMapper();
