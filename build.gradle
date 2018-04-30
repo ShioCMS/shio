@@ -1,21 +1,22 @@
 buildscript {
-    ext { springBootVersion = '2.0.1.RELEASE'
+    ext { springBootVersion = '2.1.0.BUILD-SNAPSHOT'
 	      hibernateVersion = '5.9.1.Final'
 		  httpClientVersion = '4.5.2'
 		  swaggerVersion = '2.8.0'
 		  jgitVersion = '4.11.0.201803080745-r'
 		 }
-    repositories { mavenCentral()
-    			   jcenter() }
+		repositories {
+		mavenCentral()
+		maven { url "https://repo.spring.io/snapshot" }
+		maven { url "https://repo.spring.io/milestone" }
+		jcenter()
+		}
     dependencies { classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     			   classpath("com.eriwen:gradle-js-plugin:2.12.0") }
 }
 
-ext { springBootVersion = '2.0.1.RELEASE' }
-
 apply plugin: 'java'
 apply plugin: 'eclipse'
-apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'com.eriwen.gradle.js'
@@ -30,8 +31,11 @@ bootJar {
 }
 
 repositories {
-    mavenCentral()
+	mavenCentral()
+	maven { url "https://repo.spring.io/snapshot" }
+	maven { url "https://repo.spring.io/milestone" }
 }
+
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -144,6 +148,9 @@ dependencies {
 	compile 'org.webjars.bower:ng-file-upload:12.2.13'
 	compile 'org.webjars.bower:angular-ui-notification:0.3.6'
 	compile 'org.webjars.bower:angular-ui-tinymce:0.0.19'
+	
+	
+	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
 task wrapper(type: Wrapper) {
