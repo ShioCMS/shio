@@ -77,7 +77,18 @@ public class ShImportExchange {
 	public ShExchange importFromMultipartFile(MultipartFile multipartFile, String username)
 			throws IllegalStateException, IOException, ArchiveException {
 		File extractFolder = this.extractZipFile(multipartFile);
+		File parentExtractFolder = null;
+
 		if (extractFolder != null) {
+			// Check if export.json exists, if it is not exist try access a sub directory
+			if (!(new File(extractFolder, "export.json").exists()) && (extractFolder.listFiles().length == 1)) {
+				for (File fileOrDirectory : extractFolder.listFiles()) {
+					if (fileOrDirectory.isDirectory() && new File(fileOrDirectory, "export.json").exists()) {
+						parentExtractFolder = extractFolder;
+						extractFolder = fileOrDirectory;
+					}
+				}
+			}
 			ObjectMapper mapper = new ObjectMapper();
 
 			ShExchange shExchange = mapper.readValue(
@@ -88,7 +99,9 @@ public class ShImportExchange {
 
 			try {
 				FileUtils.deleteDirectory(extractFolder);
-
+				if (parentExtractFolder != null) {
+					FileUtils.deleteDirectory(parentExtractFolder);
+				}
 			} catch (IOException ex) {
 				ex.printStackTrace();
 			}
@@ -364,7 +377,7 @@ public class ShImportExchange {
 							}
 						}
 					} catch (IllegalArgumentException iae) {
-						//iae.printStackTrace();
+						// iae.printStackTrace();
 					}
 				}
 
@@ -375,9 +388,9 @@ public class ShImportExchange {
 						shPostFields.getKey()));
 				shPostAttr.setType(1);
 				shPostAttrRepository.save(shPostAttr);
-				
+
 				shPostUtils.referencedObject(shPostAttr, shPost);
-				
+
 				shPostAttrRepository.save(shPostAttr);
 			}
 		}
