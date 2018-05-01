@@ -1,9 +1,16 @@
 package com.viglet.shiohara.onstartup.site;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+import java.util.UUID;
 
 import org.apache.commons.compress.archivers.ArchiveException;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -20,27 +27,28 @@ public class ShSiteOnStartup {
 	@Autowired
 	private ShImportExchange shImportExchange;
 
-	public void createDefaultRows() {
+	public void createDefaultRows() throws IOException, IllegalStateException, ArchiveException {
 
 		if (shSiteRepository.findAll().isEmpty()) {
-			Resource resource = new ClassPathResource("/imports" + File.separator + "sample-site.zip");
-			try {
-				File sampleSite;
 
-				sampleSite = new File(resource.getURI());
+			URL sampleSiteRepository = new URL("https://github.com/openshio/sample-site/archive/master.zip");
 
-				shImportExchange.importFromFile(sampleSite, "admin");
-			} catch (ArchiveException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalStateException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (IOException e2) {
-				// TODO Auto-generated catch block
-				e2.printStackTrace();
+			File userDir = new File(System.getProperty("user.dir"));
+			if (userDir.exists() && userDir.isDirectory()) {
+				File tmpDir = new File(
+						userDir.getAbsolutePath().concat(File.separator + "store" + File.separator + "tmp"));
+				if (!tmpDir.exists()) {
+					tmpDir.mkdirs();
+				}
+
+				File sampleSiteFile = new File(tmpDir.getAbsolutePath().concat(File.separator + "sample-site-" + UUID.randomUUID() + ".zip"));
+
+				FileUtils.copyURLToFile(sampleSiteRepository, sampleSiteFile);
+
+				shImportExchange.importFromFile(sampleSiteFile, "admin");
+
+				FileUtils.deleteQuietly(sampleSiteFile);
 			}
 		}
-
 	}
 }
