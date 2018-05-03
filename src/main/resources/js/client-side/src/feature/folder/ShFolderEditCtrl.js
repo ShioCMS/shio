@@ -8,7 +8,6 @@ shioharaApp
 						"$state",
 						"$stateParams",
 						"$rootScope",
-						"Token",
 						"shFolderResource",
 						"shSiteResource",
 						"shAPIServerService",
@@ -17,7 +16,7 @@ shioharaApp
 						'$translate',
 						'Notification',
 						function($scope, $http, $window, $state, $stateParams,
-								$rootScope, Token, shFolderResource,
+								$rootScope, shFolderResource,
 								shSiteResource, shAPIServerService, vigLocale,
 								$location, $translate, Notification) {
 							$scope.folderId = $stateParams.folderId;

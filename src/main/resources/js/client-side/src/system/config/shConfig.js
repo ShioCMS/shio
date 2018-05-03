@@ -49,14 +49,7 @@ shioharaApp.config([
 
 			$urlRouterProvider.otherwise('');
 
-			$stateProvider.state('oauth2', {
-				url : '/oauth2',
-				templateUrl : 'template/oauth2.html',
-				controller : 'ShOAuth2Ctrl',
-				data : {
-					pageTitle : 'OAuth2 | Viglet Shiohara'
-				}
-			}).state('content', {	
+			$stateProvider.state('content', {	
 				url : '',
 				controller : 'ShContentCtrl',
 				redirectTo: 'content.home'
