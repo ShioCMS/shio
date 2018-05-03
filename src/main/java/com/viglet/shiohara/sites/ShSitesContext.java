@@ -50,6 +50,9 @@ public class ShSitesContext {
 	private void sitesFullGeneric(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ScriptException {
 		String shXSiteName = request.getHeader("x-sh-site");
+		boolean shXNoCache = request.getHeader("x-sh-nocache") != null && request.getHeader("x-sh-nocache").equals("1")
+				? true
+				: false;
 		final int cacheMinutes = 1;
 		if (shXSiteName != null) {
 			String shFormat = "default";
@@ -81,13 +84,7 @@ public class ShSitesContext {
 			String[] contexts = contextURL.split("/");
 
 			ShCachedObject shCacheObject = (ShCachedObject) ShCacheManager.getCache(contextURL);
-			if (shCacheObject != null) {
-				// End Page Layout
-				// System.out.println("Is cached " + contextURL);
-				response.setContentType(MediaType.TEXT_HTML_VALUE);
-				response.getWriter().write(((String) shCacheObject.object).toString());
-			} else {
-
+			if (shXNoCache) {
 				for (int i = 1; i < contexts.length; i++) {
 					switch (i) {
 					case 1:
@@ -104,15 +101,40 @@ public class ShSitesContext {
 						break;
 					}
 				}
-				// System.out.println("Is not cached " + contextURL);
-				String html = this.siteContext(shSiteName, shFormat, shLocale, 5, request, response);
-				shCacheObject = new ShCachedObject(html, contextURL, cacheMinutes);
-				/* Place the object into the cache! */
-				ShCacheManager.putCache(shCacheObject);
+				this.siteContext(shSiteName, shFormat, shLocale, 5, request, response);
+			} else {
+				if (shCacheObject != null) {
+					// End Page Layout
+					// System.out.println("Is cached " + contextURL);
+					response.setContentType(MediaType.TEXT_HTML_VALUE);
+					response.getWriter().write(((String) shCacheObject.object).toString());
+				} else {
+
+					for (int i = 1; i < contexts.length; i++) {
+						switch (i) {
+						case 1:
+							shContext = contexts[i];
+							break;
+						case 2:
+							shSiteName = contexts[i];
+							break;
+						case 3:
+							shFormat = contexts[i];
+							break;
+						case 4:
+							shLocale = contexts[i];
+							break;
+						}
+					}
+					// System.out.println("Is not cached " + contextURL);
+					String html = this.siteContext(shSiteName, shFormat, shLocale, 5, request, response);
+					shCacheObject = new ShCachedObject(html, contextURL, cacheMinutes);
+					/* Place the object into the cache! */
+					ShCacheManager.putCache(shCacheObject);
+				}
 			}
 		}
 	}
-
 
 	private String siteContext(String shSiteName, String shFormat, String shLocale, int contextPathPosition,
 			HttpServletRequest request, HttpServletResponse response) throws IOException, ScriptException {
@@ -138,14 +160,14 @@ public class ShSitesContext {
 
 			ShFolder shFolderItem = shSitesContextComponent.shFolderItemFactory(shPostItem);
 
-			Map<String, ShPostAttr> shFolderPageLayoutMap = shSitesContextComponent.shFolderPageLayoutMapFactory(shPostItem);
+			Map<String, ShPostAttr> shFolderPageLayoutMap = shSitesContextComponent
+					.shFolderPageLayoutMapFactory(shPostItem);
 
 			pageLayoutHTML = shFolderPageLayoutMap.get(ShSystemPostTypeAttr.HTML).getStrValue();
 			pageLayoutJS = shFolderPageLayoutMap.get(ShSystemPostTypeAttr.JAVASCRIPT).getStrValue();
-			
+
 			UUID shPostThemeId = UUID.fromString(shFolderPageLayoutMap.get(ShSystemPostTypeAttr.THEME).getStrValue());
-			JSONObject shThemeAttrs = shSitesContextComponent
-					.shThemeFactory(shPostThemeId);
+			JSONObject shThemeAttrs = shSitesContextComponent.shThemeFactory(shPostThemeId);
 
 			JSONObject shPostItemAttrs = shPostUtils.toJSON(shPostItem);
 			shPostItemAttrs.put("theme", shThemeAttrs);
@@ -172,8 +194,7 @@ public class ShSitesContext {
 			pageLayoutJS = shPostPageLayoutMap.get(ShSystemPostTypeAttr.JAVASCRIPT).getStrValue();
 
 			UUID shPostThemeId = UUID.fromString(shPostPageLayoutMap.get(ShSystemPostTypeAttr.THEME).getStrValue());
-			JSONObject shThemeAttrs = shSitesContextComponent
-					.shThemeFactory(shPostThemeId);
+			JSONObject shThemeAttrs = shSitesContextComponent.shThemeFactory(shPostThemeId);
 
 			JSONObject shSiteItemAttrs = shSiteUtils.toJSON(shSite);
 
@@ -183,10 +204,11 @@ public class ShSitesContext {
 			shPostItemAttrs.put("site", shSiteItemAttrs);
 
 			javascriptVar = "var shContent = " + shPostItemAttrs.toString() + ";";
-		
+
 		}
-			
-		String shPageLayoutHTML = shSitesContextComponent.shPageLayoutFactory(javascriptVar, pageLayoutJS, pageLayoutHTML);
+
+		String shPageLayoutHTML = shSitesContextComponent.shPageLayoutFactory(javascriptVar, pageLayoutJS,
+				pageLayoutHTML);
 
 		response.setContentType(MediaType.TEXT_HTML_VALUE);
 
