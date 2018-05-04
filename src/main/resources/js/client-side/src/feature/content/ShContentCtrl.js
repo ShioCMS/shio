@@ -8,6 +8,7 @@ shioharaApp.controller('ShContentCtrl', [
 		"$window",
 		function($scope, $http, $rootScope, $location, shAPIServerService,
 				$state,$window) {
+			$rootScope.principal = null;
 			var authenticate = function(credentials) {
 
 				var headers = credentials ? {
@@ -15,28 +16,13 @@ shioharaApp.controller('ShContentCtrl', [
 							+ btoa(credentials.username + ":"
 									+ credentials.password)
 				} : {};
-
-				$http.get(shAPIServerService.get().concat("/v2"), {
-					headers : headers
-				}).then(function(response) {
-					if (response.data.product) {
-						$rootScope.authenticated = true;
-						$state.go('content.home');
-					} else {
-						$rootScope.authenticated = false;
-						$state.go('content.login');
-					}
-
-				}, function() {
-					$rootScope.authenticated = false;
-					$state.go('content.login');
-				});
 			}
 
 			// authenticate();
 			if (!$rootScope.authenticated) {
-				$http.get(shAPIServerService.get().concat("/v2/user/current")).then(function(response) {
-					if (response.data.product) {
+				$http.get(shAPIServerService.get().concat("/v2/user/current")).then(function(response) {		
+					if (response.data.username) {
+						$rootScope.principal = response.data.firstName;
 						$rootScope.authenticated = true;
 						$state.go('content.home');
 					} else {

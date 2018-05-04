@@ -1,22 +1,23 @@
 
-<div ng-include="'/template/breadcrumb/breadcrumb.html'"></div>
-<div class="settings" style="height: 85px">
-	<section class="content no-padding">
-
-		<fieldset class="user-details-top">
-			<div class="form-group"></div>
-			<div class="form-group" style="text-align: center">
-				<h3 class="hidden-lg hidden-md hidden-sm">&nbsp;</h3>
-				<h3 ng-show="shSite" class="hidden-xs">{{shSite.name}} Site</h3>
+<div ng-include="'/template/breadcrumb/breadcrumb-list.html'"></div>
+<div  ng-if="shCurrentFolder == null && 1 == 0" style="margin-bottom: 20px">
+	<dl>
+		<dd style="padding-left: 15px;">{{shSite.description}}</dd>
+	</dl>
+</div>
+<div class="panel panel-default" ng-if="shCurrentFolder == null && 1 == 0">
+	<div class="panel-body">
+		<div class="row row-centered">
+			<div class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
+				<i class="fa fa-history" aria-hidden="true" style="color: #6a737d;"></i>
+				<b>112</b> commits
 			</div>
-			<div class="pull-right" style="margin: -40px 0 0;">
-				<a ng-click="objectPreview(shSite)" class="btn btn-viglet"><i
-					class="fa fa-eye" aria-hidden="true"></i> View Site</a> <a
-					ui-sref="content.site.edit({siteId: shSite.id})"
-					class="btn btn-default">Site Properties</a>
+			<div class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
+				<i class="fa fa-users" aria-hidden="true" style="color: #6a737d;"></i>
+				<b>1</b> contributor
 			</div>
-		</fieldset>
-	</section>
+		</div>
+	</div>
 </div>
 <div class="row">
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -112,8 +113,8 @@
 						<i class="fa fa-file-o fa-4x" aria-hidden="true"
 							style="float: left; margin: 10px"></i><span
 							style="display: inline-block; margin-top: 20px"><a
-						ui-sref="content.post-type-item-by-name.post-item-new({folderId: shCurrentFolder.id, postTypeName: 'PT-FILE'})">Upload
-							file</a></span>
+							ui-sref="content.post-type-item-by-name.post-item-new({folderId: shCurrentFolder.id, postTypeName: 'PT-FILE'})">Upload
+								file</a></span>
 					</div>
 					<div style="display: table;">
 						<i class="fa fa-folder-o fa-4x" aria-hidden="true"
