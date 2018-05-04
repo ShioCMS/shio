@@ -2,7 +2,6 @@ package com.viglet.shiohara.persistence.model.post;
 
 import javax.persistence.*;
 
-import org.hibernate.annotations.Fetch;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Indexed;
@@ -14,7 +13,6 @@ import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.type.ScanResultBridge;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,10 +26,6 @@ import java.util.List;
 public class ShPost extends ShObject {
 	private static final long serialVersionUID = 1L;
 	
-	@Temporal(TemporalType.TIMESTAMP)
-	@Field(store = Store.NO)
-	private Date date;
-
 	@Field(store = Store.YES)
 	private String summary;
 
@@ -61,15 +55,6 @@ public class ShPost extends ShObject {
 	private List<ShPostAttr> shPostAttrs;
 
 	public ShPost() {
-	}
-
-	
-	public Date getDate() {
-		return this.date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
 	}
 
 	public String getSummary() {

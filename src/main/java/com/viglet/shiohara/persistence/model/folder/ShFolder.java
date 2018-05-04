@@ -9,7 +9,6 @@ import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,9 +20,6 @@ import java.util.List;
 @JsonIgnoreProperties({ "shFolders", "shPosts" })
 public class ShFolder extends ShObject {
 	private static final long serialVersionUID = 1L;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date date;
 
 	private String name;
 
@@ -50,14 +46,6 @@ public class ShFolder extends ShObject {
 	private List<ShPost> shPosts;
 
 	public ShFolder() {
-	}
-
-	public Date getDate() {
-		return date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
 	}
 
 	public String getName() {

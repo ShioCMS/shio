@@ -1,6 +1,5 @@
 package com.viglet.shiohara.persistence.model.site;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.*;
@@ -29,9 +28,6 @@ public class ShSite extends ShObject {
 	
 	@Column(name = "post_type_layout", length =  5 * 1024 * 1024) //5Mb
 	private String postTypeLayout;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date date;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "shSite", cascade = CascadeType.ALL)
 	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
@@ -71,15 +67,7 @@ public class ShSite extends ShObject {
 	public void setShFolders(List<ShFolder> shFolders) {
 		this.shFolders = shFolders;
 	}
-
-	public Date getDate() {
-		return date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
-	}
-
+	
 	public String getPostTypeLayout() {
 		return postTypeLayout;
 	}
