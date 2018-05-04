@@ -31,68 +31,7 @@ div.affix {
 
 <div class="form-group"
 	ng-repeat="shPostAttr in shPost.shPostAttrs |orderBy : 'shPostTypeAttr.ordinal'">
-	<div ng-if="shPostAttr.shPostTypeAttr.many === 1">
-		<label>{{shPostAttr.shPostTypeAttr.label}}</label>
-		<div
-			style="border-color: #f5f5f5; border-style: solid; border-width: 2px;">
-
-			<div style="background-color: #f5f5f5; padding: 10px">
-				<button class="btn btn-viglet">Add</button>
-				<div class="btn-group" uib-dropdown>
-					<button id="select-button" type="button" class="btn btn-default"
-						uib-dropdown-toggle ng-disabled="disabled">
-						Select <span class="caret"></span>
-					</button>
-					<ul class="dropdown-menu" uib-dropdown-menu role="menu"
-						aria-labelledby="select-button">
-						<li role="menuitem"><a ng-click="selectEverything()" href><i
-								class="fa fa-check-square" aria-hidden="true"></i> Everything</a></li>
-						<li role="menuitem"><a ng-click="selectInverted()" href><i
-								class="fa fa-undo" aria-hidden="true"></i> Invert Selection</a></li>
-						<li role="menuitem"><a ng-click="selectNothing()" href><i
-								class="fa fa-ban" aria-hidden="true"></i> Nothing</a></li>
-					</ul>
-				</div>
-				<div class="btn-group" uib-dropdown>
-					<button id="batch-button" type="button" class="btn btn-default"
-						uib-dropdown-toggle ng-disabled="disabled">
-						Action in Batch <span class="caret"></span>
-					</button>
-					<ul class="dropdown-menu" uib-dropdown-menu role="menu"
-						aria-labelledby="batch-button">
-						<li role="menuitem"><a ng-click="objectsCopy()" href><i
-								class="fa fa-files-o" aria-hidden="true"></i> Clone</a></li>
-						<li role="menuitem"><a ng-click="objectsDelete()" href><i
-								class="fa fa-trash-o" aria-hidden="true"></i> Delete</a></li>
-					</ul>
-				</div>
-			</div>
-			<div style="padding: 10px">
-				<div class="table-responsive">
-					<table class="table table-hover">
-						<thead>
-							<tr>
-								<th>#</th>
-								<th>Title</th>
-								<th style="text-align: right">Action</th>
-							</tr>
-						</thead>
-						<tr>
-							<td><input type="checkbox"
-								ng-model="shStateObjects[shFolder.shGlobalId.id]"></td>
-							<td>{{shPostAttr.strValue}}</td>
-							<td>
-								<button type="button" class="btn btn-link btn-xs pull-right"
-									style="display: block;" ng-click="folderDelete(shFolder)">
-									<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
-								</button>
-							</td>
-						</tr>
-
-					</table>
-				</div>
-			</div>
-		</div>
+	<div ng-if="shPostAttr.shPostTypeAttr.many === 1" ng-include="'template/widget/relator/relator-list.html'">
 	</div>
 	<div ng-if="shPostAttr.shPostTypeAttr.many === 0">
 		<label>{{shPostAttr.shPostTypeAttr.label}}</label>
