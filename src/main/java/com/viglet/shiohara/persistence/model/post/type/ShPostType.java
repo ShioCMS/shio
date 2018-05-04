@@ -11,7 +11,6 @@ import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.post.type.ShSystemPostType;
 
-import java.util.Date;
 import java.util.List;
 
 
@@ -25,9 +24,6 @@ import java.util.List;
 public class ShPostType extends ShObject {
 	private static final long serialVersionUID = 1L;
 	
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date date;
-
 	private String description;
 
 	private String name;
@@ -49,14 +45,6 @@ public class ShPostType extends ShObject {
 
 
 	public ShPostType() {
-	}
-
-	public Date getDate() {
-		return this.date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
 	}
 
 	public String getDescription() {
