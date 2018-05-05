@@ -27,7 +27,7 @@ public class ShPostRepositoryImpl implements ShPostRepositoryCustom {
 			FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(em);
 			fullTextEntityManager.createIndexer().startAndWait();
 			status = true;
-		} catch (InterruptedException e) {			
+		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		return status;
@@ -39,7 +39,7 @@ public class ShPostRepositoryImpl implements ShPostRepositoryCustom {
 		FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(em);
 		QueryBuilder qb = fullTextEntityManager.getSearchFactory().buildQueryBuilder().forEntity(ShPost.class).get();
 		Query luceneQuery = qb.keyword().fuzzy().withEditDistanceUpTo(1).withPrefixLength(1)
-				.onFields("title", "summary").matching(searchTerm).createQuery();
+				.onFields("title", "summary", "shPostAttrs.strValue").matching(searchTerm).createQuery();
 
 		javax.persistence.Query jpaQuery = fullTextEntityManager.createFullTextQuery(luceneQuery, ShPost.class);
 

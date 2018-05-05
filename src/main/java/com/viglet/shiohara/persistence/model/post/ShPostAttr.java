@@ -5,6 +5,7 @@ import javax.persistence.*;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.search.annotations.Field;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.viglet.shiohara.persistence.model.object.ShObject;
@@ -39,6 +40,7 @@ public class ShPostAttr implements Serializable {
 	@Column(name = "int_value")
 	private int intValue;
 
+	@Field
 	@Column(name = "str_value", length = 5 * 1024 * 1024) // 5Mb
 	private String strValue;
 

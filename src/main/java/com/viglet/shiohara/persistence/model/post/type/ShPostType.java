@@ -3,6 +3,7 @@ package com.viglet.shiohara.persistence.model.post.type;
 import javax.persistence.*;
 
 import org.hibernate.annotations.Fetch;
+import org.hibernate.search.annotations.Field;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -25,7 +26,8 @@ public class ShPostType extends ShObject {
 	private static final long serialVersionUID = 1L;
 	
 	private String description;
-
+	
+	@Field
 	private String name;
 
 	private String title;
