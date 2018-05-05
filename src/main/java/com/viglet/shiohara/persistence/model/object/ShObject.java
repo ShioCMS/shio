@@ -23,8 +23,6 @@ import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Store;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
@@ -58,7 +56,6 @@ public class ShObject implements Serializable {
 	private List<ShHistory> shHistories;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Field(store = Store.NO)
 	private Date date;
 
 	private String owner;
