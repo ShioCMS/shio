@@ -1,10 +1,12 @@
-package com.viglet.shiohara.api.post;
+package com.viglet.shiohara.api.history;
 
 import java.io.File;
 import java.security.Principal;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +21,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
+import com.viglet.shiohara.persistence.model.reference.ShReference;
+import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.model.user.ShUser;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
 import com.viglet.shiohara.object.ShObjectType;
+import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.history.ShHistory;
+import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.history.ShHistoryRepository;
@@ -36,13 +42,14 @@ import com.viglet.shiohara.post.type.ShSystemPostType;
 import com.viglet.shiohara.url.ShURLFormatter;
 import com.viglet.shiohara.utils.ShPostUtils;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
+import com.viglet.shiohara.widget.ShSystemWidget;
 
 import io.swagger.annotations.Api;
 
 @RestController
-@RequestMapping("/api/v2/post")
-@Api(tags = "Post", description = "Post API")
-public class ShPostAPI {
+@RequestMapping("/api/v2/history")
+@Api(tags = "History", description = "History API")
+public class ShHistoryAPI {
 
 	@Autowired
 	private ShPostRepository shPostRepository;
@@ -65,18 +72,25 @@ public class ShPostAPI {
 
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public List<ShPost> shPostList() throws Exception {
-		return shPostRepository.findAll();
+	public List<ShHistory> shHistoryList() throws Exception {
+		return shHistoryRepository.findAll();
 	}
 
-	@GetMapping("/{id}")
+	@GetMapping("/object/{globalId}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShPost shPostEdit(@PathVariable UUID id) throws Exception {
-		ShPost shPost = shPostRepository.findById(id).get();
-		List<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
-		shPost.setShPostAttrs(shPostAttrs);
-
-		return shPost;
+	public List<ShHistory> shHistoryByObject(@PathVariable UUID globalId) throws Exception {
+		if (shGlobalIdRepository.findById(globalId).isPresent()) {
+			ShGlobalId shGlobalId = shGlobalIdRepository.findById(globalId).get();
+			if (shGlobalId != null) {
+				if (shGlobalId.getType().equals(ShObjectType.SITE)) {
+					ShSite shSite = (ShSite) shGlobalId.getShObject();
+					return shHistoryRepository.findByShSite(shSite);
+				} else {
+					return shHistoryRepository.findByShObject(shGlobalId.getShObject());
+				}
+			}
+		}
+		return null;
 	}
 
 	@PutMapping("/{id}")
@@ -228,7 +242,7 @@ public class ShPostAPI {
 		shHistory.setShObject(shPost);
 		shHistory.setShSite(shPostUtils.getSite(shPost));
 		shHistoryRepository.saveAndFlush(shHistory);
-		
+
 		return shPost;
 
 	}
