@@ -13,8 +13,6 @@ import org.hibernate.search.query.dsl.QueryBuilder;
 
 import com.viglet.shiohara.persistence.model.post.ShPost;
 
-import javax.persistence.NoResultException;
-
 public class ShPostRepositoryImpl implements ShPostRepositoryCustom {
 
 	@PersistenceContext
@@ -33,6 +31,7 @@ public class ShPostRepositoryImpl implements ShPostRepositoryCustom {
 		return status;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Transactional
 	public List<ShPost> fuzzySearch(String searchTerm) {
 
@@ -43,17 +42,7 @@ public class ShPostRepositoryImpl implements ShPostRepositoryCustom {
 
 		javax.persistence.Query jpaQuery = fullTextEntityManager.createFullTextQuery(luceneQuery, ShPost.class);
 
-		// execute search
-
-		List<ShPost> BaseballCardList = null;
-		try {
-			BaseballCardList = jpaQuery.getResultList();
-		} catch (NoResultException nre) {
-			;// do nothing
-
-		}
-
-		return BaseballCardList;
+		return jpaQuery.getResultList();
 
 	}
 }

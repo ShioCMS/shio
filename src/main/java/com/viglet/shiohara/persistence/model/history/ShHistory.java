@@ -15,6 +15,7 @@ import javax.persistence.NamedQuery;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.viglet.shiohara.persistence.model.object.ShObject;
+import com.viglet.shiohara.persistence.model.site.ShSite;
 
 /**
  * The persistent class for the ShWidget database table.
@@ -44,6 +45,10 @@ public class ShHistory implements Serializable {
 	@JoinColumn(name = "object_id")
 	private ShObject shObject;
 
+	@ManyToOne
+	@JoinColumn(name = "site_id")
+	private ShSite shSite;
+	
 	public UUID getId() {
 		return id;
 	}
@@ -82,6 +87,14 @@ public class ShHistory implements Serializable {
 
 	public void setShObject(ShObject shObject) {
 		this.shObject = shObject;
+	}
+
+	public ShSite getShSite() {
+		return shSite;
+	}
+
+	public void setShSite(ShSite shSite) {
+		this.shSite = shSite;
 	}
 
 }
