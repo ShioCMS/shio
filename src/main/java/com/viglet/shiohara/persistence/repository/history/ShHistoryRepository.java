@@ -22,6 +22,7 @@ public interface ShHistoryRepository extends JpaRepository<ShHistory, UUID> {
 	
 	Optional<ShHistory> findById(UUID id);
 	
+	@SuppressWarnings("unchecked")
 	ShHistory save(ShHistory shHistory);
 
 	@Modifying

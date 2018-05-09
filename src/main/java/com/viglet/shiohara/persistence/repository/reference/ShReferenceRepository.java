@@ -21,6 +21,7 @@ public interface ShReferenceRepository extends JpaRepository<ShReference, UUID> 
 	
 	List<ShReference> findByShGlobalToId(ShGlobalId shGlobalToId);
 
+	@SuppressWarnings("unchecked")
 	ShReference save(ShReference shReference);
 
 	@Modifying

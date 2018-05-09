@@ -13,6 +13,7 @@ public interface ShConfigVarRepository extends JpaRepository<ShConfigVar, String
 
 	Optional<ShConfigVar> findById(String id);
 
+	@SuppressWarnings("unchecked")
 	ShConfigVar save(ShConfigVar turConfigVar);
 
 	void delete(ShConfigVar turConfigVar);

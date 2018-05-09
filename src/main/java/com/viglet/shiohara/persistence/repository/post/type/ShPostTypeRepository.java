@@ -18,6 +18,7 @@ public interface ShPostTypeRepository extends JpaRepository<ShPostType, UUID> {
 	
 	ShPostType findByName(String name);
 
+	@SuppressWarnings("unchecked")
 	ShPostType save(ShPostType shPostType);
 
 	void delete(ShPostType shPostType);

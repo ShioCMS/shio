@@ -29,6 +29,7 @@ public interface ShFolderRepository extends JpaRepository<ShFolder, UUID> {
 	
 	Optional<ShFolder> findById(UUID id);
 
+	@SuppressWarnings("unchecked")
 	ShFolder save(ShFolder shFolder);
 
 	@Modifying

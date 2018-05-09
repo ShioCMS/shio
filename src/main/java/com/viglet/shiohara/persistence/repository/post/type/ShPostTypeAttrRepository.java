@@ -18,7 +18,8 @@ public interface ShPostTypeAttrRepository extends JpaRepository<ShPostTypeAttr, 
 	Optional<ShPostTypeAttr> findById(UUID id);
 	
 	ShPostTypeAttr findByShPostTypeAndName(ShPostType shPostType, String name);
-
+	
+	@SuppressWarnings("unchecked")
 	ShPostTypeAttr save(ShPostTypeAttr shPostTypeAttr);
 	
 	@Modifying

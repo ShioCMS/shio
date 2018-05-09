@@ -18,6 +18,7 @@ public interface ShWidgetRepository extends JpaRepository<ShWidget, UUID> {
 	
 	ShWidget findByName(String name);
 
+	@SuppressWarnings("unchecked")
 	ShWidget save(ShWidget shWidget);
 
 	@Modifying

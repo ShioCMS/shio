@@ -4,9 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -31,6 +28,7 @@ public interface ShPostRepository extends JpaRepository<ShPost, UUID>, ShPostRep
 	
 	ShPost findByShFolderAndFurl(ShFolder shFolder, String furl);
 	
+	@SuppressWarnings("unchecked")
 	ShPost save(ShPost shPost);
 
 	@Modifying

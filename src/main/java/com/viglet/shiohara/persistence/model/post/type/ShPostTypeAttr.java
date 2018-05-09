@@ -3,6 +3,7 @@ package com.viglet.shiohara.persistence.model.post.type;
 import java.io.Serializable;
 import javax.persistence.*;
 
+import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -20,15 +21,15 @@ import java.util.UUID;
  */
 @Entity
 @NamedQuery(name = "ShPostTypeAttr.findAll", query = "SELECT s FROM ShPostTypeAttr s")
-@JsonIgnoreProperties({"shPostAttrs" })
-//Removed shPostType ignore, because it is used in JSON from new Post 
+@JsonIgnoreProperties({ "shPostAttrs" })
+// Removed shPostType ignore, because it is used in JSON from new Post
 public class ShPostTypeAttr implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GenericGenerator(name = "UUID", strategy = "com.viglet.shiohara.jpa.ShUUIDGenerator")
 	@GeneratedValue(generator = "UUID")
-	
+
 	@Column(name = "id", updatable = false, nullable = false)
 	private UUID id;
 
@@ -48,6 +49,11 @@ public class ShPostTypeAttr implements Serializable {
 
 	private byte required;
 
+	// bi-directional many-to-one association to ShPostTypeAttr
+	@OneToMany(mappedBy = "shParentPostTypeAttr")
+	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
+	private List<ShPostTypeAttr> shPostTypeAttrs;
+
 	// bi-directional many-to-one association to ShPostAttr
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "shPostTypeAttr", cascade = CascadeType.ALL)
 	private List<ShPostAttr> shPostAttrs;
@@ -55,13 +61,19 @@ public class ShPostTypeAttr implements Serializable {
 	// bi-directional many-to-one association to ShPostType
 	@ManyToOne
 	@JoinColumn(name = "postType_id")
-	@JsonView({ShJsonView.ShJsonViewPostTypeAttr.class})
+	@JsonView({ ShJsonView.ShJsonViewPostTypeAttr.class })
 	private ShPostType shPostType;
 
 	// bi-directional many-to-one association to ShWidget
 	@ManyToOne
 	@JoinColumn(name = "widget_id")
 	private ShWidget shWidget;
+
+	// bi-directional many-to-one association to ShPostTypeAttr
+	@ManyToOne
+	@JoinColumn(name = "parent_relator_id")
+	@JsonView({ ShJsonView.ShJsonViewPostTypeAttr.class })
+	private ShPostTypeAttr shParentPostTypeAttr;
 
 	@Transient
 	private String shPostTypeName;
@@ -73,7 +85,6 @@ public class ShPostTypeAttr implements Serializable {
 		return shPostTypeName;
 	}
 
-	
 	public ShPostTypeAttr() {
 	}
 
@@ -185,6 +196,22 @@ public class ShPostTypeAttr implements Serializable {
 
 	public void setShWidget(ShWidget shWidget) {
 		this.shWidget = shWidget;
+	}
+
+	public List<ShPostTypeAttr> getShPostTypeAttrs() {
+		return shPostTypeAttrs;
+	}
+
+	public void setShPostTypeAttrs(List<ShPostTypeAttr> shPostTypeAttrs) {
+		this.shPostTypeAttrs = shPostTypeAttrs;
+	}
+
+	public ShPostTypeAttr getShParentPostTypeAttr() {
+		return shParentPostTypeAttr;
+	}
+
+	public void setShParentPostTypeAttr(ShPostTypeAttr shParentPostTypeAttr) {
+		this.shParentPostTypeAttr = shParentPostTypeAttr;
 	}
 
 }
