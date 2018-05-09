@@ -19,6 +19,7 @@ public interface ShGlobalIdRepository extends JpaRepository<ShGlobalId, UUID> {
 	
 	ShGlobalId findByShObject(ShObject shObject);
 
+	@SuppressWarnings("unchecked")
 	ShGlobalId save(ShGlobalId shGlobalObject);
 
 	@Modifying

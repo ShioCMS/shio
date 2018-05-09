@@ -19,6 +19,7 @@ public interface ShPostAttrRepository extends JpaRepository<ShPostAttr, UUID> {
 	
 	Optional<ShPostAttr> findById(UUID id);
 
+	@SuppressWarnings("unchecked")
 	ShPostAttr save(ShPostAttr shPostAttr);
 
 	@Modifying

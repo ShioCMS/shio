@@ -16,6 +16,7 @@ public interface ShUserRepository extends JpaRepository<ShUser, Integer> {
 
 	ShUser findById(int id);
 
+	@SuppressWarnings("unchecked")
 	ShUser save(ShUser shUser);
 	
 	ShUser findByUsername(String username);

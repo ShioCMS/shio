@@ -1,6 +1,8 @@
 package com.viglet.shiohara.onstartup.post.type;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -331,7 +333,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setShWidget(shWidgetText);
 
 			shPostTypeAttrRepository.save(shPostTypeAttr);
-			
+
 			shPostTypeAttr = new ShPostTypeAttr();
 			shPostTypeAttr.setName(ShSystemPostTypeAttr.TEXT);
 			shPostTypeAttr.setLabel("Text");
@@ -343,6 +345,50 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
 			shPostTypeAttr.setShWidget(shWidgetHTMLEditor);
+
+			shPostTypeAttrRepository.save(shPostTypeAttr);
+
+			ShPostTypeAttr shPostTypeAttrRelation = new ShPostTypeAttr();
+			shPostTypeAttrRelation.setName("RELATION");
+			shPostTypeAttrRelation.setLabel("Relation");
+			shPostTypeAttrRelation.setDescription("Relation");
+			shPostTypeAttrRelation.setIsSummary((byte) 0);
+			shPostTypeAttrRelation.setIsTitle((byte) 0);
+			shPostTypeAttrRelation.setMany((byte) 1);
+			shPostTypeAttrRelation.setOrdinal(6);
+			shPostTypeAttrRelation.setRequired((byte) 1);
+			shPostTypeAttrRelation.setShPostType(shPostType);
+			shPostTypeAttrRelation.setShWidget(null);
+
+			shPostTypeAttrRepository.save(shPostTypeAttrRelation);
+
+			shPostTypeAttr = new ShPostTypeAttr();
+			shPostTypeAttr.setName("TEXT_RELATION");
+			shPostTypeAttr.setLabel("Text of Relation");
+			shPostTypeAttr.setDescription("Text of Relation");
+			shPostTypeAttr.setIsSummary((byte) 0);
+			shPostTypeAttr.setIsTitle((byte) 0);
+			shPostTypeAttr.setMany((byte) 0);
+			shPostTypeAttr.setOrdinal(7);
+			shPostTypeAttr.setRequired((byte) 1);
+			shPostTypeAttr.setShPostType(null);
+			shPostTypeAttr.setShWidget(shWidgetText);
+			shPostTypeAttr.setShParentPostTypeAttr(shPostTypeAttrRelation);
+
+			shPostTypeAttrRepository.save(shPostTypeAttr);
+
+			shPostTypeAttr = new ShPostTypeAttr();
+			shPostTypeAttr.setName("TEXTAREA_RELATION");
+			shPostTypeAttr.setLabel("Text Area of Relation");
+			shPostTypeAttr.setDescription("Text Area of Relation");
+			shPostTypeAttr.setIsSummary((byte) 0);
+			shPostTypeAttr.setIsTitle((byte) 0);
+			shPostTypeAttr.setMany((byte) 0);
+			shPostTypeAttr.setOrdinal(9);
+			shPostTypeAttr.setRequired((byte) 1);
+			shPostTypeAttr.setShPostType(null);
+			shPostTypeAttr.setShWidget(shWidgetTextArea);
+			shPostTypeAttr.setShParentPostTypeAttr(shPostTypeAttrRelation);
 
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
@@ -637,7 +683,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setShWidget(shWidgetContentSelect);
 
 			shPostTypeAttrRepository.save(shPostTypeAttr);
-			
+
 			// Alias
 
 			shPostType = new ShPostType();
@@ -669,7 +715,6 @@ public class ShPostTypeOnStartup {
 
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
-
 			shPostTypeAttr = new ShPostTypeAttr();
 			shPostTypeAttr.setName(ShSystemPostTypeAttr.DESCRIPTION);
 			shPostTypeAttr.setLabel("Description");
@@ -681,9 +726,9 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
 			shPostTypeAttr.setShWidget(shWidgetTextArea);
-			
+
 			shPostTypeAttrRepository.save(shPostTypeAttr);
-			
+
 			shPostTypeAttr = new ShPostTypeAttr();
 			shPostTypeAttr.setName(ShSystemPostTypeAttr.CONTENT);
 			shPostTypeAttr.setLabel("Content Select");

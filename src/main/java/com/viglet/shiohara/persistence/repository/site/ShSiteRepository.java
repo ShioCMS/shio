@@ -22,6 +22,7 @@ public interface ShSiteRepository extends JpaRepository<ShSite, UUID> {
 	
 	ShSite findByFurl(String furl);
 
+	@SuppressWarnings("unchecked")
 	ShSite save(ShSite shSite);
 
 	@Modifying
