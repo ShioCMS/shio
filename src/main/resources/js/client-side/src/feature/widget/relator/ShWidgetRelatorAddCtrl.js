@@ -1,4 +1,4 @@
-shioharaApp.controller('ShWidgetRelatorSelectCtrl', [
+shioharaApp.controller('ShWidgetRelatorAddCtrl', [
 		'$scope',
 		'shAPIServerService',
 		'$http',
@@ -6,11 +6,27 @@ shioharaApp.controller('ShWidgetRelatorSelectCtrl', [
 		'shPostAttr',
 		'shWidgetFileFactory',
 		function($scope, shAPIServerService, $http, $uibModalInstance,
-				shPostAttr,shWidgetFileFactory) {
+				shPostAttr, shWidgetFileFactory) {
+			$scope.shPostAttrs = [];
+			$scope.$evalAsync($http.get(
+					shAPIServerService.get().concat("/v2/post/attr/model"))
+					.then(function(response) {
+						$scope.shPostAttrModel = response.data;
+						
+						$scope.shPostTypeAttrs = shPostAttr.shPostTypeAttr.shPostTypeAttrs;
+						
+						angular.forEach($scope.shPostTypeAttrs, function(value, key) {
+							var attrModel = angular.copy($scope.shPostAttrModel);							
+							attrModel.shPostTypeAttr = value;
+							this.push(attrModel);
+						}, $scope.shPostAttrs);
+
+					}));
+
 			var $ctrl = this;
-			$scope.shPostAttr = shPostAttr;
+			
 			$ctrl.shPostSelected = null;
-		
+
 			$scope.shSite = null;
 			$scope.shFolders = null;
 			$scope.shPosts = null;
@@ -25,7 +41,7 @@ shioharaApp.controller('ShWidgetRelatorSelectCtrl', [
 				$ctrl.shPostSelected = null;
 				$uibModalInstance.dismiss('cancel');
 			};
-			
+
 			$scope.selectedPost = function(shPost) {
 				$ctrl.shPostSelected = shPost;
 			}
