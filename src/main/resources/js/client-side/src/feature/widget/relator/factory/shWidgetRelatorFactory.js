@@ -19,6 +19,24 @@ shioharaApp.factory('shWidgetRelatorFactory', [ '$uibModal', 'shPostResource',
 							}
 						}
 					});
+				},
+				modalAddRelatorItem : function(shPostAttr) {
+					var $ctrl = this;
+					return $uibModal.open({
+						animation : true,
+						ariaLabelledBy : 'modal-title',
+						ariaDescribedBy : 'modal-body',
+						templateUrl : 'template/widget/relator/relator-select.html',
+						controller : 'ShWidgetRelatorAddCtrl',
+						controllerAs : '$ctrl',
+						size : null,
+						appendTo : undefined,
+						resolve : {
+							shPostAttr : function() {
+								return shPostAttr;
+							}
+						}
+					});
 				}
 			}
 		} ]);

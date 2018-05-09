@@ -23,6 +23,16 @@ shioharaApp.controller('ShWidgetRelatorCtrl', [
 				shPostAttr.file = null;
 			}
 
+			$scope.addRelatorItem = function(shPost, shPostAttr) {
+				var modalInstance = shWidgetRelatorFactory
+						.modalAddRelatorItem(shPostAttr);
+				modalInstance.result.then(function(shPostSelected) {
+					// Selected SAVE			
+				}, function() {
+					// Selected CANCEL
+				});
+			}
+			
 			$scope.selectRelatorItem = function(shPost, shPostAttr) {
 				var modalInstance = shWidgetRelatorFactory
 						.modalSelectRelatorItem(shPostAttr);

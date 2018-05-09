@@ -75,18 +75,6 @@ public class ShPostTypeAPI {
 		for (ShPostTypeAttr shPostTypeAttr : shPost.getShPostType().getShPostTypeAttrs()) {
 			ShPostAttr shPostAttr = new ShPostAttr();
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-			shPostAttr.setShPostTypeAttrId(shPostTypeAttr.getId());
-
-			if (shPostTypeAttr.getShPostTypeAttrs().size() > 0) {
-				List<ShPostAttr> shRelatorPostAttrs = new ArrayList<ShPostAttr>();
-				for (ShPostTypeAttr shRelatorPostTypeAttr : shPostTypeAttr.getShPostTypeAttrs()) {
-					ShPostAttr shRelatorPostAttr = new ShPostAttr();
-					shRelatorPostAttr.setShPostTypeAttr(shRelatorPostTypeAttr);
-					shRelatorPostAttr.setShPostTypeAttrId(shRelatorPostTypeAttr.getId());
-					shRelatorPostAttrs.add(shRelatorPostAttr);
-				}
-				shPostAttr.setShRelatorPostAttrs(shRelatorPostAttrs);
-			}
 			shPostAttrs.add(shPostAttr);
 		}
 		shPost.setShPostAttrs(shPostAttrs);

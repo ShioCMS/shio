@@ -79,6 +79,13 @@ public class ShPostAPI {
 		return shPost;
 	}
 
+	@GetMapping("/attr/model")
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
+	public ShPostAttr shPostModel() throws Exception {
+		ShPostAttr shPostAttr = new ShPostAttr();
+		return shPostAttr;
+	}
+
 	@PutMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShPost shPostUpdate(@PathVariable UUID id, @RequestBody ShPost shPost, Principal principal)
@@ -228,7 +235,7 @@ public class ShPostAPI {
 		shHistory.setShObject(shPost);
 		shHistory.setShSite(shPostUtils.getSite(shPost));
 		shHistoryRepository.saveAndFlush(shHistory);
-		
+
 		return shPost;
 
 	}
