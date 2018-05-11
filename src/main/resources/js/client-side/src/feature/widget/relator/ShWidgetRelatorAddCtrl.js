@@ -34,7 +34,7 @@ shioharaApp.controller('ShWidgetRelatorAddCtrl', [
 
 			// BEGIN Functions
 			$ctrl.ok = function() {
-				$uibModalInstance.close($ctrl.shPostSelected);
+				$uibModalInstance.close($scope.shPostAttrs);
 			};
 
 			$ctrl.cancel = function() {
@@ -42,9 +42,6 @@ shioharaApp.controller('ShWidgetRelatorAddCtrl', [
 				$uibModalInstance.dismiss('cancel');
 			};
 
-			$scope.selectedPost = function(shPost) {
-				$ctrl.shPostSelected = shPost;
-			}
 			// END Functions
 
 		} ]);

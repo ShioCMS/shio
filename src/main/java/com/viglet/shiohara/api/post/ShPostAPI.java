@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
+import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
 import com.viglet.shiohara.persistence.model.user.ShUser;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
@@ -30,6 +31,7 @@ import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.history.ShHistoryRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
+import com.viglet.shiohara.persistence.repository.post.relator.ShRelatorItemRepository;
 import com.viglet.shiohara.persistence.repository.reference.ShReferenceRepository;
 import com.viglet.shiohara.persistence.repository.user.ShUserRepository;
 import com.viglet.shiohara.post.type.ShSystemPostType;
@@ -58,6 +60,8 @@ public class ShPostAPI {
 	private ShReferenceRepository shReferenceRepository;
 	@Autowired
 	private ShHistoryRepository shHistoryRepository;
+	@Autowired
+	private ShRelatorItemRepository shRelatorItemRepository;
 	@Autowired
 	private ShURLFormatter shURLFormatter;
 	@Autowired
@@ -215,11 +219,7 @@ public class ShPostAPI {
 		ShPost shPostWithGlobalId = shPost;
 		shPostWithGlobalId.setShGlobalId(shGlobalId);
 
-		for (ShPostAttr shPostAttr : shPostAttrs) {
-			shPostAttr.setShPost(shPostWithGlobalId);
-			shPostUtils.referencedObject(shPostAttr, shPostWithGlobalId);
-			shPostAttrRepository.saveAndFlush(shPostAttr);
-		}
+		this.postAttrSave(shPostAttrs, shPostWithGlobalId);
 
 		shPostRepository.saveAndFlush(shPost);
 
@@ -231,7 +231,9 @@ public class ShPostAPI {
 		ShHistory shHistory = new ShHistory();
 		shHistory.setDate(new Date());
 		shHistory.setDescription("Created " + shPost.getTitle() + " Post.");
-		shHistory.setOwner(principal.getName());
+		if (principal != null) {
+			shHistory.setOwner(principal.getName());
+		}
 		shHistory.setShObject(shPost);
 		shHistory.setShSite(shPostUtils.getSite(shPost));
 		shHistoryRepository.saveAndFlush(shHistory);
@@ -240,4 +242,32 @@ public class ShPostAPI {
 
 	}
 
+	private void postAttrSave(List<ShPostAttr> shPostAttrs, ShPost shPost) {
+		for (ShPostAttr shPostAttr : shPostAttrs) {
+			shPostAttr.setShPost(shPost);
+			shPostUtils.referencedObject(shPostAttr, shPost);
+			shPostAttrRepository.saveAndFlush(shPostAttr);
+			System.out.println("shPostAttr.getStrValue()" + shPostAttr.getStrValue());
+			if (shPostAttr.getShRelatorItems() != null) {
+				System.out.println("RelatorItems not null");
+				for (ShRelatorItem shRelatorItem : shPostAttr.getShRelatorItems()) {
+					if (shRelatorItem.getShPostAttrs() != null) {
+						System.out.println("shRelatorItem.getShPostAttrs() not null");
+						if (shRelatorItem.getShPostAttrs().size() > 0) {
+							System.out.println("shRelatorItem.getShPostAttrs() > 0");
+							this.postAttrSave(shRelatorItem.getShPostAttrs(), shPost);
+						}
+					} else {
+						System.out.println("shRelatorItem.getShPostAttrs() null");
+					}
+
+					shRelatorItem.setShPostAttr(shPostAttr);
+					shRelatorItemRepository.saveAndFlush(shRelatorItem);
+
+				}
+			} else {
+				System.out.println("RelatorItems null");
+			}
+		}
+	}
 }

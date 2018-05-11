@@ -4,7 +4,7 @@ shioharaApp.factory('shStaticFileFactory', [
         return {
             uploadFile: function (folderId, shPostAttr, key, postType, shPost, numberOfFileWidgets) {
                 var deferredFile = $q.defer();
-                if (shPostAttr.shPostTypeAttr.shWidget.name == "File" && shPostAttr.file != null) {
+                if (shPostAttr.shPostTypeAttr.shWidget != null && shPostAttr.shPostTypeAttr.shWidget.name == "File" && shPostAttr.file != null) {
                     var createPost = true;
                     if (postType.name == "PT-FILE") {
                         createPost = false;
