@@ -9,6 +9,7 @@ import org.hibernate.search.annotations.Field;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.viglet.shiohara.persistence.model.object.ShObject;
+import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 
 import java.util.Date;
@@ -51,15 +52,10 @@ public class ShPostAttr implements Serializable {
 
 	private int type;
 
-	// bi-directional many-to-one association to ShPostTypeAttr
-	@OneToMany(mappedBy = "shRelatorPostAttr")
+	// bi-directional many-to-one association to ShRelatorItem
+	@OneToMany(mappedBy = "shPostAttr")
 	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
-	private List<ShPostAttr> shRelatorPostAttrs;
-
-	// bi-directional many-to-one association to ShPost
-	@ManyToOne
-	@JoinColumn(name = "post_attr_relator_id")
-	private ShPost shRelatorPostAttr;
+	private List<ShRelatorItem> shRelatorItems;
 
 	// bi-directional many-to-one association to ShPost
 	@ManyToOne
@@ -71,6 +67,11 @@ public class ShPostAttr implements Serializable {
 	@JoinColumn(name = "post_type_attr_id")
 	private ShPostTypeAttr shPostTypeAttr;
 
+	// bi-directional many-to-one association to ShPost
+	@ManyToOne
+	@JoinColumn(name = "post_attr_id")
+	private ShRelatorItem shRelatorItem;
+		
 	@Transient
 	private UUID shPostTypeAttrId;
 
@@ -152,21 +153,21 @@ public class ShPostAttr implements Serializable {
 		this.shPostTypeAttr = shPostTypeAttr;
 	}
 
-	public List<ShPostAttr> getShRelatorPostAttrs() {
-		return shRelatorPostAttrs;
+	public List<ShRelatorItem> getShRelatorItems() {
+		return shRelatorItems;
 	}
 
-	public void setShRelatorPostAttrs(List<ShPostAttr> shRelatorPostAttrs) {
-		this.shRelatorPostAttrs = shRelatorPostAttrs;
+	public void setShRelatorItems(List<ShRelatorItem> shRelatorItems) {
+		this.shRelatorItems = shRelatorItems;
 	}
 
-	public ShPost getShRelatorPostAttr() {
-		return shRelatorPostAttr;
+	public ShRelatorItem getShRelatorItem() {
+		return shRelatorItem;
 	}
 
-	public void setShRelatorPostAttr(ShPost shRelatorPostAttr) {
-		this.shRelatorPostAttr = shRelatorPostAttr;
+	public void setShRelatorItem(ShRelatorItem shRelatorItem) {
+		this.shRelatorItem = shRelatorItem;
 	}
-	
+
 	
 }

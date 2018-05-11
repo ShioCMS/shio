@@ -170,7 +170,7 @@ public class ShPostUtils {
 				}
 
 			}
-			
+
 			try {
 				ShPost shPostReferenced = shPostRepository.findById(UUID.fromString(shPostAttr.getStrValue())).get();
 				// Lazy, need find globalId during Import
@@ -192,18 +192,22 @@ public class ShPostUtils {
 	}
 
 	public void referencedObject(ShPostAttr shPostAttr, ShPost shPost) {
-		if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.FILE)) {
-			this.referencedFile(shPostAttr, shPost);
-		} else if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.CONTENT_SELECT)) {
-			this.referencedPost(shPostAttr, shPost);
+		if (shPostAttr.getShPostTypeAttr().getShWidget() != null) {
+			if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.FILE)) {
+				this.referencedFile(shPostAttr, shPost);
+			} else if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.CONTENT_SELECT)) {
+				this.referencedPost(shPostAttr, shPost);
+			}
 		}
 	}
 
 	public void referencedObject(ShPostAttr shPostAttrEdit, ShPostAttr shPostAttr, ShPost shPost) {
-		if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.FILE)) {
-			this.referencedFile(shPostAttrEdit, shPostAttr, shPost);
-		} else if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.CONTENT_SELECT)) {
-			this.referencedPost(shPostAttrEdit, shPostAttr, shPost);
+		if (shPostAttr.getShPostTypeAttr().getShWidget() != null) {
+			if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.FILE)) {
+				this.referencedFile(shPostAttrEdit, shPostAttr, shPost);
+			} else if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.CONTENT_SELECT)) {
+				this.referencedPost(shPostAttrEdit, shPostAttr, shPost);
+			}
 		}
 	}
 
@@ -262,7 +266,7 @@ public class ShPostUtils {
 			}
 		}
 	}
-	
+
 	public ShSite getSite(ShPost shPost) {
 		return shFolderUtils.getSite(shPost.getShFolder());
 	}
