@@ -12,6 +12,7 @@ import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,8 +46,8 @@ public class ShPost extends ShObject {
 
 	// bi-directional many-to-one association to ShPostAttr
 	@IndexedEmbedded
-	@OneToMany(mappedBy = "shPost", cascade = CascadeType.ALL)
-	private List<ShPostAttr> shPostAttrs;
+	@OneToMany(mappedBy = "shPost", cascade = CascadeType.PERSIST)
+	private List<ShPostAttr> shPostAttrs  = new ArrayList<ShPostAttr>();
 
 	public ShPost() {
 	}

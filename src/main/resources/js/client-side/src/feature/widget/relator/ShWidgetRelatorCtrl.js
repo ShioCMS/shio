@@ -21,15 +21,16 @@ shioharaApp.controller('ShWidgetRelatorCtrl', [
 						.modalAddRelatorItem(shPostAttr);
 				modalInstance.result.then(function(shPostAttrs) {
 					// Selected SAVE
-					if ($scope.shPostAttr.shRelatorItems == null) {
-						$scope.shPostAttr.shRelatorItems = [];
+					if ($scope.shPostAttr.shChildrenRelatorItems == null) {
+						$scope.shPostAttr.shChildrenRelatorItems = [];
 
 					}
 					
-					var shRelatorItem = {};
-					shRelatorItem.shPostAttrs = shPostAttrs;
+					var shChilRelatorItem = {};
+					shChilRelatorItem.id = null;
+					shChilRelatorItem.shChildrenPostAttrs = shPostAttrs;
 					
-					$scope.shPostAttr.shRelatorItems.push(shRelatorItem);
+					$scope.shPostAttr.shChildrenRelatorItems.push(shChilRelatorItem);
 
 				}, function() {
 					// Selected CANCEL

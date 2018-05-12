@@ -23,7 +23,7 @@ import java.util.UUID;
  */
 @Entity
 @NamedQuery(name = "ShPostAttr.findAll", query = "SELECT s FROM ShPostAttr s")
-@JsonIgnoreProperties({ "shPostType", "shPost" })
+@JsonIgnoreProperties({ "shPostType", "shPost",  "shParentRelatorItem" })
 public class ShPostAttr implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -53,9 +53,9 @@ public class ShPostAttr implements Serializable {
 	private int type;
 
 	// bi-directional many-to-one association to ShRelatorItem
-	@OneToMany(mappedBy = "shPostAttr")
+	@OneToMany(mappedBy = "shParentPostAttr")
 	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
-	private List<ShRelatorItem> shRelatorItems;
+	private List<ShRelatorItem> shChildrenRelatorItems;
 
 	// bi-directional many-to-one association to ShPost
 	@ManyToOne
@@ -70,7 +70,7 @@ public class ShPostAttr implements Serializable {
 	// bi-directional many-to-one association to ShPost
 	@ManyToOne
 	@JoinColumn(name = "post_attr_id")
-	private ShRelatorItem shRelatorItem;
+	private ShRelatorItem shParentRelatorItem;
 		
 	@Transient
 	private UUID shPostTypeAttrId;
@@ -153,21 +153,22 @@ public class ShPostAttr implements Serializable {
 		this.shPostTypeAttr = shPostTypeAttr;
 	}
 
-	public List<ShRelatorItem> getShRelatorItems() {
-		return shRelatorItems;
+	public List<ShRelatorItem> getShChildrenRelatorItems() {
+		return shChildrenRelatorItems;
 	}
 
-	public void setShRelatorItems(List<ShRelatorItem> shRelatorItems) {
-		this.shRelatorItems = shRelatorItems;
+	public void setShChildrenRelatorItems(List<ShRelatorItem> shChildrenRelatorItems) {
+		this.shChildrenRelatorItems = shChildrenRelatorItems;
 	}
 
-	public ShRelatorItem getShRelatorItem() {
-		return shRelatorItem;
+	public ShRelatorItem getShParentRelatorItem() {
+		return shParentRelatorItem;
 	}
 
-	public void setShRelatorItem(ShRelatorItem shRelatorItem) {
-		this.shRelatorItem = shRelatorItem;
+	public void setShParentRelatorItem(ShRelatorItem shParentRelatorItem) {
+		this.shParentRelatorItem = shParentRelatorItem;
 	}
+
 
 	
 }
