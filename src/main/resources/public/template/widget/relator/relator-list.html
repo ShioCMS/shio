@@ -45,10 +45,10 @@
 					</tr>
 				</thead>
 				<tr ng-click="selectRelatorItem(shPost, shPostAttrChild)"
-					ng-repeat="shRelatorItem in shPostAttr.shRelatorItems |orderBy : 'shRelatorItem.ordinal'">
+					ng-repeat="shChildrenRelatorItem in shPostAttr.shChildrenRelatorItems |orderBy : 'shChildrenRelatorItem.ordinal'">
 					<td><input type="checkbox"
 						ng-model="shStateObjects[shFolder.shGlobalId.id]"></td>
-					<td>{{shRelatorItem.shPostAttrs[0].strValue}}</td>
+					<td>{{shChildrenRelatorItem.shChildrenPostAttrs[0].strValue}}</td>
 					<td>
 						<button type="button" class="btn btn-link btn-xs pull-right"
 							style="display: block;" ng-click="folderDelete(shFolder)">

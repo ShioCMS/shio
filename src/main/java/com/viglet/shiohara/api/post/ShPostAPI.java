@@ -3,9 +3,11 @@ package com.viglet.shiohara.api.post;
 import java.io.File;
 import java.security.Principal;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
+import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.model.user.ShUser;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
@@ -32,6 +35,7 @@ import com.viglet.shiohara.persistence.repository.history.ShHistoryRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.relator.ShRelatorItemRepository;
+import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
 import com.viglet.shiohara.persistence.repository.reference.ShReferenceRepository;
 import com.viglet.shiohara.persistence.repository.user.ShUserRepository;
 import com.viglet.shiohara.post.type.ShSystemPostType;
@@ -50,6 +54,8 @@ public class ShPostAPI {
 	private ShPostRepository shPostRepository;
 	@Autowired
 	private ShPostAttrRepository shPostAttrRepository;
+	@Autowired
+	private ShPostTypeAttrRepository shPostTypeAttrRepository;
 	@Autowired
 	private ShUserRepository shUserRepository;
 	@Autowired
@@ -191,6 +197,7 @@ public class ShPostAPI {
 		String summary = shPost.getSummary();
 		// Get PostAttrs before save, because JPA Lazy
 		List<ShPostAttr> shPostAttrs = shPost.getShPostAttrs();
+
 		for (ShPostAttr shPostAttr : shPostAttrs) {
 			if (shPostAttr.getShPostTypeAttr().getIsTitle() == 1)
 				title = StringUtils.abbreviate(shPostAttr.getStrValue(), 255);
@@ -203,6 +210,7 @@ public class ShPostAPI {
 
 			}
 		}
+
 		shPost.setDate(new Date());
 		shPost.setTitle(title);
 		shPost.setSummary(summary);
@@ -219,7 +227,10 @@ public class ShPostAPI {
 		ShPost shPostWithGlobalId = shPost;
 		shPostWithGlobalId.setShGlobalId(shGlobalId);
 
-		this.postAttrSave(shPostAttrs, shPostWithGlobalId);
+		for (ShPostAttr shPostAttr : shPostAttrs) {
+			shPostAttr.setShPost(shPost);
+			this.postAttrSave(shPostAttr, shPostWithGlobalId);
+		}
 
 		shPostRepository.saveAndFlush(shPost);
 
@@ -237,37 +248,49 @@ public class ShPostAPI {
 		shHistory.setShObject(shPost);
 		shHistory.setShSite(shPostUtils.getSite(shPost));
 		shHistoryRepository.saveAndFlush(shHistory);
-
-		return shPost;
+		
+		return this.shPostEdit(shPost.getId());
 
 	}
 
-	private void postAttrSave(List<ShPostAttr> shPostAttrs, ShPost shPost) {
-		for (ShPostAttr shPostAttr : shPostAttrs) {
-			shPostAttr.setShPost(shPost);
-			shPostUtils.referencedObject(shPostAttr, shPost);
-			shPostAttrRepository.saveAndFlush(shPostAttr);
-			System.out.println("shPostAttr.getStrValue()" + shPostAttr.getStrValue());
-			if (shPostAttr.getShRelatorItems() != null) {
-				System.out.println("RelatorItems not null");
-				for (ShRelatorItem shRelatorItem : shPostAttr.getShRelatorItems()) {
-					if (shRelatorItem.getShPostAttrs() != null) {
-						System.out.println("shRelatorItem.getShPostAttrs() not null");
-						if (shRelatorItem.getShPostAttrs().size() > 0) {
-							System.out.println("shRelatorItem.getShPostAttrs() > 0");
-							this.postAttrSave(shRelatorItem.getShPostAttrs(), shPost);
+	private void postAttrSave(ShPostAttr shPostAttr, ShPost shPost) {
+		shPostUtils.referencedObject(shPostAttr, shPost);
+		boolean savedPostAttr = false;
+		if (shPostAttr.getShChildrenRelatorItems() != null) {
+			ShPostAttr shPostAttrClone = SerializationUtils.clone(shPostAttr);
+			for (ShRelatorItem shRelatorItem : shPostAttrClone.getShChildrenRelatorItems()) {
+				ShRelatorItem shRelatorItemCopy = new ShRelatorItem();
+				boolean savedRelator = false;
+				if (shRelatorItem.getShChildrenPostAttrs() != null
+						&& shRelatorItem.getShChildrenPostAttrs().size() > 0) {
+					for (ShPostAttr shChildrenPostAttr : shRelatorItem.getShChildrenPostAttrs()) {
+						if (!savedPostAttr) {
+							shPostAttrRepository.saveAndFlush(shPostAttr);
+							savedPostAttr = true;
 						}
-					} else {
-						System.out.println("shRelatorItem.getShPostAttrs() null");
+						if (!savedRelator) {
+							shRelatorItemCopy.setShParentPostAttr(shPostAttr);
+							shRelatorItemRepository.saveAndFlush(shRelatorItemCopy);
+							savedRelator = true;
+						}
+						shChildrenPostAttr.setShParentRelatorItem(shRelatorItemCopy);
+						this.postAttrSave(shChildrenPostAttr, shPost);					
+						
 					}
-
-					shRelatorItem.setShPostAttr(shPostAttr);
-					shRelatorItemRepository.saveAndFlush(shRelatorItem);
-
+				} else {
+					if (!savedPostAttr) {
+						shPostAttrRepository.saveAndFlush(shPostAttr);
+						savedPostAttr = true;
+					}
+					if (!savedRelator) {
+						shRelatorItemCopy.setShParentPostAttr(shPostAttr);
+						shRelatorItemRepository.saveAndFlush(shRelatorItemCopy);
+						savedRelator = true;
+					}
 				}
-			} else {
-				System.out.println("RelatorItems null");
 			}
+		} else {
+			shPostAttrRepository.saveAndFlush(shPostAttr);
 		}
 	}
 }

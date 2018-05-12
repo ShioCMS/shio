@@ -25,7 +25,7 @@ import com.viglet.shiohara.persistence.model.post.ShPostAttr;
  */
 @Entity
 @NamedQuery(name = "ShRelatorItem.findAll", query = "SELECT ri FROM ShRelatorItem ri")
-@JsonIgnoreProperties({ "shPostAttr"})
+@JsonIgnoreProperties({ "shPostAttr", "shParentPostAttr"})
 public class ShRelatorItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -36,14 +36,14 @@ public class ShRelatorItem implements Serializable {
 	private UUID id;
 
 	// bi-directional many-to-one association to ShPostAttr
-	@OneToMany(mappedBy = "shRelatorItem")
+	@OneToMany(mappedBy = "shParentRelatorItem")
 	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
-	private List<ShPostAttr> shPostAttrs;
+	private List<ShPostAttr> shChildrenPostAttrs;
 
 	// bi-directional many-to-one association to ShPost
 	@ManyToOne
 	@JoinColumn(name = "post_attr_id")
-	private ShPostAttr shPostAttr;
+	private ShPostAttr shParentPostAttr;
 
 	public UUID getId() {
 		return id;
@@ -53,20 +53,21 @@ public class ShRelatorItem implements Serializable {
 		this.id = id;
 	}
 
-	public List<ShPostAttr> getShPostAttrs() {
-		return shPostAttrs;
+	public List<ShPostAttr> getShChildrenPostAttrs() {
+		return shChildrenPostAttrs;
 	}
 
-	public void setShPostAttrs(List<ShPostAttr> shPostAttrs) {
-		this.shPostAttrs = shPostAttrs;
+	public void setShChildrenPostAttrs(List<ShPostAttr> shChildrenPostAttrs) {
+		this.shChildrenPostAttrs = shChildrenPostAttrs;
 	}
 
-	public ShPostAttr getShPostAttr() {
-		return shPostAttr;
+	public ShPostAttr getShParentPostAttr() {
+		return shParentPostAttr;
 	}
 
-	public void setShPostAttr(ShPostAttr shPostAttr) {
-		this.shPostAttr = shPostAttr;
+	public void setShParentPostAttr(ShPostAttr shParentPostAttr) {
+		this.shParentPostAttr = shParentPostAttr;
 	}
 
+	
 }
