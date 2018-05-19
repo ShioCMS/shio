@@ -44,7 +44,7 @@
 						<th style="text-align: right">Action</th>
 					</tr>
 				</thead>
-				<tr ng-click="selectRelatorItem(shPost, shPostAttrChild)"
+				<tr ng-click="selectRelatorItem(shPost, shChildrenRelatorItem)"
 					ng-repeat="shChildrenRelatorItem in shPostAttr.shChildrenRelatorItems |orderBy : 'shChildrenRelatorItem.ordinal'">
 					<td><input type="checkbox"
 						ng-model="shStateObjects[shFolder.shGlobalId.id]"></td>

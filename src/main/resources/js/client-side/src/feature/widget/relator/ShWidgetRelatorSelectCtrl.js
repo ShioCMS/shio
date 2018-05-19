@@ -3,12 +3,12 @@ shioharaApp.controller('ShWidgetRelatorSelectCtrl', [
 		'shAPIServerService',
 		'$http',
 		'$uibModalInstance',
-		'shPostAttr',
+		'shChildrenRelatorItem',
 		'shWidgetFileFactory',
 		function($scope, shAPIServerService, $http, $uibModalInstance,
-				shPostAttr,shWidgetFileFactory) {
+				shChildrenRelatorItem,shWidgetFileFactory) {
 			var $ctrl = this;
-			$scope.shPostAttr = shPostAttr;
+			$scope.shPostAttrs = shChildrenRelatorItem.shChildrenPostAttrs;
 			$ctrl.shPostSelected = null;
 		
 			$scope.shSite = null;

@@ -37,9 +37,9 @@ shioharaApp.controller('ShWidgetRelatorCtrl', [
 				});
 			}
 
-			$scope.selectRelatorItem = function(shPost, shPostAttr) {
+			$scope.selectRelatorItem = function(shPost, shChildrenRelatorItem) {
 				var modalInstance = shWidgetRelatorFactory
-						.modalSelectRelatorItem(shPostAttr);
+						.modalSelectRelatorItem(shChildrenRelatorItem);
 				modalInstance.result.then(function(shPostSelected) {
 					// Selected SAVE
 				}, function() {
