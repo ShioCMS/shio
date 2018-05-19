@@ -2,6 +2,7 @@ package com.viglet.shiohara.persistence.model.post.relator;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
@@ -37,9 +38,9 @@ public class ShRelatorItem implements Serializable {
 	private UUID id;
 
 	// bi-directional many-to-one association to ShPostAttr
-	@OneToMany(mappedBy = "shParentRelatorItem", cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy = "shParentRelatorItem", cascade = CascadeType.ALL)
 	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
-	private List<ShPostAttr> shChildrenPostAttrs;
+	private Set<ShPostAttr> shChildrenPostAttrs;
 
 	// bi-directional many-to-one association to ShPost
 	@ManyToOne
@@ -54,11 +55,11 @@ public class ShRelatorItem implements Serializable {
 		this.id = id;
 	}
 
-	public List<ShPostAttr> getShChildrenPostAttrs() {
+	public Set<ShPostAttr> getShChildrenPostAttrs() {
 		return shChildrenPostAttrs;
 	}
 
-	public void setShChildrenPostAttrs(List<ShPostAttr> shChildrenPostAttrs) {
+	public void setShChildrenPostAttrs(Set<ShPostAttr> shChildrenPostAttrs) {
 		this.shChildrenPostAttrs = shChildrenPostAttrs;
 	}
 

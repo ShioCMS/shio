@@ -55,7 +55,7 @@ public class ShPostAttr implements Serializable {
 	// bi-directional many-to-one association to ShRelatorItem
 	@OneToMany(mappedBy = "shParentPostAttr", cascade = CascadeType.PERSIST)
 	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
-	private List<ShRelatorItem> shChildrenRelatorItems;
+	private Set<ShRelatorItem> shChildrenRelatorItems;
 
 	// bi-directional many-to-one association to ShPost
 	@ManyToOne
@@ -153,11 +153,11 @@ public class ShPostAttr implements Serializable {
 		this.shPostTypeAttr = shPostTypeAttr;
 	}
 
-	public List<ShRelatorItem> getShChildrenRelatorItems() {
+	public Set<ShRelatorItem> getShChildrenRelatorItems() {
 		return shChildrenRelatorItems;
 	}
 
-	public void setShChildrenRelatorItems(List<ShRelatorItem> shChildrenRelatorItems) {
+	public void setShChildrenRelatorItems(Set<ShRelatorItem> shChildrenRelatorItems) {
 		this.shChildrenRelatorItems = shChildrenRelatorItems;
 	}
 
