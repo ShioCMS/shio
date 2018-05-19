@@ -4,6 +4,7 @@ import java.io.File;
 import java.security.Principal;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang3.SerializationUtils;
@@ -78,7 +79,7 @@ public class ShPostAPI {
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShPost shPostEdit(@PathVariable UUID id) throws Exception {
 		ShPost shPost = shPostRepository.findById(id).get();
-		List<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
+		Set<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
 		shPost.setShPostAttrs(shPostAttrs);
 
 		return shPost;
@@ -91,7 +92,6 @@ public class ShPostAPI {
 		return shPostAttr;
 	}
 
-	
 	@PutMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShPost shPostUpdate(@PathVariable UUID id, @RequestBody ShPost shPost, Principal principal)
@@ -112,7 +112,7 @@ public class ShPostAPI {
 			this.postAttrUpdate(shPostAttr, shPostEdit);
 
 		}
-		
+
 		shPostEdit.setDate(new Date());
 		shPostEdit.setTitle(title);
 		shPostEdit.setSummary(summary);
@@ -142,9 +142,9 @@ public class ShPostAPI {
 	public boolean shPostDelete(@PathVariable UUID id, Principal principal) throws Exception {
 
 		ShPost shPost = shPostRepository.findById(id).get();
-		List<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
+		Set<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
 		if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE) && shPostAttrs.size() > 0) {
-			File file = shStaticFileUtils.filePath(shPost.getShFolder(), shPostAttrs.get(0).getStrValue());
+			File file = shStaticFileUtils.filePath(shPost.getShFolder(), shPostAttrs.iterator().next().getStrValue());
 			if (file != null) {
 				if (file.exists()) {
 					file.delete();
@@ -181,7 +181,7 @@ public class ShPostAPI {
 		String title = shPost.getTitle();
 		String summary = shPost.getSummary();
 		// Get PostAttrs before save, because JPA Lazy
-		List<ShPostAttr> shPostAttrs = shPost.getShPostAttrs();
+		Set<ShPostAttr> shPostAttrs = shPost.getShPostAttrs();
 
 		for (ShPostAttr shPostAttr : shPostAttrs) {
 			if (shPostAttr.getShPostTypeAttr().getIsTitle() == 1)
@@ -235,7 +235,7 @@ public class ShPostAPI {
 		return this.shPostEdit(shPost.getId());
 
 	}
-	
+
 	private void postAttrUpdate(ShPostAttr shPostAttr, ShPost shPost) {
 
 		ShPostAttr shPostAttrEdit = shPostAttrRepository.findById(shPostAttr.getId()).get();
@@ -251,30 +251,41 @@ public class ShPostAPI {
 		if (shPostAttr.getShChildrenRelatorItems() != null) {
 			ShPostAttr shPostAttrClone = SerializationUtils.clone(shPostAttr);
 			for (ShRelatorItem shRelatorItem : shPostAttrClone.getShChildrenRelatorItems()) {
+				ShRelatorItem shRelatorItemNew = null;
 				boolean savedRelator = false;
 				if (shRelatorItem.getShChildrenPostAttrs() != null
 						&& shRelatorItem.getShChildrenPostAttrs().size() > 0) {
-					
+					//System.out.println("A");
 					ShRelatorItem shRelatorItemClone = SerializationUtils.clone(shRelatorItem);
-					
+
 					for (ShPostAttr shChildrenPostAttr : shRelatorItemClone.getShChildrenPostAttrs()) {
 						if (!savedPostAttr) {
 							shPostAttrRepository.save(shPostAttrEdit);
 							savedPostAttr = true;
 						}
+						System.out.println("J");
 						if (!savedRelator) {
-/*
-							System.out.println("I " + shChildrenPostAttr.getStrValue());
-							shRelatorItem.setShParentPostAttr(shPostAttrEdit);
-							shRelatorItemRepository.saveAndFlush(shRelatorItem);
-*/							
+							if (shRelatorItem.getId() == null) {
+								//System.out.println("H (new) - " + shChildrenPostAttr.getStrValue() );
+								shRelatorItemNew = new ShRelatorItem();
+								shRelatorItem.setShParentPostAttr(shPostAttrEdit);
+								shRelatorItemRepository.saveAndFlush(shRelatorItemNew);
+							}						
 							savedRelator = true;
 						}
-	//					shChildrenPostAttr.setShParentRelatorItem(shRelatorItem);
+						if (shRelatorItemNew != null) {
+							//System.out.println("I (new)" + shChildrenPostAttr.getStrValue());
+							shChildrenPostAttr.setShParentRelatorItem(shRelatorItemNew);
+						} else {
+							//System.out.println("L (update)" + shChildrenPostAttr.getStrValue());
+							shChildrenPostAttr.setShParentRelatorItem(shRelatorItem);
+						}
 
 						if (shChildrenPostAttr.getId() != null) {
+							//System.out.println("M (update)" + shChildrenPostAttr.getStrValue());
 							this.postAttrUpdate(shChildrenPostAttr, shPost);
 						} else {
+							//System.out.println("N (new)" + shChildrenPostAttr.getStrValue());
 							this.postAttrSave(shChildrenPostAttr, shPost);
 						}
 
@@ -285,9 +296,10 @@ public class ShPostAPI {
 						savedPostAttr = true;
 					}
 					if (!savedRelator) {
-/*						shRelatorItem.setShParentPostAttr(shPostAttr);
-						shRelatorItemRepository.saveAndFlush(shRelatorItem);
-*/						
+						if (shRelatorItem.getId() != null) {
+							shRelatorItem.setShParentPostAttr(shPostAttr);
+							shRelatorItemRepository.saveAndFlush(shRelatorItem);
+						}
 						savedRelator = true;
 					}
 				}

@@ -7,6 +7,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.annotation.Resource;
@@ -98,7 +99,7 @@ public class ShSitesContextComponent {
 
 	public ShPost shPostAlias(ShPost shPostItem) {
 		if (shPostItem.getShPostType().getName().equals(ShSystemPostType.ALIAS)) {
-			List<ShPostAttr> shPostAttrs = shPostItem.getShPostAttrs();
+			Set<ShPostAttr> shPostAttrs = shPostItem.getShPostAttrs();
 			for (ShPostAttr shPostAttr : shPostAttrs) {
 				if (shPostAttr.getShPostTypeAttr().getName().equals(ShSystemPostTypeAttr.CONTENT)) {
 					shPostItem = shPostRepository.findById(UUID.fromString(shPostAttr.getStrValue())).get();

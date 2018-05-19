@@ -2,6 +2,7 @@ package com.viglet.shiohara.persistence.model.post;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.Fetch;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
@@ -14,6 +15,7 @@ import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The persistent class for the ShPost database table.
@@ -46,8 +48,9 @@ public class ShPost extends ShObject {
 
 	// bi-directional many-to-one association to ShPostAttr
 	@IndexedEmbedded
-	@OneToMany(mappedBy = "shPost", cascade = CascadeType.PERSIST)
-	private List<ShPostAttr> shPostAttrs  = new ArrayList<ShPostAttr>();
+	@OneToMany(mappedBy = "shPost", cascade = CascadeType.ALL)
+	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
+	private Set<ShPostAttr> shPostAttrs;
 
 	public ShPost() {
 	}
@@ -76,11 +79,11 @@ public class ShPost extends ShObject {
 		this.shPostType = shPostType;
 	}
 
-	public List<ShPostAttr> getShPostAttrs() {
+	public Set<ShPostAttr> getShPostAttrs() {
 		return this.shPostAttrs;
 	}
 
-	public void setShPostAttrs(List<ShPostAttr> shPostAttrs) {
+	public void setShPostAttrs(Set<ShPostAttr> shPostAttrs) {
 		this.shPostAttrs = shPostAttrs;
 	}
 

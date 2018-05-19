@@ -66,7 +66,7 @@ public class ShPostUtils {
 
 	public Map<String, ShPostAttr> postToMap(ShPost shPost) {
 
-		List<ShPostAttr> shPostAttrList = shPostAttrRepository.findByShPost(shPost);
+		Set<ShPostAttr> shPostAttrList = shPostAttrRepository.findByShPost(shPost);
 
 		Map<String, ShPostAttr> shPostMap = new HashMap<String, ShPostAttr>();
 		ShPostAttr shPostAttrId = new ShPostAttr();
@@ -94,7 +94,7 @@ public class ShPostUtils {
 		shGlobalId.setType(ShObjectType.POST);
 
 		shGlobalIdRepository.saveAndFlush(shGlobalId);
-		List<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
+		Set<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
 		for (ShPostAttr shPostAttr : shPostAttrs) {
 			ShPostAttr shPostAttrClone = new ShPostAttr();
 			shPostAttrClone.setDateValue(shPostAttr.getDateValue());

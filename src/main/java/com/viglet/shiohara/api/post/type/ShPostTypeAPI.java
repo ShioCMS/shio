@@ -1,8 +1,9 @@
 package com.viglet.shiohara.api.post.type;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +72,7 @@ public class ShPostTypeAPI {
 	public ShPost shPostTypePostStructure(@PathVariable UUID id) throws Exception {
 		ShPost shPost = new ShPost();
 		shPost.setShPostType(shPostTypeRepository.findById(id).get());
-		List<ShPostAttr> shPostAttrs = new ArrayList<ShPostAttr>();
+		Set<ShPostAttr> shPostAttrs = new HashSet<ShPostAttr>();
 		for (ShPostTypeAttr shPostTypeAttr : shPost.getShPostType().getShPostTypeAttrs()) {
 			ShPostAttr shPostAttr = new ShPostAttr();
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
@@ -87,7 +88,7 @@ public class ShPostTypeAPI {
 	public ShPost shPostTypeByNamePostStructure(@PathVariable String postTypeName) throws Exception {
 		ShPost shPost = new ShPost();
 		shPost.setShPostType(shPostTypeRepository.findByName(postTypeName));
-		List<ShPostAttr> shPostAttrs = new ArrayList<ShPostAttr>();
+		Set<ShPostAttr> shPostAttrs = new HashSet<ShPostAttr>();
 		for (ShPostTypeAttr shPostTypeAttr : shPost.getShPostType().getShPostTypeAttrs()) {
 			ShPostAttr shPostAttr = new ShPostAttr();
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);

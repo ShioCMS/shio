@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.json.JSONObject;
@@ -217,7 +218,7 @@ public class ShFolderUtils {
 		}
 		
 		for (ShPost shPost : shPostRepository.findByShFolder(shFolder)) {
-			List<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
+			Set<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
 			
 			shPostAttrRepository.deleteInBatch(shPostAttrs);
 			shGlobalIdRepository.delete(shPost.getShGlobalId().getId());
