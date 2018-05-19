@@ -23,7 +23,7 @@ import java.util.UUID;
  */
 @Entity
 @NamedQuery(name = "ShPostAttr.findAll", query = "SELECT s FROM ShPostAttr s")
-@JsonIgnoreProperties({ "shPostType", "shPost",  "shParentRelatorItem" })
+@JsonIgnoreProperties({ "shPostType", "shPost", "shParentRelatorItem" })
 public class ShPostAttr implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -53,7 +53,7 @@ public class ShPostAttr implements Serializable {
 	private int type;
 
 	// bi-directional many-to-one association to ShRelatorItem
-	@OneToMany(mappedBy = "shParentPostAttr")
+	@OneToMany(mappedBy = "shParentPostAttr", cascade = CascadeType.PERSIST)
 	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
 	private List<ShRelatorItem> shChildrenRelatorItems;
 
@@ -71,7 +71,7 @@ public class ShPostAttr implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "post_attr_id")
 	private ShRelatorItem shParentRelatorItem;
-		
+
 	@Transient
 	private UUID shPostTypeAttrId;
 
@@ -169,6 +169,4 @@ public class ShPostAttr implements Serializable {
 		this.shParentRelatorItem = shParentRelatorItem;
 	}
 
-
-	
 }

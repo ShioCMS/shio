@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -36,7 +37,7 @@ public class ShRelatorItem implements Serializable {
 	private UUID id;
 
 	// bi-directional many-to-one association to ShPostAttr
-	@OneToMany(mappedBy = "shParentRelatorItem")
+	@OneToMany(mappedBy = "shParentRelatorItem", cascade = CascadeType.PERSIST)
 	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
 	private List<ShPostAttr> shChildrenPostAttrs;
 

@@ -2,7 +2,7 @@ shioharaApp.factory('shWidgetRelatorFactory', [ '$uibModal', 'shPostResource',
 		'Notification', '$filter', "$state",
 		function($uibModal, shPostResource, Notification, $filter, $state) {
 			return {
-				modalSelectRelatorItem : function(shPostAttr) {
+				modalSelectRelatorItem : function(shChildrenRelatorItem) {
 					var $ctrl = this;
 					return $uibModal.open({
 						animation : true,
@@ -14,8 +14,8 @@ shioharaApp.factory('shWidgetRelatorFactory', [ '$uibModal', 'shPostResource',
 						size : null,
 						appendTo : undefined,
 						resolve : {
-							shPostAttr : function() {
-								return shPostAttr;
+							shChildrenRelatorItem : function() {
+								return shChildrenRelatorItem;
 							}
 						}
 					});
