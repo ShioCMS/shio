@@ -42,7 +42,7 @@ public class ShRelatorItem implements Serializable {
 	private Set<ShPostAttr> shChildrenPostAttrs;
 
 	// bi-directional many-to-one association to ShPost
-	@ManyToOne(cascade = {CascadeType.ALL})
+	@ManyToOne //(cascade = {CascadeType.ALL})
 	@JoinColumn(name = "post_attr_id")
 	private ShPostAttr shParentPostAttr;
 
