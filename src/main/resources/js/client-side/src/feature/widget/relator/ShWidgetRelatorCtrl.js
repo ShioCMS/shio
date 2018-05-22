@@ -4,7 +4,8 @@ shioharaApp.controller('ShWidgetRelatorCtrl', [
 		'$timeout',
 		'$uibModal',
 		'shWidgetRelatorFactory',
-		function($scope, Upload, $timeout, $uibModal, shWidgetRelatorFactory) {
+		'$filter',
+		function($scope, Upload, $timeout, $uibModal, shWidgetRelatorFactory, $filter) {
 			$scope.fileName = null;
 			$scope.uploadNewFile = false;
 
@@ -15,7 +16,17 @@ shioharaApp.controller('ShWidgetRelatorCtrl', [
 				shPostAttr.strValue = null;
 				shPostAttr.file = null;
 			}
-
+			
+			$scope.relatorDelete = function(shPostAttr,shChildrenRelatorItem) {
+				  var foundItem = $filter('filter')(shPostAttr.shChildrenRelatorItems, {
+                      id: shChildrenRelatorItem.id
+                  }, true)[0];
+                  // get the index
+                  var index = shPostAttr.shChildrenRelatorItems.indexOf(foundItem);
+                  // remove the item from array
+                  shPostAttr.shChildrenRelatorItems.splice(index, 1);                  
+			}
+			
 			$scope.addRelatorItem = function(shPost, shPostAttr) {
 				var modalInstance = shWidgetRelatorFactory
 						.modalAddRelatorItem(shPostAttr);
