@@ -45,7 +45,12 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
 			});
 			
 		});
-    	
+    	 $scope.$evalAsync($http.get(shAPIServerService.get().concat("/v2/history/object/" + $scope.objectId ))
+    			 .then(function (response) {
+             $scope.commits = response.data.length;
+             console.log ($scope.commits);
+         }));
+    	 
         $scope.$evalAsync($http.get(shAPIServerService.get().concat("/v2/object/" + $scope.objectId + "/list")).then(function (response) {
             $scope.processResponse(response);
         }));

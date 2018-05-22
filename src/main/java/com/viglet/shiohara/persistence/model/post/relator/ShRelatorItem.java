@@ -1,7 +1,6 @@
 package com.viglet.shiohara.persistence.model.post.relator;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -22,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 
 /**
- * The persistent class for the ShPostAttr database table.
+ * The persistent class for the ShRelatorItem database table.
  * 
  */
 @Entity
@@ -43,7 +42,7 @@ public class ShRelatorItem implements Serializable {
 	private Set<ShPostAttr> shChildrenPostAttrs;
 
 	// bi-directional many-to-one association to ShPost
-	@ManyToOne
+	@ManyToOne(cascade = {CascadeType.ALL})
 	@JoinColumn(name = "post_attr_id")
 	private ShPostAttr shParentPostAttr;
 

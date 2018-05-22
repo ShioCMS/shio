@@ -13,7 +13,6 @@ import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -53,12 +52,12 @@ public class ShPostAttr implements Serializable {
 	private int type;
 
 	// bi-directional many-to-one association to ShRelatorItem
-	@OneToMany(mappedBy = "shParentPostAttr", cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy = "shParentPostAttr", cascade = CascadeType.ALL)
 	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
 	private Set<ShRelatorItem> shChildrenRelatorItems;
 
 	// bi-directional many-to-one association to ShPost
-	@ManyToOne
+	@ManyToOne(cascade = {CascadeType.ALL})
 	@JoinColumn(name = "post_id")
 	private ShPost shPost;
 
@@ -68,7 +67,7 @@ public class ShPostAttr implements Serializable {
 	private ShPostTypeAttr shPostTypeAttr;
 
 	// bi-directional many-to-one association to ShPost
-	@ManyToOne
+	@ManyToOne(cascade = {CascadeType.ALL})
 	@JoinColumn(name = "post_attr_id")
 	private ShRelatorItem shParentRelatorItem;
 

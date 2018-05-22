@@ -1,6 +1,7 @@
 package com.viglet.shiohara.api.history;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,15 +39,15 @@ public class ShHistoryAPI {
 
 	@GetMapping("/object/{globalId}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public List<ShHistory> shHistoryByObject(@PathVariable UUID globalId) throws Exception {
+	public Set<ShHistory> shHistoryByObject(@PathVariable UUID globalId) throws Exception {
 		if (shGlobalIdRepository.findById(globalId).isPresent()) {
 			ShGlobalId shGlobalId = shGlobalIdRepository.findById(globalId).get();
 			if (shGlobalId != null) {
 				if (shGlobalId.getType().equals(ShObjectType.SITE)) {
 					ShSite shSite = (ShSite) shGlobalId.getShObject();
-					return shHistoryRepository.findByShSite(shSite);
+					return shHistoryRepository.findByShSite(shSite.getId());
 				} else {
-					return shHistoryRepository.findByShObject(shGlobalId.getShObject());
+					return shHistoryRepository.findByShObject(shGlobalId.getShObject().getId());
 				}
 			}
 		}
