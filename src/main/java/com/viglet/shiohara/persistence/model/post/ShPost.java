@@ -13,8 +13,6 @@ import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 /**

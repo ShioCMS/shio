@@ -40,15 +40,10 @@ public class ShHistory implements Serializable {
 
 	private String description;
 
-	// bi-directional many-to-one association to ShPostType
-	@ManyToOne
-	@JoinColumn(name = "object_id")
-	private ShObject shObject;
+	private UUID shObject;
 
-	@ManyToOne
-	@JoinColumn(name = "site_id")
-	private ShSite shSite;
-	
+	private UUID shSite;
+
 	public UUID getId() {
 		return id;
 	}
@@ -81,20 +76,21 @@ public class ShHistory implements Serializable {
 		this.description = description;
 	}
 
-	public ShObject getShObject() {
+	public UUID getShObject() {
 		return shObject;
 	}
 
-	public void setShObject(ShObject shObject) {
+	public void setShObject(UUID shObject) {
 		this.shObject = shObject;
 	}
 
-	public ShSite getShSite() {
+	public UUID getShSite() {
 		return shSite;
 	}
 
-	public void setShSite(ShSite shSite) {
+	public void setShSite(UUID shSite) {
 		this.shSite = shSite;
 	}
+	
 
 }
