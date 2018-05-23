@@ -9,8 +9,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
@@ -37,12 +39,14 @@ import com.viglet.shiohara.exchange.ShFolderExchange;
 import com.viglet.shiohara.exchange.ShExchange;
 import com.viglet.shiohara.exchange.ShFileExchange;
 import com.viglet.shiohara.exchange.ShPostExchange;
+import com.viglet.shiohara.exchange.ShRelatorExchange;
 import com.viglet.shiohara.exchange.ShSiteExchange;
 import com.viglet.shiohara.object.ShObjectType;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
+import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.model.site.ShSite;
@@ -360,7 +364,25 @@ public class ShSiteAPI {
 
 				for (ShPostAttr shPostAttr : shPostAttrRepository.findByShPost(shPost)) {
 					if (shPostAttr != null && shPostAttr.getShPostTypeAttr() != null) {
-						fields.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
+						if (shPostAttr.getShPostTypeAttr().getShWidget() == null) {
+							ShRelatorExchange shRelatorExchange = new ShRelatorExchange();
+							shRelatorExchange.setId(shPostAttr.getId());
+							shRelatorExchange.setName(shPostAttr.getStrValue());
+							Set<Object> relators = new HashSet<Object>();
+							for (ShRelatorItem shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
+								Map<String, Object> relatorFields = new HashMap<String, Object>();
+								for (ShPostAttr shPostAttrRelator : shRelatorItem.getShChildrenPostAttrs()) {
+									relatorFields.put(shPostAttrRelator.getShPostTypeAttr().getName(),
+											shPostAttrRelator.getStrValue());
+								}
+								relators.add(relatorFields);
+							}
+							shRelatorExchange.setShSubPosts(relators);
+							fields.put(shPostAttr.getShPostTypeAttr().getName(), shRelatorExchange);
+						} else {
+							fields.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
+						}
+
 						if (shPostAttr.getShPostTypeAttr().getName().equals(ShSystemPostTypeAttr.FILE)
 								&& shPost.getShPostType().getName().equals(ShSystemPostType.FILE)) {
 							String fileName = shPostAttr.getStrValue();
