@@ -1,10 +1,13 @@
 package com.viglet.shiohara.persistence.model.post;
 
 import java.io.Serializable;
-import javax.persistence.*;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.search.annotations.Field;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -13,8 +16,24 @@ import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 /**
  * The persistent class for the ShPostAttr database table.
@@ -44,20 +63,23 @@ public class ShPostAttr implements Serializable {
 	@Column(name = "str_value", length = 5 * 1024 * 1024) // 5Mb
 	private String strValue;
 
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "object_post_attr", joinColumns = @JoinColumn(name = "post_attr_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "object_id", referencedColumnName = "id"))
 	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
+	@Cascade({CascadeType.ALL})
 	private Set<ShObject> referenceObjects;
 
 	private int type;
 
 	// bi-directional many-to-one association to ShRelatorItem
-	@OneToMany(mappedBy = "shParentPostAttr", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "shParentPostAttr", orphanRemoval = true)
 	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
-	private Set<ShRelatorItem> shChildrenRelatorItems;
+	@Cascade({CascadeType.ALL})
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private Set<ShRelatorItem> shChildrenRelatorItems = new HashSet<ShRelatorItem>();
 
 	// bi-directional many-to-one association to ShPost
-	@ManyToOne //(cascade = {CascadeType.ALL})
+	@ManyToOne // (cascade = {CascadeType.ALL})
 	@JoinColumn(name = "post_id")
 	private ShPost shPost;
 
@@ -67,7 +89,7 @@ public class ShPostAttr implements Serializable {
 	private ShPostTypeAttr shPostTypeAttr;
 
 	// bi-directional many-to-one association to ShPost
-	@ManyToOne //(cascade = {CascadeType.ALL})
+	@ManyToOne // (cascade = {CascadeType.ALL})
 	@JoinColumn(name = "post_attr_id")
 	private ShRelatorItem shParentRelatorItem;
 
@@ -157,7 +179,10 @@ public class ShPostAttr implements Serializable {
 	}
 
 	public void setShChildrenRelatorItems(Set<ShRelatorItem> shChildrenRelatorItems) {
-		this.shChildrenRelatorItems = shChildrenRelatorItems;
+		this.shChildrenRelatorItems.clear();
+		if (shChildrenRelatorItems != null) {
+			this.shChildrenRelatorItems.addAll(shChildrenRelatorItems);
+		}
 	}
 
 	public ShRelatorItem getShParentRelatorItem() {
