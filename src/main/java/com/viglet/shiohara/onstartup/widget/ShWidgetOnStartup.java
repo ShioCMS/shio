@@ -79,6 +79,15 @@ public class ShWidgetOnStartup {
 			shWidget.setType("TEXT,TEXTAREA");
 
 			shWidgetRepository.save(shWidget);
+			
+			shWidget = new ShWidget();
+			shWidget.setName(ShSystemWidget.RELATOR);
+			shWidget.setDescription("Relator Widget");
+			shWidget.setClassName("com.viglet.shiohara.widget.ShRelatorWidget");
+			shWidget.setImplementationCode("template/widget/relator/relator-list.html");
+			shWidget.setType("TEXT,TEXTAREA");
+
+			shWidgetRepository.save(shWidget);
 		}
 
 	}

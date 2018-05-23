@@ -63,6 +63,7 @@ import com.viglet.shiohara.url.ShURLFormatter;
 import com.viglet.shiohara.utils.ShFolderUtils;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
 import com.viglet.shiohara.utils.ShUtils;
+import com.viglet.shiohara.widget.ShSystemWidget;
 
 import io.swagger.annotations.Api;
 
@@ -364,7 +365,7 @@ public class ShSiteAPI {
 
 				for (ShPostAttr shPostAttr : shPostAttrRepository.findByShPost(shPost)) {
 					if (shPostAttr != null && shPostAttr.getShPostTypeAttr() != null) {
-						if (shPostAttr.getShPostTypeAttr().getShWidget() == null) {
+						if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.RELATOR)) {
 							ShRelatorExchange shRelatorExchange = new ShRelatorExchange();
 							shRelatorExchange.setId(shPostAttr.getId());
 							shRelatorExchange.setName(shPostAttr.getStrValue());

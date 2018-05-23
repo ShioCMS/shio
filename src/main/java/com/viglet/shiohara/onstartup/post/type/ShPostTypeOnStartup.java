@@ -1,8 +1,6 @@
 package com.viglet.shiohara.onstartup.post.type;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -43,7 +41,7 @@ public class ShPostTypeOnStartup {
 			ShWidget shWidgetAceEditorHTML = shWidgetRepository.findByName(ShSystemWidget.ACE_HTML);
 			ShWidget shWidgetHTMLEditor = shWidgetRepository.findByName(ShSystemWidget.HTML_EDITOR);
 			ShWidget shWidgetContentSelect = shWidgetRepository.findByName(ShSystemWidget.CONTENT_SELECT);
-
+			ShWidget shWidgetRelator = shWidgetRepository.findByName(ShSystemWidget.RELATOR);
 			// Text
 
 			ShPostType shPostType = new ShPostType();
@@ -358,7 +356,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttrRelation.setOrdinal(6);
 			shPostTypeAttrRelation.setRequired((byte) 1);
 			shPostTypeAttrRelation.setShPostType(shPostType);
-			shPostTypeAttrRelation.setShWidget(null);
+			shPostTypeAttrRelation.setShWidget(shWidgetRelator);
 
 			shPostTypeAttrRepository.save(shPostTypeAttrRelation);
 
