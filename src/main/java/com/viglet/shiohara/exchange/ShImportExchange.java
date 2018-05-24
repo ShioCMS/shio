@@ -306,7 +306,6 @@ public class ShImportExchange {
 		return shFolderChild;
 	}
 
-	@SuppressWarnings({ "unchecked" })
 	public ShPost createShPost(ShPostExchange shPostExchange, File extractFolder, String username) {
 		ShPost shPost = null;
 		if (shPostRepository.findById(shPostExchange.getId()).isPresent()) {
@@ -362,80 +361,88 @@ public class ShImportExchange {
 			shGlobalIdRepository.saveAndFlush(shGlobalId);
 
 			shPost.setShGlobalId(shGlobalId);
-
-			for (Entry<String, Object> shPostFields : shPostExchange.getFields().entrySet()) {
-				ShPostType shPostType = shPostTypeRepository.findByName(shPostExchange.getPostType());
-				ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType,
-						shPostFields.getKey());
-				if ((shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.FILE)
-						|| shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.CONTENT_SELECT))
-						&& shPostFields.getValue() != null && !shPostType.getName().equals(ShSystemPostType.FILE)) {
-					try {
-						UUID shReferencedPostUUID = UUID.fromString((String) shPostFields.getValue());
-						if (!shPostRepository.findById(shReferencedPostUUID).isPresent()) {
-							// So the referenced Post not exists, need create first
-							if (shObjects.get(shReferencedPostUUID) instanceof ShPostExchange) {
-								ShPostExchange shReferencedPostExchange = (ShPostExchange) shObjects
-										.get(shReferencedPostUUID);
-								this.createShPost(shReferencedPostExchange, extractFolder, username);
-							}
-						}
-					} catch (IllegalArgumentException iae) {
-						// iae.printStackTrace();
-					}
-				}
-				if (shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.RELATOR)) {
-
-					LinkedHashMap<String, Object> relatorFields = (LinkedHashMap<String, Object>) shPostFields
-							.getValue();
-
-					ShPostAttr shPostAttr = new ShPostAttr();
-					shPostAttr.setShPost(shPost);
-					shPostAttr.setId(UUID.fromString((String) relatorFields.get("id")));
-					shPostAttr.setStrValue((String) relatorFields.get("name"));
-					shPostAttr.setShPostTypeAttr(shPostTypeAttrRepository
-							.findByShPostTypeAndName(shPost.getShPostType(), shPostFields.getKey()));
-					shPostAttr.setType(1);
-
-					shPostAttrRepository.save(shPostAttr);
-
-					for (Object shSubPost : (ArrayList<Object>) relatorFields.get("shSubPosts")) {
-						ShRelatorItem shRelatorItem = new ShRelatorItem();
-						shRelatorItem.setShParentPostAttr(shPostAttr);
-
-						shRelatorItemRepository.save(shRelatorItem);
-
-						for (Entry<String, Object> shSubPostFields : ((Map<String, Object>) shSubPost).entrySet()) {
-							ShPostAttr shSubPostAttrs = new ShPostAttr();
-							shSubPostAttrs.setStrValue((String) shSubPostFields.getValue());
-							shSubPostAttrs.setShPostTypeAttr(shPostTypeAttrRepository.findByShParentPostTypeAttrAndName(
-									shPostAttr.getShPostTypeAttr(), shSubPostFields.getKey()));
-							shSubPostAttrs.setType(1);
-							shSubPostAttrs.setShParentRelatorItem(shRelatorItem);
-
-							shPostAttrRepository.save(shSubPostAttrs);
-
-							shPostUtils.referencedObject(shPostAttr, shPost);
-
-							shPostAttrRepository.save(shPostAttr);
-
-						}
-					}
-				} else {
-					ShPostAttr shPostAttr = new ShPostAttr();
-					shPostAttr.setStrValue((String) shPostFields.getValue());
-					shPostAttr.setShPost(shPost);
-					shPostAttr.setShPostTypeAttr(shPostTypeAttrRepository
-							.findByShPostTypeAndName(shPost.getShPostType(), shPostFields.getKey()));
-					shPostAttr.setType(1);
-					shPostAttrRepository.save(shPostAttr);
-
-					shPostUtils.referencedObject(shPostAttr, shPost);
-
-					shPostAttrRepository.save(shPostAttr);
-				}
-			}
+			this.createShPostAttrs(shPostExchange, shPost, shPostExchange.getFields(), null, extractFolder, username);
 		}
 		return shPost;
+	}
+
+	@SuppressWarnings({ "unchecked" })
+	private void createShPostAttrs(ShPostExchange shPostExchange, ShPost shPost, Map<String, Object> shPostFields,
+			ShRelatorItem shParentRelatorItem, File extractFolder, String username) {
+		for (Entry<String, Object> shPostField : shPostFields.entrySet()) {
+			ShPostType shPostType = shPostTypeRepository.findByName(shPostExchange.getPostType());
+
+			ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType,
+					shPostField.getKey());
+			// Relator: the PostType is null
+			if (shPostTypeAttr == null) {
+				shPostTypeAttr = shPostTypeAttrRepository.findByShParentPostTypeAttrAndName(
+						shParentRelatorItem.getShParentPostAttr().getShPostTypeAttr(), shPostField.getKey());
+			}
+			
+			if ((shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.FILE)
+					|| shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.CONTENT_SELECT))
+					&& shPostField.getValue() != null && !shPostType.getName().equals(ShSystemPostType.FILE)) {
+				try {
+					UUID shReferencedPostUUID = UUID.fromString((String) shPostField.getValue());
+					if (!shPostRepository.findById(shReferencedPostUUID).isPresent()) {
+						// So the referenced Post not exists, need create first
+						if (shObjects.get(shReferencedPostUUID) instanceof ShPostExchange) {
+							ShPostExchange shReferencedPostExchange = (ShPostExchange) shObjects
+									.get(shReferencedPostUUID);
+							this.createShPost(shReferencedPostExchange, extractFolder, username);
+						}
+					}
+				} catch (IllegalArgumentException iae) {
+					// iae.printStackTrace();
+				}
+			}
+			if (shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.RELATOR)) {
+
+				LinkedHashMap<String, Object> relatorFields = (LinkedHashMap<String, Object>) shPostField.getValue();
+
+				ShPostAttr shPostAttr = new ShPostAttr();
+				
+				if (shParentRelatorItem != null) {
+					shPostAttr.setShPost(null);
+					shPostAttr.setShParentRelatorItem(shParentRelatorItem);
+				} else {
+					shPostAttr.setShPost(shPost);
+				}
+							
+				shPostAttr.setId(UUID.fromString((String) relatorFields.get("id")));
+				shPostAttr.setStrValue((String) relatorFields.get("name"));
+				shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+				shPostAttr.setType(1);
+
+				shPostAttrRepository.save(shPostAttr);
+
+				for (Object shSubPost : (ArrayList<Object>) relatorFields.get("shSubPosts")) {
+					ShRelatorItem shRelatorItem = new ShRelatorItem();
+					shRelatorItem.setShParentPostAttr(shPostAttr);
+
+					shRelatorItemRepository.save(shRelatorItem);
+					this.createShPostAttrs(shPostExchange, shPost, (Map<String, Object>) shSubPost, shRelatorItem,
+							extractFolder, username);
+				}
+			} else {
+				ShPostAttr shPostAttr = new ShPostAttr();
+				shPostAttr.setStrValue((String) shPostField.getValue());
+				if (shParentRelatorItem != null) {
+					shPostAttr.setShPost(null);
+					shPostAttr.setShParentRelatorItem(shParentRelatorItem);
+				} else {
+					shPostAttr.setShPost(shPost);
+				}
+				
+				shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+				shPostAttr.setType(1);
+				shPostAttrRepository.save(shPostAttr);
+
+				shPostUtils.referencedObject(shPostAttr, shPost);
+
+				shPostAttrRepository.save(shPostAttr);
+			}
+		}
 	}
 }
