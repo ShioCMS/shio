@@ -17,13 +17,7 @@ shioharaApp.controller('ShWidgetRelatorCtrl', [
 				shPostAttr.file = null;
 			}
 			
-			$scope.relatorDelete = function(shPostAttr,shChildrenRelatorItem) {
-				  var foundItem = $filter('filter')(shPostAttr.shChildrenRelatorItems, {
-                      id: shChildrenRelatorItem.id
-                  }, true)[0];
-                  // get the index
-                  var index = shPostAttr.shChildrenRelatorItems.indexOf(foundItem);
-                  // remove the item from array
+			$scope.relatorDelete = function(shPostAttr,index) {				 
                   shPostAttr.shChildrenRelatorItems.splice(index, 1);                  
 			}
 			

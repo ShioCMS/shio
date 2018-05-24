@@ -50,7 +50,8 @@
 					<td>{{shChildrenRelatorItem.shChildrenPostAttrs[0].strValue}}</td>
 					<td>
 						<button type="button" class="btn btn-link btn-xs pull-right"
-							style="display: block;" ng-click="relatorDelete(shPostAttr,shChildrenRelatorItem)">
+							style="display: block;"
+							ng-click="relatorDelete(shPostAttr,$index)">
 							<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
 						</button>
 					</td>
