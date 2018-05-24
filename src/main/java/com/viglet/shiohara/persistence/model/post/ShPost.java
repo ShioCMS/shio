@@ -60,7 +60,7 @@ public class ShPost extends ShObject {
 	@Cascade({CascadeType.ALL})
 	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	private Set<ShPostAttr> shPostAttrs = new HashSet<ShPostAttr>();;
+	private Set<ShPostAttr> shPostAttrs = new HashSet<ShPostAttr>();
 
 	public ShPost() {
 	}
