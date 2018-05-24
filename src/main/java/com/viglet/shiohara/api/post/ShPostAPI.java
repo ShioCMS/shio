@@ -217,6 +217,13 @@ public class ShPostAPI {
 		for (ShRelatorItem shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
 			shRelatorItem.setShParentPostAttr(shPostAttr);
 			for (ShPostAttr shChildrenPostAttr : shRelatorItem.getShChildrenPostAttrs()) {
+				
+				if (shChildrenPostAttr.getShPostTypeAttr().getIsTitle() == 1)
+					shRelatorItem.setTitle(StringUtils.abbreviate(shChildrenPostAttr.getStrValue(), 255));
+
+				if (shChildrenPostAttr.getShPostTypeAttr().getIsSummary() == 1)
+					shRelatorItem.setSummary(StringUtils.abbreviate(shChildrenPostAttr.getStrValue(), 255));
+				
 				shChildrenPostAttr.setShParentRelatorItem(shRelatorItem);
 				this.postAttrSave(shChildrenPostAttr, shPost);
 			}

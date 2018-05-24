@@ -44,10 +44,13 @@
 					</tr>
 				</thead>
 				<tr ng-click="selectRelatorItem(shPost, shChildrenRelatorItem)"
-					ng-repeat="shChildrenRelatorItem in shPostAttr.shChildrenRelatorItems |orderBy : 'shChildrenRelatorItem.ordinal'">
+					ng-repeat="shChildrenRelatorItem in shPostAttr.shChildrenRelatorItems |orderBy : 'ordinal'">
 					<td><input type="checkbox"
-						ng-model="shStateObjects[shFolder.shGlobalId.id]"></td>
-					<td>{{shChildrenRelatorItem.shChildrenPostAttrs[0].strValue}}</td>
+						ng-model="shStateObjects[shFolder.shGlobalId.id]">
+						<span style="visibility: hidden;">{{shChildrenRelatorItem.ordinal=$index}}</span></td>
+					<td>
+					 
+					{{shChildrenRelatorItem.title}}</td>
 					<td>
 						<button type="button" class="btn btn-link btn-xs pull-right"
 							style="display: block;"
