@@ -24,29 +24,33 @@ shioharaApp.controller('ShWidgetRelatorCtrl', [
 			$scope.addRelatorItem = function(shPost, shPostAttr) {
 				var modalInstance = shWidgetRelatorFactory
 						.modalAddRelatorItem(shPostAttr);
-				modalInstance.result.then(function(shPostAttrs) {
+				modalInstance.result.then(function(transferData) {			
 					// Selected SAVE
 					if ($scope.shPostAttr.shChildrenRelatorItems == null) {
 						$scope.shPostAttr.shChildrenRelatorItems = [];
 
 					}
 					
-					var shChilRelatorItem = {};
-					shChilRelatorItem.id = null;
-					shChilRelatorItem.shChildrenPostAttrs = shPostAttrs;
+					var shChildRelatorItem = {};
+					shChildRelatorItem.id = null;
+					shChildRelatorItem.title = transferData.title;
+					shChildRelatorItem.summary = transferData.summary;
+					shChildRelatorItem.shChildrenPostAttrs = transferData.shPostAttrs;
 					
-					$scope.shPostAttr.shChildrenRelatorItems.push(shChilRelatorItem);
+					$scope.shPostAttr.shChildrenRelatorItems.push(shChildRelatorItem);
 
 				}, function() {
 					// Selected CANCEL
 				});
 			}
 
-			$scope.selectRelatorItem = function(shPost, shChildrenRelatorItem) {
+			$scope.selectRelatorItem = function(shPost, shChildRelatorItem) {
 				var modalInstance = shWidgetRelatorFactory
-						.modalSelectRelatorItem(shChildrenRelatorItem);
-				modalInstance.result.then(function(shPostSelected) {
+						.modalSelectRelatorItem(shChildRelatorItem);
+				modalInstance.result.then(function(transferData) {
 					// Selected SAVE
+					shChildRelatorItem.title = transferData.title;
+					shChildRelatorItem.summary = transferData.summary;
 				}, function() {
 					// Selected CANCEL
 				});

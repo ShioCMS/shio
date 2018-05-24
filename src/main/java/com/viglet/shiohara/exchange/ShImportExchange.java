@@ -379,7 +379,7 @@ public class ShImportExchange {
 				shPostTypeAttr = shPostTypeAttrRepository.findByShParentPostTypeAttrAndName(
 						shParentRelatorItem.getShParentPostAttr().getShPostTypeAttr(), shPostField.getKey());
 			}
-			
+
 			if ((shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.FILE)
 					|| shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.CONTENT_SELECT))
 					&& shPostField.getValue() != null && !shPostType.getName().equals(ShSystemPostType.FILE)) {
@@ -402,14 +402,20 @@ public class ShImportExchange {
 				LinkedHashMap<String, Object> relatorFields = (LinkedHashMap<String, Object>) shPostField.getValue();
 
 				ShPostAttr shPostAttr = new ShPostAttr();
-				
+
 				if (shParentRelatorItem != null) {
 					shPostAttr.setShPost(null);
 					shPostAttr.setShParentRelatorItem(shParentRelatorItem);
+					if (shPostTypeAttr.getIsTitle() == 1) {
+						shParentRelatorItem.setTitle((String) relatorFields.get("name"));
+					}
+					if (shPostTypeAttr.getIsSummary() == 1) {
+						shParentRelatorItem.setTitle((String) relatorFields.get("name"));
+					}
 				} else {
 					shPostAttr.setShPost(shPost);
 				}
-							
+
 				shPostAttr.setId(UUID.fromString((String) relatorFields.get("id")));
 				shPostAttr.setStrValue((String) relatorFields.get("name"));
 				shPostAttr.setShPostTypeAttr(shPostTypeAttr);
@@ -428,13 +434,20 @@ public class ShImportExchange {
 			} else {
 				ShPostAttr shPostAttr = new ShPostAttr();
 				shPostAttr.setStrValue((String) shPostField.getValue());
+				
 				if (shParentRelatorItem != null) {
 					shPostAttr.setShPost(null);
 					shPostAttr.setShParentRelatorItem(shParentRelatorItem);
+					if (shPostTypeAttr.getIsTitle() == 1) {
+						shParentRelatorItem.setTitle(shPostAttr.getStrValue());
+					}
+					if (shPostTypeAttr.getIsSummary() == 1) {
+						shParentRelatorItem.setTitle(shPostAttr.getStrValue());
+					}
 				} else {
 					shPostAttr.setShPost(shPost);
 				}
-				
+
 				shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 				shPostAttr.setType(1);
 				shPostAttrRepository.save(shPostAttr);

@@ -16,7 +16,7 @@ shioharaApp.controller('ShWidgetRelatorAddCtrl', [
 						$scope.shPostTypeAttrs = shPostAttr.shPostTypeAttr.shPostTypeAttrs;
 						
 						angular.forEach($scope.shPostTypeAttrs, function(value, key) {
-							var attrModel = angular.copy($scope.shPostAttrModel);							
+							var attrModel = angular.copy($scope.shPostAttrModel);
 							attrModel.shPostTypeAttr = value;
 							this.push(attrModel);
 						}, $scope.shPostAttrs);
@@ -34,7 +34,18 @@ shioharaApp.controller('ShWidgetRelatorAddCtrl', [
 
 			// BEGIN Functions
 			$ctrl.ok = function() {
-				$uibModalInstance.close($scope.shPostAttrs);
+				$scope.title = null;
+				$scope.summary = null;
+				angular.forEach($scope.shPostAttrs, function(shPostAttr, key) {		
+					if (shPostAttr.shPostTypeAttr.isTitle == 1) {
+						$scope.title = shPostAttr.strValue;
+				    }
+					if (shPostAttr.shPostTypeAttr.isSummary == 1) {
+						$scope.summary = shPostAttr.strValue;
+					}
+				});	
+				
+				$uibModalInstance.close({shPostAttrs: $scope.shPostAttrs, title: $scope.title, summary: $scope.summary});
 			};
 
 			$ctrl.cancel = function() {

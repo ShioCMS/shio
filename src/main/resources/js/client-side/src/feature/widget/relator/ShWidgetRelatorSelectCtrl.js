@@ -18,7 +18,17 @@ shioharaApp.controller('ShWidgetRelatorSelectCtrl', [
 
 			// BEGIN Functions
 			$ctrl.ok = function() {
-				$uibModalInstance.close($ctrl.shPostSelected);
+				$scope.title = null;
+				$scope.summary = null;
+				angular.forEach($scope.shPostAttrs, function(shPostAttr, key) {		
+					if (shPostAttr.shPostTypeAttr.isTitle == 1) {
+						$scope.title = shPostAttr.strValue;
+				    }
+					if (shPostAttr.shPostTypeAttr.isSummary == 1) {
+						$scope.summary = shPostAttr.strValue;
+					}
+				});	
+				$uibModalInstance.close({shPostAttrs: $scope.shPostAttrs, title: $scope.title, summary: $scope.summary});
 			};
 
 			$ctrl.cancel = function() {

@@ -42,6 +42,7 @@ public class ShPostTypeOnStartup {
 			ShWidget shWidgetHTMLEditor = shWidgetRepository.findByName(ShSystemWidget.HTML_EDITOR);
 			ShWidget shWidgetContentSelect = shWidgetRepository.findByName(ShSystemWidget.CONTENT_SELECT);
 			ShWidget shWidgetRelator = shWidgetRepository.findByName(ShSystemWidget.RELATOR);
+			
 			// Text
 
 			ShPostType shPostType = new ShPostType();
@@ -365,7 +366,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setLabel("Text of Relation");
 			shPostTypeAttr.setDescription("Text of Relation");
 			shPostTypeAttr.setIsSummary((byte) 0);
-			shPostTypeAttr.setIsTitle((byte) 0);
+			shPostTypeAttr.setIsTitle((byte) 1);
 			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(7);
 			shPostTypeAttr.setRequired((byte) 1);
@@ -395,7 +396,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setLabel("Text of Relation 2nd");
 			shPostTypeAttr.setDescription("Text of Relation 2nd");
 			shPostTypeAttr.setIsSummary((byte) 0);
-			shPostTypeAttr.setIsTitle((byte) 0);
+			shPostTypeAttr.setIsTitle((byte) 1);
 			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(9);
 			shPostTypeAttr.setRequired((byte) 1);
