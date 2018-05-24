@@ -31,9 +31,7 @@ div.affix {
 
 <div class="form-group"
 	ng-repeat="shPostAttr in shPost.shPostAttrs |orderBy : 'shPostTypeAttr.ordinal'">
-	<div ng-if="shPostAttr.shPostTypeAttr.many === 1" ng-include="'template/widget/relator/relator-list.html'">
-	</div>
-	<div ng-if="shPostAttr.shPostTypeAttr.many === 0">
+	<div>
 		<label>{{shPostAttr.shPostTypeAttr.label}}</label>
 		<div
 			ng-include="shPostAttr.shPostTypeAttr.shWidget.implementationCode"></div>
