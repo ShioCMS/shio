@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -17,16 +18,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viglet.shiohara.object.ShObjectType;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
-import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
+import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.model.site.ShSite;
@@ -34,6 +34,7 @@ import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
+import com.viglet.shiohara.persistence.repository.post.relator.ShRelatorItemRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
@@ -62,6 +63,8 @@ public class ShImportExchange {
 	private ShPostAttrRepository shPostAttrRepository;
 	@Autowired
 	private ShGlobalIdRepository shGlobalIdRepository;
+	@Autowired
+	private ShRelatorItemRepository shRelatorItemRepository;
 	@Autowired
 	private ShStaticFileUtils shStaticFileUtils;
 	@Autowired
@@ -303,6 +306,7 @@ public class ShImportExchange {
 		return shFolderChild;
 	}
 
+	@SuppressWarnings({ "unchecked" })
 	public ShPost createShPost(ShPostExchange shPostExchange, File extractFolder, String username) {
 		ShPost shPost = null;
 		if (shPostRepository.findById(shPostExchange.getId()).isPresent()) {
@@ -380,18 +384,56 @@ public class ShImportExchange {
 						// iae.printStackTrace();
 					}
 				}
+				if (shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.RELATOR)) {
 
-				ShPostAttr shPostAttr = new ShPostAttr();
-				shPostAttr.setStrValue((String) shPostFields.getValue());
-				shPostAttr.setShPost(shPost);
-				shPostAttr.setShPostTypeAttr(shPostTypeAttrRepository.findByShPostTypeAndName(shPost.getShPostType(),
-						shPostFields.getKey()));
-				shPostAttr.setType(1);
-				shPostAttrRepository.save(shPostAttr);
+					LinkedHashMap<String, Object> relatorFields = (LinkedHashMap<String, Object>) shPostFields
+							.getValue();
 
-				shPostUtils.referencedObject(shPostAttr, shPost);
+					ShPostAttr shPostAttr = new ShPostAttr();
+					shPostAttr.setShPost(shPost);
+					shPostAttr.setId(UUID.fromString((String) relatorFields.get("id")));
+					shPostAttr.setStrValue((String) relatorFields.get("name"));
+					shPostAttr.setShPostTypeAttr(shPostTypeAttrRepository
+							.findByShPostTypeAndName(shPost.getShPostType(), shPostFields.getKey()));
+					shPostAttr.setType(1);
 
-				shPostAttrRepository.save(shPostAttr);
+					shPostAttrRepository.save(shPostAttr);
+
+					for (Object shSubPost : (ArrayList<Object>) relatorFields.get("shSubPosts")) {
+						ShRelatorItem shRelatorItem = new ShRelatorItem();
+						shRelatorItem.setShParentPostAttr(shPostAttr);
+
+						shRelatorItemRepository.save(shRelatorItem);
+
+						for (Entry<String, Object> shSubPostFields : ((Map<String, Object>) shSubPost).entrySet()) {
+							ShPostAttr shSubPostAttrs = new ShPostAttr();
+							shSubPostAttrs.setStrValue((String) shSubPostFields.getValue());
+							shSubPostAttrs.setShPostTypeAttr(shPostTypeAttrRepository.findByShParentPostTypeAttrAndName(
+									shPostAttr.getShPostTypeAttr(), shSubPostFields.getKey()));
+							shSubPostAttrs.setType(1);
+							shSubPostAttrs.setShParentRelatorItem(shRelatorItem);
+
+							shPostAttrRepository.save(shSubPostAttrs);
+
+							shPostUtils.referencedObject(shPostAttr, shPost);
+
+							shPostAttrRepository.save(shPostAttr);
+
+						}
+					}
+				} else {
+					ShPostAttr shPostAttr = new ShPostAttr();
+					shPostAttr.setStrValue((String) shPostFields.getValue());
+					shPostAttr.setShPost(shPost);
+					shPostAttr.setShPostTypeAttr(shPostTypeAttrRepository
+							.findByShPostTypeAndName(shPost.getShPostType(), shPostFields.getKey()));
+					shPostAttr.setType(1);
+					shPostAttrRepository.save(shPostAttr);
+
+					shPostUtils.referencedObject(shPostAttr, shPost);
+
+					shPostAttrRepository.save(shPostAttr);
+				}
 			}
 		}
 		return shPost;
