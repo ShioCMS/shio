@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +32,6 @@ import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.history.ShHistoryRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
-import com.viglet.shiohara.persistence.repository.post.relator.ShRelatorItemRepository;
 import com.viglet.shiohara.persistence.repository.reference.ShReferenceRepository;
 import com.viglet.shiohara.persistence.repository.user.ShUserRepository;
 import com.viglet.shiohara.post.type.ShSystemPostType;
@@ -62,8 +60,6 @@ public class ShPostAPI {
 	private ShReferenceRepository shReferenceRepository;
 	@Autowired
 	private ShHistoryRepository shHistoryRepository;
-	@Autowired
-	private ShRelatorItemRepository shRelatorItemRepository;
 	@Autowired
 	private ShURLFormatter shURLFormatter;
 	@Autowired
@@ -97,44 +93,42 @@ public class ShPostAPI {
 	public ShPost shPostUpdate(@PathVariable UUID id, @RequestBody ShPost shPost, Principal principal)
 			throws Exception {
 
-		ShPost shPostEdit = shPostRepository.findById(id).get();
-
-		String title = shPostEdit.getTitle();
-		String summary = shPostEdit.getSummary();
-
-		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
-			if (shPostAttr.getShPostTypeAttr().getIsTitle() == 1)
-				title = StringUtils.abbreviate(shPostAttr.getStrValue(), 255);
-
-			if (shPostAttr.getShPostTypeAttr().getIsSummary() == 1)
-				summary = StringUtils.abbreviate(shPostAttr.getStrValue(), 255);
-
-			shPostEdit.getShPostAttrs().add(this.postAttrUpdate(shPostAttr, shPostEdit));
-		}
-
-		shPostEdit.setDate(new Date());
-		shPostEdit.setTitle(title);
-		shPostEdit.setSummary(summary);
-		shPostEdit.setFurl(shURLFormatter.format(title));
-		shPostRepository.saveAndFlush(shPostEdit);
-
-		ShUser shUser = shUserRepository.findById(1);
-		shUser.setLastPostType(String.valueOf(shPostEdit.getShPostType().getId()));
-		shUserRepository.saveAndFlush(shUser);
+		this.postSave(shPost, principal);
 
 		// History
 		ShHistory shHistory = new ShHistory();
 		shHistory.setDate(new Date());
-		shHistory.setDescription("Updated " + shPostEdit.getTitle() + " Post.");
+		shHistory.setDescription("Updated " + shPost.getTitle() + " Post.");
 		if (principal != null) {
 			shHistory.setOwner(principal.getName());
 		}
-		shHistory.setShObject(shPostEdit.getId());
-		shHistory.setShSite(shPostUtils.getSite(shPostEdit).getId());
+		shHistory.setShObject(shPost.getId());
+		shHistory.setShSite(shPostUtils.getSite(shPost).getId());
 		shHistoryRepository.saveAndFlush(shHistory);
-		
-	
-		return  this.shPostEdit(shPostEdit.getId());
+
+		return this.shPostEdit(shPost.getId());
+
+	}
+
+	@PostMapping
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
+	public ShPost shPostAdd(@RequestBody ShPost shPost, Principal principal) throws Exception {
+
+		this.postSave(shPost, principal);
+
+		// History
+		ShHistory shHistory = new ShHistory();
+		shHistory.setDate(new Date());
+		shHistory.setDescription("Created " + shPost.getTitle() + " Post.");
+		if (principal != null) {
+			shHistory.setOwner(principal.getName());
+		}
+		shHistory.setShObject(shPost.getId());
+		shHistory.setShSite(shPostUtils.getSite(shPost).getId());
+		shHistoryRepository.saveAndFlush(shHistory);
+
+		return this.shPostEdit(shPost.getId());
+
 	}
 
 	@Transactional
@@ -174,10 +168,7 @@ public class ShPostAPI {
 		return true;
 	}
 
-	@PostMapping
-	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShPost shPostAdd(@RequestBody ShPost shPost, Principal principal) throws Exception {
-
+	private void postSave(ShPost shPost, Principal principal) {
 		String title = shPost.getTitle();
 		String summary = shPost.getSummary();
 		// Get PostAttrs before save, because JPA Lazy
@@ -201,146 +192,34 @@ public class ShPostAPI {
 		shPost.setSummary(summary);
 		shPost.setFurl(shURLFormatter.format(title));
 
-		shPostRepository.saveAndFlush(shPost);
-
 		ShGlobalId shGlobalId = new ShGlobalId();
 		shGlobalId.setShObject(shPost);
 		shGlobalId.setType(ShObjectType.POST);
 
-		shGlobalIdRepository.saveAndFlush(shGlobalId);
-
-		ShPost shPostWithGlobalId = shPost;
-		shPostWithGlobalId.setShGlobalId(shGlobalId);
-
 		for (ShPostAttr shPostAttr : shPostAttrs) {
 			shPostAttr.setShPost(shPost);
-			this.postAttrSave(shPostAttr, shPostWithGlobalId);
+			this.postAttrSave(shPostAttr, shPost);
 		}
+
+		shPostRepository.saveAndFlush(shPost);
+
+		shGlobalIdRepository.saveAndFlush(shGlobalId);
 
 		ShUser shUser = shUserRepository.findById(1);
 		shUser.setLastPostType(String.valueOf(shPost.getShPostType().getId()));
 		shUserRepository.saveAndFlush(shUser);
 
-		// History
-		ShHistory shHistory = new ShHistory();
-		shHistory.setDate(new Date());
-		shHistory.setDescription("Created " + shPost.getTitle() + " Post.");
-		if (principal != null) {
-			shHistory.setOwner(principal.getName());
-		}
-		shHistory.setShObject(shPost.getId());
-		shHistory.setShSite(shPostUtils.getSite(shPost).getId());
-		shHistoryRepository.saveAndFlush(shHistory);
-
-		return this.shPostEdit(shPost.getId());
-
-	}
-
-	private ShPostAttr postAttrUpdate(ShPostAttr shPostAttr, ShPost shPost) {
-
-		ShPostAttr shPostAttrEdit = shPostAttrRepository.findById(shPostAttr.getId()).get();
-		shPostUtils.referencedObject(shPostAttrEdit, shPostAttr, shPost);
-		if (shPostAttrEdit != null) {
-			shPostAttrEdit.setDateValue(shPostAttr.getDateValue());
-			shPostAttrEdit.setIntValue(shPostAttr.getIntValue());
-			shPostAttrEdit.setStrValue(shPostAttr.getStrValue());
-			shPostAttrEdit.setReferenceObjects(shPostAttr.getReferenceObjects());
-		}
-
-		boolean savedPostAttr = false;
-		if (shPostAttr.getShChildrenRelatorItems() != null) {
-			ShPostAttr shPostAttrClone = SerializationUtils.clone(shPostAttr);
-			for (ShRelatorItem shRelatorItem : shPostAttrClone.getShChildrenRelatorItems()) {
-				ShRelatorItem shRelatorItemNew = null;
-				boolean savedRelator = false;
-				if (shRelatorItem.getShChildrenPostAttrs() != null
-						&& shRelatorItem.getShChildrenPostAttrs().size() > 0) {
-					ShRelatorItem shRelatorItemClone = SerializationUtils.clone(shRelatorItem);
-
-					for (ShPostAttr shChildrenPostAttr : shRelatorItemClone.getShChildrenPostAttrs()) {
-						if (!savedPostAttr) {
-							shPostAttrRepository.save(shPostAttrEdit);
-							savedPostAttr = true;
-						}
-						
-						if (!savedRelator) {
-							if (shRelatorItem.getId() == null) {
-								shRelatorItemNew = new ShRelatorItem();
-								shRelatorItemNew.setShParentPostAttr(shPostAttrEdit);
-								shRelatorItemRepository.saveAndFlush(shRelatorItemNew);
-							}
-							savedRelator = true;
-						}
-						if (shRelatorItemNew != null)
-							shChildrenPostAttr.setShParentRelatorItem(shRelatorItemNew);
-						else
-							shChildrenPostAttr.setShParentRelatorItem(shRelatorItem);
-
-						if (shChildrenPostAttr.getId() != null)
-							this.postAttrUpdate(shChildrenPostAttr, shPost);
-						else
-							this.postAttrSave(shChildrenPostAttr, shPost);
-
-					}
-				} else {
-					if (!savedPostAttr) {
-						shPostAttrRepository.save(shPostAttrEdit);
-						savedPostAttr = true;
-					}
-					if (!savedRelator) {
-						if (shRelatorItem.getId() != null) {
-							shRelatorItem.setShParentPostAttr(shPostAttr);
-							shRelatorItemRepository.saveAndFlush(shRelatorItem);
-						}
-						savedRelator = true;
-					}
-				}
-			}
-		} else {
-			shPostAttrRepository.save(shPostAttrEdit);
-		}
-
-		return shPostAttrEdit;
 	}
 
 	private void postAttrSave(ShPostAttr shPostAttr, ShPost shPost) {
-		shPostUtils.referencedObject(shPostAttr, shPost);
-		boolean savedPostAttr = false;
-		if (shPostAttr.getShChildrenRelatorItems() != null) {
-			ShPostAttr shPostAttrClone = SerializationUtils.clone(shPostAttr);
-			for (ShRelatorItem shRelatorItem : shPostAttrClone.getShChildrenRelatorItems()) {
-				ShRelatorItem shRelatorItemCopy = new ShRelatorItem();
-				boolean savedRelator = false;
-				if (shRelatorItem.getShChildrenPostAttrs() != null
-						&& shRelatorItem.getShChildrenPostAttrs().size() > 0) {
-					for (ShPostAttr shChildrenPostAttr : shRelatorItem.getShChildrenPostAttrs()) {
-						if (!savedPostAttr) {
-							shPostAttrRepository.saveAndFlush(shPostAttr);
-							savedPostAttr = true;
-						}
-						if (!savedRelator) {
-							shRelatorItemCopy.setShParentPostAttr(shPostAttr);
-							shRelatorItemRepository.saveAndFlush(shRelatorItemCopy);
-							savedRelator = true;
-						}
-						shChildrenPostAttr.setShParentRelatorItem(shRelatorItemCopy);
-						this.postAttrSave(shChildrenPostAttr, shPost);
 
-					}
-				} else {
-					if (!savedPostAttr) {
-						shPostAttrRepository.saveAndFlush(shPostAttr);
-						savedPostAttr = true;
-					}
-					if (!savedRelator) {
-						shRelatorItemCopy.setShParentPostAttr(shPostAttr);
-						shRelatorItemRepository.saveAndFlush(shRelatorItemCopy);
-						savedRelator = true;
-					}
-				}
+		shPostUtils.referencedObject(shPostAttr, shPost);
+		for (ShRelatorItem shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
+			shRelatorItem.setShParentPostAttr(shPostAttr);
+			for (ShPostAttr shChildrenPostAttr : shRelatorItem.getShChildrenPostAttrs()) {
+				shChildrenPostAttr.setShParentRelatorItem(shRelatorItem);
+				this.postAttrSave(shChildrenPostAttr, shPost);
 			}
-		} else {
-			shPostAttrRepository.saveAndFlush(shPostAttr);
 		}
 	}
 }
