@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/openviglet/shiohara.svg?branch=master)](https://travis-ci.org/openviglet/shiohara) [![Join the chat at https://gitter.im/viglet-shiohara/Lobby](https://badges.gitter.im/viglet-shiohara/Lobby.svg)](https://gitter.im/viglet-shiohara/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Join the chat at https://gitter.im/openviglet/shiohara](https://badges.gitter.im/openviglet/shiohara.svg)](https://gitter.im/openviglet/shiohara?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://travis-ci.org/openviglet/shiohara.svg?branch=master)](https://travis-ci.org/openviglet/shiohara) [![Join the chat at https://gitter.im/openviglet/shiohara](https://badges.gitter.im/openviglet/shiohara.svg)](https://gitter.im/openviglet/shiohara?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ![banner_shiohara.jpg](https://openviglet.github.io/shiohara/img/banner_shiohara.jpg)
 ------
