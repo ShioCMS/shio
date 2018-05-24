@@ -19,6 +19,8 @@ public interface ShPostTypeAttrRepository extends JpaRepository<ShPostTypeAttr, 
 	
 	ShPostTypeAttr findByShPostTypeAndName(ShPostType shPostType, String name);
 	
+	ShPostTypeAttr findByShParentPostTypeAttrAndName(ShPostTypeAttr shPostTypeAttr, String name);
+	
 	@SuppressWarnings("unchecked")
 	ShPostTypeAttr save(ShPostTypeAttr shPostTypeAttr);
 	
