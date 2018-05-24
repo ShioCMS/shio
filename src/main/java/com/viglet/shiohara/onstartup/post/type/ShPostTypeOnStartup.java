@@ -375,18 +375,33 @@ public class ShPostTypeOnStartup {
 
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
+			ShPostTypeAttr shPostTypeAttrRelation2nd = new ShPostTypeAttr();
+			shPostTypeAttrRelation2nd.setName("RELATION2nd");
+			shPostTypeAttrRelation2nd.setLabel("Relation2nd");
+			shPostTypeAttrRelation2nd.setDescription("Relation2nd");
+			shPostTypeAttrRelation2nd.setIsSummary((byte) 0);
+			shPostTypeAttrRelation2nd.setIsTitle((byte) 0);
+			shPostTypeAttrRelation2nd.setMany((byte) 1);
+			shPostTypeAttrRelation2nd.setOrdinal(8);
+			shPostTypeAttrRelation2nd.setRequired((byte) 1);
+			shPostTypeAttrRelation2nd.setShPostType(null);
+			shPostTypeAttrRelation2nd.setShWidget(shWidgetRelator);
+			shPostTypeAttrRelation2nd.setShParentPostTypeAttr(shPostTypeAttrRelation);
+			
+			shPostTypeAttrRepository.save(shPostTypeAttrRelation2nd);
+			
 			shPostTypeAttr = new ShPostTypeAttr();
-			shPostTypeAttr.setName("TEXTAREA_RELATION");
-			shPostTypeAttr.setLabel("Text Area of Relation");
-			shPostTypeAttr.setDescription("Text Area of Relation");
+			shPostTypeAttr.setName("TEXT_RELATION2nd");
+			shPostTypeAttr.setLabel("Text of Relation 2nd");
+			shPostTypeAttr.setDescription("Text of Relation 2nd");
 			shPostTypeAttr.setIsSummary((byte) 0);
 			shPostTypeAttr.setIsTitle((byte) 0);
 			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(9);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(null);
-			shPostTypeAttr.setShWidget(shWidgetTextArea);
-			shPostTypeAttr.setShParentPostTypeAttr(shPostTypeAttrRelation);
+			shPostTypeAttr.setShWidget(shWidgetText);
+			shPostTypeAttr.setShParentPostTypeAttr(shPostTypeAttrRelation2nd);
 
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 

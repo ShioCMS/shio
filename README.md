@@ -43,4 +43,4 @@ $ java -jar build/libs/viglet-shiohara.jar
 
 > login/password: admin/admin
 
-* Sample Site: [http://localhost:2710/sites/sample/default/en-us](http://localhost:2710/sites/sample/default/en-us).
+* Sample Site: [http://localhost:2710/sites/viglet/default/en-us](http://localhost:2710/sites/viglet/default/en-us).
