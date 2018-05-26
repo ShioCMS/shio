@@ -1,0 +1,66 @@
+<table class="table" style="margin: 0px;">
+	<tr>
+		<td style="background: #F9F9F9; width: 20%;">
+			<p>
+				<b>Sub Posts *</b>
+			</p>
+		</td>
+		<td>
+			<div class="row">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<button
+						ng-repeat="shWidget in shWidgets |filter: {name: 'Text'} : true"
+						ng-click="addPostTypeAttr(shWidget, shPostTypeAttr.shPostTypeAttrs)"
+						class="btn btn-viglet pull-right">+ Add Field</button>
+				</div>
+			</div>
+
+			<div class="row" style="margin: 0px">
+				<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3"
+					style="padding: 0px">Order</div>
+				<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3"
+					style="padding: 0px">Name</div>
+				<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3"
+					style="padding: 0px">Title</div>
+				<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2"
+					style="padding: 0px">Widget</div>
+				<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"
+					style="padding: 0px"></div>
+			</div> <uib-accordion>
+
+			<div uib-accordion-group
+				ng-repeat="shPostTypeAttr in shPostTypeAttr.shPostTypeAttrs |filter: {willBeDeleted: '!1'} | orderBy: 'ordinal'"
+				class="panel-default"
+				template-url="template/post/type/post-type-accordion.html">
+				<uib-accordion-heading>
+				<div class="row" style="margin: 0px">
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3"
+						style="padding: 0px">{{shPostTypeAttr.ordinal}}</div>
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3"
+						style="padding: 0px">{{shPostTypeAttr.name}}</div>
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3"
+						style="padding: 0px">{{shPostTypeAttr.label}}</div>
+					<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2"
+						style="padding: 0px">{{shPostTypeAttr.shWidget.name}}</div>
+					<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"
+						style="padding: 0px"></div>
+				</div>
+				</uib-accordion-heading>
+				<div
+					ng-include="'template/widget/default/setting/default-setting.html'"></div>
+				<div ng-include="shPostTypeAttr.shWidget.settingPath"></div>
+			</div>
+			</uib-accordion>
+			<div class="row">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<button
+						ng-repeat="shWidget in shWidgets |filter: {name: 'Text'} : true"
+						ng-click="addPostTypeAttr(shWidget, shPostTypeAttr.shPostTypeAttrs)"
+						class="btn btn-viglet pull-right">+ Add Field</button>
+				</div>
+			</div>
+
+
+		</td>
+	</tr>
+</table>

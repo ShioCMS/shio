@@ -80,10 +80,10 @@ shioharaApp
 								});
 							}
 							
-							$scope.addPostTypeAttr = function(shWidget) {
+							$scope.addPostTypeAttr = function(shWidget, shPostTypeAttrs) {
 								$scope.shPostTypeAttrModel.shWidget = shWidget;
 								delete $scope.shPostTypeAttrModel.id;
-								$scope.shPostType.shPostTypeAttrs.push(angular
+								shPostTypeAttrs.push(angular
 										.copy($scope.shPostTypeAttrModel));
 							}
 							

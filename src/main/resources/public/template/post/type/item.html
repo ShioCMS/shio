@@ -40,11 +40,11 @@
 		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 			<button
 				ng-repeat="shWidget in shWidgets |filter: {name: 'Text'} : true"
-				ng-click="addPostTypeAttr(shWidget)"
+				ng-click="addPostTypeAttr(shWidget, shPostType.shPostTypeAttrs)"
 				class="btn btn-viglet pull-right">+ Add Field</button>
 		</div>
 	</div>
-	
+
 	<div class="row" style="margin: 0px">
 		<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3" style="padding: 0px">Order</div>
 		<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3" style="padding: 0px">Name</div>
@@ -69,84 +69,15 @@
 			</div>
 		</div>
 		</uib-accordion-heading>
-		<table class="table" style="margin: 0px;">
-			<tr>
-				<td style="background: #F9F9F9; width: 20%;">
-					<p>
-						<b>Rótulo do Campo *</b>
-					</p>
-					<p>Este é o nome que irá aparecer na página de EDIÇÃO</p>
-				</td>
-				<td><input type="text" class="form-control"
-					ng-model="shPostTypeAttr.label" /></td>
-			</tr>
-			<tr>
-				<td style="background: #F9F9F9; width: 20%;">
-					<p>
-						<b>Nome do Campo *</b>
-					</p>
-					<p>Uma única palavra, sem espaços. Traço inferior (_) e traços
-						(-) permitidos</p>
-				</td>
-				<td><input type="text" class="form-control"
-					ng-model="shPostTypeAttr.name" /></td>
-			</tr>
-			<tr>
-				<td style="background: #F9F9F9; width: 20%;">
-					<p>
-						<b>Tipo de Campo *</b>
-					</p>
-				</td>
-				<td><select class="form-control"
-					ng-model="shPostTypeAttr.shWidget"
-					ng-options="shWidget as shWidget.name for shWidget in shWidgets track by shWidget.id">
-						<option value="">- Pick One -</option>
-				</select></td>
-			</tr>
-			<tr>
-				<td style="background: #F9F9F9; width: 20%;">
-					<p>
-						<b>Título?</b>
-					</p>
-				</td>
-				<td><input type="checkbox" ng-model="shPostTypeAttr.isTitle"
-					ng-true-value="1" ng-false-value="0"></td>
-			</tr>
-			<tr>
-				<td style="background: #F9F9F9; width: 20%;">
-					<p>
-						<b>Descrição?</b>
-					</p>
-				</td>
-				<td><input type="checkbox" ng-model="shPostTypeAttr.isSummary"
-					ng-true-value="1" ng-false-value="0"></td>
-			</tr>
-			<tr>
-				<td style="background: #F9F9F9; width: 20%;">
-					<p>
-						<b>Requerido?</b>
-					</p>
-				</td>
-				<td><input type="checkbox" ng-model="shPostTypeAttr.required"
-					ng-true-value="1" ng-false-value="0"></td>
-			</tr>
-			<tr>
-				<td style="background: #F9F9F9; width: 20%;">
-					<p>
-						<b>Um para muitos?</b>
-					</p>
-				</td>
-				<td><input type="checkbox" ng-model="shPostTypeAttr.many"
-					ng-true-value="1" ng-false-value="0"></td>
-			</tr>
-		</table>
+		<div ng-include="'template/widget/default/setting/default-setting.html'"></div>
+		<div ng-include="shPostTypeAttr.shWidget.settingPath"></div>
 	</div>
 	</uib-accordion>
 	<div class="row">
 		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 			<button
 				ng-repeat="shWidget in shWidgets |filter: {name: 'Text'} : true"
-				ng-click="addPostTypeAttr(shWidget)"
+				ng-click="addPostTypeAttr(shWidget, shPostType.shPostTypeAttrs)"
 				class="btn btn-viglet pull-right">+ Add Field</button>
 		</div>
 	</div>
