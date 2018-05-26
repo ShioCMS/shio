@@ -42,7 +42,7 @@ public class ShPostTypeOnStartup {
 			ShWidget shWidgetHTMLEditor = shWidgetRepository.findByName(ShSystemWidget.HTML_EDITOR);
 			ShWidget shWidgetContentSelect = shWidgetRepository.findByName(ShSystemWidget.CONTENT_SELECT);
 			ShWidget shWidgetRelator = shWidgetRepository.findByName(ShSystemWidget.RELATOR);
-			
+
 			// Text
 
 			ShPostType shPostType = new ShPostType();
@@ -66,7 +66,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setDescription("Text");
 			shPostTypeAttr.setIsSummary((byte) 0);
 			shPostTypeAttr.setIsTitle((byte) 1);
-			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(1);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
@@ -97,7 +96,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setDescription("Photo Path");
 			shPostTypeAttr.setIsSummary((byte) 0);
 			shPostTypeAttr.setIsTitle((byte) 1);
-			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(1);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
@@ -128,7 +126,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setDescription("Video Path");
 			shPostTypeAttr.setIsSummary((byte) 0);
 			shPostTypeAttr.setIsTitle((byte) 1);
-			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(1);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
@@ -159,7 +156,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setDescription("Quote Text");
 			shPostTypeAttr.setIsSummary((byte) 0);
 			shPostTypeAttr.setIsTitle((byte) 1);
-			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(1);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
@@ -190,7 +186,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setDescription("Link");
 			shPostTypeAttr.setIsSummary((byte) 0);
 			shPostTypeAttr.setIsTitle((byte) 1);
-			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(1);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
@@ -221,7 +216,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setDescription("File Path");
 			shPostTypeAttr.setIsSummary((byte) 0);
 			shPostTypeAttr.setIsTitle((byte) 1);
-			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(1);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
@@ -252,7 +246,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setDescription("Text");
 			shPostTypeAttr.setIsSummary((byte) 0);
 			shPostTypeAttr.setIsTitle((byte) 1);
-			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(1);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
@@ -283,7 +276,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setDescription("Title");
 			shPostTypeAttr.setIsSummary((byte) 0);
 			shPostTypeAttr.setIsTitle((byte) 1);
-			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(1);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
@@ -297,7 +289,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setDescription("Description");
 			shPostTypeAttr.setIsSummary((byte) 1);
 			shPostTypeAttr.setIsTitle((byte) 0);
-			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(2);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
@@ -311,7 +302,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setDescription("File Path");
 			shPostTypeAttr.setIsSummary((byte) 0);
 			shPostTypeAttr.setIsTitle((byte) 0);
-			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(3);
 			shPostTypeAttr.setRequired((byte) 0);
 			shPostTypeAttr.setShPostType(shPostType);
@@ -325,7 +315,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setDescription("Video URL");
 			shPostTypeAttr.setIsSummary((byte) 0);
 			shPostTypeAttr.setIsTitle((byte) 0);
-			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(4);
 			shPostTypeAttr.setRequired((byte) 0);
 			shPostTypeAttr.setShPostType(shPostType);
@@ -339,7 +328,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setDescription("Text");
 			shPostTypeAttr.setIsSummary((byte) 0);
 			shPostTypeAttr.setIsTitle((byte) 0);
-			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(5);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
@@ -353,7 +341,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttrRelation.setDescription("Relation");
 			shPostTypeAttrRelation.setIsSummary((byte) 0);
 			shPostTypeAttrRelation.setIsTitle((byte) 0);
-			shPostTypeAttrRelation.setMany((byte) 1);
 			shPostTypeAttrRelation.setOrdinal(6);
 			shPostTypeAttrRelation.setRequired((byte) 1);
 			shPostTypeAttrRelation.setShPostType(shPostType);
@@ -367,7 +354,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setDescription("Text of Relation");
 			shPostTypeAttr.setIsSummary((byte) 0);
 			shPostTypeAttr.setIsTitle((byte) 1);
-			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(7);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(null);
@@ -382,22 +368,20 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttrRelation2nd.setDescription("Relation2nd");
 			shPostTypeAttrRelation2nd.setIsSummary((byte) 0);
 			shPostTypeAttrRelation2nd.setIsTitle((byte) 0);
-			shPostTypeAttrRelation2nd.setMany((byte) 1);
 			shPostTypeAttrRelation2nd.setOrdinal(8);
 			shPostTypeAttrRelation2nd.setRequired((byte) 1);
 			shPostTypeAttrRelation2nd.setShPostType(null);
 			shPostTypeAttrRelation2nd.setShWidget(shWidgetRelator);
 			shPostTypeAttrRelation2nd.setShParentPostTypeAttr(shPostTypeAttrRelation);
-			
+
 			shPostTypeAttrRepository.save(shPostTypeAttrRelation2nd);
-			
+
 			shPostTypeAttr = new ShPostTypeAttr();
 			shPostTypeAttr.setName("TEXT_RELATION2nd");
 			shPostTypeAttr.setLabel("Text of Relation 2nd");
 			shPostTypeAttr.setDescription("Text of Relation 2nd");
 			shPostTypeAttr.setIsSummary((byte) 0);
 			shPostTypeAttr.setIsTitle((byte) 1);
-			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(9);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(null);
@@ -429,7 +413,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setDescription("Title");
 			shPostTypeAttr.setIsSummary((byte) 0);
 			shPostTypeAttr.setIsTitle((byte) 1);
-			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(1);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
@@ -443,7 +426,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setDescription("Description");
 			shPostTypeAttr.setIsSummary((byte) 1);
 			shPostTypeAttr.setIsTitle((byte) 0);
-			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(2);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
@@ -457,7 +439,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setDescription("Javascript");
 			shPostTypeAttr.setIsSummary((byte) 0);
 			shPostTypeAttr.setIsTitle((byte) 0);
-			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(3);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
@@ -471,7 +452,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setDescription("HTML");
 			shPostTypeAttr.setIsSummary((byte) 0);
 			shPostTypeAttr.setIsTitle((byte) 0);
-			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(4);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
@@ -502,7 +482,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setDescription("Title");
 			shPostTypeAttr.setIsSummary((byte) 0);
 			shPostTypeAttr.setIsTitle((byte) 1);
-			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(1);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
@@ -516,7 +495,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setDescription("Description");
 			shPostTypeAttr.setIsSummary((byte) 1);
 			shPostTypeAttr.setIsTitle((byte) 0);
-			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(2);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
@@ -530,7 +508,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setDescription("CSS");
 			shPostTypeAttr.setIsSummary((byte) 0);
 			shPostTypeAttr.setIsTitle((byte) 0);
-			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(3);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
@@ -544,7 +521,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setDescription("Javascript");
 			shPostTypeAttr.setIsSummary((byte) 0);
 			shPostTypeAttr.setIsTitle((byte) 0);
-			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(4);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
@@ -575,7 +551,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setDescription("Title");
 			shPostTypeAttr.setIsSummary((byte) 0);
 			shPostTypeAttr.setIsTitle((byte) 1);
-			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(1);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
@@ -589,7 +564,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setDescription("Description");
 			shPostTypeAttr.setIsSummary((byte) 1);
 			shPostTypeAttr.setIsTitle((byte) 0);
-			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(2);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
@@ -603,7 +577,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setDescription("Theme");
 			shPostTypeAttr.setIsSummary((byte) 0);
 			shPostTypeAttr.setIsTitle((byte) 0);
-			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(3);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
@@ -617,7 +590,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setDescription("Javascript");
 			shPostTypeAttr.setIsSummary((byte) 0);
 			shPostTypeAttr.setIsTitle((byte) 0);
-			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(4);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
@@ -631,7 +603,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setDescription("HTML");
 			shPostTypeAttr.setIsSummary((byte) 0);
 			shPostTypeAttr.setIsTitle((byte) 0);
-			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(5);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
@@ -662,7 +633,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setDescription("Title");
 			shPostTypeAttr.setIsSummary((byte) 0);
 			shPostTypeAttr.setIsTitle((byte) 1);
-			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(1);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
@@ -676,7 +646,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setDescription("Description");
 			shPostTypeAttr.setIsSummary((byte) 1);
 			shPostTypeAttr.setIsTitle((byte) 0);
-			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(2);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
@@ -690,7 +659,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setDescription("Page Layout");
 			shPostTypeAttr.setIsSummary((byte) 0);
 			shPostTypeAttr.setIsTitle((byte) 0);
-			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(2);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
@@ -721,7 +689,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setDescription("Title");
 			shPostTypeAttr.setIsSummary((byte) 0);
 			shPostTypeAttr.setIsTitle((byte) 1);
-			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(1);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
@@ -735,7 +702,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setDescription("Description");
 			shPostTypeAttr.setIsSummary((byte) 1);
 			shPostTypeAttr.setIsTitle((byte) 0);
-			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(2);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);
@@ -749,7 +715,6 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttr.setDescription("Content Select");
 			shPostTypeAttr.setIsSummary((byte) 1);
 			shPostTypeAttr.setIsTitle((byte) 0);
-			shPostTypeAttr.setMany((byte) 0);
 			shPostTypeAttr.setOrdinal(3);
 			shPostTypeAttr.setRequired((byte) 1);
 			shPostTypeAttr.setShPostType(shPostType);

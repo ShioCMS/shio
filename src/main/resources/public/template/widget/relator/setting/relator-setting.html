@@ -22,28 +22,25 @@
 					style="padding: 0px">Name</div>
 				<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3"
 					style="padding: 0px">Title</div>
-				<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2"
-					style="padding: 0px">Widget</div>
-				<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"
-					style="padding: 0px"></div>
+				<div class="col-lg-2 col-md-3 col-sm-3 col-xs-3"
+					style="padding: 0px">Widget</div>				
 			</div> <uib-accordion>
-
+			<span style="display:none">{{shParentPostTypeAttr = shPostTypeAttr}}</span>
 			<div uib-accordion-group
-				ng-repeat="shPostTypeAttr in shPostTypeAttr.shPostTypeAttrs |filter: {willBeDeleted: '!1'} | orderBy: 'ordinal'"
+				ng-repeat="shPostTypeAttr in shPostTypeAttr.shPostTypeAttrs | orderBy: 'ordinal'"
 				class="panel-default"
-				template-url="template/post/type/post-type-accordion.html">
+				template-url="template/widget/relator/setting/relator-setting-accordion.html">
 				<uib-accordion-heading>
+				<span style="display:none">{{shChildPostTypeAttr = shPostTypeAttr}}</span>
 				<div class="row" style="margin: 0px">
 					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3"
-						style="padding: 0px">{{shPostTypeAttr.ordinal}}</div>
+						style="padding: 0px">{{shPostTypeAttr.ordinal}} <span style="display:none;">{{shPostTypeAttr.ordinal=$index+1}}</div>
 					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3"
 						style="padding: 0px">{{shPostTypeAttr.name}}</div>
 					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3"
 						style="padding: 0px">{{shPostTypeAttr.label}}</div>
-					<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2"
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3"
 						style="padding: 0px">{{shPostTypeAttr.shWidget.name}}</div>
-					<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1"
-						style="padding: 0px"></div>
 				</div>
 				</uib-accordion-heading>
 				<div

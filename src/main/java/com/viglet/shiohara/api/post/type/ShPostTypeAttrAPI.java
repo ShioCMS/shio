@@ -48,7 +48,6 @@ public class ShPostTypeAttrAPI {
 		shPostTypeAttrEdit.setIsSummary(shPostTypeAttr.getIsSummary());
 		shPostTypeAttrEdit.setIsTitle(shPostTypeAttr.getIsTitle());
 		shPostTypeAttrEdit.setLabel(shPostTypeAttr.getLabel());
-		shPostTypeAttrEdit.setMany(shPostTypeAttr.getMany());
 		shPostTypeAttrEdit.setName(shPostTypeAttr.getName());
 		shPostTypeAttrEdit.setOrdinal(shPostTypeAttr.getOrdinal());
 		shPostTypeAttrEdit.setRequired(shPostTypeAttr.getRequired());

@@ -45,31 +45,19 @@ shioharaApp
 														$scope.shPostTypeAttrModel = response.data;
 													}));
 
-							$scope.postTypeSave = function() {
-								angular
-										.forEach(
-												$scope.shPostType.shPostTypeAttrs,
-												function(value, key) {
-													if (value.willBeDeleted == 1) {
-														shPostTypeAttrResource
-																.delete({
-																	id : value.id
-																});
-														var index = $scope.shPostType.shPostTypeAttrs
-																.indexOf(value);
-														$scope.shPostType.shPostTypeAttrs
-																.splice(index,
-																		1);
-													}
-												});
-
+							$scope.postTypeSaveAndClose = function() {
 								$scope.shPostType.$update(function() {
 									Notification.warning('The ' + $scope.shPostType.name +' Site was updated.');
 									$state.go('content.post-type-select');
 								});
 
 							}
+							$scope.postTypeSave = function() {
+								$scope.shPostType.$update(function() {
+									Notification.warning('The ' + $scope.shPostType.name +' Site was updated.');							
+								});
 
+							}
 							$scope.removePostType = function() {
 								shPostTypeResource
 								.delete({
@@ -82,23 +70,22 @@ shioharaApp
 							
 							$scope.addPostTypeAttr = function(shWidget, shPostTypeAttrs) {
 								$scope.shPostTypeAttrModel.shWidget = shWidget;
+								
+								$scope.shPostTypeAttrModel.ordinal = shPostTypeAttrs.length;
+								$scope.shPostTypeAttrModel.label = "Attribute " + (shPostTypeAttrs.length + 1);
+								$scope.shPostTypeAttrModel.name = "attribute_" + (shPostTypeAttrs.length + 1);	
 								delete $scope.shPostTypeAttrModel.id;
 								shPostTypeAttrs.push(angular
 										.copy($scope.shPostTypeAttrModel));
 							}
 							
-							$scope.removePostTypeAttr = function(shPostTypeAttr) {
-								if (shPostTypeAttr.id == null
-										|| shPostTypeAttr.id == 0) {
-									// Removed from shPostTypeAttrs because is
-									// not persisted
-									var index = $scope.shPostType.shPostTypeAttrs
+							$scope.postTypeAttrDelete = function(shPostTypeAttrs, shPostTypeAttr,index) {
+								console.log("postTypeAttrDelete");
+						
+									var index = shPostTypeAttrs
 											.indexOf(shPostTypeAttr);
-									$scope.shPostType.shPostTypeAttrs.splice(
+									shPostTypeAttrs.splice(
 											index, 1);
-								} else {
-									// Mark to be deleted
-									shPostTypeAttr['willBeDeleted'] = 1;
-								}
+						
 							}
 						} ]);
