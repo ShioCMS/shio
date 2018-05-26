@@ -46,8 +46,6 @@ public class ShPostTypeAttr implements Serializable {
 
 	private String label;
 
-	private byte many;
-
 	private String name;
 
 	private int ordinal;
@@ -136,14 +134,6 @@ public class ShPostTypeAttr implements Serializable {
 
 	public void setLabel(String label) {
 		this.label = label;
-	}
-
-	public byte getMany() {
-		return this.many;
-	}
-
-	public void setMany(byte many) {
-		this.many = many;
 	}
 
 	public String getName() {
