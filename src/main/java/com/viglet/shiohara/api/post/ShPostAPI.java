@@ -93,7 +93,7 @@ public class ShPostAPI {
 	public ShPost shPostUpdate(@PathVariable UUID id, @RequestBody ShPost shPost, Principal principal)
 			throws Exception {
 
-		this.postSave(shPost, principal);
+		this.postSave(shPost);
 
 		// History
 		ShHistory shHistory = new ShHistory();
@@ -114,7 +114,7 @@ public class ShPostAPI {
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShPost shPostAdd(@RequestBody ShPost shPost, Principal principal) throws Exception {
 
-		this.postSave(shPost, principal);
+		this.postSave(shPost);
 
 		// History
 		ShHistory shHistory = new ShHistory();
@@ -168,7 +168,7 @@ public class ShPostAPI {
 		return true;
 	}
 
-	private void postSave(ShPost shPost, Principal principal) {
+	private void postSave(ShPost shPost) {
 		String title = shPost.getTitle();
 		String summary = shPost.getSummary();
 		// Get PostAttrs before save, because JPA Lazy

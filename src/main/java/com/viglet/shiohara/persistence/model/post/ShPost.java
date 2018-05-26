@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.object.ShObject;
-import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 
 import java.util.HashSet;

@@ -3,8 +3,12 @@ package com.viglet.shiohara.persistence.model.post.type;
 import java.io.Serializable;
 import javax.persistence.*;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -12,7 +16,8 @@ import com.viglet.shiohara.api.ShJsonView;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.widget.ShWidget;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -50,13 +55,18 @@ public class ShPostTypeAttr implements Serializable {
 	private byte required;
 
 	// bi-directional many-to-one association to ShPostTypeAttr
-	@OneToMany(mappedBy = "shParentPostTypeAttr")
+	@OneToMany(mappedBy = "shParentPostTypeAttr", orphanRemoval = true)
+	@Cascade({CascadeType.ALL})
 	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
-	private List<ShPostTypeAttr> shPostTypeAttrs;
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private Set<ShPostTypeAttr> shPostTypeAttrs = new HashSet<ShPostTypeAttr>();;
 
 	// bi-directional many-to-one association to ShPostAttr
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "shPostTypeAttr", cascade = CascadeType.ALL)
-	private List<ShPostAttr> shPostAttrs;
+	@OneToMany(mappedBy = "shPostTypeAttr", orphanRemoval = true)
+	@Cascade({CascadeType.ALL})
+	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
+	@OnDelete(action = OnDeleteAction.CASCADE)	
+	private Set<ShPostAttr> shPostAttrs = new HashSet<ShPostAttr>();
 
 	// bi-directional many-to-one association to ShPostType
 	@ManyToOne
@@ -160,12 +170,15 @@ public class ShPostTypeAttr implements Serializable {
 		this.required = required;
 	}
 
-	public List<ShPostAttr> getShPostAttrs() {
+	public Set<ShPostAttr> getShPostAttrs() {
 		return this.shPostAttrs;
 	}
 
-	public void setShPostAttrs(List<ShPostAttr> shPostAttrs) {
-		this.shPostAttrs = shPostAttrs;
+	public void setShPostAttrs(Set<ShPostAttr> shPostAttrs) {
+		this.shPostAttrs.clear();
+		if (shPostAttrs != null) {
+			this.shPostAttrs.addAll(shPostAttrs);
+		}
 	}
 
 	public ShPostAttr addShPostAttr(ShPostAttr shPostAttr) {
@@ -198,12 +211,15 @@ public class ShPostTypeAttr implements Serializable {
 		this.shWidget = shWidget;
 	}
 
-	public List<ShPostTypeAttr> getShPostTypeAttrs() {
+	public Set<ShPostTypeAttr> getShPostTypeAttrs() {
 		return shPostTypeAttrs;
 	}
 
-	public void setShPostTypeAttrs(List<ShPostTypeAttr> shPostTypeAttrs) {
-		this.shPostTypeAttrs = shPostTypeAttrs;
+	public void setShPostTypeAttrs(Set<ShPostTypeAttr> shPostTypeAttrs) {
+		this.shPostTypeAttrs.clear();
+		if (shPostTypeAttrs != null) {
+			this.shPostTypeAttrs.addAll(shPostTypeAttrs);
+		}
 	}
 
 	public ShPostTypeAttr getShParentPostTypeAttr() {
