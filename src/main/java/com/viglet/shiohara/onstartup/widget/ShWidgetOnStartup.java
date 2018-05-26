@@ -23,7 +23,7 @@ public class ShWidgetOnStartup {
 			shWidget.setClassName("com.viglet.shiohara.widget.ShTextWidget");
 			shWidget.setImplementationCode("template/widget/text.html");
 			shWidget.setType("TEXT,TEXTAREA");
-			
+
 			shWidgetRepository.save(shWidget);
 
 			shWidget = new ShWidget();
@@ -32,25 +32,25 @@ public class ShWidgetOnStartup {
 			shWidget.setClassName("com.viglet.shiohara.widget.ShTextAreaWidget");
 			shWidget.setImplementationCode("template/widget/textarea.html");
 			shWidget.setType("TEXT,TEXTAREA");
-			
+
 			shWidgetRepository.save(shWidget);
-			
+
 			shWidget = new ShWidget();
 			shWidget.setName(ShSystemWidget.FILE);
 			shWidget.setDescription("File Widget");
 			shWidget.setClassName("com.viglet.shiohara.widget.ShFileWidget");
 			shWidget.setImplementationCode("template/widget/file.html");
 			shWidget.setType("TEXT,TEXTAREA");
-			
+
 			shWidgetRepository.save(shWidget);
-			
+
 			shWidget = new ShWidget();
 			shWidget.setName(ShSystemWidget.ACE_JS);
 			shWidget.setDescription("Ace Editor Widget");
 			shWidget.setClassName("com.viglet.shiohara.widget.ShAceEditorWidget");
 			shWidget.setImplementationCode("template/widget/ace-editor-js.html");
 			shWidget.setType("TEXT,TEXTAREA");
-			
+
 			shWidgetRepository.save(shWidget);
 
 			shWidget = new ShWidget();
@@ -61,7 +61,7 @@ public class ShWidgetOnStartup {
 			shWidget.setType("TEXT,TEXTAREA");
 
 			shWidgetRepository.save(shWidget);
-			
+
 			shWidget = new ShWidget();
 			shWidget.setName(ShSystemWidget.HTML_EDITOR);
 			shWidget.setDescription("HTML Editor Widget");
@@ -79,12 +79,13 @@ public class ShWidgetOnStartup {
 			shWidget.setType("TEXT,TEXTAREA");
 
 			shWidgetRepository.save(shWidget);
-			
+
 			shWidget = new ShWidget();
 			shWidget.setName(ShSystemWidget.RELATOR);
 			shWidget.setDescription("Relator Widget");
 			shWidget.setClassName("com.viglet.shiohara.widget.ShRelatorWidget");
 			shWidget.setImplementationCode("template/widget/relator/relator-list.html");
+			shWidget.setSettingPath("template/widget/relator/setting/relator-setting.html");
 			shWidget.setType("TEXT,TEXTAREA");
 
 			shWidgetRepository.save(shWidget);

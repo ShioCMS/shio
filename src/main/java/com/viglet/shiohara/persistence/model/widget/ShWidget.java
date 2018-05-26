@@ -12,13 +12,12 @@ import com.viglet.shiohara.widget.ShSystemWidget;
 import java.util.List;
 import java.util.UUID;
 
-
 /**
  * The persistent class for the ShWidget database table.
  * 
  */
 @Entity
-@NamedQuery(name="ShWidget.findAll", query="SELECT s FROM ShWidget s")
+@NamedQuery(name = "ShWidget.findAll", query = "SELECT s FROM ShWidget s")
 @JsonIgnoreProperties({ "shPostTypeAttrs" })
 public class ShWidget implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -26,24 +25,27 @@ public class ShWidget implements Serializable {
 	@Id
 	@GenericGenerator(name = "UUID", strategy = "com.viglet.shiohara.jpa.ShUUIDGenerator")
 	@GeneratedValue(generator = "UUID")
-	
+
 	@Column(name = "id", updatable = false, nullable = false)
 	private UUID id;
 
-	@Column(name="class_name")
+	@Column(name = "class_name")
 	private String className;
 
 	private String description;
 
-	@Column(name="implementation_code")
+	@Column(name = "implementation_code")
 	private String implementationCode;
+
+	@Column(name = "setting_path")
+	private String settingPath;
 
 	private String name;
 
 	private String type;
 
-	//bi-directional many-to-one association to ShPostTypeAttr
-	@OneToMany(mappedBy="shWidget")
+	// bi-directional many-to-one association to ShPostTypeAttr
+	@OneToMany(mappedBy = "shWidget")
 	private List<ShPostTypeAttr> shPostTypeAttrs;
 
 	public ShWidget() {
@@ -88,6 +90,7 @@ public class ShWidget implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public void setName(ShSystemWidget shSystemWidget) {
 		this.name = shSystemWidget.toString();
 	}
@@ -120,6 +123,14 @@ public class ShWidget implements Serializable {
 		shPostTypeAttr.setShWidget(null);
 
 		return shPostTypeAttr;
+	}
+
+	public String getSettingPath() {
+		return settingPath;
+	}
+
+	public void setSettingPath(String settingPath) {
+		this.settingPath = settingPath;
 	}
 
 }
