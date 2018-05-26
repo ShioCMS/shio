@@ -1,6 +1,7 @@
-package com.viglet.shiohara.sites;
+package com.viglet.shiohara.api.site;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.Before;
@@ -16,7 +17,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class ShSitesContextTest {
+public class ShSiteAPITest {
 
 	@Autowired
 	private WebApplicationContext webApplicationContext;
@@ -29,8 +30,8 @@ public class ShSitesContextTest {
 	}
 
 	@Test
-	public void sitesFullGeneric() throws Exception {
-		mockMvc.perform(get("/sites/viglet/default/en-us.")).andExpect(status().isOk());
+	public void shSiteExport() throws Exception {
+		mockMvc.perform(get("/api/v2/site/c5bdee96-6feb-4894-9daf-3aab6cdd5087/export")).andExpect(status().isOk());
 
 	}
 
