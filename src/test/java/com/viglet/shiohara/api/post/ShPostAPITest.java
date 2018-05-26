@@ -1,4 +1,4 @@
-package com.viglet.shiohara.api.widget;
+package com.viglet.shiohara.api.post;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -17,7 +17,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class ShWidgetAPITest {
+public class ShPostAPITest {
 
 	@Autowired
 	private WebApplicationContext webApplicationContext;
@@ -30,8 +30,8 @@ public class ShWidgetAPITest {
 	}
 
 	@Test
-	public void shWidgetList() throws Exception {
-		mockMvc.perform(get("/api/v2/widget")).andExpect(status().isOk())
+	public void shPostList() throws Exception {
+		mockMvc.perform(get("/api/v2/post")).andExpect(status().isOk())
 				.andExpect(content().contentType("application/json;charset=UTF-8"));
 
 	}
