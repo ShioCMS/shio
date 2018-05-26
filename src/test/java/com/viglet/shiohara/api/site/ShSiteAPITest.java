@@ -1,7 +1,6 @@
 package com.viglet.shiohara.api.site;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.Before;
@@ -34,5 +33,5 @@ public class ShSiteAPITest {
 		mockMvc.perform(get("/api/v2/site/c5bdee96-6feb-4894-9daf-3aab6cdd5087/export")).andExpect(status().isOk());
 
 	}
-
+	
 }
