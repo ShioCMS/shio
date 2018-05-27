@@ -7,7 +7,7 @@ shioharaApp.config([
 		'$httpProvider',
 		function($stateProvider, $urlRouterProvider,
 				$locationProvider, $translateProvider, NotificationProvider,$httpProvider) {	
-			
+
 			$httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 			 
 			$translateProvider.useSanitizeValueStrategy('escaped');

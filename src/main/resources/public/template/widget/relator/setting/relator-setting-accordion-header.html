@@ -31,7 +31,7 @@
 								<div class="btn-group">
 									<button
 										ng-repeat="shWidget in $parent.shWidgets |filter: {name: 'Text'} : true"
-										ng-click="$parent.$parent.addPostTypeAttr(shWidget, $parent.$parent.shPostType.shPostTypeAttrs)"
+										ng-click="$parent.$parent.addPostTypeAttr(shWidget, $parent.$parent.shPostTypeAttr.shPostTypeAttrs)"
 										class="btn btn-viglet btn-sm">
 										<i class="fa fa-plus-circle" aria-hidden="true"></i>
 										{{shWidget.name}} Field

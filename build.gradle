@@ -130,6 +130,7 @@ dependencies {
 	
 	// WebJars
 	compile 'org.webjars.bower:jquery:1.12.4'
+	compile 'org.webjars.bower:jquery.ui:1.11.3'
 	compile 'org.webjars:bootstrap:3.3.7-1'
 	compile 'org.webjars.bower:moment:2.20.1'
 	compile 'org.webjars.bower:angular:1.6.9'
@@ -148,7 +149,7 @@ dependencies {
 	compile 'org.webjars.bower:ng-file-upload:12.2.13'
 	compile 'org.webjars.bower:angular-ui-notification:0.3.6'
 	compile 'org.webjars.bower:angular-ui-tinymce:0.0.19'
-	
+	compile 'org.webjars.bower:angular-ui-sortable:0.14.3'
 	
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
