@@ -1,5 +1,11 @@
 <div ui-view>
-
+	<style>
+div.affix {
+	top: 55px; /* Set the top position of pinned element */
+	left: 0px;
+	z-index: 1000;
+}
+</style>
 	<ul class="breadcrumb" style="margin-top: 5px; margin-bottom: 25px;">
 		<li><a ui-sref="content" ui-sref-opts="{reload:true}">Content</a></li>
 		<li><a ui-sref="content.post-type-select"
@@ -21,12 +27,35 @@
 
 		</section>
 	</div>
+	<div
+		style="background-color: #FFF0E8;; height: 55px; width: 100%; padding: 10px; margin-bottom: 10px"
+		class="affix-top" data-spy="affix" data-offset-top="147">
+		<div class="form-actions">
+			<div class="pull-right">
+				<div class="btn-group">
+					<button ng-click="postTypeSave()" class="btn btn-viglet">Save
+						changes</button>
+					<a class="btn btn-viglet dropdown-toggle" data-toggle="dropdown"
+						href><span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href ng-click="postTypeSaveAndClose()">Save and
+								Close</a></li>
+						<li><a href ng-click="removePostType()"><i
+								class="icon-trash"></i> Delete</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
 
 	<div class="form-group">
+	<label>Name</label>
 		<input type="text" id="title" name="title" class="form-control"
 			placeholder="Post Type Title" ng-model="shPostType.title">
 	</div>
 	<div class="form-group">
+	<label>Description</label>
 		<textarea id="description" name="description" class="form-control"
 			placeholder="About this Post Type" ng-model="shPostType.description"></textarea>
 	</div>
@@ -36,15 +65,7 @@
 			ng-model="shPostType.name">
 	</div>
 
-	<div class="row" style="margin-bottom:20px">
-		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-			<button
-				ng-repeat="shWidget in shWidgets |filter: {name: 'Text'} : true"
-				ng-click="addPostTypeAttr(shWidget, shPostType.shPostTypeAttrs)"
-				class="btn btn-viglet pull-right">+ Add Field</button>
-		</div>
-	</div>
-
+	<label>Fields</label>
 	<uib-accordion>
 	<div uib-accordion-group class="panel-default"
 		template-url="template/post/type/post-type-accordion-header.html">
@@ -55,12 +76,13 @@
 		template-url="template/post/type/post-type-accordion.html">
 		<uib-accordion-heading>
 		<div class="row" style="margin: 0px">
-			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3" style="padding: 0px">
-				<i class="fa fa-bars" aria-hidden="true"></i> {{shPostTypeAttr.ordinal}} <span style="display:none;">{{shPostTypeAttr.ordinal=$index+1}}</span>
+			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6" style="padding: 0px">
+				<i class="fa fa-bars" aria-hidden="true"></i>
+				{{shPostTypeAttr.ordinal}} <span style="display: none;">{{shPostTypeAttr.ordinal=$index+1}}</span>
 			</div>
-			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3" style="padding: 0px">{{shPostTypeAttr.name}}</div>
-			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3" style="padding: 0px">{{shPostTypeAttr.label}}</div>
-			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3" style="padding: 0px">{{shPostTypeAttr.shWidget.name}}</div>
+			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6" style="padding: 0px">{{shPostTypeAttr.label}}</div>
+			<div class="col-lg-3 col-md-3 col-sm-3 hidden-xs" style="padding: 0px">{{shPostTypeAttr.name}}</div>
+			<div class="col-lg-3 col-md-3 col-sm-3 hidden-xs" style="padding: 0px">{{shPostTypeAttr.shWidget.name}}</div>
 		</div>
 		</uib-accordion-heading>
 		<div
@@ -68,26 +90,4 @@
 		<div ng-include="shPostTypeAttr.shWidget.settingPath"></div>
 	</div>
 	</uib-accordion>
-	<div class="row">
-		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-			<button
-				ng-repeat="shWidget in shWidgets |filter: {name: 'Text'} : true"
-				ng-click="addPostTypeAttr(shWidget, shPostType.shPostTypeAttrs)"
-				class="btn btn-viglet pull-right">+ Add Field</button>
-		</div>
-	</div>
-	<div class="btn-group">
-		<button ng-click="postTypeSave()" class="btn btn-viglet">Save
-			changes</button>
-		<a class="btn btn-viglet dropdown-toggle" data-toggle="dropdown" href><span
-			class="caret"></span></a>
-		<ul class="dropdown-menu">
-		<li><a href ng-click="postTypeSaveAndClose()">Save and Close</a></li>
-			<li><a href ng-click="removePostType()"><i
-					class="icon-trash"></i> Delete</a></li>
-			<li><a href><i class="icon-plus-sign"></i> Duplicate</a></li>
-		</ul>
-	</div>
-	<button type="button" class="btn btn-default">Cancel</button>
-
 </div>
