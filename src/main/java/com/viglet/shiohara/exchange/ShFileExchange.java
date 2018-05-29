@@ -1,29 +1,28 @@
 package com.viglet.shiohara.exchange;
 
 import java.io.File;
-import java.util.UUID;
 
 public class ShFileExchange {
 	
-	private UUID globalId;
+	private String globalId;
 	
-	private UUID id;
+	private String id;
 
 	private File file;
 
-	public UUID getGlobalId() {
+	public String getGlobalId() {
 		return globalId;
 	}
 
-	public void setGlobalId(UUID globalId) {
+	public void setGlobalId(String globalId) {
 		this.globalId = globalId;
 	}
 
-	public UUID getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(UUID id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

@@ -3,7 +3,6 @@ package com.viglet.shiohara.component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -32,7 +31,7 @@ public class ShQueryComponent {
 	public List<Map<String, ShPostAttr>> findByFolderName(String folderId, String postTypeName ) {
 
 		ShPostType shPostType = shPostTypeRepository.findByName(postTypeName);
-		ShFolder shFolder = shFolderRepository.findById(UUID.fromString(folderId)).get();
+		ShFolder shFolder = shFolderRepository.findById(folderId).get();
 		List<ShPost> shPostList = shPostRepository.findByShFolderAndShPostType(shFolder, shPostType);
 
 		List<Map<String, ShPostAttr>> shPosts = new ArrayList<Map<String, ShPostAttr>>();

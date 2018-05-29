@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Date;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -56,7 +55,7 @@ public class ShStaticFileAPI {
 
 	@PostMapping("/upload")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShPost shStaticFileUpload(@RequestParam("file") MultipartFile file, @RequestParam("folderId") UUID folderId,
+	public ShPost shStaticFileUpload(@RequestParam("file") MultipartFile file, @RequestParam("folderId") String folderId,
 			@RequestParam("createPost") boolean createPost) throws URISyntaxException, IOException {
 
 		ShFolder shFolder = shFolderRepository.findById(folderId).get();

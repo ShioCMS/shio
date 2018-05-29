@@ -4,16 +4,14 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -21,6 +19,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -41,10 +41,12 @@ public class ShObject implements Serializable {
 	@GeneratedValue(generator = "UUID")
 
 	@Column(name = "id", updatable = false, nullable = false)
-	private UUID id;
+	private String id;
 
-	@OneToOne(mappedBy = "shObject", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
-	@JsonView({ ShJsonView.ShJsonViewObject.class })
+	@OneToOne
+	@JoinColumn(name = "global_id")
+	@Cascade({ CascadeType.ALL })
+	@JsonView({ ShJsonView.ShJsonViewObject.class, ShJsonView.ShJsonViewPostType.class })
 	private ShGlobalId shGlobalId;
 
 	@ManyToMany(mappedBy = "referenceObjects")
@@ -72,11 +74,11 @@ public class ShObject implements Serializable {
 
 	private int position;
 
-	public UUID getId() {
+	public String getId() {
 		return this.id;
 	}
 
-	public void setId(UUID id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

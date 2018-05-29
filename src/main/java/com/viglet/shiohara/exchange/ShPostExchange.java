@@ -2,20 +2,19 @@ package com.viglet.shiohara.exchange;
 
 import java.util.Date;
 import java.util.Map;
-import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class ShPostExchange {
 	
-	private UUID globalId;
+	private String globalId;
 	
-	private UUID id;
+	private String id;
 
 	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm'Z'")
 	private Date date;
 
-	private UUID folder;
+	private String folder;
 
 	private String postType;
 
@@ -25,19 +24,19 @@ public class ShPostExchange {
 	
 	private String furl;
 	
-	public UUID getGlobalId() {
+	public String getGlobalId() {
 		return globalId;
 	}
 
-	public void setGlobalId(UUID globalId) {
+	public void setGlobalId(String globalId) {
 		this.globalId = globalId;
 	}
 
-	public UUID getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(UUID id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -49,11 +48,11 @@ public class ShPostExchange {
 		this.date = date;
 	}
 
-	public UUID getFolder() {
+	public String getFolder() {
 		return folder;
 	}
 
-	public void setFolder(UUID folder) {
+	public void setFolder(String folder) {
 		this.folder = folder;
 	}
 

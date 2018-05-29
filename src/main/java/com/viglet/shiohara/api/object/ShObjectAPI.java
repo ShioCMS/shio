@@ -1,22 +1,17 @@
 package com.viglet.shiohara.api.object;
 
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -66,7 +61,7 @@ public class ShObjectAPI {
 	private ShPostUtils shPostUtils;
 
 	@GetMapping("/{id}/preview")
-	public RedirectView shObjectPreview(@PathVariable UUID id, HttpServletResponse response,
+	public RedirectView shObjectPreview(@PathVariable String id, HttpServletResponse response,
 			RedirectAttributes attributes) throws Exception {
 		String redirect = null;
 		ShGlobalId shGlobalId = shGlobalIdRepository.findById(id).get();
@@ -88,10 +83,10 @@ public class ShObjectAPI {
 
 	@PutMapping("/moveto/{globallIdDest}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public List<ShObject> shObjectMoveTo(@PathVariable UUID globallIdDest, @RequestBody List<UUID> globalIds)
+	public List<ShObject> shObjectMoveTo(@PathVariable String globallIdDest, @RequestBody List<String> globalIds)
 			throws Exception {
 		List<ShObject> shObjects = new ArrayList<ShObject>();
-		for (UUID globalId : globalIds) {
+		for (String globalId : globalIds) {
 			ShGlobalId shGlobalId = shGlobalIdRepository.findById(globalId).get();
 			ShGlobalId shGlobalIdDest = shGlobalIdRepository.findById(globallIdDest).get();
 			if (shGlobalIdDest.getType().equals(ShObjectType.FOLDER)) {
@@ -126,10 +121,10 @@ public class ShObjectAPI {
 
 	@PutMapping("/copyto/{globallIdDest}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public List<ShObject> shObjectCopyTo(@PathVariable UUID globallIdDest, @RequestBody List<UUID> globalIds)
+	public List<ShObject> shObjectCopyTo(@PathVariable String globallIdDest, @RequestBody List<String> globalIds)
 			throws Exception {
 		List<ShObject> shObjects = new ArrayList<ShObject>();
-		for (UUID globalId : globalIds) {
+		for (String globalId : globalIds) {
 			ShGlobalId shGlobalId = shGlobalIdRepository.findById(globalId).get();
 			ShGlobalId shGlobalIdDest = shGlobalIdRepository.findById(globallIdDest).get();
 			if (shGlobalIdDest.getType().equals(ShObjectType.FOLDER)) {
@@ -153,7 +148,7 @@ public class ShObjectAPI {
 
 	@GetMapping("/{id}/list")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShFolderList shObjectListItem(@PathVariable UUID id) throws Exception {
+	public ShFolderList shObjectListItem(@PathVariable String id) throws Exception {
 		ShGlobalId shGlobalId = shGlobalIdRepository.findById(id).get();
 		if (shGlobalId.getType().equals(ShObjectType.FOLDER)) {
 			ShFolder shFolder = (ShFolder) shGlobalId.getShObject();
@@ -181,7 +176,7 @@ public class ShObjectAPI {
 
 	@GetMapping("/{id}/list/{postTypeName}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShFolderList shFolderListByPostType(@PathVariable UUID id, @PathVariable String postTypeName)
+	public ShFolderList shFolderListByPostType(@PathVariable String id, @PathVariable String postTypeName)
 			throws Exception {
 		ShGlobalId shGlobalId = shGlobalIdRepository.findById(id).get();
 		ShPostType shPostType = shPostTypeRepository.findByName(postTypeName);
@@ -212,7 +207,7 @@ public class ShObjectAPI {
 	@ApiOperation(value = "Object path")
 	@GetMapping("/{id}/path")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShFolderPath shObjectPath(@PathVariable UUID id) throws Exception {
+	public ShFolderPath shObjectPath(@PathVariable String id) throws Exception {
 		ShGlobalId shGlobalId = shGlobalIdRepository.findById(id).get();
 		if (shGlobalId.getType().equals(ShObjectType.SITE)) {
 			ShSite shSite = (ShSite) shGlobalId.getShObject();

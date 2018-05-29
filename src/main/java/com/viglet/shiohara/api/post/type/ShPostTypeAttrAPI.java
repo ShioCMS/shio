@@ -1,7 +1,6 @@
 package com.viglet.shiohara.api.post.type;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,13 +36,13 @@ public class ShPostTypeAttrAPI {
 
 	@GetMapping("/{id}")
 	@JsonView({ShJsonView.ShJsonViewPostTypeAttr.class})
-	public ShPostTypeAttr  shPostTypeAttrEdit(@PathVariable UUID id) throws Exception {
+	public ShPostTypeAttr  shPostTypeAttrEdit(@PathVariable String id) throws Exception {
 		return shPostTypeAttrRepository.findById(id).get();
 	}
 
 	@PutMapping("/{id}")
 	@JsonView({ShJsonView.ShJsonViewPostTypeAttr.class})
-	public ShPostTypeAttr  shPostTypeAttrUpdate(@PathVariable UUID id, @RequestBody ShPostTypeAttr shPostTypeAttr) throws Exception {
+	public ShPostTypeAttr  shPostTypeAttrUpdate(@PathVariable String id, @RequestBody ShPostTypeAttr shPostTypeAttr) throws Exception {
 		ShPostTypeAttr shPostTypeAttrEdit = shPostTypeAttrRepository.findById(id).get();
 		shPostTypeAttrEdit.setIsSummary(shPostTypeAttr.getIsSummary());
 		shPostTypeAttrEdit.setIsTitle(shPostTypeAttr.getIsTitle());
@@ -58,7 +57,7 @@ public class ShPostTypeAttrAPI {
 	}
 
 	@DeleteMapping("/{id}")
-	public boolean  shPostTypeAttrDelete(@PathVariable UUID id) throws Exception {
+	public boolean  shPostTypeAttrDelete(@PathVariable String id) throws Exception {
 		ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findById(id).get();
 		for ( ShPostAttr shPostAttr : shPostTypeAttr.getShPostAttrs()) {
 			shPostAttrRepository.delete(shPostAttr.getId());

@@ -1,7 +1,6 @@
 package com.viglet.shiohara.persistence.model.globalid;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,7 +11,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
@@ -30,22 +34,20 @@ public class ShGlobalId implements Serializable {
 	@GeneratedValue(generator = "UUID")
 
 	@Column(name = "id", updatable = false, nullable = false)
-	private UUID id;
+	private String id;
 
 	@Column(name = "type", length = 20)
 	private ShObjectType type;
-
-	//@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
-	@OneToOne
-	@JoinColumn(name = "object_id")	
+	
+	@OneToOne(mappedBy = "shGlobalId", fetch = FetchType.LAZY, optional = false)
 	@JsonView({ShJsonView.ShJsonViewReference.class})
 	private ShObject shObject;
 
-	public UUID getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(UUID id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

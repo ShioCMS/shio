@@ -52,13 +52,11 @@ public class ShPostTypeOnStartup {
 			shPostType.setDescription("Text Post Type");
 			shPostType.setSystem((byte) 1);
 
-			shPostTypeRepository.save(shPostType);
-
 			ShGlobalId shGlobalId = new ShGlobalId();
-			shGlobalId.setShObject(shPostType);
 			shGlobalId.setType(ShObjectType.POST_TYPE);
+			shPostType.setShGlobalId(shGlobalId);
 
-			shGlobalIdRepository.save(shGlobalId);
+			shPostTypeRepository.save(shPostType);
 
 			ShPostTypeAttr shPostTypeAttr = new ShPostTypeAttr();
 			shPostTypeAttr.setName(ShSystemPostTypeAttr.TEXT);
@@ -82,13 +80,11 @@ public class ShPostTypeOnStartup {
 			shPostType.setDescription("Photo Post Type");
 			shPostType.setSystem((byte) 1);
 
-			shPostTypeRepository.save(shPostType);
-
 			shGlobalId = new ShGlobalId();
-			shGlobalId.setShObject(shPostType);
 			shGlobalId.setType(ShObjectType.POST_TYPE);
-
-			shGlobalIdRepository.save(shGlobalId);
+			shPostType.setShGlobalId(shGlobalId);
+			
+			shPostTypeRepository.save(shPostType);
 
 			shPostTypeAttr = new ShPostTypeAttr();
 			shPostTypeAttr.setName(ShSystemPostTypeAttr.PHOTO);
@@ -112,13 +108,11 @@ public class ShPostTypeOnStartup {
 			shPostType.setDescription("Video Post Type");
 			shPostType.setSystem((byte) 1);
 
-			shPostTypeRepository.save(shPostType);
-
 			shGlobalId = new ShGlobalId();
-			shGlobalId.setShObject(shPostType);
 			shGlobalId.setType(ShObjectType.POST_TYPE);
+			shPostType.setShGlobalId(shGlobalId);
 
-			shGlobalIdRepository.save(shGlobalId);
+			shPostTypeRepository.save(shPostType);
 
 			shPostTypeAttr = new ShPostTypeAttr();
 			shPostTypeAttr.setName(ShSystemPostTypeAttr.VIDEO);
@@ -142,13 +136,11 @@ public class ShPostTypeOnStartup {
 			shPostType.setDescription("Quote Post Type");
 			shPostType.setSystem((byte) 1);
 
-			shPostTypeRepository.save(shPostType);
-
 			shGlobalId = new ShGlobalId();
-			shGlobalId.setShObject(shPostType);
 			shGlobalId.setType(ShObjectType.POST_TYPE);
+			shPostType.setShGlobalId(shGlobalId);
 
-			shGlobalIdRepository.save(shGlobalId);
+			shPostTypeRepository.save(shPostType);
 
 			shPostTypeAttr = new ShPostTypeAttr();
 			shPostTypeAttr.setName(ShSystemPostTypeAttr.TEXT);
@@ -172,13 +164,12 @@ public class ShPostTypeOnStartup {
 			shPostType.setDescription("Link Post Type");
 			shPostType.setSystem((byte) 1);
 
+			shGlobalId = new ShGlobalId();
+			shGlobalId.setType(ShObjectType.POST_TYPE);
+			shPostType.setShGlobalId(shGlobalId);
+
 			shPostTypeRepository.save(shPostType);
 
-			shGlobalId = new ShGlobalId();
-			shGlobalId.setShObject(shPostType);
-			shGlobalId.setType(ShObjectType.POST_TYPE);
-
-			shGlobalIdRepository.save(shGlobalId);
 
 			shPostTypeAttr = new ShPostTypeAttr();
 			shPostTypeAttr.setName(ShSystemPostTypeAttr.LINK);
@@ -202,13 +193,11 @@ public class ShPostTypeOnStartup {
 			shPostType.setDescription("File Post Type");
 			shPostType.setSystem((byte) 1);
 
-			shPostTypeRepository.save(shPostType);
-
 			shGlobalId = new ShGlobalId();
-			shGlobalId.setShObject(shPostType);
 			shGlobalId.setType(ShObjectType.POST_TYPE);
+			shPostType.setShGlobalId(shGlobalId);
 
-			shGlobalIdRepository.save(shGlobalId);
+			shPostTypeRepository.save(shPostType);
 
 			shPostTypeAttr = new ShPostTypeAttr();
 			shPostTypeAttr.setName(ShSystemPostTypeAttr.FILE);
@@ -232,13 +221,11 @@ public class ShPostTypeOnStartup {
 			shPostType.setDescription("Text Area Post Type");
 			shPostType.setSystem((byte) 0);
 
-			shPostTypeRepository.save(shPostType);
-
 			shGlobalId = new ShGlobalId();
-			shGlobalId.setShObject(shPostType);
 			shGlobalId.setType(ShObjectType.POST_TYPE);
+			shPostType.setShGlobalId(shGlobalId);
 
-			shGlobalIdRepository.save(shGlobalId);
+			shPostTypeRepository.save(shPostType);
 
 			shPostTypeAttr = new ShPostTypeAttr();
 			shPostTypeAttr.setName(ShSystemPostTypeAttr.TEXT);
@@ -262,14 +249,12 @@ public class ShPostTypeOnStartup {
 			shPostType.setDescription("Article Post Type");
 			shPostType.setSystem((byte) 0);
 
-			shPostTypeRepository.save(shPostType);
-
 			shGlobalId = new ShGlobalId();
-			shGlobalId.setShObject(shPostType);
 			shGlobalId.setType(ShObjectType.POST_TYPE);
+			shPostType.setShGlobalId(shGlobalId);
 
-			shGlobalIdRepository.save(shGlobalId);
-
+			shPostTypeRepository.save(shPostType);
+			
 			shPostTypeAttr = new ShPostTypeAttr();
 			shPostTypeAttr.setName(ShSystemPostTypeAttr.TITLE);
 			shPostTypeAttr.setLabel("Title");
@@ -399,13 +384,11 @@ public class ShPostTypeOnStartup {
 			shPostType.setDescription("Region Post Type");
 			shPostType.setSystem((byte) 1);
 
-			shPostTypeRepository.save(shPostType);
-
 			shGlobalId = new ShGlobalId();
-			shGlobalId.setShObject(shPostType);
 			shGlobalId.setType(ShObjectType.POST_TYPE);
+			shPostType.setShGlobalId(shGlobalId);
 
-			shGlobalIdRepository.save(shGlobalId);
+			shPostTypeRepository.save(shPostType);
 
 			shPostTypeAttr = new ShPostTypeAttr();
 			shPostTypeAttr.setName(ShSystemPostTypeAttr.TITLE);
@@ -468,13 +451,11 @@ public class ShPostTypeOnStartup {
 			shPostType.setDescription("Theme Post Type");
 			shPostType.setSystem((byte) 1);
 
-			shPostTypeRepository.save(shPostType);
-
 			shGlobalId = new ShGlobalId();
-			shGlobalId.setShObject(shPostType);
 			shGlobalId.setType(ShObjectType.POST_TYPE);
+			shPostType.setShGlobalId(shGlobalId);
 
-			shGlobalIdRepository.save(shGlobalId);
+			shPostTypeRepository.save(shPostType);
 
 			shPostTypeAttr = new ShPostTypeAttr();
 			shPostTypeAttr.setName(ShSystemPostTypeAttr.TITLE);
@@ -537,13 +518,11 @@ public class ShPostTypeOnStartup {
 			shPostType.setDescription("Page Layout Post Type");
 			shPostType.setSystem((byte) 1);
 
-			shPostTypeRepository.save(shPostType);
-
 			shGlobalId = new ShGlobalId();
-			shGlobalId.setShObject(shPostType);
 			shGlobalId.setType(ShObjectType.POST_TYPE);
+			shPostType.setShGlobalId(shGlobalId);
 
-			shGlobalIdRepository.save(shGlobalId);
+			shPostTypeRepository.save(shPostType);
 
 			shPostTypeAttr = new ShPostTypeAttr();
 			shPostTypeAttr.setName(ShSystemPostTypeAttr.TITLE);
@@ -619,13 +598,11 @@ public class ShPostTypeOnStartup {
 			shPostType.setDescription("Folder Index Post Type");
 			shPostType.setSystem((byte) 1);
 
-			shPostTypeRepository.save(shPostType);
-
 			shGlobalId = new ShGlobalId();
-			shGlobalId.setShObject(shPostType);
 			shGlobalId.setType(ShObjectType.POST_TYPE);
+			shPostType.setShGlobalId(shGlobalId);
 
-			shGlobalIdRepository.save(shGlobalId);
+			shPostTypeRepository.save(shPostType);
 
 			shPostTypeAttr = new ShPostTypeAttr();
 			shPostTypeAttr.setName(ShSystemPostTypeAttr.TITLE);
@@ -675,13 +652,11 @@ public class ShPostTypeOnStartup {
 			shPostType.setDescription("Alias Post Type");
 			shPostType.setSystem((byte) 1);
 
-			shPostTypeRepository.save(shPostType);
-
 			shGlobalId = new ShGlobalId();
-			shGlobalId.setShObject(shPostType);
 			shGlobalId.setType(ShObjectType.POST_TYPE);
+			shPostType.setShGlobalId(shGlobalId);
 
-			shGlobalIdRepository.save(shGlobalId);
+			shPostTypeRepository.save(shPostType);
 
 			shPostTypeAttr = new ShPostTypeAttr();
 			shPostTypeAttr.setName(ShSystemPostTypeAttr.TITLE);

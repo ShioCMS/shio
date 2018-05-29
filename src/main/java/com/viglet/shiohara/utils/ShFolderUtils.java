@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -202,7 +201,7 @@ public class ShFolderUtils {
 	}
 
 	public String generateFolderLinkById(String folderID) {
-		ShFolder shFolder = shFolderRepository.findById(UUID.fromString(folderID)).get();
+		ShFolder shFolder = shFolderRepository.findById(folderID).get();
 		return this.generateFolderLink(shFolder);
 	}
 

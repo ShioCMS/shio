@@ -100,6 +100,9 @@ dependencies {
     // Jackson
    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.9.4'
     
+    // H2
+     compile group: 'com.h2database', name: 'h2', version:'1.4.197'
+     
     // HSQLDB
     compile group: 'org.hsqldb', name: 'hsqldb', version:'2.4.0'
     

@@ -8,8 +8,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.io.FileUtils;
@@ -31,7 +31,6 @@ import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
-import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.relator.ShRelatorItemRepository;
@@ -62,8 +61,6 @@ public class ShImportExchange {
 	@Autowired
 	private ShPostAttrRepository shPostAttrRepository;
 	@Autowired
-	private ShGlobalIdRepository shGlobalIdRepository;
-	@Autowired
 	private ShRelatorItemRepository shRelatorItemRepository;
 	@Autowired
 	private ShStaticFileUtils shStaticFileUtils;
@@ -74,8 +71,8 @@ public class ShImportExchange {
 	@Autowired
 	private ShURLFormatter shURLFormatter;
 
-	private Map<UUID, Object> shObjects = new HashMap<UUID, Object>();
-	private Map<UUID, List<UUID>> shChildObjects = new HashMap<UUID, List<UUID>>();
+	private Map<String, Object> shObjects = new HashMap<String, Object>();
+	private Map<String, List<String>> shChildObjects = new HashMap<String, List<String>>();
 
 	public ShExchange importFromMultipartFile(MultipartFile multipartFile, String username)
 			throws IllegalStateException, IOException, ArchiveException {
@@ -159,7 +156,7 @@ public class ShImportExchange {
 	}
 
 	public void prepareImport(ShExchange shExchange, ShSiteExchange shSiteExchange) {
-		List<UUID> rootFolders = shSiteExchange.getRootFolders();
+		List<String> rootFolders = shSiteExchange.getRootFolders();
 
 		shObjects.put(shSiteExchange.getId(), shSiteExchange);
 		for (ShFolderExchange shFolderExchange : shExchange.getFolders()) {
@@ -169,7 +166,7 @@ public class ShImportExchange {
 				if (shChildObjects.containsKey(shFolderExchange.getParentFolder())) {
 					shChildObjects.get(shFolderExchange.getParentFolder()).add(shFolderExchange.getId());
 				} else {
-					List<UUID> childFolderList = new ArrayList<UUID>();
+					List<String> childFolderList = new ArrayList<String>();
 					childFolderList.add(shFolderExchange.getId());
 					shChildObjects.put(shFolderExchange.getParentFolder(), childFolderList);
 				}
@@ -178,7 +175,7 @@ public class ShImportExchange {
 					if (shChildObjects.containsKey(shSiteExchange.getId())) {
 						shChildObjects.get(shSiteExchange.getId()).add(shFolderExchange.getId());
 					} else {
-						List<UUID> childFolderList = new ArrayList<UUID>();
+						List<String> childFolderList = new ArrayList<String>();
 						childFolderList.add(shFolderExchange.getId());
 						shChildObjects.put(shSiteExchange.getId(), childFolderList);
 					}
@@ -194,7 +191,7 @@ public class ShImportExchange {
 				if (shChildObjects.containsKey(shPostExchange.getFolder())) {
 					shChildObjects.get(shPostExchange.getFolder()).add(shPostExchange.getId());
 				} else {
-					List<UUID> childObjectList = new ArrayList<UUID>();
+					List<String> childObjectList = new ArrayList<String>();
 					childObjectList.add(shPostExchange.getId());
 					shChildObjects.put(shPostExchange.getFolder(), childObjectList);
 				}
@@ -202,10 +199,10 @@ public class ShImportExchange {
 		}
 	}
 
-	public void shFolderImportNested(UUID shObject, File extractFolder, String username, boolean importOnlyFolders)
+	public void shFolderImportNested(String shObject, File extractFolder, String username, boolean importOnlyFolders)
 			throws IOException {
 		if (shChildObjects.containsKey(shObject)) {
-			for (UUID objectId : shChildObjects.get(shObject)) {
+			for (String objectId : shChildObjects.get(shObject)) {
 				if (shObjects.get(objectId) instanceof ShFolderExchange) {
 					ShFolderExchange shFolderExchange = (ShFolderExchange) shObjects.get(objectId);
 					this.createShFolder(shFolderExchange, extractFolder, username, shObject, importOnlyFolders);
@@ -244,14 +241,13 @@ public class ShImportExchange {
 			}
 			shSite.setDate(shSiteExchange.getDate());
 
+			ShGlobalId shGlobalId = new ShGlobalId();
+			shGlobalId.setId(shSiteExchange.getGlobalId());			
+			shGlobalId.setType(ShObjectType.SITE);
+			shSite.setShGlobalId(shGlobalId);
+			
 			shSiteRepository.save(shSite);
 
-			ShGlobalId shGlobalId = new ShGlobalId();
-			shGlobalId.setId(shSiteExchange.getGlobalId());
-			shGlobalId.setShObject(shSite);
-			shGlobalId.setType(ShObjectType.SITE);
-
-			shGlobalIdRepository.save(shGlobalId);
 		}
 
 		return shSite;
@@ -259,7 +255,7 @@ public class ShImportExchange {
 	}
 
 	public ShFolder createShFolder(ShFolderExchange shFolderExchange, File extractFolder, String username,
-			UUID shObject, boolean importOnlyFolders) throws IOException {
+			String shObject, boolean importOnlyFolders) throws IOException {
 		ShFolder shFolderChild = null;
 		if (shFolderRepository.findById(shFolderExchange.getId()).isPresent()) {
 			shFolderChild = shFolderRepository.findById(shFolderExchange.getId()).get();
@@ -292,15 +288,15 @@ public class ShImportExchange {
 					}
 				}
 			}
-			shFolderRepository.save(shFolderChild);
-
+			
 			ShGlobalId shGlobalId = new ShGlobalId();
-			shGlobalId.setId(shFolderExchange.getGlobalId());
-			shGlobalId.setShObject(shFolderChild);
+			shGlobalId.setId(shFolderExchange.getGlobalId());		
 			shGlobalId.setType(ShObjectType.FOLDER);
-
-			shGlobalIdRepository.save(shGlobalId);
+			shFolderChild.setShGlobalId(shGlobalId);
+			
+			shFolderRepository.save(shFolderChild);
 		}
+		
 		this.shFolderImportNested(shFolderChild.getId(), extractFolder, username, importOnlyFolders);
 
 		return shFolderChild;
@@ -351,16 +347,14 @@ public class ShImportExchange {
 			} else {
 				shPost.setFurl(shURLFormatter.format(shPost.getTitle()));
 			}
-			shPostRepository.saveAndFlush(shPost);
-
+			
 			ShGlobalId shGlobalId = new ShGlobalId();
 			shGlobalId.setId(shPostExchange.getGlobalId());
-			shGlobalId.setShObject(shPost);
 			shGlobalId.setType(ShObjectType.POST);
-
-			shGlobalIdRepository.saveAndFlush(shGlobalId);
-
 			shPost.setShGlobalId(shGlobalId);
+			
+			shPostRepository.saveAndFlush(shPost);
+
 			this.createShPostAttrs(shPostExchange, shPost, shPostExchange.getFields(), null, extractFolder, username);
 		}
 		return shPost;
@@ -384,7 +378,7 @@ public class ShImportExchange {
 					|| shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.CONTENT_SELECT))
 					&& shPostField.getValue() != null && !shPostType.getName().equals(ShSystemPostType.FILE)) {
 				try {
-					UUID shReferencedPostUUID = UUID.fromString((String) shPostField.getValue());
+					String shReferencedPostUUID = (String) shPostField.getValue();
 					if (!shPostRepository.findById(shReferencedPostUUID).isPresent()) {
 						// So the referenced Post not exists, need create first
 						if (shObjects.get(shReferencedPostUUID) instanceof ShPostExchange) {
@@ -416,7 +410,7 @@ public class ShImportExchange {
 					shPostAttr.setShPost(shPost);
 				}
 
-				shPostAttr.setId(UUID.fromString((String) relatorFields.get("id")));
+				shPostAttr.setId((String) relatorFields.get("id"));
 				shPostAttr.setStrValue((String) relatorFields.get("name"));
 				shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 				shPostAttr.setType(1);

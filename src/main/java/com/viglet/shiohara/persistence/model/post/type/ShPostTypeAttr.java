@@ -36,7 +36,7 @@ public class ShPostTypeAttr implements Serializable {
 	@GeneratedValue(generator = "UUID")
 
 	@Column(name = "id", updatable = false, nullable = false)
-	private UUID id;
+	private String id;
 
 	private String description;
 
@@ -52,27 +52,23 @@ public class ShPostTypeAttr implements Serializable {
 
 	private byte required;
 
-	// bi-directional many-to-one association to ShPostTypeAttr
 	@OneToMany(mappedBy = "shParentPostTypeAttr", orphanRemoval = true)
 	@Cascade({CascadeType.ALL})
 	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Set<ShPostTypeAttr> shPostTypeAttrs = new HashSet<ShPostTypeAttr>();;
 
-	// bi-directional many-to-one association to ShPostAttr
 	@OneToMany(mappedBy = "shPostTypeAttr", orphanRemoval = true)
 	@Cascade({CascadeType.ALL})
 	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
 	@OnDelete(action = OnDeleteAction.CASCADE)	
 	private Set<ShPostAttr> shPostAttrs = new HashSet<ShPostAttr>();
 
-	// bi-directional many-to-one association to ShPostType
 	@ManyToOne
 	@JoinColumn(name = "postType_id")
 	@JsonView({ ShJsonView.ShJsonViewPostTypeAttr.class })
 	private ShPostType shPostType;
 
-	// bi-directional many-to-one association to ShWidget
 	@ManyToOne
 	@JoinColumn(name = "widget_id")
 	private ShWidget shWidget;
@@ -96,11 +92,11 @@ public class ShPostTypeAttr implements Serializable {
 	public ShPostTypeAttr() {
 	}
 
-	public UUID getId() {
+	public String getId() {
 		return this.id;
 	}
 
-	public void setId(UUID id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

@@ -11,20 +11,20 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.viglet.shiohara.persistence.model.history.ShHistory;
 
-public interface ShHistoryRepository extends JpaRepository<ShHistory, UUID> {
+public interface ShHistoryRepository extends JpaRepository<ShHistory, String> {
 
 	List<ShHistory> findAll();
 
-	Set<ShHistory> findByShObject(UUID shObject);
+	Set<ShHistory> findByShObject(String shObject);
 	
-	Set<ShHistory> findByShSite(UUID shSite);
+	Set<ShHistory> findByShSite(String shSite);
 	
-	Optional<ShHistory> findById(UUID id);
+	Optional<ShHistory> findById(String id);
 	
 	@SuppressWarnings("unchecked")
 	ShHistory save(ShHistory shHistory);
 
 	@Modifying
 	@Query("delete from ShHistory h where h.id = ?1")
-	void delete(UUID id);
+	void delete(String id);
 }

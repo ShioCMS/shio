@@ -1,39 +1,38 @@
 package com.viglet.shiohara.exchange;
 
 import java.util.Date;
-import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class ShFolderExchange {
-	private UUID globalId;
+	private String globalId;
 	
-	private UUID id;
+	private String id;
 
 	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm'Z'")
 	private Date date;
 
 	private String name;
 
-	private UUID parentFolder;
+	private String parentFolder;
 
 	private String owner;
 	
 	private String furl;
 	
-	public UUID getGlobalId() {
+	public String getGlobalId() {
 		return globalId;
 	}
 
-	public void setGlobalId(UUID globalId) {
+	public void setGlobalId(String globalId) {
 		this.globalId = globalId;
 	}
 
-	public UUID getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(UUID id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -53,11 +52,11 @@ public class ShFolderExchange {
 		this.name = name;
 	}
 
-	public UUID getParentFolder() {
+	public String getParentFolder() {
 		return parentFolder;
 	}
 
-	public void setParentFolder(UUID parentFolder) {
+	public void setParentFolder(String parentFolder) {
 		this.parentFolder = parentFolder;
 	}
 	

@@ -25,7 +25,7 @@ public class ShReference implements Serializable{
 	@GenericGenerator(name = "UUID", strategy = "com.viglet.shiohara.jpa.ShUUIDGenerator")
 	@GeneratedValue(generator = "UUID")
 	@Column(name = "id", updatable = false, nullable = false)
-	private UUID id;
+	private String id;
 	
 	@ManyToOne
 	@JoinColumn(name = "global_from_id" , nullable = false)
@@ -35,11 +35,11 @@ public class ShReference implements Serializable{
 	@JoinColumn(name = "global_to_id", nullable = false)
 	private ShGlobalId shGlobalToId;
 
-	public UUID getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(UUID id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
