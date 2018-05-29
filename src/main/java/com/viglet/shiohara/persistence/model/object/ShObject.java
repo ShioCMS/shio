@@ -2,7 +2,7 @@ package com.viglet.shiohara.persistence.model.object;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -55,7 +55,9 @@ public class ShObject implements Serializable {
 
 	// bi-directional many-to-one association to ShPostTypeAttr
 	@OneToMany(mappedBy = "shObject")
-	private List<ShHistory> shHistories;
+	@Cascade({CascadeType.ALL})
+	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
+	private Set<ShHistory> shHistories = new HashSet<ShHistory>();
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date date;

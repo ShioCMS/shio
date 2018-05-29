@@ -103,9 +103,6 @@ dependencies {
     // H2
      compile group: 'com.h2database', name: 'h2', version:'1.4.197'
      
-    // HSQLDB
-    compile group: 'org.hsqldb', name: 'hsqldb', version:'2.4.0'
-    
     // JSON
     compile group: 'org.json', name: 'json', version:'20140107'
     

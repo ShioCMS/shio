@@ -21,10 +21,7 @@
 		<class>com.viglet.shiohara.persistence.model.widget.ShWidget</class>
 		<properties>
 			<property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema" />
-			<!-- <property name="openjpa.ConnectionURL" value="jdbc:hsqldb:store/shioharaDB" />
-			<property name="openjpa.ConnectionDriverName" value="org.hsqldb.jdbcDriver" /> -->
-			
-			<property name="openjpa.ConnectionURL" value="jdbc:h2:file:./store/shioharaDB" />
+			<property name="openjpa.ConnectionURL" value="jdbc:h2:file:./store/db/shioharaDB" />
 			<property name="openjpa.ConnectionDriverName" value="org.h2.Driver" />
 			
 			<property name="openjpa.ConnectionUserName" value="sa" />

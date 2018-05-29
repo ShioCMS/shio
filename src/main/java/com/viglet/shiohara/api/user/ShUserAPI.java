@@ -18,10 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
-import com.viglet.shiohara.object.ShObjectType;
-import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.user.ShUser;
-import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.user.ShUserRepository;
 
 import io.swagger.annotations.Api;
@@ -58,15 +55,15 @@ public class ShUserAPI {
 
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShUser shUserEdit(@PathVariable String id) throws Exception {
-		ShUser shUser = shUserRepository.findById(id).get();
+	public ShUser shUserEdit(@PathVariable int id) throws Exception {
+		ShUser shUser = shUserRepository.findById(id);
 		shUser.setPassword(null);
-		return shUserRepository.findById(id).get();
+		return shUserRepository.findById(id);
 	}
 
 	@PutMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShUser shUserUpdate(@PathVariable String id, @RequestBody ShUser shUser) throws Exception {
+	public ShUser shUserUpdate(@PathVariable int id, @RequestBody ShUser shUser) throws Exception {
 		if (shUser.getPassword() != null) {
 			shUser.setPassword(passwordEncoder.encode(shUser.getPassword()));
 		}	
@@ -75,7 +72,7 @@ public class ShUserAPI {
 	}
 
 	@DeleteMapping("/{id}")
-	public boolean shUserDelete(@PathVariable String id) throws Exception {
+	public boolean shUserDelete(@PathVariable int id) throws Exception {
 		shUserRepository.delete(id);
 		return true;
 	}
@@ -86,10 +83,6 @@ public class ShUserAPI {
 		if (shUser.getPassword() != null) {
 			shUser.setPassword(passwordEncoder.encode(shUser.getPassword()));
 		}
-		
-		ShGlobalId shGlobalId = new ShGlobalId();	
-		shGlobalId.setType(ShObjectType.USER);
-		shUser.setShGlobalId(shGlobalId);
 		
 		shUserRepository.save(shUser);
 		

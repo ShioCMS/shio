@@ -4,16 +4,10 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 
-import org.hibernate.annotations.GenericGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.utils.MD5Util;
 
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * The persistent class for the ShUser database table.
@@ -21,15 +15,14 @@ import java.util.UUID;
  */
 @Entity
 @NamedQuery(name = "ShUser.findAll", query = "SELECT s FROM ShUser s")
-public class ShUser  extends ShObject {
+public class ShUser implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	//@Id
-	//@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 
-	//@Column(name = "id")
-	//private int id;
-	//private UUID id;
+	@Column(name = "id")
+	private int id;
 
 	private String confirmEmail;
 
@@ -65,20 +58,20 @@ public class ShUser  extends ShObject {
 	}
 
 	public ShUser(ShUser shUser) {
-		//this.id = shUser.id;
+		this.id = shUser.id;
 		this.username = shUser.username;
 		this.email = shUser.email;
 		this.password = shUser.password;
 		this.enabled = shUser.enabled;
 	}
 
-/*	public UUID getId() {
+	public int getId() {
 		return this.id;
 	}
 
-	public void setId(UUID id) {
+	public void setId(int id) {
 		this.id = id;
-	}*/
+	}
 
 	public String getConfirmEmail() {
 		return this.confirmEmail;

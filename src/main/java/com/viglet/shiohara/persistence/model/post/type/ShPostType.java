@@ -42,9 +42,7 @@ public class ShPostType extends ShObject {
 
 	// bi-directional many-to-one association to ShPost
 	@OneToMany(mappedBy = "shPostType", orphanRemoval = true)
-	@Cascade({ CascadeType.ALL })
 	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
-//	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Set<ShPost> shPosts = new HashSet<ShPost>();
 
 	// bi-directional many-to-one association to ShPostTypeAttr

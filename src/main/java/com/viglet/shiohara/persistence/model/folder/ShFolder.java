@@ -2,6 +2,8 @@ package com.viglet.shiohara.persistence.model.folder;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.search.annotations.Field;
 
@@ -10,7 +12,8 @@ import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * The persistent class for the ShPost database table.
@@ -38,14 +41,16 @@ public class ShFolder extends ShObject {
 	private ShSite shSite;
 
 	// bi-directional many-to-one association to ShFolder
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parentFolder", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "parentFolder", orphanRemoval = true)
+	@Cascade({CascadeType.ALL})
 	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
-	private List<ShFolder> shFolders;
+	private Set<ShFolder> shFolders = new HashSet<ShFolder>();
 
 	// bi-directional many-to-one association to ShFolder
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "shFolder", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "shFolder", orphanRemoval = true)
+	@Cascade({CascadeType.ALL})
 	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
-	private List<ShPost> shPosts;
+	private Set<ShPost> shPosts = new HashSet<ShPost>();
 
 	public ShFolder() {
 	}
@@ -74,20 +79,26 @@ public class ShFolder extends ShObject {
 		this.shSite = shSite;
 	}
 
-	public List<ShFolder> getShFolders() {
+	public Set<ShFolder> getShFolders() {
 		return this.shFolders;
 	}
 
-	public void setShFolders(List<ShFolder> shFolders) {
-		this.shFolders = shFolders;
+	public void setShFolders(Set<ShFolder> shFolders) {
+		this.shFolders.clear();
+		if (shFolders != null) {
+			this.shFolders.addAll(shFolders);
+		}
 	}
 
-	public List<ShPost> getShPosts() {
+	public Set<ShPost> getShPosts() {
 		return this.shPosts;
 	}
 
-	public void setShPosts(List<ShPost> shPosts) {
-		this.shPosts = shPosts;
+	public void setShPosts(Set<ShPost> shPosts) {
+		this.shPosts.clear();
+		if (shPosts != null) {
+			this.shPosts.addAll(shPosts);
+		}
 	}
 
 	public byte getRootFolder() {

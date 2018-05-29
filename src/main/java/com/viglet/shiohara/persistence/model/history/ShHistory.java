@@ -2,20 +2,14 @@ package com.viglet.shiohara.persistence.model.history;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 
 import org.hibernate.annotations.GenericGenerator;
-
-import com.viglet.shiohara.persistence.model.object.ShObject;
-import com.viglet.shiohara.persistence.model.site.ShSite;
 
 /**
  * The persistent class for the ShWidget database table.
