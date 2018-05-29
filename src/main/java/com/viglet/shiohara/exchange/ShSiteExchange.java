@@ -8,9 +8,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class ShSiteExchange {
 	
-	private UUID globalId;
+	private String globalId;
 	
-	private UUID id;
+	private String id;
 
 	private String name;
 
@@ -27,21 +27,21 @@ public class ShSiteExchange {
 	
 	private String furl;
 	
-	private List<UUID> rootFolders;
+	private List<String> rootFolders;
 
-	public UUID getGlobalId() {
+	public String getGlobalId() {
 		return globalId;
 	}
 
-	public void setGlobalId(UUID globalId) {
+	public void setGlobalId(String globalId) {
 		this.globalId = globalId;
 	}
 
-	public UUID getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(UUID id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -77,11 +77,11 @@ public class ShSiteExchange {
 		this.url = url;
 	}
 
-	public List<UUID> getRootFolders() {
+	public List<String> getRootFolders() {
 		return rootFolders;
 	}
 
-	public void setRootFolders(List<UUID> rootFolders) {
+	public void setRootFolders(List<String> rootFolders) {
 		this.rootFolders = rootFolders;
 	}
 

@@ -38,7 +38,7 @@ public class ShRelatorItem implements Serializable {
 	@GenericGenerator(name = "UUID", strategy = "com.viglet.shiohara.jpa.ShUUIDGenerator")
 	@GeneratedValue(generator = "UUID")
 	@Column(name = "id", updatable = false, nullable = false)
-	private UUID id;
+	private String id;
 
 	private String title;
 	
@@ -58,11 +58,11 @@ public class ShRelatorItem implements Serializable {
 	@JoinColumn(name = "post_attr_id")
 	private ShPostAttr shParentPostAttr;
 
-	public UUID getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(UUID id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

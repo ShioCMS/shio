@@ -6,8 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import com.viglet.shiohara.object.ShObjectType;
+import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.user.ShUser;
+import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.persistence.repository.user.ShUserRepository;
 import com.viglet.shiohara.post.type.ShSystemPostType;
@@ -20,6 +23,8 @@ public class ShUserOnStartup {
 	private ShUserRepository shUserRepository;
 	@Autowired
 	private ShPostTypeRepository shPostTypeRepository;
+	@Autowired
+	private ShGlobalIdRepository shGlobalIdRepository;
 	
 	public void createDefaultRows() {
 
@@ -39,6 +44,10 @@ public class ShUserOnStartup {
 			shUser.setUsername("admin");
 			shUser.setEnabled(1);
 			
+			ShGlobalId shGlobalId = new ShGlobalId();
+			shGlobalId.setType(ShObjectType.USER);
+			shPostType.setShGlobalId(shGlobalId);
+
 			shUserRepository.save(shUser);
 			
 			shUser = new ShUser();
@@ -54,8 +63,11 @@ public class ShUserOnStartup {
 			shUser.setUsername("sample");
 			shUser.setEnabled(1);
 			
-			shUserRepository.save(shUser);
+			shGlobalId = new ShGlobalId();
+			shGlobalId.setType(ShObjectType.POST_TYPE);
+			shPostType.setShGlobalId(shGlobalId);
 
+			shUserRepository.save(shUser);			
 		}
 
 	}

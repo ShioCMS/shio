@@ -1,7 +1,6 @@
 package com.viglet.shiohara.api.user;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -17,7 +16,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.viglet.shiohara.api.ShJsonView;
+import com.viglet.shiohara.object.ShObjectType;
+import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.user.ShUser;
+import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.user.ShUserRepository;
 
 import io.swagger.annotations.Api;
@@ -29,16 +33,17 @@ public class ShUserAPI {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-
 	@Autowired
 	private ShUserRepository shUserRepository;
 
 	@GetMapping
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShUser> shUserList() throws Exception {
 		return shUserRepository.findAll();
 	}
 
 	@GetMapping("/current")
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShUser shUserCurrent() throws Exception {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (!(authentication instanceof AnonymousAuthenticationToken)) {
@@ -52,49 +57,47 @@ public class ShUserAPI {
 	}
 
 	@GetMapping("/{id}")
-	public ShUser shUserEdit(@PathVariable int id) throws Exception {
-		ShUser shUser = shUserRepository.findById(id);
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
+	public ShUser shUserEdit(@PathVariable String id) throws Exception {
+		ShUser shUser = shUserRepository.findById(id).get();
 		shUser.setPassword(null);
-		return shUserRepository.findById(id);
+		return shUserRepository.findById(id).get();
 	}
 
 	@PutMapping("/{id}")
-	public ShUser shUserUpdate(@PathVariable int id, @RequestBody ShUser shUser) throws Exception {
-		ShUser shUserEdit = shUserRepository.findById(id);
-		shUserEdit.setConfirmEmail(shUser.getConfirmEmail());
-		shUserEdit.setEmail(shUser.getEmail());
-		shUserEdit.setFirstName(shUser.getFirstName());
-		shUserEdit.setLastLogin(shUser.getLastLogin());
-		shUserEdit.setLastName(shUser.getLastName());
-		shUserEdit.setLastPostType(shUser.getLastPostType());
-		shUserEdit.setLoginTimes(shUser.getLoginTimes());
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
+	public ShUser shUserUpdate(@PathVariable String id, @RequestBody ShUser shUser) throws Exception {
 		if (shUser.getPassword() != null) {
-			shUserEdit.setPassword(passwordEncoder.encode(shUser.getPassword()));
-		}
-		shUserEdit.setRealm(shUser.getRealm());
-		shUserEdit.setRecoverPassword(shUser.getRecoverPassword());
-		shUserEdit.setUsername(shUser.getUsername());
-		shUserRepository.save(shUserEdit);
-		return shUserEdit;
+			shUser.setPassword(passwordEncoder.encode(shUser.getPassword()));
+		}	
+		shUserRepository.save(shUser);
+		return shUser;
 	}
 
 	@DeleteMapping("/{id}")
-	public boolean shUserDelete(@PathVariable UUID id) throws Exception {
+	public boolean shUserDelete(@PathVariable String id) throws Exception {
 		shUserRepository.delete(id);
 		return true;
 	}
 
 	@PostMapping
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShUser shUserAdd(@RequestBody ShUser shUser) throws Exception {
 		if (shUser.getPassword() != null) {
 			shUser.setPassword(passwordEncoder.encode(shUser.getPassword()));
 		}
+		
+		ShGlobalId shGlobalId = new ShGlobalId();	
+		shGlobalId.setType(ShObjectType.USER);
+		shUser.setShGlobalId(shGlobalId);
+		
 		shUserRepository.save(shUser);
+		
 		return shUser;
-
 	}
 
 	@GetMapping("/model")
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShUser shUserStructure() throws Exception {
 		ShUser shUser = new ShUser();
 		return shUser;

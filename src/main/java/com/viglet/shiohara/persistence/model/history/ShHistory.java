@@ -32,7 +32,7 @@ public class ShHistory implements Serializable {
 	@GeneratedValue(generator = "UUID")
 
 	@Column(name = "id", updatable = false, nullable = false)
-	private UUID id;
+	private String id;
 
 	private String owner;
 
@@ -40,15 +40,15 @@ public class ShHistory implements Serializable {
 
 	private String description;
 
-	private UUID shObject;
+	private String shObject;
 
-	private UUID shSite;
+	private String shSite;
 
-	public UUID getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(UUID id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -76,19 +76,19 @@ public class ShHistory implements Serializable {
 		this.description = description;
 	}
 
-	public UUID getShObject() {
+	public String getShObject() {
 		return shObject;
 	}
 
-	public void setShObject(UUID shObject) {
+	public void setShObject(String shObject) {
 		this.shObject = shObject;
 	}
 
-	public UUID getShSite() {
+	public String getShSite() {
 		return shSite;
 	}
 
-	public void setShSite(UUID shSite) {
+	public void setShSite(String shSite) {
 		this.shSite = shSite;
 	}
 	

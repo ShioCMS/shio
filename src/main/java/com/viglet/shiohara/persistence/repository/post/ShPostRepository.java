@@ -12,7 +12,7 @@ import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 
-public interface ShPostRepository extends JpaRepository<ShPost, UUID>, ShPostRepositoryCustom {
+public interface ShPostRepository extends JpaRepository<ShPost, String>, ShPostRepositoryCustom {
 	
 	List<ShPost> findAll();
 
@@ -20,7 +20,7 @@ public interface ShPostRepository extends JpaRepository<ShPost, UUID>, ShPostRep
 	
 	List<ShPost> findByShFolderAndShPostType(ShFolder shFolder, ShPostType shPostType);
 	
-	Optional<ShPost> findById(UUID id);
+	Optional<ShPost> findById(String id);
 	
 	ShPost findByTitle(String title);
 	
@@ -33,5 +33,5 @@ public interface ShPostRepository extends JpaRepository<ShPost, UUID>, ShPostRep
 
 	@Modifying
 	@Query("delete from ShPost p where p.id = ?1")
-	void delete(UUID shPostId);
+	void delete(String shPostId);
 }

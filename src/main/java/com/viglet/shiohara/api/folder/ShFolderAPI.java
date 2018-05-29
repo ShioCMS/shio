@@ -55,14 +55,14 @@ public class ShFolderAPI {
 	@ApiOperation(value = "Show a folder")
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShFolder shFolderGet(@PathVariable UUID id) throws Exception {
+	public ShFolder shFolderGet(@PathVariable String id) throws Exception {
 		return shFolderRepository.findById(id).get();
 	}
 
 	@ApiOperation(value = "Update a folder")
 	@PutMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShFolder shFolderUpdate(@PathVariable UUID id, @RequestBody ShFolder shFolder) throws Exception {
+	public ShFolder shFolderUpdate(@PathVariable String id, @RequestBody ShFolder shFolder) throws Exception {
 
 		ShFolder shFolderEdit = shFolderRepository.findById(id).get();
 
@@ -80,7 +80,7 @@ public class ShFolderAPI {
 	@Transactional
 	@ApiOperation(value = "Delete a folder")
 	@DeleteMapping("/{id}")
-	public boolean shFolderDelete(@PathVariable UUID id) throws Exception {
+	public boolean shFolderDelete(@PathVariable String id) throws Exception {
 		shFolderRepository.findById(id).ifPresent(new Consumer<ShFolder>() {
 			@Override
 			public void accept(ShFolder shFolder) {
@@ -112,7 +112,7 @@ public class ShFolderAPI {
 	@ApiOperation(value = "Create a folder from Parent Object")
 	@PostMapping("/object/{objectId}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShFolder shFolderAddFromParentObject(@RequestBody ShFolder shFolder, @PathVariable UUID objectId)
+	public ShFolder shFolderAddFromParentObject(@RequestBody ShFolder shFolder, @PathVariable String objectId)
 			throws Exception {
 
 		ShFolder shNewFolder = new ShFolder();
@@ -149,7 +149,7 @@ public class ShFolderAPI {
 	@ApiOperation(value = "Folder path")
 	@GetMapping("/{id}/path")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShFolderPath shFolderPath(@PathVariable UUID id) throws Exception {
+	public ShFolderPath shFolderPath(@PathVariable String id) throws Exception {
 		ShFolder shFolder = shFolderRepository.findById(id).get();
 		if (shFolder != null) {
 			ShFolderPath shFolderPath = new ShFolderPath();

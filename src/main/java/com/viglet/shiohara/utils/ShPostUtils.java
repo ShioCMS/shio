@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,7 +127,7 @@ public class ShPostUtils {
 	public String generatePostLinkById(String postID) {
 		if (postID != null) {
 			try {
-				ShPost shPost = shPostRepository.findById(UUID.fromString(postID)).get();
+				ShPost shPost = shPostRepository.findById(postID).get();
 				return this.generatePostLink(shPost);
 
 			} catch (IllegalArgumentException exception) {
@@ -172,7 +171,7 @@ public class ShPostUtils {
 			}
 
 			try {
-				ShPost shPostReferenced = shPostRepository.findById(UUID.fromString(shPostAttr.getStrValue())).get();
+				ShPost shPostReferenced = shPostRepository.findById(shPostAttr.getStrValue()).get();
 				// Lazy, need find globalId during Import
 				ShGlobalId shGlobalToId = shGlobalIdRepository.findByShObject(shPostReferenced);
 				// Create new reference
@@ -250,7 +249,7 @@ public class ShPostUtils {
 				}
 			}
 			try {
-				ShPost shPostReferenced = shPostRepository.findById(UUID.fromString(shPostAttr.getStrValue())).get();
+				ShPost shPostReferenced = shPostRepository.findById(shPostAttr.getStrValue()).get();
 
 				ShReference shReference = new ShReference();
 				shReference.setShGlobalFromId(shPost.getShGlobalId());

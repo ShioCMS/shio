@@ -39,7 +39,7 @@ public class ShHistoryAPI {
 
 	@GetMapping("/object/{globalId}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public Set<ShHistory> shHistoryByObject(@PathVariable UUID globalId) throws Exception {
+	public Set<ShHistory> shHistoryByObject(@PathVariable String globalId) throws Exception {
 		if (shGlobalIdRepository.findById(globalId).isPresent()) {
 			ShGlobalId shGlobalId = shGlobalIdRepository.findById(globalId).get();
 			if (shGlobalId != null) {

@@ -3,7 +3,6 @@ package com.viglet.shiohara.sites;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
@@ -166,7 +165,7 @@ public class ShSitesContext {
 			pageLayoutHTML = shFolderPageLayoutMap.get(ShSystemPostTypeAttr.HTML).getStrValue();
 			pageLayoutJS = shFolderPageLayoutMap.get(ShSystemPostTypeAttr.JAVASCRIPT).getStrValue();
 
-			UUID shPostThemeId = UUID.fromString(shFolderPageLayoutMap.get(ShSystemPostTypeAttr.THEME).getStrValue());
+			String shPostThemeId = shFolderPageLayoutMap.get(ShSystemPostTypeAttr.THEME).getStrValue();
 			JSONObject shThemeAttrs = shSitesContextComponent.shThemeFactory(shPostThemeId);
 
 			JSONObject shPostItemAttrs = shPostUtils.toJSON(shPostItem);
@@ -193,7 +192,7 @@ public class ShSitesContext {
 			pageLayoutHTML = shPostPageLayoutMap.get(ShSystemPostTypeAttr.HTML).getStrValue();
 			pageLayoutJS = shPostPageLayoutMap.get(ShSystemPostTypeAttr.JAVASCRIPT).getStrValue();
 
-			UUID shPostThemeId = UUID.fromString(shPostPageLayoutMap.get(ShSystemPostTypeAttr.THEME).getStrValue());
+			String shPostThemeId = shPostPageLayoutMap.get(ShSystemPostTypeAttr.THEME).getStrValue();
 			JSONObject shThemeAttrs = shSitesContextComponent.shThemeFactory(shPostThemeId);
 
 			JSONObject shSiteItemAttrs = shSiteUtils.toJSON(shSite);

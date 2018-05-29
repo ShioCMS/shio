@@ -103,13 +103,13 @@ public class ShSiteAPI {
 
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShSite shSiteEdit(@PathVariable UUID id) throws Exception {
+	public ShSite shSiteEdit(@PathVariable String id) throws Exception {
 		return shSiteRepository.findById(id).get();
 	}
 
 	@PutMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShSite shSiteUpdate(@PathVariable UUID id, @RequestBody ShSite shSite) throws Exception {
+	public ShSite shSiteUpdate(@PathVariable String id, @RequestBody ShSite shSite) throws Exception {
 		ShSite shSiteEdit = shSiteRepository.findById(id).get();
 		shSiteEdit.setDate(new Date());
 		shSiteEdit.setName(shSite.getName());
@@ -121,7 +121,7 @@ public class ShSiteAPI {
 
 	@DeleteMapping("/{id}")
 	@Transactional
-	public boolean shSiteDelete(@PathVariable UUID id) throws Exception {
+	public boolean shSiteDelete(@PathVariable String id) throws Exception {
 		ShSite shSite = shSiteRepository.findById(id).get();
 
 		List<ShFolder> shFolders = shFolderRepository.findByShSiteAndRootFolder(shSite, (byte) 1);
@@ -227,7 +227,7 @@ public class ShSiteAPI {
 
 	@GetMapping("/{id}/folder")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShFolderList shSiteRootFolder(@PathVariable UUID id) throws Exception {
+	public ShFolderList shSiteRootFolder(@PathVariable String id) throws Exception {
 		ShSite shSite = shSiteRepository.findById(id).get();
 		List<ShFolder> shFolders = shFolderRepository.findByShSiteAndRootFolder(shSite, (byte) 1);
 		ShFolderList shFolderList = new ShFolderList();
@@ -240,7 +240,7 @@ public class ShSiteAPI {
 	@ResponseBody
 	@GetMapping(value = "/{id}/export", produces = "application/zip")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public StreamingResponseBody shSiteExport(@PathVariable UUID id, HttpServletResponse response) throws Exception {
+	public StreamingResponseBody shSiteExport(@PathVariable String id, HttpServletResponse response) throws Exception {
 		String folderName = UUID.randomUUID().toString();
 		File userDir = new File(System.getProperty("user.dir"));
 		if (userDir.exists() && userDir.isDirectory()) {
@@ -254,7 +254,7 @@ public class ShSiteAPI {
 
 			List<ShFolder> rootFolders = shFolderRepository.findByShSiteAndRootFolder(shSite, (byte) 1);
 
-			List<UUID> rootFoldersUUID = new ArrayList<UUID>();
+			List<String> rootFoldersUUID = new ArrayList<String>();
 			for (ShFolder shFolder : rootFolders) {
 				rootFoldersUUID.add(shFolder.getId());
 			}

@@ -50,7 +50,7 @@ public class ShPostAttr implements Serializable {
 	@GeneratedValue(generator = "UUID")
 
 	@Column(name = "id", updatable = false, nullable = false)
-	private UUID id;
+	private String id;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "date_value")
@@ -64,9 +64,12 @@ public class ShPostAttr implements Serializable {
 	private String strValue;
 
 	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "object_post_attr", joinColumns = @JoinColumn(name = "post_attr_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "object_id", referencedColumnName = "id"))
+	@JoinTable(name = "object_post_attr", 
+	joinColumns = 
+		@JoinColumn(name = "post_attr_id", referencedColumnName = "id"), 
+	inverseJoinColumns = 
+		@JoinColumn(name = "object_id", referencedColumnName = "id"))
 	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
-	@Cascade({CascadeType.ALL})
 	private Set<ShObject> referenceObjects;
 
 	private int type;
@@ -74,7 +77,7 @@ public class ShPostAttr implements Serializable {
 	// bi-directional many-to-one association to ShRelatorItem
 	@OneToMany(mappedBy = "shParentPostAttr", orphanRemoval = true)
 	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
-	@Cascade({CascadeType.ALL})
+	@Cascade({ CascadeType.ALL })
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Set<ShRelatorItem> shChildrenRelatorItems = new HashSet<ShRelatorItem>();
 
@@ -94,7 +97,7 @@ public class ShPostAttr implements Serializable {
 	private ShRelatorItem shParentRelatorItem;
 
 	@Transient
-	private UUID shPostTypeAttrId;
+	private String shPostTypeAttrId;
 
 	public Set<ShObject> getReferenceObjects() {
 		return referenceObjects;
@@ -104,25 +107,25 @@ public class ShPostAttr implements Serializable {
 		this.referenceObjects = referenceObjects;
 	}
 
-	public UUID getShPostTypeAttrId() {
+	public String getShPostTypeAttrId() {
 		if (shPostTypeAttr.getId() != null) {
 			shPostTypeAttrId = shPostTypeAttr.getId();
 		}
 		return shPostTypeAttrId;
 	}
 
-	public void setShPostTypeAttrId(UUID shPostTypeAttrId) {
+	public void setShPostTypeAttrId(String shPostTypeAttrId) {
 		this.shPostTypeAttrId = shPostTypeAttrId;
 	}
 
 	public ShPostAttr() {
 	}
 
-	public UUID getId() {
+	public String getId() {
 		return this.id;
 	}
 
-	public void setId(UUID id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,7 +55,7 @@ public class ShPostTypeAPI {
 
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewPostType.class })
-	public ShPostType shPostTypeEdit(@PathVariable UUID id) throws Exception {
+	public ShPostType shPostTypeEdit(@PathVariable String id) throws Exception {
 		return shPostTypeRepository.findById(id).get();
 	}
 
@@ -70,7 +69,7 @@ public class ShPostTypeAPI {
 
 	@GetMapping("/{id}/post/model")
 	@JsonView({ ShJsonView.ShJsonViewPostType.class })
-	public ShPost shPostTypePostStructure(@PathVariable UUID id) throws Exception {
+	public ShPost shPostTypePostStructure(@PathVariable String id) throws Exception {
 		ShPost shPost = new ShPost();
 		shPost.setShPostType(shPostTypeRepository.findById(id).get());
 		Set<ShPostAttr> shPostAttrs = new HashSet<ShPostAttr>();
@@ -103,14 +102,14 @@ public class ShPostTypeAPI {
 
 	@PutMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewPostType.class })
-	public ShPostType shPostTypeUpdate(@PathVariable UUID id, @RequestBody ShPostType shPostType) throws Exception {
+	public ShPostType shPostTypeUpdate(@PathVariable String id, @RequestBody ShPostType shPostType) throws Exception {
 		this.postTypeSave(shPostType);
 		return shPostType;
 	}
 
 	@Transactional
 	@DeleteMapping("/{id}")
-	public boolean shPostTypeDelete(@PathVariable UUID id) throws Exception {
+	public boolean shPostTypeDelete(@PathVariable String id) throws Exception {
 		ShPostType shPostType = shPostTypeRepository.findById(id).get();
 
 		for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs()) {
@@ -137,6 +136,11 @@ public class ShPostTypeAPI {
 	@PostMapping
 	@JsonView({ ShJsonView.ShJsonViewPostType.class })
 	public ShPostType shPostTypeAdd(@RequestBody ShPostType shPostType) throws Exception {
+		
+		ShGlobalId shGlobalId = new ShGlobalId();
+		shGlobalId.setType(ShObjectType.POST_TYPE);
+		shPostType.setShGlobalId(shGlobalId);
+
 		this.postTypeSave(shPostType);
 
 		return shPostType;
@@ -144,7 +148,7 @@ public class ShPostTypeAPI {
 	}
 
 	@PostMapping("/{id}/attr")
-	public ShPostTypeAttr shPostTypeAttrAdd(@PathVariable UUID id, @RequestBody ShPostTypeAttr shPostTypeAttr)
+	public ShPostTypeAttr shPostTypeAttrAdd(@PathVariable String id, @RequestBody ShPostTypeAttr shPostTypeAttr)
 			throws Exception {
 		ShPostType shPostType = shPostTypeRepository.findById(id).get();
 		if (shPostType != null) {
@@ -161,18 +165,12 @@ public class ShPostTypeAPI {
 
 		shPostType.setDate(new Date());
 
-		ShGlobalId shGlobalId = new ShGlobalId();
-		shGlobalId.setShObject(shPostType);
-		shGlobalId.setType(ShObjectType.POST_TYPE);
-
 		for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs()) {
 			shPostTypeAttr.setShPostType(shPostType);
 			this.postTypeAttrSave(shPostTypeAttr, shPostType);
 		}
 
 		shPostTypeRepository.saveAndFlush(shPostType);
-
-		shGlobalIdRepository.saveAndFlush(shGlobalId);
 
 	}
 

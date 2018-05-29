@@ -10,16 +10,16 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
 
-public interface ShRelatorItemRepository extends JpaRepository<ShRelatorItem, UUID> {
+public interface ShRelatorItemRepository extends JpaRepository<ShRelatorItem, String> {
 
 	List<ShRelatorItem> findAll();
 	
-	Optional<ShRelatorItem> findById(UUID id);
+	Optional<ShRelatorItem> findById(String id);
 
 	@SuppressWarnings("unchecked")
 	ShRelatorItem save(ShRelatorItem shRelatorItem);
 
 	@Modifying
 	@Query("delete from ShRelatorItem ri where ri.id = ?1")
-	void delete(UUID shRelatorItemId);
+	void delete(String shRelatorItemId);
 }

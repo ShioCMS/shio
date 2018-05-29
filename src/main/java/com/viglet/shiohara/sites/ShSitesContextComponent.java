@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.annotation.Resource;
 import javax.script.Bindings;
@@ -102,7 +101,7 @@ public class ShSitesContextComponent {
 			Set<ShPostAttr> shPostAttrs = shPostItem.getShPostAttrs();
 			for (ShPostAttr shPostAttr : shPostAttrs) {
 				if (shPostAttr.getShPostTypeAttr().getName().equals(ShSystemPostTypeAttr.CONTENT)) {
-					shPostItem = shPostRepository.findById(UUID.fromString(shPostAttr.getStrValue())).get();
+					shPostItem = shPostRepository.findById(shPostAttr.getStrValue()).get();
 				}
 			}
 		}
@@ -147,7 +146,7 @@ public class ShSitesContextComponent {
 		return shPostItem;
 	}
 
-	public JSONObject shThemeFactory(UUID postThemeId) {
+	public JSONObject shThemeFactory(String postThemeId) {
 		ShPost shTheme = shPostRepository.findById(postThemeId).get();
 
 		Map<String, ShPostAttr> shThemeMap = shPostUtils.postToMap(shTheme);
@@ -195,7 +194,7 @@ public class ShSitesContextComponent {
 	public Map<String, ShPostAttr> shFolderPageLayoutMapFactory(ShPost shPostItem) {
 		Map<String, ShPostAttr> shFolderIndexMap = shPostUtils.postToMap(shPostItem);
 
-		UUID shPostFolderPageLayoutId = UUID.fromString(shFolderIndexMap.get(ShSystemPostTypeAttr.PAGE_LAYOUT).getStrValue());
+		String shPostFolderPageLayoutId = shFolderIndexMap.get(ShSystemPostTypeAttr.PAGE_LAYOUT).getStrValue();
 		ShPost shFolderPageLayout = shPostRepository
 				.findById(shPostFolderPageLayoutId).get();
 

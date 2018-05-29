@@ -5,7 +5,6 @@ import java.security.Principal;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,7 +72,7 @@ public class ShPostAPI {
 
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShPost shPostEdit(@PathVariable UUID id) throws Exception {
+	public ShPost shPostEdit(@PathVariable String id) throws Exception {
 		ShPost shPost = shPostRepository.findById(id).get();
 		Set<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
 		shPost.setShPostAttrs(shPostAttrs);
@@ -90,7 +89,7 @@ public class ShPostAPI {
 
 	@PutMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShPost shPostUpdate(@PathVariable UUID id, @RequestBody ShPost shPost, Principal principal)
+	public ShPost shPostUpdate(@PathVariable String id, @RequestBody ShPost shPost, Principal principal)
 			throws Exception {
 
 		this.postSave(shPost);
@@ -133,7 +132,7 @@ public class ShPostAPI {
 
 	@Transactional
 	@DeleteMapping("/{id}")
-	public boolean shPostDelete(@PathVariable UUID id, Principal principal) throws Exception {
+	public boolean shPostDelete(@PathVariable String id, Principal principal) throws Exception {
 
 		ShPost shPost = shPostRepository.findById(id).get();
 		Set<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
@@ -192,9 +191,11 @@ public class ShPostAPI {
 		shPost.setSummary(summary);
 		shPost.setFurl(shURLFormatter.format(title));
 
-		ShGlobalId shGlobalId = new ShGlobalId();
-		shGlobalId.setShObject(shPost);
-		shGlobalId.setType(ShObjectType.POST);
+		if (shPost.getShGlobalId() == null) {
+			ShGlobalId shGlobalId = new ShGlobalId();
+			shGlobalId.setType(ShObjectType.POST);
+			shPost.setShGlobalId(shGlobalId);
+		}
 
 		for (ShPostAttr shPostAttr : shPostAttrs) {
 			shPostAttr.setShPost(shPost);
@@ -203,11 +204,11 @@ public class ShPostAPI {
 
 		shPostRepository.saveAndFlush(shPost);
 
-		shGlobalIdRepository.saveAndFlush(shGlobalId);
-
-		ShUser shUser = shUserRepository.findById(1);
-		shUser.setLastPostType(String.valueOf(shPost.getShPostType().getId()));
-		shUserRepository.saveAndFlush(shUser);
+		/*
+		 * ShUser shUser = shUserRepository.findById(1);
+		 * shUser.setLastPostType(String.valueOf(shPost.getShPostType().getId()));
+		 * shUserRepository.saveAndFlush(shUser);
+		 */
 
 	}
 
@@ -217,13 +218,13 @@ public class ShPostAPI {
 		for (ShRelatorItem shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
 			shRelatorItem.setShParentPostAttr(shPostAttr);
 			for (ShPostAttr shChildrenPostAttr : shRelatorItem.getShChildrenPostAttrs()) {
-				
+
 				if (shChildrenPostAttr.getShPostTypeAttr().getIsTitle() == 1)
 					shRelatorItem.setTitle(StringUtils.abbreviate(shChildrenPostAttr.getStrValue(), 255));
 
 				if (shChildrenPostAttr.getShPostTypeAttr().getIsSummary() == 1)
 					shRelatorItem.setSummary(StringUtils.abbreviate(shChildrenPostAttr.getStrValue(), 255));
-				
+
 				shChildrenPostAttr.setShParentRelatorItem(shRelatorItem);
 				this.postAttrSave(shChildrenPostAttr, shPost);
 			}

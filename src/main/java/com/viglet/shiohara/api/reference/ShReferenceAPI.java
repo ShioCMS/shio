@@ -3,7 +3,6 @@ package com.viglet.shiohara.api.reference;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,20 +48,20 @@ public class ShReferenceAPI {
 
 	@GetMapping("/from/{fromId}")
 	@JsonView({  ShJsonView.ShJsonViewReference.class })
-	public List<ShReference> shReferenceFrom(@PathVariable UUID fromId) throws Exception {
+	public List<ShReference> shReferenceFrom(@PathVariable String fromId) throws Exception {
 		ShGlobalId shGlobalId = shGlobalIdRepository.findById(fromId).get();
 		return shReferenceRepository.findByShGlobalFromId(shGlobalId);
 	}
 	@GetMapping("/to/{toId}")
 	@JsonView({  ShJsonView.ShJsonViewReference.class })
-	public List<ShReference> shReferenceTo(@PathVariable UUID toId) throws Exception {
+	public List<ShReference> shReferenceTo(@PathVariable String toId) throws Exception {
 		ShGlobalId shGlobalId = shGlobalIdRepository.findById(toId).get();
 		return shReferenceRepository.findByShGlobalToId(shGlobalId);
 	}
 
 	@PostMapping("/to/{toId}/replace/{otherId}")
 	@JsonView({  ShJsonView.ShJsonViewReference.class })
-	public List<ShReference> shReferenceToReplace(@PathVariable UUID toId, @PathVariable UUID otherId)
+	public List<ShReference> shReferenceToReplace(@PathVariable String toId, @PathVariable String otherId)
 			throws Exception {
 		ShGlobalId shGlobalId = shGlobalIdRepository.findById(toId).get();
 		ShGlobalId shGlobaOtherlId = shGlobalIdRepository.findById(otherId).get();

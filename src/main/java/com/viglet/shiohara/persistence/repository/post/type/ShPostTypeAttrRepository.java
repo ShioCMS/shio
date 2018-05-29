@@ -11,11 +11,11 @@ import org.springframework.data.jpa.repository.Query;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 
-public interface ShPostTypeAttrRepository extends JpaRepository<ShPostTypeAttr, UUID> {
+public interface ShPostTypeAttrRepository extends JpaRepository<ShPostTypeAttr, String> {
 
 	List<ShPostTypeAttr> findAll();
 
-	Optional<ShPostTypeAttr> findById(UUID id);
+	Optional<ShPostTypeAttr> findById(String id);
 	
 	ShPostTypeAttr findByShPostTypeAndName(ShPostType shPostType, String name);
 	
@@ -26,5 +26,5 @@ public interface ShPostTypeAttrRepository extends JpaRepository<ShPostTypeAttr, 
 	
 	@Modifying
 	@Query("delete from ShPostTypeAttr pta where pta.id = ?1")
-	void delete(UUID shPostTypeAttrId);
+	void delete(String shPostTypeAttrId);
 }

@@ -10,11 +10,11 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.viglet.shiohara.persistence.model.site.ShSite;
 
-public interface ShSiteRepository extends JpaRepository<ShSite, UUID> {
+public interface ShSiteRepository extends JpaRepository<ShSite, String> {
 
 	List<ShSite> findAll();
 
-	Optional<ShSite> findById(UUID id);
+	Optional<ShSite> findById(String id);
 
 	List<ShSite> findByOwner(String owner);
 	
@@ -27,5 +27,5 @@ public interface ShSiteRepository extends JpaRepository<ShSite, UUID> {
 
 	@Modifying
 	@Query("delete from ShSite p where p.id = ?1")
-	void delete(UUID shSiteId);
+	void delete(String shSiteId);
 }

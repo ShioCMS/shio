@@ -11,11 +11,11 @@ import org.springframework.data.jpa.repository.Query;
 import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.reference.ShReference;
 
-public interface ShReferenceRepository extends JpaRepository<ShReference, UUID> {
+public interface ShReferenceRepository extends JpaRepository<ShReference, String> {
 
 	List<ShReference> findAll();
 
-	Optional<ShReference> findById(UUID id);
+	Optional<ShReference> findById(String id);
 	
 	List<ShReference> findByShGlobalFromId(ShGlobalId shGlobalFromId);
 	
@@ -26,5 +26,5 @@ public interface ShReferenceRepository extends JpaRepository<ShReference, UUID> 
 
 	@Modifying
 	@Query("delete from ShReference r where r.id = ?1")
-	void delete(UUID id);
+	void delete(String id);
 }

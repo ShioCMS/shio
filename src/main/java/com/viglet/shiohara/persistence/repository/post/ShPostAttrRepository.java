@@ -12,18 +12,18 @@ import org.springframework.data.jpa.repository.Query;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 
-public interface ShPostAttrRepository extends JpaRepository<ShPostAttr, UUID> {
+public interface ShPostAttrRepository extends JpaRepository<ShPostAttr, String> {
 
 	List<ShPostAttr> findAll();
 
 	Set<ShPostAttr> findByShPost(ShPost shPost);
 	
-	Optional<ShPostAttr> findById(UUID id);
+	Optional<ShPostAttr> findById(String id);
 
 	@SuppressWarnings("unchecked")
 	ShPostAttr save(ShPostAttr shPostAttr);
 
 	@Modifying
 	@Query("delete from ShPostAttr pa where pa.id = ?1")
-	void delete(UUID shPostAttrId);
+	void delete(String shPostAttrId);
 }
