@@ -18,7 +18,6 @@ import com.viglet.shiohara.persistence.model.widget.ShWidget;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * The persistent class for the ShPostTypeAttr database table.
@@ -59,9 +58,7 @@ public class ShPostTypeAttr implements Serializable {
 	private Set<ShPostTypeAttr> shPostTypeAttrs = new HashSet<ShPostTypeAttr>();;
 
 	@OneToMany(mappedBy = "shPostTypeAttr", orphanRemoval = true)
-	@Cascade({CascadeType.ALL})
 	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
-	@OnDelete(action = OnDeleteAction.CASCADE)	
 	private Set<ShPostAttr> shPostAttrs = new HashSet<ShPostAttr>();
 
 	@ManyToOne

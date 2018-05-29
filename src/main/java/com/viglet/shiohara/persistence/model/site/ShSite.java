@@ -1,9 +1,12 @@
 package com.viglet.shiohara.persistence.model.site;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Fetch;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -25,14 +28,15 @@ public class ShSite extends ShObject {
 	private String description;
 
 	private String url;
-	
-	@Column(name = "post_type_layout", length =  5 * 1024 * 1024) //5Mb
+
+	@Column(name = "post_type_layout", length = 5 * 1024 * 1024) // 5Mb
 	private String postTypeLayout;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "shSite", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "shSite")
+	@Cascade({ CascadeType.ALL })
 	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
-	private List<ShFolder> shFolders;
-		
+	private Set<ShFolder> shFolders = new HashSet<ShFolder>();
+
 	public ShSite() {
 	}
 
@@ -59,15 +63,18 @@ public class ShSite extends ShObject {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	public List<ShFolder> getShFolders() {
+
+	public Set<ShFolder> getShFolders() {
 		return this.shFolders;
 	}
 
-	public void setShFolders(List<ShFolder> shFolders) {
-		this.shFolders = shFolders;
+	public void setShFolders(Set<ShFolder> shFolders) {
+		this.shFolders.clear();
+		if (shFolders != null) {
+			this.shFolders.addAll(shFolders);
+		}
 	}
-	
+
 	public String getPostTypeLayout() {
 		return postTypeLayout;
 	}
@@ -76,5 +83,4 @@ public class ShSite extends ShObject {
 		this.postTypeLayout = postTypeLayout;
 	}
 
-	
 }

@@ -18,7 +18,6 @@ import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
