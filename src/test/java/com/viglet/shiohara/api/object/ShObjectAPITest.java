@@ -23,11 +23,11 @@ public class ShObjectAPITest {
 
 	private MockMvc mockMvc;
 
-	private String siteObjectId = "1b610b31-7e7a-403e-ab09-986a8f11711a";
+	private String siteObjectId = "c5bdee96-6feb-4894-9daf-3aab6cdd5087";
 
-	private String folderObjectId = "f0e8030e-8077-44d3-83cb-86fcb3711f3b";
+	private String folderObjectId = "fdbff43b-cc7e-40f1-80a1-062bb08ae5d0";
 
-	private String postObjectId = "a814fe3f-8293-425f-8c4c-3a094fd8b0dc";
+	private String postObjectId = "7887cd98-a593-4e3c-a7d9-eabf41103d03";
 
 	@Before
 	public void setup() {

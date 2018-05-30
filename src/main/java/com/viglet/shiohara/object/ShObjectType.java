@@ -1,16 +1,8 @@
 package com.viglet.shiohara.object;
 
-public enum ShObjectType {
-	FOLDER("FOLDER"), POST("POST"), POST_TYPE("POST_TYPE"), SITE("SITE");
-
-	private String objectType;
-
-	ShObjectType(String objectType) {
-		this.objectType = objectType;
-	}
-
-	public String id() {
-		return objectType;
-	}
-
+public class ShObjectType {
+	public static final String FOLDER = "FOLDER";
+	public static final String POST = "POST";
+	public static final String POST_TYPE = "POST_TYPE";
+	public static final String SITE = "SITE";
 }
