@@ -10,6 +10,7 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
 
+import com.viglet.shiohara.object.ShObjectType;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
@@ -60,6 +61,7 @@ public class ShPost extends ShObject {
 	private Set<ShPostAttr> shPostAttrs = new HashSet<ShPostAttr>();
 
 	public ShPost() {
+		this.setObjectType(ShObjectType.POST);
 	}
 
 	public String getSummary() {
@@ -117,6 +119,16 @@ public class ShPost extends ShObject {
 
 	public void setShFolder(ShFolder shFolder) {
 		this.shFolder = shFolder;
+	}
+
+	@Override
+	public String getObjectType() {
+		return ShObjectType.POST;
+	}
+
+	@Override
+	public void setObjectType(String objectType) {		
+		super.setObjectType(ShObjectType.POST);
 	}
 
 }

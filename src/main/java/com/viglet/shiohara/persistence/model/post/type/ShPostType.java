@@ -10,6 +10,7 @@ import org.hibernate.search.annotations.Field;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
+import com.viglet.shiohara.object.ShObjectType;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.post.type.ShSystemPostType;
@@ -54,6 +55,7 @@ public class ShPostType extends ShObject {
 	private Set<ShPostTypeAttr> shPostTypeAttrs = new HashSet<ShPostTypeAttr>();
 
 	public ShPostType() {
+		this.setObjectType(ShObjectType.POST_TYPE);
 	}
 
 	public String getDescription() {
@@ -141,5 +143,14 @@ public class ShPostType extends ShObject {
 	public void setSystem(byte system) {
 		this.system = system;
 	}
+	
+	@Override
+	public String getObjectType() {
+		return ShObjectType.POST_TYPE;
+	}
 
+	@Override
+	public void setObjectType(String objectType) {		
+		super.setObjectType(ShObjectType.POST_TYPE);
+	}
 }

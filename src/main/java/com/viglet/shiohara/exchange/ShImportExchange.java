@@ -21,7 +21,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.viglet.shiohara.object.ShObjectType;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
@@ -239,13 +238,11 @@ public class ShImportExchange {
 				shSite.setFurl(shURLFormatter.format(shSiteExchange.getName()));
 			}
 			shSite.setDate(shSiteExchange.getDate());
-			shSite.setObjectType(ShObjectType.SITE);
 			shSiteRepository.save(shSite);
 
 		}
 
 		return shSite;
-
 	}
 
 	public ShFolder createShFolder(ShFolderExchange shFolderExchange, File extractFolder, String username,
@@ -282,11 +279,9 @@ public class ShImportExchange {
 					}
 				}
 			}
-			shFolderChild.setObjectType(ShObjectType.FOLDER);
-
 			shFolderRepository.save(shFolderChild);
 		}
-		
+
 		this.shFolderImportNested(shFolderChild.getId(), extractFolder, username, importOnlyFolders);
 
 		return shFolderChild;
@@ -337,8 +332,6 @@ public class ShImportExchange {
 			} else {
 				shPost.setFurl(shURLFormatter.format(shPost.getTitle()));
 			}
-			
-			shPost.setObjectType(ShObjectType.POST);
 
 			shPostRepository.saveAndFlush(shPost);
 
@@ -415,7 +408,7 @@ public class ShImportExchange {
 			} else {
 				ShPostAttr shPostAttr = new ShPostAttr();
 				shPostAttr.setStrValue((String) shPostField.getValue());
-				
+
 				if (shParentRelatorItem != null) {
 					shPostAttr.setShPost(null);
 					shPostAttr.setShParentRelatorItem(shParentRelatorItem);

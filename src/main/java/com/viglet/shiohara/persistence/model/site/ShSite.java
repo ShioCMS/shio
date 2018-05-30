@@ -10,6 +10,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Fetch;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.viglet.shiohara.object.ShObjectType;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 
@@ -38,6 +39,7 @@ public class ShSite extends ShObject {
 	private Set<ShFolder> shFolders = new HashSet<ShFolder>();
 
 	public ShSite() {
+		this.setObjectType(ShObjectType.SITE);
 	}
 
 	public String getDescription() {
@@ -82,5 +84,14 @@ public class ShSite extends ShObject {
 	public void setPostTypeLayout(String postTypeLayout) {
 		this.postTypeLayout = postTypeLayout;
 	}
+	
+	@Override
+	public String getObjectType() {
+		return ShObjectType.SITE;
+	}
 
+	@Override
+	public void setObjectType(String objectType) {		
+		super.setObjectType(ShObjectType.SITE);
+	}
 }

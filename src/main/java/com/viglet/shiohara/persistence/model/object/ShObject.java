@@ -66,7 +66,7 @@ public class ShObject implements Serializable {
 
 	private int position;
 
-	private ShObjectType objectType;
+	private String objectType;
 
 	public String getId() {
 		return this.id;
@@ -140,11 +140,11 @@ public class ShObject implements Serializable {
 		this.position = position;
 	}
 	
-	public ShObjectType getObjectType() {
+	public String getObjectType() {
 		return objectType;
 	}
 	
-	public void setObjectType(ShObjectType objectType) {
+	public void setObjectType(String objectType) {
 		this.objectType = objectType;
 	}
 }
