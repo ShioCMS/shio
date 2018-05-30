@@ -2,21 +2,14 @@ package com.viglet.shiohara.exchange;
 
 import java.io.File;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ShFileExchange {
-	
-	private String globalId;
 	
 	private String id;
 
 	private File file;
-
-	public String getGlobalId() {
-		return globalId;
-	}
-
-	public void setGlobalId(String globalId) {
-		this.globalId = globalId;
-	}
 
 	public String getId() {
 		return id;

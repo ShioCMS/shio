@@ -41,9 +41,7 @@ import com.viglet.shiohara.exchange.ShFileExchange;
 import com.viglet.shiohara.exchange.ShPostExchange;
 import com.viglet.shiohara.exchange.ShRelatorExchange;
 import com.viglet.shiohara.exchange.ShSiteExchange;
-import com.viglet.shiohara.object.ShObjectType;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
-import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
@@ -51,7 +49,6 @@ import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
-import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
@@ -88,8 +85,6 @@ public class ShSiteAPI {
 	private ShPostTypeAttrRepository shPostTypeAttrRepository;
 	@Autowired
 	private ShPostAttrRepository shPostAttrRepository;
-	@Autowired
-	private ShGlobalIdRepository shGlobalIdRepository;
 	@Autowired
 	private ShUtils shUtils;
 	@Autowired
@@ -129,8 +124,7 @@ public class ShSiteAPI {
 		for (ShFolder shFolder : shFolders) {
 			shFolderUtils.deleteFolder(shFolder);
 		}
-
-		shGlobalIdRepository.delete(shSite.getShGlobalId().getId());
+		
 		shSiteRepository.delete(id);
 
 		return true;
@@ -142,13 +136,9 @@ public class ShSiteAPI {
 		shSite.setDate(new Date());
 		shSite.setOwner(principal.getName());
 		shSite.setFurl(shURLFormatter.format(shSite.getName()));
+
 		shSiteRepository.save(shSite);
 
-		ShGlobalId shGlobalId = new ShGlobalId();
-		shGlobalId.setShObject(shSite);
-		shGlobalId.setType(ShObjectType.SITE);
-
-		shGlobalIdRepository.save(shGlobalId);
 
 		// Home Folder
 		ShFolder shFolderHome = new ShFolder();
@@ -161,12 +151,6 @@ public class ShSiteAPI {
 		shFolderHome.setFurl(shURLFormatter.format(shFolderHome.getName()));
 
 		shFolderRepository.save(shFolderHome);
-
-		shGlobalId = new ShGlobalId();
-		shGlobalId.setShObject(shFolderHome);
-		shGlobalId.setType(ShObjectType.FOLDER);
-
-		shGlobalIdRepository.save(shGlobalId);
 
 		// Folder Index
 
@@ -183,12 +167,6 @@ public class ShSiteAPI {
 
 		shPostRepository.save(shPost);
 
-		shGlobalId = new ShGlobalId();
-		shGlobalId.setShObject(shPost);
-		shGlobalId.setType(ShObjectType.POST);
-
-		shGlobalIdRepository.save(shGlobalId);
-
 		ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex,
 				ShSystemPostTypeAttr.TITLE);
 
@@ -197,6 +175,7 @@ public class ShSiteAPI {
 		shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 		shPostAttr.setStrValue(shPost.getTitle());
 		shPostAttr.setType(1);
+				
 		shPostAttrRepository.save(shPostAttr);
 
 		shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex,
@@ -222,7 +201,6 @@ public class ShSiteAPI {
 		shPostAttrRepository.save(shPostAttr);
 
 		return shSite;
-
 	}
 
 	@GetMapping("/{id}/folder")
@@ -269,7 +247,6 @@ public class ShSiteAPI {
 			shSiteExchange.setRootFolders(rootFoldersUUID);
 			shSiteExchange.setOwner(shSite.getOwner());
 			shSiteExchange.setFurl(shSite.getFurl());
-			shSiteExchange.setGlobalId(shSite.getShGlobalId().getId());
 
 			List<ShSiteExchange> shSiteExchanges = new ArrayList<ShSiteExchange>();
 			shSiteExchanges.add(shSiteExchange);
@@ -286,7 +263,7 @@ public class ShSiteAPI {
 
 			for (ShFileExchange fileExchange : shExchangeFolder.getFiles()) {
 				FileUtils.copyFile(fileExchange.getFile(),
-						new File(exportDir.getAbsolutePath().concat(File.separator + fileExchange.getGlobalId())));
+						new File(exportDir.getAbsolutePath().concat(File.separator + fileExchange.getId())));
 			}
 			// Object to JSON in file
 			ObjectMapper mapper = new ObjectMapper();
@@ -360,7 +337,6 @@ public class ShSiteAPI {
 				shPostExchange.setOwner(shPost.getOwner());
 				shPostExchange.setFurl(shPost.getFurl());
 
-				shPostExchange.setGlobalId(shPost.getShGlobalId().getId());
 				Map<String, Object> fields = new HashMap<String, Object>();
 
 				this.shPostAttrExchangeIterate(shPost, shPostAttrRepository.findByShPost(shPost), fields, files);
@@ -371,7 +347,6 @@ public class ShSiteAPI {
 			}
 			ShFolderExchange shFolderExchangeChild = new ShFolderExchange();
 			shFolderExchangeChild.setId(shFolder.getId());
-			shFolderExchangeChild.setGlobalId(shFolder.getShGlobalId().getId());
 			shFolderExchangeChild.setDate(shFolder.getDate());
 			shFolderExchangeChild.setName(shFolder.getName());
 			shFolderExchangeChild.setOwner(shFolder.getOwner());
@@ -419,7 +394,6 @@ public class ShSiteAPI {
 					File directoryPath = shStaticFileUtils.dirPath(shPost.getShFolder());
 					File file = new File(directoryPath.getAbsolutePath().concat(File.separator + fileName));
 					ShFileExchange shFileExchange = new ShFileExchange();
-					shFileExchange.setGlobalId(shPost.getShGlobalId().getId());
 					shFileExchange.setId(shPost.getId());
 					shFileExchange.setFile(file);
 					files.add(shFileExchange);

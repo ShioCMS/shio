@@ -2,7 +2,6 @@ package com.viglet.shiohara.api.history;
 
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,11 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
-import com.viglet.shiohara.object.ShObjectType;
-import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.history.ShHistory;
-import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
+import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.repository.history.ShHistoryRepository;
+import com.viglet.shiohara.persistence.repository.object.ShObjectRepository;
 
 import io.swagger.annotations.Api;
 
@@ -27,7 +25,7 @@ import io.swagger.annotations.Api;
 public class ShHistoryAPI {
 
 	@Autowired
-	private ShGlobalIdRepository shGlobalIdRepository;
+	private ShObjectRepository shObjectRepository;
 	@Autowired
 	private ShHistoryRepository shHistoryRepository;
 
@@ -40,14 +38,14 @@ public class ShHistoryAPI {
 	@GetMapping("/object/{globalId}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public Set<ShHistory> shHistoryByObject(@PathVariable String globalId) throws Exception {
-		if (shGlobalIdRepository.findById(globalId).isPresent()) {
-			ShGlobalId shGlobalId = shGlobalIdRepository.findById(globalId).get();
-			if (shGlobalId != null) {
-				if (shGlobalId.getType().equals(ShObjectType.SITE)) {
-					ShSite shSite = (ShSite) shGlobalId.getShObject();
+		if (shObjectRepository.findById(globalId).isPresent()) {
+			ShObject shObject = shObjectRepository.findById(globalId).get();
+			if (shObject != null) {
+				if (shObject instanceof ShSite) {
+					ShSite shSite = (ShSite) shObject;
 					return shHistoryRepository.findByShSite(shSite.getId());
 				} else {
-					return shHistoryRepository.findByShObject(shGlobalId.getShObject().getId());
+					return shHistoryRepository.findByShObject(shObject.getId());
 				}
 			}
 		}

@@ -9,7 +9,6 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
-import org.springframework.beans.factory.annotation.Configurable;
 
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.object.ShObject;
@@ -28,7 +27,6 @@ import javax.persistence.OneToMany;
  * The persistent class for the ShPost database table.
  * 
  */
-@Configurable(preConstruction = true)
 @Indexed
 @Entity
 @NamedQuery(name = "ShPost.findAll", query = "SELECT s FROM ShPost s")

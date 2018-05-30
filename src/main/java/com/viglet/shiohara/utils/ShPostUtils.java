@@ -13,15 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.viglet.shiohara.object.ShObjectType;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
-import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.reference.ShReference;
 import com.viglet.shiohara.persistence.model.site.ShSite;
-import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.reference.ShReferenceRepository;
@@ -36,8 +33,6 @@ public class ShPostUtils {
 	private ShPostRepository shPostRepository;
 	@Autowired
 	private ShPostAttrRepository shPostAttrRepository;
-	@Autowired
-	private ShGlobalIdRepository shGlobalIdRepository;
 	@Autowired
 	private ShStaticFileUtils shStaticFileUtils;
 	@Autowired
@@ -86,13 +81,9 @@ public class ShPostUtils {
 		shPostCopy.setShPostType(shPost.getShPostType());
 		shPostCopy.setSummary(shPost.getSummary());
 		shPostCopy.setTitle(shPost.getTitle());
+		
 		shPostRepository.save(shPostCopy);
 
-		ShGlobalId shGlobalId = new ShGlobalId();
-		shGlobalId.setShObject(shPostCopy);
-		shGlobalId.setType(ShObjectType.POST);
-
-		shGlobalIdRepository.saveAndFlush(shGlobalId);
 		Set<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
 		for (ShPostAttr shPostAttr : shPostAttrs) {
 			ShPostAttr shPostAttrClone = new ShPostAttr();
@@ -105,8 +96,6 @@ public class ShPostUtils {
 			shPostAttrClone.setType(shPostAttr.getType());
 			shPostAttrRepository.save(shPostAttrClone);
 		}
-
-		shPostCopy.setShGlobalId(shGlobalId);
 
 		return shPostCopy;
 	}
@@ -154,13 +143,13 @@ public class ShPostUtils {
 			// TODO Two or more attributes with FILE Widget and same file, it cannot remove
 			// a valid reference
 			// Remove old references
-			List<ShReference> shOldReferences = shReferenceRepository.findByShGlobalFromId(shPost.getShGlobalId());
+			List<ShReference> shOldReferences = shReferenceRepository.findByShObjectFrom(shPost);
 			if (shOldReferences.size() > 0) {
 				for (ShReference shOldReference : shOldReferences) {
 					if (shPostAttr.getReferenceObjects() != null) {
 						for (ShObject shObject : shPostAttr.getReferenceObjects()) {
-							if (shOldReference.getShGlobalToId().getId().toString()
-									.equals(shObject.getShGlobalId().getId().toString())) {
+							if (shOldReference.getShObjectTo().getId().toString()
+									.equals(shObject.getId().toString())) {
 								shReferenceRepository.delete(shOldReference);
 								break;
 							}
@@ -172,12 +161,10 @@ public class ShPostUtils {
 
 			try {
 				ShPost shPostReferenced = shPostRepository.findById(shPostAttr.getStrValue()).get();
-				// Lazy, need find globalId during Import
-				ShGlobalId shGlobalToId = shGlobalIdRepository.findByShObject(shPostReferenced);
 				// Create new reference
 				ShReference shReference = new ShReference();
-				shReference.setShGlobalFromId(shPost.getShGlobalId());
-				shReference.setShGlobalToId(shGlobalToId);
+				shReference.setShObjectFrom(shPost);
+				shReference.setShObjectTo(shPostReferenced);
 				shReferenceRepository.saveAndFlush(shReference);
 
 				Set<ShObject> referenceObjects = new HashSet<ShObject>();
@@ -234,13 +221,13 @@ public class ShPostUtils {
 			// TODO Two or more attributes with FILE Widget and same file, it cannot remove
 			// a valid reference
 			// Remove old references
-			List<ShReference> shOldReferences = shReferenceRepository.findByShGlobalFromId(shPost.getShGlobalId());
+			List<ShReference> shOldReferences = shReferenceRepository.findByShObjectFrom(shPost);
 			if (shOldReferences.size() > 0) {
 				for (ShReference shOldReference : shOldReferences) {
 					if (shPostAttrEdit.getReferenceObjects() != null) {
 						for (ShObject shObject : shPostAttrEdit.getReferenceObjects()) {
-							if (shOldReference.getShGlobalToId().getId().toString()
-									.equals(shObject.getShGlobalId().getId().toString())) {
+							if (shOldReference.getShObjectTo().getId().toString()
+									.equals(shObject.getId().toString())) {
 								shReferenceRepository.delete(shOldReference);
 								break;
 							}
@@ -252,8 +239,8 @@ public class ShPostUtils {
 				ShPost shPostReferenced = shPostRepository.findById(shPostAttr.getStrValue()).get();
 
 				ShReference shReference = new ShReference();
-				shReference.setShGlobalFromId(shPost.getShGlobalId());
-				shReference.setShGlobalToId(shPostReferenced.getShGlobalId());
+				shReference.setShObjectFrom(shPost);
+				shReference.setShObjectTo(shPostReferenced);
 				shReferenceRepository.saveAndFlush(shReference);
 
 				Set<ShObject> referenceObjects = new HashSet<ShObject>();

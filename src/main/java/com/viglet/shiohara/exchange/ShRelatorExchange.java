@@ -2,6 +2,9 @@ package com.viglet.shiohara.exchange;
 
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ShRelatorExchange {
 
 	private String id;

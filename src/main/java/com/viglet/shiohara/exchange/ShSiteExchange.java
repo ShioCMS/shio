@@ -2,13 +2,12 @@ package com.viglet.shiohara.exchange;
 
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ShSiteExchange {
-	
-	private String globalId;
 	
 	private String id;
 
@@ -28,14 +27,6 @@ public class ShSiteExchange {
 	private String furl;
 	
 	private List<String> rootFolders;
-
-	public String getGlobalId() {
-		return globalId;
-	}
-
-	public void setGlobalId(String globalId) {
-		this.globalId = globalId;
-	}
 
 	public String getId() {
 		return id;

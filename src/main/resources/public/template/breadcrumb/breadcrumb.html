@@ -4,10 +4,10 @@
 		<ul class="breadcrumb" style="margin-top: 5px;">
 			<li><a ui-sref="content" ui-sref-opts="{reload:true}">Content</a></li>
 			<li><a
-				ui-sref="content.children({objectId: shSite.shGlobalId.id})"
+				ui-sref="content.children({objectId: shSite.id})"
 				ui-sref-opts="{reload:true}">{{shSite.name}} (Site)</a></li>
 			<li ng-repeat="breacrumbItem in breadcrumb"><a
-				ui-sref="content.children({objectId: breacrumbItem.shGlobalId.id})"
+				ui-sref="content.children({objectId: breacrumbItem.id})"
 				ui-sref-opts="{reload:true}">{{breacrumbItem.name}}</a></li>
 		</ul>
 	</div>	

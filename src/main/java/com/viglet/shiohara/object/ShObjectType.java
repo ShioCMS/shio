@@ -1,7 +1,7 @@
 package com.viglet.shiohara.object;
 
 public enum ShObjectType {
-	FOLDER("FOLDER"), POST("POST"), POST_TYPE("POST_TYPE"), SITE("SITE"), USER("USER") ;
+	FOLDER("FOLDER"), POST("POST"), POST_TYPE("POST_TYPE"), SITE("SITE");
 
 	private String objectType;
 

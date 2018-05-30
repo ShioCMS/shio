@@ -58,7 +58,7 @@ shioharaApp.controller('ShPostEditCtrl', [
 			
 							
 			$scope.openPreviewURL = function() {
-				 var link = shAPIServerService.get().concat("/v2/object/" + $scope.shPost.shGlobalId.id + "/preview");
+				 var link = shAPIServerService.get().concat("/v2/object/" + $scope.shPost.id + "/preview");
 		         $window.open(link,"_self");
 			}
 	

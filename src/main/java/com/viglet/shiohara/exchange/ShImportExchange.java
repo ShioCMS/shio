@@ -23,7 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viglet.shiohara.object.ShObjectType;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
-import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
@@ -240,12 +239,7 @@ public class ShImportExchange {
 				shSite.setFurl(shURLFormatter.format(shSiteExchange.getName()));
 			}
 			shSite.setDate(shSiteExchange.getDate());
-
-			ShGlobalId shGlobalId = new ShGlobalId();
-			shGlobalId.setId(shSiteExchange.getGlobalId());			
-			shGlobalId.setType(ShObjectType.SITE);
-			shSite.setShGlobalId(shGlobalId);
-			
+			shSite.setObjectType(ShObjectType.SITE);
 			shSiteRepository.save(shSite);
 
 		}
@@ -288,12 +282,8 @@ public class ShImportExchange {
 					}
 				}
 			}
-			
-			ShGlobalId shGlobalId = new ShGlobalId();
-			shGlobalId.setId(shFolderExchange.getGlobalId());		
-			shGlobalId.setType(ShObjectType.FOLDER);
-			shFolderChild.setShGlobalId(shGlobalId);
-			
+			shFolderChild.setObjectType(ShObjectType.FOLDER);
+
 			shFolderRepository.save(shFolderChild);
 		}
 		
@@ -331,7 +321,7 @@ public class ShImportExchange {
 					String fileName = (String) shPostField.getValue();
 					File directoryPath = shStaticFileUtils.dirPath(shPost.getShFolder());
 					File fileSource = new File(
-							extractFolder.getAbsolutePath().concat(File.separator + shPostExchange.getGlobalId()));
+							extractFolder.getAbsolutePath().concat(File.separator + shPostExchange.getId()));
 					File fileDest = new File(directoryPath.getAbsolutePath().concat(File.separator + fileName));
 					try {
 						FileUtils.copyFile(fileSource, fileDest);
@@ -348,11 +338,8 @@ public class ShImportExchange {
 				shPost.setFurl(shURLFormatter.format(shPost.getTitle()));
 			}
 			
-			ShGlobalId shGlobalId = new ShGlobalId();
-			shGlobalId.setId(shPostExchange.getGlobalId());
-			shGlobalId.setType(ShObjectType.POST);
-			shPost.setShGlobalId(shGlobalId);
-			
+			shPost.setObjectType(ShObjectType.POST);
+
 			shPostRepository.saveAndFlush(shPost);
 
 			this.createShPostAttrs(shPostExchange, shPost, shPostExchange.getFields(), null, extractFolder, username);

@@ -77,13 +77,13 @@
 		<div>
 			<ul class="breadcrumb" style="margin-top: 0px; margin-bottom: 5px;">
 				<li><a ng-if="breadcrumb != null"
-					ui-sref="content.children({objectId: shSite.shGlobalId.id})"
+					ui-sref="content.children({objectId: shSite.id})"
 					ui-sref-opts="{reload:true}"><i class="fa fa-sitemap"
 						aria-hidden="true"></i></a><span ng-if="breadcrumb == null"><i
 						class="fa fa-sitemap" aria-hidden="true"></i></span></li>
 				<li ng-repeat="breacrumbItem in breadcrumb"
 					ng-class="{'active':$last}"><a ng-if="!$last"
-					ui-sref="content.children({objectId: breacrumbItem.shGlobalId.id})"
+					ui-sref="content.children({objectId: breacrumbItem.id})"
 					ui-sref-opts="{reload:true}">{{breacrumbItem.name}}</a> <span
 					ng-if="$last">{{breacrumbItem.name}}</span></li>
 			</ul>
@@ -127,18 +127,18 @@
 			</div>
 			<!--  Folders  -->
 			<div ng-repeat="shFolder in shFolders | orderBy: '-date'"
-				ng-mouseenter="updateAction(shFolder.shGlobalId,true)"
-				ng-mouseleave="updateAction(shFolder.shGlobalId,false)"
+				ng-mouseenter="updateAction(shFolder,true)"
+				ng-mouseleave="updateAction(shFolder,false)"
 				class="list-group-item">
 				<div class="row">
 					<div class="col-lg-10 col-md-9 col-sm-8 col-xs-6">
 						<div style="display: inline">
 							<input type="checkbox"
-								ng-model="shStateObjects[shFolder.shGlobalId.id]">
+								ng-model="shStateObjects[shFolder.id]">
 						</div>
 						<div style="display: inline">
 							<a type="button" class="btn btn-link"
-								ui-sref="content.children({objectId: shFolder.shGlobalId.id})"><i
+								ui-sref="content.children({objectId: shFolder.id})"><i
 								class="fa fa-folder-open" aria-hidden="true"
 								style="margin-right: 5px"></i> {{shFolder.name}}</a> <span
 								ng-if="isRecent(shFolder.date)" class="label label-default"
@@ -198,14 +198,14 @@
 			</div>
 			<!--  Posts  -->
 			<div ng-repeat="shPost in shPosts | orderBy: '-date'"
-				ng-mouseenter="updateAction(shPost.shGlobalId,true)"
-				ng-mouseleave="updateAction(shPost.shGlobalId,false)"
+				ng-mouseenter="updateAction(shPost,true)"
+				ng-mouseleave="updateAction(shPost,false)"
 				class="list-group-item">
 				<div class="row">
 					<div class="col-lg-10 col-md-9 col-sm-8 col-xs-6">
 						<div style="display: inline">
 							<input type="checkbox"
-								ng-model="shStateObjects[shPost.shGlobalId.id]">
+								ng-model="shStateObjects[shPost.id]">
 						</div>
 						<div style="display: inline">
 							<!-- NON ALIAS -->

@@ -23,11 +23,8 @@ import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
 import com.viglet.shiohara.persistence.model.user.ShUser;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
-import com.viglet.shiohara.object.ShObjectType;
-import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.history.ShHistory;
 import com.viglet.shiohara.persistence.model.post.ShPost;
-import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.history.ShHistoryRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
@@ -53,8 +50,6 @@ public class ShPostAPI {
 	private ShUserRepository shUserRepository;
 	@Autowired
 	private ShStaticFileUtils shStaticFileUtils;
-	@Autowired
-	private ShGlobalIdRepository shGlobalIdRepository;
 	@Autowired
 	private ShReferenceRepository shReferenceRepository;
 	@Autowired
@@ -147,11 +142,9 @@ public class ShPostAPI {
 
 		shPostAttrRepository.deleteInBatch(shPostAttrs);
 
-		shReferenceRepository.deleteInBatch(shReferenceRepository.findByShGlobalFromId(shPost.getShGlobalId()));
+		shReferenceRepository.deleteInBatch(shReferenceRepository.findByShObjectFrom(shPost));
 
-		shReferenceRepository.deleteInBatch(shReferenceRepository.findByShGlobalToId(shPost.getShGlobalId()));
-
-		shGlobalIdRepository.delete(shPost.getShGlobalId().getId());
+		shReferenceRepository.deleteInBatch(shReferenceRepository.findByShObjectTo(shPost));
 
 		// History
 		ShHistory shHistory = new ShHistory();
@@ -182,7 +175,6 @@ public class ShPostAPI {
 
 			if (shPostAttr != null) {
 				shPostAttr.setReferenceObjects(null);
-
 			}
 		}
 
@@ -190,12 +182,6 @@ public class ShPostAPI {
 		shPost.setTitle(title);
 		shPost.setSummary(summary);
 		shPost.setFurl(shURLFormatter.format(title));
-
-		if (shPost.getShGlobalId() == null) {
-			ShGlobalId shGlobalId = new ShGlobalId();
-			shGlobalId.setType(ShObjectType.POST);
-			shPost.setShGlobalId(shGlobalId);
-		}
 
 		for (ShPostAttr shPostAttr : shPostAttrs) {
 			shPostAttr.setShPost(shPost);

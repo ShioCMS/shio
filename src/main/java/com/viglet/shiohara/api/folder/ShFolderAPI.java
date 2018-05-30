@@ -3,7 +3,6 @@ package com.viglet.shiohara.api.folder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 import java.util.function.Consumer;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
-import com.viglet.shiohara.object.ShObjectType;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
-import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
+import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
-import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
+import com.viglet.shiohara.persistence.repository.object.ShObjectRepository;
 import com.viglet.shiohara.url.ShURLFormatter;
 import com.viglet.shiohara.utils.ShFolderUtils;
 
@@ -41,9 +39,9 @@ public class ShFolderAPI {
 	@Autowired
 	private ShFolderUtils shFolderUtils;
 	@Autowired
-	private ShGlobalIdRepository shGlobalIdRepository;
-	@Autowired
 	private ShURLFormatter shURLFormatter;
+	@Autowired
+	private ShObjectRepository shObjectRepository;
 	
 	@ApiOperation(value = "Folder list")
 	@GetMapping
@@ -84,7 +82,6 @@ public class ShFolderAPI {
 		shFolderRepository.findById(id).ifPresent(new Consumer<ShFolder>() {
 			@Override
 			public void accept(ShFolder shFolder) {
-				shGlobalIdRepository.delete(shFolder.getShGlobalId().getId());
 				shFolderUtils.deleteFolder(shFolder);
 			}
 		});
@@ -98,12 +95,6 @@ public class ShFolderAPI {
 		shFolder.setDate(new Date());
 		shFolder.setFurl(shURLFormatter.format(shFolder.getName()));
 		shFolderRepository.save(shFolder);
-
-		ShGlobalId shGlobalId = new ShGlobalId();
-		shGlobalId.setShObject(shFolder);
-		shGlobalId.setType(ShObjectType.FOLDER);
-
-		shGlobalIdRepository.save(shGlobalId);
 
 		return shFolder;
 
@@ -120,30 +111,23 @@ public class ShFolderAPI {
 		shNewFolder.setName(shFolder.getName());
 		shNewFolder.setFurl(shURLFormatter.format(shNewFolder.getName()));
 		
-		ShGlobalId shParentGlobalId = shGlobalIdRepository.findById(objectId).get();
-		if (shParentGlobalId.getType().equals(ShObjectType.FOLDER)) {
-			ShFolder shParentFolder = (ShFolder) shParentGlobalId.getShObject();
+		ShObject shParentObject = shObjectRepository.findById(objectId).get();
+		if (shParentObject instanceof ShFolder) {
+			ShFolder shParentFolder = (ShFolder) shParentObject;
 			shNewFolder.setParentFolder(shParentFolder);
 			shNewFolder.setRootFolder((byte) 0);
 			shNewFolder.setShSite(null);
 
-		} else if (shParentGlobalId.getType().equals(ShObjectType.SITE)) {
-			ShSite shSite = (ShSite) shParentGlobalId.getShObject();
+		} else if (shParentObject instanceof ShSite) {
+			ShSite shSite = (ShSite) shParentObject;
 			shNewFolder.setParentFolder(null);
 			shNewFolder.setRootFolder((byte) 1);
 			shNewFolder.setShSite(shSite);
 		}
-
+		
 		shFolderRepository.save(shNewFolder);
 
-		ShGlobalId shGlobalId = new ShGlobalId();
-		shGlobalId.setShObject(shNewFolder);
-		shGlobalId.setType(ShObjectType.FOLDER);
-
-		shGlobalIdRepository.save(shGlobalId);
-
 		return shFolder;
-
 	}
 
 	@ApiOperation(value = "Folder path")

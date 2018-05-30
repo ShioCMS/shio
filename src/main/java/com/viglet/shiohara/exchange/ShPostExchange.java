@@ -4,10 +4,10 @@ import java.util.Date;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ShPostExchange {
-	
-	private String globalId;
 	
 	private String id;
 
@@ -23,14 +23,6 @@ public class ShPostExchange {
 	private String owner;
 	
 	private String furl;
-	
-	public String getGlobalId() {
-		return globalId;
-	}
-
-	public void setGlobalId(String globalId) {
-		this.globalId = globalId;
-	}
 
 	public String getId() {
 		return id;

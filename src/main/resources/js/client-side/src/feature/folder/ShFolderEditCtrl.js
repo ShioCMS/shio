@@ -64,9 +64,9 @@ shioharaApp
 													+ ' Folder was updated.');
 											var parentObjectId = null;
 											if ($scope.shFolder.parentFolder == null) {
-												parentObjectId = $scope.shSite.shGlobalId.id;
+												parentObjectId = $scope.shSite.id;
 											} else {
-												parentObjectId = $scope.shFolder.parentFolder.shGlobalId.id;
+												parentObjectId = $scope.shFolder.parentFolder.id;
 											}
 											$state.go('content.children', {
 												objectId : parentObjectId
