@@ -44,7 +44,7 @@ shioharaApp
 								if ($scope.shFolder.id != null) {
 									$scope.shFolder.$update(function() {
 										 Notification.warning('The ' + $scope.shFolder.name +' Folder was created.');
-										$state.go('content.children', {folderId: $scope.shFolder.parentFolder.shGlobalId.id});
+										$state.go('content.children', {folderId: $scope.shFolder.parentFolder.id});
 									});
 								} else {
 									delete $scope.shFolder.id;

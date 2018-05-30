@@ -11,15 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.viglet.shiohara.object.ShObjectType;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
-import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
+import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.reference.ShReference;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
-import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.reference.ShReferenceRepository;
@@ -33,8 +31,6 @@ public class ShFolderUtils {
 	private ShPostRepository shPostRepository;
 	@Autowired
 	private ShPostAttrRepository shPostAttrRepository;
-	@Autowired
-	private ShGlobalIdRepository shGlobalIdRepository;
 	@Autowired
 	private ShReferenceRepository shReferenceRepository;
 	
@@ -210,17 +206,15 @@ public class ShFolderUtils {
 
 		for (ShPost shPost : shPostRepository.findByShFolder(shFolder)) {
 			// TODO: Check relation and show to user decides.
-			List<ShReference> shGlobalFromId = shReferenceRepository.findByShGlobalFromId(shPost.getShGlobalId());			
-			List<ShReference> shGlobalToId = shReferenceRepository.findByShGlobalToId(shPost.getShGlobalId());
+			List<ShReference> shGlobalFromId = shReferenceRepository.findByShObjectFrom(shPost);			
+			List<ShReference> shGlobalToId = shReferenceRepository.findByShObjectTo(shPost);
 			shReferenceRepository.deleteInBatch(shGlobalFromId);
 			shReferenceRepository.deleteInBatch(shGlobalToId);
 		}
 		
 		for (ShPost shPost : shPostRepository.findByShFolder(shFolder)) {
-			Set<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
-			
-			shPostAttrRepository.deleteInBatch(shPostAttrs);
-			shGlobalIdRepository.delete(shPost.getShGlobalId().getId());
+			Set<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);			
+			shPostAttrRepository.deleteInBatch(shPostAttrs);			
 		}
 		
 		shPostRepository.deleteInBatch(shPostRepository.findByShFolder(shFolder));
@@ -228,21 +222,20 @@ public class ShFolderUtils {
 		for (ShFolder shFolderChild : shFolderRepository.findByParentFolder(shFolder)) {
 			this.deleteFolder(shFolderChild);
 		}
-		shGlobalIdRepository.delete(shFolder.getShGlobalId().getId());
 		shFolderRepository.delete(shFolder.getId());
 		return true;
 	}
 
-	public ShFolder copy(ShFolder shFolder, ShGlobalId shGlobalIdDest) {
+	public ShFolder copy(ShFolder shFolder, ShObject shObjectDest) {
 		// TODO: Copy objects into Folder
 		ShFolder shFolderCopy = new ShFolder();
-		if (shGlobalIdDest.getType().equals(ShObjectType.FOLDER)) {
-			ShFolder shFolderDest = (ShFolder) shGlobalIdDest.getShObject();
+		if (shObjectDest instanceof ShFolder) {
+			ShFolder shFolderDest = (ShFolder) shObjectDest;
 			shFolderCopy.setParentFolder(shFolderDest);
 			shFolderCopy.setShSite(null);
 			shFolderCopy.setRootFolder((byte) 0);
-		} else if (shGlobalIdDest.getType().equals(ShObjectType.SITE)) {
-			ShSite shSiteDest = (ShSite) shGlobalIdDest.getShObject();
+		} else if (shObjectDest instanceof ShSite) {
+			ShSite shSiteDest = (ShSite) shObjectDest;
 			shFolderCopy.setParentFolder(null);
 			shFolderCopy.setShSite(shSiteDest);
 			shFolderCopy.setRootFolder((byte) 1);
@@ -251,15 +244,8 @@ public class ShFolderUtils {
 		}
 		shFolderCopy.setDate(new Date());
 		shFolderCopy.setName(shFolder.getName());
-
+		
 		shFolderRepository.save(shFolderCopy);
-
-		ShGlobalId shGlobalId = new ShGlobalId();
-		shGlobalId.setShObject(shFolderCopy);
-		shGlobalId.setType(ShObjectType.FOLDER);
-
-		shGlobalIdRepository.saveAndFlush(shGlobalId);
-		shFolderCopy.setShGlobalId(shGlobalId);
 
 		return shFolderCopy;
 	}

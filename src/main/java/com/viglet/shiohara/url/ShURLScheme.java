@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.HandlerMapping;
 
-import com.viglet.shiohara.object.ShObjectType;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
@@ -35,13 +34,13 @@ public class ShURLScheme {
 			String shFormat = "default";
 			String shLocale = "en-us";
 			String shSiteName = null;
-			if (shObject.getShGlobalId().getType().equals(ShObjectType.SITE)) {
+			if (shObject instanceof ShSite) {
 				ShSite shSite = (ShSite) shObject;
 				shSiteName = shSite.getFurl();
-			} else if (shObject.getShGlobalId().getType().equals(ShObjectType.FOLDER)) {
+			} else if (shObject instanceof ShFolder) {
 				ShFolder shFolder = (ShFolder) shObject;
 				shSiteName = shFolderUtils.getSite(shFolder).getFurl();
-			} else if (shObject.getShGlobalId().getType().equals(ShObjectType.POST)) {
+			} else if (shObject instanceof ShPost) {
 				ShPost shPost = (ShPost) shObject;
 				ShFolder shFolder = shPost.getShFolder();
 				shSiteName = shFolderUtils.getSite(shFolder).getFurl();

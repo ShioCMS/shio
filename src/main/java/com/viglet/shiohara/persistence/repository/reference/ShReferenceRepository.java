@@ -2,13 +2,12 @@ package com.viglet.shiohara.persistence.repository.reference;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
+import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.reference.ShReference;
 
 public interface ShReferenceRepository extends JpaRepository<ShReference, String> {
@@ -17,9 +16,9 @@ public interface ShReferenceRepository extends JpaRepository<ShReference, String
 
 	Optional<ShReference> findById(String id);
 	
-	List<ShReference> findByShGlobalFromId(ShGlobalId shGlobalFromId);
+	List<ShReference> findByShObjectFrom(ShObject shObjectFrom);
 	
-	List<ShReference> findByShGlobalToId(ShGlobalId shGlobalToId);
+	List<ShReference> findByShObjectTo(ShObject shObjectTo);
 
 	@SuppressWarnings("unchecked")
 	ShReference save(ShReference shReference);

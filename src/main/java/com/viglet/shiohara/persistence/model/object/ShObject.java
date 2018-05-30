@@ -11,11 +11,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -24,14 +22,12 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.GenericGenerator;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.viglet.shiohara.api.ShJsonView;
-import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
+import com.viglet.shiohara.object.ShObjectType;
 import com.viglet.shiohara.persistence.model.history.ShHistory;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.JOINED)
 @NamedQuery(name = "ShObject.findAll", query = "SELECT o FROM ShObject o")
 public class ShObject implements Serializable {
 
@@ -43,19 +39,13 @@ public class ShObject implements Serializable {
 	@Column(name = "id", updatable = false, nullable = false)
 	private String id;
 
-	@OneToOne
-	@JoinColumn(name = "global_id")
-	@Cascade({ CascadeType.ALL })
-	@JsonView({ ShJsonView.ShJsonViewObject.class, ShJsonView.ShJsonViewPostType.class })
-	private ShGlobalId shGlobalId;
-
 	@ManyToMany(mappedBy = "referenceObjects")
 	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
 	private Set<ShPostAttr> shPostAttrRefs;
 
 	// bi-directional many-to-one association to ShPostTypeAttr
 	@OneToMany(mappedBy = "shObject")
-	@Cascade({CascadeType.ALL})
+	@Cascade({ CascadeType.ALL })
 	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
 	private Set<ShHistory> shHistories = new HashSet<ShHistory>();
 
@@ -76,20 +66,14 @@ public class ShObject implements Serializable {
 
 	private int position;
 
+	private ShObjectType objectType;
+
 	public String getId() {
 		return this.id;
 	}
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	public ShGlobalId getShGlobalId() {
-		return shGlobalId;
-	}
-
-	public void setShGlobalId(ShGlobalId shGlobalId) {
-		this.shGlobalId = shGlobalId;
 	}
 
 	public String getOwner() {
@@ -155,5 +139,12 @@ public class ShObject implements Serializable {
 	public void setPosition(int position) {
 		this.position = position;
 	}
-
+	
+	public ShObjectType getObjectType() {
+		return objectType;
+	}
+	
+	public void setObjectType(ShObjectType objectType) {
+		this.objectType = objectType;
+	}
 }

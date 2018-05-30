@@ -13,31 +13,31 @@
 	<div class="list-group">
 		<a ng-repeat="objectRefer in $ctrl.objectRefers"
 			class="list-group-item" ng-click="$ctrl.cancel()"
-			ui-sref="content.children.folder-children({folderId: objectRefer.shGlobalFromId.shObject.id})"
+			ui-sref="content.children.folder-children({folderId: objectRefer.shObjectFrom.id})"
 			style="color: #337ab7;"
-			ng-if="objectRefer.shGlobalFromId.type === 'CHANNEL'">
+			ng-if="objectRefer.shObjectFrom.objectType === 'CHANNEL'">
 			<div class="row">
 				<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
 					<i class="fa fa-folder-open fa-2x" aria-hidden="true"></i>
 				</div>
-				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">{{objectRefer.shGlobalFromId.shObject.name}}</div>
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">{{objectRefer.shObjectFrom.name}}</div>
 				<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-					<span class="label label-primary">{{objectRefer.shGlobalFromId.type}}</span>
+					<span class="label label-primary">{{objectRefer.shObjectFrom.objectType}}</span>
 				</div>
 			</div>
 		</a> <a ng-repeat="objectRefer in $ctrl.objectRefers"
 			class="list-group-item" ng-click="$ctrl.cancel()"
-			ui-sref="content.post-type-item.post-item({postTypeId: objectRefer.shGlobalFromId.shObject.shPostType.id, postId: objectRefer.shGlobalFromId.shObject.id})"
+			ui-sref="content.post-type-item.post-item({postTypeId: objectRefer.shObjectFrom.shPostType.id, postId: objectRefer.shObjectFrom.id})"
 			style="color: #337ab7;"
-			ng-if="objectRefer.shGlobalFromId.type === 'POST'">
+			ng-if="objectRefer.shObjectFrom.objectType === 'POST'">
 			<div class="row">
 				<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
 					<i class="fa fa-file-o fa-2x" aria-hidden="true"> </i>
 				</div>
 
-				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">{{objectRefer.shGlobalFromId.shObject.title}}</div>
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">{{objectRefer.shObjectFrom.title}}</div>
 				<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-					<span class="label label-primary">{{objectRefer.shGlobalFromId.type}}</span>
+					<span class="label label-primary">{{objectRefer.shObjectFrom.objectType}}</span>
 				</div>
 			</div>
 		</a>

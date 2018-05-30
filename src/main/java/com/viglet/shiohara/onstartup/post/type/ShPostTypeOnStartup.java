@@ -5,12 +5,9 @@ import java.util.Calendar;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.viglet.shiohara.object.ShObjectType;
-import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.model.widget.ShWidget;
-import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.persistence.repository.widget.ShWidgetRepository;
@@ -27,9 +24,7 @@ public class ShPostTypeOnStartup {
 	private ShPostTypeAttrRepository shPostTypeAttrRepository;
 	@Autowired
 	private ShWidgetRepository shWidgetRepository;
-	@Autowired
-	private ShGlobalIdRepository shGlobalIdRepository;
-
+	
 	public void createDefaultRows() {
 
 		if (shPostTypeRepository.findAll().isEmpty()) {
@@ -51,10 +46,6 @@ public class ShPostTypeOnStartup {
 			shPostType.setDate(Calendar.getInstance().getTime());
 			shPostType.setDescription("Text Post Type");
 			shPostType.setSystem((byte) 1);
-
-			ShGlobalId shGlobalId = new ShGlobalId();
-			shGlobalId.setType(ShObjectType.POST_TYPE);
-			shPostType.setShGlobalId(shGlobalId);
 
 			shPostTypeRepository.save(shPostType);
 
@@ -80,10 +71,6 @@ public class ShPostTypeOnStartup {
 			shPostType.setDescription("Photo Post Type");
 			shPostType.setSystem((byte) 1);
 
-			shGlobalId = new ShGlobalId();
-			shGlobalId.setType(ShObjectType.POST_TYPE);
-			shPostType.setShGlobalId(shGlobalId);
-			
 			shPostTypeRepository.save(shPostType);
 
 			shPostTypeAttr = new ShPostTypeAttr();
@@ -107,10 +94,6 @@ public class ShPostTypeOnStartup {
 			shPostType.setDate(Calendar.getInstance().getTime());
 			shPostType.setDescription("Video Post Type");
 			shPostType.setSystem((byte) 1);
-
-			shGlobalId = new ShGlobalId();
-			shGlobalId.setType(ShObjectType.POST_TYPE);
-			shPostType.setShGlobalId(shGlobalId);
 
 			shPostTypeRepository.save(shPostType);
 
@@ -136,10 +119,6 @@ public class ShPostTypeOnStartup {
 			shPostType.setDescription("Quote Post Type");
 			shPostType.setSystem((byte) 1);
 
-			shGlobalId = new ShGlobalId();
-			shGlobalId.setType(ShObjectType.POST_TYPE);
-			shPostType.setShGlobalId(shGlobalId);
-
 			shPostTypeRepository.save(shPostType);
 
 			shPostTypeAttr = new ShPostTypeAttr();
@@ -163,10 +142,6 @@ public class ShPostTypeOnStartup {
 			shPostType.setDate(Calendar.getInstance().getTime());
 			shPostType.setDescription("Link Post Type");
 			shPostType.setSystem((byte) 1);
-
-			shGlobalId = new ShGlobalId();
-			shGlobalId.setType(ShObjectType.POST_TYPE);
-			shPostType.setShGlobalId(shGlobalId);
 
 			shPostTypeRepository.save(shPostType);
 
@@ -193,10 +168,6 @@ public class ShPostTypeOnStartup {
 			shPostType.setDescription("File Post Type");
 			shPostType.setSystem((byte) 1);
 
-			shGlobalId = new ShGlobalId();
-			shGlobalId.setType(ShObjectType.POST_TYPE);
-			shPostType.setShGlobalId(shGlobalId);
-
 			shPostTypeRepository.save(shPostType);
 
 			shPostTypeAttr = new ShPostTypeAttr();
@@ -221,10 +192,6 @@ public class ShPostTypeOnStartup {
 			shPostType.setDescription("Text Area Post Type");
 			shPostType.setSystem((byte) 0);
 
-			shGlobalId = new ShGlobalId();
-			shGlobalId.setType(ShObjectType.POST_TYPE);
-			shPostType.setShGlobalId(shGlobalId);
-
 			shPostTypeRepository.save(shPostType);
 
 			shPostTypeAttr = new ShPostTypeAttr();
@@ -248,10 +215,6 @@ public class ShPostTypeOnStartup {
 			shPostType.setDate(Calendar.getInstance().getTime());
 			shPostType.setDescription("Article Post Type");
 			shPostType.setSystem((byte) 0);
-
-			shGlobalId = new ShGlobalId();
-			shGlobalId.setType(ShObjectType.POST_TYPE);
-			shPostType.setShGlobalId(shGlobalId);
 
 			shPostTypeRepository.save(shPostType);
 			
@@ -384,10 +347,6 @@ public class ShPostTypeOnStartup {
 			shPostType.setDescription("Region Post Type");
 			shPostType.setSystem((byte) 1);
 
-			shGlobalId = new ShGlobalId();
-			shGlobalId.setType(ShObjectType.POST_TYPE);
-			shPostType.setShGlobalId(shGlobalId);
-
 			shPostTypeRepository.save(shPostType);
 
 			shPostTypeAttr = new ShPostTypeAttr();
@@ -451,10 +410,6 @@ public class ShPostTypeOnStartup {
 			shPostType.setDescription("Theme Post Type");
 			shPostType.setSystem((byte) 1);
 
-			shGlobalId = new ShGlobalId();
-			shGlobalId.setType(ShObjectType.POST_TYPE);
-			shPostType.setShGlobalId(shGlobalId);
-
 			shPostTypeRepository.save(shPostType);
 
 			shPostTypeAttr = new ShPostTypeAttr();
@@ -517,11 +472,7 @@ public class ShPostTypeOnStartup {
 			shPostType.setDate(Calendar.getInstance().getTime());
 			shPostType.setDescription("Page Layout Post Type");
 			shPostType.setSystem((byte) 1);
-
-			shGlobalId = new ShGlobalId();
-			shGlobalId.setType(ShObjectType.POST_TYPE);
-			shPostType.setShGlobalId(shGlobalId);
-
+			
 			shPostTypeRepository.save(shPostType);
 
 			shPostTypeAttr = new ShPostTypeAttr();
@@ -598,10 +549,6 @@ public class ShPostTypeOnStartup {
 			shPostType.setDescription("Folder Index Post Type");
 			shPostType.setSystem((byte) 1);
 
-			shGlobalId = new ShGlobalId();
-			shGlobalId.setType(ShObjectType.POST_TYPE);
-			shPostType.setShGlobalId(shGlobalId);
-
 			shPostTypeRepository.save(shPostType);
 
 			shPostTypeAttr = new ShPostTypeAttr();
@@ -651,11 +598,7 @@ public class ShPostTypeOnStartup {
 			shPostType.setDate(Calendar.getInstance().getTime());
 			shPostType.setDescription("Alias Post Type");
 			shPostType.setSystem((byte) 1);
-
-			shGlobalId = new ShGlobalId();
-			shGlobalId.setType(ShObjectType.POST_TYPE);
-			shPostType.setShGlobalId(shGlobalId);
-
+			
 			shPostTypeRepository.save(shPostType);
 
 			shPostTypeAttr = new ShPostTypeAttr();

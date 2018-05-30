@@ -28,7 +28,7 @@ shioharaApp.controller('ShWidgetContentSelectSelectCtrl', [
 				$ctrl.shPostSelected = null;
 				$scope.$evalAsync($http.get(
 						shAPIServerService.get().concat(
-								"/v2/object/" + shFolder.shGlobalId.id + "/list"))
+								"/v2/object/" + shFolder.id + "/list"))
 						.then(function(response) {
 							$scope.shFolders = response.data.shFolders;
 							$scope.shPosts = response.data.shPosts;

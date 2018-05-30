@@ -14,15 +14,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
-import com.viglet.shiohara.object.ShObjectType;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
-import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
-import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
@@ -50,8 +47,6 @@ public class ShStaticFileAPI {
 	private ShPostTypeAttrRepository shPostTypeAttrRepository;
 	@Autowired
 	private ShPostAttrRepository shPostAttrRepository;
-	@Autowired
-	private ShGlobalIdRepository shGlobalIdRepository;
 
 	@PostMapping("/upload")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
@@ -84,14 +79,8 @@ public class ShStaticFileAPI {
 					shPost.setSummary(null);
 					shPost.setTitle(filePath);
 					shPost.setShFolder(shFolder);
-
+					
 					shPostRepository.save(shPost);
-
-					ShGlobalId shGlobalId = new ShGlobalId();
-					shGlobalId.setShObject(shPost);
-					shGlobalId.setType(ShObjectType.POST);
-
-					shGlobalIdRepository.saveAndFlush(shGlobalId);
 
 					ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType,
 							ShSystemPostTypeAttr.FILE);

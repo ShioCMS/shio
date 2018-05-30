@@ -19,18 +19,15 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
 import com.viglet.shiohara.api.folder.ShFolderList;
 import com.viglet.shiohara.api.folder.ShFolderPath;
-import com.viglet.shiohara.object.ShObjectType;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
-import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
-import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
+import com.viglet.shiohara.persistence.repository.object.ShObjectRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
-import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
 import com.viglet.shiohara.utils.ShFolderUtils;
 import com.viglet.shiohara.utils.ShPostUtils;
 import com.viglet.shiohara.utils.ShSiteUtils;
@@ -46,8 +43,6 @@ public class ShObjectAPI {
 	@Autowired
 	private ShFolderRepository shFolderRepository;
 	@Autowired
-	private ShSiteRepository shSiteRepository;
-	@Autowired
 	private ShPostRepository shPostRepository;
 	@Autowired
 	private ShSiteUtils shSiteUtils;
@@ -56,24 +51,27 @@ public class ShObjectAPI {
 	@Autowired
 	private ShPostTypeRepository shPostTypeRepository;
 	@Autowired
-	private ShGlobalIdRepository shGlobalIdRepository;
+	private ShObjectRepository shObjectRepository;
 	@Autowired
 	private ShPostUtils shPostUtils;
+
+	@GetMapping
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
+	public List<ShObject> shObjectList() throws Exception {
+		return shObjectRepository.findAll();
+	}
 
 	@GetMapping("/{id}/preview")
 	public RedirectView shObjectPreview(@PathVariable String id, HttpServletResponse response,
 			RedirectAttributes attributes) throws Exception {
 		String redirect = null;
-		ShGlobalId shGlobalId = shGlobalIdRepository.findById(id).get();
-		if (shGlobalId.getType().equals(ShObjectType.SITE)) {
-			ShSite shSite = shSiteRepository.findById(shGlobalId.getShObject().getId()).get();
-			redirect = shSiteUtils.generatePostLink(shSite);
-		} else if (shGlobalId.getType().equals(ShObjectType.POST)) {
-			ShPost shPost = shPostRepository.findById(shGlobalId.getShObject().getId()).get();
-			redirect = shPostUtils.generatePostLink(shPost);
-		} else if (shGlobalId.getType().equals(ShObjectType.FOLDER)) {
-			ShFolder shFolder = shFolderRepository.findById(shGlobalId.getShObject().getId()).get();
-			redirect = shFolderUtils.generateFolderLink(shFolder);
+		ShObject shObject = shObjectRepository.findById(id).get();
+		if (shObject instanceof ShSite) {
+			redirect = shSiteUtils.generatePostLink((ShSite) shObject);
+		} else if (shObject instanceof ShPost) {
+			redirect = shPostUtils.generatePostLink((ShPost) shObject);
+		} else if (shObject instanceof ShFolder) {
+			redirect = shFolderUtils.generateFolderLink((ShFolder) shObject);
 		}
 
 		RedirectView redirectView = new RedirectView(new String(redirect.getBytes("UTF-8"), "ISO-8859-1"));
@@ -87,27 +85,27 @@ public class ShObjectAPI {
 			throws Exception {
 		List<ShObject> shObjects = new ArrayList<ShObject>();
 		for (String globalId : globalIds) {
-			ShGlobalId shGlobalId = shGlobalIdRepository.findById(globalId).get();
-			ShGlobalId shGlobalIdDest = shGlobalIdRepository.findById(globallIdDest).get();
-			if (shGlobalIdDest.getType().equals(ShObjectType.FOLDER)) {
-				ShFolder shFolderDest = (ShFolder) shGlobalIdDest.getShObject();
-				if (shGlobalId.getType().equals(ShObjectType.POST)) {
-					ShPost shPost = (ShPost) shGlobalId.getShObject();
+			ShObject shObject = shObjectRepository.findById(globalId).get();
+			ShObject shObjectDest = shObjectRepository.findById(globallIdDest).get();
+			if (shObjectDest instanceof ShFolder) {
+				ShFolder shFolderDest = (ShFolder) shObjectDest;
+				if (shObject instanceof ShPost) {
+					ShPost shPost = (ShPost) shObject;
 					shPost.setShFolder(shFolderDest);
 					shPostRepository.save(shPost);
 					shObjects.add(shPost);
-				} else if (shGlobalId.getType().equals(ShObjectType.FOLDER)) {
-					ShFolder shFolder = (ShFolder) shGlobalId.getShObject();
+				} else if (shObject instanceof ShFolder) {
+					ShFolder shFolder = (ShFolder) shObject;
 					shFolder.setParentFolder(shFolderDest);
 					shFolder.setRootFolder((byte) 0);
 					shFolder.setShSite(null);
 					shFolderRepository.save(shFolder);
 					shObjects.add(shFolder);
 				}
-			} else if (shGlobalIdDest.getType().equals(ShObjectType.SITE)) {
-				if (shGlobalId.getType().equals(ShObjectType.FOLDER)) {
-					ShSite shSiteDest = (ShSite) shGlobalIdDest.getShObject();
-					ShFolder shFolder = (ShFolder) shGlobalId.getShObject();
+			} else if (shObjectDest instanceof ShSite) {
+				if (shObject instanceof ShFolder) {
+					ShSite shSiteDest = (ShSite) shObjectDest;
+					ShFolder shFolder = (ShFolder) shObjectDest;
 					shFolder.setParentFolder(null);
 					shFolder.setRootFolder((byte) 1);
 					shFolder.setShSite(shSiteDest);
@@ -125,21 +123,21 @@ public class ShObjectAPI {
 			throws Exception {
 		List<ShObject> shObjects = new ArrayList<ShObject>();
 		for (String globalId : globalIds) {
-			ShGlobalId shGlobalId = shGlobalIdRepository.findById(globalId).get();
-			ShGlobalId shGlobalIdDest = shGlobalIdRepository.findById(globallIdDest).get();
-			if (shGlobalIdDest.getType().equals(ShObjectType.FOLDER)) {
-				ShFolder shFolderDest = (ShFolder) shGlobalIdDest.getShObject();
-				if (shGlobalId.getType().equals(ShObjectType.POST)) {
-					ShPost shPost = (ShPost) shGlobalId.getShObject();
+			ShObject shObject = shObjectRepository.findById(globalId).get();
+			ShObject shObjectDest = shObjectRepository.findById(globallIdDest).get();
+			if (shObjectDest instanceof ShFolder) {
+				ShFolder shFolderDest = (ShFolder) shObjectDest;
+				if (shObject instanceof ShPost) {
+					ShPost shPost = (ShPost) shObject;
 					shObjects.add(shPostUtils.copy(shPost, shFolderDest));
-				} else if (shGlobalId.getType().equals(ShObjectType.FOLDER)) {
-					ShFolder shFolder = (ShFolder) shGlobalId.getShObject();
-					shObjects.add(shFolderUtils.copy(shFolder, shGlobalIdDest));
+				} else if (shObject instanceof ShFolder) {
+					ShFolder shFolder = (ShFolder) shObject;
+					shObjects.add(shFolderUtils.copy(shFolder, shObjectDest));
 				}
-			} else if (shGlobalIdDest.getType().equals(ShObjectType.SITE)) {
-				if (shGlobalId.getType().equals(ShObjectType.FOLDER)) {
-					ShFolder shFolder = (ShFolder) shGlobalId.getShObject();
-					shObjects.add(shFolderUtils.copy(shFolder, shGlobalIdDest));
+			} else if (shObjectDest instanceof ShSite) {
+				if (shObject instanceof ShFolder) {
+					ShFolder shFolder = (ShFolder) shObject;
+					shObjects.add(shFolderUtils.copy(shFolder, shObjectDest));
 				}
 			}
 		}
@@ -149,9 +147,9 @@ public class ShObjectAPI {
 	@GetMapping("/{id}/list")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShFolderList shObjectListItem(@PathVariable String id) throws Exception {
-		ShGlobalId shGlobalId = shGlobalIdRepository.findById(id).get();
-		if (shGlobalId.getType().equals(ShObjectType.FOLDER)) {
-			ShFolder shFolder = (ShFolder) shGlobalId.getShObject();
+		ShObject shObject = shObjectRepository.findById(id).get();
+		if (shObject instanceof ShFolder) {
+			ShFolder shFolder = (ShFolder) shObject;
 			String folderPath = shFolderUtils.folderPath(shFolder);
 			ArrayList<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shFolder);
 			ShSite shSite = breadcrumb.get(0).getShSite();
@@ -162,8 +160,8 @@ public class ShObjectAPI {
 			shFolderList.setBreadcrumb(breadcrumb);
 			shFolderList.setShSite(shSite);
 			return shFolderList;
-		} else if (shGlobalId.getType().equals(ShObjectType.SITE)) {
-			ShSite shSite = (ShSite) shGlobalId.getShObject();
+		} else if (shObject instanceof ShSite) {
+			ShSite shSite = (ShSite) shObject;
 			List<ShFolder> shFolders = shFolderRepository.findByShSiteAndRootFolder(shSite, (byte) 1);
 			ShFolderList shFolderList = new ShFolderList();
 			shFolderList.setShFolders(shFolders);
@@ -178,10 +176,10 @@ public class ShObjectAPI {
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShFolderList shFolderListByPostType(@PathVariable String id, @PathVariable String postTypeName)
 			throws Exception {
-		ShGlobalId shGlobalId = shGlobalIdRepository.findById(id).get();
+		ShObject shObject = shObjectRepository.findById(id).get();
 		ShPostType shPostType = shPostTypeRepository.findByName(postTypeName);
-		if (shGlobalId.getType().equals(ShObjectType.FOLDER)) {
-			ShFolder shFolder = (ShFolder) shGlobalId.getShObject();
+		if (shObject instanceof ShFolder) {
+			ShFolder shFolder = (ShFolder) shObject;
 			String folderPath = shFolderUtils.folderPath(shFolder);
 			ArrayList<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shFolder);
 			ShSite shSite = breadcrumb.get(0).getShSite();
@@ -192,8 +190,8 @@ public class ShObjectAPI {
 			shFolderList.setBreadcrumb(breadcrumb);
 			shFolderList.setShSite(shSite);
 			return shFolderList;
-		} else if (shGlobalId.getType().equals(ShObjectType.SITE)) {
-			ShSite shSite = (ShSite) shGlobalId.getShObject();
+		} else if (shObject instanceof ShSite) {
+			ShSite shSite = (ShSite) shObject;
 			List<ShFolder> shFolders = shFolderRepository.findByShSiteAndRootFolder(shSite, (byte) 1);
 			ShFolderList shFolderList = new ShFolderList();
 			shFolderList.setShFolders(shFolders);
@@ -208,9 +206,9 @@ public class ShObjectAPI {
 	@GetMapping("/{id}/path")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShFolderPath shObjectPath(@PathVariable String id) throws Exception {
-		ShGlobalId shGlobalId = shGlobalIdRepository.findById(id).get();
-		if (shGlobalId.getType().equals(ShObjectType.SITE)) {
-			ShSite shSite = (ShSite) shGlobalId.getShObject();
+		ShObject shObject = shObjectRepository.findById(id).get();
+		if (shObject instanceof ShSite) {
+			ShSite shSite = (ShSite) shObject;
 			if (shSite != null) {
 				ShFolderPath shFolderPath = new ShFolderPath();
 				shFolderPath.setFolderPath(null);
@@ -218,11 +216,9 @@ public class ShObjectAPI {
 				shFolderPath.setBreadcrumb(null);
 				shFolderPath.setShSite(shSite);
 				return shFolderPath;
-			} else {
-				return null;
 			}
-		} else if (shGlobalId.getType().equals(ShObjectType.FOLDER)) {
-			ShFolder shFolder = (ShFolder) shGlobalId.getShObject();
+		} else if (shObject instanceof ShFolder) {
+			ShFolder shFolder = (ShFolder) shObject;
 			if (shFolder != null) {
 				ShFolderPath shFolderPath = new ShFolderPath();
 				String folderPath = shFolderUtils.folderPath(shFolder);
@@ -233,11 +229,9 @@ public class ShObjectAPI {
 				shFolderPath.setBreadcrumb(breadcrumb);
 				shFolderPath.setShSite(shSite);
 				return shFolderPath;
-			} else {
-				return null;
 			}
-		} else if (shGlobalId.getType().equals(ShObjectType.POST)) {
-			ShPost shPost = (ShPost) shGlobalId.getShObject();
+		} else if (shObject instanceof ShPost) {
+			ShPost shPost = (ShPost) shObject;
 			if (shPost != null) {
 				ShFolder shFolder = shPost.getShFolder();
 				ShFolderPath shFolderPath = new ShFolderPath();
@@ -249,11 +243,8 @@ public class ShObjectAPI {
 				shFolderPath.setBreadcrumb(breadcrumb);
 				shFolderPath.setShSite(shSite);
 				return shFolderPath;
-			} else {
-				return null;
 			}
-		} else {
-			return null;
 		}
+		return null;
 	}
 }

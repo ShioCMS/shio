@@ -9,7 +9,7 @@ shioharaApp.controller('ShModalDeleteObjectCtrl', [
 			var $ctrl = this;
 			$ctrl.removeInstance = false;
 			$ctrl.shObject = shObject;
-			shObjectType = $ctrl.shObject.shGlobalId.type
+			shObjectType = $ctrl.shObject.objectType
 
 			if (angular.equals(shObjectType, 'POST')
 					|| angular.equals(shObjectType, 'POSTTYPE')) {
@@ -41,7 +41,7 @@ shioharaApp.controller('ShModalDeleteObjectCtrl', [
 					// Selected Replace and Remove it
 					$http.post(
 							shAPIServerService.get().concat(
-									"/v2/reference/to/" + shObject.shGlobalId.id + "/replace/" + shPostSelected.shGlobalId.id))
+									"/v2/reference/to/" + shObject.id + "/replace/" + shPostSelected.id))
 							.then(function(response) {
 								$ctrl.objectRefers = response.data;
 							});

@@ -183,7 +183,12 @@ public class ShSitesContext {
 
 		} else {
 			// Post
-			JSONObject postTypeLayout = new JSONObject(shSite.getPostTypeLayout());
+			JSONObject postTypeLayout = new JSONObject();
+			
+			if (shSite.getPostTypeLayout() != null) {
+				postTypeLayout = new JSONObject(shSite.getPostTypeLayout());
+			}
+			
 			String pageLayoutName = (String) postTypeLayout.get(shPostItem.getShPostType().getName());
 			ShPost shPostPageLayout = shPostRepository.findByTitle(pageLayoutName);
 

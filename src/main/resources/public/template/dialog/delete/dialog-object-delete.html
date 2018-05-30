@@ -4,7 +4,7 @@
 <div class="modal-body">
 	<div class="list-group">
 		<div ng-repeat="shObject in $ctrl.shObjects" class="list-group-item">
-			<div class="row" ng-if="shObject.shGlobalId.type === 'POST'">
+			<div class="row" ng-if="shObject.objectType === 'POST'">
 				<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
 					<i class="fa fa-file-o fa-2x" aria-hidden="true"> </i>
 				</div>
@@ -14,7 +14,7 @@
 						{{shObject.shPostType.title}}</span>
 				</div>
 			</div>
-			<div class="row" ng-if="shObject.shGlobalId.type === 'FOLDER'">
+			<div class="row" ng-if="shObject.objectType === 'FOLDER'">
 				<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
 					<i class="fa fa-folder-open fa-2x" aria-hidden="true"> </i>
 				</div>

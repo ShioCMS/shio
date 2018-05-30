@@ -19,12 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
-import com.viglet.shiohara.object.ShObjectType;
-import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
-import com.viglet.shiohara.persistence.repository.globalid.ShGlobalIdRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
@@ -44,8 +41,6 @@ public class ShPostTypeAPI {
 	private ShPostAttrRepository shPostAttrRepository;
 	@Autowired
 	private ShPostRepository shPostRepository;
-	@Autowired
-	private ShGlobalIdRepository shGlobalIdRepository;
 
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewPostType.class })
@@ -122,12 +117,9 @@ public class ShPostTypeAPI {
 		for (ShPost shPost : shPostType.getShPosts()) {
 			for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
 				shPostAttrRepository.delete(shPostAttr.getId());
-			}
-			shGlobalIdRepository.delete(shPost.getShGlobalId().getId());
+			}			
 			shPostRepository.delete(shPost.getId());
 		}
-
-		shGlobalIdRepository.delete(shPostType.getShGlobalId().getId());
 
 		shPostTypeRepository.delete(id);
 		return true;
@@ -137,10 +129,6 @@ public class ShPostTypeAPI {
 	@JsonView({ ShJsonView.ShJsonViewPostType.class })
 	public ShPostType shPostTypeAdd(@RequestBody ShPostType shPostType) throws Exception {
 		
-		ShGlobalId shGlobalId = new ShGlobalId();
-		shGlobalId.setType(ShObjectType.POST_TYPE);
-		shPostType.setShGlobalId(shGlobalId);
-
 		this.postTypeSave(shPostType);
 
 		return shPostType;

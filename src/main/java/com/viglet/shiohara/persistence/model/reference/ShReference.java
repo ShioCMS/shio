@@ -12,8 +12,7 @@ import javax.persistence.NamedQuery;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import com.viglet.shiohara.persistence.model.globalid.ShGlobalId;
-
+import com.viglet.shiohara.persistence.model.object.ShObject;
 
 @Entity
 @NamedQuery(name = "ShReference.findAll", query = "SELECT r FROM ShReference r")
@@ -27,12 +26,12 @@ public class ShReference implements Serializable{
 	private String id;
 	
 	@ManyToOne
-	@JoinColumn(name = "global_from_id" , nullable = false)
-	private ShGlobalId shGlobalFromId;
+	@JoinColumn(name = "object_from" , nullable = false)
+	private ShObject shObjectFrom;
 	
 	@ManyToOne
-	@JoinColumn(name = "global_to_id", nullable = false)
-	private ShGlobalId shGlobalToId;
+	@JoinColumn(name = "object_to", nullable = false)
+	private ShObject shObjectTo;
 
 	public String getId() {
 		return id;
@@ -42,23 +41,21 @@ public class ShReference implements Serializable{
 		this.id = id;
 	}
 
-	public ShGlobalId getShGlobalFromId() {
-		return shGlobalFromId;
+	public ShObject getShObjectFrom() {
+		return shObjectFrom;
 	}
 
-	public void setShGlobalFromId(ShGlobalId shGlobalFromId) {
-		this.shGlobalFromId = shGlobalFromId;
+	public void setShObjectFrom(ShObject shObjectFrom) {
+		this.shObjectFrom = shObjectFrom;
 	}
 
-	public ShGlobalId getShGlobalToId() {
-		return shGlobalToId;
+	public ShObject getShObjectTo() {
+		return shObjectTo;
 	}
 
-	public void setShGlobalToId(ShGlobalId shGlobalToId) {
-		this.shGlobalToId = shGlobalToId;
+	public void setShObjectTo(ShObject shObjectTo) {
+		this.shObjectTo = shObjectTo;
 	}
 
-
-	 
 	
 }

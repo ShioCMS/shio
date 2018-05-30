@@ -3,7 +3,8 @@ package com.viglet.shiohara.exchange;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-@JsonIgnoreProperties({ "files"})
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ShExchange {
 
 	private List<ShSiteExchange> sites;

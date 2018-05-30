@@ -3,9 +3,10 @@ package com.viglet.shiohara.exchange;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ShFolderExchange {
-	private String globalId;
 	
 	private String id;
 
@@ -19,14 +20,6 @@ public class ShFolderExchange {
 	private String owner;
 	
 	private String furl;
-	
-	public String getGlobalId() {
-		return globalId;
-	}
-
-	public void setGlobalId(String globalId) {
-		this.globalId = globalId;
-	}
 
 	public String getId() {
 		return id;
