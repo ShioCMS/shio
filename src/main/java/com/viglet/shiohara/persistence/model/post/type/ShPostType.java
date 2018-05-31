@@ -21,6 +21,7 @@ import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.PrimaryKeyJoinColumn;
 
 /**
  * The persistent class for the ShPostType database table.
@@ -29,6 +30,7 @@ import javax.persistence.OneToMany;
 @Entity
 @NamedQuery(name = "ShPostType.findAll", query = "SELECT s FROM ShPostType s")
 @JsonIgnoreProperties({ "shPosts", "shPostAttrs" })
+@PrimaryKeyJoinColumn(name = "object_id")
 public class ShPostType extends ShObject {
 	private static final long serialVersionUID = 1L;
 
