@@ -23,6 +23,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.PrimaryKeyJoinColumn;
 
 /**
  * The persistent class for the ShPost database table.
@@ -31,6 +32,7 @@ import javax.persistence.OneToMany;
 @Indexed
 @Entity
 @NamedQuery(name = "ShPost.findAll", query = "SELECT s FROM ShPost s")
+@PrimaryKeyJoinColumn(name = "object_id")
 public class ShPost extends ShObject {
 	private static final long serialVersionUID = 1L;
 

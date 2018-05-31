@@ -12,7 +12,7 @@ shioharaApp.controller('ShModalDeleteObjectCtrl', [
 			shObjectType = $ctrl.shObject.objectType
 
 			if (angular.equals(shObjectType, 'POST')
-					|| angular.equals(shObjectType, 'POSTTYPE')) {
+					|| angular.equals(shObjectType, 'POST_TYPE')) {
 				$ctrl.objectName = shObject.title;
 			} else {
 				$ctrl.objectName = shObject.name;
@@ -20,7 +20,7 @@ shioharaApp.controller('ShModalDeleteObjectCtrl', [
 
 			$http.get(
 					shAPIServerService.get().concat(
-							"/v2/reference/to/" + $ctrl.shObject.shGlobalId.id))
+							"/v2/reference/to/" + $ctrl.shObject.id))
 					.then(function(response) {
 						$ctrl.objectRefers = response.data;
 					});

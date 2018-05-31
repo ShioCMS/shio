@@ -124,7 +124,7 @@ public class ShSiteAPI {
 		for (ShFolder shFolder : shFolders) {
 			shFolderUtils.deleteFolder(shFolder);
 		}
-		
+
 		shSiteRepository.delete(id);
 
 		return true;
@@ -133,12 +133,12 @@ public class ShSiteAPI {
 	@PostMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShSite shSiteAdd(@RequestBody ShSite shSite, final Principal principal) throws Exception {
+
 		shSite.setDate(new Date());
 		shSite.setOwner(principal.getName());
 		shSite.setFurl(shURLFormatter.format(shSite.getName()));
 
 		shSiteRepository.save(shSite);
-
 
 		// Home Folder
 		ShFolder shFolderHome = new ShFolder();
@@ -175,7 +175,7 @@ public class ShSiteAPI {
 		shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 		shPostAttr.setStrValue(shPost.getTitle());
 		shPostAttr.setType(1);
-				
+
 		shPostAttrRepository.save(shPostAttr);
 
 		shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex,

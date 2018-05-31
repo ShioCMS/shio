@@ -21,6 +21,7 @@ import com.viglet.shiohara.persistence.model.object.ShObject;
 @Entity
 @NamedQuery(name = "ShSite.findAll", query = "SELECT s FROM ShSite s")
 @JsonIgnoreProperties({ "shFolders", "shPosts" })
+@PrimaryKeyJoinColumn(name = "object_id")
 public class ShSite extends ShObject {
 	private static final long serialVersionUID = 1L;
 
