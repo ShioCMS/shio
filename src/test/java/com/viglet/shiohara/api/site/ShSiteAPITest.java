@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.security.Principal;
+import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -37,13 +38,39 @@ public class ShSiteAPITest {
 
 	private String sampleSiteId = "c5bdee96-6feb-4894-9daf-3aab6cdd5087";
 
-	private String newSiteId = "878ee9bb-b4d7-4142-ab5f-c822af092fe2";
+	private String newSiteId  = "2761f115-198d-4cd8-9566-7d5671764444";
 
+	private Principal mockPrincipal;
+	
 	@Before
 	public void setup() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+		mockPrincipal = Mockito.mock(Principal.class);
+		Mockito.when(mockPrincipal.getName()).thenReturn("admin");
 	}
 
+	@Test
+	public void shSiteList()  throws Exception {	
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/v2/site").principal(mockPrincipal);
+
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+	}
+	
+	@Test
+	public void shSiteStructure()  throws Exception {		
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/v2/site/model").principal(mockPrincipal);
+
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+	}
+	
+	@Test
+	public void shSiteRootFolder() throws Exception {
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/v2/site/" + sampleSiteId + "/folder").principal(mockPrincipal);
+
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+		
+	}
+	
 	@Test
 	public void shSiteEdit() throws Exception {
 		mockMvc.perform(get("/api/v2/site/" + sampleSiteId)).andExpect(status().isOk());
@@ -57,10 +84,7 @@ public class ShSiteAPITest {
 	}
 
 	@Test
-	public void stage01shSiteAdd() throws Exception {
-		Principal mockPrincipal = Mockito.mock(Principal.class);
-		Mockito.when(mockPrincipal.getName()).thenReturn("admin");
-
+	public void stage01ShSiteAdd() throws Exception {
 		ShSite shSite = new ShSite();
 		shSite.setId(newSiteId);
 		shSite.setDescription("Test Site");
@@ -79,9 +103,6 @@ public class ShSiteAPITest {
 
 	@Test
 	public void stage02ShSiteUpdate() throws Exception {
-		Principal mockPrincipal = Mockito.mock(Principal.class);
-		Mockito.when(mockPrincipal.getName()).thenReturn("admin");
-
 		ShSite shSite = new ShSite();
 		shSite.setId(newSiteId);
 		shSite.setDescription("Test Site2");
@@ -99,10 +120,11 @@ public class ShSiteAPITest {
 	}
 	
 	@Test
-	public void stage03shSiteDelete() throws Exception {
+	public void stage03ShSiteDelete() throws Exception {
 		mockMvc.perform(delete("/api/v2/site/" + newSiteId)).andExpect(status().isOk());
 
 	}
+	
 	public static String asJsonString(final Object obj) {
 		try {
 			return new ObjectMapper().writeValueAsString(obj);
