@@ -10,7 +10,6 @@ import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.widget.ShSystemWidget;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * The persistent class for the ShWidget database table.
@@ -27,7 +26,7 @@ public class ShWidget implements Serializable {
 	@GeneratedValue(generator = "UUID")
 
 	@Column(name = "id", updatable = false, nullable = false)
-	private UUID id;
+	private String id;
 
 	@Column(name = "class_name")
 	private String className;
@@ -51,11 +50,11 @@ public class ShWidget implements Serializable {
 	public ShWidget() {
 	}
 
-	public UUID getId() {
+	public String getId() {
 		return this.id;
 	}
 
-	public void setId(UUID id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
