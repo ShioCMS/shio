@@ -1,7 +1,8 @@
 package com.viglet.shiohara.api.widget;
 
 import java.util.List;
-import java.util.UUID;
+
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,12 +33,12 @@ public class ShWidgetAPI {
 	}
 	
 	@GetMapping("/{id}")
-	public ShWidget shWidgetEdit(@PathVariable UUID id) throws Exception {
+	public ShWidget shWidgetEdit(@PathVariable String id) throws Exception {
 		return shWidgetRepository.findById(id).get();
 	}
 
 	@PutMapping("/{id}")
-	public ShWidget shWidgetUpdate(@PathVariable UUID id, @RequestBody ShWidget shWidget) throws Exception {
+	public ShWidget shWidgetUpdate(@PathVariable String id, @RequestBody ShWidget shWidget) throws Exception {
 		ShWidget shWidgetEdit = shWidgetRepository.findById(id).get();
 		shWidgetEdit.setName(shWidget.getName());
 		shWidgetEdit.setType(shWidget.getType());
@@ -48,8 +49,9 @@ public class ShWidgetAPI {
 		return shWidgetEdit;
 	}
 
+	@Transactional
 	@DeleteMapping("/{id}")
-	public boolean shWidgetDelete(@PathVariable UUID id) throws Exception {
+	public boolean shWidgetDelete(@PathVariable String id) throws Exception {
 		shWidgetRepository.delete(id);
 		return true;
 	}

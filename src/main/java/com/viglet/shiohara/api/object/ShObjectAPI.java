@@ -28,6 +28,7 @@ import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.object.ShObjectRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
+import com.viglet.shiohara.url.ShURLFormatter;
 import com.viglet.shiohara.utils.ShFolderUtils;
 import com.viglet.shiohara.utils.ShPostUtils;
 import com.viglet.shiohara.utils.ShSiteUtils;
@@ -54,7 +55,9 @@ public class ShObjectAPI {
 	private ShObjectRepository shObjectRepository;
 	@Autowired
 	private ShPostUtils shPostUtils;
-
+	@Autowired
+	private ShURLFormatter shURLFormatter;
+	
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShObject> shObjectList() throws Exception {
@@ -92,6 +95,7 @@ public class ShObjectAPI {
 				if (shObject instanceof ShPost) {
 					ShPost shPost = (ShPost) shObject;
 					shPost.setShFolder(shFolderDest);
+					shPost.setFurl(shURLFormatter.format(shPost.getTitle()));
 					shPostRepository.save(shPost);
 					shObjects.add(shPost);
 				} else if (shObject instanceof ShFolder) {
@@ -99,6 +103,7 @@ public class ShObjectAPI {
 					shFolder.setParentFolder(shFolderDest);
 					shFolder.setRootFolder((byte) 0);
 					shFolder.setShSite(null);
+					shFolder.setFurl(shURLFormatter.format(shFolder.getName()));
 					shFolderRepository.save(shFolder);
 					shObjects.add(shFolder);
 				}
@@ -109,6 +114,7 @@ public class ShObjectAPI {
 					shFolder.setParentFolder(null);
 					shFolder.setRootFolder((byte) 1);
 					shFolder.setShSite(shSiteDest);
+					shFolder.setFurl(shURLFormatter.format(shFolder.getName()));
 					shFolderRepository.save(shFolder);
 					shObjects.add(shFolder);
 				}

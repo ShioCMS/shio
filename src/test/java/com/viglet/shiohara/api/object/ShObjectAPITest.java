@@ -67,7 +67,7 @@ public class ShObjectAPITest {
 		String newFolderId = UUID.randomUUID().toString();
 		ShFolder shFolder = new ShFolder();
 		shFolder.setId(newFolderId);
-		shFolder.setName("Unit Test Move");
+		shFolder.setName("Unit Test Move to Folder");
 		shFolder.setPosition(2);
 		shFolder.setRootFolder((byte) 1);
 		shFolder.setShSite(shSite);
@@ -135,7 +135,7 @@ public class ShObjectAPITest {
 			String newFolderId = UUID.randomUUID().toString();
 			ShFolder shFolder = new ShFolder();
 			shFolder.setId(newFolderId);
-			shFolder.setName("Unit Test Move");
+			shFolder.setName("Unit Test Copy to Folder");
 			shFolder.setPosition(2);
 			shFolder.setRootFolder((byte) 1);
 			shFolder.setShSite(shSite);
@@ -168,7 +168,7 @@ public class ShObjectAPITest {
 			String newFolderId = UUID.randomUUID().toString();
 			ShFolder shFolder = new ShFolder();
 			shFolder.setId(newFolderId);
-			shFolder.setName("Unit Test Move to Site");
+			shFolder.setName("Unit Test Copy to Site");
 			shFolder.setPosition(2);
 			shFolder.setRootFolder((byte) 0);
 			shFolder.setParentFolder(shParentFolder);
