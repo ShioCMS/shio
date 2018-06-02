@@ -105,7 +105,7 @@ public class ShObjectAPI {
 			} else if (shObjectDest instanceof ShSite) {
 				if (shObject instanceof ShFolder) {
 					ShSite shSiteDest = (ShSite) shObjectDest;
-					ShFolder shFolder = (ShFolder) shObjectDest;
+					ShFolder shFolder = (ShFolder) shObject;
 					shFolder.setParentFolder(null);
 					shFolder.setRootFolder((byte) 1);
 					shFolder.setShSite(shSiteDest);

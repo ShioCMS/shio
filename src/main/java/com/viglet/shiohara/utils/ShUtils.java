@@ -17,6 +17,8 @@ import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @Component
 public class ShUtils {
 	/**
@@ -102,5 +104,13 @@ public class ShUtils {
 		String path = file.getCanonicalPath();
 
 		return path.substring(index);
+	}
+	
+	public static String asJsonString(final Object obj) {
+		try {
+			return new ObjectMapper().writeValueAsString(obj);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

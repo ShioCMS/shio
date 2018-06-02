@@ -5,7 +5,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.security.Principal;
-import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -23,8 +22,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viglet.shiohara.persistence.model.site.ShSite;
+import com.viglet.shiohara.utils.ShUtils;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -91,7 +90,7 @@ public class ShSiteAPITest {
 		shSite.setName("Test");
 		shSite.setUrl("http://example.com");
 
-		String requestBody = asJsonString(shSite);
+		String requestBody = ShUtils.asJsonString(shSite);
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/v2/site").principal(mockPrincipal)
 				.accept(MediaType.APPLICATION_JSON).content(requestBody).contentType("application/json;charset=UTF-8")
@@ -109,7 +108,7 @@ public class ShSiteAPITest {
 		shSite.setName("Test2");
 		shSite.setUrl("http://www2.example.com");
 
-		String requestBody = asJsonString(shSite);
+		String requestBody = ShUtils.asJsonString(shSite);
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/api/v2/site/" + newSiteId).principal(mockPrincipal)
 				.accept(MediaType.APPLICATION_JSON).content(requestBody).contentType("application/json;charset=UTF-8")
@@ -124,12 +123,5 @@ public class ShSiteAPITest {
 		mockMvc.perform(delete("/api/v2/site/" + newSiteId)).andExpect(status().isOk());
 
 	}
-	
-	public static String asJsonString(final Object obj) {
-		try {
-			return new ObjectMapper().writeValueAsString(obj);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+
 }
