@@ -23,10 +23,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
+import com.viglet.shiohara.utils.ShUtils;
+
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -74,7 +75,7 @@ public class ShFolderAPITest {
 		shSite.setName("Test");
 		shSite.setUrl("http://example.com");
 
-		String requestBody = asJsonString(shSite);
+		String requestBody = ShUtils.asJsonString(shSite);
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/v2/site").principal(mockPrincipal)
 				.accept(MediaType.APPLICATION_JSON).content(requestBody).contentType("application/json;charset=UTF-8")
@@ -89,7 +90,7 @@ public class ShFolderAPITest {
 		shFolder.setRootFolder((byte) 1);
 		shFolder.setShSite(shSite);
 
-		String folderRequestBody = asJsonString(shFolder);
+		String folderRequestBody = ShUtils.asJsonString(shFolder);
 
 		RequestBuilder folderRequestBuilder = MockMvcRequestBuilders.post("/api/v2/folder").principal(mockPrincipal)
 				.accept(MediaType.APPLICATION_JSON).content(folderRequestBody)
@@ -121,7 +122,7 @@ public class ShFolderAPITest {
 		shFolder.setRootFolder((byte) 1);
 		shFolder.setShSite(shSite);
 
-		String folderRequestBody = asJsonString(shFolder);
+		String folderRequestBody = ShUtils.asJsonString(shFolder);
 
 		RequestBuilder folderRequestBuilder = MockMvcRequestBuilders.put("/api/v2/folder/" + newFolderId)
 				.principal(mockPrincipal).accept(MediaType.APPLICATION_JSON).content(folderRequestBody)
@@ -136,7 +137,7 @@ public class ShFolderAPITest {
 		ShFolder shFolder = new ShFolder();
 		shFolder.setName("Unit Test By Object Site");
 
-		String folderRequestBody = asJsonString(shFolder);
+		String folderRequestBody = ShUtils.asJsonString(shFolder);
 
 		RequestBuilder folderRequestBuilder = MockMvcRequestBuilders.post("/api/v2/folder/object/" + newSiteId)
 				.principal(mockPrincipal).accept(MediaType.APPLICATION_JSON).content(folderRequestBody)
@@ -151,7 +152,7 @@ public class ShFolderAPITest {
 		ShFolder shFolder = new ShFolder();
 		shFolder.setName("Unit Test By Object Folder");
 
-		String folderRequestBody = asJsonString(shFolder);
+		String folderRequestBody = ShUtils.asJsonString(shFolder);
 
 		RequestBuilder folderRequestBuilder = MockMvcRequestBuilders.post("/api/v2/folder/object/" + newFolderId)
 				.principal(mockPrincipal).accept(MediaType.APPLICATION_JSON).content(folderRequestBody)
@@ -163,13 +164,5 @@ public class ShFolderAPITest {
 	@Test
 	public void stage07ShFolderDelete() throws Exception {
 		mockMvc.perform(delete("/api/v2/folder/" + newFolderId)).andExpect(status().isOk());
-	}
-
-	public static String asJsonString(final Object obj) {
-		try {
-			return new ObjectMapper().writeValueAsString(obj);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+	}	
 }
