@@ -136,6 +136,7 @@ public class ShPostTypeAPI {
 	}
 
 	@PostMapping("/{id}/attr")
+	@JsonView({ ShJsonView.ShJsonViewPostType.class })
 	public ShPostTypeAttr shPostTypeAttrAdd(@PathVariable String id, @RequestBody ShPostTypeAttr shPostTypeAttr)
 			throws Exception {
 		ShPostType shPostType = shPostTypeRepository.findById(id).get();

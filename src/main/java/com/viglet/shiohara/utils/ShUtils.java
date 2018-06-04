@@ -105,10 +105,18 @@ public class ShUtils {
 
 		return path.substring(index);
 	}
-	
+
 	public static String asJsonString(final Object obj) {
 		try {
 			return new ObjectMapper().writeValueAsString(obj);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static String asJsonStringAndView(final Object obj, @SuppressWarnings("rawtypes") Class clazz) {
+		try {
+			return new ObjectMapper().writerWithView(clazz).writeValueAsString(obj);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
