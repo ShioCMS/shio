@@ -55,7 +55,7 @@ public class ShPostTypeAttr implements Serializable {
 	@Cascade({CascadeType.ALL})
 	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	private Set<ShPostTypeAttr> shPostTypeAttrs = new HashSet<ShPostTypeAttr>();;
+	private Set<ShPostTypeAttr> shPostTypeAttrs = new HashSet<ShPostTypeAttr>();
 
 	@OneToMany(mappedBy = "shPostTypeAttr", orphanRemoval = true)
 	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
