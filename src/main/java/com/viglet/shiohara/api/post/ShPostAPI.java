@@ -77,7 +77,7 @@ public class ShPostAPI {
 
 	@GetMapping("/attr/model")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShPostAttr shPostModel() throws Exception {
+	public ShPostAttr shPostAttrModel() throws Exception {
 		ShPostAttr shPostAttr = new ShPostAttr();
 		return shPostAttr;
 	}
