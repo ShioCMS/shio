@@ -14,4 +14,5 @@ public class ShSystemPostTypeAttr {
 	public static final String PHOTO = "PHOTO";
 	public static final String VIDEO = "VIDEO";
 	public static final String LINK = "LINK";
+	public static final String RELATION = "RELATION";
 }

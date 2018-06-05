@@ -32,7 +32,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 
 /**
  * The persistent class for the ShPostAttr database table.
@@ -95,26 +94,12 @@ public class ShPostAttr implements Serializable {
 	@JoinColumn(name = "post_attr_id")
 	private ShRelatorItem shParentRelatorItem;
 
-	@Transient
-	private String shPostTypeAttrId;
-
 	public Set<ShObject> getReferenceObjects() {
 		return referenceObjects;
 	}
 
 	public void setReferenceObjects(Set<ShObject> referenceObjects) {
 		this.referenceObjects = referenceObjects;
-	}
-
-	public String getShPostTypeAttrId() {
-		if (shPostTypeAttr.getId() != null) {
-			shPostTypeAttrId = shPostTypeAttr.getId();
-		}
-		return shPostTypeAttrId;
-	}
-
-	public void setShPostTypeAttrId(String shPostTypeAttrId) {
-		this.shPostTypeAttrId = shPostTypeAttrId;
 	}
 
 	public ShPostAttr() {
