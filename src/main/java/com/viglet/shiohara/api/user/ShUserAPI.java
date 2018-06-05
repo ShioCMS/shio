@@ -2,6 +2,8 @@ package com.viglet.shiohara.api.user;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -53,17 +55,17 @@ public class ShUserAPI {
 		return null;
 	}
 
-	@GetMapping("/{id}")
+	@GetMapping("/{username}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShUser shUserEdit(@PathVariable int id) throws Exception {
-		ShUser shUser = shUserRepository.findById(id);
+	public ShUser shUserEdit(@PathVariable String username) throws Exception {
+		ShUser shUser = shUserRepository.findByUsername(username);
 		shUser.setPassword(null);
-		return shUserRepository.findById(id);
+		return shUserRepository.findByUsername(username);
 	}
 
-	@PutMapping("/{id}")
+	@PutMapping("/{username}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShUser shUserUpdate(@PathVariable int id, @RequestBody ShUser shUser) throws Exception {
+	public ShUser shUserUpdate(@PathVariable String username, @RequestBody ShUser shUser) throws Exception {
 		if (shUser.getPassword() != null) {
 			shUser.setPassword(passwordEncoder.encode(shUser.getPassword()));
 		}	
@@ -71,9 +73,10 @@ public class ShUserAPI {
 		return shUser;
 	}
 
-	@DeleteMapping("/{id}")
-	public boolean shUserDelete(@PathVariable int id) throws Exception {
-		shUserRepository.delete(id);
+	@Transactional
+	@DeleteMapping("/{username}")
+	public boolean shUserDelete(@PathVariable String username) throws Exception {
+		shUserRepository.delete(username);
 		return true;
 	}
 

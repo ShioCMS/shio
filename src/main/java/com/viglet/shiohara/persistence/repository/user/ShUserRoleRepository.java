@@ -11,7 +11,7 @@ import com.viglet.shiohara.persistence.model.user.ShUserRole;
 @Repository
 public interface ShUserRoleRepository extends JpaRepository<ShUserRole, Long> {
 	
-	@Query("select a.role from ShUserRole a, ShUser b where b.username=?1 and a.userid=b.id")
+	@Query("select a.role from ShUserRole a, ShUser b where b.username=?1 and a.username=b.username")
     public List<String> findRoleByUsername(String username);
 	
 }
