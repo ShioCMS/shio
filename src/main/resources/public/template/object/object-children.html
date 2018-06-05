@@ -1,16 +1,20 @@
 
 <div ng-include="'/template/breadcrumb/breadcrumb-list.html'"></div>
-<div  ng-if="shCurrentFolder == null && 1 == 0" style="margin-bottom: 20px">
+<div ng-if="shCurrentFolder == null && 1 == 0"
+	style="margin-bottom: 20px">
 	<dl>
 		<dd style="padding-left: 15px;">{{shSite.description}}</dd>
 	</dl>
 </div>
-<div class="panel panel-default" ng-if="shCurrentFolder == null &&  commits > 0">
+<div class="panel panel-default"
+	ng-if="shCurrentFolder == null &&  commits > 0">
 	<div class="panel-body">
 		<div class="row row-centered">
 			<div class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
-				<i class="fa fa-history" aria-hidden="true" style="color: #6a737d;"></i>
-				<b>{{commits}}</b> commits
+				<a ui-sref="content.commit({objectId: shSite.id})"
+					style="color: #6a737d;"> <i class="fa fa-history"
+					aria-hidden="true"></i> <b>{{commits}}</b> commits
+				</a>
 			</div>
 			<div class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
 				<i class="fa fa-users" aria-hidden="true" style="color: #6a737d;"></i>
@@ -128,13 +132,11 @@
 			<!--  Folders  -->
 			<div ng-repeat="shFolder in shFolders | orderBy: '-date'"
 				ng-mouseenter="updateAction(shFolder,true)"
-				ng-mouseleave="updateAction(shFolder,false)"
-				class="list-group-item">
+				ng-mouseleave="updateAction(shFolder,false)" class="list-group-item">
 				<div class="row">
 					<div class="col-lg-10 col-md-9 col-sm-8 col-xs-6">
 						<div style="display: inline">
-							<input type="checkbox"
-								ng-model="shStateObjects[shFolder.id]">
+							<input type="checkbox" ng-model="shStateObjects[shFolder.id]">
 						</div>
 						<div style="display: inline">
 							<a type="button" class="btn btn-link"
@@ -199,13 +201,11 @@
 			<!--  Posts  -->
 			<div ng-repeat="shPost in shPosts | orderBy: '-date'"
 				ng-mouseenter="updateAction(shPost,true)"
-				ng-mouseleave="updateAction(shPost,false)"
-				class="list-group-item">
+				ng-mouseleave="updateAction(shPost,false)" class="list-group-item">
 				<div class="row">
 					<div class="col-lg-10 col-md-9 col-sm-8 col-xs-6">
 						<div style="display: inline">
-							<input type="checkbox"
-								ng-model="shStateObjects[shPost.id]">
+							<input type="checkbox" ng-model="shStateObjects[shPost.id]">
 						</div>
 						<div style="display: inline">
 							<!-- NON ALIAS -->
