@@ -70,6 +70,13 @@ shioharaApp.config([
 				data : {
 					pageTitle : 'Content | Viglet Shiohara'
 				}
+			}).state('content.commit', {
+				url : '/commit/:objectId',
+				templateUrl : 'template/commit/commit.html',
+				controller :'ShCommitCtrl',				
+				data : {
+					pageTitle : 'Commits | Viglet Shiohara'
+				}
 			}).state('content.search', {
 				url : '/search',
 				templateUrl : '/template/search/search.html',

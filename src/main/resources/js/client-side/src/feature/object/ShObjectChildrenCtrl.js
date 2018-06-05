@@ -37,7 +37,7 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
         $scope.shLastPostType = null;
         
     	$scope.shUser = shUserResource.get({
-			id : 1,
+			id : "admin",
 			access_token : $scope.accessToken
 		}, function() {
 			$scope.shLastPostType = shPostTypeResource.get({
