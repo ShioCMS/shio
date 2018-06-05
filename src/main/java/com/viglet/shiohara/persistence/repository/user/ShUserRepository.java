@@ -8,18 +8,16 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.viglet.shiohara.persistence.model.user.ShUser;
 
-public interface ShUserRepository extends JpaRepository<ShUser, Integer> {
+public interface ShUserRepository extends JpaRepository<ShUser, String> {
 
 	List<ShUser> findAll();
 
-	ShUser findById(int id);
+	ShUser findByUsername(String username);
 
 	@SuppressWarnings("unchecked")
 	ShUser save(ShUser shUser);
-	
-	ShUser findByUsername(String username);
-	
+
 	@Modifying
-	@Query("delete from ShUser p where p.id = ?1")
-	void delete(int id);
+	@Query("delete from ShUser p where p.username = ?1")
+	void delete(String id);
 }

@@ -190,7 +190,7 @@ public class ShPostAPI {
 
 		shPostRepository.saveAndFlush(shPost);
 
-		ShUser shUser = shUserRepository.findById(1);
+		ShUser shUser = shUserRepository.findByUsername("admin");
 		shUser.setLastPostType(String.valueOf(shPost.getShPostType().getId()));
 		shUserRepository.saveAndFlush(shUser);
 

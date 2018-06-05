@@ -9,10 +9,10 @@ public class ShUserRole {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "user_role_id")
-	private Long userroleid;
+	private Long userRoleId;
 
-	@Column(name = "userid")
-	private Long userid;
+	@Column(name = "username")
+	private String username;
 
 	@Column(name = "role")
 	private String role;
@@ -25,20 +25,20 @@ public class ShUserRole {
 		this.role = role;
 	}
 
-	public Long getUserid() {
-		return userid;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setUserid(Long userid) {
-		this.userid = userid;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
-	public Long getUserroleid() {
-		return userroleid;
+	public Long getUserRoleId() {
+		return userRoleId;
 	}
 
-	public void setUserroleid(Long userroleid) {
-		this.userroleid = userroleid;
+	public void setUserRoleId(Long userRoleId) {
+		this.userRoleId = userRoleId;
 	}
 
 }

@@ -19,10 +19,8 @@ public class ShUser implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-
-	@Column(name = "id")
-	private int id;
+	@Column(name = "username")
+	private String username;
 
 	private String confirmEmail;
 
@@ -47,9 +45,6 @@ public class ShUser implements Serializable {
 
 	private String recoverPassword;
 
-	@Column(name = "username")
-	private String username;
-
 	@Column(name = "enabled")
 	private int enabled;
 
@@ -58,19 +53,10 @@ public class ShUser implements Serializable {
 	}
 
 	public ShUser(ShUser shUser) {
-		this.id = shUser.id;
 		this.username = shUser.username;
 		this.email = shUser.email;
 		this.password = shUser.password;
 		this.enabled = shUser.enabled;
-	}
-
-	public int getId() {
-		return this.id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public String getConfirmEmail() {

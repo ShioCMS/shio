@@ -30,7 +30,6 @@ import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
-import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
@@ -65,6 +64,7 @@ public class ShPostAPITest {
 
 	@Before
 	public void setup() {
+		log.debug("PostAPITest Setup");
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 		mockPrincipal = Mockito.mock(Principal.class);
 		Mockito.when(mockPrincipal.getName()).thenReturn("admin");
@@ -168,15 +168,15 @@ public class ShPostAPITest {
 		mockMvc.perform(folderRequestBuilder).andExpect(status().isOk());
 	}
 
-	/*
-	 * @Test public void stage04ShPostDelete() throws Exception {
-	 * 
-	 * RequestBuilder folderRequestBuilder =
-	 * MockMvcRequestBuilders.delete("/api/v2/post/" + newPostId)
-	 * .principal(mockPrincipal).accept(MediaType.APPLICATION_JSON)
-	 * .contentType("application/json;charset=UTF-8");
-	 * 
-	 * mockMvc.perform(folderRequestBuilder).andExpect(status().isOk())
-	 * .andExpect(content().contentType("application/json;charset=UTF-8")); }
-	 */
+	@Test
+	public void stage04ShPostDelete() throws Exception {
+
+		RequestBuilder folderRequestBuilder = MockMvcRequestBuilders.delete("/api/v2/post/" + newPostId)
+				.principal(mockPrincipal).accept(MediaType.APPLICATION_JSON)
+				.contentType("application/json;charset=UTF-8");
+
+		mockMvc.perform(folderRequestBuilder).andExpect(status().isOk())
+				.andExpect(content().contentType("application/json;charset=UTF-8"));
+	}
+
 }
