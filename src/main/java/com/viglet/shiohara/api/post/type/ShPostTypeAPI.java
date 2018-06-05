@@ -87,7 +87,6 @@ public class ShPostTypeAPI {
 		for (ShPostTypeAttr shPostTypeAttr : shPost.getShPostType().getShPostTypeAttrs()) {
 			ShPostAttr shPostAttr = new ShPostAttr();
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-			shPostAttr.setShPostTypeAttrId(shPostTypeAttr.getId());
 			shPostAttrs.add(shPostAttr);
 		}
 		shPost.setShPostAttrs(shPostAttrs);

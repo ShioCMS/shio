@@ -12,6 +12,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.mockito.Mockito;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -26,6 +28,7 @@ import com.viglet.shiohara.api.ShJsonView;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
+import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
@@ -40,7 +43,7 @@ import com.viglet.shiohara.utils.ShUtils;
 @SpringBootTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ShPostAPITest {
-
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	private WebApplicationContext webApplicationContext;
 	@Autowired
@@ -85,22 +88,54 @@ public class ShPostAPITest {
 	public void stage01ShPostAdd() throws Exception {
 
 		ShFolder shFolder = shFolderRepository.findById(sampleHomeFolderId).get();
-		ShPostType shPostType = shPostTypeRepository.findByName(ShSystemPostType.TEXT);
-		ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType,
-				ShSystemPostTypeAttr.TEXT);
+		ShPostType shPostType = shPostTypeRepository.findByName(ShSystemPostType.ARTICLE);
+
+		// Post
 		ShPost shPost = new ShPost();
 		shPost.setId(newPostId);
 		shPost.setShFolder(shFolder);
 		shPost.setShPostType(shPostType);
 
-		ShPostAttr shPostAttr = new ShPostAttr();
-		shPostAttr.setStrValue("Test Value");
-		shPostAttr.setType(1);
-		shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+		// Title Field
+		ShPostAttr shPostAttrTitle = new ShPostAttr();
+		shPostAttrTitle.setStrValue("Test Title Value");
+		shPostAttrTitle.setType(1);
+		shPostAttrTitle.setShPostTypeAttr(
+				shPostTypeAttrRepository.findByShPostTypeAndName(shPostType, ShSystemPostTypeAttr.TITLE));
 
-		shPost.getShPostAttrs().add(shPostAttr);
+		shPost.getShPostAttrs().add(shPostAttrTitle);
 
-		String postRequestBody = ShUtils.asJsonStringAndView(shPost, ShJsonView.ShJsonViewPost.class);
+		// Description Field
+		ShPostAttr shPostAttrDescription = new ShPostAttr();
+		shPostAttrDescription.setStrValue("Test Description Value");
+		shPostAttrDescription.setType(1);
+		shPostAttrDescription.setShPostTypeAttr(
+				shPostTypeAttrRepository.findByShPostTypeAndName(shPostType, ShSystemPostTypeAttr.DESCRIPTION));
+
+		shPost.getShPostAttrs().add(shPostAttrDescription);
+
+		// Text Relation
+		ShRelatorItem shRelatorItem = new ShRelatorItem();
+
+		ShPostAttr shPostAttrTextRelation = new ShPostAttr();
+		shPostAttrTextRelation.setStrValue("Test Text Relation Value");
+		shPostAttrTextRelation.setType(1);
+		shPostAttrTextRelation.setShPostTypeAttr(shPostTypeAttrRepository.findByShParentPostTypeAttrAndName(
+				shPostTypeAttrRepository.findByShPostTypeAndName(shPostType, ShSystemPostTypeAttr.RELATION),
+				"TEXT_RELATION"));
+
+		shRelatorItem.getShChildrenPostAttrs().add(shPostAttrTextRelation);
+
+		// Relation
+		ShPostAttr shPostAttrRelation = new ShPostAttr();
+		shPostAttrRelation.getShChildrenRelatorItems().add(shRelatorItem);
+		shPostAttrRelation.setType(1);
+		shPostAttrRelation.setShPostTypeAttr(
+				shPostTypeAttrRepository.findByShPostTypeAndName(shPostType, ShSystemPostTypeAttr.RELATION));
+
+		shPost.getShPostAttrs().add(shPostAttrRelation);
+
+		String postRequestBody = ShUtils.asJsonStringAndView(shPost, ShJsonView.ShJsonViewObject.class);
 
 		RequestBuilder folderRequestBuilder = MockMvcRequestBuilders.post("/api/v2/post").principal(mockPrincipal)
 				.accept(MediaType.APPLICATION_JSON).content(postRequestBody)
@@ -133,14 +168,15 @@ public class ShPostAPITest {
 		mockMvc.perform(folderRequestBuilder).andExpect(status().isOk());
 	}
 
-	@Test
-	public void stage04ShPostDelete() throws Exception {
-
-		RequestBuilder folderRequestBuilder = MockMvcRequestBuilders.delete("/api/v2/post/" + newPostId)
-				.principal(mockPrincipal).accept(MediaType.APPLICATION_JSON)
-				.contentType("application/json;charset=UTF-8");
-
-		mockMvc.perform(folderRequestBuilder).andExpect(status().isOk())
-				.andExpect(content().contentType("application/json;charset=UTF-8"));
-	}
+	/*
+	 * @Test public void stage04ShPostDelete() throws Exception {
+	 * 
+	 * RequestBuilder folderRequestBuilder =
+	 * MockMvcRequestBuilders.delete("/api/v2/post/" + newPostId)
+	 * .principal(mockPrincipal).accept(MediaType.APPLICATION_JSON)
+	 * .contentType("application/json;charset=UTF-8");
+	 * 
+	 * mockMvc.perform(folderRequestBuilder).andExpect(status().isOk())
+	 * .andExpect(content().contentType("application/json;charset=UTF-8")); }
+	 */
 }

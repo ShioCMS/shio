@@ -284,7 +284,7 @@ public class ShPostTypeOnStartup {
 			shPostTypeAttrRepository.save(shPostTypeAttr);
 
 			ShPostTypeAttr shPostTypeAttrRelation = new ShPostTypeAttr();
-			shPostTypeAttrRelation.setName("RELATION");
+			shPostTypeAttrRelation.setName(ShSystemPostTypeAttr.RELATION);
 			shPostTypeAttrRelation.setLabel("Relation");
 			shPostTypeAttrRelation.setDescription("Relation");
 			shPostTypeAttrRelation.setIsSummary((byte) 0);
