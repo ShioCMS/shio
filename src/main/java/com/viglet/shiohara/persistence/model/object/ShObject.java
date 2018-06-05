@@ -2,7 +2,6 @@ package com.viglet.shiohara.persistence.model.object;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -13,16 +12,12 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.GenericGenerator;
 
-import com.viglet.shiohara.persistence.model.history.ShHistory;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 
 @Entity
@@ -41,12 +36,6 @@ public class ShObject implements Serializable {
 	@ManyToMany(mappedBy = "referenceObjects")
 	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
 	private Set<ShPostAttr> shPostAttrRefs;
-
-	// bi-directional many-to-one association to ShPostTypeAttr
-	@OneToMany(mappedBy = "shObject")
-	@Cascade({ CascadeType.ALL })
-	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
-	private Set<ShHistory> shHistories = new HashSet<ShHistory>();
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date date;

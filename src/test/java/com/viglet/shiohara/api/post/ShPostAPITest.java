@@ -4,29 +4,67 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.security.Principal;
+
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.viglet.shiohara.api.ShJsonView;
+import com.viglet.shiohara.persistence.model.folder.ShFolder;
+import com.viglet.shiohara.persistence.model.post.ShPost;
+import com.viglet.shiohara.persistence.model.post.ShPostAttr;
+import com.viglet.shiohara.persistence.model.post.type.ShPostType;
+import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
+import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
+import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
+import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
+import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
+import com.viglet.shiohara.post.type.ShSystemPostType;
+import com.viglet.shiohara.post.type.ShSystemPostTypeAttr;
+import com.viglet.shiohara.utils.ShUtils;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ShPostAPITest {
 
 	@Autowired
 	private WebApplicationContext webApplicationContext;
+	@Autowired
+	private ShFolderRepository shFolderRepository;
+	@Autowired
+	private ShPostTypeRepository shPostTypeRepository;
+	@Autowired
+	private ShPostTypeAttrRepository shPostTypeAttrRepository;
+	@Autowired
+	private ShPostRepository shPostRepository;
 
 	private MockMvc mockMvc;
+
+	private Principal mockPrincipal;
+
+	private String newPostId = "553923c7-fda4-4a91-9700-eb9a549bb522";
+
+	private String sampleHomeFolderId = "fdbff43b-cc7e-40f1-80a1-062bb08ae5d0";
 
 	@Before
 	public void setup() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+		mockPrincipal = Mockito.mock(Principal.class);
+		Mockito.when(mockPrincipal.getName()).thenReturn("admin");
 	}
 
 	@Test
@@ -36,4 +74,73 @@ public class ShPostAPITest {
 
 	}
 
+	@Test
+	public void shPostAttrModel() throws Exception {
+		mockMvc.perform(get("/api/v2/post/attr/model")).andExpect(status().isOk())
+				.andExpect(content().contentType("application/json;charset=UTF-8"));
+
+	}
+
+	@Test
+	public void stage01ShPostAdd() throws Exception {
+
+		ShFolder shFolder = shFolderRepository.findById(sampleHomeFolderId).get();
+		ShPostType shPostType = shPostTypeRepository.findByName(ShSystemPostType.TEXT);
+		ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType,
+				ShSystemPostTypeAttr.TEXT);
+		ShPost shPost = new ShPost();
+		shPost.setId(newPostId);
+		shPost.setShFolder(shFolder);
+		shPost.setShPostType(shPostType);
+
+		ShPostAttr shPostAttr = new ShPostAttr();
+		shPostAttr.setStrValue("Test Value");
+		shPostAttr.setType(1);
+		shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+
+		shPost.getShPostAttrs().add(shPostAttr);
+
+		String postRequestBody = ShUtils.asJsonStringAndView(shPost, ShJsonView.ShJsonViewPost.class);
+
+		RequestBuilder folderRequestBuilder = MockMvcRequestBuilders.post("/api/v2/post").principal(mockPrincipal)
+				.accept(MediaType.APPLICATION_JSON).content(postRequestBody)
+				.contentType("application/json;charset=UTF-8");
+
+		mockMvc.perform(folderRequestBuilder).andExpect(status().isOk());
+	}
+
+	@Test
+	public void stage02ShPostEdit() throws Exception {
+		mockMvc.perform(get("/api/v2/post/" + newPostId)).andExpect(status().isOk())
+				.andExpect(content().contentType("application/json;charset=UTF-8"));
+	}
+
+	@Test
+	public void stage03ShPostUpdate() throws Exception {
+
+		ShPost shPost = shPostRepository.findById(newPostId).get();
+
+		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
+			shPostAttr.setStrValue("Test Value was changed");
+		}
+
+		String postRequestBody = ShUtils.asJsonStringAndView(shPost, ShJsonView.ShJsonViewPost.class);
+
+		RequestBuilder folderRequestBuilder = MockMvcRequestBuilders.put("/api/v2/post/" + newPostId)
+				.principal(mockPrincipal).accept(MediaType.APPLICATION_JSON).content(postRequestBody)
+				.contentType("application/json;charset=UTF-8");
+
+		mockMvc.perform(folderRequestBuilder).andExpect(status().isOk());
+	}
+
+	@Test
+	public void stage04ShPostDelete() throws Exception {
+
+		RequestBuilder folderRequestBuilder = MockMvcRequestBuilders.delete("/api/v2/post/" + newPostId)
+				.principal(mockPrincipal).accept(MediaType.APPLICATION_JSON)
+				.contentType("application/json;charset=UTF-8");
+
+		mockMvc.perform(folderRequestBuilder).andExpect(status().isOk())
+				.andExpect(content().contentType("application/json;charset=UTF-8"));
+	}
 }
