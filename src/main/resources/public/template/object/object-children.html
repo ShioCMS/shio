@@ -131,8 +131,8 @@
 			</div>
 			<!--  Folders  -->
 			<div ng-repeat="shFolder in shFolders | orderBy: '-date'"
-				ng-mouseenter="updateAction(shFolder,true)"
-				ng-mouseleave="updateAction(shFolder,false)" class="list-group-item">
+				ng-mouseenter="updateAction(shFolder.id,true)"
+				ng-mouseleave="updateAction(shFolder.id,false)" class="list-group-item">
 				<div class="row">
 					<div class="col-lg-10 col-md-9 col-sm-8 col-xs-6">
 						<div style="display: inline">
@@ -164,7 +164,7 @@
 						</div>
 					</div>
 					<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6"
-						ng-show="actions[shFolder.shGlobalId.id]">
+						ng-show="actions[shFolder.id]">
 						<div class="row">
 							<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
 								<a type="button" class="btn btn-link btn-xs"
@@ -200,8 +200,8 @@
 			</div>
 			<!--  Posts  -->
 			<div ng-repeat="shPost in shPosts | orderBy: '-date'"
-				ng-mouseenter="updateAction(shPost,true)"
-				ng-mouseleave="updateAction(shPost,false)" class="list-group-item">
+				ng-mouseenter="updateAction(shPost.id,true)"
+				ng-mouseleave="updateAction(shPost.id,false)" class="list-group-item">
 				<div class="row">
 					<div class="col-lg-10 col-md-9 col-sm-8 col-xs-6">
 						<div style="display: inline">
@@ -241,7 +241,7 @@
 						</div>
 					</div>
 					<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6"
-						ng-show="actions[shPost.shGlobalId.id]">
+						ng-show="actions[shPost.id]">
 						<div class="row">
 							<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
 								<button type="button" class="btn btn-link btn-xs "

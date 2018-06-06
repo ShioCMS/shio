@@ -52,13 +52,15 @@ public class ShPostTypeAttr implements Serializable {
 	private byte required;
 
 	@OneToMany(mappedBy = "shParentPostTypeAttr", orphanRemoval = true)
-	@Cascade({CascadeType.ALL})
+	@Cascade({ CascadeType.ALL })
 	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Set<ShPostTypeAttr> shPostTypeAttrs = new HashSet<ShPostTypeAttr>();
 
 	@OneToMany(mappedBy = "shPostTypeAttr", orphanRemoval = true)
+	@Cascade({ CascadeType.ALL })
 	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
+ 
 	private Set<ShPostAttr> shPostAttrs = new HashSet<ShPostAttr>();
 
 	@ManyToOne
