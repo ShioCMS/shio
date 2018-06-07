@@ -28,7 +28,18 @@ viglet.shiohara.shObject = function() {
 	this.navigation = function(siteName, home) {
 		return Java.from(shNavigationComponent.navigation(siteName, home));
 	},
-
+	
+	/**
+	 * @desc Returns Folder Navigation Component from Parent Folder
+	 * @param folderId,
+	 *            Folder Id.
+	 * @param home,
+	 *            true or false to show the Home folder.
+	 * @public
+	 */
+	this.navigationFolder = function(folderId, home) {
+		return Java.from(shNavigationComponent.navigationFolder(folderId, home));
+	},
 	/**
 	 * @desc Returns Query Component
 	 * @param folderId,
