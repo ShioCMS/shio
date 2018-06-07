@@ -28,4 +28,13 @@ public class ShNavigationComponent {
 		shFolders.addAll(shFolderRepository.findByParentFolder(homeFolder));
 		return shFolders;
 	}
+	
+	public List<ShFolder> navigationFolder(String folderId, boolean home) {
+		ShFolder shParentFolder = shFolderRepository.findById(folderId).get();
+		List<ShFolder> shFolders = shFolderRepository.findByParentFolder(shParentFolder);
+		if (home) {
+			shFolders.add(shParentFolder);
+		}
+		return shFolders;
+	}
 }

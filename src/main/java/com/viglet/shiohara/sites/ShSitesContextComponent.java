@@ -195,8 +195,7 @@ public class ShSitesContextComponent {
 		Map<String, ShPostAttr> shFolderIndexMap = shPostUtils.postToMap(shPostItem);
 
 		String shPostFolderPageLayoutId = shFolderIndexMap.get(ShSystemPostTypeAttr.PAGE_LAYOUT).getStrValue();
-		ShPost shFolderPageLayout = shPostRepository
-				.findById(shPostFolderPageLayoutId).get();
+		ShPost shFolderPageLayout = shPostRepository.findById(shPostFolderPageLayoutId).get();
 
 		return shPostUtils.postToMap(shFolderPageLayout);
 	}
@@ -205,7 +204,7 @@ public class ShSitesContextComponent {
 			throws ScriptException, IOException {
 
 		StringBuilder shObjectJS = this.shObjectJSFactory();
-
+		
 		String javascript = shObjectJS.toString() + javascriptVar + pageLayoutJS;
 
 		// Nashorn Engine
@@ -214,12 +213,18 @@ public class ShSitesContextComponent {
 		bindings.put("html", pageLayoutHTML);
 		bindings.put("spring", context);
 		Object pageLayoutResult = engine.eval(javascript, bindings);
+		
+		return this.shRegionFactory(engine, bindings, javascriptVar, pageLayoutResult.toString()).html();
+	}
 
-		Document doc = Jsoup.parse(pageLayoutResult.toString());
+	private Document shRegionFactory(ScriptEngine engine, Bindings bindings, String javascriptVar, String regionResult)
+			throws IOException, ScriptException {
+		StringBuilder shObjectJS = this.shObjectJSFactory();
+
+		Document doc = Jsoup.parse(regionResult);
 
 		Elements elements = doc.getElementsByAttribute("sh-region");
 
-		// Regions
 		for (Element element : elements) {
 
 			String regionAttr = element.attr("sh-region");
@@ -234,13 +239,13 @@ public class ShSitesContextComponent {
 
 			bindings.put("html", shRegionHTML);
 
-			javascript = shObjectJS.toString() + javascriptVar + shRegionJS;
+			String javascript = shObjectJS.toString() + javascriptVar + shRegionJS;
 
-			Object regionResult = engine.eval(javascript, bindings);
-
-			element.html(regionResult.toString());
+			Object regionResultChild = engine.eval(javascript, bindings);
+			
+			element.html(this.shRegionFactory(engine, bindings, javascriptVar, regionResultChild.toString()).html());
 		}
-		return doc.html();
+		
+		return doc;
 	}
-
 }
