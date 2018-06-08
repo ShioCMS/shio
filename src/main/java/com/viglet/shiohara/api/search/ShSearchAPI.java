@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
-import com.viglet.shiohara.api.post.ShPostWIthBreadcrumb;
+import com.viglet.shiohara.api.post.ShPostWithBreadcrumb;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.site.ShSite;
@@ -34,16 +34,16 @@ public class ShSearchAPI {
 	@ApiOperation(value = "Search for Shiohara Objects")
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public List<ShPostWIthBreadcrumb> shSearch(@RequestParam(value = "q") String q) throws Exception {
-		List<ShPostWIthBreadcrumb> searchResults = new ArrayList<ShPostWIthBreadcrumb>();
+	public List<ShPostWithBreadcrumb> shSearch(@RequestParam(value = "q") String q) throws Exception {
+		List<ShPostWithBreadcrumb> searchResults = new ArrayList<ShPostWithBreadcrumb>();
 		for (ShPost shPost : shPostRepository.fuzzySearch(q)) {
 			ArrayList<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shPost.getShFolder());
 			ShSite shSite = breadcrumb.get(0).getShSite();
-			ShPostWIthBreadcrumb shPostWIthBreadcrumb = new ShPostWIthBreadcrumb();
-			shPostWIthBreadcrumb.setShPost(shPost);
-			shPostWIthBreadcrumb.setBreadcrumb(breadcrumb);
-			shPostWIthBreadcrumb.setShSite(shSite);
-			searchResults.add(shPostWIthBreadcrumb);
+			ShPostWithBreadcrumb shPostWithBreadcrumb = new ShPostWithBreadcrumb();
+			shPostWithBreadcrumb.setShPost(shPost);
+			shPostWithBreadcrumb.setBreadcrumb(breadcrumb);
+			shPostWithBreadcrumb.setShSite(shSite);
+			searchResults.add(shPostWithBreadcrumb);
 		}
 
 		return searchResults;

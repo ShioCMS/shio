@@ -2,10 +2,13 @@ var shNavigationComponent = spring.getBean('shNavigationComponent', Java
 		.type('com.viglet.shiohara.component.ShNavigationComponent'));
 var shQueryComponent = spring.getBean('shQueryComponent', Java
 		.type('com.viglet.shiohara.component.ShQueryComponent'));
+var shSearchComponent = spring.getBean('shSearchComponent', Java
+		.type('com.viglet.shiohara.component.ShSearchComponent'));
 var shFolderUtils = spring.getBean('shFolderUtils', Java
 		.type('com.viglet.shiohara.utils.ShFolderUtils'));
 var shPostUtils = spring.getBean('shPostUtils', Java
 		.type('com.viglet.shiohara.utils.ShPostUtils'));
+
 var viglet = this.viglet || {};
 viglet.shiohara = viglet.shiohara || {};
 
@@ -18,6 +21,14 @@ viglet.shiohara = viglet.shiohara || {};
 viglet.shiohara.shObject = function() {
 
 	/**
+	 * @desc Returns Search Result
+	 * @public
+	 */
+	this.searchComponent = function() {
+		return Java.from(shSearchComponent.search(request.getParameter('q')));
+	},
+
+	/**
 	 * @desc Returns Folder Navigation Component
 	 * @param siteName,
 	 *            Site Name.
@@ -28,7 +39,7 @@ viglet.shiohara.shObject = function() {
 	this.navigation = function(siteName, home) {
 		return Java.from(shNavigationComponent.navigation(siteName, home));
 	},
-	
+
 	/**
 	 * @desc Returns Folder Navigation Component from Parent Folder
 	 * @param folderId,
@@ -38,7 +49,8 @@ viglet.shiohara.shObject = function() {
 	 * @public
 	 */
 	this.navigationFolder = function(folderId, home) {
-		return Java.from(shNavigationComponent.navigationFolder(folderId, home));
+		return Java
+				.from(shNavigationComponent.navigationFolder(folderId, home));
 	},
 	/**
 	 * @desc Returns Query Component
@@ -59,7 +71,7 @@ viglet.shiohara.shObject = function() {
 	 *            Post Id.
 	 * @public
 	 */
-	this.generatePostLink = function(postId) { 
+	this.generatePostLink = function(postId) {
 		return shPostUtils.generatePostLinkById(postId);
 	}
 

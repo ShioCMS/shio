@@ -6,7 +6,7 @@ import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 
-public class ShPostWIthBreadcrumb {
+public class ShPostWithBreadcrumb {
 
 	private ShPost shPost;
 	
