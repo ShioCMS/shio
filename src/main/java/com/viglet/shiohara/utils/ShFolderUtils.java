@@ -33,7 +33,7 @@ public class ShFolderUtils {
 	private ShPostAttrRepository shPostAttrRepository;
 	@Autowired
 	private ShReferenceRepository shReferenceRepository;
-	
+
 	@Autowired
 	private ShURLScheme shURLScheme;
 
@@ -43,7 +43,7 @@ public class ShFolderUtils {
 		JSONObject shFolderItemSystemAttrs = new JSONObject();
 		shFolderItemSystemAttrs.put("id", shFolder.getId());
 		shFolderItemSystemAttrs.put("title", shFolder.getName());
-		shFolderItemSystemAttrs.put("link", this.folderPath(shFolder));
+		shFolderItemSystemAttrs.put("link", this.folderPath(shFolder, true));
 
 		shFolderItemAttrs.put("system", shFolderItemSystemAttrs);
 
@@ -72,11 +72,11 @@ public class ShFolderUtils {
 		}
 	}
 
-	public String folderPath(ShFolder shFolder) {
-		return this.folderPath(shFolder, "/");
+	public String folderPath(ShFolder shFolder, boolean usingFurl) {
+		return this.folderPath(shFolder, "/", usingFurl);
 	}
 
-	public String folderPath(ShFolder shFolder, String separator) {
+	public String folderPath(ShFolder shFolder, String separator, boolean usingFurl) {
 		if (shFolder != null) {
 			boolean rootFolder = false;
 			ArrayList<String> pathContexts = new ArrayList<String>();
@@ -89,10 +89,18 @@ public class ShFolderUtils {
 				if ((parentFolder.getRootFolder() == (byte) 1) || (parentFolder.getParentFolder() == null)) {
 					rootFolder = true;
 					if (!parentFolder.getName().toLowerCase().equals("home")) {
-						pathContexts.add(parentFolder.getFurl());
+						if (usingFurl) {
+							pathContexts.add(parentFolder.getFurl());
+						} else {
+							pathContexts.add(parentFolder.getName());
+						}
 					}
 				} else {
-					pathContexts.add(parentFolder.getFurl());
+					if (usingFurl) {
+						pathContexts.add(parentFolder.getFurl());
+					} else {
+						pathContexts.add(parentFolder.getName());
+					}
 					parentFolder = parentFolder.getParentFolder();
 				}
 			}
@@ -124,7 +132,7 @@ public class ShFolderUtils {
 					parentFolder = parentFolder.getParentFolder();
 				}
 			}
-			
+
 			String path = "";
 
 			for (String context : pathContexts) {
@@ -192,7 +200,7 @@ public class ShFolderUtils {
 
 	public String generateFolderLink(ShFolder shFolder) {
 		String link = shURLScheme.get(shFolder).toString();
-		link = link + this.folderPath(shFolder);
+		link = link + this.folderPath(shFolder, true);
 		return link;
 	}
 
@@ -206,17 +214,17 @@ public class ShFolderUtils {
 
 		for (ShPost shPost : shPostRepository.findByShFolder(shFolder)) {
 			// TODO: Check relation and show to user decides.
-			List<ShReference> shGlobalFromId = shReferenceRepository.findByShObjectFrom(shPost);			
+			List<ShReference> shGlobalFromId = shReferenceRepository.findByShObjectFrom(shPost);
 			List<ShReference> shGlobalToId = shReferenceRepository.findByShObjectTo(shPost);
 			shReferenceRepository.deleteInBatch(shGlobalFromId);
 			shReferenceRepository.deleteInBatch(shGlobalToId);
 		}
-		
+
 		for (ShPost shPost : shPostRepository.findByShFolder(shFolder)) {
-			Set<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);			
-			shPostAttrRepository.deleteInBatch(shPostAttrs);			
+			Set<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
+			shPostAttrRepository.deleteInBatch(shPostAttrs);
 		}
-		
+
 		shPostRepository.deleteInBatch(shPostRepository.findByShFolder(shFolder));
 
 		for (ShFolder shFolderChild : shFolderRepository.findByParentFolder(shFolder)) {

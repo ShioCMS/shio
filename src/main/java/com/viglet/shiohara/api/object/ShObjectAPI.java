@@ -156,7 +156,7 @@ public class ShObjectAPI {
 		ShObject shObject = shObjectRepository.findById(id).get();
 		if (shObject instanceof ShFolder) {
 			ShFolder shFolder = (ShFolder) shObject;
-			String folderPath = shFolderUtils.folderPath(shFolder);
+			String folderPath = shFolderUtils.folderPath(shFolder, true);
 			ArrayList<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shFolder);
 			ShSite shSite = breadcrumb.get(0).getShSite();
 			ShFolderList shFolderList = new ShFolderList();
@@ -186,7 +186,7 @@ public class ShObjectAPI {
 		ShPostType shPostType = shPostTypeRepository.findByName(postTypeName);
 		if (shObject instanceof ShFolder) {
 			ShFolder shFolder = (ShFolder) shObject;
-			String folderPath = shFolderUtils.folderPath(shFolder);
+			String folderPath = shFolderUtils.folderPath(shFolder, true);
 			ArrayList<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shFolder);
 			ShSite shSite = breadcrumb.get(0).getShSite();
 			ShFolderList shFolderList = new ShFolderList();
@@ -227,7 +227,7 @@ public class ShObjectAPI {
 			ShFolder shFolder = (ShFolder) shObject;
 			if (shFolder != null) {
 				ShFolderPath shFolderPath = new ShFolderPath();
-				String folderPath = shFolderUtils.folderPath(shFolder);
+				String folderPath = shFolderUtils.folderPath(shFolder, true);
 				ArrayList<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shFolder);
 				ShSite shSite = breadcrumb.get(0).getShSite();
 				shFolderPath.setFolderPath(folderPath);
@@ -241,7 +241,7 @@ public class ShObjectAPI {
 			if (shPost != null) {
 				ShFolder shFolder = shPost.getShFolder();
 				ShFolderPath shFolderPath = new ShFolderPath();
-				String folderPath = shFolderUtils.folderPath(shFolder);
+				String folderPath = shFolderUtils.folderPath(shFolder, true);
 				ArrayList<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shFolder);
 				ShSite shSite = breadcrumb.get(0).getShSite();
 				shFolderPath.setFolderPath(folderPath);
