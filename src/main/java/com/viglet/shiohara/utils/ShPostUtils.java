@@ -49,7 +49,7 @@ public class ShPostUtils {
 		shPostObject.put("post-type-id", shPost.getShPostType().getId());
 		shPostObject.put("title", shPost.getTitle());
 		shPostObject.put("summary", shPost.getSummary());
-		shPostObject.put("link", shFolderUtils.folderPath(shPost.getShFolder()) + shPost.getFurl());
+		shPostObject.put("link", this.generatePostLink(shPost));
 		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
 			if (shPostAttr.getShPostTypeAttr().getName() != null) {
 				shPostItemAttrs.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
@@ -108,7 +108,7 @@ public class ShPostUtils {
 		String link = null;
 		if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE.toString())) {
 			link = shStaticFileUtils.getFileSourceBase() + "/" + shFolderUtils.getSite(shFolder).getName()
-					+ shFolderUtils.folderPath(shFolder) + shPost.getTitle();
+					+ shFolderUtils.folderPath(shFolder, false) + shPost.getTitle();
 		} else {
 			link = shFolderUtils.generateFolderLink(shFolder);
 			link = link + shPost.getFurl();

@@ -137,7 +137,7 @@ public class ShFolderAPI {
 		ShFolder shFolder = shFolderRepository.findById(id).get();
 		if (shFolder != null) {
 			ShFolderPath shFolderPath = new ShFolderPath();
-			String folderPath = shFolderUtils.folderPath(shFolder);
+			String folderPath = shFolderUtils.folderPath(shFolder, true);
 			ArrayList<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shFolder);
 			ShSite shSite = breadcrumb.get(0).getShSite();
 			shFolderPath.setFolderPath(folderPath);
