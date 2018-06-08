@@ -3,8 +3,8 @@ shioharaApp.controller('ShWidgetContentSelectCtrl', [
 		'Upload',
 		'$timeout',
 		'$uibModal',
-		'shWidgetContentSelectFactory',
-		function($scope, Upload, $timeout, $uibModal, shWidgetContentSelectFactory) {
+		'ShDialogSelectObject',
+		function($scope, Upload, $timeout, $uibModal, ShDialogSelectObject) {
 			$scope.$watch('shPostAttr.file', function() {
 				if ($scope.shPostAttr.file != null) {
 					$scope.uploadNewFile = false;
@@ -18,12 +18,11 @@ shioharaApp.controller('ShWidgetContentSelectCtrl', [
 			}
 
 			$scope.selectContent = function(shPost, shPostAttr) {
-				var modalInstance = shWidgetContentSelectFactory
-						.modalSelectFile($scope.shFolder);
-				modalInstance.result.then(function(shPostSelected) {
+				var modalInstance = ShDialogSelectObject.dialog($scope.shFolder.id, "shObject");				
+				modalInstance.result.then(function(shObjectSelected) {
 					// Selected INSERT
-					shPostAttr.strValue = shPostSelected.id;
-					shPostAttr.referenceObjects = [ shPostSelected ];
+					shPostAttr.strValue = shObjectSelected.id;
+					shPostAttr.referenceObjects = [ shObjectSelected ];
 				}, function() {
 					// Selected CANCEL
 				});

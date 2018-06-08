@@ -15,6 +15,10 @@ shioharaApp.controller('ShComponentExplorerCtrl', [
 				$ctrl.objectTypeName = "Folder";
 				$ctrl.folderDoubleClick = true;
 			}
+			else if (angular.equals(objectType, "shObject")) {
+				$ctrl.objectTypeName = "Content or Folder";
+				$ctrl.folderDoubleClick = true;
+			}
 			$ctrl.enableInsertButton = false;
 			$ctrl.shObjectSelected = null;
 			$ctrl.ok = function() {
@@ -35,10 +39,15 @@ shioharaApp.controller('ShComponentExplorerCtrl', [
 			$scope.objectList = function(selectedObjectId) {
 				$scope.isSiteList = false;
 				$ctrl.enableInsertButton = false;
-				$ctrl.shPostSelected = null;
-				$scope.$evalAsync($http.get(
-						shAPIServerService.get().concat(
-								"/v2/object/" + selectedObjectId + "/list/" + objectType))
+				$ctrl.shObjectSelected = null;
+				var objectListURL = "/v2/object/" + selectedObjectId + "/list/";
+				
+				if (!angular.equals(objectType, "shObject")) {
+					objectListURL = objectListURL + objectType;
+				}
+				
+				$scope.$evalAsync($http.get(						
+						shAPIServerService.get().concat(objectListURL))
 						.then(function(response) {
 							$scope.shSites = null;	
 							$scope.shFolders = response.data.shFolders;

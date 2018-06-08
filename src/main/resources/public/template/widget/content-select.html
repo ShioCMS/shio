@@ -27,12 +27,18 @@
 	<div ng-if="shPostAttr.strValue != null">
 		<div class="row">
 			<div class="col-lg-8 col-md-7 col-sm-6 col-xs-4">
+
 				<input type='text' class='form-control'
-					ng-model="shPostAttr.referenceObjects[0].title" />
+					ng-if="shPostAttr.referenceObjects[0].title != null"
+					ng-model="shPostAttr.referenceObjects[0].title" /> <input
+					type='text' class='form-control'
+					ng-if="shPostAttr.referenceObjects[0].title == null"
+					ng-model="shPostAttr.referenceObjects[0].name" />
 			</div>
 			<div class="col-lg-4 col-md-5 col-sm-6 col-xs-8">
 				<a class="btn btn-viglet"
-					ui-sref="content.post-type-item.post-item({postTypeId: shPostAttr.referenceObjects[0].shPostType.id, postId: shPostAttr.referenceObjects[0].id})">Edit this Content</a>
+					ui-sref="content.post-type-item.post-item({postTypeId: shPostAttr.referenceObjects[0].shPostType.id, postId: shPostAttr.referenceObjects[0].id})">Edit
+					this Content</a>
 				<button class="btn btn-default" ng-click="clearContent(shPostAttr)">Clear</button>
 				<button class="btn btn-default"
 					ng-click="selectContent(shPost, shPostAttr)">Select a

@@ -9,13 +9,13 @@ shioharaApp.controller('ShWidgetContentSelectSelectCtrl', [
 				shFolder,shWidgetContentSelectFactory) {
 			var $ctrl = this;
 
-			$ctrl.shPostSelected = null;
+			$ctrl.shObjectSelected = null;
 			$ctrl.ok = function() {
-				$uibModalInstance.close($ctrl.shPostSelected);
+				$uibModalInstance.close($ctrl.shObjectSelected);
 			};
 
 			$ctrl.cancel = function() {
-				$ctrl.shPostSelected = null;
+				$ctrl.shObjectSelected = null;
 				$uibModalInstance.dismiss('cancel');
 			};
 			$scope.shSite = null;
@@ -25,7 +25,7 @@ shioharaApp.controller('ShWidgetContentSelectSelectCtrl', [
 
 			// BEGIN Functions
 			$scope.folderList = function(shFolder) {
-				$ctrl.shPostSelected = null;
+				$ctrl.shObjectSelected = null;
 				$scope.$evalAsync($http.get(
 						shAPIServerService.get().concat(
 								"/v2/object/" + shFolder.id + "/list"))
@@ -38,7 +38,7 @@ shioharaApp.controller('ShWidgetContentSelectSelectCtrl', [
 			}
 
 			$scope.siteList = function(siteId) {
-				$ctrl.shPostSelected = null;
+				$ctrl.shObjectSelected = null;
 				$scope.$evalAsync($http.get(
 						shAPIServerService.get().concat(
 								"/v2/site/" + siteId + "/folder")).then(
@@ -49,9 +49,10 @@ shioharaApp.controller('ShWidgetContentSelectSelectCtrl', [
 						}));
 			}
 
-			$scope.selectedPost = function(shPost) {
-				$ctrl.shPostSelected = shPost;
+			$scope.selectedObject = function(shObject) {
+				$ctrl.shObjectSelected = shObject;
 			}
+			
 			// END Functions
 
 			$scope.folderList(shFolder);

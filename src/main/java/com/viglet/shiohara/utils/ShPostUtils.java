@@ -19,6 +19,7 @@ import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.reference.ShReference;
 import com.viglet.shiohara.persistence.model.site.ShSite;
+import com.viglet.shiohara.persistence.repository.object.ShObjectRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.reference.ShReferenceRepository;
@@ -33,6 +34,8 @@ public class ShPostUtils {
 	private ShPostRepository shPostRepository;
 	@Autowired
 	private ShPostAttrRepository shPostAttrRepository;
+	@Autowired
+	private ShObjectRepository shObjectRepository;
 	@Autowired
 	private ShStaticFileUtils shStaticFileUtils;
 	@Autowired
@@ -160,15 +163,15 @@ public class ShPostUtils {
 			}
 
 			try {
-				ShPost shPostReferenced = shPostRepository.findById(shPostAttr.getStrValue()).get();
+				ShObject shObjectReferenced = shObjectRepository.findById(shPostAttr.getStrValue()).get();
 				// Create new reference
 				ShReference shReference = new ShReference();
 				shReference.setShObjectFrom(shPost);
-				shReference.setShObjectTo(shPostReferenced);
+				shReference.setShObjectTo(shObjectReferenced);
 				shReferenceRepository.saveAndFlush(shReference);
 
 				Set<ShObject> referenceObjects = new HashSet<ShObject>();
-				referenceObjects.add(shPostReferenced);
+				referenceObjects.add(shObjectReferenced);
 				shPostAttr.setReferenceObjects(referenceObjects);
 			} catch (IllegalArgumentException iae) {
 				// TODO Re-thing about ignore this
@@ -236,15 +239,15 @@ public class ShPostUtils {
 				}
 			}
 			try {
-				ShPost shPostReferenced = shPostRepository.findById(shPostAttr.getStrValue()).get();
+				ShObject shObjectReferenced = shObjectRepository.findById(shPostAttr.getStrValue()).get();
 
 				ShReference shReference = new ShReference();
 				shReference.setShObjectFrom(shPost);
-				shReference.setShObjectTo(shPostReferenced);
+				shReference.setShObjectTo(shObjectReferenced);
 				shReferenceRepository.saveAndFlush(shReference);
 
 				Set<ShObject> referenceObjects = new HashSet<ShObject>();
-				referenceObjects.add(shPostReferenced);
+				referenceObjects.add(shObjectReferenced);
 				shPostAttr.setReferenceObjects(referenceObjects);
 			} catch (IllegalArgumentException iae) {
 				// TODO Re-thing about ignore this
