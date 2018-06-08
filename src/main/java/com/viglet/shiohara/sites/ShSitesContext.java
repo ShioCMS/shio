@@ -212,7 +212,7 @@ public class ShSitesContext {
 		}
 
 		String shPageLayoutHTML = shSitesContextComponent.shPageLayoutFactory(javascriptVar, pageLayoutJS,
-				pageLayoutHTML);
+				pageLayoutHTML, request);
 
 		response.setContentType(MediaType.TEXT_HTML_VALUE);
 

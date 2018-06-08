@@ -200,7 +200,7 @@ public class ShSitesContextComponent {
 		return shPostUtils.postToMap(shFolderPageLayout);
 	}
 
-	public String shPageLayoutFactory(String javascriptVar, String pageLayoutJS, String pageLayoutHTML)
+	public String shPageLayoutFactory(String javascriptVar, String pageLayoutJS, String pageLayoutHTML, HttpServletRequest request)
 			throws ScriptException, IOException {
 
 		StringBuilder shObjectJS = this.shObjectJSFactory();
@@ -212,6 +212,7 @@ public class ShSitesContextComponent {
 		Bindings bindings = engine.createBindings();
 		bindings.put("html", pageLayoutHTML);
 		bindings.put("spring", context);
+		bindings.put("request", request);
 		Object pageLayoutResult = engine.eval(javascript, bindings);
 		
 		return this.shRegionFactory(engine, bindings, javascriptVar, pageLayoutResult.toString()).html();
