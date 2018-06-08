@@ -6,6 +6,8 @@ var shSearchComponent = spring.getBean('shSearchComponent', Java
 		.type('com.viglet.shiohara.component.ShSearchComponent'));
 var shFolderUtils = spring.getBean('shFolderUtils', Java
 		.type('com.viglet.shiohara.utils.ShFolderUtils'));
+var shObjectUtils = spring.getBean('shObjectUtils', Java
+		.type('com.viglet.shiohara.utils.ShObjectUtils'));
 var shPostUtils = spring.getBean('shPostUtils', Java
 		.type('com.viglet.shiohara.utils.ShPostUtils'));
 
@@ -83,6 +85,16 @@ viglet.shiohara.shObject = function() {
 	 */
 	this.generateFolderLink = function(folderId) {
 		return shFolderUtils.generateFolderLinkById(folderId);
+	}
+
+	/**
+	 * @desc Generate Object Link
+	 * @param objectId,
+	 *            Object Id.
+	 * @public
+	 */
+	this.generateObjectLink = function(objectId) {
+		return shObjectUtils.generateObjectLinkById(objectId);
 	}
 
 };
