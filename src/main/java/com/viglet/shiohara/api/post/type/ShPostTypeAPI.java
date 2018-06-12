@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,11 +16,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
+import com.viglet.shiohara.exchange.post.type.ShPostTypeExport;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
@@ -41,7 +46,9 @@ public class ShPostTypeAPI {
 	private ShPostAttrRepository shPostAttrRepository;
 	@Autowired
 	private ShPostRepository shPostRepository;
-
+	@Autowired
+	private ShPostTypeExport shPostTypeExport;
+	
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewPostType.class })
 	public List<ShPostType> shPostTypeList() throws Exception {
@@ -146,6 +153,15 @@ public class ShPostTypeAPI {
 		} else {
 			return null;
 		}
+
+	}
+	
+	@ResponseBody
+	@GetMapping(value = "/export", produces = "application/zip")
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
+	public StreamingResponseBody shPostTypeExport(HttpServletResponse response) throws Exception {
+		
+		return shPostTypeExport.exportObject(response);
 
 	}
 
