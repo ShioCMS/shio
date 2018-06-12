@@ -1,23 +1,11 @@
 package com.viglet.shiohara.api.site;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.Principal;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,19 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viglet.shiohara.api.ShJsonView;
 import com.viglet.shiohara.api.folder.ShFolderList;
-import com.viglet.shiohara.exchange.ShFolderExchange;
-import com.viglet.shiohara.exchange.ShExchange;
-import com.viglet.shiohara.exchange.ShFileExchange;
-import com.viglet.shiohara.exchange.ShPostExchange;
-import com.viglet.shiohara.exchange.ShRelatorExchange;
-import com.viglet.shiohara.exchange.ShSiteExchange;
+import com.viglet.shiohara.exchange.site.ShSiteExport;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
-import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.model.site.ShSite;
@@ -58,9 +39,6 @@ import com.viglet.shiohara.post.type.ShSystemPostType;
 import com.viglet.shiohara.post.type.ShSystemPostTypeAttr;
 import com.viglet.shiohara.url.ShURLFormatter;
 import com.viglet.shiohara.utils.ShFolderUtils;
-import com.viglet.shiohara.utils.ShStaticFileUtils;
-import com.viglet.shiohara.utils.ShUtils;
-import com.viglet.shiohara.widget.ShSystemWidget;
 
 import io.swagger.annotations.Api;
 
@@ -78,18 +56,16 @@ public class ShSiteAPI {
 	@Autowired
 	private ShFolderUtils shFolderUtils;
 	@Autowired
-	private ShStaticFileUtils shStaticFileUtils;
-	@Autowired
 	private ShPostTypeRepository shPostTypeRepository;
 	@Autowired
 	private ShPostTypeAttrRepository shPostTypeAttrRepository;
 	@Autowired
 	private ShPostAttrRepository shPostAttrRepository;
 	@Autowired
-	private ShUtils shUtils;
-	@Autowired
 	private ShURLFormatter shURLFormatter;
-
+	@Autowired
+	private ShSiteExport shSiteExport;
+	
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShSite> shSiteList(final Principal principal) throws Exception {
@@ -219,91 +195,8 @@ public class ShSiteAPI {
 	@GetMapping(value = "/{id}/export", produces = "application/zip")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public StreamingResponseBody shSiteExport(@PathVariable String id, HttpServletResponse response) throws Exception {
-		String folderName = UUID.randomUUID().toString();
-		File userDir = new File(System.getProperty("user.dir"));
-		if (userDir.exists() && userDir.isDirectory()) {
-			File tmpDir = new File(userDir.getAbsolutePath().concat(File.separator + "store" + File.separator + "tmp"));
-			if (!tmpDir.exists()) {
-				tmpDir.mkdirs();
-			}
-
-			ShExchange shExchange = new ShExchange();
-			ShSite shSite = shSiteRepository.findById(id).get();
-
-			List<ShFolder> rootFolders = shFolderRepository.findByShSiteAndRootFolder(shSite, (byte) 1);
-
-			List<String> rootFoldersUUID = new ArrayList<String>();
-			for (ShFolder shFolder : rootFolders) {
-				rootFoldersUUID.add(shFolder.getId());
-			}
-
-			ShSiteExchange shSiteExchange = new ShSiteExchange();
-			shSiteExchange.setId(shSite.getId());
-			shSiteExchange.setName(shSite.getName());
-			shSiteExchange.setUrl(shSite.getUrl());
-			shSiteExchange.setDescription(shSite.getDescription());
-			shSiteExchange.setPostTypeLayout(shSite.getPostTypeLayout());
-			shSiteExchange.setDate(shSite.getDate());
-			shSiteExchange.setRootFolders(rootFoldersUUID);
-			shSiteExchange.setOwner(shSite.getOwner());
-			shSiteExchange.setFurl(shSite.getFurl());
-
-			List<ShSiteExchange> shSiteExchanges = new ArrayList<ShSiteExchange>();
-			shSiteExchanges.add(shSiteExchange);
-			shExchange.setSites(shSiteExchanges);
-
-			ShExchange shExchangeFolder = this.shFolderExchangeIterate(rootFolders);
-
-			shExchange.setFolders(shExchangeFolder.getFolders());
-			shExchange.setPosts(shExchangeFolder.getPosts());
-			File exportDir = new File(tmpDir.getAbsolutePath().concat(File.separator + folderName));
-			if (!exportDir.exists()) {
-				exportDir.mkdirs();
-			}
-
-			for (ShFileExchange fileExchange : shExchangeFolder.getFiles()) {
-				FileUtils.copyFile(fileExchange.getFile(),
-						new File(exportDir.getAbsolutePath().concat(File.separator + fileExchange.getId())));
-			}
-			// Object to JSON in file
-			ObjectMapper mapper = new ObjectMapper();
-			mapper.writerWithDefaultPrettyPrinter().writeValue(
-					new File(exportDir.getAbsolutePath().concat(File.separator + "export.json")), shExchange);
-
-			File zipFile = new File(tmpDir.getAbsolutePath().concat(File.separator + folderName + ".zip"));
-
-			shUtils.addFilesToZip(exportDir, zipFile);
-
-			String strDate = new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(new Date());
-			String zipFileName = shSite.getName() + "_" + strDate + ".zip";
-
-			response.addHeader("Content-disposition", "attachment;filename=" + zipFileName);
-			response.setContentType("application/octet-stream");
-			response.setStatus(HttpServletResponse.SC_OK);
-
-			return new StreamingResponseBody() {
-				@Override
-				public void writeTo(java.io.OutputStream output) throws IOException {
-
-					try {
-						java.nio.file.Path path = Paths.get(zipFile.getAbsolutePath());
-						byte[] data = Files.readAllBytes(path);
-						output.write(data);
-						output.flush();
-
-						FileUtils.deleteDirectory(exportDir);
-						FileUtils.deleteQuietly(zipFile);
-
-					} catch (IOException ex) {
-						ex.printStackTrace();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-			};
-		} else {
-			return null;
-		}
+		
+		return shSiteExport.exportObject(id, response);
 
 	}
 
@@ -313,92 +206,5 @@ public class ShSiteAPI {
 		ShSite shSite = new ShSite();
 		return shSite;
 
-	}
-
-	public ShExchange shFolderExchangeNested(ShFolder shFolder) {
-		List<ShFolder> childFolders = shFolderRepository.findByParentFolder(shFolder);
-		return this.shFolderExchangeIterate(childFolders);
-	}
-
-	public ShExchange shFolderExchangeIterate(List<ShFolder> shFolders) {
-		ShExchange shExchange = new ShExchange();
-		List<ShFolderExchange> shFolderExchanges = new ArrayList<ShFolderExchange>();
-		List<ShPostExchange> shPostExchanges = new ArrayList<ShPostExchange>();
-		List<ShFileExchange> files = new ArrayList<ShFileExchange>();
-
-		for (ShFolder shFolder : shFolders) {
-
-			for (ShPost shPost : shPostRepository.findByShFolder(shFolder)) {
-				ShPostExchange shPostExchange = new ShPostExchange();
-				shPostExchange.setId(shPost.getId());
-				shPostExchange.setFolder(shPost.getShFolder().getId());
-				shPostExchange.setDate(shPost.getDate());
-				shPostExchange.setPostType(shPost.getShPostType().getName());
-				shPostExchange.setOwner(shPost.getOwner());
-				shPostExchange.setFurl(shPost.getFurl());
-
-				Map<String, Object> fields = new HashMap<String, Object>();
-
-				this.shPostAttrExchangeIterate(shPost, shPostAttrRepository.findByShPost(shPost), fields, files);
-
-				shPostExchange.setFields(fields);
-
-				shPostExchanges.add(shPostExchange);
-			}
-			ShFolderExchange shFolderExchangeChild = new ShFolderExchange();
-			shFolderExchangeChild.setId(shFolder.getId());
-			shFolderExchangeChild.setDate(shFolder.getDate());
-			shFolderExchangeChild.setName(shFolder.getName());
-			shFolderExchangeChild.setOwner(shFolder.getOwner());
-			shFolderExchangeChild.setFurl(shFolder.getFurl());
-
-			if (shFolder.getParentFolder() != null) {
-				shFolderExchangeChild.setParentFolder(shFolder.getParentFolder().getId());
-			}
-			shFolderExchanges.add(shFolderExchangeChild);
-			ShExchange shExchangeChild = this.shFolderExchangeNested(shFolder);
-			shFolderExchanges.addAll(shExchangeChild.getFolders());
-			shPostExchanges.addAll(shExchangeChild.getPosts());
-			files.addAll(shExchangeChild.getFiles());
-		}
-		shExchange.setFolders(shFolderExchanges);
-		shExchange.setPosts(shPostExchanges);
-		shExchange.setFiles(files);
-		return shExchange;
-	}
-
-	public void shPostAttrExchangeIterate(ShPost shPost, Set<ShPostAttr> shPostAttrs, Map<String, Object> fields,
-			List<ShFileExchange> files) {
-		for (ShPostAttr shPostAttr : shPostAttrs) {
-			if (shPostAttr != null && shPostAttr.getShPostTypeAttr() != null) {
-				if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.RELATOR)) {
-					ShRelatorExchange shRelatorExchange = new ShRelatorExchange();
-					shRelatorExchange.setId(shPostAttr.getId());
-					shRelatorExchange.setName(shPostAttr.getStrValue());
-					Set<Object> relators = new HashSet<Object>();
-					for (ShRelatorItem shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
-						Map<String, Object> relatorFields = new HashMap<String, Object>();
-						this.shPostAttrExchangeIterate(shPost, shRelatorItem.getShChildrenPostAttrs(), relatorFields,
-								files);
-						relators.add(relatorFields);
-					}
-					shRelatorExchange.setShSubPosts(relators);
-					fields.put(shPostAttr.getShPostTypeAttr().getName(), shRelatorExchange);
-				} else {
-					fields.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
-				}
-
-				if (shPostAttr.getShPostTypeAttr().getName().equals(ShSystemPostTypeAttr.FILE)
-						&& shPost.getShPostType().getName().equals(ShSystemPostType.FILE)) {
-					String fileName = shPostAttr.getStrValue();
-					File directoryPath = shStaticFileUtils.dirPath(shPost.getShFolder());
-					File file = new File(directoryPath.getAbsolutePath().concat(File.separator + fileName));
-					ShFileExchange shFileExchange = new ShFileExchange();
-					shFileExchange.setId(shPost.getId());
-					shFileExchange.setFile(file);
-					files.add(shFileExchange);
-				}
-			}
-		}
 	}
 }
