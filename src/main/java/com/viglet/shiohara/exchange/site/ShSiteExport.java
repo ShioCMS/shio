@@ -78,6 +78,8 @@ public class ShSiteExport {
 
 			shExchange.setFolders(shExchangeFolder.getFolders());
 			shExchange.setPosts(shExchangeFolder.getPosts());
+			shExchange.setPostTypes(shExchangeFolder.getPostTypes());
+
 			File exportDir = new File(tmpDir.getAbsolutePath().concat(File.separator + folderName));
 			if (!exportDir.exists()) {
 				exportDir.mkdirs();
