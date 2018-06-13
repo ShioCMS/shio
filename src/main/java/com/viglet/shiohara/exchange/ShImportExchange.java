@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.viglet.shiohara.exchange.post.type.ShPostTypeImport;
 import com.viglet.shiohara.exchange.site.ShSiteImport;
 import com.viglet.shiohara.utils.ShUtils;
 
@@ -27,6 +28,8 @@ public class ShImportExchange {
 	private ShUtils shUtils;
 	@Autowired
 	private ShSiteImport shSiteImport;
+	@Autowired
+	private ShPostTypeImport shPostTypeImport;
 
 	private Map<String, Object> shObjects = new HashMap<String, Object>();
 	private Map<String, List<String>> shChildObjects = new HashMap<String, List<String>>();
@@ -52,7 +55,12 @@ public class ShImportExchange {
 					new FileInputStream(extractFolder.getAbsolutePath().concat(File.separator + "export.json")),
 					ShExchange.class);
 
-			shSiteImport.importSite(shExchange, username, extractFolder, shObjects, shChildObjects);
+			if (shExchange.getPostTypes() != null && shExchange.getPostTypes().size() > 0) {
+				shPostTypeImport.importPostType(shExchange);
+			}
+			if (shExchange.getSites() != null && shExchange.getSites().size() > 0) {
+				shSiteImport.importSite(shExchange, username, extractFolder, shObjects, shChildObjects);
+			}
 
 			try {
 				FileUtils.deleteDirectory(extractFolder);
