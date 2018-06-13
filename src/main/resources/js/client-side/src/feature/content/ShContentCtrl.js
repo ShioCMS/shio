@@ -24,7 +24,6 @@ shioharaApp.controller('ShContentCtrl', [
 					if (response.data.username) {
 						$rootScope.principal = response.data.firstName;
 						$rootScope.authenticated = true;
-						$state.go('content.home');
 					} else {
 						$rootScope.authenticated = false;
 						$state.go('content.login');
