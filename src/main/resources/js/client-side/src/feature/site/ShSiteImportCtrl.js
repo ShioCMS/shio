@@ -28,8 +28,14 @@ shioharaApp.controller('ShSiteImportCtrl', [
 					}).then(
 
 							function(resp) {
-								var siteName = resp.data.sites[0].name;
-								Notification.warning('The ' + siteName +' Site was imported.');
+								if (typeof resp.data.sites != 'undefined') {
+									var siteName = resp.data.sites[0].name;
+									Notification.warning('The ' + siteName
+											+ ' Site was imported.');
+								} else {
+									Notification
+											.warning('Objects were imported.');
+								}
 								$state.go('content');
 							},
 							null,
