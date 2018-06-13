@@ -27,27 +27,30 @@ public class ShPostTypeImport {
 
 	public void importPostType(ShExchange shExchange) throws IOException {
 		for (ShPostTypeExchange shPostTypeExchange : shExchange.getPostTypes()) {
-			ShPostType shPostType = new ShPostType();
-			shPostType.setId(shPostTypeExchange.getId());
-			shPostType.setTitle(shPostTypeExchange.getLabel());
-			shPostType.setDate(shPostTypeExchange.getDate());
-			shPostType.setDescription(shPostTypeExchange.getDescription());
-			shPostType.setName(shPostTypeExchange.getName());
-			shPostType.setOwner(shPostTypeExchange.getOwner());
+			if (shPostTypeRepository.findByName(shPostTypeExchange.getName()) == null) {
+				ShPostType shPostType = new ShPostType();
+				shPostType.setId(shPostTypeExchange.getId());
+				shPostType.setTitle(shPostTypeExchange.getLabel());
+				shPostType.setDate(shPostTypeExchange.getDate());
+				shPostType.setDescription(shPostTypeExchange.getDescription());
+				shPostType.setName(shPostTypeExchange.getName());
+				shPostType.setOwner(shPostTypeExchange.getOwner());
 
-			shPostType.setSystem(shPostTypeExchange.isSystem() ? (byte) 1 : (byte) 0);
+				shPostType.setSystem(shPostTypeExchange.isSystem() ? (byte) 1 : (byte) 0);
 
-			Set<ShPostTypeAttr> shPostTypeAttrs = new HashSet<ShPostTypeAttr>();
-			if (shPostTypeExchange.getFields() != null && shPostTypeExchange.getFields().size() > 0) {
-				for (Entry<String, ShPostTypeFieldExchange> postTypeField : shPostTypeExchange.getFields().entrySet()) {
-					ShPostTypeAttr shPostTypeAttr = this.importPostTypeField(postTypeField);
-					shPostTypeAttr.setShPostType(shPostType);
-					shPostTypeAttrs.add(shPostTypeAttr);
+				Set<ShPostTypeAttr> shPostTypeAttrs = new HashSet<ShPostTypeAttr>();
+				if (shPostTypeExchange.getFields() != null && shPostTypeExchange.getFields().size() > 0) {
+					for (Entry<String, ShPostTypeFieldExchange> postTypeField : shPostTypeExchange.getFields()
+							.entrySet()) {
+						ShPostTypeAttr shPostTypeAttr = this.importPostTypeField(postTypeField);
+						shPostTypeAttr.setShPostType(shPostType);
+						shPostTypeAttrs.add(shPostTypeAttr);
+					}
 				}
-			}
-			shPostType.setShPostTypeAttrs(shPostTypeAttrs);
+				shPostType.setShPostTypeAttrs(shPostTypeAttrs);
 
-			shPostTypeRepository.save(shPostType);
+				shPostTypeRepository.save(shPostType);
+			}
 		}
 	}
 

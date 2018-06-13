@@ -12,7 +12,9 @@ import com.viglet.shiohara.exchange.ShExchange;
 import com.viglet.shiohara.exchange.ShFileExchange;
 import com.viglet.shiohara.exchange.ShFolderExchange;
 import com.viglet.shiohara.exchange.ShPostExchange;
+import com.viglet.shiohara.exchange.ShPostTypeExchange;
 import com.viglet.shiohara.exchange.post.ShPostExport;
+import com.viglet.shiohara.exchange.post.type.ShPostTypeExport;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
@@ -29,13 +31,15 @@ public class ShFolderExport {
 	private ShPostAttrRepository shPostAttrRepository;
 	@Autowired
 	private ShPostExport shPostExport;
+	@Autowired
+	private ShPostTypeExport shPostTypeExport;
 
 	public ShExchange shFolderExchangeIterate(List<ShFolder> shFolders) {
 		ShExchange shExchange = new ShExchange();
 		List<ShFolderExchange> shFolderExchanges = new ArrayList<ShFolderExchange>();
 		List<ShPostExchange> shPostExchanges = new ArrayList<ShPostExchange>();
 		List<ShFileExchange> files = new ArrayList<ShFileExchange>();
-
+		Map<String, ShPostTypeExchange> shPostTypeExchanges = new HashMap<String, ShPostTypeExchange>();
 		for (ShFolder shFolder : shFolders) {
 
 			for (ShPost shPost : shPostRepository.findByShFolder(shFolder)) {
@@ -47,6 +51,10 @@ public class ShFolderExport {
 				shPostExchange.setOwner(shPost.getOwner());
 				shPostExchange.setFurl(shPost.getFurl());
 
+				if (!shPostTypeExchanges.containsKey(shPost.getShPostType().getName())) {
+					shPostTypeExchanges.put(shPost.getShPostType().getName(),
+							shPostTypeExport.exportPostType(shPost.getShPostType()));
+				}
 				Map<String, Object> fields = new HashMap<String, Object>();
 
 				shPostExport.shPostAttrExchangeIterate(shPost, shPostAttrRepository.findByShPost(shPost), fields,
@@ -70,11 +78,19 @@ public class ShFolderExport {
 			ShExchange shExchangeChild = this.shFolderExchangeNested(shFolder);
 			shFolderExchanges.addAll(shExchangeChild.getFolders());
 			shPostExchanges.addAll(shExchangeChild.getPosts());
+
+			for (ShPostTypeExchange shPostTypeExchange : shExchangeChild.getPostTypes()) {
+				if (!shPostTypeExchanges.containsKey(shPostTypeExchange.getName())) {
+					shPostTypeExchanges.put(shPostTypeExchange.getName(), shPostTypeExchange);
+				}
+
+			}
 			files.addAll(shExchangeChild.getFiles());
 		}
 		shExchange.setFolders(shFolderExchanges);
 		shExchange.setPosts(shPostExchanges);
 		shExchange.setFiles(files);
+		shExchange.setPostTypes(new ArrayList<ShPostTypeExchange>(shPostTypeExchanges.values()));
 		return shExchange;
 	}
 

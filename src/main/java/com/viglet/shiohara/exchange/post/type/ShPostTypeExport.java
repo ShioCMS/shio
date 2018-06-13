@@ -49,28 +49,7 @@ public class ShPostTypeExport {
 			List<ShPostTypeExchange> postTypeExchanges = new ArrayList<ShPostTypeExchange>();
 
 			for (ShPostType shPostType : shPostTypes) {
-				ShPostTypeExchange shPostTypeExchange = new ShPostTypeExchange();
-				shPostTypeExchange.setId(shPostType.getId());
-				shPostTypeExchange.setName(shPostType.getName());
-				shPostTypeExchange.setLabel(shPostType.getTitle());
-				shPostTypeExchange.setDate(shPostType.getDate());
-				shPostTypeExchange.setDescription(shPostType.getDescription());
-
-				shPostTypeExchange.setOwner(shPostType.getOwner());
-				shPostTypeExchange.setSystem(shPostType.getSystem() == (byte) 1 ? true : false);
-
-				if (shPostType.getShPostTypeAttrs().size() > 0) {
-					Map<String, ShPostTypeFieldExchange> shPostTypeFieldExchanges = new HashMap<String, ShPostTypeFieldExchange>();
-
-					for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs()) {
-						ShPostTypeFieldExchange shPostTypeFieldExchange = this.exportPostTypeField(shPostTypeAttr);
-						shPostTypeFieldExchanges.put(shPostTypeAttr.getName(), shPostTypeFieldExchange);
-					}
-
-					shPostTypeExchange.setFields(shPostTypeFieldExchanges);
-				}
-
-				postTypeExchanges.add(shPostTypeExchange);
+				postTypeExchanges.add(this.exportPostType(shPostType));
 			}
 
 			File exportDir = new File(tmpDir.getAbsolutePath().concat(File.separator + folderName));
@@ -123,6 +102,30 @@ public class ShPostTypeExport {
 		}
 	}
 
+	public ShPostTypeExchange exportPostType(ShPostType shPostType) {
+		ShPostTypeExchange shPostTypeExchange = new ShPostTypeExchange();
+		shPostTypeExchange.setId(shPostType.getId());
+		shPostTypeExchange.setName(shPostType.getName());
+		shPostTypeExchange.setLabel(shPostType.getTitle());
+		shPostTypeExchange.setDate(shPostType.getDate());
+		shPostTypeExchange.setDescription(shPostType.getDescription());
+
+		shPostTypeExchange.setOwner(shPostType.getOwner());
+		shPostTypeExchange.setSystem(shPostType.getSystem() == (byte) 1 ? true : false);
+
+		if (shPostType.getShPostTypeAttrs().size() > 0) {
+			Map<String, ShPostTypeFieldExchange> shPostTypeFieldExchanges = new HashMap<String, ShPostTypeFieldExchange>();
+
+			for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs()) {
+				ShPostTypeFieldExchange shPostTypeFieldExchange = this.exportPostTypeField(shPostTypeAttr);
+				shPostTypeFieldExchanges.put(shPostTypeAttr.getName(), shPostTypeFieldExchange);
+			}
+
+			shPostTypeExchange.setFields(shPostTypeFieldExchanges);
+		}
+
+		return shPostTypeExchange;
+	}
 	public ShPostTypeFieldExchange exportPostTypeField(ShPostTypeAttr shPostTypeAttr) {
 		ShPostTypeFieldExchange shPostTypeFieldExchange = new ShPostTypeFieldExchange();
 		shPostTypeFieldExchange.setId(shPostTypeAttr.getId());
