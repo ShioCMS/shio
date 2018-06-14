@@ -190,6 +190,8 @@ public class ShPostAPI {
 
 		shPostRepository.saveAndFlush(shPost);
 
+		this.postReferenceSave(shPost);
+
 		ShUser shUser = shUserRepository.findByUsername("admin");
 		shUser.setLastPostType(String.valueOf(shPost.getShPostType().getId()));
 		shUserRepository.saveAndFlush(shUser);
@@ -197,8 +199,6 @@ public class ShPostAPI {
 	}
 
 	private void postAttrSave(ShPostAttr shPostAttr, ShPost shPost) {
-
-		shPostUtils.referencedObject(shPostAttr, shPost);
 		for (ShRelatorItem shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
 			shRelatorItem.setShParentPostAttr(shPostAttr);
 			for (ShPostAttr shChildrenPostAttr : shRelatorItem.getShChildrenPostAttrs()) {
@@ -211,6 +211,17 @@ public class ShPostAPI {
 
 				shChildrenPostAttr.setShParentRelatorItem(shRelatorItem);
 				this.postAttrSave(shChildrenPostAttr, shPost);
+			}
+		}
+	}
+
+	private void postReferenceSave(ShPost shPost) {
+		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
+			shPostUtils.referencedObject(shPostAttr, shPost);
+			for (ShRelatorItem shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
+				for (ShPostAttr shChildrenPostAttr : shRelatorItem.getShChildrenPostAttrs()) {
+					this.postAttrSave(shChildrenPostAttr, shPost);
+				}
 			}
 		}
 	}
