@@ -171,5 +171,10 @@ test {
     }
 }
 
+bootRun {
+    if (project.hasProperty('args')) {
+        args project.args.split(',')
+    }
+}
 check.dependsOn jacocoTestReport   
 }

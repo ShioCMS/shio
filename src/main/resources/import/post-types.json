@@ -1,0 +1,501 @@
+{
+	"postTypes": [
+		{
+			"id": "bbaf6bde-337d-4789-86ca-ba2e2ceb1e87",
+			"date": "2018-06-14T13:53Z",
+			"name": "PT-TEXT",
+			"label": "Text",
+			"description": "Text Post Type",
+			"fields": {
+				"TEXT": {
+					"id": "63805de2-e570-496f-8029-98f4719336eb",
+					"label": "Text",
+					"description": "Text",
+					"ordinal": 1,
+					"widget": "Text",
+					"required": true,
+					"title": true,
+					"summary": false
+				}
+			},
+			"owner": "admin",
+			"system": true
+		},
+		{
+			"id": "1bf7dcd3-8a6e-4e9e-b8a2-2a27fe550758",
+			"date": "2018-06-14T13:53Z",
+			"name": "PT-PHOTO",
+			"label": "Photo",
+			"description": "Photo Post Type",
+			"fields": {
+				"PHOTO": {
+					"id": "de19eec4-9db6-4ae1-9175-45771b35e443",
+					"label": "Photo Path",
+					"description": "Photo Path",
+					"ordinal": 1,
+					"widget": "Text",
+					"required": true,
+					"title": true,
+					"summary": false
+				}
+			},
+			"owner": "admin",
+			"system": true
+		},
+		{
+			"id": "59df2ffe-eaff-49b8-acf8-ed347c81ebe2",
+			"date": "2018-06-14T13:53Z",
+			"name": "PT-VIDEO",
+			"label": "Video",
+			"description": "Video Post Type",
+			"fields": {
+				"VIDEO": {
+					"id": "5c2d4cfb-00ab-45c5-92db-e03e9ec9d527",
+					"label": "Video Path",
+					"description": "Video Path",
+					"ordinal": 1,
+					"widget": "Text",
+					"required": true,
+					"title": true,
+					"summary": false
+				}
+			},
+			"owner": "admin",
+			"system": true
+		},
+		{
+			"id": "86539e60-e763-4f03-851e-c1b79c11fc4f",
+			"date": "2018-06-14T13:53Z",
+			"name": "PT-QUOTE",
+			"label": "Quote",
+			"description": "Quote Post Type",
+			"fields": {
+				"TEXT": {
+					"id": "466089a9-b53d-451c-9f2d-ace6f56ca3f9",
+					"label": "Quote",
+					"description": "Quote Text",
+					"ordinal": 1,
+					"widget": "Text",
+					"required": true,
+					"title": true,
+					"summary": false
+				}
+			},
+			"owner": "admin",
+			"system": true
+		},
+		{
+			"id": "ad0fe339-f925-4dab-a379-bee572a5a097",
+			"date": "2018-06-14T13:53Z",
+			"name": "PT-LINK",
+			"label": "Link",
+			"description": "Link Post Type",
+			"fields": {
+				"LINK": {
+					"id": "43578523-2d0a-4840-acec-4bfccef20aac",
+					"label": "Link",
+					"description": "Link",
+					"ordinal": 1,
+					"widget": "Text",
+					"required": true,
+					"title": true,
+					"summary": false
+				}
+			},
+			"owner": "admin",
+			"system": true
+		},
+		{
+			"id": "61a2d491-0933-418c-b1cb-aae042d5e089",
+			"date": "2018-06-14T13:53Z",
+			"name": "PT-FILE",
+			"label": "File",
+			"description": "File Post Type",
+			"fields": {
+				"FILE": {
+					"id": "077f8b1c-3fcd-4342-852a-7711245696b2",
+					"label": "File Path",
+					"description": "File Path",
+					"ordinal": 1,
+					"widget": "File",
+					"required": true,
+					"title": true,
+					"summary": false
+				}
+			},
+			"owner": "admin",
+			"system": true
+		},
+		{
+			"id": "537f147e-64ea-4205-a3c7-987b8cb3f196",
+			"date": "2018-06-14T13:53Z",
+			"name": "PT-TEXT-AREA",
+			"label": "Text Area",
+			"description": "Text Area Post Type",
+			"fields": {
+				"TEXT": {
+					"id": "0a26b756-1fe2-4dd3-ab0d-89d78f2f151f",
+					"label": "Text",
+					"description": "Text",
+					"ordinal": 1,
+					"widget": "Text Area",
+					"required": true,
+					"title": true,
+					"summary": false
+				}
+			},
+			"owner": "admin",
+			"system": false
+		},
+		{
+			"id": "cd710f35-e838-41e2-943c-1c93f0543ebe",
+			"date": "2018-06-14T13:53Z",
+			"name": "PT-ARTICLE",
+			"label": "Article",
+			"description": "Article Post Type",
+			"fields": {
+				"RELATION": {
+					"id": "4c39181b-732a-4470-947e-26cc2cda1e45",
+					"label": "Relation",
+					"description": "Relation",
+					"ordinal": 6,
+					"fields": {
+						"RELATION2nd": {
+							"id": "7b2e1f2b-81b8-43f7-b805-7ab4baf51484",
+							"label": "Relation2nd",
+							"description": "Relation2nd",
+							"ordinal": 8,
+							"fields": {
+								"TEXT_RELATION2nd": {
+									"id": "9e850f2e-f2b8-4cd8-a913-cf944d24f2c5",
+									"label": "Text of Relation 2nd",
+									"description": "Text of Relation 2nd",
+									"ordinal": 9,
+									"widget": "Text",
+									"required": true,
+									"title": true,
+									"summary": false
+								}
+							},
+							"widget": "Relator",
+							"required": true,
+							"title": false,
+							"summary": false
+						},
+						"TEXT_RELATION": {
+							"id": "6de05406-c3cf-4657-937a-fcf2072dd4e7",
+							"label": "Text of Relation",
+							"description": "Text of Relation",
+							"ordinal": 7,
+							"widget": "Text",
+							"required": true,
+							"title": true,
+							"summary": false
+						}
+					},
+					"widget": "Relator",
+					"required": true,
+					"title": false,
+					"summary": false
+				},
+				"VIDEO": {
+					"id": "c9f329fe-8d5c-43d4-be93-c25df72fc0fd",
+					"label": "Video URL",
+					"description": "Video URL",
+					"ordinal": 4,
+					"widget": "Text",
+					"required": false,
+					"title": false,
+					"summary": false
+				},
+				"DESCRIPTION": {
+					"id": "0f46d6f0-e589-44ca-a246-3fd6c7ffe4b2",
+					"label": "Description",
+					"description": "Description",
+					"ordinal": 2,
+					"widget": "Text Area",
+					"required": true,
+					"title": false,
+					"summary": true
+				},
+				"TITLE": {
+					"id": "c0c52b1e-08f4-4ae3-847c-a67e2f3712c0",
+					"label": "Title",
+					"description": "Title",
+					"ordinal": 1,
+					"widget": "Text",
+					"required": true,
+					"title": true,
+					"summary": false
+				},
+				"TEXT": {
+					"id": "7fb41aed-5fe3-49bc-8ae8-e500173a0279",
+					"label": "Text",
+					"description": "Text",
+					"ordinal": 5,
+					"widget": "HTML Editor",
+					"required": true,
+					"title": false,
+					"summary": false
+				},
+				"FILE": {
+					"id": "0015d0c2-9c64-4032-b3c3-424a07d3614d",
+					"label": "File Path",
+					"description": "File Path",
+					"ordinal": 3,
+					"widget": "File",
+					"required": false,
+					"title": false,
+					"summary": false
+				}
+			},
+			"owner": "admin",
+			"system": false
+		},
+		{
+			"id": "301a6645-a3b2-4644-b7c6-ec6554aef8d1",
+			"date": "2018-06-14T13:53Z",
+			"name": "PT-REGION",
+			"label": "Region",
+			"description": "Region Post Type",
+			"fields": {
+				"JAVASCRIPT": {
+					"id": "82c558f0-2b06-45df-a583-84cef30f2bb9",
+					"label": "Javascript",
+					"description": "Javascript",
+					"ordinal": 3,
+					"widget": "Ace Editor - Javascript",
+					"required": true,
+					"title": false,
+					"summary": false
+				},
+				"DESCRIPTION": {
+					"id": "6f2e271c-8d1a-4748-9002-53c1dd08b2fb",
+					"label": "Description",
+					"description": "Description",
+					"ordinal": 2,
+					"widget": "Text Area",
+					"required": true,
+					"title": false,
+					"summary": true
+				},
+				"TITLE": {
+					"id": "bdcd9cc5-c0f3-4f12-963b-b97716b0bdc1",
+					"label": "Title",
+					"description": "Title",
+					"ordinal": 1,
+					"widget": "Text",
+					"required": true,
+					"title": true,
+					"summary": false
+				},
+				"HTML": {
+					"id": "8fa416d4-4468-4ecb-a63b-24dbec574b58",
+					"label": "HTML",
+					"description": "HTML",
+					"ordinal": 4,
+					"widget": "Ace Editor - HTML",
+					"required": true,
+					"title": false,
+					"summary": false
+				}
+			},
+			"owner": "admin",
+			"system": true
+		},
+		{
+			"id": "2ec0d911-e64f-41e5-a5d8-e0dba41a5b3b",
+			"date": "2018-06-14T13:53Z",
+			"name": "PT-THEME",
+			"label": "Theme",
+			"description": "Theme Post Type",
+			"fields": {
+				"JAVASCRIPT": {
+					"id": "97129e7e-bf0b-44db-8c5b-bb5e75b5cb1c",
+					"label": "Javascript",
+					"description": "Javascript",
+					"ordinal": 4,
+					"widget": "Ace Editor - HTML",
+					"required": true,
+					"title": false,
+					"summary": false
+				},
+				"CSS": {
+					"id": "989ff943-7d49-4afa-be3d-851e437573ca",
+					"label": "CSS",
+					"description": "CSS",
+					"ordinal": 3,
+					"widget": "Ace Editor - HTML",
+					"required": true,
+					"title": false,
+					"summary": false
+				},
+				"DESCRIPTION": {
+					"id": "3cd69b44-f4dc-4780-b43b-8bcdec0450f5",
+					"label": "Description",
+					"description": "Description",
+					"ordinal": 2,
+					"widget": "Text Area",
+					"required": true,
+					"title": false,
+					"summary": true
+				},
+				"TITLE": {
+					"id": "018df4da-1a10-4a65-8e58-0d4a9006a2a2",
+					"label": "Title",
+					"description": "Title",
+					"ordinal": 1,
+					"widget": "Text",
+					"required": true,
+					"title": true,
+					"summary": false
+				}
+			},
+			"owner": "admin",
+			"system": true
+		},
+		{
+			"id": "3d349925-3509-463d-ab72-b0006d0b463e",
+			"date": "2018-06-14T13:53Z",
+			"name": "PT-PAGE-LAYOUT",
+			"label": "Page Layout",
+			"description": "Page Layout Post Type",
+			"fields": {
+				"JAVASCRIPT": {
+					"id": "924a1f01-132e-4696-a628-9c3de25e7e04",
+					"label": "Javascript",
+					"description": "Javascript",
+					"ordinal": 4,
+					"widget": "Ace Editor - Javascript",
+					"required": true,
+					"title": false,
+					"summary": false
+				},
+				"DESCRIPTION": {
+					"id": "db01cf5b-836f-49c7-9e7a-19bcac221978",
+					"label": "Description",
+					"description": "Description",
+					"ordinal": 2,
+					"widget": "Text",
+					"required": true,
+					"title": false,
+					"summary": true
+				},
+				"THEME": {
+					"id": "a5d27dcd-1372-43c5-950c-e6cbee1807da",
+					"label": "Theme",
+					"description": "Theme",
+					"ordinal": 3,
+					"widget": "Content Select",
+					"required": true,
+					"title": false,
+					"summary": false
+				},
+				"TITLE": {
+					"id": "d40eb842-55bd-48fa-9329-77d4c22644e6",
+					"label": "Title",
+					"description": "Title",
+					"ordinal": 1,
+					"widget": "Text",
+					"required": true,
+					"title": true,
+					"summary": false
+				},
+				"HTML": {
+					"id": "c02c23a9-51bb-4ddb-ab3d-252da57f9450",
+					"label": "HTML",
+					"description": "HTML",
+					"ordinal": 5,
+					"widget": "Ace Editor - HTML",
+					"required": true,
+					"title": false,
+					"summary": false
+				}
+			},
+			"owner": "admin",
+			"system": true
+		},
+		{
+			"id": "10edbb4c-b2fa-481b-be8c-404e44050167",
+			"date": "2018-06-14T13:53Z",
+			"name": "PT-FOLDER-INDEX",
+			"label": "Folder Index",
+			"description": "Folder Index Post Type",
+			"fields": {
+				"DESCRIPTION": {
+					"id": "325ea5c2-7a2b-4c53-828a-4a848b7b4c62",
+					"label": "Description",
+					"description": "Description",
+					"ordinal": 2,
+					"widget": "Text Area",
+					"required": true,
+					"title": false,
+					"summary": true
+				},
+				"PAGE-LAYOUT": {
+					"id": "da6dbfeb-34a4-4019-a09d-6b457a1120d3",
+					"label": "Page Layout",
+					"description": "Page Layout",
+					"ordinal": 2,
+					"widget": "Content Select",
+					"required": true,
+					"title": false,
+					"summary": false
+				},
+				"TITLE": {
+					"id": "fd63f8ae-9ff4-4ad4-bb9e-7965642a9ea8",
+					"label": "Title",
+					"description": "Title",
+					"ordinal": 1,
+					"widget": "Text",
+					"required": true,
+					"title": true,
+					"summary": false
+				}
+			},
+			"owner": "admin",
+			"system": true
+		},
+		{
+			"id": "e2c7b542-ff13-4150-bac8-ef95251753e8",
+			"date": "2018-06-14T13:53Z",
+			"name": "PT-ALIAS",
+			"label": "Alias",
+			"description": "Alias Post Type",
+			"fields": {
+				"DESCRIPTION": {
+					"id": "07754ab4-5eea-4bd5-a88f-2362dbdf65f4",
+					"label": "Description",
+					"description": "Description",
+					"ordinal": 2,
+					"widget": "Text Area",
+					"required": true,
+					"title": false,
+					"summary": true
+				},
+				"TITLE": {
+					"id": "319fa1e4-f0ff-490e-904d-f374ee1d2726",
+					"label": "Title",
+					"description": "Title",
+					"ordinal": 1,
+					"widget": "Text",
+					"required": true,
+					"title": true,
+					"summary": false
+				},
+				"CONTENT": {
+					"id": "fb34e99c-333a-4063-815f-54512a6feebf",
+					"label": "Content Select",
+					"description": "Content Select",
+					"ordinal": 3,
+					"widget": "Content Select",
+					"required": true,
+					"title": false,
+					"summary": true
+				}
+			},
+			"owner": "admin",
+			"system": true
+		}
+	]
+}
