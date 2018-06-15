@@ -84,7 +84,7 @@ public class ShPostUtils {
 		shPostCopy.setShPostType(shPost.getShPostType());
 		shPostCopy.setSummary(shPost.getSummary());
 		shPostCopy.setTitle(shPost.getTitle());
-		
+
 		shPostRepository.save(shPostCopy);
 
 		Set<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
@@ -138,23 +138,26 @@ public class ShPostUtils {
 
 	@Transactional
 	public void referencedPost(ShPostAttr shPostAttr, ShPost shPost) {
-
 		if (shPostAttr.getStrValue() == null) {
 			shPostAttr.setReferenceObjects(null);
 		} else {
-
 			// TODO Two or more attributes with FILE Widget and same file, it cannot remove
 			// a valid reference
 			// Remove old references
 			List<ShReference> shOldReferences = shReferenceRepository.findByShObjectFrom(shPost);
 			if (shOldReferences.size() > 0) {
 				for (ShReference shOldReference : shOldReferences) {
+					// Find by shPostAttr.getStrValue()
+					if (shOldReference.getShObjectTo().getId().toString().equals(shPostAttr.getStrValue())) {
+						shReferenceRepository.delete(shOldReference);
+
+					}
+					
+					// Find by shPostAttr.getReferenceObjects()
 					if (shPostAttr.getReferenceObjects() != null) {
 						for (ShObject shObject : shPostAttr.getReferenceObjects()) {
-							if (shOldReference.getShObjectTo().getId().toString()
-									.equals(shObject.getId().toString())) {
+							if (shOldReference.getShObjectTo().getId().toString().equals(shObject.getId().toString())) {
 								shReferenceRepository.delete(shOldReference);
-								break;
 							}
 						}
 					}
@@ -169,7 +172,6 @@ public class ShPostUtils {
 				shReference.setShObjectFrom(shPost);
 				shReference.setShObjectTo(shObjectReferenced);
 				shReferenceRepository.saveAndFlush(shReference);
-
 				Set<ShObject> referenceObjects = new HashSet<ShObject>();
 				referenceObjects.add(shObjectReferenced);
 				shPostAttr.setReferenceObjects(referenceObjects);
@@ -229,8 +231,7 @@ public class ShPostUtils {
 				for (ShReference shOldReference : shOldReferences) {
 					if (shPostAttrEdit.getReferenceObjects() != null) {
 						for (ShObject shObject : shPostAttrEdit.getReferenceObjects()) {
-							if (shOldReference.getShObjectTo().getId().toString()
-									.equals(shObject.getId().toString())) {
+							if (shOldReference.getShObjectTo().getId().toString().equals(shObject.getId().toString())) {
 								shReferenceRepository.delete(shOldReference);
 								break;
 							}
