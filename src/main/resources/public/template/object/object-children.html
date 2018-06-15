@@ -62,7 +62,7 @@
 
 				<div class="btn-group" uib-dropdown>
 					<button id="batch-button" type="button" class="btn btn-default"
-						uib-dropdown-toggle ng-disabled="disabled">
+						uib-dropdown-toggle ng-disabled="!itemSelected">
 						Action in Batch <span class="caret"></span>
 					</button>
 					<ul class="dropdown-menu" uib-dropdown-menu role="menu"
@@ -136,7 +136,7 @@
 				<div class="row">
 					<div class="col-lg-10 col-md-9 col-sm-8 col-xs-6">
 						<div style="display: inline">
-							<input type="checkbox" ng-model="shStateObjects[shFolder.id]">
+							<input type="checkbox" ng-model="shStateObjects[shFolder.id]" ng-click="checkSomeItemSelected()">
 						</div>
 						<div style="display: inline">
 							<a type="button" class="btn btn-link"
@@ -171,21 +171,21 @@
 									ui-sref="content.folder.edit({folderId: shFolder.id})"> <i
 									class="fa fa-pencil-square-o" aria-hidden="true"> </i> Edit
 								</a>
-								<button type="button" class="btn btn-link btn-xs"
+								<button type="button" class="btn btn-link btn-xs" ng-hide="itemSelected"
 									style="display: block;" ng-click="objectCopy(shFolder)">
 									<i class="fa fa-files-o" aria-hidden="true"></i> Copy
 								</button>
-								<button type="button" class="btn btn-link btn-xs"
+								<button type="button" class="btn btn-link btn-xs" ng-hide="itemSelected"
 									style="display: block;" ng-click="objectMove(shFolder)">
 									<i class="fa fa-share" aria-hidden="true"></i> Move
 								</button>
 							</div>
 							<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-								<button type="button" class="btn btn-link btn-xs"
+								<button type="button" class="btn btn-link btn-xs" ng-hide="itemSelected"
 									style="display: block;" ng-click="objectClone(shFolder)">
 									<i class="fa fa-clone" aria-hidden="true"></i> Clone
 								</button>
-								<button type="button" class="btn btn-link btn-xs"
+								<button type="button" class="btn btn-link btn-xs" ng-hide="itemSelected"
 									style="display: block;" ng-click="folderDelete(shFolder)">
 									<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
 								</button>
@@ -205,7 +205,7 @@
 				<div class="row">
 					<div class="col-lg-10 col-md-9 col-sm-8 col-xs-6">
 						<div style="display: inline">
-							<input type="checkbox" ng-model="shStateObjects[shPost.id]">
+							<input type="checkbox" ng-model="shStateObjects[shPost.id]" ng-click="checkSomeItemSelected()">
 						</div>
 						<div style="display: inline">
 							<!-- NON ALIAS -->
@@ -244,21 +244,21 @@
 						ng-show="actions[shPost.id]">
 						<div class="row">
 							<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-								<button type="button" class="btn btn-link btn-xs "
+								<button type="button" class="btn btn-link btn-xs" ng-hide="itemSelected"
 									ng-click="objectCopy(shPost)">
 									<i class="fa fa-files-o" aria-hidden="true"></i> Copy
 								</button>
-								<button type="button" class="btn btn-link btn-xs"
+								<button type="button" class="btn btn-link btn-xs" ng-hide="itemSelected"
 									ng-click="objectMove(shPost)">
 									<i class="fa fa-share" aria-hidden="true"></i> Move
 								</button>
-								<button type="button" class="btn btn-link btn-xs"
+								<button type="button" class="btn btn-link btn-xs" ng-hide="itemSelected"
 									ng-click="objectClone(shPost)">
 									<i class="fa fa-clone" aria-hidden="true"></i> Clone
 								</button>
 							</div>
 							<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-								<button type="button" class="btn btn-link btn-xs"
+								<button type="button" class="btn btn-link btn-xs" ng-hide="itemSelected"
 									ng-click="postDelete(shPost)">
 									<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
 								</button>
