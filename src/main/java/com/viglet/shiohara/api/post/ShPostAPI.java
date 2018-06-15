@@ -226,5 +226,6 @@ public class ShPostAPI {
 				}
 			}
 		}
+		shPostRepository.saveAndFlush(shPost);
 	}
 }

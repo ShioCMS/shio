@@ -5,6 +5,26 @@ shioharaApp.controller('ShWidgetContentSelectCtrl', [
 		'$uibModal',
 		'ShDialogSelectObject',
 		function($scope, Upload, $timeout, $uibModal, ShDialogSelectObject) {
+			$scope.breadcrumb = [];
+			$scope.init = function(shPostAttr) {
+				$scope.folderBreadcrumb($scope.breadcrumb, shPostAttr.referenceObjects[0].shFolder);
+			}
+			$scope.folderBreadcrumb = function(breadcrumb, shFolder) {
+				if (shFolder != null) {
+					$scope.breadcrumbItem = {};
+					$scope.breadcrumbItem.id = shFolder.id;
+					$scope.breadcrumbItem.name = shFolder.name;
+					$scope.breadcrumb.push($scope.breadcrumbItem);	
+					if (shFolder.parentFolder != null) {
+						$scope.folderBreadcrumb(breadcrumb, shFolder.parentFolder);
+					} else if (shFolder.shSite != null) {
+						$scope.breadcrumbItem = {};
+						$scope.breadcrumbItem.id = shFolder.shSite.id;
+						$scope.breadcrumbItem.name = shFolder.shSite.name + " (Site)";
+						$scope.breadcrumb.push($scope.breadcrumbItem);
+					}
+				}			
+			}
 			$scope.$watch('shPostAttr.file', function() {
 				if ($scope.shPostAttr.file != null) {
 					$scope.uploadNewFile = false;

@@ -23,33 +23,46 @@
 	border: 5px dashed blue;
 }
 </style>
-<div ng-controller="ShWidgetContentSelectCtrl">
-	<div ng-if="shPostAttr.strValue != null">
-		<div class="row">
-			<div class="col-lg-8 col-md-7 col-sm-6 col-xs-4">
+<div ng-controller="ShWidgetContentSelectCtrl"
+	ng-init="init(shPostAttr)">
+		<div class="panel panel-default" style="margin-top: 10px;" ng-if="shPostAttr.strValue != null">
+			<div class="panel-body">
+				<ul class="breadcrumb"
+					style="background-color: white; padding: 0px; margin: 0px; font-size: 12px;">
+					<li ng-repeat="breacrumbItem in breadcrumb.slice().reverse()"><a
+						ui-sref="content.children({objectId: breacrumbItem.id})"
+						ui-sref-opts="{reload:true}">{{breacrumbItem.name}}</a></li>
+				</ul>
+				<div class="row">
+					<div class="col-lg-8 col-md-7 col-sm-6 col-xs-4">
+						<a type="button" class="btn btn-link"
+							ng-if="shPostAttr.referenceObjects[0].title != null"
+							ui-sref="content.post-type-item.post-item({postTypeId: shPostAttr.referenceObjects[0].shPostType.id, postId: shPostAttr.referenceObjects[0].id})"><i
+							class="fa fa-newspaper-o" aria-hidden="true"
+							style="margin-right: 5px"></i>
+							{{shPostAttr.referenceObjects[0].title}}</a> <a type="button"
+							class="btn btn-link"
+							ng-if="shPostAttr.referenceObjects[0].title == null"
+							ui-sref="content.children({objectId: shFolder.id})"><i
+							class="fa fa-folder-open" aria-hidden="true"
+							style="margin-right: 5px"></i>
+							{{shPostAttr.referenceObjects[0].name}}</a>
 
-				<input type='text' class='form-control'
-					ng-if="shPostAttr.referenceObjects[0].title != null"
-					ng-model="shPostAttr.referenceObjects[0].title" /> <input
-					type='text' class='form-control'
-					ng-if="shPostAttr.referenceObjects[0].title == null"
-					ng-model="shPostAttr.referenceObjects[0].name" />
-			</div>
-			<div class="col-lg-4 col-md-5 col-sm-6 col-xs-8">
-				<a class="btn btn-viglet"
-					ui-sref="content.post-type-item.post-item({postTypeId: shPostAttr.referenceObjects[0].shPostType.id, postId: shPostAttr.referenceObjects[0].id})">Edit
-					this Content</a>
-				<button class="btn btn-default" ng-click="clearContent(shPostAttr)">Clear</button>
-				<button class="btn btn-default"
-					ng-click="selectContent(shPost, shPostAttr)">Select a
-					Content</button>
+
+						<button class="btn btn-default btn-xs"
+							ng-click="clearContent(shPostAttr)">Clear</button>
+						<button class="btn btn-default btn-xs"
+							ng-click="selectContent(shPost, shPostAttr)">Select a
+							Content</button>
+
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
 	<div ng-if="shPostAttr.strValue == null" class="row">
 		<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6"
-			style="height: 40px; margin-top: 25px;">
-			<button class="btn btn-viglet"
+			style="height: 40px; margin-top: 10px;">
+			<button class="btn btn-viglet btn-xs"
 				ng-click="selectContent(shPost, shPostAttr)">Select a
 				Content</button>
 		</div>
