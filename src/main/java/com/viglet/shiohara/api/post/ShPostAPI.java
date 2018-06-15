@@ -150,7 +150,9 @@ public class ShPostAPI {
 		ShHistory shHistory = new ShHistory();
 		shHistory.setDate(new Date());
 		shHistory.setDescription("Deleted " + shPost.getTitle() + " Post.");
-		shHistory.setOwner(principal.getName());
+		if (principal != null) {
+			shHistory.setOwner(principal.getName());
+		}
 		shHistory.setShObject(shPost.getId());
 		shHistory.setShSite(shPostUtils.getSite(shPost).getId());
 		shHistoryRepository.saveAndFlush(shHistory);
