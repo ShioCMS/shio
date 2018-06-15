@@ -7,7 +7,11 @@ shioharaApp.controller('ShWidgetContentSelectCtrl', [
 		function($scope, Upload, $timeout, $uibModal, ShDialogSelectObject) {
 			$scope.breadcrumb = [];
 			$scope.init = function(shPostAttr) {
-				$scope.folderBreadcrumb($scope.breadcrumb, shPostAttr.referenceObjects[0].shFolder);
+				if (shPostAttr.referenceObjects[0].objectType == "FOLDER") {
+					$scope.folderBreadcrumb($scope.breadcrumb, shPostAttr.referenceObjects[0].parentFolder);
+				} else if (shPostAttr.referenceObjects[0].objectType == "POST") {
+					$scope.folderBreadcrumb($scope.breadcrumb, shPostAttr.referenceObjects[0].shFolder);
+				}
 			}
 			$scope.folderBreadcrumb = function(breadcrumb, shFolder) {
 				if (shFolder != null) {
@@ -39,6 +43,17 @@ shioharaApp.controller('ShWidgetContentSelectCtrl', [
 
 			$scope.selectContent = function(shPost, shPostAttr) {
 				var modalInstance = ShDialogSelectObject.dialog($scope.shFolder.id, "shObject");				
+				modalInstance.result.then(function(shObjectSelected) {
+					// Selected INSERT
+					shPostAttr.strValue = shObjectSelected.id;
+					shPostAttr.referenceObjects = [ shObjectSelected ];
+				}, function() {
+					// Selected CANCEL
+				});
+			}
+			
+			$scope.selectContentByObject = function(shPostAttr, shObject) {
+				var modalInstance = ShDialogSelectObject.dialog(shObject.id, "shObject");				
 				modalInstance.result.then(function(shObjectSelected) {
 					// Selected INSERT
 					shPostAttr.strValue = shObjectSelected.id;
