@@ -23,28 +23,50 @@
 	border: 5px dashed blue;
 }
 </style>
-<div ng-controller="ShWidgetFileCtrl">
+<div ng-controller="ShWidgetFileCtrl" ng-init="init(shPost, shPostAttr)">
 	<div ng-if="shPostAttr.strValue != null">
-		<div class="row" ng-if="shPostType.name == 'PT-FILE'">
-			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-				<input type='text' class='form-control'
-					ng-model="shPostAttr.strValue" />
+
+		<div class="panel panel-default" style="margin-top: 10px;"
+			ng-if="shPostType.name != 'PT-FILE' && !uploadNewFile">
+			<div class="panel-body">
+				<ul class="breadcrumb"
+					style="background-color: white; padding: 0px; margin: 0px; font-size: 12px;">
+					<li ng-repeat="breacrumbItem in breadcrumbFile.slice().reverse()"><a
+						ng-click="selectFileByObject(shPostAttr, breacrumbItem)" href>{{breacrumbItem.name}}</a></li>
+				</ul>
+				<div class="row">
+					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+
+						<a type="button" class="btn btn-link"
+							ng-if="shPostAttr.referenceObjects[0].title != null"
+							ui-sref="content.post-type-item.post-item({postTypeId: shPostAttr.referenceObjects[0].shPostType.id, postId: shPostAttr.referenceObjects[0].id})"><i
+							class="fa fa-newspaper-o" aria-hidden="true"
+							style="margin-right: 5px"></i>
+							{{shPostAttr.referenceObjects[0].title}}</a>
+
+						<button class="btn btn-default btn-xs"
+							ng-click="clearFile(shPostAttr)">Clear</button>
+						<button class="btn btn-default btn-xs"
+							ng-click="selectFile(shPost, shPostAttr)">Select a File</button>
+
+					</div>
+					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"
+						style="margin-top: 20px;">
+						<img ng-if="imageURL != null" ng-src="{{imageURL}}" style="max-height: 100px;">
+					</div>
+				</div>
 			</div>
 		</div>
-		<div class="row"
-			ng-if="shPostType.name != 'PT-FILE' && !uploadNewFile">
-			<div class="col-lg-9 col-md-8 col-sm-7 col-xs-6">
-				<input ng-if="fileName != null" type='text' class='form-control'
-					ng-model="fileName" /> <input ng-if="fileName == null" type='text'
-					class='form-control'
-					ng-model="shPostAttr.referenceObjects[0].title" />
+
+		<div class="row" ng-if="shPostType.name == 'PT-FILE'">
+			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+				<i class="fa fa-newspaper-o" aria-hidden="true"
+					style="margin-right: 5px"></i> {{shPostAttr.strValue}}
+
 			</div>
-			<div class="col-lg-3 col-md-4 col-sm-5 col-xs-6">
-				<button class="btn btn-viglet" ng-click="clearFile(shPostAttr)">Clear</button>
-				<button class="btn btn-viglet" ng-click="newFile()">New
-					File</button>
-				<button class="btn btn-viglet"
-					ng-click="selectFile(shPost, shPostAttr)">Select a File</button>
+			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"
+				style="margin-top: 20px;">
+				<img ng-if="imageURL != null" ng-src="{{imageURL}}" style="max-height: 100px;">
 			</div>
 		</div>
 	</div>
@@ -52,8 +74,8 @@
 		<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
 			<div ngf-drop ngf-select ng-model="shPostAttr.file" class="drop-box"
 				ngf-drag-over-class="'dragover'" ngf-multiple="false"
-				ngf-allow-dir="true"
-				style="width: 100%">Drop files here or click to upload</div>
+				ngf-allow-dir="true" style="width: 100%">Drop files here or
+				click to upload</div>
 			<div ngf-no-file-drop>File Drag/Drop is not supported for this
 				browser</div>
 		</div>
