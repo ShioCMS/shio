@@ -17,21 +17,24 @@ shioharaApp.controller('ShWidgetFileCtrl', [
 			});
 			$scope.imageURL = null;
 			$scope.breadcrumbFile = [];
+			$scope.shPostFile = null;
 			$scope.init = function(shPost, shPostAttr) {
+				$scope.shPostFile = shPost;
+				$scope.updateFileInfo(shPostAttr);			
+			}
+			
+			$scope.updateFileInfo = function(shPostAttr) {	
+				$scope.breadcrumbFile = [];
 				if (typeof shPostAttr.referenceObjects[0] != 'undefined' ) {
 					$scope.folderBreadcrumb($scope.breadcrumbFile,
 						shPostAttr.referenceObjects[0].shFolder);
 					$scope.getImageURL(shPostAttr.referenceObjects[0]);
-					if (shPostAttr.referenceObjects[0].title.match(/.(jpg|jpeg|png|gif)$/i)) {
-						$scope.imageURL = shAPIServerService.get().concat("/v2/object/" + shPostAttr.referenceObjects[0].id + "/preview");
-					}
 				}
 				else {
-					$scope.getImageURL(shPost);
+					$scope.getImageURL($scope.shPostFile);
 				}
 				
 			}
-
 			$scope.folderBreadcrumb = function(breadcrumb, shFolder) {
 				if (shFolder != null) {
 					var breadcrumbItem = {};
@@ -56,6 +59,8 @@ shioharaApp.controller('ShWidgetFileCtrl', [
 			$scope.clearFile = function(shPostAttr) {
 				shPostAttr.strValue = null;
 				shPostAttr.file = null;
+				$scope.breadcrumbFile = [];
+				$scope.imageURL = null;
 			}
 
 			$scope.selectFile = function(shPost, shPostAttr) {
@@ -67,7 +72,7 @@ shioharaApp.controller('ShWidgetFileCtrl', [
 					$scope.fileName = shPostSelected.title;
 					shPostAttr.strValue = shPostSelected.id;
 					shPostAttr.referenceObjects = [ shPostSelected ];
-					$scope.getImageURL(shPostAttr.referenceObjects[0]);
+					$scope.updateFileInfo(shPostAttr);
 				}, function() {
 					// Selected CANCEL
 				});
@@ -82,13 +87,14 @@ shioharaApp.controller('ShWidgetFileCtrl', [
 					$scope.fileName = shPostSelected.title;
 					shPostAttr.strValue = shPostSelected.id;
 					shPostAttr.referenceObjects = [ shPostSelected ];
-					$scope.getImageURL(shPostAttr.referenceObjects[0]);
+					$scope.updateFileInfo(shPostAttr);
 				}, function() {
 					// Selected CANCEL
 				});
 			}
 			
 			$scope.getImageURL = function(shPost) {
+				$scope.imageURL = null;
 				if (shPost.title.match(/.(jpg|jpeg|png|gif)$/i)) {
 					$scope.imageURL = shAPIServerService.get().concat("/v2/object/" + shPost.id + "/preview");
 				}

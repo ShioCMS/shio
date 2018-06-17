@@ -5,27 +5,23 @@ shioharaApp.controller('ShWidgetContentSelectCtrl', [
 		'$uibModal',
 		'ShDialogSelectObject',
 		function($scope, Upload, $timeout, $uibModal, ShDialogSelectObject) {
-			$scope.breadcrumb = [];
+			$scope.breadcrumbCS = [];
 			$scope.init = function(shPostAttr) {
-				if (shPostAttr.referenceObjects[0].objectType == "FOLDER") {
-					$scope.folderBreadcrumb($scope.breadcrumb, shPostAttr.referenceObjects[0].parentFolder);
-				} else if (shPostAttr.referenceObjects[0].objectType == "POST") {
-					$scope.folderBreadcrumb($scope.breadcrumb, shPostAttr.referenceObjects[0].shFolder);
-				}
+				$scope.updateCSInfo(shPostAttr);
 			}
 			$scope.folderBreadcrumb = function(breadcrumb, shFolder) {
 				if (shFolder != null) {
-					$scope.breadcrumbItem = {};
-					$scope.breadcrumbItem.id = shFolder.id;
-					$scope.breadcrumbItem.name = shFolder.name;
-					$scope.breadcrumb.push($scope.breadcrumbItem);	
+					var breadcrumbItem = {};
+					breadcrumbItem.id = shFolder.id;
+					breadcrumbItem.name = shFolder.name;
+					breadcrumb.push(breadcrumbItem);	
 					if (shFolder.parentFolder != null) {
 						$scope.folderBreadcrumb(breadcrumb, shFolder.parentFolder);
 					} else if (shFolder.shSite != null) {
-						$scope.breadcrumbItem = {};
-						$scope.breadcrumbItem.id = shFolder.shSite.id;
-						$scope.breadcrumbItem.name = shFolder.shSite.name + " (Site)";
-						$scope.breadcrumb.push($scope.breadcrumbItem);
+						var breadcrumbItem = {};
+						breadcrumbItem.id = shFolder.shSite.id;
+						breadcrumbItem.name = shFolder.shSite.name + " (Site)";
+						breadcrumb.push(breadcrumbItem);
 					}
 				}			
 			}
@@ -36,9 +32,20 @@ shioharaApp.controller('ShWidgetContentSelectCtrl', [
 				}
 			});
 
+			$scope.updateCSInfo = function(shPostAttr) {	
+				$scope.breadcrumbCS = [];
+				if (shPostAttr.referenceObjects[0].objectType == "FOLDER") {
+					$scope.folderBreadcrumb($scope.breadcrumbCS, shPostAttr.referenceObjects[0].parentFolder);
+				} else if (shPostAttr.referenceObjects[0].objectType == "POST") {
+					$scope.folderBreadcrumb($scope.breadcrumbCS, shPostAttr.referenceObjects[0].shFolder);
+				}
+				
+			}
+			
 			$scope.clearContent = function(shPostAttr) {
 				shPostAttr.strValue = null;
 				shPostAttr.file = null;
+				$scope.breadcrumbCS = [];
 			}
 
 			$scope.selectContent = function(shPost, shPostAttr) {
@@ -47,6 +54,7 @@ shioharaApp.controller('ShWidgetContentSelectCtrl', [
 					// Selected INSERT
 					shPostAttr.strValue = shObjectSelected.id;
 					shPostAttr.referenceObjects = [ shObjectSelected ];
+					$scope.updateCSInfo(shPostAttr);
 				}, function() {
 					// Selected CANCEL
 				});
@@ -58,6 +66,7 @@ shioharaApp.controller('ShWidgetContentSelectCtrl', [
 					// Selected INSERT
 					shPostAttr.strValue = shObjectSelected.id;
 					shPostAttr.referenceObjects = [ shObjectSelected ];
+					$scope.updateCSInfo(shPostAttr);
 				}, function() {
 					// Selected CANCEL
 				});
