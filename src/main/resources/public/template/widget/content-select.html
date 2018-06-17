@@ -30,7 +30,7 @@
 		<div class="panel-body">
 			<ul class="breadcrumb"
 				style="background-color: white; padding: 0px; margin: 0px; font-size: 12px;">
-				<li ng-repeat="breacrumbItem in breadcrumb.slice().reverse()"><a
+				<li ng-repeat="breacrumbItem in breadcrumbCS.slice().reverse() track by $index"><a
 					ng-click="selectContentByObject(shPostAttr, breacrumbItem)" href>{{breacrumbItem.name}}</a></li>
 			</ul>
 			<div class="row">
@@ -48,13 +48,8 @@
 						style="margin-right: 5px"></i>
 						{{shPostAttr.referenceObjects[0].name}}</a>
 
-
 					<button class="btn btn-default btn-xs"
 						ng-click="clearContent(shPostAttr)">Clear</button>
-					<button class="btn btn-default btn-xs"
-						ng-click="selectContent(shPost, shPostAttr)">Select a
-						Content</button>
-
 				</div>
 			</div>
 		</div>
