@@ -35,7 +35,15 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
         $scope.actions = [];
         $scope.shUser = null;
         $scope.shLastPostType = null;
-        
+        $scope.itemSelected = false;
+        $scope.checkSomeItemSelected = function () {
+        	$scope.itemSelected = false;
+        	for (var stateKey in $scope.shStateObjects) {
+        		if ($scope.shStateObjects[stateKey]) {
+        			$scope.itemSelected = true;
+        		}
+        	}        
+        }
     	$scope.shUser = shUserResource.get({
 			id : "admin",
 			access_token : $scope.accessToken
@@ -72,17 +80,20 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
                 $scope.shObjects[shPost.id] = shPost;
                 $scope.actions[shPost.id] = false;
             });
+            $scope.itemSelected = false;
         }
-        
+     
         $scope.selectContents = function () {	
        	 for (var stateKey in $scope.shStateObjects) {
        		 if ($scope.shObjects[stateKey].objectType === "POST") {
        			 $scope.shStateObjects[stateKey] = true;
+       			 $scope.itemSelected = true;
        		 }
        		 else {
        			$scope.shStateObjects[stateKey] = false;
        		 }
        	 }
+       	 $scope.checkSomeItemSelected();
         }
         
         $scope.selectFolders = function () {	
@@ -94,18 +105,21 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
         			 $scope.shStateObjects[stateKey] = false;
         		 }
         	 }
+        	 $scope.checkSomeItemSelected();
         }
         
         $scope.selectEverything = function () {	
           	 for (var stateKey in $scope.shStateObjects) {          		
           			 $scope.shStateObjects[stateKey] = true;
           	 }
+          	$scope.checkSomeItemSelected();
         }
         
         $scope.selectNothing = function () {	
          	 for (var stateKey in $scope.shStateObjects) {          		
          			 $scope.shStateObjects[stateKey] = false;
          	 }
+         	 $scope.itemSelected = false;
         }
         
         $scope.selectInverted = function () {	
@@ -117,10 +131,12 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
         		 }
         		 
         	 }
+        	 $scope.checkSomeItemSelected();
        }
 
         $scope.updateAction = function (id, value) {
             $scope.actions[id] = value;
+            $scope.checkSomeItemSelected();
         }
         $scope.isRecent = function (date) {
         	var momentDate = moment(date);
@@ -140,7 +156,7 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
             for (var stateKey in $scope.shStateObjects) {
                 if ($scope.shStateObjects[stateKey] === true) {
                     var objectGlobalId = "" + stateKey;
-                    objectGlobalIds.push(objectGlobalId);
+                    objectGlobalIds.push(objectGlobalId);                    
                 }
             }
             $scope.objectsCopyDialog(objectGlobalIds);
@@ -160,15 +176,27 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
                     var shObjects = response.data;
                     for (i = 0; i < shObjects.length; i++) {
                     	shObject = shObjects[i];
+                    	if (shObjectSelected.id == $scope.objectId) {
+                    		$scope.shStateObjects[shObject.id] = false;
+                    		$scope.shObjects[shObject.id] = shObject;
+                            $scope.actions[shObject.id] = false;
+                		}
                     	var copiedMessage = null;
                         if (shObject.objectType == "POST") {
+                        	if (shObjectSelected.id == $scope.objectId) {
+                        		$scope.shPosts.push(shObject);
+                        	}
                         	copiedMessage = 'The ' + shObject.title + ' Post was copied.';
                         }
                         else if (shObject.objectType == "FOLDER") {
+                        	if (shObjectSelected.id == $scope.objectId) {
+                        		$scope.shFolders.push(shObject);
+                        	}
                         	copiedMessage = 'The ' + shObject.name + ' Folder was copied.';
                         }
                         Notification.warning(copiedMessage);
                     }
+                    $scope.checkSomeItemSelected();
                 });
             }, function () {
                 // Selected CANCEL
@@ -180,6 +208,7 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
                 if ($scope.shStateObjects[stateKey] === true) {
                     var objectGlobalId = "" + stateKey;
                     objectGlobalIds.push(objectGlobalId);
+                    
                 }
             }
             $scope.objectsMoveDialog(objectGlobalIds);
@@ -194,32 +223,40 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
         $scope.objectsMoveDialog = function (objectGlobalIds) {
             var modalInstance = ShDialogSelectObject.dialog($scope.objectId, "shFolder");
             modalInstance.result.then(function (shObjectSelected) {
-                var parameter = JSON.stringify(objectGlobalIds);
-                $http.put(shAPIServerService.get().concat("/v2/object/moveto/" + shObjectSelected.id), parameter).then(function (response) {
-                    var shObjects = response.data;
-                    for (i = 0; i < shObjects.length; i++) {
-                    	shObject = shObjects[i];
-                        var movedMessage = null;
-                        if (shObject.objectType == "POST") {
-                        	movedMessage = 'The ' + shObject.title + ' Post was moved.';
-	                        var foundItem = $filter('filter')
-	                            ($scope.shPosts, {
-	                                id: shObject.id
-	                            }, true)[0];
-	                        var index = $scope.shPosts.indexOf(foundItem);
-	                        $scope.shPosts.splice(index, 1);
-                        } else if (shObject.objectType == "FOLDER") {
-                        	movedMessage = 'The ' + shObject.name + ' Folder was moved.';
-                        	  var foundItem = $filter('filter')
-	                            ($scope.shFolders, {
-	                                id: shObject.id
-	                            }, true)[0];
-	                        var index = $scope.shFolders.indexOf(foundItem);
-	                        $scope.shFolders.splice(index, 1);
-                        }
-                        Notification.warning(movedMessage);
-                    }
-                });
+            	if (shObjectSelected.id == $scope.objectId) {
+            		movedMessage = 'No moved, because you selected the same folder as destination';
+            		Notification.warning(movedMessage);
+            	}
+            	else {
+	                var parameter = JSON.stringify(objectGlobalIds);
+	                $http.put(shAPIServerService.get().concat("/v2/object/moveto/" + shObjectSelected.id), parameter).then(function (response) {
+	                    var shObjects = response.data;
+	                    for (i = 0; i < shObjects.length; i++) {
+	                    	shObject = shObjects[i];
+	                    	$scope.shStateObjects[shObject.id] = false;
+	                        var movedMessage = null;
+	                        if (shObject.objectType == "POST") {
+	                        	movedMessage = 'The ' + shObject.title + ' Post was moved.';
+		                        var foundItem = $filter('filter')
+		                            ($scope.shPosts, {
+		                                id: shObject.id
+		                            }, true)[0];
+		                        var index = $scope.shPosts.indexOf(foundItem);
+		                        $scope.shPosts.splice(index, 1);
+	                        } else if (shObject.objectType == "FOLDER") {
+	                        	movedMessage = 'The ' + shObject.name + ' Folder was moved.';
+	                        	  var foundItem = $filter('filter')
+		                            ($scope.shFolders, {
+		                                id: shObject.id
+		                            }, true)[0];
+		                        var index = $scope.shFolders.indexOf(foundItem);
+		                        $scope.shFolders.splice(index, 1);
+	                        }
+	                        Notification.warning(movedMessage);
+	                    }
+	                    $scope.checkSomeItemSelected();
+	                });
+            	}
             }, function () {
                 // Selected CANCEL
             });
@@ -240,28 +277,36 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
                 var shObjects = response.data;
                 for (i = 0; i < shObjects.length; i++) {
                 	shObject = shObjects[i];
+                	$scope.shStateObjects[shObject.id] = false;
+                    $scope.shObjects[shObject.id] = shObject;
+                    $scope.actions[shObject.id] = false;
                 	var clonedMessage = null;
                 	if (shObject.objectType == "POST") {
+                		$scope.shPosts.push(shObject);
                 		clonedMessage = 'The ' + shObject.title + ' Post was cloned.';                	
                 	} else if (shObject.objectType == "FOLDER") {
+                		$scope.shFolders.push(shObject);
                 		clonedMessage = 'The ' + shObject.name + ' Folder was cloned.';                		
                 	}
                 	Notification.warning(clonedMessage);
                 }
+                $scope.checkSomeItemSelected();
             });
         }       
         $scope.objectsRename = function () {
             for (var stateKey in $scope.shStateObjects) {
                 if ($scope.shStateObjects[stateKey] === true) {
                     console.log("Rename " + stateKey);
-                }
+                    $scope.shStateObjects[stateKey] = false;
+                }                
             }
+            $scope.checkSomeItemSelected();
         }
         $scope.objectsDelete = function () {
         	 var shSelectedObjects = [];
              for (var stateKey in $scope.shStateObjects) {
                  if ($scope.shStateObjects[stateKey] === true) {                     
-                	 shSelectedObjects.push($scope.shObjects[stateKey]);
+                	 shSelectedObjects.push($scope.shObjects[stateKey]);                	
                  }
              }
              $scope.objectsDeleteDialog(shSelectedObjects);
@@ -278,12 +323,14 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
             var modalInstance = ShDialogDeleteFactory.dialog(shSelectedObjects);
             modalInstance.result.then(function () {
             	angular.forEach(shSelectedObjects, function(value, key) {  
+            		 $scope.shStateObjects[value.id] = false;
             		if (value.objectType === "POST") {
             		shPost = value;
             		var deletedMessage = 'The ' + shPost.title + ' Post was deleted.';
                     shPostResource.delete({
                         id: shPost.id
                     }, function () {
+                    	delete $scope.shStateObjects[shPost.id];
                         // filter the array
                         var foundItem = $filter('filter')($scope.shPosts, {
                             id: shPost.id
@@ -300,6 +347,7 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
                     shFolderResource.delete({
                         id: shFolder.id
                     }, function () {
+                    	delete $scope.shStateObjects[shFolder.id];
                         // filter the array
                         var foundItem = $filter('filter')($scope.shFolders, {
                             id: shFolder.id
@@ -311,6 +359,7 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
                         Notification.error(deletedMessage);
                     });
             	}
+            		 $scope.checkSomeItemSelected();
             	});
             }, function () {
                 // Selected CANCEL
