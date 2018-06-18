@@ -1,4 +1,57 @@
+<style>
 
+.numberCircle2 {
+    border-radius: 50%;
+    behavior: url(PIE.htc);
+    width: 18px;
+    height: 18px;
+    padding: 1px;
+    background: #fff;
+    border: 1px solid #FF874Bdd;
+    color: #666;
+    text-align: center;
+    font: 12px Arial, sans-serif;
+    color: #FF874Bdd;
+}
+.numberCircle {
+	padding: 5px;
+	display: inline-block;
+	line-height: 0px;
+	border-radius: 50%;
+	border: 1px solid;
+	font-size: 12px;
+	border-color: #FF874Bdd;
+}
+
+.numberCircle span {
+	display: inline-block;
+	padding-top: 50%;
+	padding-bottom: 50%;
+	margin-left: 2px;
+	margin-right: 2px;
+	color: #FF874Bdd;
+}
+
+.numberCircleFolder {
+	padding: 5px;
+	display: inline-block;
+	line-height: 0px;
+	border-radius: 50%;
+	border: 0px solid;
+	/* border-bottom-color: #ddd; */
+	font-size: 12px;
+	background-color: #FF874Bdd;
+}
+
+.numberCircleFolder span {
+	display: inline-block;
+	padding-top: 50%;
+	padding-bottom: 50%;
+	margin-left: 2px;
+	margin-right: 2px;
+	color: white;
+}
+</style>
 <div ng-include="'/template/breadcrumb/breadcrumb-list.html'"></div>
 <div ng-if="shCurrentFolder == null && 1 == 0"
 	style="margin-bottom: 20px">
@@ -130,142 +183,158 @@
 				</div>
 			</div>
 			<!--  Folders  -->
-			<div ng-repeat="shFolder in shFolders | orderBy: '-date'"
-				ng-mouseenter="updateAction(shFolder.id,true)"
-				ng-mouseleave="updateAction(shFolder.id,false)" class="list-group-item">
-				<div class="row">
-					<div class="col-lg-10 col-md-9 col-sm-8 col-xs-6">
-						<div style="display: inline">
-							<input type="checkbox" ng-model="shStateObjects[shFolder.id]" ng-click="checkSomeItemSelected()">
-						</div>
-						<div style="display: inline">
-							<a type="button" class="btn btn-link"
-								ui-sref="content.children({objectId: shFolder.id})"><i
-								class="fa fa-folder-open" aria-hidden="true"
-								style="margin-right: 5px"></i> {{shFolder.name}}</a> <span
-								ng-if="isRecent(shFolder.date)" class="label label-default"
-								style="display: inline-block; margin-top: 12px">Recent</span>
+			<div ui-sortable ng-model="shFolders">
+				<div ng-repeat="shFolder in shFolders | orderBy: '-date'"
+					ng-mouseenter="updateAction(shFolder.id,true)"
+					ng-mouseleave="updateAction(shFolder.id,false)"
+					class="list-group-item">
+					<div class="row">
+						<div class="col-lg-10 col-md-9 col-sm-8 col-xs-6">
+							<div style="display: inline">
+								<span class="numberCircleFolder" style="margin-right: 10px"><span>{{$index+1}}</span></span>
+								<input type="checkbox" ng-model="shStateObjects[shFolder.id]"
+									ng-click="checkSomeItemSelected()">
+							</div>
+							<div style="display: inline">
+								<a type="button" class="btn btn-link"
+									ui-sref="content.children({objectId: shFolder.id})"><i
+									class="fa fa-folder-open" aria-hidden="true"
+									style="margin-right: 5px"></i> {{shFolder.name}}</a> <span
+									ng-if="isRecent(shFolder.date)" class="label label-default"
+									style="display: inline-block; margin-top: 12px">Recent</span>
 
-							<div style="font-size: 12px; margin-left: 28px">
-								<div style="display: table-row">
-									<div>
-										<span am-time-ago="shFolder.date" style="color: gray"></span><span
-											ng-if="shFolder.summary != null"> - </span>
-										{{shFolder.summary}}
+								<div style="font-size: 12px; margin-left: 28px">
+									<div style="display: table-row">
+										<div>
+											<span am-time-ago="shFolder.date" style="color: gray"></span><span
+												ng-if="shFolder.summary != null"> - </span>
+											{{shFolder.summary}}
+										</div>
 									</div>
-								</div>
-								<div>
-									<div style="display: inline;">
-										<span class="label label-warning">Folder</span> <span
-											class="label label-warning">{{shSite.name}} Site</span>
+									<div>
+										<div style="display: inline;">
+											<span class="label label-warning">Folder</span> <span
+												class="label label-warning">{{shSite.name}} Site</span>
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-					<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6"
-						ng-show="actions[shFolder.id]">
-						<div class="row">
-							<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-								<a type="button" class="btn btn-link btn-xs"
-									ui-sref="content.folder.edit({folderId: shFolder.id})"> <i
-									class="fa fa-pencil-square-o" aria-hidden="true"> </i> Edit
-								</a>
-								<button type="button" class="btn btn-link btn-xs" ng-hide="itemSelected"
-									style="display: block;" ng-click="objectCopy(shFolder)">
-									<i class="fa fa-files-o" aria-hidden="true"></i> Copy
-								</button>
-								<button type="button" class="btn btn-link btn-xs" ng-hide="itemSelected"
-									style="display: block;" ng-click="objectMove(shFolder)">
-									<i class="fa fa-share" aria-hidden="true"></i> Move
-								</button>
-							</div>
-							<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-								<button type="button" class="btn btn-link btn-xs" ng-hide="itemSelected"
-									style="display: block;" ng-click="objectClone(shFolder)">
-									<i class="fa fa-clone" aria-hidden="true"></i> Clone
-								</button>
-								<button type="button" class="btn btn-link btn-xs" ng-hide="itemSelected"
-									style="display: block;" ng-click="folderDelete(shFolder)">
-									<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
-								</button>
-								<button type="button" class="btn btn-link btn-xs"
-									style="display: block;" ng-click="objectPreview(shFolder)">
-									<i class="fa fa-eye" aria-hidden="true"></i> View Page
-								</button>
+						<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6"
+							ng-show="actions[shFolder.id]">
+							<div class="row">
+								<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+									<a type="button" class="btn btn-link btn-xs"
+										ui-sref="content.folder.edit({folderId: shFolder.id})"> <i
+										class="fa fa-pencil-square-o" aria-hidden="true"> </i> Edit
+									</a>
+									<button type="button" class="btn btn-link btn-xs"
+										ng-hide="itemSelected" style="display: block;"
+										ng-click="objectCopy(shFolder)">
+										<i class="fa fa-files-o" aria-hidden="true"></i> Copy
+									</button>
+									<button type="button" class="btn btn-link btn-xs"
+										ng-hide="itemSelected" style="display: block;"
+										ng-click="objectMove(shFolder)">
+										<i class="fa fa-share" aria-hidden="true"></i> Move
+									</button>
+								</div>
+								<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+									<button type="button" class="btn btn-link btn-xs"
+										ng-hide="itemSelected" style="display: block;"
+										ng-click="objectClone(shFolder)">
+										<i class="fa fa-clone" aria-hidden="true"></i> Clone
+									</button>
+									<button type="button" class="btn btn-link btn-xs"
+										ng-hide="itemSelected" style="display: block;"
+										ng-click="folderDelete(shFolder)">
+										<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+									</button>
+									<button type="button" class="btn btn-link btn-xs"
+										style="display: block;" ng-click="objectPreview(shFolder)">
+										<i class="fa fa-eye" aria-hidden="true"></i> View Page
+									</button>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 			<!--  Posts  -->
-			<div ng-repeat="shPost in shPosts | orderBy: '-date'"
-				ng-mouseenter="updateAction(shPost.id,true)"
-				ng-mouseleave="updateAction(shPost.id,false)" class="list-group-item">
-				<div class="row">
-					<div class="col-lg-10 col-md-9 col-sm-8 col-xs-6">
-						<div style="display: inline">
-							<input type="checkbox" ng-model="shStateObjects[shPost.id]" ng-click="checkSomeItemSelected()">
-						</div>
-						<div style="display: inline">
-							<!-- NON ALIAS -->
-							<a ng-if="shPost.shPostType.name !== 'PT-ALIAS'" type="button"
-								class="btn btn-link"
-								ui-sref="content.post-type-item.post-item({postTypeId: shPost.shPostType.id, postId: shPost.id})"><i
-								class="fa fa-newspaper-o" aria-hidden="true"
-								style="margin-right: 5px"></i> {{shPost.title}}</a>
-							<!-- ALIAS -->
-							<a ng-if="shPost.shPostType.name === 'PT-ALIAS'" type="button"
-								class="btn btn-link"
-								ui-sref="content.post-type-item.post-item({postTypeId: shPost.shPostType.id, postId: shPost.id})"><i
-								class="fa fa-share-square-o" aria-hidden="true"
-								style="margin-right: 5px"></i> {{shPost.title}}</a> <span
-								ng-if="isRecent(shPost.date)" class="label label-default"
-								style="display: inline-block; margin-top: 12px">Recent</span>
-							<div style="font-size: 12px; margin-left: 28px">
-								<div style="display: table-row">
+			<div ui-sortable ng-model="shPosts">
+				<div ng-repeat="shPost in shPosts | orderBy: '-date'"
+					ng-mouseenter="updateAction(shPost.id,true)"
+					ng-mouseleave="updateAction(shPost.id,false)"
+					class="list-group-item">
+					<div class="row">
+						<div class="col-lg-10 col-md-9 col-sm-8 col-xs-6">
+			
+						<div style="display: inline" class="numberCircle2" style="margin-right: 10px">{{$index+1}}</div>
+							<div style="display: inline">
+								
+								<input type="checkbox" ng-model="shStateObjects[shPost.id]"
+									ng-click="checkSomeItemSelected()">
+							</div>
+							<div style="display: inline">
+								<!-- NON ALIAS -->
+								<a ng-if="shPost.shPostType.name !== 'PT-ALIAS'" type="button"
+									class="btn btn-link"
+									ui-sref="content.post-type-item.post-item({postTypeId: shPost.shPostType.id, postId: shPost.id})"><i
+									class="fa fa-newspaper-o" aria-hidden="true"
+									style="margin-right: 5px"></i> {{shPost.title}} </a>
+								<!-- ALIAS -->
+								<a ng-if="shPost.shPostType.name === 'PT-ALIAS'" type="button"
+									class="btn btn-link"
+									ui-sref="content.post-type-item.post-item({postTypeId: shPost.shPostType.id, postId: shPost.id})"><i
+									class="fa fa-share-square-o" aria-hidden="true"
+									style="margin-right: 5px"></i> {{shPost.title}}</a> <span
+									ng-if="isRecent(shPost.date)" class="label label-default"
+									style="display: inline-block; margin-top: 12px">Recent</span>
+								<div style="font-size: 12px; margin-left: 28px">
+									<div style="display: table-row">
+										<div>
+											<span am-time-ago="shPost.date" style="color: gray"></span><span
+												ng-if="shPost.summary != null"> - </span> {{shPost.summary}}
+										</div>
+									</div>
 									<div>
-										<span am-time-ago="shPost.date" style="color: gray"></span><span
-											ng-if="shPost.summary != null"> - </span> {{shPost.summary}}
-									</div>
-								</div>
-								<div>
-									<div style="display: inline;">
-										<span class="label label-warning">Post</span> <span
-											class="label label-warning">{{shSite.name}} Site</span> <span
-											class="label label-warning">
-											{{shPost.shPostType.title}}</span>
+										<div style="display: inline;">
+											<span class="label label-warning">Post</span> <span
+												class="label label-warning">{{shSite.name}} Site</span> <span
+												class="label label-warning">
+												{{shPost.shPostType.title}}</span>
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-					<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6"
-						ng-show="actions[shPost.id]">
-						<div class="row">
-							<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-								<button type="button" class="btn btn-link btn-xs" ng-hide="itemSelected"
-									ng-click="objectCopy(shPost)">
-									<i class="fa fa-files-o" aria-hidden="true"></i> Copy
-								</button>
-								<button type="button" class="btn btn-link btn-xs" ng-hide="itemSelected"
-									ng-click="objectMove(shPost)">
-									<i class="fa fa-share" aria-hidden="true"></i> Move
-								</button>
-								<button type="button" class="btn btn-link btn-xs" ng-hide="itemSelected"
-									ng-click="objectClone(shPost)">
-									<i class="fa fa-clone" aria-hidden="true"></i> Clone
-								</button>
-							</div>
-							<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-								<button type="button" class="btn btn-link btn-xs" ng-hide="itemSelected"
-									ng-click="postDelete(shPost)">
-									<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
-								</button>
-								<button type="button" class="btn btn-link btn-xs"
-									ng-click="objectPreview(shPost)">
-									<i class="fa fa-eye" aria-hidden="true"></i> View Page
-								</button>
+						<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6"
+							ng-show="actions[shPost.id]">
+							<div class="row">
+								<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+									<button type="button" class="btn btn-link btn-xs"
+										ng-hide="itemSelected" ng-click="objectCopy(shPost)">
+										<i class="fa fa-files-o" aria-hidden="true"></i> Copy
+									</button>
+									<button type="button" class="btn btn-link btn-xs"
+										ng-hide="itemSelected" ng-click="objectMove(shPost)">
+										<i class="fa fa-share" aria-hidden="true"></i> Move
+									</button>
+									<button type="button" class="btn btn-link btn-xs"
+										ng-hide="itemSelected" ng-click="objectClone(shPost)">
+										<i class="fa fa-clone" aria-hidden="true"></i> Clone
+									</button>
+								</div>
+								<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+									<button type="button" class="btn btn-link btn-xs"
+										ng-hide="itemSelected" ng-click="postDelete(shPost)">
+										<i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+									</button>
+									<button type="button" class="btn btn-link btn-xs"
+										ng-click="objectPreview(shPost)">
+										<i class="fa fa-eye" aria-hidden="true"></i> View Page
+									</button>
+								</div>
 							</div>
 						</div>
 					</div>
