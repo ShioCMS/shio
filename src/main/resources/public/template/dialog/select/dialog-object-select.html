@@ -4,7 +4,7 @@
 <div class="modal-body"
 	ng-include="'/template/component/component-explorer.html'"></div>
 <div class="modal-footer">
-	<button class="btn" type="button" ng-click="$ctrl.ok()"
+	<button class="btn btn-default" ng-disabled="!$ctrl.enableInsertButton" type="button" ng-click="$ctrl.ok()"
 		ng-class="{'btn-viglet': $ctrl.enableInsertButton }">Insert</button>
 	<button class="btn btn-default" type="button" ng-click="$ctrl.cancel()">Cancel</button>
 </div>
