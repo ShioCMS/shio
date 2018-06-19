@@ -3,6 +3,8 @@ package com.viglet.shiohara.api.folder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Consumer;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +44,7 @@ public class ShFolderAPI {
 	private ShURLFormatter shURLFormatter;
 	@Autowired
 	private ShObjectRepository shObjectRepository;
-	
+
 	@ApiOperation(value = "Folder list")
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
@@ -110,7 +112,7 @@ public class ShFolderAPI {
 		shNewFolder.setDate(new Date());
 		shNewFolder.setName(shFolder.getName());
 		shNewFolder.setFurl(shURLFormatter.format(shNewFolder.getName()));
-		
+
 		ShObject shParentObject = shObjectRepository.findById(objectId).get();
 		if (shParentObject instanceof ShFolder) {
 			ShFolder shParentFolder = (ShFolder) shParentObject;
@@ -124,7 +126,7 @@ public class ShFolderAPI {
 			shNewFolder.setRootFolder((byte) 1);
 			shNewFolder.setShSite(shSite);
 		}
-		
+
 		shFolderRepository.save(shNewFolder);
 
 		return shFolder;
@@ -158,5 +160,4 @@ public class ShFolderAPI {
 		return shFolder;
 
 	}
-
 }

@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import com.viglet.shiohara.persistence.model.object.ShObject;
-import com.viglet.shiohara.persistence.model.site.ShSite;
 
 public interface ShObjectRepository extends JpaRepository<ShObject, String> {
 
@@ -17,7 +16,7 @@ public interface ShObjectRepository extends JpaRepository<ShObject, String> {
 	Optional<ShObject> findById(String id);
 	
 	@SuppressWarnings("unchecked")
-	ShSite save(ShObject shObject);
+	ShObject save(ShObject shObject);
 
 	@Modifying
 	@Query("delete from ShObject o where o.id = ?1")

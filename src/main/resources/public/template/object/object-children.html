@@ -1,18 +1,4 @@
 <style>
-
-.numberCircle2 {
-    border-radius: 50%;
-    behavior: url(PIE.htc);
-    width: 18px;
-    height: 18px;
-    padding: 1px;
-    background: #fff;
-    border: 1px solid #FF874Bdd;
-    color: #666;
-    text-align: center;
-    font: 12px Arial, sans-serif;
-    color: #FF874Bdd;
-}
 .numberCircle {
 	padding: 5px;
 	display: inline-block;
@@ -30,6 +16,7 @@
 	margin-left: 2px;
 	margin-right: 2px;
 	color: #FF874Bdd;
+	font-family: Arial, sans-serif;
 }
 
 .numberCircleFolder {
@@ -50,6 +37,7 @@
 	margin-left: 2px;
 	margin-right: 2px;
 	color: white;
+	font-family: Arial, sans-serif;
 }
 </style>
 <div ng-include="'/template/breadcrumb/breadcrumb-list.html'"></div>
@@ -183,8 +171,8 @@
 				</div>
 			</div>
 			<!--  Folders  -->
-			<div ui-sortable ng-model="shFolders">
-				<div ng-repeat="shFolder in shFolders | orderBy: '-date'"
+			<div ui-sortable="sortableFolders" ng-model="shFolders">
+				<div ng-repeat="shFolder in shFolders"
 					ng-mouseenter="updateAction(shFolder.id,true)"
 					ng-mouseleave="updateAction(shFolder.id,false)"
 					class="list-group-item">
@@ -192,7 +180,8 @@
 						<div class="col-lg-10 col-md-9 col-sm-8 col-xs-6">
 							<div style="display: inline">
 								<span class="numberCircleFolder" style="margin-right: 10px"><span>{{$index+1}}</span></span>
-								<input type="checkbox" ng-model="shStateObjects[shFolder.id]"
+								<span style="visibility: hidden;">{{shFolder.position=$index+1}}</span>
+								</td> <input type="checkbox" ng-model="shStateObjects[shFolder.id]"
 									ng-click="checkSomeItemSelected()">
 							</div>
 							<div style="display: inline">
@@ -261,17 +250,17 @@
 				</div>
 			</div>
 			<!--  Posts  -->
-			<div ui-sortable ng-model="shPosts">
-				<div ng-repeat="shPost in shPosts | orderBy: '-date'"
+			<div ui-sortable="sortablePosts" ng-model="shPosts">
+				<div ng-repeat="shPost in shPosts"
 					ng-mouseenter="updateAction(shPost.id,true)"
 					ng-mouseleave="updateAction(shPost.id,false)"
 					class="list-group-item">
 					<div class="row">
 						<div class="col-lg-10 col-md-9 col-sm-8 col-xs-6">
-			
-						<div style="display: inline" class="numberCircle2" style="margin-right: 10px">{{$index+1}}</div>
+
 							<div style="display: inline">
-								
+								<span class="numberCircle" style="margin-right: 10px"><span>{{$index+1}}</span></span>
+								<span style="visibility: hidden;">{{shPost.position=$index+1}}</span>
 								<input type="checkbox" ng-model="shStateObjects[shPost.id]"
 									ng-click="checkSomeItemSelected()">
 							</div>
