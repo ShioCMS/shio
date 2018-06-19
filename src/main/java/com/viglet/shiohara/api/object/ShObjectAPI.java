@@ -2,6 +2,8 @@ package com.viglet.shiohara.api.object;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -252,5 +254,21 @@ public class ShObjectAPI {
 			}
 		}
 		return null;
+	}
+	
+	@ApiOperation(value = "Sort Object")
+	@PutMapping("/sort")
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
+	public Map<String, Integer> shObjectSort(@RequestBody Map<String, Integer> objectOrder) throws Exception {
+		for (Entry<String, Integer> objectOrderItem : objectOrder.entrySet()) {
+			int shObjectOrder = objectOrderItem.getValue();
+			String shObjectId = objectOrderItem.getKey();
+			
+			ShObject shObject = shObjectRepository.findById(shObjectId).get();
+			shObject.setPosition(shObjectOrder);
+			shObjectRepository.save(shObject);
+		}
+		return objectOrder;
+
 	}
 }

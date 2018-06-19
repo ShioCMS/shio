@@ -12,21 +12,23 @@ import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 
 public interface ShPostRepository extends JpaRepository<ShPost, String>, ShPostRepositoryCustom {
-	
+
 	List<ShPost> findAll();
 
 	List<ShPost> findByShFolder(ShFolder shFolder);
-	
+
 	List<ShPost> findByShFolderAndShPostType(ShFolder shFolder, ShPostType shPostType);
-	
+
+	List<ShPost> findByShFolderAndShPostTypeOrderByPositionAsc(ShFolder shFolder, ShPostType shPostType);
+
 	Optional<ShPost> findById(String id);
-	
+
 	ShPost findByTitle(String title);
-	
+
 	ShPost findByShFolderAndTitle(ShFolder shFolder, String title);
-	
+
 	ShPost findByShFolderAndFurl(ShFolder shFolder, String furl);
-	
+
 	@SuppressWarnings("unchecked")
 	ShPost save(ShPost shPost);
 
