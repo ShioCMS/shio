@@ -25,13 +25,13 @@ public class ShNavigationComponent {
 		if (home) {
 			shFolders.add(homeFolder);
 		}
-		shFolders.addAll(shFolderRepository.findByParentFolder(homeFolder));
+		shFolders.addAll(shFolderRepository.findByParentFolderOrderByPositionAsc(homeFolder));
 		return shFolders;
 	}
 	
 	public List<ShFolder> navigationFolder(String folderId, boolean home) {
 		ShFolder shParentFolder = shFolderRepository.findById(folderId).get();
-		List<ShFolder> shFolders = shFolderRepository.findByParentFolder(shParentFolder);
+		List<ShFolder> shFolders = shFolderRepository.findByParentFolderOrderByPositionAsc(shParentFolder);
 		if (home) {
 			shFolders.add(shParentFolder);
 		}

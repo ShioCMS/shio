@@ -26,6 +26,8 @@ public interface ShFolderRepository extends JpaRepository<ShFolder, String> {
 	
 	List<ShFolder> findByParentFolder(ShFolder parentFolder);
 	
+	List<ShFolder> findByParentFolderOrderByPositionAsc(ShFolder parentFolder);
+	
 	Optional<ShFolder> findById(String id);
 
 	@SuppressWarnings("unchecked")

@@ -36,6 +36,7 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
         $scope.shUser = null;
         $scope.shLastPostType = null;
         $scope.itemSelected = false;
+        
         $scope.checkSomeItemSelected = function () {
         	$scope.itemSelected = false;
         	for (var stateKey in $scope.shStateObjects) {
@@ -44,6 +45,34 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
         		}
         	}        
         }
+        $scope.sortableFolders = {
+       		  stop: function(e, ui) {
+        			  console.log("Test update sort");
+        			  var sortObject = {};
+        			  var i = 1 ;
+        			  angular.forEach($scope.shFolders, function (shFolder, key) {
+        				  sortObject[shFolder.id] = shFolder.position;
+        	            });         			 
+        			  var parameter = JSON.stringify(sortObject);
+                      $http.put(shAPIServerService.get().concat("/v2/object/sort"), parameter).then(function (response) {
+                    	  console.log("Sort was updated");
+                      });
+        		  }
+        		};
+        $scope.sortablePosts = {
+         		  stop: function(e, ui) {
+          			  console.log("Test update sort");
+          			  var sortObject = {};
+          			  var i = 1 ;
+          			  angular.forEach($scope.shPosts, function (shPost, key) {
+          				sortObject[shPost.id] = shPost.position;
+          	            });         			 
+          			  var parameter = JSON.stringify(sortObject);
+                        $http.put(shAPIServerService.get().concat("/v2/object/sort"), parameter).then(function (response) {
+                      	  console.log("Sort was updated");
+                        });
+          		  }
+          		};
     	$scope.shUser = shUserResource.get({
 			id : "admin",
 			access_token : $scope.accessToken
@@ -63,7 +92,9 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
         }));
         $scope.processResponse = function (response) {
             $scope.shFolders = response.data.shFolders;
+            $scope.shFolders = $filter('orderBy')($scope.shFolders, 'position');
             $scope.shPosts = response.data.shPosts;
+            $scope.shPosts = $filter('orderBy')($scope.shPosts, 'position');
             $scope.breadcrumb = response.data.breadcrumb;         
             $scope.shCurrentFolder = null;
             if ($scope.breadcrumb != null) {	
