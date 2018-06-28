@@ -1,4 +1,5 @@
 [![demo](https://img.shields.io/badge/demo-try%20online-FF874B.svg)](https://demo.shiohara.org) [![Build Status](https://travis-ci.org/openviglet/shiohara.svg?branch=master)](https://travis-ci.org/openviglet/shiohara) [![Join the chat at https://gitter.im/openviglet/shiohara](https://badges.gitter.im/openviglet/shiohara.svg)](https://gitter.im/openviglet/shiohara?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![codecov](https://codecov.io/gh/openviglet/shiohara/branch/master/graph/badge.svg)](https://codecov.io/gh/openviglet/shiohara)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fopenviglet%2Fshiohara.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fopenviglet%2Fshiohara?ref=badge_shield)
 
 
 ![banner_shiohara.jpg](https://openviglet.github.io/shiohara/img/banner_shiohara.jpg)
@@ -45,3 +46,7 @@ $ java -jar build/libs/viglet-shiohara.jar
 > login/password: admin/admin
 
 * Sample Site: [http://localhost:2710/sites/viglet/default/en-us](http://localhost:2710/sites/viglet/default/en-us).
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fopenviglet%2Fshiohara.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fopenviglet%2Fshiohara?ref=badge_large)
