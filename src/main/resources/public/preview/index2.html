@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#" ng-app="shPreviewApp">
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name='viewport'
+	content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no'>
+<title>Viglet Shiohara</title>
+<!-- The filemtime is to append a timestamp for the last time the stylesheet was updated to automate cache busting from CloudFlare -->
+<link rel='stylesheet' href='/css/preview/style.css?ver=1530216775' />
+
+</head>
+<body>
+	<style>
+html {
+	margin-top: 0 !important;
+}
+</style>
+
+	<main class="main bg-dark"> <iframe class="iframe-preview"
+		src="http://localhost:2710/sites/viglet/default/en-us"></iframe> </main>
+
+	<nav class="navbar navbar-preview fixed-top">
+		<div
+			class="container-fluid d-flex justify-content-between align-items-center w-100">
+			<a class="my-lg-0 text-gray-soft" href="https://demo.shiohara.org"><i
+				class="bootstrap-themes-icon-left-open-1"></i> Viglet Shiohara
+				Console</a>
+			<ul class="nav nav-preview d-none d-md-flex" role="tablist">
+				<li class="nav-item"><a
+					class="nav-link btn-iframe-to-desktop-trigger active"
+					data-toggle="tab" href="#home" role="tab"><i
+						class="bootstrap-themes-icon-desktop nav-preview__icon"></i></a></li>
+				<li class="nav-item"><a
+					class="nav-link nav-link--small btn-iframe-to-mobile-trigger"
+					data-toggle="tab" href="#profile" role="tab"><i
+						class="bootstrap-themes-icon-iphone nav-preview__icon nav-preview__icon--sm"></i></a></li>
+			</ul>
+			<div class="form-inline">
+				<div class="btn-group d-none d-sm-flex">
+					<a class="dropdown-toggle text-gray-soft" js-price-dropdown="true"
+						href="#" data-toggle="dropdown" aria-haspopup="true"
+						aria-expanded="false">Standard License</a>
+					<div
+						class="dropdown-menu dropdown-menu--xl dropdown-menu--centered dropdown-menu--has-triangle">
+						<button class="dropdown-block-item switch_price_prod"
+							data-type="Standard License" data-price="49.00"
+							data-price_label="$49.00" data-label="Standard License">
+							<div
+								class="d-flex justify-content-between align-items-center mb-2">
+								<span>Standard License</span><span
+									class="d-flex align-items-center">$49.00</span>
+							</div>
+							<ul class="fs-13 text-gray-soft mb-2">
+								<li>Use for a single product</li>
+								<li>Non-paying users only</li>
+							</ul>
+							<p class="fs-11 text-gray-soft">
+								Read the full <a
+									href="https://themes.getbootstrap.com/licenses#fullStandardLicense">Standard
+									License</a>
+							</p>
+						</button>
+						<div class="dropdown-divider"></div>
+						<button class="dropdown-block-item switch_price_prod"
+							data-type="Extended License" data-price="499.00"
+							data-price_label="$499.00" data-label="Extended License">
+							<div
+								class="d-flex justify-content-between align-items-center mb-2">
+								<span>Extended License</span><span
+									class="d-flex align-items-center">$499.00</span>
+							</div>
+							<ul class="fs-13 text-gray-soft mb-2">
+								<li>Use for a single product</li>
+								<li>Paying users allowed</li>
+							</ul>
+							<p class="fs-11 text-gray-soft">
+								Read the full <a
+									href="https://themes.getbootstrap.com/licenses#fullExtendedLicense">Extended
+									License</a>
+							</p>
+						</button>
+					</div>
+				</div>
+				<form action="https://themes.getbootstrap.com/cart/" method="POST"
+					class=" btn-block inline-block">
+					<input type="hidden" js-license-type="license_type"
+						name="license_type" value="Standard License" /> <input
+						type="hidden" name="add-to-cart" value="1468" />
+					<button type="submit" class="btn btn-brand btn-block btn-checkout">
+						<span class="btn-text">Edit Content <span
+							class="btn__label btn__label--right"
+							js-price-value="main_price_div">$<b id="price_val">49.00</b></span></span>
+					</button>
+				</form>
+			</div>
+		</div>
+	</nav>
+	<script
+		src="http://localhost:2710/thirdparty/jquery/1.12.4/dist/jquery.min.js"></script>
+	<script
+		src="http://localhost:2710/thirdparty/jquery.ui/1.11.3/ui/core.js"></script>
+	<script
+		src="http://localhost:2710/thirdparty/jquery.ui/1.11.3/ui/widget.js"></script>
+	<script
+		src="http://localhost:2710/thirdparty/jquery.ui/1.11.3/ui/mouse.js"></script>
+	<script
+		src="http://localhost:2710/thirdparty/jquery.ui/1.11.3/ui/sortable.js"></script>
+	<script
+		src="http://localhost:2710/thirdparty/tinymce/4.5.8/tinymce.min.js"></script>
+	<script
+		src="http://localhost:2710/thirdparty/ace-builds/1.3.1/src-min-noconflict/ace.js"></script>
+
+	<script
+		src="http://localhost:2710/thirdparty/moment/2.20.1/min/moment-with-locales.min.js"></script>
+	<script
+		src="http://localhost:2710/thirdparty/angular/1.6.9/angular.min.js"></script>
+
+	<script
+		src="http://localhost:2710/thirdparty/angular-ui-sortable/0.14.3/sortable.min.js"></script>
+
+	<script
+		src="http://localhost:2710/thirdparty/angular-ui-router/1.0.14/release/angular-ui-router.min.js"></script>
+	<script
+		src="http://localhost:2710/thirdparty/angular-translate/2.17.0/angular-translate.min.js"></script>
+	<script
+		src="http://localhost:2710/thirdparty/angular-resource/1.6.9/angular-resource.min.js"></script>
+	<script
+		src="http://localhost:2710/thirdparty/angular-animate/1.6.9/angular-animate.min.js"></script>
+	<script
+		src="http://localhost:2710/thirdparty/angular-cookies/1.6.9/angular-cookies.min.js"></script>
+	<script
+		src="http://localhost:2710/thirdparty/angular-sanitize/1.6.9/angular-sanitize.min.js"></script>
+	<script
+		src="http://localhost:2710/thirdparty/angular-moment/1.2.0/angular-moment.min.js"></script>
+	<!-- shim is needed to support non-HTML5 FormData browsers (IE8-9)-->
+	<script
+		src="http://localhost:2710/thirdparty/ng-file-upload/12.2.13/ng-file-upload-shim.min.js"></script>
+	<script
+		src="http://localhost:2710/thirdparty/ng-file-upload/12.2.13/ng-file-upload.min.js"></script>
+	<script
+		src="http://localhost:2710/thirdparty/angular-ui-notification/0.3.6/dist/angular-ui-notification.min.js"></script>
+	<script
+		src="http://localhost:2710/thirdparty/angular-ui-tinymce/0.0.19/dist/tinymce.min.js"></script>
+	<script
+		src="http://localhost:2710/thirdparty/angular-ui-ace/0.2.3/ui-ace.min.js"></script>
+
+
+
+	<script
+		src='http://themes.getbootstrap.com/wp-content/themes/bootstrap-marketplace/assets/javascript/popper.min.js'></script>
+	<script
+		src='http://themes.getbootstrap.com/wp-content/themes/bootstrap-marketplace/assets/javascript/bootstrap.min.js'></script>
+	<script src="../js/dist/shiohara.min.js"></script>
+	<script
+	src='http://themes.getbootstrap.com/wp-content/themes/bootstrap-marketplace/assets/javascript/scripts.js?ver=1516485707'></script>
+	
+</body>
+</html>
