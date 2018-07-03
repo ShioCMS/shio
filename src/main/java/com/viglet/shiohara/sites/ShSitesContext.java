@@ -135,7 +135,7 @@ public class ShSitesContext {
 		}
 	}
 
-	private String siteContext(String shSiteName, String shFormat, String shLocale, int contextPathPosition,
+	public String siteContext(String shSiteName, String shFormat, String shLocale, int contextPathPosition,
 			HttpServletRequest request, HttpServletResponse response) throws IOException, ScriptException {
 
 		ArrayList<String> contentPath = shSitesContextComponent.contentPathFactory(contextPathPosition, request);

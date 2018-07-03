@@ -19,7 +19,7 @@ public class ShSecurityConfigDevelopment extends WebSecurityConfigurerAdapter {
 	   
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.headers().cacheControl().disable();
+		http.headers().frameOptions().disable().cacheControl().disable();
 		http.csrf().disable();
 		http.cors().disable();
 	}
