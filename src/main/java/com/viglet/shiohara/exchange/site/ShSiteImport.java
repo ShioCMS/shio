@@ -61,8 +61,11 @@ public class ShSiteImport {
 	public void cloneSite(ShExchange shExchange, String username, File extractFolder, Map<String, Object> shObjects,
 			Map<String, List<String>> shChildObjects, ShSite shSite) throws IOException {
 		shExchange = this.prepareClone(shExchange);
-	
+
 		for (ShSiteExchange shSiteExchange : shExchange.getSites()) {
+			if (shSite.getId() != null && shSite.getId().trim().length() > 0) {
+				shSiteExchange.setId(shSite.getId());
+			}
 			shSiteExchange.setDate(shSite.getDate());
 			shSiteExchange.setOwner(shSite.getOwner());
 			shSiteExchange.setFurl(shSite.getFurl());
