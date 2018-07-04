@@ -2,6 +2,7 @@ package com.viglet.shiohara.sites;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.script.ScriptException;
@@ -184,35 +185,47 @@ public class ShSitesContext {
 		} else {
 			// Post
 			JSONObject postTypeLayout = new JSONObject();
-			
+
 			if (shSite.getPostTypeLayout() != null) {
 				postTypeLayout = new JSONObject(shSite.getPostTypeLayout());
 			}
-			
+
 			String pageLayoutName = (String) postTypeLayout.get(shPostItem.getShPostType().getName());
-			ShPost shPostPageLayout = shPostRepository.findByTitle(pageLayoutName);
+			List<ShPost> shPostPageLayouts = shPostRepository.findByTitle(pageLayoutName);
 
-			Map<String, ShPostAttr> shPostPageLayoutMap = shPostUtils.postToMap(shPostPageLayout);
+			Map<String, ShPostAttr> shPostPageLayoutMap = null;
 
-			pageLayoutHTML = shPostPageLayoutMap.get(ShSystemPostTypeAttr.HTML).getStrValue();
-			pageLayoutJS = shPostPageLayoutMap.get(ShSystemPostTypeAttr.JAVASCRIPT).getStrValue();
+			if (shPostPageLayouts != null) {
+				for (ShPost shPostPageLayout : shPostPageLayouts) {
+					if (shPostUtils.getSite(shPostPageLayout).getId().equals(shSite.getId())) {
+						shPostPageLayoutMap = shPostUtils.postToMap(shPostPageLayout);
 
-			String shPostThemeId = shPostPageLayoutMap.get(ShSystemPostTypeAttr.THEME).getStrValue();
-			JSONObject shThemeAttrs = shSitesContextComponent.shThemeFactory(shPostThemeId);
+					}
+				}
+			}
 
-			JSONObject shSiteItemAttrs = shSiteUtils.toJSON(shSite);
+			if (shPostPageLayoutMap != null) {
 
-			JSONObject shPostItemAttrs = shPostUtils.toJSON(shPostItem);
+				pageLayoutHTML = shPostPageLayoutMap.get(ShSystemPostTypeAttr.HTML).getStrValue();
+				pageLayoutJS = shPostPageLayoutMap.get(ShSystemPostTypeAttr.JAVASCRIPT).getStrValue();
 
-			shPostItemAttrs.put("theme", shThemeAttrs);
-			shPostItemAttrs.put("site", shSiteItemAttrs);
+				String shPostThemeId = shPostPageLayoutMap.get(ShSystemPostTypeAttr.THEME).getStrValue();
+				JSONObject shThemeAttrs = shSitesContextComponent.shThemeFactory(shPostThemeId);
 
-			javascriptVar = "var shContent = " + shPostItemAttrs.toString() + ";";
+				JSONObject shSiteItemAttrs = shSiteUtils.toJSON(shSite);
 
+				JSONObject shPostItemAttrs = shPostUtils.toJSON(shPostItem);
+
+				shPostItemAttrs.put("theme", shThemeAttrs);
+				shPostItemAttrs.put("site", shSiteItemAttrs);
+
+				javascriptVar = "var shContent = " + shPostItemAttrs.toString() + ";";
+
+			}
 		}
 
 		String shPageLayoutHTML = shSitesContextComponent.shPageLayoutFactory(javascriptVar, pageLayoutJS,
-				pageLayoutHTML, request);
+				pageLayoutHTML, request, shSite);
 
 		response.setContentType(MediaType.TEXT_HTML_VALUE);
 
