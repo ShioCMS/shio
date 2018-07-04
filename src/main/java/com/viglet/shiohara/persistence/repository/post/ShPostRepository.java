@@ -23,7 +23,7 @@ public interface ShPostRepository extends JpaRepository<ShPost, String>, ShPostR
 
 	Optional<ShPost> findById(String id);
 
-	ShPost findByTitle(String title);
+	List<ShPost> findByTitle(String title);
 
 	ShPost findByShFolderAndTitle(ShFolder shFolder, String title);
 

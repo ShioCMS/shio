@@ -200,11 +200,11 @@ public class ShSitesContextComponent {
 		return shPostUtils.postToMap(shFolderPageLayout);
 	}
 
-	public String shPageLayoutFactory(String javascriptVar, String pageLayoutJS, String pageLayoutHTML, HttpServletRequest request)
-			throws ScriptException, IOException {
+	public String shPageLayoutFactory(String javascriptVar, String pageLayoutJS, String pageLayoutHTML,
+			HttpServletRequest request, ShSite shSite) throws ScriptException, IOException {
 
 		StringBuilder shObjectJS = this.shObjectJSFactory();
-		
+
 		String javascript = shObjectJS.toString() + javascriptVar + pageLayoutJS;
 
 		// Nashorn Engine
@@ -214,11 +214,11 @@ public class ShSitesContextComponent {
 		bindings.put("spring", context);
 		bindings.put("request", request);
 		Object pageLayoutResult = engine.eval(javascript, bindings);
-		
-		return this.shRegionFactory(engine, bindings, javascriptVar, pageLayoutResult.toString()).html();
+
+		return this.shRegionFactory(engine, bindings, javascriptVar, pageLayoutResult.toString(), shSite).html();
 	}
 
-	private Document shRegionFactory(ScriptEngine engine, Bindings bindings, String javascriptVar, String regionResult)
+	private Document shRegionFactory(ScriptEngine engine, Bindings bindings, String javascriptVar, String regionResult, ShSite shSite)
 			throws IOException, ScriptException {
 		StringBuilder shObjectJS = this.shObjectJSFactory();
 
@@ -230,23 +230,35 @@ public class ShSitesContextComponent {
 
 			String regionAttr = element.attr("sh-region");
 
-			ShPost shRegionPost = shPostRepository.findByTitle(regionAttr);
+			List<ShPost> shRegionPosts = shPostRepository.findByTitle(regionAttr);
 
-			Map<String, ShPostAttr> shRegionPostMap = shPostUtils.postToMap(shRegionPost);
+			Map<String, ShPostAttr> shRegionPostMap = null;
 
-			String shRegionJS = shRegionPostMap.get(ShSystemPostTypeAttr.JAVASCRIPT).getStrValue();
+			if (shRegionPosts != null) {
+				for (ShPost shRegionPost : shRegionPosts) {
+					if (shPostUtils.getSite(shRegionPost).getId().equals(shSite.getId())) {
+						shRegionPostMap = shPostUtils.postToMap(shRegionPost);
 
-			String shRegionHTML = shRegionPostMap.get(ShSystemPostTypeAttr.HTML).getStrValue();
+					}
+				}
+			}
 
-			bindings.put("html", shRegionHTML);
+			if (shRegionPostMap != null) {
+				String shRegionJS = shRegionPostMap.get(ShSystemPostTypeAttr.JAVASCRIPT).getStrValue();
 
-			String javascript = shObjectJS.toString() + javascriptVar + shRegionJS;
+				String shRegionHTML = shRegionPostMap.get(ShSystemPostTypeAttr.HTML).getStrValue();
 
-			Object regionResultChild = engine.eval(javascript, bindings);
-			
-			element.html(this.shRegionFactory(engine, bindings, javascriptVar, regionResultChild.toString()).html());
+				bindings.put("html", shRegionHTML);
+
+				String javascript = shObjectJS.toString() + javascriptVar + shRegionJS;
+
+				Object regionResultChild = engine.eval(javascript, bindings);
+
+				element.html(
+						this.shRegionFactory(engine, bindings, javascriptVar, regionResultChild.toString(), shSite).html());
+			}
 		}
-		
+
 		return doc;
 	}
 }

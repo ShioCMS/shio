@@ -399,7 +399,7 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
         
         $scope.objectPreview = function (shObject) {
             //var link = shAPIServerService.get().concat("/v2/object/" + shObject.id + "/preview");
-            var link = "/preview/#!/" + shObject.id;
+            var link = "/preview#!/" + shObject.id;
             $window.open(link,"_self");
         }
 						}]);
