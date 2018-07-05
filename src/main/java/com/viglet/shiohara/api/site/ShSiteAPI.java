@@ -29,6 +29,8 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
 import com.viglet.shiohara.api.folder.ShFolderList;
 import com.viglet.shiohara.exchange.ShCloneExchange;
+import com.viglet.shiohara.exchange.ShExchange;
+import com.viglet.shiohara.exchange.ShSiteExchange;
 import com.viglet.shiohara.exchange.site.ShSiteExport;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.site.ShSite;
@@ -56,7 +58,7 @@ public class ShSiteAPI {
 	private ShSiteExport shSiteExport;
 	@Autowired
 	private ShCloneExchange shCloneExchange;
-	
+
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShSite> shSiteList(final Principal principal) throws Exception {
@@ -97,7 +99,7 @@ public class ShSiteAPI {
 		return true;
 	}
 
-	public void importTemplateSite(ShSite shSite) throws IOException, IllegalStateException, ArchiveException {
+	public ShExchange importTemplateSite(ShSite shSite) throws IOException, IllegalStateException, ArchiveException {
 
 		URL templateSiteRepository = new URL("https://github.com/openshio/bootstrap-site/archive/master.zip");
 
@@ -113,9 +115,13 @@ public class ShSiteAPI {
 
 			FileUtils.copyURLToFile(templateSiteRepository, templateSiteFile);
 
-			shCloneExchange.cloneFromFile(templateSiteFile, "admin", shSite);
+			ShExchange shExchange = shCloneExchange.cloneFromFile(templateSiteFile, "admin", shSite);
 
 			FileUtils.deleteQuietly(templateSiteFile);
+
+			return shExchange;
+		} else {
+			return null;
 		}
 
 	}
@@ -128,8 +134,10 @@ public class ShSiteAPI {
 		shSite.setOwner(principal.getName());
 		shSite.setFurl(shURLFormatter.format(shSite.getName()));
 
-		this.importTemplateSite(shSite);
-
+		ShExchange shExchange = this.importTemplateSite(shSite);
+		ShSiteExchange shSiteExchange = shExchange.getSites().get(0);
+		shSite.setId(shSiteExchange.getId());
+		
 		return shSite;
 	}
 
