@@ -37,7 +37,7 @@ public class ShCloneExchange {
 			throws IllegalStateException, IOException, ArchiveException {
 		File extractFolder = shImportExchange.extractZipFile(multipartFile);
 		File parentExtractFolder = null;
-
+		ShExchange shExchangeModified = null;
 		if (extractFolder != null) {
 			// Check if export.json exists, if it is not exist try access a sub directory
 			if (!(new File(extractFolder, "export.json").exists()) && (extractFolder.listFiles().length == 1)) {
@@ -58,7 +58,7 @@ public class ShCloneExchange {
 				shPostTypeImport.importPostType(shExchange);
 			}
 			if (shExchange.getSites() != null && shExchange.getSites().size() > 0) {
-				shSiteImport.cloneSite(shExchange, username, extractFolder, shObjects, shChildObjects, shSite);
+				shExchangeModified = shSiteImport.cloneSite(shExchange, username, extractFolder, shObjects, shChildObjects, shSite);
 			}
 
 			try {
@@ -69,7 +69,7 @@ public class ShCloneExchange {
 			} catch (IOException ex) {
 				ex.printStackTrace();
 			}
-			return shExchange;
+			return shExchangeModified;
 		} else {
 			return null;
 		}
