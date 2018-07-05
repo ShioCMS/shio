@@ -32,7 +32,7 @@ public class ShSecurityConfigProduction extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		// Prevent the HTTP response header of "Pragma: no-cache".
-		http.headers().cacheControl().disable();
+		http.headers().frameOptions().disable().cacheControl().disable();
 		http.httpBasic().authenticationEntryPoint(shAuthenticationEntryPoint).and().authorizeRequests()
 				.antMatchers("/index.html", "/welcome/**", "/", "/store/**", "/thirdparty/**", "/js/**", "/css/**",
 						"/template/**", "/img/**", "/sites/**", "/swagger-resources/**", "/h2/**")

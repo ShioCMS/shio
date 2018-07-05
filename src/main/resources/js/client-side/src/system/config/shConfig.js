@@ -62,8 +62,7 @@ shioharaApp.config([
 				}
 			}).state('content.object', {
 				url : '/:objectId'
-			})
-			.state('content.children', {
+			}).state('content.children', {
 				url : '/list/:objectId',
 				templateUrl : 'template/object/object-children.html',
 				controller :'ShObjectChildrenCtrl',				
@@ -264,3 +263,32 @@ shioharaApp.config([
 			})
 
 		} ]);
+
+
+
+shPreviewApp.config([
+	'$stateProvider',
+	'$urlRouterProvider',
+	'$locationProvider',
+	'$translateProvider',
+	'NotificationProvider',
+	'$httpProvider',
+	function($stateProvider, $urlRouterProvider,
+			$locationProvider, $translateProvider, NotificationProvider,$httpProvider) {	
+
+		$httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
+		 
+		$translateProvider.useSanitizeValueStrategy('escaped');
+	
+		$urlRouterProvider.otherwise('');
+
+		$stateProvider.state('preview', {
+			url : '/:objectId',
+			templateUrl : '../template/preview/preview.html',
+			controller :'ShPreviewCtrl',				
+			data : {
+				pageTitle : 'Preview | Viglet Shiohara'
+			}
+		})
+	} ]);
+

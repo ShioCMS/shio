@@ -3,6 +3,7 @@ package com.viglet.shiohara.api.folder;
 import java.util.ArrayList;
 
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
+import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 
 public class ShFolderPath {
@@ -12,6 +13,8 @@ public class ShFolderPath {
 	private ShFolder currentFolder;
 	
 	private ArrayList<ShFolder> breadcrumb;
+	
+	private ShPost shPost;
 	
 	private ShSite shSite;
 
@@ -45,6 +48,14 @@ public class ShFolderPath {
 
 	public void setShSite(ShSite shSite) {
 		this.shSite = shSite;
+	}
+
+	public ShPost getShPost() {
+		return shPost;
+	}
+
+	public void setShPost(ShPost shPost) {
+		this.shPost = shPost;
 	}
 
 }

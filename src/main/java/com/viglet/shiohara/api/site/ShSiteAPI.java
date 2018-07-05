@@ -1,11 +1,17 @@
 package com.viglet.shiohara.api.site;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.security.Principal;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.compress.archivers.ArchiveException;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,21 +28,12 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
 import com.viglet.shiohara.api.folder.ShFolderList;
+import com.viglet.shiohara.exchange.ShCloneExchange;
 import com.viglet.shiohara.exchange.site.ShSiteExport;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
-import com.viglet.shiohara.persistence.model.post.ShPost;
-import com.viglet.shiohara.persistence.model.post.ShPostAttr;
-import com.viglet.shiohara.persistence.model.post.type.ShPostType;
-import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
-import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
-import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
-import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
-import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
-import com.viglet.shiohara.post.type.ShSystemPostType;
-import com.viglet.shiohara.post.type.ShSystemPostTypeAttr;
 import com.viglet.shiohara.url.ShURLFormatter;
 import com.viglet.shiohara.utils.ShFolderUtils;
 
@@ -52,19 +49,13 @@ public class ShSiteAPI {
 	@Autowired
 	private ShFolderRepository shFolderRepository;
 	@Autowired
-	private ShPostRepository shPostRepository;
-	@Autowired
 	private ShFolderUtils shFolderUtils;
-	@Autowired
-	private ShPostTypeRepository shPostTypeRepository;
-	@Autowired
-	private ShPostTypeAttrRepository shPostTypeAttrRepository;
-	@Autowired
-	private ShPostAttrRepository shPostAttrRepository;
 	@Autowired
 	private ShURLFormatter shURLFormatter;
 	@Autowired
 	private ShSiteExport shSiteExport;
+	@Autowired
+	private ShCloneExchange shCloneExchange;
 	
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
@@ -106,6 +97,29 @@ public class ShSiteAPI {
 		return true;
 	}
 
+	public void importTemplateSite(ShSite shSite) throws IOException, IllegalStateException, ArchiveException {
+
+		URL templateSiteRepository = new URL("https://github.com/openshio/bootstrap-site/archive/master.zip");
+
+		File userDir = new File(System.getProperty("user.dir"));
+		if (userDir.exists() && userDir.isDirectory()) {
+			File tmpDir = new File(userDir.getAbsolutePath().concat(File.separator + "store" + File.separator + "tmp"));
+			if (!tmpDir.exists()) {
+				tmpDir.mkdirs();
+			}
+
+			File templateSiteFile = new File(
+					tmpDir.getAbsolutePath().concat(File.separator + "template-site-" + UUID.randomUUID() + ".zip"));
+
+			FileUtils.copyURLToFile(templateSiteRepository, templateSiteFile);
+
+			shCloneExchange.cloneFromFile(templateSiteFile, "admin", shSite);
+
+			FileUtils.deleteQuietly(templateSiteFile);
+		}
+
+	}
+
 	@PostMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShSite shSiteAdd(@RequestBody ShSite shSite, final Principal principal) throws Exception {
@@ -114,67 +128,7 @@ public class ShSiteAPI {
 		shSite.setOwner(principal.getName());
 		shSite.setFurl(shURLFormatter.format(shSite.getName()));
 
-		shSiteRepository.save(shSite);
-
-		// Home Folder
-		ShFolder shFolderHome = new ShFolder();
-		shFolderHome.setName("Home");
-		shFolderHome.setParentFolder(null);
-		shFolderHome.setShSite(shSite);
-		shFolderHome.setDate(new Date());
-		shFolderHome.setRootFolder((byte) 1);
-		shFolderHome.setOwner(principal.getName());
-		shFolderHome.setFurl(shURLFormatter.format(shFolderHome.getName()));
-
-		shFolderRepository.save(shFolderHome);
-
-		// Folder Index
-
-		ShPostType shPostFolderIndex = shPostTypeRepository.findByName(ShSystemPostType.FOLDER_INDEX);
-
-		ShPost shPost = new ShPost();
-		shPost.setDate(new Date());
-		shPost.setShPostType(shPostFolderIndex);
-		shPost.setSummary("Folder Index");
-		shPost.setTitle("index");
-		shPost.setShFolder(shFolderHome);
-		shPost.setOwner(principal.getName());
-		shPost.setFurl(shURLFormatter.format(shPost.getTitle()));
-
-		shPostRepository.save(shPost);
-
-		ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex,
-				ShSystemPostTypeAttr.TITLE);
-
-		ShPostAttr shPostAttr = new ShPostAttr();
-		shPostAttr.setShPost(shPost);
-		shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-		shPostAttr.setStrValue(shPost.getTitle());
-		shPostAttr.setType(1);
-
-		shPostAttrRepository.save(shPostAttr);
-
-		shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex,
-				ShSystemPostTypeAttr.DESCRIPTION);
-
-		shPostAttr = new ShPostAttr();
-		shPostAttr.setShPost(shPost);
-		shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-		shPostAttr.setStrValue(shPost.getSummary());
-		shPostAttr.setType(1);
-
-		shPostAttrRepository.save(shPostAttr);
-
-		shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostFolderIndex,
-				ShSystemPostTypeAttr.PAGE_LAYOUT);
-
-		shPostAttr = new ShPostAttr();
-		shPostAttr.setShPost(shPost);
-		shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-		shPostAttr.setStrValue("");
-		shPostAttr.setType(1);
-
-		shPostAttrRepository.save(shPostAttr);
+		this.importTemplateSite(shSite);
 
 		return shSite;
 	}
@@ -195,7 +149,7 @@ public class ShSiteAPI {
 	@GetMapping(value = "/{id}/export", produces = "application/zip")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public StreamingResponseBody shSiteExport(@PathVariable String id, HttpServletResponse response) throws Exception {
-		
+
 		return shSiteExport.exportObject(id, response);
 
 	}
