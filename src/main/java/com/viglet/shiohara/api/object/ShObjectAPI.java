@@ -250,6 +250,7 @@ public class ShObjectAPI {
 				shFolderPath.setCurrentFolder(shFolder);
 				shFolderPath.setBreadcrumb(breadcrumb);
 				shFolderPath.setShSite(shSite);
+				shFolderPath.setShPost(shPost);
 				return shFolderPath;
 			}
 		}

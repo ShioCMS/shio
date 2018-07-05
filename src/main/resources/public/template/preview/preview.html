@@ -9,7 +9,7 @@ html {
 	<nav class="navbar navbar-preview fixed-top">
 		<div
 			class="container-fluid d-flex justify-content-between align-items-center w-100">
-			<a class="my-lg-0 text-gray-soft" href onClick="window.history.back();"><i
+			<a class="my-lg-0 text-gray-soft" href ng-click="returnLink()"><i
 				class="bootstrap-themes-icon-left-open-1"></i> Viglet Shiohara
 				Console</a>
 			<ul class="nav nav-preview d-none d-md-flex" role="tablist">
@@ -68,15 +68,12 @@ html {
 						</button>
 					</div>
 				</div> -->
-				<form action="https://themes.getbootstrap.com/cart/" method="POST"
-					class=" btn-block inline-block">
 					<!-- <input type="hidden" js-license-type="license_type"
 						name="license_type" value="Standard License" /> <input
 						type="hidden" name="add-to-cart" value="1468" /> -->
-					<button type="submit" class="btn btn-brand btn-block btn-checkout">
-						<span class="btn-text">Edit Content</span>
+					<button ng-click="actionLink()" class="btn btn-brand btn-block btn-checkout">
+						<span class="btn-text">{{captionButton}}</span>
 					</button>
-				</form>
 			</div>
 		</div>
 	</nav>
