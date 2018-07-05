@@ -80,7 +80,7 @@ public class ShObjectAPI {
 		}
 
 		RedirectView redirectView = new RedirectView(new String(redirect.getBytes("UTF-8"), "ISO-8859-1"));
-
+		redirectView.setHttp10Compatible(false);
 		return redirectView;
 	}
 
