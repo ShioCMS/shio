@@ -1,25 +1,24 @@
 shioharaApp.controller('ShObjectChildrenCtrl', [
-						"$scope"
-						, "$state"
-						, "$stateParams"
-						, "$rootScope"
-						, "$translate"
-						, "$http"
-						, "$window"
-						, "shAPIServerService"
-						, 'vigLocale'
-						, "shFolderFactory"
-						, "shPostFactory"
-						, "ShDialogSelectObject"
-						, "ShDialogDeleteFactory"
-						, "shPostResource"
-						, "shFolderResource"
-						, "$filter"
-						, "Notification"
-						, "moment"
-						, "shUserResource"
-						, "shPostTypeResource"
-    
+    "$scope"
+    , "$state"
+    , "$stateParams"
+    , "$rootScope"
+    , "$translate"
+    , "$http"
+    , "$window"
+    , "shAPIServerService"
+    , 'vigLocale'
+    , "shFolderFactory"
+    , "shPostFactory"
+    , "ShDialogSelectObject"
+    , "ShDialogDeleteFactory"
+    , "shPostResource"
+    , "shFolderResource"
+    , "$filter"
+    , "Notification"
+    , "moment"
+    , "shUserResource"
+    , "shPostTypeResource"
     , function ($scope, $state, $stateParams, $rootScope, $translate, $http, $window, shAPIServerService, vigLocale, shFolderFactory, shPostFactory, ShDialogSelectObject, ShDialogDeleteFactory, shPostResource, shFolderResource, $filter, Notification, moment, shUserResource, shPostTypeResource) {
         $scope.objectId = $stateParams.objectId;
         $scope.vigLanguage = vigLocale.getLocale().substring(0, 2);
@@ -52,7 +51,7 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
                     sortObject[shFolder.id] = shFolder.position;
                 });
                 var parameter = JSON.stringify(sortObject);
-                $http.put(shAPIServerService.get().concat("/v2/object/sort"), parameter).then(function (response) {});
+                $http.put(shAPIServerService.get().concat("/v2/object/sort"), parameter).then(function (response) { });
             }
         };
         $scope.sortablePosts = {
@@ -63,7 +62,7 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
                     sortObject[shPost.id] = shPost.position;
                 });
                 var parameter = JSON.stringify(sortObject);
-                $http.put(shAPIServerService.get().concat("/v2/object/sort"), parameter).then(function (response) {});
+                $http.put(shAPIServerService.get().concat("/v2/object/sort"), parameter).then(function (response) { });
             }
         };
         $scope.shUser = shUserResource.get({
@@ -379,4 +378,4 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
             var link = "/preview#!/" + shObject.id;
             $window.open(link, "_self");
         }
-						}]);
+    }]);
