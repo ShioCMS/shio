@@ -1,0 +1,79 @@
+		<style>
+html {
+	margin-top: 0 !important;
+}
+</style>
+	<main class="main bg-dark"> <iframe class="iframe-preview" ng-class="{'iframe-preview--mobile': isMobile }"
+		ng-src="{{previewURL}}"></iframe> </main>
+
+	<nav class="navbar navbar-preview fixed-top">
+		<div
+			class="container-fluid d-flex justify-content-between align-items-center w-100">
+			<a class="my-lg-0 text-gray-soft" href ng-click="returnLink()"><i
+				class="bootstrap-themes-icon-left-open-1"></i> Viglet Shiohara
+				Console</a>
+			<ul class="nav nav-preview d-none d-md-flex" role="tablist">
+				<li class="nav-item"><a ng-click="isMobile = false"
+					class="nav-link btn-iframe-to-desktop-trigger active"
+					data-toggle="tab" href= role="tab"><i
+						class="bootstrap-themes-icon-desktop nav-preview__icon"></i></a></li>
+				<li class="nav-item"><a ng-click="isMobile = true;"
+					class="nav-link nav-link--small btn-iframe-to-mobile-trigger"
+					data-toggle="tab" href= role="tab"><i
+						class="bootstrap-themes-icon-iphone nav-preview__icon nav-preview__icon--sm"></i></a></li>
+			</ul>
+			<div class="form-inline">
+				<!-- <div class="btn-group d-none d-sm-flex">
+					<a class="dropdown-toggle text-gray-soft" js-price-dropdown="true"
+						href="#" data-toggle="dropdown" aria-haspopup="true"
+						aria-expanded="false">Standard License</a>
+					<div
+						class="dropdown-menu dropdown-menu--xl dropdown-menu--centered dropdown-menu--has-triangle">
+						<button class="dropdown-block-item switch_price_prod"
+							data-type="Standard License" data-price="49.00"
+							data-price_label="$49.00" data-label="Standard License">
+							<div
+								class="d-flex justify-content-between align-items-center mb-2">
+								<span>Standard License</span><span
+									class="d-flex align-items-center">$49.00</span>
+							</div>
+							<ul class="fs-13 text-gray-soft mb-2">
+								<li>Use for a single product</li>
+								<li>Non-paying users only</li>
+							</ul>
+							<p class="fs-11 text-gray-soft">
+								Read the full <a
+									href="https://themes.getbootstrap.com/licenses#fullStandardLicense">Standard
+									License</a>
+							</p>
+						</button>
+						<div class="dropdown-divider"></div>
+						<button class="dropdown-block-item switch_price_prod"
+							data-type="Extended License" data-price="499.00"
+							data-price_label="$499.00" data-label="Extended License">
+							<div
+								class="d-flex justify-content-between align-items-center mb-2">
+								<span>Extended License</span><span
+									class="d-flex align-items-center">$499.00</span>
+							</div>
+							<ul class="fs-13 text-gray-soft mb-2">
+								<li>Use for a single product</li>
+								<li>Paying users allowed</li>
+							</ul>
+							<p class="fs-11 text-gray-soft">
+								Read the full <a
+									href="https://themes.getbootstrap.com/licenses#fullExtendedLicense">Extended
+									License</a>
+							</p>
+						</button>
+					</div>
+				</div> -->
+					<!-- <input type="hidden" js-license-type="license_type"
+						name="license_type" value="Standard License" /> <input
+						type="hidden" name="add-to-cart" value="1468" /> -->
+					<button ng-click="actionLink()" class="btn btn-brand btn-block btn-checkout">
+						<span class="btn-text">{{captionButton}}</span>
+					</button>
+			</div>
+		</div>
+	</nav>
