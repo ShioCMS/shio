@@ -29,6 +29,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerMapping;
 
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
+import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.site.ShSite;
@@ -117,19 +118,19 @@ public class ShSitesContextComponent {
 		return objectName;
 	}
 
-	public ShPost shPostItemFactory(ShSite shSite, String folderPath, String objectName) {
-		ShPost shPostItem = null;
+	public ShObject shObjectItemFactory(ShSite shSite, ShFolder shFolder, String objectName) {
+		ShObject shObjectItem = null;
 
 		// If shPostItem is not null, so is a Post, otherwise is a Folder
 		if (objectName != null) {
-			ShFolder shParentFolder = shFolderUtils.folderFromPath(shSite, folderPath);
-			shPostItem = shPostRepository.findByShFolderAndFurl(shParentFolder, objectName);
+			ShFolder shParentFolder = shFolder;
+			shObjectItem = shPostRepository.findByShFolderAndFurl(shParentFolder, objectName);
 		}
 
-		if (shPostItem != null) {
-			shPostItem = this.shPostAlias(shPostItem);
+		if (shObjectItem != null) {
+			shObjectItem = this.shPostAlias((ShPost) shObjectItem);
 		} else {
-			String folderPathCurrent = folderPath;
+			String folderPathCurrent = shFolderUtils.folderPath(shFolder, true);
 			if (objectName != null) {
 				folderPathCurrent = folderPathCurrent + objectName + "/";
 			}
@@ -139,11 +140,13 @@ public class ShSitesContextComponent {
 				ShPost shFolderIndex = shPostRepository.findByShFolderAndFurl(shFolderItem, "index");
 
 				if (shFolderIndex != null) {
-					shPostItem = shFolderIndex;
+					shObjectItem = shFolderIndex;
+				} else {
+					shObjectItem = shFolderItem;
 				}
 			}
 		}
-		return shPostItem;
+		return shObjectItem;
 	}
 
 	public JSONObject shThemeFactory(String postThemeId) {
@@ -184,18 +187,40 @@ public class ShSitesContextComponent {
 
 	public ShFolder shFolderItemFactory(ShPost shPostItem) {
 		ShFolder shFolderItem = null;
-		if (shPostItem.getShPostType().getName().equals(ShSystemPostType.FOLDER_INDEX)) {
+		if (shPostItem != null && shPostItem.getShPostType().getName().equals(ShSystemPostType.FOLDER_INDEX)) {
 			shFolderItem = shPostItem.getShFolder();
 		}
 
 		return shFolderItem;
 	}
 
-	public Map<String, ShPostAttr> shFolderPageLayoutMapFactory(ShPost shPostItem) {
-		Map<String, ShPostAttr> shFolderIndexMap = shPostUtils.postToMap(shPostItem);
+	public Map<String, ShPostAttr> shFolderPageLayoutMapFactory(ShObject shObjectItem, ShSite shSite) {
+		String shPostFolderPageLayoutId = null;
+		ShPost shFolderPageLayout = null;
 
-		String shPostFolderPageLayoutId = shFolderIndexMap.get(ShSystemPostTypeAttr.PAGE_LAYOUT).getStrValue();
-		ShPost shFolderPageLayout = shPostRepository.findById(shPostFolderPageLayoutId).get();
+		if (shObjectItem instanceof ShPost) {
+			Map<String, ShPostAttr> shFolderIndexMap = shPostUtils.postToMap((ShPost) shObjectItem);
+			shPostFolderPageLayoutId = shFolderIndexMap.get(ShSystemPostTypeAttr.PAGE_LAYOUT).getStrValue();
+
+			if (shPostFolderPageLayoutId != null) {
+				shFolderPageLayout = shPostRepository.findById(shPostFolderPageLayoutId).get();
+			}
+		} else if (shObjectItem instanceof ShFolder) {
+			// If Folder doesn't have PageLayout, it will try use default Folder Page Layout
+			if (shSite.getPostTypeLayout() != null) {
+				JSONObject postTypeLayout = new JSONObject(shSite.getPostTypeLayout());
+				String pageLayoutName = (String) postTypeLayout.get("FOLDER");
+				List<ShPost> shPostPageLayouts = shPostRepository.findByTitle(pageLayoutName);
+
+				if (shPostPageLayouts != null) {
+					for (ShPost shPostPageLayout : shPostPageLayouts) {
+						if (shPostUtils.getSite(shPostPageLayout).getId().equals(shSite.getId())) {
+							shFolderPageLayout = shPostPageLayout;
+						}
+					}
+				}
+			}
+		}
 
 		return shPostUtils.postToMap(shFolderPageLayout);
 	}
@@ -218,8 +243,8 @@ public class ShSitesContextComponent {
 		return this.shRegionFactory(engine, bindings, javascriptVar, pageLayoutResult.toString(), shSite).html();
 	}
 
-	private Document shRegionFactory(ScriptEngine engine, Bindings bindings, String javascriptVar, String regionResult, ShSite shSite)
-			throws IOException, ScriptException {
+	private Document shRegionFactory(ScriptEngine engine, Bindings bindings, String javascriptVar, String regionResult,
+			ShSite shSite) throws IOException, ScriptException {
 		StringBuilder shObjectJS = this.shObjectJSFactory();
 
 		Document doc = Jsoup.parse(regionResult);
@@ -254,8 +279,8 @@ public class ShSitesContextComponent {
 
 				Object regionResultChild = engine.eval(javascript, bindings);
 
-				element.html(
-						this.shRegionFactory(engine, bindings, javascriptVar, regionResultChild.toString(), shSite).html());
+				element.html(this.shRegionFactory(engine, bindings, javascriptVar, regionResultChild.toString(), shSite)
+						.html());
 			}
 		}
 
