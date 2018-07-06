@@ -1,9 +1,10 @@
-## 0.3.1
+## 0.3.1 (July 06, 2018)
 
 #### NEW FEATURES
 * Site Template: Create a new site using template
 * Clone Site: Clone a site with diferent Ids.
 * In-Context Editing: New toolbar in Preview Site, that allows edit the content directly.
+* Default Folder Page Layout: Create a empty Folder using default Page Layout.
 
 #### IMPROVEMENTS
 * Spring Boot 2.0.3 and Gradle 4.8.1
