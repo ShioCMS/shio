@@ -89,6 +89,16 @@ public class ShWidgetOnStartup {
 			shWidget.setType("TEXT,TEXTAREA");
 
 			shWidgetRepository.save(shWidget);
+			
+			shWidget = new ShWidget();
+			shWidget.setName(ShSystemWidget.COMBO_BOX);
+			shWidget.setDescription("Combo Box Widget");
+			shWidget.setClassName("com.viglet.shiohara.widget.ShComboBoxWidget");
+			shWidget.setImplementationCode("template/widget/combo-box/combo-box.html");
+			shWidget.setSettingPath("template/widget/combo-box/setting/combo-box-setting.html");
+			shWidget.setType("TEXT,TEXTAREA");
+
+			shWidgetRepository.save(shWidget);
 		}
 
 	}
