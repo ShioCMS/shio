@@ -72,6 +72,8 @@ public class ShPostTypeAttr implements Serializable {
 	@JoinColumn(name = "widget_id")
 	private ShWidget shWidget;
 
+	private String widgetSettings;
+	
 	// bi-directional many-to-one association to ShPostTypeAttr
 	@ManyToOne
 	@JoinColumn(name = "parent_relator_id")
@@ -213,6 +215,14 @@ public class ShPostTypeAttr implements Serializable {
 
 	public void setShParentPostTypeAttr(ShPostTypeAttr shParentPostTypeAttr) {
 		this.shParentPostTypeAttr = shParentPostTypeAttr;
+	}
+
+	public String getWidgetSettings() {
+		return widgetSettings;
+	}
+
+	public void setWidgetSettings(String widgetSettings) {
+		this.widgetSettings = widgetSettings;
 	}
 
 }

@@ -5,7 +5,7 @@
 				<b>List Size Attribute</b>
 			</p>
 		</td>
-		<td><input type="text" class="form-control"></td>
+		<td><input type="text" class="form-control" ng-model="shPostTypeAttr.widgetSettingsObject.listSize"></td>
 	</tr>
 	<tr>
 		<td style="background: #F9F9F9; width: 20%;">
@@ -18,16 +18,16 @@
 				red: Red<br> blue: Blue
 			</samp>
 		</td>
-		<td><textarea class="form-control" rows="8"></textarea>
+		<td><textarea class="form-control" rows="8" ng-model="shPostTypeAttr.widgetSettingsObject.choices"></textarea>
 	</tr>
 	<tr>
 		<td style="background: #F9F9F9; width: 20%;">
 			<p>
-				<b>Default Value</b>
+				<b>Default Values</b>
 			</p>
 			<p>Enter each default value in a new line</p>
 		</td>
-		<td><textarea class="form-control" rows="8"></textarea>
+		<td><textarea class="form-control" rows="8" ng-model="shPostTypeAttr.widgetSettingsObject.defaultValues"></textarea>
 	</tr>
 	<tr>
 		<td style="background: #F9F9F9; width: 20%;">
@@ -36,7 +36,7 @@
 			</p>
 
 		</td>
-		<td><input type="checkbox" ng-true-value="1" ng-false-value="0"></td>
+		<td><input type="checkbox" ng-true-value="1" ng-false-value="0" ng-model="shPostTypeAttr.widgetSettingsObject.allowNull"></td>
 	</tr>
 	<tr>
 		<td style="background: #F9F9F9; width: 20%;">
@@ -45,7 +45,7 @@
 			</p>
 
 		</td>
-		<td><input type="checkbox" ng-true-value="1" ng-false-value="0"></td>
+		<td><input type="checkbox" ng-true-value="1" ng-false-value="0"  ng-model="shPostTypeAttr.widgetSettingsObject.multipleValues"></td>
 	</tr>
 	<tr>
 		<td style="background: #F9F9F9; width: 20%;">
@@ -54,7 +54,7 @@
 			</p>
 
 		</td>
-		<td><input type="checkbox" ng-true-value="1" ng-false-value="0"></td>
+		<td><input type="checkbox" ng-true-value="1" ng-false-value="0"  ng-model="shPostTypeAttr.widgetSettingsObject.enhancedField"></td>
 	</tr>
 	<tr>
 		<td style="background: #F9F9F9; width: 20%;">
@@ -63,7 +63,7 @@
 			</p>
 			<p>Specify how values will be returned</p>
 		</td>
-		<td><select class="form-control">
+		<td><select class="form-control"  ng-model="shPostTypeAttr.widgetSettingsObject.dataFormat">
 				<option>Value</option>
 				<option>Label</option>
 				<option>Both (Array)</option>
@@ -80,19 +80,19 @@
 				<div class="col-xs-4">
 					<div class="input-group">
 						<span class="input-group-addon">width</span> <input type="text"
-							class="form-control">
+							class="form-control"  ng-model="shPostTypeAttr.widgetSettingsObject.width">
 					</div>
 				</div>
 				<div class="col-xs-4">
 					<div class="input-group">
 						<span class="input-group-addon">class</span> <input type="text"
-							class="form-control">
+							class="form-control"  ng-model="shPostTypeAttr.widgetSettingsObject.class">
 					</div>
 				</div>
 				<div class="col-xs-4">
 					<div class="input-group">
 						<span class="input-group-addon">id</span> <input type="text"
-							class="form-control">
+							class="form-control"  ng-model="shPostTypeAttr.widgetSettingsObject.id">
 					</div>
 				</div>
 			</div>

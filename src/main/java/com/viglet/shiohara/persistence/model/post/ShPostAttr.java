@@ -93,7 +93,7 @@ public class ShPostAttr implements Serializable {
 	@ManyToOne // (cascade = {CascadeType.ALL})
 	@JoinColumn(name = "post_attr_id")
 	private ShRelatorItem shParentRelatorItem;
-
+	
 	public Set<ShObject> getReferenceObjects() {
 		return referenceObjects;
 	}

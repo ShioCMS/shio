@@ -26,16 +26,18 @@ shioharaApp
 						            handle: ' .handle'
 						            // items: ' .panel:not(.panel-heading)'
 						            // axis: 'y'
-						        }
-						    
-							$scope.shPostType = shPostTypeResource
+						        }						   
+								shPostTypeResource
 									.get(
 											{
 												id : $scope.postTypeId
 											},
 											function(response) {
-												$scope.shPostNewItem = angular
-														.copy($scope.shPostType);												
+											//	$scope.shPostNewItem = angular.copy($scope.shPostType);
+												$scope.shPostType = response;
+												angular.forEach($scope.shPostType.shPostTypeAttrs, function(value, key) {
+													  value.widgetSettingsObject = angular.fromJson(value.widgetSettings);
+													});
 											});
 
 							$scope.shPostTypeAttrModel = null;
@@ -60,7 +62,12 @@ shioharaApp
 
 							}
 							
-							$scope.postTypeSave = function() {
+							$scope.postTypeSave = function() {								
+								var log = [];
+								angular.forEach($scope.shPostType.shPostTypeAttrs, function(value, key) {
+									  value.widgetSettings = JSON.stringify(value.widgetSettingsObject);
+									});
+
 								$scope.shPostType.$update(function() {
 									Notification.warning('The ' + $scope.shPostType.name +' Site was updated.');							
 								});
