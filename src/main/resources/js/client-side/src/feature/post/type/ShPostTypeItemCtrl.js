@@ -56,7 +56,10 @@ shioharaApp
 
 							$scope.postTypeSaveAndClose = function() {
 								$scope.shPostType.$update(function() {
-									Notification.warning('The ' + $scope.shPostType.name +' Site was updated.');
+									angular.forEach($scope.shPostType.shPostTypeAttrs, function(value, key) {
+										  value.widgetSettingsObject = angular.fromJson(value.widgetSettings);
+										});
+									Notification.warning('The ' + $scope.shPostType.name +' Post Type was updated.');
 									$state.go('content.post-type-select');
 								});
 
@@ -69,7 +72,10 @@ shioharaApp
 									});
 
 								$scope.shPostType.$update(function() {
-									Notification.warning('The ' + $scope.shPostType.name +' Site was updated.');							
+									angular.forEach($scope.shPostType.shPostTypeAttrs, function(value, key) {
+										  value.widgetSettingsObject = angular.fromJson(value.widgetSettings);
+										});									
+									Notification.warning('The ' + $scope.shPostType.name +' Post Type was updated.');							
 								});
 
 							}
@@ -78,7 +84,7 @@ shioharaApp
 								.delete({
 									id : $scope.shPostType.id
 								},function() {
-									Notification.error('The ' + $scope.shPostType.name +' Site was deleted.');
+									Notification.error('The ' + $scope.shPostType.name +' Post Type was deleted.');
 									$state.go('content.post-type-select');
 								});
 							}
