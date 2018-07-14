@@ -2,8 +2,11 @@ package com.viglet.shiohara.sites;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
@@ -17,14 +20,21 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.HandlerMapping;
 
+import com.viglet.shiohara.api.post.ShPostAPI;
 import com.viglet.shiohara.cache.ShCacheManager;
 import com.viglet.shiohara.cache.ShCachedObject;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
+import com.viglet.shiohara.persistence.model.post.type.ShPostType;
+import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.model.site.ShSite;
+import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
+import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
+import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
+import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
 import com.viglet.shiohara.post.type.ShSystemPostType;
 import com.viglet.shiohara.post.type.ShSystemPostTypeAttr;
@@ -35,7 +45,15 @@ import com.viglet.shiohara.utils.ShSiteUtils;
 @Controller
 public class ShSitesContext {
 	@Autowired
+	private ShPostTypeRepository shPostTypeRepository;
+	@Autowired
+	private ShPostTypeAttrRepository shPostTypeAttrRepository;
+	@Autowired
 	private ShPostRepository shPostRepository;
+	@Autowired
+	private ShPostAttrRepository shPostAttrRepository;
+	@Autowired
+	private ShFolderRepository shFolderRepository;
 	@Autowired
 	private ShSiteRepository shSiteRepository;
 	@Autowired
@@ -46,10 +64,45 @@ public class ShSitesContext {
 	private ShSiteUtils shSiteUtils;
 	@Autowired
 	private ShSitesContextComponent shSitesContextComponent;
+	@Autowired
+	private ShPostAPI shPostAPI; 
+	
 
 	@RequestMapping("/sites/**")
 	private void sitesFullGeneric(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ScriptException {
+
+		///
+		ShSite shSite = shSiteRepository.findByName("Viglet");
+		//System.out.println(shSite.getName());
+		ShFolder shFolder = shFolderRepository.findById("b19d78e0-8f78-4396-b212-d1fd7b29c2c2").get();
+		//System.out.println(shFolder.getName());
+		String shPostTypeName = request.getParameter("__sh-post-type");
+		//System.out.println(shPostTypeName);
+		String textValue = request.getParameter("text");
+		//System.out.println(textValue);
+		ShPostType shPostType = shPostTypeRepository.findByName(shPostTypeName);
+		//System.out.println(shPostType.getName());
+		ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType, "TITLE");
+		//System.out.println(shPostTypeAttr.getName());
+		ShPost shPost = new ShPost();
+		shPost.setDate(new Date());
+		shPost.setOwner("anonymous");
+		shPost.setShFolder(shFolder);
+
+		shPost.setShPostType(shPostType);
+
+		ShPostAttr shPostAttr = new ShPostAttr();
+		shPostAttr.setShPost(shPost);
+		shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+		shPostAttr.setStrValue(textValue);
+		Set<ShPostAttr> shPostAttrs = new HashSet<ShPostAttr>();
+		shPostAttrs.add(shPostAttr);
+		shPost.setShPostAttrs(shPostAttrs);
+		
+		shPostAPI.postSave(shPost);
+		
+		///
 		String shXSiteName = request.getHeader("x-sh-site");
 		boolean shXNoCache = request.getHeader("x-sh-nocache") != null && request.getHeader("x-sh-nocache").equals("1")
 				? true

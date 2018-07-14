@@ -162,7 +162,7 @@ public class ShPostAPI {
 		return true;
 	}
 
-	private void postSave(ShPost shPost) {
+	public void postSave(ShPost shPost) {
 		String title = shPost.getTitle();
 		String summary = shPost.getSummary();
 		// Get PostAttrs before save, because JPA Lazy
