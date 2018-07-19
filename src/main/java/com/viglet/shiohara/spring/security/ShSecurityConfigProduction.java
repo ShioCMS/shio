@@ -39,6 +39,7 @@ public class ShSecurityConfigProduction extends WebSecurityConfigurerAdapter {
 				.permitAll().anyRequest().authenticated().and()
 				.addFilterAfter(new ShCsrfHeaderFilter(), CsrfFilter.class).csrf()
 				.csrfTokenRepository(csrfTokenRepository()).and().logout();
+		http.csrf().disable();
 
 	}
 
