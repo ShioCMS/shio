@@ -1,6 +1,7 @@
 ## 0.3.2
 
 #### NEW FEATURES
+* Site Form: Create Forms into Site and save as Posts into Shiohara CMS
 * Combo Box Field Type
 
 ## 0.3.1 (July 06, 2018)

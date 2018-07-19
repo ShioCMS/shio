@@ -4,6 +4,8 @@ var shQueryComponent = spring.getBean('shQueryComponent', Java
 		.type('com.viglet.shiohara.component.ShQueryComponent'));
 var shSearchComponent = spring.getBean('shSearchComponent', Java
 		.type('com.viglet.shiohara.component.ShSearchComponent'));
+var shFormComponent = spring.getBean('shFormComponent', Java
+		.type('com.viglet.shiohara.component.ShFormComponent'));
 var shFolderUtils = spring.getBean('shFolderUtils', Java
 		.type('com.viglet.shiohara.utils.ShFolderUtils'));
 var shObjectUtils = spring.getBean('shObjectUtils', Java
@@ -21,7 +23,13 @@ viglet.shiohara = viglet.shiohara || {};
  * @extends viglet.shiohara
  */
 viglet.shiohara.shObject = function() {
-
+	/**
+	 * @desc Returns Form from PostType
+	 * @public
+	 */
+	this.formComponent = function(shPostTypeName) {
+		return shFormComponent.byPostType(shPostTypeName, request);
+	},
 	/**
 	 * @desc Returns Search Result
 	 * @public

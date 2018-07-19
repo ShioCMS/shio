@@ -3,6 +3,7 @@ package com.viglet.shiohara.sites;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.HandlerMapping;
 
@@ -31,7 +33,6 @@ import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
-import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
@@ -51,8 +52,6 @@ public class ShSitesContext {
 	@Autowired
 	private ShPostRepository shPostRepository;
 	@Autowired
-	private ShPostAttrRepository shPostAttrRepository;
-	@Autowired
 	private ShFolderRepository shFolderRepository;
 	@Autowired
 	private ShSiteRepository shSiteRepository;
@@ -65,44 +64,60 @@ public class ShSitesContext {
 	@Autowired
 	private ShSitesContextComponent shSitesContextComponent;
 	@Autowired
-	private ShPostAPI shPostAPI; 
-	
+	private ShPostAPI shPostAPI;
 
+	@PostMapping("/sites/**") 
+	private void sitesPostForm(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ScriptException {
+	
+		ShSite shSite = shSiteRepository.findByName("Viglet");
+		// System.out.println(shSite.getName());
+		ShFolder shFolder = shFolderRepository.findById("b19d78e0-8f78-4396-b212-d1fd7b29c2c2").get();
+		// System.out.println(shFolder.getName());
+		String shPostTypeName = request.getParameter("__sh-post-type");
+		// System.out.println(shPostTypeName);
+		
+		// System.out.println(textValue);
+		ShPostType shPostType = shPostTypeRepository.findByName(shPostTypeName);
+		// System.out.println(shPostType.getName());
+		Enumeration<String> parameters = request.getParameterNames();
+		if (shPostTypeName != null) {
+			ShPost shPost = new ShPost();
+			shPost.setDate(new Date());
+			shPost.setOwner("anonymous");
+			shPost.setShFolder(shFolder);
+
+			shPost.setShPostType(shPostType);
+			Set<ShPostAttr> shPostAttrs = new HashSet<ShPostAttr>();
+			while (parameters.hasMoreElements()) {
+				String param = parameters.nextElement();
+				String paramValue = request.getParameter(param);
+				
+				if (param.startsWith("__sh-post-type-attr-")) {
+					String attribute = param.replaceFirst("__sh-post-type-attr-", "");
+
+					ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType,
+							attribute);
+					// System.out.println(shPostTypeAttr.getName());
+
+					ShPostAttr shPostAttr = new ShPostAttr();
+					shPostAttr.setShPost(shPost);
+					shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+					shPostAttr.setStrValue(paramValue);
+
+					shPostAttrs.add(shPostAttr);
+				}
+
+			}
+			shPost.setShPostAttrs(shPostAttrs);
+			shPostAPI.postSave(shPost);
+		}	
+		this.sitesFullGeneric(request, response);
+	}
 	@RequestMapping("/sites/**")
 	private void sitesFullGeneric(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ScriptException {
 
-		///
-		ShSite shSite = shSiteRepository.findByName("Viglet");
-		//System.out.println(shSite.getName());
-		ShFolder shFolder = shFolderRepository.findById("b19d78e0-8f78-4396-b212-d1fd7b29c2c2").get();
-		//System.out.println(shFolder.getName());
-		String shPostTypeName = request.getParameter("__sh-post-type");
-		//System.out.println(shPostTypeName);
-		String textValue = request.getParameter("text");
-		//System.out.println(textValue);
-		ShPostType shPostType = shPostTypeRepository.findByName(shPostTypeName);
-		//System.out.println(shPostType.getName());
-		ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType, "TITLE");
-		//System.out.println(shPostTypeAttr.getName());
-		ShPost shPost = new ShPost();
-		shPost.setDate(new Date());
-		shPost.setOwner("anonymous");
-		shPost.setShFolder(shFolder);
-
-		shPost.setShPostType(shPostType);
-
-		ShPostAttr shPostAttr = new ShPostAttr();
-		shPostAttr.setShPost(shPost);
-		shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-		shPostAttr.setStrValue(textValue);
-		Set<ShPostAttr> shPostAttrs = new HashSet<ShPostAttr>();
-		shPostAttrs.add(shPostAttr);
-		shPost.setShPostAttrs(shPostAttrs);
-		
-		shPostAPI.postSave(shPost);
-		
-		///
 		String shXSiteName = request.getHeader("x-sh-site");
 		boolean shXNoCache = request.getHeader("x-sh-nocache") != null && request.getHeader("x-sh-nocache").equals("1")
 				? true
