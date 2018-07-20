@@ -66,17 +66,17 @@ public class ShSitesContext {
 	@Autowired
 	private ShPostAPI shPostAPI;
 
-	@PostMapping("/sites/**") 
+	@PostMapping("/sites/**")
 	private void sitesPostForm(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ScriptException {
-	
+
 		ShSite shSite = shSiteRepository.findByName("Viglet");
 		// System.out.println(shSite.getName());
 		ShFolder shFolder = shFolderRepository.findById("b19d78e0-8f78-4396-b212-d1fd7b29c2c2").get();
 		// System.out.println(shFolder.getName());
 		String shPostTypeName = request.getParameter("__sh-post-type");
 		// System.out.println(shPostTypeName);
-		
+
 		// System.out.println(textValue);
 		ShPostType shPostType = shPostTypeRepository.findByName(shPostTypeName);
 		// System.out.println(shPostType.getName());
@@ -92,7 +92,7 @@ public class ShSitesContext {
 			while (parameters.hasMoreElements()) {
 				String param = parameters.nextElement();
 				String paramValue = request.getParameter(param);
-				
+
 				if (param.startsWith("__sh-post-type-attr-")) {
 					String attribute = param.replaceFirst("__sh-post-type-attr-", "");
 
@@ -111,9 +111,10 @@ public class ShSitesContext {
 			}
 			shPost.setShPostAttrs(shPostAttrs);
 			shPostAPI.postSave(shPost);
-		}	
+		}
 		this.sitesFullGeneric(request, response);
 	}
+
 	@RequestMapping("/sites/**")
 	private void sitesFullGeneric(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ScriptException {
