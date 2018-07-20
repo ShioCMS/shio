@@ -1,14 +1,12 @@
 package com.viglet.shiohara.component;
 
 import javax.annotation.Resource;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Component;
-import org.springframework.web.util.WebUtils;
 
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
@@ -34,7 +32,7 @@ public class ShFormComponent {
 		if (csrf != null) {
 			String token = csrf.getToken();
 			if (token != null) {
-				sb.append("<input type=\"hidden\" name=\"XSRF-TOKEN\" value=\"" + token + "\" />");
+				sb.append("<input type=\"hidden\" name=\"_csrf\" value=\"" + token + "\" />");
 			}
 		}
 		sb.append("<input type=\"hidden\" name=\"__sh-post-type\" value=\"" + shPostType.getName() + "\" />");
