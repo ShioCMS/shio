@@ -89,6 +89,7 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-parent', version:"${springBootVersion}"
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version:"${springBootVersion}"
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-activemq', version:"${springBootVersion}"   
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf', version:"${springBootVersion}"  
   
   	// Spring
   	compile group: 'org.springframework', name: 'spring-test', version: '5.0.6.RELEASE'
