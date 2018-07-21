@@ -252,20 +252,24 @@ public class ShSitesContextComponent {
 		Elements elements = doc.getElementsByAttribute("sh-region");
 
 		for (Element element : elements) {
-
+			element.addClass("sh-region");
+			
 			String regionAttr = element.attr("sh-region");
 
 			List<ShPost> shRegionPosts = shPostRepository.findByTitle(regionAttr);
-
+			
 			Map<String, ShPostAttr> shRegionPostMap = null;
 
 			if (shRegionPosts != null) {
+				
 				for (ShPost shRegionPost : shRegionPosts) {
+					element.attr("id",shRegionPost.getId());
 					if (shPostUtils.getSite(shRegionPost).getId().equals(shSite.getId())) {
 						shRegionPostMap = shPostUtils.postToMap(shRegionPost);
 
 					}
 				}
+				
 			}
 
 			if (shRegionPostMap != null) {
