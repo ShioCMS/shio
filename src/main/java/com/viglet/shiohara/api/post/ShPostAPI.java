@@ -31,6 +31,7 @@ import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.reference.ShReferenceRepository;
 import com.viglet.shiohara.persistence.repository.user.ShUserRepository;
 import com.viglet.shiohara.post.type.ShSystemPostType;
+import com.viglet.shiohara.turing.ShTuringIntegration;
 import com.viglet.shiohara.url.ShURLFormatter;
 import com.viglet.shiohara.utils.ShPostUtils;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
@@ -58,6 +59,10 @@ public class ShPostAPI {
 	private ShURLFormatter shURLFormatter;
 	@Autowired
 	private ShPostUtils shPostUtils;
+	@Autowired
+	private ShTuringIntegration shTuringIntegration;
+
+	private boolean turingEnabled = false;
 
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
@@ -96,6 +101,10 @@ public class ShPostAPI {
 		if (principal != null) {
 			shHistory.setOwner(principal.getName());
 		}
+
+		if (turingEnabled) {
+			shTuringIntegration.preparePost(shPost);
+		}
 		shHistory.setShObject(shPost.getId());
 		shHistory.setShSite(shPostUtils.getSite(shPost).getId());
 		shHistoryRepository.saveAndFlush(shHistory);
@@ -110,6 +119,9 @@ public class ShPostAPI {
 
 		this.postSave(shPost);
 
+		if (turingEnabled) {
+			shTuringIntegration.preparePost(shPost);
+		}
 		// History
 		ShHistory shHistory = new ShHistory();
 		shHistory.setDate(new Date());
