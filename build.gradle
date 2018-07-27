@@ -37,7 +37,6 @@ repositories {
 	maven { url "https://repo.spring.io/milestone" }
 }
 
-
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -80,6 +79,7 @@ javadoc {
     classpath = configurations.compile
     destinationDir = file("store/doc/javadoc")
 }
+
 dependencies {
     
     // Spring Boot
@@ -178,5 +178,7 @@ bootRun {
         args project.args.split(',')
     }
 }
+
 check.dependsOn jacocoTestReport   
+
 }

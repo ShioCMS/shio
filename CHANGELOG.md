@@ -1,6 +1,7 @@
 ## 0.3.2
 
 #### NEW FEATURES
+* Viglet Turing Integration: Indexing Posts in Semantic Navigation
 * InContext Editing using Float Menu to Regions
 * Site Form: Create Forms into Site and save as Posts into Shiohara CMS
 * Combo Box Field Type
