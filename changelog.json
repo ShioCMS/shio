@@ -1,0 +1,16 @@
+[{
+    "name": ""
+    , "notes": ["[New] Site Template: Create a new site using template", "[New] Clone Site: Clone a site with different Ids.", "[New] In-Context Editing: New toolbar in Preview Site, that allows edit the content directly.", "[New] Default Folder Page Layout: Create a empty Folder using default Page Layout.", "[Improved] Spring Boot 2.0.3 and Gradle 4.8.1"]
+    , "pub_date": "2018-07-06T12:00:00Z"
+    , "version": "0.3.1"
+}, {
+    "name": ""
+    , "notes": ["[New] Relator: Create fields as children of parent field.","[New] Sort: Drag and Drop Folders and Posts to reorder into /content, this change will reflect Navigation and Query Component order.","[Improved]New Post Type Editor: Edit Fields of Post Types in same window without pop up. Using accordion component encapsulate entire fields details" ]
+    , "pub_date": "2018-06-23T12:00:00Z"
+    , "version": "0.3.0"
+}, {
+    "name": ""
+    , "notes": ["[New] Search: You can search for objects into /content","[New] Content Select Widget: Create a Post Type field that allows elect some post", "[New] File Widget: Create a Post Type field that allows select some File.","[Improved] Unit Test","[Improved] Using H2 instead of HSQL","[Improved] Removed GlobalId because Posts, Folders and Sites Ids are unique"]
+    , "pub_date": "2018-05-04T12:00:00"
+    , "version": "0.2.0"
+}]
