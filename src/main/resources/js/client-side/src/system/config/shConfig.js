@@ -78,7 +78,7 @@ shioharaApp.config([
 				}
 			}).state('content.ecommerce.payment', {
 				url : '/payment',
-				templateUrl : 'template/ecommerce/ecommerce-payment.html',
+				templateUrl : 'template/ecommerce/payment/ecommerce-payment.html',
 				controller :'ShECommercePaymentCtrl',				
 				data : {
 					pageTitle : 'E-Commerce Payment Types | Viglet Shiohara'
