@@ -5,6 +5,7 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+import com.viglet.shiohara.onstartup.ecommerce.ShEcomPaymentTypeOnStartup;
 import com.viglet.shiohara.onstartup.post.type.ShPostTypeOnStartup;
 import com.viglet.shiohara.onstartup.site.ShSiteOnStartup;
 import com.viglet.shiohara.onstartup.system.ShConfigVarOnStartup;
@@ -30,6 +31,8 @@ public class ShOnStartup implements ApplicationRunner {
 	private ShSiteOnStartup shSiteOnStartup;
 	@Autowired
 	private ShUserOnStartup shUserOnStartup;
+	@Autowired
+	private ShEcomPaymentTypeOnStartup shEcomPaymentTypeOnStartup;
 	
 	@Override
 	public void run(ApplicationArguments arg0) throws Exception {
@@ -45,6 +48,7 @@ public class ShOnStartup implements ApplicationRunner {
 			shUserOnStartup.createDefaultRows();			
 			shConfigVarOnStartup.createDefaultRows();
 			shSiteOnStartup.createDefaultRows();
+			shEcomPaymentTypeOnStartup.createDefaultRows();
 			
 			System.out.println("Configuration finished.");
 		}

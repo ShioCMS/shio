@@ -1,0 +1,18 @@
+<div style="margin-bottom: 25px;">
+	<ul class="breadcrumb" style="margin-top: 5px; margin-bottom: 5px;">
+		<li><a ui-sref="content.ecommerce" ui-sref-opts="{reload:true}">E-Commerce</a></li>
+		<li>Payment Types</li>
+	</ul>
+</div>
+<h1>Payment Types</h1>
+
+<uib-accordion close-others="oneAtATime">
+<div ng-repeat="shEcomPaymentType in shEcomPaymentTypes"
+	uib-accordion-group class="panel-default"
+	heading="{{shEcomPaymentType.name}}"
+	template-url="template/ecommerce/payment/setting/payment-type-accordion.html">
+	<div ng-include="'template/ecommerce/payment/setting/payment-type-default-setting.html'"></div>
+	<div ng-include="shEcomPaymentType.settingPath"></div>
+	</div>
+
+</uib-accordion>
