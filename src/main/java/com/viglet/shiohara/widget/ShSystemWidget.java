@@ -10,4 +10,5 @@ public class ShSystemWidget {
 	public static final String COMBO_BOX = "Combo Box";
 	public static final String CONTENT_SELECT = "Content Select";
 	public static final String RELATOR = "Relator";
+	public static final String RECAPTCHA = "reCAPTCHA";
 }
