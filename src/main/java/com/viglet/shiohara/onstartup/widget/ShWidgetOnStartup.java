@@ -99,6 +99,16 @@ public class ShWidgetOnStartup {
 			shWidget.setType("TEXT,TEXTAREA");
 
 			shWidgetRepository.save(shWidget);
+			
+			shWidget = new ShWidget();
+			shWidget.setName(ShSystemWidget.RECAPTCHA);
+			shWidget.setDescription("reCAPTCHA Widget");
+			shWidget.setClassName("com.viglet.shiohara.widget.ShReCaptchaWidget");
+			shWidget.setImplementationCode("template/widget/recaptcha/recaptcha.html");
+			shWidget.setSettingPath("template/widget/recaptcha/setting/recaptcha-setting.html");
+			shWidget.setType("TEXT,TEXTAREA");
+
+			shWidgetRepository.save(shWidget);
 		}
 
 	}
