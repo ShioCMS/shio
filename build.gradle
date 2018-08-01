@@ -37,7 +37,6 @@ repositories {
 	maven { url "https://repo.spring.io/milestone" }
 }
 
-
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -80,6 +79,7 @@ javadoc {
     classpath = configurations.compile
     destinationDir = file("store/doc/javadoc")
 }
+
 dependencies {
     
     // Spring Boot
@@ -89,6 +89,7 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-parent', version:"${springBootVersion}"
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version:"${springBootVersion}"
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-activemq', version:"${springBootVersion}"   
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf', version:"${springBootVersion}"  
   
   	// Spring
   	compile group: 'org.springframework', name: 'spring-test', version: '5.0.6.RELEASE'
@@ -177,5 +178,7 @@ bootRun {
         args project.args.split(',')
     }
 }
+
 check.dependsOn jacocoTestReport   
+
 }

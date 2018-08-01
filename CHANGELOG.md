@@ -1,8 +1,17 @@
+## 0.3.2
+
+#### NEW FEATURES
+* E-Commerce: Payment Types and Settings
+* Viglet Turing Integration: Indexing Posts in Semantic Navigation
+* InContext Editing using Float Menu to Regions
+* Site Form: Create Forms into Site and save as Posts into Shiohara CMS
+* Combo Box Field Type
+
 ## 0.3.1 (July 06, 2018)
 
 #### NEW FEATURES
 * Site Template: Create a new site using template
-* Clone Site: Clone a site with diferent Ids.
+* Clone Site: Clone a site with different Ids.
 * In-Context Editing: New toolbar in Preview Site, that allows edit the content directly.
 * Default Folder Page Layout: Create a empty Folder using default Page Layout.
 
