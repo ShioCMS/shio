@@ -231,10 +231,12 @@ public class ShSitesContext {
 		String objectName = shSitesContextComponent.objectNameFactory(contentPath);
 
 		String folderPath = shSitesContextComponent.folderPathFactory(contentPath);
-
-		File staticFile = new File(shStaticFileUtils.getFileSource().getAbsolutePath() + File.separator
-				+ shSite.getName() + File.separator + "Home" + folderPath + objectName);
-		if (staticFile.exists()) {
+		File staticFile = null;
+		if (shSite != null && folderPath != null && objectName != null) {
+			staticFile = new File(shStaticFileUtils.getFileSource().getAbsolutePath() + File.separator
+					+ shSite.getName() + File.separator + "Home" + folderPath + objectName);
+		}
+		if (staticFile != null && staticFile.exists()) {
 			byte[] binaryFile = FileUtils.readFileToByteArray(staticFile);
 			MimetypesFileTypeMap mimetypesFileTypeMap = new MimetypesFileTypeMap();
 			response.setContentType(mimetypesFileTypeMap.getContentType(staticFile));
