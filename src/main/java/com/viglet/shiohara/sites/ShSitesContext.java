@@ -139,10 +139,15 @@ public class ShSitesContext {
 							.replaceAll("^/sites/", "/");
 			ShCachedObject shCacheObject = (ShCachedObject) ShCacheManager.getCache(contextURL);
 			if (shCacheObject != null) {
-				// End Page Layout
-				// System.out.println("Is cached " + contextURL);
-				response.setContentType(MediaType.TEXT_HTML_VALUE);
-				response.getWriter().write(((String) shCacheObject.object).toString());
+				String extension = FilenameUtils.getExtension(contextURL);
+
+				if (extension.isEmpty() || extension == null) {
+					response.setContentType(MediaType.TEXT_HTML_VALUE);
+				} else {
+					MimetypesFileTypeMap mimetypesFileTypeMap = new MimetypesFileTypeMap();
+					response.setContentType(mimetypesFileTypeMap.getContentType(contextURL));
+				}
+				response.getOutputStream().write((byte[]) shCacheObject.object);				
 			} else {
 				// System.out.println("Is not cached " + contextURL);
 				byte[] html = this.siteContext(shXSiteName, "default", "en-us", 2, request, response);
