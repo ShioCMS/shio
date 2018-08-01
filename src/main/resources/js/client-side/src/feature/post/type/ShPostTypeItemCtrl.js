@@ -26,16 +26,18 @@ shioharaApp
 						            handle: ' .handle'
 						            // items: ' .panel:not(.panel-heading)'
 						            // axis: 'y'
-						        }
-						    
-							$scope.shPostType = shPostTypeResource
+						        }						   
+								shPostTypeResource
 									.get(
 											{
 												id : $scope.postTypeId
 											},
 											function(response) {
-												$scope.shPostNewItem = angular
-														.copy($scope.shPostType);												
+											//	$scope.shPostNewItem = angular.copy($scope.shPostType);
+												$scope.shPostType = response;
+												angular.forEach($scope.shPostType.shPostTypeAttrs, function(value, key) {
+													  value.widgetSettingsObject = angular.fromJson(value.widgetSettings);
+													});
 											});
 
 							$scope.shPostTypeAttrModel = null;
@@ -54,15 +56,26 @@ shioharaApp
 
 							$scope.postTypeSaveAndClose = function() {
 								$scope.shPostType.$update(function() {
-									Notification.warning('The ' + $scope.shPostType.name +' Site was updated.');
+									angular.forEach($scope.shPostType.shPostTypeAttrs, function(value, key) {
+										  value.widgetSettingsObject = angular.fromJson(value.widgetSettings);
+										});
+									Notification.warning('The ' + $scope.shPostType.name +' Post Type was updated.');
 									$state.go('content.post-type-select');
 								});
 
 							}
 							
-							$scope.postTypeSave = function() {
+							$scope.postTypeSave = function() {								
+								var log = [];
+								angular.forEach($scope.shPostType.shPostTypeAttrs, function(value, key) {
+									  value.widgetSettings = JSON.stringify(value.widgetSettingsObject);
+									});
+
 								$scope.shPostType.$update(function() {
-									Notification.warning('The ' + $scope.shPostType.name +' Site was updated.');							
+									angular.forEach($scope.shPostType.shPostTypeAttrs, function(value, key) {
+										  value.widgetSettingsObject = angular.fromJson(value.widgetSettings);
+										});									
+									Notification.warning('The ' + $scope.shPostType.name +' Post Type was updated.');							
 								});
 
 							}
@@ -71,7 +84,7 @@ shioharaApp
 								.delete({
 									id : $scope.shPostType.id
 								},function() {
-									Notification.error('The ' + $scope.shPostType.name +' Site was deleted.');
+									Notification.error('The ' + $scope.shPostType.name +' Post Type was deleted.');
 									$state.go('content.post-type-select');
 								});
 							}

@@ -89,6 +89,26 @@ public class ShWidgetOnStartup {
 			shWidget.setType("TEXT,TEXTAREA");
 
 			shWidgetRepository.save(shWidget);
+			
+			shWidget = new ShWidget();
+			shWidget.setName(ShSystemWidget.COMBO_BOX);
+			shWidget.setDescription("Combo Box Widget");
+			shWidget.setClassName("com.viglet.shiohara.widget.ShComboBoxWidget");
+			shWidget.setImplementationCode("template/widget/combo-box/combo-box.html");
+			shWidget.setSettingPath("template/widget/combo-box/setting/combo-box-setting.html");
+			shWidget.setType("TEXT,TEXTAREA");
+
+			shWidgetRepository.save(shWidget);
+			
+			shWidget = new ShWidget();
+			shWidget.setName(ShSystemWidget.RECAPTCHA);
+			shWidget.setDescription("reCAPTCHA Widget");
+			shWidget.setClassName("com.viglet.shiohara.widget.ShReCaptchaWidget");
+			shWidget.setImplementationCode("template/widget/recaptcha/recaptcha.html");
+			shWidget.setSettingPath("template/widget/recaptcha/setting/recaptcha-setting.html");
+			shWidget.setType("TEXT,TEXTAREA");
+
+			shWidgetRepository.save(shWidget);
 		}
 
 	}

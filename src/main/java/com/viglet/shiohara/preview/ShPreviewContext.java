@@ -2,10 +2,12 @@ package com.viglet.shiohara.preview;
 
 import java.io.IOException;
 
+import javax.activation.MimetypesFileTypeMap;
 import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.MediaType;
@@ -21,6 +23,7 @@ import com.viglet.shiohara.sites.ShSitesContext;
 public class ShPreviewContext {
 	@Autowired
 	private ShSitesContext shSitesContext;
+
 	@RequestMapping("/preview1/**")
 	private void sitesFullGeneric(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ScriptException {
@@ -37,13 +40,17 @@ public class ShPreviewContext {
 							.replaceAll("^/sites/", "/");
 			ShCachedObject shCacheObject = (ShCachedObject) ShCacheManager.getCache(contextURL);
 			if (shCacheObject != null) {
-				// End Page Layout
-				// System.out.println("Is cached " + contextURL);
-				response.setContentType(MediaType.TEXT_HTML_VALUE);
-				response.getWriter().write(((String) shCacheObject.object).toString());
+				String extension = FilenameUtils.getExtension(contextURL);
+				if (extension.isEmpty() || extension == null) {
+					response.setContentType(MediaType.TEXT_HTML_VALUE);
+				} else {
+					MimetypesFileTypeMap mimetypesFileTypeMap = new MimetypesFileTypeMap();
+					response.setContentType(mimetypesFileTypeMap.getContentType(contextURL));
+				}
+				response.getOutputStream().write((byte[]) shCacheObject.object);
 			} else {
 				// System.out.println("Is not cached " + contextURL);
-				String html = shSitesContext.siteContext(shXSiteName, "default", "en-us", 2, request, response);
+				byte[] html = shSitesContext.siteContext(shXSiteName, "default", "en-us", 2, request, response);
 				shCacheObject = new ShCachedObject(html, contextURL, cacheMinutes);
 				/* Place the object into the cache! */
 				ShCacheManager.putCache(shCacheObject);
@@ -82,7 +89,7 @@ public class ShPreviewContext {
 					// End Page Layout
 					// System.out.println("Is cached " + contextURL);
 					response.setContentType(MediaType.TEXT_HTML_VALUE);
-					response.getWriter().write(((String) shCacheObject.object).toString());
+					response.getWriter().write(((byte[]) shCacheObject.object).toString());
 				} else {
 
 					for (int i = 1; i < contexts.length; i++) {
@@ -102,7 +109,7 @@ public class ShPreviewContext {
 						}
 					}
 					// System.out.println("Is not cached " + contextURL);
-					String html = shSitesContext.siteContext(shSiteName, shFormat, shLocale, 5, request, response);
+					byte[] html = shSitesContext.siteContext(shSiteName, shFormat, shLocale, 5, request, response);
 					shCacheObject = new ShCachedObject(html, contextURL, cacheMinutes);
 					/* Place the object into the cache! */
 					ShCacheManager.putCache(shCacheObject);

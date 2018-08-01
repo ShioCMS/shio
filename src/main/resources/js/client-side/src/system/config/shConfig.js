@@ -69,6 +69,27 @@ shioharaApp.config([
 				data : {
 					pageTitle : 'Content | Viglet Shiohara'
 				}
+			}).state('content.ecommerce', {
+				url : '/ecommerce',
+				templateUrl : 'template/ecommerce/ecommerce.html',
+				controller :'ShECommerceCtrl',				
+				data : {
+					pageTitle : 'E-Commerce | Viglet Shiohara'
+				}
+			}).state('content.ecommerce.payment', {
+				url : '/payment',
+				templateUrl : 'template/ecommerce/payment/ecommerce-payment.html',
+				controller :'ShECommercePaymentCtrl',				
+				data : {
+					pageTitle : 'E-Commerce Payment Types | Viglet Shiohara'
+				}
+			}).state('content.ecommerce.setting', {
+				url : '/setting',
+				templateUrl : 'template/ecommerce/ecommerce-setting.html',
+				controller :'ShECommerceSettingCtrl',				
+				data : {
+					pageTitle : 'E-Commerce Settings | Viglet Shiohara'
+				}
 			}).state('content.commit', {
 				url : '/commit/:objectId',
 				templateUrl : 'template/commit/commit.html',
