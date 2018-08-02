@@ -125,6 +125,9 @@ public class ShSitesContextComponent {
 		if (objectName != null) {
 			ShFolder shParentFolder = shFolder;
 			shObjectItem = shPostRepository.findByShFolderAndFurl(shParentFolder, objectName);
+			if (shObjectItem == null) {
+				shObjectItem = shPostRepository.findByShFolderAndTitle(shParentFolder, objectName);
+			}
 		}
 
 		if (shObjectItem != null) {
@@ -136,7 +139,6 @@ public class ShSitesContextComponent {
 			}
 			ShFolder shFolderItem = shFolderUtils.folderFromPath(shSite, folderPathCurrent);
 			if (shFolderItem != null) {
-				// System.out.println("shFolderItem is not null");
 				ShPost shFolderIndex = shPostRepository.findByShFolderAndFurl(shFolderItem, "index");
 
 				if (shFolderIndex != null) {
@@ -253,23 +255,23 @@ public class ShSitesContextComponent {
 
 		for (Element element : elements) {
 			element.addClass("sh-region");
-			
+
 			String regionAttr = element.attr("sh-region");
 
 			List<ShPost> shRegionPosts = shPostRepository.findByTitle(regionAttr);
-			
+
 			Map<String, ShPostAttr> shRegionPostMap = null;
 
 			if (shRegionPosts != null) {
-				
+
 				for (ShPost shRegionPost : shRegionPosts) {
-					element.attr("id",shRegionPost.getId());
+					element.attr("id", shRegionPost.getId());
 					if (shPostUtils.getSite(shRegionPost).getId().equals(shSite.getId())) {
 						shRegionPostMap = shPostUtils.postToMap(shRegionPost);
 
 					}
 				}
-				
+
 			}
 
 			if (shRegionPostMap != null) {
