@@ -36,7 +36,6 @@ import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.model.site.ShSite;
-import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
@@ -57,8 +56,6 @@ public class ShSitesContext {
 	@Autowired
 	private ShPostRepository shPostRepository;
 	@Autowired
-	private ShFolderRepository shFolderRepository;
-	@Autowired
 	private ShSiteRepository shSiteRepository;
 	@Autowired
 	private ShFolderUtils shFolderUtils;
@@ -76,17 +73,55 @@ public class ShSitesContext {
 	@PostMapping("/sites/**")
 	private void sitesPostForm(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ScriptException {
+	
+		String shXSiteName = request.getHeader("x-sh-site");
+		if (shXSiteName != null) {
+			String shFormat = "default";
+			String shLocale = "en-us";
+			this.siteContextPost(shXSiteName, shFormat, shLocale, 2, request, response);
+		} else {
+			@SuppressWarnings("unused")
+			String shContext = null;
+			String contextURL = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
+			String shSiteName = null;
+			String shFormat = null;
+			String shLocale = null;
+			String[] contexts = contextURL.split("/");
+			for (int i = 1; i < contexts.length; i++) {
+				switch (i) {
+				case 1:
+					shContext = contexts[i];
+					break;
+				case 2:
+					shSiteName = contexts[i];
+					break;
+				case 3:
+					shFormat = contexts[i];
+					break;
+				case 4:
+					shLocale = contexts[i];
+					break;
+				}
+			}
+			this.siteContextPost(shSiteName, shFormat, shLocale, 5, request, response);
+		}
+	}
 
-		ShSite shSite = shSiteRepository.findByName("Viglet");
-		// System.out.println(shSite.getName());
-		ShFolder shFolder = shFolderRepository.findById("b19d78e0-8f78-4396-b212-d1fd7b29c2c2").get();
-		// System.out.println(shFolder.getName());
+	public byte[] siteContextPost(String shSiteName, String shFormat, String shLocale, int contextPathPosition,
+			HttpServletRequest request, HttpServletResponse response) throws IOException, ScriptException {
+		
+		ShSite shSite = shSiteRepository.findByFurl(shSiteName);
+		ArrayList<String> contentPath = shSitesContextComponent.contentPathFactory(contextPathPosition, request);
+
+		String objectName = shSitesContextComponent.objectNameFactory(contentPath); 
+		
+		String folderPath = shSitesContextComponent.folderPathFactory(contentPath);
+
+		ShFolder shFolder = shFolderUtils.folderFromPath(shSite, folderPath + objectName );
+		
 		String shPostTypeName = request.getParameter("__sh-post-type");
-		// System.out.println(shPostTypeName);
-
-		// System.out.println(textValue);
 		ShPostType shPostType = shPostTypeRepository.findByName(shPostTypeName);
-		// System.out.println(shPostType.getName());
+
 		Enumeration<String> parameters = request.getParameterNames();
 		if (shPostTypeName != null) {
 			ShPost shPost = new ShPost();
@@ -111,7 +146,7 @@ public class ShSitesContext {
 					shPostAttr.setShPost(shPost);
 					shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 					shPostAttr.setStrValue(paramValue);
-
+			
 					shPostAttrs.add(shPostAttr);
 				}
 
@@ -120,6 +155,8 @@ public class ShSitesContext {
 			shPostAPI.postSave(shPost);
 		}
 		this.sitesFullGeneric(request, response);
+
+		return null;
 	}
 
 	@RequestMapping("/sites/**")
@@ -147,7 +184,7 @@ public class ShSitesContext {
 					MimetypesFileTypeMap mimetypesFileTypeMap = new MimetypesFileTypeMap();
 					response.setContentType(mimetypesFileTypeMap.getContentType(contextURL));
 				}
-				response.getOutputStream().write((byte[]) shCacheObject.object);				
+				response.getOutputStream().write((byte[]) shCacheObject.object);
 			} else {
 				// System.out.println("Is not cached " + contextURL);
 				byte[] html = this.siteContext(shXSiteName, "default", "en-us", 2, request, response);

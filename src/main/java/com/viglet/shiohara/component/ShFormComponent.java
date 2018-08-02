@@ -1,11 +1,9 @@
 package com.viglet.shiohara.component;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -40,7 +38,16 @@ public class ShFormComponent {
 
 		List<String> fields = new ArrayList<String>();
 
-		for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs()) {
+		List<ShPostTypeAttr> postTypeAttrByOrdinal = new ArrayList<ShPostTypeAttr>(shPostType.getShPostTypeAttrs());
+
+		Collections.sort(postTypeAttrByOrdinal, new Comparator<ShPostTypeAttr>() {
+
+			public int compare(ShPostTypeAttr o1, ShPostTypeAttr o2) {
+				return o1.getOrdinal() - o2.getOrdinal();
+			}
+		});
+
+		for (ShPostTypeAttr shPostTypeAttr : postTypeAttrByOrdinal) {
 			String className = shPostTypeAttr.getShWidget().getClassName();
 			ShWidgetImplementation object = (ShWidgetImplementation) Class.forName(className).newInstance();
 			applicationContext.getAutowireCapableBeanFactory().autowireBean(object);
