@@ -26,7 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.HandlerMapping;
 
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.object.ShObject;
@@ -86,8 +85,7 @@ public class ShSitesContextComponent {
 		return folderPath;
 	}
 
-	public ArrayList<String> contentPathFactory(int contextPathPosition, HttpServletRequest request) {
-		String url = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
+	public ArrayList<String> contentPathFactory(int contextPathPosition, String url) {
 		String[] contexts = url.split("/");
 		ArrayList<String> contentPath = new ArrayList<String>();
 
