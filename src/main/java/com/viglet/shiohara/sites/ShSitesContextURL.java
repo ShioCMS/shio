@@ -1,5 +1,6 @@
 package com.viglet.shiohara.sites;
 
+import java.net.URL;
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,7 +11,6 @@ import org.springframework.web.servlet.HandlerMapping;
 
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.object.ShObject;
-import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
 import com.viglet.shiohara.utils.ShFolderUtils;
@@ -36,50 +36,59 @@ public class ShSitesContextURL {
 
 	public void init(HttpServletRequest request) {
 		String shXSiteName = request.getHeader("x-sh-site");
-		cacheEnabled = request.getHeader("x-sh-nocache") != null && request.getHeader("x-sh-nocache").equals("1") ? false
+		cacheEnabled = request.getHeader("x-sh-nocache") != null && request.getHeader("x-sh-nocache").equals("1")
+				? false
 				: true;
-		String shSiteName = null;
+
 		if (shXSiteName != null) {
-			shSiteName = shXSiteName;
-			shContext = "sites";
-			shFormat = "default";
-			shLocale = "en-us";
 			contextPathPosition = 2;
-			contextURL = "/sites/" + shXSiteName + "/" + shFormat + "/" + shLocale
+			contextURL = "/sites/" + shXSiteName + "/default/en-us"
 					+ ((String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE))
 							.replaceAll("^/sites/", "/");
 		} else {
 			contextPathPosition = 5;
 			contextURL = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
+		}
 
-			String[] contexts = contextURL.split("/");
-			for (int i = 1; i < contexts.length; i++) {
-				switch (i) {
-				case 1:
-					shContext = contexts[i];
-					break;
-				case 2:
-					shSiteName = contexts[i];
-					break;
-				case 3:
-					shFormat = contexts[i];
-					break;
-				case 4:
-					shLocale = contexts[i];
-					break;
-				}
+		this.detectContextURL(contextURL);
+
+	}
+
+	public void detectContextURL(String contextURL) {
+		String shSiteName = null;
+		String[] contexts = contextURL.split("/");
+		for (int i = 1; i < contexts.length; i++) {
+			switch (i) {
+			case 1:
+				shContext = contexts[i];
+				break;
+			case 2:
+				shSiteName = contexts[i];
+				break;
+			case 3:
+				shFormat = contexts[i];
+				break;
+			case 4:
+				shLocale = contexts[i];
+				break;
 			}
 		}
+
 		shSite = shSiteRepository.findByFurl(shSiteName);
 
 		ArrayList<String> contentPath = shSitesContextComponent.contentPathFactory(this.getContextPathPosition(),
-				request);
+				contextURL);
 
 		String objectName = shSitesContextComponent.objectNameFactory(contentPath);
 
 		shParentFolder = shFolderUtils.folderFromPath(shSite, shSitesContextComponent.folderPathFactory(contentPath));
 		shObject = shSitesContextComponent.shObjectItemFactory(shSite, shParentFolder, objectName);
-		ShPost shPost1 = (ShPost) shObject;
+
+	}
+
+	public void byURL(URL url) {
+		contextPathPosition = 5;
+		this.detectContextURL(url.getPath());
 	}
 
 	public ShSiteRepository getShSiteRepository() {
