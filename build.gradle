@@ -90,9 +90,13 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version:"${springBootVersion}"
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-activemq', version:"${springBootVersion}"   
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf', version:"${springBootVersion}"  
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-mongodb', version:"${springBootVersion}"  
   
   	// Spring
   	compile group: 'org.springframework', name: 'spring-test', version: '5.0.6.RELEASE'
+  	
+  	// MongoDB
+  	compile group: 'de.flapdoodle.embed', name: 'de.flapdoodle.embed.mongo'
   
     // JGit
     compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: "${jgitVersion}"
