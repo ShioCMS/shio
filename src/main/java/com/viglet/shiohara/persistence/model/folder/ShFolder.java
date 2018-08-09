@@ -20,6 +20,7 @@ import java.util.Set;
  * The persistent class for the ShPost database table.
  * 
  */
+
 @Entity
 @NamedQuery(name = "ShFolder.findAll", query = "SELECT c FROM ShFolder c")
 @JsonIgnoreProperties({ "shFolders", "shPosts" })
