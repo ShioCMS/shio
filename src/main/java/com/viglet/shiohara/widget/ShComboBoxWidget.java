@@ -3,6 +3,8 @@ package com.viglet.shiohara.widget;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -34,5 +36,11 @@ public class ShComboBoxWidget implements ShWidgetImplementation {
 		ctx.setVariable("choices", choices);
 
 		return templateEngine.process("widget/combo-box/combo-box-widget", ctx);
+	}
+
+	@Override
+	public boolean validateForm(HttpServletRequest request, ShPostTypeAttr shPostTypeAttr) {
+		// TODO Auto-generated method stub
+		return true;
 	}
 }

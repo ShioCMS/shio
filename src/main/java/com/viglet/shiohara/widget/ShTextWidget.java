@@ -1,5 +1,7 @@
 package com.viglet.shiohara.widget;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
@@ -16,5 +18,11 @@ public class ShTextWidget implements ShWidgetImplementation {
 		final Context ctx = new Context();
 		ctx.setVariable("shPostTypeAttr", shPostTypeAttr);
 		return templateEngine.process("widget/text/text-widget", ctx);
+	}
+
+	@Override
+	public boolean validateForm(HttpServletRequest request, ShPostTypeAttr shPostTypeAttr) {
+		// TODO Auto-generated method stub
+		return true;
 	}
 }

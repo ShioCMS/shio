@@ -1,6 +1,7 @@
 ## 0.3.2
 
 #### NEW FEATURES
+* MongoDB
 * Show content files from /sites URL: Response file with mime type
 * E-Commerce: reCAPTCHA Widget
 * E-Commerce: Payment Types and Settings

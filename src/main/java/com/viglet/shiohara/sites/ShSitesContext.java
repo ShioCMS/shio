@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.activation.MimetypesFileTypeMap;
+import javax.annotation.Resource;
 import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,7 +19,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,9 +43,12 @@ import com.viglet.shiohara.utils.ShFolderUtils;
 import com.viglet.shiohara.utils.ShPostUtils;
 import com.viglet.shiohara.utils.ShSiteUtils;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
+import com.viglet.shiohara.widget.ShWidgetImplementation;
 
 @Controller
 public class ShSitesContext {
+	@Resource
+	private ApplicationContext applicationContext;
 	@Autowired
 	private ShPostTypeRepository shPostTypeRepository;
 	@Autowired
@@ -67,14 +71,16 @@ public class ShSitesContext {
 	private ShSitesContextURL shSitesContextURL;
 
 	@PostMapping("/sites/**")
-	private void sitesPostForm(HttpServletRequest request, HttpServletResponse response)
-			throws IOException, ScriptException {
+	private void sitesPostForm(HttpServletRequest request, HttpServletResponse response) throws IOException,
+			ScriptException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		shSitesContextURL.init(request);
+
 		this.siteContextPost(shSitesContextURL, request, response);
 	}
 
 	public byte[] siteContextPost(ShSitesContextURL shSitesContextURL, HttpServletRequest request,
-			HttpServletResponse response) throws IOException, ScriptException {
+			HttpServletResponse response) throws IOException, ScriptException, InstantiationException,
+			IllegalAccessException, ClassNotFoundException {
 		if (shSitesContextURL.getShObject() instanceof ShFolder
 				|| (shSitesContextURL.getShObject() instanceof ShPost && ((ShPost) shSitesContextURL.getShObject())
 						.getShPostType().getName().equals(ShSystemPostType.FOLDER_INDEX))) {
@@ -105,6 +111,13 @@ public class ShSitesContext {
 
 						ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType,
 								attribute);
+
+						String className = shPostTypeAttr.getShWidget().getClassName();
+						ShWidgetImplementation object = (ShWidgetImplementation) Class.forName(className).newInstance();
+						applicationContext.getAutowireCapableBeanFactory().autowireBean(object);
+						@SuppressWarnings("unused")
+						boolean attrStatus = object.validateForm(request, shPostTypeAttr);
+						// TODO: Create validation Form logic
 
 						ShPostAttr shPostAttr = new ShPostAttr();
 						shPostAttr.setShPost(shPost);
