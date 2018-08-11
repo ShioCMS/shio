@@ -3,7 +3,8 @@
 #### NEW FEATURES
 * MongoDB
 * Show content files from /sites URL: Response file with mime type
-* E-Commerce: reCAPTCHA Widget
+* E-Commerce: reCAPTCHA Field Type
+* E-Commerce: Payment Field Type
 * E-Commerce: Payment Types and Settings
 * Viglet Turing Integration: Indexing Posts in Semantic Navigation
 * InContext Editing using Float Menu to Regions
