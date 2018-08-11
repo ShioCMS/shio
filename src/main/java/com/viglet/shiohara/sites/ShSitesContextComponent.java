@@ -85,7 +85,8 @@ public class ShSitesContextComponent {
 		return folderPath;
 	}
 
-	public ArrayList<String> contentPathFactory(int contextPathPosition, String url) {
+	public ArrayList<String> contentPathFactory(String url) {
+		int contextPathPosition = 5;
 		String[] contexts = url.split("/");
 		ArrayList<String> contentPath = new ArrayList<String>();
 

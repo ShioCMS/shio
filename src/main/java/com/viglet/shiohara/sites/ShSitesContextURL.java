@@ -30,7 +30,6 @@ public class ShSitesContextURL {
 	private ShFolder shParentFolder = null;
 	private String shFormat = null;
 	private String shLocale = null;
-	private int contextPathPosition = 0;
 	private ShObject shObject = null;
 	private boolean cacheEnabled = true;
 
@@ -40,13 +39,11 @@ public class ShSitesContextURL {
 				? false
 				: true;
 
-		if (shXSiteName != null) {
-			contextPathPosition = 2;
+		if (shXSiteName != null) {			
 			contextURL = "/sites/" + shXSiteName + "/default/en-us"
 					+ ((String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE))
-							.replaceAll("^/sites/", "/");
-		} else {
-			contextPathPosition = 5;
+							.replaceAll("^/sites", "");
+		} else {			
 			contextURL = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
 		}
 
@@ -76,8 +73,7 @@ public class ShSitesContextURL {
 
 		shSite = shSiteRepository.findByFurl(shSiteName);
 
-		ArrayList<String> contentPath = shSitesContextComponent.contentPathFactory(this.getContextPathPosition(),
-				contextURL);
+		ArrayList<String> contentPath = shSitesContextComponent.contentPathFactory(contextURL);
 
 		String objectName = shSitesContextComponent.objectNameFactory(contentPath);
 
@@ -86,8 +82,7 @@ public class ShSitesContextURL {
 
 	}
 
-	public void byURL(URL url) {
-		contextPathPosition = 5;
+	public void byURL(URL url) {	
 		this.detectContextURL(url.getPath());
 	}
 
@@ -138,15 +133,7 @@ public class ShSitesContextURL {
 	public void setShLocale(String shLocale) {
 		this.shLocale = shLocale;
 	}
-
-	public int getContextPathPosition() {
-		return contextPathPosition;
-	}
-
-	public void setContextPathPosition(int contextPathPosition) {
-		this.contextPathPosition = contextPathPosition;
-	}
-
+	
 	public ShFolder getShParentFolder() {
 		return shParentFolder;
 	}
