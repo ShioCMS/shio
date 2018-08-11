@@ -35,7 +35,6 @@ public class ShPostTypeImport {
 				shPostType.setDescription(shPostTypeExchange.getDescription());
 				shPostType.setName(shPostTypeExchange.getName());
 				shPostType.setOwner(shPostTypeExchange.getOwner());
-
 				shPostType.setSystem(shPostTypeExchange.isSystem() ? (byte) 1 : (byte) 0);
 
 				Set<ShPostTypeAttr> shPostTypeAttrs = new HashSet<ShPostTypeAttr>();
@@ -68,7 +67,7 @@ public class ShPostTypeImport {
 		shPostTypeAttr.setIsTitle(shPostTypeFieldExchange.isTitle() ? (byte) 1 : (byte) 0);
 		shPostTypeAttr.setRequired(shPostTypeFieldExchange.isRequired() ? (byte) 1 : (byte) 0);
 		shPostTypeAttr.setShWidget(shWidget);
-
+		shPostTypeAttr.setWidgetSettings(shPostTypeFieldExchange.getWidgetSettings());
 		Set<ShPostTypeAttr> shPostTypeAttrs = new HashSet<ShPostTypeAttr>();
 		if (shPostTypeFieldExchange.getFields() != null && shPostTypeFieldExchange.getFields().size() > 0) {
 			for (Entry<String, ShPostTypeFieldExchange> postTypeFieldChild : shPostTypeFieldExchange.getFields()

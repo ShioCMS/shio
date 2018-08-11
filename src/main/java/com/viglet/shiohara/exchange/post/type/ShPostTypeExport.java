@@ -137,7 +137,8 @@ public class ShPostTypeExport {
 		shPostTypeFieldExchange.setSummary(shPostTypeAttr.getIsSummary() == (byte) 1 ? true : false);
 		shPostTypeFieldExchange.setTitle(shPostTypeAttr.getIsTitle() == (byte) 1 ? true : false);
 		shPostTypeFieldExchange.setWidget(shPostTypeAttr.getShWidget().getName());
-
+		shPostTypeFieldExchange.setWidgetSettings(shPostTypeAttr.getWidgetSettings());
+		
 		if (shPostTypeAttr.getShPostTypeAttrs().size() > 0) {
 			Map<String, ShPostTypeFieldExchange> shPostTypeFieldExchanges = new HashMap<String, ShPostTypeFieldExchange>();
 

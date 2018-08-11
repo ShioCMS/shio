@@ -109,6 +109,16 @@ public class ShWidgetOnStartup {
 			shWidget.setType("TEXT,TEXTAREA");
 
 			shWidgetRepository.save(shWidget);
+			
+			shWidget = new ShWidget();
+			shWidget.setName(ShSystemWidget.PAYMENT);
+			shWidget.setDescription("Payment Widget");
+			shWidget.setClassName("com.viglet.shiohara.widget.ShPaymentWidget");
+			shWidget.setImplementationCode("template/widget/payment/payment.html");
+			shWidget.setSettingPath("template/widget/payment/setting/payment-setting.html");
+			shWidget.setType("TEXT,TEXTAREA");
+
+			shWidgetRepository.save(shWidget);
 		}
 
 	}
