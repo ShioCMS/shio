@@ -28,6 +28,8 @@ public class ShPostTypeFieldExchange {
 
 	private String widget;
 
+	private String widgetSettings;
+	
 	public String getId() {
 		return id;
 	}
@@ -98,6 +100,14 @@ public class ShPostTypeFieldExchange {
 
 	public void setWidget(String widget) {
 		this.widget = widget;
+	}
+
+	public String getWidgetSettings() {
+		return widgetSettings;
+	}
+
+	public void setWidgetSettings(String widgetSettings) {
+		this.widgetSettings = widgetSettings;
 	}
 
 }
