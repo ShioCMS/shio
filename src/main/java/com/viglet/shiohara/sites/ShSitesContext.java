@@ -24,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.viglet.shiohara.api.post.ShPostAPI;
 import com.viglet.shiohara.cache.ShCacheManager;
@@ -71,11 +72,15 @@ public class ShSitesContext {
 	private ShSitesContextURL shSitesContextURL;
 
 	@PostMapping("/sites/**")
-	private void sitesPostForm(HttpServletRequest request, HttpServletResponse response) throws IOException,
+	private RedirectView sitesPostForm(HttpServletRequest request, HttpServletResponse response) throws IOException,
 			ScriptException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		shSitesContextURL.init(request);
 
 		this.siteContextPost(shSitesContextURL, request, response);
+		RedirectView redirectView = new RedirectView(
+				new String((request.getRequestURL() + "/success").getBytes("UTF-8"), "ISO-8859-1"));
+		redirectView.setHttp10Compatible(false);
+		return redirectView;
 	}
 
 	public byte[] siteContextPost(ShSitesContextURL shSitesContextURL, HttpServletRequest request,

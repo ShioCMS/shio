@@ -17,7 +17,7 @@ public class ShEcomPaymentTypeOnStartup {
 
 		if (shEcomPaymentTypeRepository.findAll().isEmpty()) {
 			ShEcomPaymentType shEcomPaymentType = new ShEcomPaymentType();
-			shEcomPaymentType.setName("Rede Card");
+			shEcomPaymentType.setName(ShSystemEcomPaymentType.REDECARD);
 			shEcomPaymentType.setDate(new Date());
 			shEcomPaymentType.setDescription("Rede Card Payment");
 			shEcomPaymentType.setClassName("com.viglet.shiohara.ecommece.payment.ShRedeCardPayment");
@@ -25,7 +25,7 @@ public class ShEcomPaymentTypeOnStartup {
 			shEcomPaymentTypeRepository.save(shEcomPaymentType);
 
 			shEcomPaymentType = new ShEcomPaymentType();
-			shEcomPaymentType.setName("Boletos");
+			shEcomPaymentType.setName(ShSystemEcomPaymentType.BOLETOS);
 			shEcomPaymentType.setDate(new Date());
 			shEcomPaymentType.setDescription("Boletos Payment");
 			shEcomPaymentType.setClassName("com.viglet.shiohara.ecommece.payment.ShBoletoPayment");
@@ -33,7 +33,7 @@ public class ShEcomPaymentTypeOnStartup {
 			shEcomPaymentTypeRepository.save(shEcomPaymentType);
 
 			shEcomPaymentType = new ShEcomPaymentType();
-			shEcomPaymentType.setName("Shopline");
+			shEcomPaymentType.setName(ShSystemEcomPaymentType.SHOPLINE);
 			shEcomPaymentType.setDate(new Date());
 			shEcomPaymentType.setDescription("Shopline Payment");
 			shEcomPaymentType.setClassName("com.viglet.shiohara.ecommece.payment.ShShoplinePayment");

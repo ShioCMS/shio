@@ -12,8 +12,10 @@ import com.viglet.shiohara.persistence.model.ecommerce.ShEcomPaymentType;
 public interface ShEcomPaymentTypeRepository extends JpaRepository<ShEcomPaymentType, String> {
 
 	List<ShEcomPaymentType> findAll();
-	
+
 	Optional<ShEcomPaymentType> findById(String id);
+
+	ShEcomPaymentType findByName(String name);
 
 	@SuppressWarnings("unchecked")
 	ShEcomPaymentType save(ShEcomPaymentType shEcomPaymentType);
