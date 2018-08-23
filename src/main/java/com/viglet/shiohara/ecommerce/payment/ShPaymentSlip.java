@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -42,7 +43,11 @@ public class ShPaymentSlip {
 		for (ShPostTypeAttr shPostTypeAttr : shPostTypeAttrs) {
 			if (shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.PAYMENT)) {
 				JSONObject settings = new JSONObject(shPostTypeAttr.getWidgetSettings());
-				paymentTypeId = settings.getString("paymentType");
+				JSONArray paymentTypes = settings.getJSONArray("paymentTypes");
+				for (int i = 0; i < paymentTypes.length(); i++) {
+					JSONObject paymentType = paymentTypes.getJSONObject(i);
+					paymentTypeId = paymentType.getString("id");  				
+				}
 			}
 		}
 

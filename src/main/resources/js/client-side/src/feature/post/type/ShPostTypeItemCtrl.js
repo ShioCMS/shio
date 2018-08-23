@@ -90,7 +90,6 @@ shioharaApp
 							}
 							
 							$scope.addPostTypeAttr = function(shWidget, shPostTypeAttrs) {
-								console.log("addPostTypeAttr");
 								$scope.shPostTypeAttrModel.shWidget = shWidget;
 								
 								$scope.shPostTypeAttrModel.ordinal = shPostTypeAttrs.length;
@@ -102,8 +101,6 @@ shioharaApp
 							}
 							
 							$scope.postTypeAttrDelete = function(shPostTypeAttrs, shPostTypeAttr,index) {
-								console.log("postTypeAttrDelete");
-						
 									var index = shPostTypeAttrs
 											.indexOf(shPostTypeAttr);
 									shPostTypeAttrs.splice(

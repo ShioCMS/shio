@@ -1,0 +1,26 @@
+<table class="table" style="margin: 0px;">
+	<tr>
+		<td style="background: #F9F9F9; width: 20%;">
+			<p>
+				<b>Name</b>
+			</p>
+			<p>Name of Payment</p>
+		</td>
+		<td><input type="text" class="form-control"
+			ng-model="paymentType.name" /></td>
+	</tr>
+	<tr>
+		<td style="background: #F9F9F9; width: 20%;">
+			<p>
+				<b>Payment Type</b>
+			</p>
+			<p>Kind of Payment</p>
+		</td>
+		<td><select class="form-control"
+			ng-model="paymentType.id"
+			ng-options="paymentTypeItem.id as paymentTypeItem.title for paymentTypeItem in paymentTypes">
+				<option value="">-- Pick One --</option>
+		</select></td>
+	</tr>
+</table>
+
