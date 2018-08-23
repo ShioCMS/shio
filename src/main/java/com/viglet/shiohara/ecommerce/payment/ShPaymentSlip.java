@@ -40,13 +40,15 @@ public class ShPaymentSlip {
 		Set<ShPostTypeAttr> shPostTypeAttrs = shPost.getShPostType().getShPostTypeAttrs();
 		String paymentTypeId = null;
 		JSONObject ptdSettings = null;
+		JSONObject payer = null;
 		for (ShPostTypeAttr shPostTypeAttr : shPostTypeAttrs) {
 			if (shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.PAYMENT)) {
 				JSONObject settings = new JSONObject(shPostTypeAttr.getWidgetSettings());
+				payer = settings.getJSONObject("payer");
 				JSONArray paymentTypes = settings.getJSONArray("paymentTypes");
 				for (int i = 0; i < paymentTypes.length(); i++) {
 					JSONObject paymentType = paymentTypes.getJSONObject(i);
-					paymentTypeId = paymentType.getString("id");  				
+					paymentTypeId = paymentType.getString("id");
 				}
 			}
 		}
@@ -58,6 +60,7 @@ public class ShPaymentSlip {
 			ptdSettings = new JSONObject(shPaymentTypeDefinitionPostAttr.getStrValue()).getJSONObject("widgetSettings");
 		}
 		if (ptdSettings != null) {
+
 			Calendar today = Calendar.getInstance();
 			Calendar firstPayment = Calendar.getInstance();
 			firstPayment.add(Calendar.DATE, 7);
@@ -77,7 +80,8 @@ public class ShPaymentSlip {
 					.comCidade(ptdSettings.getString("city")).comUf(ptdSettings.getString("state"));
 
 			// Quem emite o boleto
-			Beneficiario beneficiario = Beneficiario.novoBeneficiario().comDocumento("63.056.469/0001-62")
+			Beneficiario beneficiario = Beneficiario.novoBeneficiario()
+					.comDocumento(ptdSettings.getString("documentId"))
 					.comNomeBeneficiario(ptdSettings.getString("name")).comAgencia(ptdSettings.getString("agency"))
 					.comDigitoAgencia(ptdSettings.getString("agencyCode"))
 					.comCodigoBeneficiario(ptdSettings.getString("recepientCode"))
@@ -90,8 +94,8 @@ public class ShPaymentSlip {
 			// Quem paga o boleto
 			Map<String, ShPostAttr> shPostMap = shPostUtils.postToMap(shPost);
 
-			Pagador pagador = Pagador.novoPagador().comNome(shPostMap.get("NOME").getStrValue())
-					.comDocumento(shPostMap.get("CPF").getStrValue());
+			Pagador pagador = Pagador.novoPagador().comNome(shPostMap.get(payer.getString("name")).getStrValue())
+					.comDocumento(shPostMap.get(payer.getString("documentId")).getStrValue());
 
 			Banco banco = new Itau();
 			String[] instructions = ptdSettings.getString("instructions").split("\n");

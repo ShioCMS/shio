@@ -3,37 +3,60 @@
 		<tr>
 			<td style="background: #F9F9F9; width: 20%;">
 				<p>
+					<b>Payer Name</b>
+				</p>
+			</td>
+			<td><select class="form-control"
+				ng-model="shPostTypeAttr.widgetSettingsObject.payer.name"
+				ng-options="shPostTypeAttr.name as shPostTypeAttr.name for shPostTypeAttr in shPostType.shPostTypeAttrs | orderBy: 'ordinal'">
+					<option value="">-- Pick One --</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td style="background: #F9F9F9; width: 20%;">
+				<p>
+					<b>Payer Document ID</b>
+				</p>
+			</td>
+			<td><select class="form-control"
+				ng-model="shPostTypeAttr.widgetSettingsObject.payer.documentId"
+				ng-options="shPostTypeAttr.name as shPostTypeAttr.name for shPostTypeAttr in shPostType.shPostTypeAttrs | orderBy: 'ordinal'">
+					<option value="">-- Pick One --</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td style="background: #F9F9F9; width: 20%;">
+				<p>
 					<b>Payment Types</b>
 				</p>
 			</td>
-			<td>
-			
-			<uib-accordion>
-			<div uib-accordion-group class="panel-default"
-				template-url="template/widget/payment/setting/payment-setting-accordion-header.html">
-			</div>
-			<div uib-accordion-group
-				ng-repeat=" paymentType in shPostTypeAttr.widgetSettingsObject.paymentTypes | orderBy: 'ordinal'"
-				class="panel-default"
-				template-url="template/widget/payment/setting/payment-setting-accordion.html">
-				<uib-accordion-heading>
-				<div class="row" style="margin: 0px">
-					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6"
-						style="padding: 0px">
-						<i class="fa fa-bars" aria-hidden="true"></i>
-						{{paymentType.ordinal}} <span style="display: none;">{{paymentType.ordinal=$index+1}}</span>
-					</div>
-					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6"
-						style="padding: 0px">{{ $parent.$parent.getPaymentType(paymentType.id).title }}</div>
-					<div class="col-lg-3 col-md-3 col-sm-3 hidden-xs"
-						style="padding: 0px">{{paymentType.name}}</div>
-
+			<td><uib-accordion>
+				<div uib-accordion-group class="panel-default"
+					template-url="template/widget/payment/setting/payment-setting-accordion-header.html">
 				</div>
-				</uib-accordion-heading>
-				<div
-					ng-include="'template/widget/payment/setting/payment-default-setting.html'"></div>			
-			</div>
-			</uib-accordion>
+				<div uib-accordion-group
+					ng-repeat=" paymentType in shPostTypeAttr.widgetSettingsObject.paymentTypes | orderBy: 'ordinal'"
+					class="panel-default"
+					template-url="template/widget/payment/setting/payment-setting-accordion.html">
+					<uib-accordion-heading>
+					<div class="row" style="margin: 0px">
+						<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6"
+							style="padding: 0px">
+							<i class="fa fa-bars" aria-hidden="true"></i>
+							{{paymentType.ordinal}} <span style="display: none;">{{paymentType.ordinal=$index+1}}</span>
+						</div>
+						<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6"
+							style="padding: 0px">{{
+							$parent.$parent.getPaymentType(paymentType.id).title }}</div>
+						<div class="col-lg-3 col-md-3 col-sm-3 hidden-xs"
+							style="padding: 0px">{{paymentType.name}}</div>
+
+					</div>
+					</uib-accordion-heading>
+					<div
+						ng-include="'template/widget/payment/setting/payment-default-setting.html'"></div>
+				</div>
+				</uib-accordion>
 		</tr>
 	</table>
 </div>
