@@ -29,7 +29,19 @@ shioharaApp.controller('ShPostEditCtrl', [
 			$scope.shPost = shPostResource.get({
 				id : $scope.postId
 			}, function() {
+				angular
+				.forEach($scope.shPost.shPostAttrs,
+						function(shPostAttr, key) {
+					//console.log("Type: " + shPostAttr.shPostTypeAttr.shWidget.type);
+							if (angular.equals(shPostAttr.shPostTypeAttr.shWidget.type, "JSON")) {
+								shPostAttr.strValue =  JSON.parse(shPostAttr.strValue);
+								console.log(shPostAttr.strValue);
+							}
+				});
+				
+				shPostAttr.strValue =  JSON.stringify(shPostAttr.strValue);
 				if ( $scope.shPost.shFolder != null) {
+					
 					$scope.folderId = $scope.shPost.shFolder.id;
 				$scope
 				.$evalAsync($http
@@ -75,6 +87,11 @@ shioharaApp.controller('ShPostEditCtrl', [
 				angular
 						.forEach($scope.shPost.shPostAttrs,
 								function(shPostAttr, key) {
+							//console.log("Type: " + shPostAttr.shPostTypeAttr.shWidget.type);
+									if (angular.equals(shPostAttr.shPostTypeAttr.shWidget.type, "JSON")) {
+										shPostAttr.strValue =  JSON.stringify(shPostAttr.strValue);
+										console.log(shPostAttr.strValue);
+									}
 									promiseFiles
 											.push(uploadFile(
 													shPostAttr,
@@ -86,7 +103,15 @@ shioharaApp.controller('ShPostEditCtrl', [
 						.all(promiseFiles)
 						.then(
 								function(dataThatWasPassed) {
+									console.log("Post: " + $scope.shPost);
 				$scope.shPost.$update(function() {
+					angular
+					.forEach($scope.shPost.shPostAttrs,
+					function(shPostAttr, key) {					
+								if (angular.equals(shPostAttr.shPostTypeAttr.shWidget.type, "JSON")) {
+									shPostAttr.strValue =  JSON.parse(shPostAttr.strValue);
+								}
+					});
 					 Notification.warning('The ' + $scope.shPost.title +' Post was updated.');
 				});
 								});

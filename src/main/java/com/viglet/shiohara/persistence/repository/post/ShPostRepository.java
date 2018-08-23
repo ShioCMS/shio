@@ -18,6 +18,8 @@ public interface ShPostRepository extends JpaRepository<ShPost, String>, ShPostR
 	List<ShPost> findByShFolder(ShFolder shFolder);
 
 	List<ShPost> findByShFolderAndShPostType(ShFolder shFolder, ShPostType shPostType);
+	
+	List<ShPost> findByShPostType(ShPostType shPostType);
 
 	List<ShPost> findByShFolderAndShPostTypeOrderByPositionAsc(ShFolder shFolder, ShPostType shPostType);
 

@@ -45,6 +45,7 @@ import com.viglet.shiohara.utils.ShPostUtils;
 import com.viglet.shiohara.utils.ShSiteUtils;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
 import com.viglet.shiohara.widget.ShWidgetImplementation;
+import com.viglet.shiohara.widget.ecommerce.ShPaymentWidget;
 
 @Controller
 public class ShSitesContext {
@@ -70,7 +71,9 @@ public class ShSitesContext {
 	private ShStaticFileUtils shStaticFileUtils;
 	@Autowired
 	private ShSitesContextURL shSitesContextURL;
-
+	@Autowired
+	private ShPaymentWidget shPaymentWidget;
+	
 	@PostMapping("/sites/**")
 	private RedirectView sitesPostForm(HttpServletRequest request, HttpServletResponse response) throws IOException,
 			ScriptException, InstantiationException, IllegalAccessException, ClassNotFoundException {
@@ -86,6 +89,7 @@ public class ShSitesContext {
 	public byte[] siteContextPost(ShSitesContextURL shSitesContextURL, HttpServletRequest request,
 			HttpServletResponse response) throws IOException, ScriptException, InstantiationException,
 			IllegalAccessException, ClassNotFoundException {
+		ShPost shPost = null;
 		if (shSitesContextURL.getShObject() instanceof ShFolder
 				|| (shSitesContextURL.getShObject() instanceof ShPost && ((ShPost) shSitesContextURL.getShObject())
 						.getShPostType().getName().equals(ShSystemPostType.FOLDER_INDEX))) {
@@ -97,10 +101,10 @@ public class ShSitesContext {
 			}
 			String shPostTypeName = request.getParameter("__sh-post-type");
 			ShPostType shPostType = shPostTypeRepository.findByName(shPostTypeName);
-
+			
 			Enumeration<String> parameters = request.getParameterNames();
 			if (shPostTypeName != null) {
-				ShPost shPost = new ShPost();
+				shPost = new ShPost();
 				shPost.setDate(new Date());
 				shPost.setOwner("anonymous");
 				shPost.setShFolder(shFolder);
@@ -120,6 +124,7 @@ public class ShSitesContext {
 						String className = shPostTypeAttr.getShWidget().getClassName();
 						ShWidgetImplementation object = (ShWidgetImplementation) Class.forName(className).newInstance();
 						applicationContext.getAutowireCapableBeanFactory().autowireBean(object);
+						
 						@SuppressWarnings("unused")
 						boolean attrStatus = object.validateForm(request, shPostTypeAttr);
 						// TODO: Create validation Form logic
@@ -137,6 +142,8 @@ public class ShSitesContext {
 				shPostAPI.postSave(shPost);
 			}
 		}
+		
+		shPaymentWidget.postRender(shPost, request, response);
 		this.sitesFullGeneric(request, response);
 
 		return null;
