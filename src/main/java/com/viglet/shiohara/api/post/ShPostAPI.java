@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
+import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.user.ShUser;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
@@ -28,6 +29,7 @@ import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.repository.history.ShHistoryRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
+import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.persistence.repository.reference.ShReferenceRepository;
 import com.viglet.shiohara.persistence.repository.user.ShUserRepository;
 import com.viglet.shiohara.post.type.ShSystemPostType;
@@ -56,6 +58,8 @@ public class ShPostAPI {
 	@Autowired
 	private ShHistoryRepository shHistoryRepository;
 	@Autowired
+	private ShPostTypeRepository shPostTypeRepository;
+	@Autowired
 	private ShURLFormatter shURLFormatter;
 	@Autowired
 	private ShPostUtils shPostUtils;
@@ -70,6 +74,13 @@ public class ShPostAPI {
 		return shPostRepository.findAll();
 	}
 
+	@GetMapping("/post-type/{postTypeNane}")
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
+	public List<ShPost> shPostListByPostType(@PathVariable String postTypeNane) throws Exception {
+		ShPostType shPostType = shPostTypeRepository.findByName(postTypeNane);
+		return shPostRepository.findByShPostType(shPostType);
+	}
+	
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShPost shPostEdit(@PathVariable String id) throws Exception {

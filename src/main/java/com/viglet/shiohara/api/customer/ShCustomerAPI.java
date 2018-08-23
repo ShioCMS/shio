@@ -32,7 +32,7 @@ public class ShCustomerAPI {
 		// save a couple of customers
 		repository.save(new ShCustomer("Alice", "Smith"));
 		repository.save(new ShCustomer("Bob", "Smith"));
-		
+
 		return repository.findByLastName("Smith");
 	}
 }

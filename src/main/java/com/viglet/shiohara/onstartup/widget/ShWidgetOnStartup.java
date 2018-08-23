@@ -111,9 +111,19 @@ public class ShWidgetOnStartup {
 			shWidgetRepository.save(shWidget);
 			
 			shWidget = new ShWidget();
+			shWidget.setName(ShSystemWidget.PAYMENT_DEFINITION);
+			shWidget.setDescription("Payment Type Definition Widget");
+			shWidget.setClassName("com.viglet.shiohara.widget.ecommerce.ShPaymentTypeDefinitionWidget");
+			shWidget.setImplementationCode("template/widget/payment/type/definition/payment-type-definition.html");
+			shWidget.setSettingPath("template/widget/payment/type/definition/setting/payment-type-definition-setting.html");
+			shWidget.setType("JSON");
+
+			shWidgetRepository.save(shWidget);
+			
+			shWidget = new ShWidget();
 			shWidget.setName(ShSystemWidget.PAYMENT);
 			shWidget.setDescription("Payment Widget");
-			shWidget.setClassName("com.viglet.shiohara.widget.ShPaymentWidget");
+			shWidget.setClassName("com.viglet.shiohara.widget.ecommerce.ShPaymentWidget");
 			shWidget.setImplementationCode("template/widget/payment/payment.html");
 			shWidget.setSettingPath("template/widget/payment/setting/payment-setting.html");
 			shWidget.setType("TEXT,TEXTAREA");

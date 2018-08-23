@@ -1,0 +1,173 @@
+<table class="table" style="margin: 0px;">
+	<tbody>
+		<tr>
+			<td style="background: #F9F9F9; width: 20%;">
+				<p>
+					<b>Recipient</b>
+				</p>
+			</td>
+			<td>
+
+				<table class="table" style="margin: 0px;">
+					<tbody>
+						<tr>
+							<td style="background: #F9F9F9; width: 20%;">
+								<p>
+									<b>Details</b>
+								</p>
+							</td>
+							<td>
+								<div class="form-group">
+									<label for="name">Name</label> <input type="text"
+										class="form-control" id="name"
+										ng-model="shPostAttr.strValue.widgetSettings.name">
+								</div>
+								<div class="form-group">
+									<label for="documentId">Document ID</label> <input type="text"
+										class="form-control" id="documentId"
+										ng-model="shPostAttr.strValue.widgetSettings.documentId">
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td style="background: #F9F9F9; width: 20%;">
+								<p>
+									<b>Bank</b>
+								</p>
+							</td>
+							<td>
+								<div class="form-group">
+									<label for="agency">Agency</label>
+									<div id="agency" class="form-inline">
+										<div class="form-group">
+											<input type="text" class="form-control"
+												ng-model="shPostAttr.strValue.widgetSettings.agency">
+											- <input type="text" class="form-control" maxlength="1"
+												size="1"
+												ng-model="shPostAttr.strValue.widgetSettings.agencyDigit">
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="agency">Recipient Code</label>
+									<div id="recipientCode" class="form-inline">
+										<div class="form-group">
+											<input type="text" class="form-control"
+												ng-model="shPostAttr.strValue.widgetSettings.recepientCode">
+											- <input type="text" class="form-control" maxlength="1"
+												size="1"
+												ng-model="shPostAttr.strValue.widgetSettings.recepientCodeDigit">
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="agreementNumber">Agreement Number</label> <input
+										id="agreementNumber" type="text" class="form-control"
+										ng-model="shPostAttr.strValue.widgetSettings.agreementNumber">
+								</div>
+								<div class="form-group">
+									<label for="wallet">Wallet</label> <input id="wallet"
+										type="text" class="form-control"
+										ng-model="shPostAttr.strValue.widgetSettings.wallet">
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td style="background: #F9F9F9; width: 20%;">
+								<p>
+									<b>Address</b>
+								</p>
+							</td>
+							<td>
+								<div class="form-group">
+									<label for="address">Address</label> <input type="text"
+										class="form-control" id="address"
+										ng-model="shPostAttr.strValue.widgetSettings.address">
+								</div>
+								<div class="form-group">
+									<label for="addressNumber">Number</label> <input type="text"
+										class="form-control" id="addressNumber"
+										ng-model="shPostAttr.strValue.widgetSettings.addressNumber">
+								</div>
+								<div class="form-group">
+									<label for="district">District</label> <input type="text"
+										class="form-control" id="district"
+										ng-model="shPostAttr.strValue.widgetSettings.district">
+								</div>
+								<div class="form-group">
+									<label for="zipCode">Zip Code</label> <input type="text"
+										class="form-control" id="zipCode"
+										ng-model="shPostAttr.strValue.widgetSettings.zipCode">
+								</div>
+								<div class="form-group">
+									<label for="city">City</label> <input type="text"
+										class="form-control" id="city"
+										ng-model="shPostAttr.strValue.widgetSettings.city">
+								</div>
+								<div class="form-group">
+									<label for="state">State</label> <input type="text"
+										class="form-control" id="state"
+										ng-model="shPostAttr.strValue.widgetSettings.state">
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td style="background: #F9F9F9; width: 20%;">
+				<p>
+					<b> Instructions</b>
+				</p>
+			</td>
+			<td>
+				<div class="form-group">
+					<textarea class="form-control" rows="7"
+						ng-model="shPostAttr.strValue.widgetSettings.instructions"> </textarea>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td style="background: #F9F9F9; width: 20%;">
+				<p>
+					<b>Document Number</b>
+				</p>
+			</td>
+			<td>
+				<div class="form-group">
+					<input type="text" class="form-control"
+						ng-model="shPostAttr.strValue.widgetSettings.documentNumber">
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td style="background: #F9F9F9; width: 20%;">
+				<p>
+					<b>Our Number</b>
+				</p>
+			</td>
+			<td class="form-inline">
+				<div class="form-group">
+					<input type="text" class="form-control"
+						ng-model="shPostAttr.strValue.widgetSettings.ourNumber"> -
+					<input type="text" class="form-control" maxlength="1" size="1"
+						ng-model="shPostAttr.strValue.widgetSettings.ourNumberDigit">
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td style="background: #F9F9F9; width: 20%;">
+				<p>
+					<b>Local</b>
+				</p>
+			</td>
+			<td>
+				<div class="form-group">
+					<input type="text" class="form-control"
+						ng-model="shPostAttr.strValue.widgetSettings.local">
+				</div>
+			</td>
+		</tr>
+	</tbody>
+</table>

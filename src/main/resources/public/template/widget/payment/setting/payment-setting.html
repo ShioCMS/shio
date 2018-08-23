@@ -1,1 +1,15 @@
-<h1>Payment Settings</h1>
+<div ng-controller="ShWidgetPaymentTypeCtrl">
+	<table class="table" style="margin: 0px;">
+		<tr>
+			<td style="background: #F9F9F9; width: 20%;">
+				<p>
+					<b>Payment Type</b>
+				</p>
+			</td>
+			<td><select class="form-control" ng-model="shPostTypeAttr.widgetSettingsObject.paymentType"
+				ng-options="paymentType.id as paymentType.title for paymentType in paymentTypes">
+					<option value="">-- Pick One --</option>
+			</select>
+		</tr>
+	</table>
+</div>

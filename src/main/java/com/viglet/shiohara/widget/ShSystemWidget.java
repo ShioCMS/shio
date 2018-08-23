@@ -11,5 +11,6 @@ public class ShSystemWidget {
 	public static final String CONTENT_SELECT = "Content Select";
 	public static final String RELATOR = "Relator";
 	public static final String RECAPTCHA = "reCAPTCHA";
+	public static final String PAYMENT_DEFINITION = "Payment Definition";
 	public static final String PAYMENT = "Payment";
 }
