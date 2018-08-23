@@ -11,6 +11,9 @@
 * Site Form: Create Forms into Site and save as Posts into Shiohara CMS
 * Combo Box Field Type
 
+#### IMPROVEMENTS
+* Spring Boot 2.0.4 and Gradle 4.9
+
 ## 0.3.1 (July 06, 2018)
 
 #### NEW FEATURES

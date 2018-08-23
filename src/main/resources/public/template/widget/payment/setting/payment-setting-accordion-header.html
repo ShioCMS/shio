@@ -1,0 +1,46 @@
+
+<div class="panel-heading" style="background-color: white;">
+	<div class="panel-title">
+		<div class="row" style="margin: 0px">
+			<div class="col-lg-10 col-md-10 col-sm-10 col-xs-10"
+				style="padding: 0px">
+				<div class="row" style="margin: 0px">
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6"
+						style="padding: 0px; padding-top: 5px">
+						<b>Order</b>
+					</div>
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6"
+						style="padding: 0px; padding-top: 5px">
+						<b>Type</b>
+					</div>
+					<div class="col-lg-3 col-md-3 col-sm-3 hidden-xs"
+						style="padding: 0px; padding-top: 5px">
+						<b>Name</b>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2" style="padding: 0px">
+				<div class="row">
+					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+						<div class="form-actions">
+							<div class="pull-right">
+								<div class="btn-group">
+									<button
+										ng-repeat="paymentType in $parent.paymentTypes |filter: {title: 'Boleto'} : true"
+										ng-click="$parent.$parent.addPaymentType(paymentType,$parent.$parent.shPostTypeAttr)"										
+										class="btn btn-viglet btn-sm">
+										<i class="fa fa-plus-circle" aria-hidden="true"></i>
+										{{paymentType.title}} Type
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="panel-collapse collapse" uib-collapse="!isOpen">
+	<div class="panel-body" style="padding: 0px" ng-transclude></div>
+</div>
