@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
+import com.viglet.shiohara.ecommerce.ShEcomProductBean;
 import com.viglet.shiohara.ecommerce.payment.ShPaymentSlip;
 import com.viglet.shiohara.persistence.model.ecommerce.ShEcomPaymentTypeDefinition;
 import com.viglet.shiohara.persistence.model.post.ShPost;
@@ -50,17 +51,31 @@ public class ShPaymentWidget implements ShWidgetImplementation {
 			String paymentTypeId = paymentType.getString("id");
 			ShPost shPaymentTypePost = shPostRepository.findById(paymentTypeId).get();
 			Map<String, ShPostAttr> shPaymentTypePostMap = shPostUtils.postToMap(shPaymentTypePost);
-			
+
 			ShPostAttr shPaymentTypeDefinitionPostAttr = shPaymentTypePostMap.get("PAYMENT_TYPE_DEFINITION");
 			JSONObject ptdJSON = new JSONObject(shPaymentTypeDefinitionPostAttr.getStrValue());
+			
 			
 			ShEcomPaymentTypeDefinition shEcomPaymentTypeDefinition = shEcomPaymentTypeDefinitionRepository
 					.findById(ptdJSON.getString("id")).get();
 			paymentType.put("formPath", shEcomPaymentTypeDefinition.getFormPath());
 		}
 
+		// Product BEGIN
+		JSONObject product = settings.getJSONObject("product");
+		ShPost shProductPost = shPostRepository.findById(product.getString("post")).get();		
+		Map<String, ShPostAttr> shProductPostMap = shPostUtils.postToMap(shProductPost);	
+		
+		ShEcomProductBean shProduct = new ShEcomProductBean();
+		shProduct.setName(shProductPostMap.get(product.getString("name")).getStrValue());
+		shProduct.setDescription(shProductPostMap.get(product.getString("description")).getStrValue());
+		shProduct.setValue(Double.valueOf(shProductPostMap.get(product.getString("value")).getStrValue()));
+		
+		/// Product END
+		
 		final Context ctx = new Context();
 		ctx.setVariable("shPostTypeAttr", shPostTypeAttr);
+		ctx.setVariable("shProduct", shProduct);
 		ctx.setVariable("paymentTypes", paymentTypes);
 		return templateEngine.process("widget/payment/payment-widget", ctx);
 	}
