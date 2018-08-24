@@ -103,7 +103,6 @@ shioharaApp.controller('ShPostEditCtrl', [
 						.all(promiseFiles)
 						.then(
 								function(dataThatWasPassed) {
-									console.log("Post: " + $scope.shPost);
 				$scope.shPost.$update(function() {
 					angular
 					.forEach($scope.shPost.shPostAttrs,

@@ -40,10 +40,14 @@ public class ShPaymentSlip {
 		Set<ShPostTypeAttr> shPostTypeAttrs = shPost.getShPostType().getShPostTypeAttrs();
 		String paymentTypeId = null;
 		JSONObject ptdSettings = null;
+		JSONObject product = null;
 		JSONObject payer = null;
+		ShPost shProductPost = null;
 		for (ShPostTypeAttr shPostTypeAttr : shPostTypeAttrs) {
 			if (shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.PAYMENT)) {
 				JSONObject settings = new JSONObject(shPostTypeAttr.getWidgetSettings());
+				product = settings.getJSONObject("product");
+				shProductPost = shPostRepository.findById(product.getString("post")).get();
 				payer = settings.getJSONObject("payer");
 				JSONArray paymentTypes = settings.getJSONArray("paymentTypes");
 				for (int i = 0; i < paymentTypes.length(); i++) {
@@ -93,6 +97,8 @@ public class ShPaymentSlip {
 
 			// Quem paga o boleto
 			Map<String, ShPostAttr> shPostMap = shPostUtils.postToMap(shPost);
+			Map<String, ShPostAttr> shProductPostMap = shPostUtils.postToMap(shProductPost);
+			double paymentSlipValue = Double.parseDouble(shProductPostMap.get(product.getString("value")).getStrValue());
 
 			Pagador pagador = Pagador.novoPagador().comNome(shPostMap.get(payer.getString("name")).getStrValue())
 					.comDocumento(shPostMap.get(payer.getString("documentId")).getStrValue());
@@ -100,12 +106,12 @@ public class ShPaymentSlip {
 			Banco banco = new Itau();
 			String[] instructions = ptdSettings.getString("instructions").split("\n");
 			Boleto primeraParcela = Boleto.novoBoleto().comBanco(banco).comDatas(datas).comBeneficiario(beneficiario)
-					.comPagador(pagador).comValorBoleto("12.50")
+					.comPagador(pagador).comValorBoleto(paymentSlipValue)
 					.comNumeroDoDocumento(ptdSettings.getString("documentNumber")).comInstrucoes(instructions)
 					.comLocaisDePagamento(ptdSettings.getString("local"));
 
 			Boleto segundaParcela = Boleto.novoBoleto().comBanco(banco).comDatas(datas2nd).comBeneficiario(beneficiario)
-					.comPagador(pagador).comValorBoleto("12.50")
+					.comPagador(pagador).comValorBoleto(paymentSlipValue)
 					.comNumeroDoDocumento(ptdSettings.getString("documentNumber")).comInstrucoes(instructions)
 					.comLocaisDePagamento(ptdSettings.getString("local"));
 
