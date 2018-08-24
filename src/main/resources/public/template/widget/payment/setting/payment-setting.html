@@ -1,9 +1,81 @@
-<div ng-controller="ShWidgetPaymentTypeCtrl">
+<div ng-controller="ShWidgetPaymentTypeCtrl" ng-init="init(shPostTypeAttr)">
 	<table class="table" style="margin: 0px;">
 		<tr>
 			<td style="background: #F9F9F9; width: 20%;">
 				<p>
-					<b>Payer Name</b>
+					<b>Product Post Type</b>
+				</p>
+			</td>
+			<td><select class="form-control" ng-change="getProductPosts()"
+				ng-model="shPostTypeAttr.widgetSettingsObject.product.postType"
+				ng-options="postType.id as postType.title for postType in postTypes | orderBy: 'title'">
+					<option value="">-- Pick One --</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td style="background: #F9F9F9; width: 20%;">
+				<p>
+					<b>Product Name Field</b>
+				</p>
+			</td>
+			<td><select class="form-control"
+				ng-model="shPostTypeAttr.widgetSettingsObject.product.name"
+				ng-options="shPostTypeAttr.name as shPostTypeAttr.name for shPostTypeAttr in postTypeMap[shPostTypeAttr.widgetSettingsObject.product.postType].shPostTypeAttrs | orderBy: 'ordinal'">
+					<option value="">-- Pick One --</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td style="background: #F9F9F9; width: 20%;">
+				<p>
+					<b>Product Description Field</b>
+				</p>
+			</td>
+			<td><select class="form-control"
+				ng-model="shPostTypeAttr.widgetSettingsObject.product.description"
+				ng-options="shPostTypeAttr.name as shPostTypeAttr.name for shPostTypeAttr in postTypeMap[shPostTypeAttr.widgetSettingsObject.product.postType].shPostTypeAttrs | orderBy: 'ordinal'">
+					<option value="">-- Pick One --</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td style="background: #F9F9F9; width: 20%;">
+				<p>
+					<b>Product Value Field</b>
+				</p>
+			</td>
+			<td><select class="form-control"
+				ng-model="shPostTypeAttr.widgetSettingsObject.product.value"
+				ng-options="shPostTypeAttr.name as shPostTypeAttr.name for shPostTypeAttr in postTypeMap[shPostTypeAttr.widgetSettingsObject.product.postType].shPostTypeAttrs | orderBy: 'ordinal'">
+					<option value="">-- Pick One --</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td style="background: #F9F9F9; width: 20%;">
+				<p>
+					<b>Product Item Field</b>
+				</p>
+			</td>
+			<td><select class="form-control"
+				ng-model="shPostTypeAttr.widgetSettingsObject.product.field"
+				ng-options="shPostTypeAttr.name as shPostTypeAttr.name for shPostTypeAttr in shPostType.shPostTypeAttrs | orderBy: 'ordinal'">
+					<option value="">-- Pick One --</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td style="background: #F9F9F9; width: 20%;">
+				<p>
+					<b>Product Item Select</b>
+				</p>
+			</td>
+			<td><select class="form-control"
+				ng-model="shPostTypeAttr.widgetSettingsObject.product.post"
+				ng-options="productPost.id as productPost.title for productPost in productPosts">
+					<option value="">-- Pick One --</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td style="background: #F9F9F9; width: 20%;">
+				<p>
+					<b>Payer Name Field</b>
 				</p>
 			</td>
 			<td><select class="form-control"
@@ -15,7 +87,7 @@
 		<tr>
 			<td style="background: #F9F9F9; width: 20%;">
 				<p>
-					<b>Payer Document ID</b>
+					<b>Payer Document ID Field</b>
 				</p>
 			</td>
 			<td><select class="form-control"
