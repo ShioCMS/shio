@@ -117,11 +117,14 @@
 							<i class="fa fa-bars" aria-hidden="true"></i>
 							{{paymentType.ordinal}} <span style="display: none;">{{paymentType.ordinal=$index+1}}</span>
 						</div>
+						<div class="col-lg-3 col-md-3 col-sm-3 hidden-xs"
+							style="padding: 0px">{{paymentType.name}}</div>
+							<div class="col-lg-3 col-md-3 col-sm-3 hidden-xs"
+							style="padding: 0px">{{paymentType.identifier}}</div>
 						<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6"
 							style="padding: 0px">{{
 							$parent.$parent.getPaymentType(paymentType.id).title }}</div>
-						<div class="col-lg-3 col-md-3 col-sm-3 hidden-xs"
-							style="padding: 0px">{{paymentType.name}}</div>
+						
 
 					</div>
 					</uib-accordion-heading>

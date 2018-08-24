@@ -3,7 +3,7 @@
 	<label for="parcelas"> Parcelas </label> <select class="form-control"
 		name="parcelas" id="parcelas">
 
-		<option value="01">1x de 25,00</option>
-		<option value="02">2x de 12,50</option>
+		<option value="01" th:text="'1x de R$ ' + ${#numbers.formatDecimal(shProduct.value, 0, 'POINT', 2, 'COMMA')}"></option>
+		<option value="02" th:text="'2x de R$' + ${#numbers.formatDecimal(shProduct.value/2, 0, 'POINT', 2, 'COMMA')}"></option>
 	</select>
 </div>

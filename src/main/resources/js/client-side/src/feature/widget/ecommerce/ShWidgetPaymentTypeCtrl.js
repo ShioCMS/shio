@@ -94,7 +94,9 @@ shioharaApp
 								var paymentTypeId = {};
 								paymentTypeId.id = paymentType.id;
 								paymentTypeId.name = "PaymentType "
-										+ (shPostTypeAttr.widgetSettingsObject.paymentTypes.length + 1)
+										+ (shPostTypeAttr.widgetSettingsObject.paymentTypes.length + 1);
+								paymentTypeId.identifier = "PAYMENT_TYPE_"
+									+ (shPostTypeAttr.widgetSettingsObject.paymentTypes.length + 1);
 								shPostTypeAttr.widgetSettingsObject.paymentTypes
 										.push(paymentTypeId);
 							}
