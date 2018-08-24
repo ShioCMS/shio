@@ -38,6 +38,9 @@ public class ShEcomPaymentTypeDefinition {
 
 	@Column(name = "setting_path")
 	private String settingPath;
+	
+	@Column(name = "form_path")
+	private String formPath;
 
 	// bi-directional many-to-one association to ShPost
 	@OneToMany(mappedBy = "shEcomPaymentTypeDefinition", orphanRemoval = true)
@@ -90,6 +93,14 @@ public class ShEcomPaymentTypeDefinition {
 
 	public void setDate(Date date) {
 		this.date = date;
+	}
+
+	public String getFormPath() {
+		return formPath;
+	}
+
+	public void setFormPath(String formPath) {
+		this.formPath = formPath;
 	}
 
 }
