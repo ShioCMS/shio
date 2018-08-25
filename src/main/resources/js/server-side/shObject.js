@@ -31,6 +31,13 @@ viglet.shiohara.shObject = function() {
 		return shFormComponent.byPostType(shPostTypeName, request);
 	},
 	/**
+	 * @desc Returns Form from PostType And Folder
+	 * @public
+	 */
+	this.formComponentByFolder = function(shPostTypeName, folderId) {
+		return shFormComponent.byPostTypeAndFolder(shPostTypeName, folderId, request);
+	},
+	/**
 	 * @desc Returns Search Result
 	 * @public
 	 */

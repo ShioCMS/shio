@@ -32,14 +32,11 @@ shioharaApp.controller('ShPostEditCtrl', [
 				angular
 				.forEach($scope.shPost.shPostAttrs,
 						function(shPostAttr, key) {
-					//console.log("Type: " + shPostAttr.shPostTypeAttr.shWidget.type);
 							if (angular.equals(shPostAttr.shPostTypeAttr.shWidget.type, "JSON")) {
 								shPostAttr.strValue =  JSON.parse(shPostAttr.strValue);
-								console.log(shPostAttr.strValue);
 							}
 				});
 				
-				shPostAttr.strValue =  JSON.stringify(shPostAttr.strValue);
 				if ( $scope.shPost.shFolder != null) {
 					
 					$scope.folderId = $scope.shPost.shFolder.id;
