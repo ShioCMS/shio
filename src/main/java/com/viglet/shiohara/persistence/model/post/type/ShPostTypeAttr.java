@@ -72,6 +72,7 @@ public class ShPostTypeAttr implements Serializable {
 	@JoinColumn(name = "widget_id")
 	private ShWidget shWidget;
 
+	@Column(name = "widget_settings", length = 5 * 1024 * 1024) // 5Mb
 	private String widgetSettings;
 	
 	// bi-directional many-to-one association to ShPostTypeAttr

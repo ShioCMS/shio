@@ -3,12 +3,15 @@ package com.viglet.shiohara.widget;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
+import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 
 @Component
@@ -16,7 +19,7 @@ public class ShComboBoxWidget implements ShWidgetImplementation {
 	@Autowired
 	private SpringTemplateEngine templateEngine;
 
-	public String render(ShPostTypeAttr shPostTypeAttr) {
+	public String render(ShPostTypeAttr shPostTypeAttr, ShObject shObject) {
 
 		String widgetSettings = shPostTypeAttr.getWidgetSettings();
 		JSONObject settings = new JSONObject(widgetSettings);
@@ -34,5 +37,11 @@ public class ShComboBoxWidget implements ShWidgetImplementation {
 		ctx.setVariable("choices", choices);
 
 		return templateEngine.process("widget/combo-box/combo-box-widget", ctx);
+	}
+
+	@Override
+	public boolean validateForm(HttpServletRequest request, ShPostTypeAttr shPostTypeAttr) {
+		// TODO Auto-generated method stub
+		return true;
 	}
 }

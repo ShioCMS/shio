@@ -8,6 +8,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
@@ -26,39 +28,31 @@ public class ShEcomPaymentType {
 
 	@Column(name = "id", updatable = false, nullable = false)
 	private String id;
-	
-	private String name;
-	
-	private String description;
-	
-	private Date date;
-	
-	@Column(name = "class_name")
-	private String className;
 
-	@Column(name = "setting_path")
-	private String settingPath;
+	private String name;
+
+	private String description;
+
+	private Date date;
+
+	private String settings;
+
+	@ManyToOne
+	@JoinColumn(name = "payment_type_definition_id")
+	private ShEcomPaymentTypeDefinition shEcomPaymentTypeDefinition;
 
 	// bi-directional many-to-one association to ShFolder
 	@OneToMany(mappedBy = "shEcomPaymentType", orphanRemoval = true)
 	@Cascade({ CascadeType.ALL })
 	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
 	private Set<ShEcomOrder> shEcomOrders = new HashSet<ShEcomOrder>();
-
+	
 	public String getId() {
 		return id;
 	}
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	public Set<ShEcomOrder> getShEcomOrders() {
-		return shEcomOrders;
-	}
-
-	public void setShEcomOrders(Set<ShEcomOrder> shEcomOrders) {
-		this.shEcomOrders = shEcomOrders;
 	}
 
 	public String getName() {
@@ -77,22 +71,6 @@ public class ShEcomPaymentType {
 		this.description = description;
 	}
 
-	public String getClassName() {
-		return className;
-	}
-
-	public void setClassName(String className) {
-		this.className = className;
-	}
-
-	public String getSettingPath() {
-		return settingPath;
-	}
-
-	public void setSettingPath(String settingPath) {
-		this.settingPath = settingPath;
-	}
-
 	public Date getDate() {
 		return date;
 	}
@@ -101,5 +79,28 @@ public class ShEcomPaymentType {
 		this.date = date;
 	}
 
-	
+	public String getSettings() {
+		return settings;
+	}
+
+	public void setSettings(String settings) {
+		this.settings = settings;
+	}
+
+	public ShEcomPaymentTypeDefinition getShEcomPaymentTypeDefinition() {
+		return shEcomPaymentTypeDefinition;
+	}
+
+	public void setShEcomPaymentTypeDefinition(ShEcomPaymentTypeDefinition shEcomPaymentTypeDefinition) {
+		this.shEcomPaymentTypeDefinition = shEcomPaymentTypeDefinition;
+	}
+
+	public Set<ShEcomOrder> getShEcomOrders() {
+		return shEcomOrders;
+	}
+
+	public void setShEcomOrders(Set<ShEcomOrder> shEcomOrders) {
+		this.shEcomOrders = shEcomOrders;
+	}
+
 }

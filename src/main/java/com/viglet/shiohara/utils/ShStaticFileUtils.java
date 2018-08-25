@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
+import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.site.ShSite;
+import com.viglet.shiohara.post.type.ShSystemPostType;
 
 @Component
 public class ShStaticFileUtils {
@@ -35,6 +37,19 @@ public class ShStaticFileUtils {
 		if (directoryPath != null) {
 			file = new File(directoryPath.getAbsolutePath().concat(File.separator + fileName));
 
+		}
+		return file;
+	}
+
+	public File filePath(ShPost shPost) {
+		File file = null;
+		if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE)) {
+			File directoryPath = this.dirPath(shPost.getShFolder());
+
+			if (directoryPath != null) {
+				file = new File(directoryPath.getAbsolutePath().concat(File.separator + shPost.getTitle()));
+
+			}
 		}
 		return file;
 	}

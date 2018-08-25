@@ -26,7 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.HandlerMapping;
 
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.object.ShObject;
@@ -86,8 +85,8 @@ public class ShSitesContextComponent {
 		return folderPath;
 	}
 
-	public ArrayList<String> contentPathFactory(int contextPathPosition, HttpServletRequest request) {
-		String url = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
+	public ArrayList<String> contentPathFactory(String url) {
+		int contextPathPosition = 5;
 		String[] contexts = url.split("/");
 		ArrayList<String> contentPath = new ArrayList<String>();
 
@@ -125,6 +124,9 @@ public class ShSitesContextComponent {
 		if (objectName != null) {
 			ShFolder shParentFolder = shFolder;
 			shObjectItem = shPostRepository.findByShFolderAndFurl(shParentFolder, objectName);
+			if (shObjectItem == null) {
+				shObjectItem = shPostRepository.findByShFolderAndTitle(shParentFolder, objectName);
+			}
 		}
 
 		if (shObjectItem != null) {
@@ -136,7 +138,6 @@ public class ShSitesContextComponent {
 			}
 			ShFolder shFolderItem = shFolderUtils.folderFromPath(shSite, folderPathCurrent);
 			if (shFolderItem != null) {
-				// System.out.println("shFolderItem is not null");
 				ShPost shFolderIndex = shPostRepository.findByShFolderAndFurl(shFolderItem, "index");
 
 				if (shFolderIndex != null) {
@@ -253,23 +254,23 @@ public class ShSitesContextComponent {
 
 		for (Element element : elements) {
 			element.addClass("sh-region");
-			
+
 			String regionAttr = element.attr("sh-region");
 
 			List<ShPost> shRegionPosts = shPostRepository.findByTitle(regionAttr);
-			
+
 			Map<String, ShPostAttr> shRegionPostMap = null;
 
 			if (shRegionPosts != null) {
-				
+
 				for (ShPost shRegionPost : shRegionPosts) {
-					element.attr("id",shRegionPost.getId());
+					element.attr("id", shRegionPost.getId());
 					if (shPostUtils.getSite(shRegionPost).getId().equals(shSite.getId())) {
 						shRegionPostMap = shPostUtils.postToMap(shRegionPost);
 
 					}
 				}
-				
+
 			}
 
 			if (shRegionPostMap != null) {

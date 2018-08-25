@@ -8,6 +8,10 @@ shPreviewApp.controller('ShPreviewCtrl', [
 		"$window",
 		function($scope, $state, $stateParams, $sce, shAPIServerService, $http,
 				$window) {
+			angular.element('#myiframe').load(function() {
+				  console.log(angular.element('#myiframe')[0].contentDocument.URL);
+				  
+				});
 			$scope.objectId = $stateParams.objectId;
 			$scope.objectInfo = null;
 			$scope.actionButton = null;

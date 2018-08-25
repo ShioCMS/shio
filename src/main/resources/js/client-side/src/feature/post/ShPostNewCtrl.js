@@ -61,11 +61,22 @@ shioharaApp.controller('ShPostNewCtrl', [
             $scope.numberOfFileWidgets = 0;
             var postType = $scope.shPost.shPostType;
             angular.forEach($scope.shPost.shPostAttrs, function (shPostAttr, key) {
+				if (angular.equals(shPostAttr.shPostTypeAttr.shWidget.type, "JSON")) {
+					shPostAttr.strValue =  JSON.stringify(shPostAttr.strValue);
+				}
+            	
                 promiseFiles.push(uploadFile(shPostAttr, key, postType));
             });
             $q.all(promiseFiles).then(function (dataThatWasPassed) {
                 if ($scope.shPost.id != null) {
                     $scope.shPost.$update(function () {
+                    	angular
+    					.forEach($scope.shPost.shPostAttrs,
+    					function(shPostAttr, key) {					
+    								if (angular.equals(shPostAttr.shPostTypeAttr.shWidget.type, "JSON")) {
+    									shPostAttr.strValue =  JSON.parse(shPostAttr.strValue);
+    								}
+    					});
                         Notification.warning('The ' + $scope.shPost.title + ' Post was update.');
                         // $state.go('content');
                     });
@@ -75,6 +86,13 @@ shioharaApp.controller('ShPostNewCtrl', [
                     $scope.shPost.shFolder = $scope.shFolder;
                     shPostResource.save($scope.shPost, function (response) {
                         $scope.shPost = response;
+                        angular
+    					.forEach($scope.shPost.shPostAttrs,
+    					function(shPostAttr, key) {					
+    								if (angular.equals(shPostAttr.shPostTypeAttr.shWidget.type, "JSON")) {
+    									shPostAttr.strValue =  JSON.parse(shPostAttr.strValue);
+    								}
+    					});
                         Notification.warning('The ' + $scope.shPost.title + ' Post was created.');
                     });
                 }
