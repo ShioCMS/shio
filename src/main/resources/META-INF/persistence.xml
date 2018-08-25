@@ -5,11 +5,14 @@
 	<persistence-unit name="shiohara-app">
 		<provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
 		<!-- <non-jta-data-source>jdbc/ShioharaDS</non-jta-data-source> -->
+		<class>com.viglet.shiohara.persistence.model.ecommerce.ShEcomOrder</class>
+		<class>com.viglet.shiohara.persistence.model.ecommerce.ShEcomPaymentType</class>
 		<class>com.viglet.shiohara.persistence.model.folder.ShFolder</class>
-		<class>com.viglet.shiohara.persistence.model.globalid.ShGlobalId</class>
+		<class>com.viglet.shiohara.persistence.model.history.ShHistory</class>
 		<class>com.viglet.shiohara.persistence.model.object.ShObject</class>
 		<class>com.viglet.shiohara.persistence.model.post.ShPost</class>
 		<class>com.viglet.shiohara.persistence.model.post.ShPostAttr</class>
+		<class>com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem</class>
 		<class>com.viglet.shiohara.persistence.model.post.type.ShPostType</class>
 		<class>com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr</class>
 		<class>com.viglet.shiohara.persistence.model.reference.ShReference</class>

@@ -83,6 +83,13 @@ shioharaApp.config([
 				data : {
 					pageTitle : 'E-Commerce Payment Types | Viglet Shiohara'
 				}
+			}).state('content.ecommerce.payment-new', {
+				url : '/payment/new',
+				templateUrl : 'template/ecommerce/payment/ecommerce-payment-new.html',
+				controller :'ShECommercePaymentNewCtrl',				
+				data : {
+					pageTitle : 'E-Commerce Payment Types | Viglet Shiohara'
+				}
 			}).state('content.ecommerce.setting', {
 				url : '/setting',
 				templateUrl : 'template/ecommerce/ecommerce-setting.html',

@@ -1,13 +1,18 @@
 ## 0.3.2
 
 #### NEW FEATURES
+* MongoDB
 * Show content files from /sites URL: Response file with mime type
-* E-Commerce: reCAPTCHA Widget
+* E-Commerce: reCAPTCHA Field Type
+* E-Commerce: Payment Field Type
 * E-Commerce: Payment Types and Settings
 * Viglet Turing Integration: Indexing Posts in Semantic Navigation
 * InContext Editing using Float Menu to Regions
 * Site Form: Create Forms into Site and save as Posts into Shiohara CMS
 * Combo Box Field Type
+
+#### IMPROVEMENTS
+* Spring Boot 2.0.4 and Gradle 4.9
 
 ## 0.3.1 (July 06, 2018)
 

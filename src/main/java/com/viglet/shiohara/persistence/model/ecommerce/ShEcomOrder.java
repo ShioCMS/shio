@@ -19,7 +19,13 @@ public class ShEcomOrder {
 	@Column(name = "id", updatable = false, nullable = false)
 	private String id;
 
+	private String name;
+	
 	private String description;
+
+	private String product;
+
+	private double value;
 
 	@ManyToOne
 	@JoinColumn(name = "payment_type_id")
@@ -48,7 +54,29 @@ public class ShEcomOrder {
 	public void setShEcomPaymentType(ShEcomPaymentType shEcomPaymentType) {
 		this.shEcomPaymentType = shEcomPaymentType;
 	}
-	
-	
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getProduct() {
+		return product;
+	}
+
+	public void setProduct(String product) {
+		this.product = product;
+	}
+
+	public double getValue() {
+		return value;
+	}
+
+	public void setValue(double value) {
+		this.value = value;
+	}
 
 }

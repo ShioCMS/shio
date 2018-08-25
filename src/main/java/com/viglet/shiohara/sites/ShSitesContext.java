@@ -2,7 +2,6 @@ package com.viglet.shiohara.sites;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -11,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.activation.MimetypesFileTypeMap;
+import javax.annotation.Resource;
 import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,18 +19,17 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.HandlerMapping;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.viglet.shiohara.api.post.ShPostAPI;
 import com.viglet.shiohara.cache.ShCacheManager;
 import com.viglet.shiohara.cache.ShCachedObject;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
-import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
@@ -40,16 +39,19 @@ import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
-import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
 import com.viglet.shiohara.post.type.ShSystemPostType;
 import com.viglet.shiohara.post.type.ShSystemPostTypeAttr;
 import com.viglet.shiohara.utils.ShFolderUtils;
 import com.viglet.shiohara.utils.ShPostUtils;
 import com.viglet.shiohara.utils.ShSiteUtils;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
+import com.viglet.shiohara.widget.ShWidgetImplementation;
+import com.viglet.shiohara.widget.ecommerce.ShPaymentWidget;
 
 @Controller
 public class ShSitesContext {
+	@Resource
+	private ApplicationContext applicationContext;
 	@Autowired
 	private ShPostTypeRepository shPostTypeRepository;
 	@Autowired
@@ -58,8 +60,6 @@ public class ShSitesContext {
 	private ShPostRepository shPostRepository;
 	@Autowired
 	private ShFolderRepository shFolderRepository;
-	@Autowired
-	private ShSiteRepository shSiteRepository;
 	@Autowired
 	private ShFolderUtils shFolderUtils;
 	@Autowired
@@ -72,152 +72,121 @@ public class ShSitesContext {
 	private ShPostAPI shPostAPI;
 	@Autowired
 	private ShStaticFileUtils shStaticFileUtils;
+	@Autowired
+	private ShSitesContextURL shSitesContextURL;
+	@Autowired
+	private ShPaymentWidget shPaymentWidget;
 
 	@PostMapping("/sites/**")
-	private void sitesPostForm(HttpServletRequest request, HttpServletResponse response)
-			throws IOException, ScriptException {
+	private RedirectView sitesPostForm(HttpServletRequest request, HttpServletResponse response) throws IOException,
+			ScriptException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+		shSitesContextURL.init(request, response);
 
-		ShSite shSite = shSiteRepository.findByName("Viglet");
-		// System.out.println(shSite.getName());
-		ShFolder shFolder = shFolderRepository.findById("b19d78e0-8f78-4396-b212-d1fd7b29c2c2").get();
-		// System.out.println(shFolder.getName());
-		String shPostTypeName = request.getParameter("__sh-post-type");
-		// System.out.println(shPostTypeName);
+		this.siteContextPost(shSitesContextURL, request, response);
+		RedirectView redirectView = new RedirectView(
+				new String((request.getRequestURL() + "/success").getBytes("UTF-8"), "ISO-8859-1"));
+		redirectView.setHttp10Compatible(false);
+		return redirectView;
+	}
 
-		// System.out.println(textValue);
-		ShPostType shPostType = shPostTypeRepository.findByName(shPostTypeName);
-		// System.out.println(shPostType.getName());
-		Enumeration<String> parameters = request.getParameterNames();
-		if (shPostTypeName != null) {
-			ShPost shPost = new ShPost();
-			shPost.setDate(new Date());
-			shPost.setOwner("anonymous");
-			shPost.setShFolder(shFolder);
-
-			shPost.setShPostType(shPostType);
-			Set<ShPostAttr> shPostAttrs = new HashSet<ShPostAttr>();
-			while (parameters.hasMoreElements()) {
-				String param = parameters.nextElement();
-				String paramValue = request.getParameter(param);
-
-				if (param.startsWith("__sh-post-type-attr-")) {
-					String attribute = param.replaceFirst("__sh-post-type-attr-", "");
-
-					ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType,
-							attribute);
-					// System.out.println(shPostTypeAttr.getName());
-
-					ShPostAttr shPostAttr = new ShPostAttr();
-					shPostAttr.setShPost(shPost);
-					shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-					shPostAttr.setStrValue(paramValue);
-
-					shPostAttrs.add(shPostAttr);
+	public byte[] siteContextPost(ShSitesContextURL shSitesContextURL, HttpServletRequest request,
+			HttpServletResponse response) throws IOException, ScriptException, InstantiationException,
+			IllegalAccessException, ClassNotFoundException {
+		ShPost shPost = null;
+		if (request.getParameter("__sh-post-type-attr-__FORM_FOLDER_ID") != null
+				|| shSitesContextURL.getShObject() instanceof ShFolder
+				|| (shSitesContextURL.getShObject() instanceof ShPost && ((ShPost) shSitesContextURL.getShObject())
+						.getShPostType().getName().equals(ShSystemPostType.FOLDER_INDEX))) {
+			ShFolder shFolder = null;
+			
+			if (request.getParameter("__sh-post-type-attr-__FORM_FOLDER_ID") != null) {
+				shFolder = shFolderRepository.findById(request.getParameter("__sh-post-type-attr-__FORM_FOLDER_ID"))
+						.get();
+			} else {
+				if (shSitesContextURL.getShObject() instanceof ShFolder) {
+					shFolder = (ShFolder) shSitesContextURL.getShObject();
+				} else {
+					shFolder = ((ShPost) shSitesContextURL.getShObject()).getShFolder();
 				}
-
 			}
-			shPost.setShPostAttrs(shPostAttrs);
-			shPostAPI.postSave(shPost);
+			String shPostTypeName = request.getParameter("__sh-post-type");
+			ShPostType shPostType = shPostTypeRepository.findByName(shPostTypeName);
+
+			Enumeration<String> parameters = request.getParameterNames();
+			if (shPostTypeName != null) {
+				shPost = new ShPost();
+				shPost.setDate(new Date());
+				shPost.setOwner("anonymous");
+				shPost.setShFolder(shFolder);
+
+				shPost.setShPostType(shPostType);
+				Set<ShPostAttr> shPostAttrs = new HashSet<ShPostAttr>();
+				while (parameters.hasMoreElements()) {
+					String param = parameters.nextElement();
+					String paramValue = request.getParameter(param);
+
+					if (param.startsWith("__sh-post-type-attr-")
+							&& !param.equals("__sh-post-type-attr-__FORM_FOLDER_ID")) {
+						String attribute = param.replaceFirst("__sh-post-type-attr-", "");
+
+						ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType,
+								attribute);
+
+						String className = shPostTypeAttr.getShWidget().getClassName();
+						ShWidgetImplementation object = (ShWidgetImplementation) Class.forName(className).newInstance();
+						applicationContext.getAutowireCapableBeanFactory().autowireBean(object);
+
+						@SuppressWarnings("unused")
+						boolean attrStatus = object.validateForm(request, shPostTypeAttr);
+						// TODO: Create validation Form logic
+
+						ShPostAttr shPostAttr = new ShPostAttr();
+						shPostAttr.setShPost(shPost);
+						shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+						shPostAttr.setStrValue(paramValue);
+
+						shPostAttrs.add(shPostAttr);
+					}
+
+				}
+				shPost.setShPostAttrs(shPostAttrs);
+				shPostAPI.postSave(shPost);
+			}
 		}
+
+		shPaymentWidget.postRender(shPost, shSitesContextURL);
 		this.sitesFullGeneric(request, response);
+
+		return null;
 	}
 
 	@RequestMapping("/sites/**")
 	private void sitesFullGeneric(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ScriptException {
 
-		String shXSiteName = request.getHeader("x-sh-site");
-		boolean shXNoCache = request.getHeader("x-sh-nocache") != null && request.getHeader("x-sh-nocache").equals("1")
-				? true
-				: false;
 		final int cacheMinutes = 1;
-		if (shXSiteName != null) {
-			String shFormat = "default";
-			String shLocale = "en-us";
-			String contextURL = "/sites/" + shXSiteName + "/" + shFormat + "/" + shLocale
-					+ ((String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE))
-							.replaceAll("^/sites/", "/");
-			ShCachedObject shCacheObject = (ShCachedObject) ShCacheManager.getCache(contextURL);
-			if (shCacheObject != null) {
-				String extension = FilenameUtils.getExtension(contextURL);
 
-				if (extension.isEmpty() || extension == null) {
-					response.setContentType(MediaType.TEXT_HTML_VALUE);
-				} else {
-					MimetypesFileTypeMap mimetypesFileTypeMap = new MimetypesFileTypeMap();
-					response.setContentType(mimetypesFileTypeMap.getContentType(contextURL));
-				}
-				response.getOutputStream().write((byte[]) shCacheObject.object);				
+		shSitesContextURL.init(request, response);
+		if (shSitesContextURL.getShSite() != null) {
+			if (!shSitesContextURL.isCacheEnabled()) {
+				this.siteContext(shSitesContextURL, request, response);
 			} else {
-				// System.out.println("Is not cached " + contextURL);
-				byte[] html = this.siteContext(shXSiteName, "default", "en-us", 2, request, response);
-				shCacheObject = new ShCachedObject(html, contextURL, cacheMinutes);
-				/* Place the object into the cache! */
-				ShCacheManager.putCache(shCacheObject);
-			}
-		} else {
-
-			@SuppressWarnings("unused")
-			String shContext = null;
-			String contextURL = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
-			String shSiteName = null;
-			String shFormat = null;
-			String shLocale = null;
-			String[] contexts = contextURL.split("/");
-
-			ShCachedObject shCacheObject = (ShCachedObject) ShCacheManager.getCache(contextURL);
-			if (shXNoCache) {
-				for (int i = 1; i < contexts.length; i++) {
-					switch (i) {
-					case 1:
-						shContext = contexts[i];
-						break;
-					case 2:
-						shSiteName = contexts[i];
-						break;
-					case 3:
-						shFormat = contexts[i];
-						break;
-					case 4:
-						shLocale = contexts[i];
-						break;
-					}
-				}
-				this.siteContext(shSiteName, shFormat, shLocale, 5, request, response);
-			} else {
+				ShCachedObject shCacheObject = (ShCachedObject) ShCacheManager
+						.getCache(shSitesContextURL.getContextURL());
 				if (shCacheObject != null) {
-					// System.out.println("Is cached " + contextURL);
-					String extension = FilenameUtils.getExtension(contextURL);
+					String extension = FilenameUtils.getExtension(shSitesContextURL.getContextURL());
 
 					if (extension.isEmpty() || extension == null) {
 						response.setContentType(MediaType.TEXT_HTML_VALUE);
 					} else {
 						MimetypesFileTypeMap mimetypesFileTypeMap = new MimetypesFileTypeMap();
-						response.setContentType(mimetypesFileTypeMap.getContentType(contextURL));
+						response.setContentType(mimetypesFileTypeMap.getContentType(shSitesContextURL.getContextURL()));
 					}
 					response.getOutputStream().write((byte[]) shCacheObject.object);
 				} else {
-
-					for (int i = 1; i < contexts.length; i++) {
-						switch (i) {
-						case 1:
-							shContext = contexts[i];
-							break;
-						case 2:
-							shSiteName = contexts[i];
-							break;
-						case 3:
-							shFormat = contexts[i];
-							break;
-						case 4:
-							shLocale = contexts[i];
-							break;
-						}
-					}
-					// System.out.println("Is not cached " + contextURL);
-					byte[] html = this.siteContext(shSiteName, shFormat, shLocale, 5, request, response);
+					byte[] html = this.siteContext(shSitesContextURL, request, response);
 					if (html != null) {
-						shCacheObject = new ShCachedObject(html, contextURL, cacheMinutes);
+						shCacheObject = new ShCachedObject(html, shSitesContextURL.getContextURL(), cacheMinutes);
 						/* Place the object into the cache! */
 						ShCacheManager.putCache(shCacheObject);
 					}
@@ -226,30 +195,25 @@ public class ShSitesContext {
 		}
 	}
 
-	public byte[] siteContext(String shSiteName, String shFormat, String shLocale, int contextPathPosition,
-			HttpServletRequest request, HttpServletResponse response) throws IOException, ScriptException {
-
-		ShSite shSite = shSiteRepository.findByFurl(shSiteName);
-
-		ArrayList<String> contentPath = shSitesContextComponent.contentPathFactory(contextPathPosition, request);
-
-		String objectName = shSitesContextComponent.objectNameFactory(contentPath);
-
-		String folderPath = shSitesContextComponent.folderPathFactory(contentPath);
+	public byte[] siteContext(ShSitesContextURL shSitesContextURL, HttpServletRequest request,
+			HttpServletResponse response) throws IOException, ScriptException {
+		ShSite shSite = shSitesContextURL.getShSite();
 		File staticFile = null;
-		if (shSite != null && folderPath != null && objectName != null) {
-			staticFile = new File(shStaticFileUtils.getFileSource().getAbsolutePath() + File.separator
-					+ shSite.getName() + File.separator + "Home" + folderPath + objectName);
-		}
-		if (staticFile != null && staticFile.exists()) {
-			byte[] binaryFile = FileUtils.readFileToByteArray(staticFile);
-			MimetypesFileTypeMap mimetypesFileTypeMap = new MimetypesFileTypeMap();
-			response.setContentType(mimetypesFileTypeMap.getContentType(staticFile));
-			response.getOutputStream().write(binaryFile);
-			return binaryFile;
+		if (shSitesContextURL.getShObject() != null && shSitesContextURL.getShObject() instanceof ShPost
+				&& ((ShPost) shSitesContextURL.getShObject()).getShPostType().getName().equals(ShSystemPostType.FILE)) {
+
+			ShPost shPost = (ShPost) shSitesContextURL.getShObject();
+			staticFile = shStaticFileUtils.filePath(shPost);
+			if (staticFile != null && staticFile.exists()) {
+
+				byte[] binaryFile = FileUtils.readFileToByteArray(staticFile);
+				MimetypesFileTypeMap mimetypesFileTypeMap = new MimetypesFileTypeMap();
+				response.setContentType(mimetypesFileTypeMap.getContentType(staticFile));
+				response.getOutputStream().write(binaryFile);
+				return binaryFile;
+			} else
+				return null;
 		} else {
-			ShFolder shFolder = shFolderUtils.folderFromPath(shSite, folderPath);
-			ShObject shObjectItem = shSitesContextComponent.shObjectItemFactory(shSite, shFolder, objectName);
 
 			String javascriptVar = null;
 
@@ -258,8 +222,8 @@ public class ShSitesContext {
 			String pageLayoutJS = null;
 
 			// Folder
-			if (shObjectItem instanceof ShFolder) {
-				ShFolder shFolderItem = (ShFolder) shObjectItem;
+			if (shSitesContextURL.getShObject() instanceof ShFolder) {
+				ShFolder shFolderItem = (ShFolder) shSitesContextURL.getShObject();
 
 				Map<String, ShPostAttr> shFolderPageLayoutMap = shSitesContextComponent
 						.shFolderPageLayoutMapFactory(shFolderItem, shSite);
@@ -285,8 +249,8 @@ public class ShSitesContext {
 				javascriptVar = "var shContent = " + shFolderItemAttrs.toString() + ";";
 			}
 			// Post
-			else if (shObjectItem instanceof ShPost) {
-				ShPost shPostItem = (ShPost) shObjectItem;
+			else if (shSitesContextURL.getShObject() instanceof ShPost) {
+				ShPost shPostItem = (ShPost) shSitesContextURL.getShObject();
 
 				if (shPostItem.getShPostType().getName().equals(ShSystemPostType.FOLDER_INDEX)) {
 					// Folder Index
