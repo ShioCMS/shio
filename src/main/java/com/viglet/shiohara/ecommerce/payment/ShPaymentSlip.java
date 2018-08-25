@@ -17,6 +17,7 @@ import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
+import com.viglet.shiohara.sites.ShSitesContextURL;
 import com.viglet.shiohara.utils.ShPostUtils;
 import com.viglet.shiohara.widget.ShSystemWidget;
 
@@ -36,7 +37,8 @@ public class ShPaymentSlip {
 	@Autowired
 	private ShPostRepository shPostRepository;
 
-	public void payment(ShPost shPost, HttpServletResponse response) throws IOException {
+	public void payment(ShPost shPost, ShSitesContextURL shSitesContextURL) throws IOException {
+
 		Set<ShPostTypeAttr> shPostTypeAttrs = shPost.getShPostType().getShPostTypeAttrs();
 		String paymentTypeId = null;
 		JSONObject ptdSettings = null;
@@ -47,7 +49,12 @@ public class ShPaymentSlip {
 			if (shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.PAYMENT)) {
 				JSONObject settings = new JSONObject(shPostTypeAttr.getWidgetSettings());
 				product = settings.getJSONObject("product");
-				shProductPost = shPostRepository.findById(product.getString("post")).get();
+
+				if (shSitesContextURL.getShObject() instanceof ShPost) {
+					shProductPost = (ShPost) shSitesContextURL.getShObject();
+				} else {
+					shProductPost = shPostRepository.findById(product.getString("post")).get();
+				}
 				payer = settings.getJSONObject("payer");
 				JSONArray paymentTypes = settings.getJSONArray("paymentTypes");
 				for (int i = 0; i < paymentTypes.length(); i++) {
@@ -98,7 +105,8 @@ public class ShPaymentSlip {
 			// Quem paga o boleto
 			Map<String, ShPostAttr> shPostMap = shPostUtils.postToMap(shPost);
 			Map<String, ShPostAttr> shProductPostMap = shPostUtils.postToMap(shProductPost);
-			double paymentSlipValue = Double.parseDouble(shProductPostMap.get(product.getString("value")).getStrValue());
+			double paymentSlipValue = Double
+					.parseDouble(shProductPostMap.get(product.getString("value")).getStrValue());
 
 			Pagador pagador = Pagador.novoPagador().comNome(shPostMap.get(payer.getString("name")).getStrValue())
 					.comDocumento(shPostMap.get(payer.getString("documentId")).getStrValue());
@@ -110,17 +118,18 @@ public class ShPaymentSlip {
 					.comNumeroDoDocumento(ptdSettings.getString("documentNumber")).comInstrucoes(instructions)
 					.comLocaisDePagamento(ptdSettings.getString("local"));
 
-			Boleto segundaParcela = Boleto.novoBoleto().comBanco(banco).comDatas(datas2nd).comBeneficiario(beneficiario)
+		/*	Boleto segundaParcela = Boleto.novoBoleto().comBanco(banco).comDatas(datas2nd).comBeneficiario(beneficiario)
 					.comPagador(pagador).comValorBoleto(paymentSlipValue)
 					.comNumeroDoDocumento(ptdSettings.getString("documentNumber")).comInstrucoes(instructions)
-					.comLocaisDePagamento(ptdSettings.getString("local"));
+					.comLocaisDePagamento(ptdSettings.getString("local"));*/
 
-			Boleto[] boletos = { primeraParcela, segundaParcela };
+			Boleto[] boletos = { primeraParcela };
 			GeradorDeBoleto gerador = new GeradorDeBoleto(boletos);
 
 			byte[] bPDF = gerador.geraPDF();
 
 			MimetypesFileTypeMap mimetypesFileTypeMap = new MimetypesFileTypeMap();
+			HttpServletResponse response = shSitesContextURL.getResponse();
 			response.setContentType(mimetypesFileTypeMap.getContentType("PaymentSlip.pdf"));
 			response.setHeader("Content-disposition", "attachment; filename=PaymentSlip.pdf");
 			response.getOutputStream().write(bPDF);

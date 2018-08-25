@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
+import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 
 @Component
@@ -18,7 +19,7 @@ public class ShComboBoxWidget implements ShWidgetImplementation {
 	@Autowired
 	private SpringTemplateEngine templateEngine;
 
-	public String render(ShPostTypeAttr shPostTypeAttr) {
+	public String render(ShPostTypeAttr shPostTypeAttr, ShObject shObject) {
 
 		String widgetSettings = shPostTypeAttr.getWidgetSettings();
 		JSONObject settings = new JSONObject(widgetSettings);
