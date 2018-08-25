@@ -11,8 +11,10 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import com.viglet.shiohara.ecommerce.payment.ShPaymentSlip;
+import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
+import com.viglet.shiohara.sites.ShSitesContextURL;
 import com.viglet.shiohara.widget.ShWidgetImplementation;
 
 
@@ -24,7 +26,7 @@ public class ShPaymentTypeDefinitionWidget implements ShWidgetImplementation {
 	private ShPaymentSlip shPaymentSlip;
 
 	@Override
-	public String render(ShPostTypeAttr shPostTypeAttr) {
+	public String render(ShPostTypeAttr shPostTypeAttr, ShObject shObject) {
 		final Context ctx = new Context();
 		ctx.setVariable("shPostTypeAttr", shPostTypeAttr);
 		return templateEngine.process("widget/payment/payment-widget", ctx);
@@ -47,7 +49,7 @@ public class ShPaymentTypeDefinitionWidget implements ShWidgetImplementation {
 		return true;
 	}
 
-	public void postRender(ShPost shPost, HttpServletRequest request, HttpServletResponse response) throws IOException {
-		shPaymentSlip.payment(shPost, response);
+	public void postRender(ShPost shPost, ShSitesContextURL shSitesContextURL) throws IOException {
+		shPaymentSlip.payment(shPost, shSitesContextURL);
 	}
 }

@@ -14,6 +14,7 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import com.google.gson.Gson;
+import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 
 @Component
@@ -21,7 +22,7 @@ public class ShReCaptchaWidget implements ShWidgetImplementation {
 	@Autowired
 	private SpringTemplateEngine templateEngine;
 
-	public String render(ShPostTypeAttr shPostTypeAttr) {
+	public String render(ShPostTypeAttr shPostTypeAttr, ShObject shObject) {
 		String widgetSettings = shPostTypeAttr.getWidgetSettings();
 		JSONObject settings = new JSONObject(widgetSettings);
 		String siteKey = settings.getString("siteKey");

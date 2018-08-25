@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,8 @@ public class ShSitesContextURL {
 	@Autowired
 	private ShFolderUtils shFolderUtils;
 
+	private HttpServletRequest request = null;
+	private HttpServletResponse response = null;
 	private String shContext = null;
 	private String contextURL = null;
 	private ShSite shSite = null;
@@ -33,7 +36,10 @@ public class ShSitesContextURL {
 	private ShObject shObject = null;
 	private boolean cacheEnabled = true;
 
-	public void init(HttpServletRequest request) {
+	public void init(HttpServletRequest request,  HttpServletResponse response) {
+		this.setRequest(request);
+		this.setResponse(response);
+		
 		String shXSiteName = request.getHeader("x-sh-site");
 		cacheEnabled = request.getHeader("x-sh-nocache") != null && request.getHeader("x-sh-nocache").equals("1")
 				? false
@@ -156,6 +162,22 @@ public class ShSitesContextURL {
 
 	public void setCacheEnabled(boolean cacheEnabled) {
 		this.cacheEnabled = cacheEnabled;
+	}
+
+	public HttpServletRequest getRequest() {
+		return request;
+	}
+
+	public void setRequest(HttpServletRequest request) {
+		this.request = request;
+	}
+
+	public HttpServletResponse getResponse() {
+		return response;
+	}
+
+	public void setResponse(HttpServletResponse response) {
+		this.response = response;
 	}
 
 }
