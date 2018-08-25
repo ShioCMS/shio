@@ -18,6 +18,16 @@ public class ShWidgetOnStartup {
 		if (shWidgetRepository.findAll().isEmpty()) {
 
 			ShWidget shWidget = new ShWidget();
+			shWidget.setName(ShSystemWidget.HIDDEN);
+			shWidget.setDescription("Hidden Widget");
+			shWidget.setClassName("com.viglet.shiohara.widget.ShHiddenWidget");
+			shWidget.setImplementationCode("template/widget/hidden/hidden.html");
+			shWidget.setSettingPath("template/widget/hidden/setting/hidden-setting.html");
+			shWidget.setType("TEXT,TEXTAREA");
+
+			shWidgetRepository.save(shWidget);
+			
+			shWidget = new ShWidget();
 			shWidget.setName(ShSystemWidget.TEXT);
 			shWidget.setDescription("Text Widget");
 			shWidget.setClassName("com.viglet.shiohara.widget.ShTextWidget");

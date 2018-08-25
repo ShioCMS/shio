@@ -17,7 +17,10 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
+import com.viglet.shiohara.persistence.model.widget.ShWidget;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
+import com.viglet.shiohara.persistence.repository.widget.ShWidgetRepository;
+import com.viglet.shiohara.widget.ShSystemWidget;
 import com.viglet.shiohara.widget.ShWidgetImplementation;
 
 @Component
@@ -28,7 +31,9 @@ public class ShFormComponent {
 	private ApplicationContext applicationContext;
 	@Autowired
 	private SpringTemplateEngine templateEngine;
-
+	@Autowired
+	private ShWidgetRepository shWidgetRepository;
+	
 	public String byPostType(String shPostTypeName, HttpServletRequest request)
 			throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 		final Context ctx = new Context();
@@ -54,6 +59,45 @@ public class ShFormComponent {
 			fields.add(object.render(shPostTypeAttr));
 		}
 
+		String token = null;
+		if (csrf != null) {
+			token = csrf.getToken();
+		}
+
+		ctx.setVariable("token", token);
+		ctx.setVariable("shPostType", shPostType);
+		ctx.setVariable("shPostTypeAttrs", shPostType.getShPostTypeAttrs());
+		ctx.setVariable("fields", fields);
+
+		return templateEngine.process("form", ctx);
+	}
+	
+	public String byPostTypeAndFolder(String shPostTypeName, String folderId, HttpServletRequest request)
+			throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+		final Context ctx = new Context();
+
+		ShPostType shPostType = shPostTypeRepository.findByName(shPostTypeName);
+		CsrfToken csrf = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
+
+		List<String> fields = new ArrayList<String>();
+
+		List<ShPostTypeAttr> postTypeAttrByOrdinal = new ArrayList<ShPostTypeAttr>(shPostType.getShPostTypeAttrs());
+
+		Collections.sort(postTypeAttrByOrdinal, new Comparator<ShPostTypeAttr>() {
+
+			public int compare(ShPostTypeAttr o1, ShPostTypeAttr o2) {
+				return o1.getOrdinal() - o2.getOrdinal();
+			}
+		});
+
+		for (ShPostTypeAttr shPostTypeAttr : postTypeAttrByOrdinal) {
+			String className = shPostTypeAttr.getShWidget().getClassName();
+			ShWidgetImplementation object = (ShWidgetImplementation) Class.forName(className).newInstance();
+			applicationContext.getAutowireCapableBeanFactory().autowireBean(object);
+			fields.add(object.render(shPostTypeAttr));
+		}
+		
+		
 		String token = null;
 		if (csrf != null) {
 			token = csrf.getToken();
