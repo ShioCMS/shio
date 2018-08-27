@@ -139,6 +139,16 @@ public class ShWidgetOnStartup {
 			shWidget.setType("TEXT,TEXTAREA");
 
 			shWidgetRepository.save(shWidget);
+			
+			shWidget = new ShWidget();
+			shWidget.setName(ShSystemWidget.FORM_CONFIGURATION);
+			shWidget.setDescription("Form Configuraion Widget");
+			shWidget.setClassName("com.viglet.shiohara.widget.ShFormConfigurationWidget");
+			shWidget.setImplementationCode("template/widget/form/form-configuration.html");
+			shWidget.setSettingPath("template/widget/form/setting/form-configuration-setting.html");
+			shWidget.setType("TEXT,TEXTAREA");
+
+			shWidgetRepository.save(shWidget);
 		}
 
 	}

@@ -1,0 +1,41 @@
+<div ng-controller="ShWidgetFormConfigurationCtrl"
+	ng-init="init(shPostTypeAttr)">
+	<table class="table" style="margin: 0px;">
+		<tr>
+			<td style="background: #F9F9F9; width: 20%;">
+				<p>
+					<b>Method</b>
+				</p>
+			</td>
+			<td><select class="form-control"
+				ng-model="shPostTypeAttr.widgetSettingsObject.form.method">
+					<option value="GET">GET</option>
+					<option value="POST">POST</option>
+					<option value="PUT">PUT</option>
+					<option value="DELETE">DELETE</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td style="background: #F9F9F9; width: 20%;">
+				<p>
+					<b>Action</b>
+				</p>
+				<p>Select Page Layout that will receive the request</p>
+			</td>
+			<td><select class="form-control"
+				ng-model="shPostTypeAttr.widgetSettingsObject.form.pageLayout"
+				ng-options="pageLayout.id as pageLayout.title for pageLayout in pageLayouts">
+					<option value="">-- Pick One --</option>
+			</select></td>
+		</tr>
+		<tr>
+		<td style="background: #F9F9F9; width: 20%;">
+			<p>
+				<b>Create Post from Form?</b>
+			</p>
+
+		</td>
+		<td><input type="checkbox" ng-true-value="1" ng-false-value="0" ng-model="shPostTypeAttr.widgetSettingsObject.form.createPost"></td>
+	</tr>
+	</table>
+</div>
