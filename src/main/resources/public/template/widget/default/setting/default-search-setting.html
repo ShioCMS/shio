@@ -6,7 +6,7 @@
 		<td style="background: #F9F9F9; width: 20%;">
 			<p>
 				<b>Search Field Association</b>
-			</p>		
+			</p>
 		</td>
 		<td><select class="form-control"
 			ng-model="shPostTypeAttr.widgetSettingsObject.search.association">
@@ -15,6 +15,7 @@
 				<option value="text">text</option>
 				<option value="abstract">abstract</option>
 				<option value="type">type</option>
+				<option value="image">image</option>
 				<option value="url">url</option>
 		</select></td>
 	</tr>
@@ -29,22 +30,32 @@
 			ng-true-value="1" ng-false-value="0">
 
 			<table class="table"
+				ng-if="shPostTypeAttr.widgetSettingsObject.search.isAdditionalField == 1"
 				style="margin: 0px; border-color: #ddd; border-style: solid; border-width: 1px; margin-top: 10px">
 				<tr>
 					<td style="background: #F9F9F9; width: 20%;">
 						<p>
 							<b>Search Field Name</b>
-						</p>				
+						</p>
 					</td>
 					<td><label> <input type="checkbox"
 							ng-model="shPostTypeAttr.widgetSettingsObject.search.isSamePostTypeField"
 							ng-true-value="1" ng-false-value="0"> Same Post Type
 							Field Name
-					</label> <input type="text" class="form-control"
-						ng-model="shPostTypeAttr.widgetSettingsObject.search.customFieldName" /></td>
+					</label>
+						<div
+							ng-if="shPostTypeAttr.widgetSettingsObject.search.isSamePostTypeField == 0">
+							<input type="text" class="form-control"
+								ng-model="shPostTypeAttr.widgetSettingsObject.search.customFieldName" />
+						</div>
+						<div
+							ng-if="shPostTypeAttr.widgetSettingsObject.search.isSamePostTypeField == 1">
+							<input type="text" class="form-control" disabled
+								ng-model="shPostTypeAttr.name" />
+						</div></td>
 				</tr>
 			</table>
-		</td>
+	</td>
 	</tr>
 
 </table>
