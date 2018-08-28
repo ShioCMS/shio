@@ -23,7 +23,8 @@ public class ShStaticResourceConfiguration implements WebMvcConfigurer {
 
 		String resourceLocation = "file:" + shStaticFileUtils.getFileSource().getAbsolutePath();
 		registry.addResourceHandler("/store/**").addResourceLocations(resourceLocation).setCachePeriod(3600 * 24);
-		registry.addResourceHandler("/**") .addResourceLocations(resourceLocation +"/","classpath:/public/").setCachePeriod(3600 * 24);
+		registry.addResourceHandler("/file_source/**").addResourceLocations(resourceLocation +"/").setCachePeriod(3600 * 24);
+		//registry.addResourceHandler("/**") .addResourceLocations(resourceLocation +"/","classpath:/public/").setCachePeriod(3600 * 24);
 	
 		if (!registry.hasMappingForPattern("/thirdparty/**")) {
 			registry.addResourceHandler("/thirdparty/**").addResourceLocations("classpath:/META-INF/resources/webjars/")
