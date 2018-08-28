@@ -14,17 +14,13 @@ shioharaApp
 							$scope.shPostTypeAttrForm = null;
 							$scope.init = function(shPostTypeAttr) {
 								$scope.shPostTypeAttrForm = shPostTypeAttr;
-								if ($scope.shPostTypeAttrForm.widgetSettingsObject === undefined
+								/*if ($scope.shPostTypeAttrForm.widgetSettingsObject === undefined
 										|| $scope.shPostTypeAttrForm.widgetSettingsObject === null) {
 									$scope.shPostTypeAttrForm.widgetSettingsObject = [];
-								}
-								if ($scope.shPostTypeAttrForm.widgetSettingsObject.form === undefined
-										|| $scope.shPostTypeAttrForm.widgetSettingsObject.form === null) {
-									$scope.shPostTypeAttrForm.widgetSettingsObject.form = [];
-								}
-								if ($scope.shPostTypeAttrForm.widgetSettingsObject.form.method === undefined) {
-									$scope.shPostTypeAttrForm.widgetSettingsObject.form.method = "POST";
-								}
+								}							
+								if ($scope.shPostTypeAttrForm.widgetSettingsObject.method === undefined) {
+									$scope.shPostTypeAttrForm.widgetSettingsObject.method = "POST";
+								}*/
 
 							}
 

@@ -2,12 +2,8 @@ package com.viglet.shiohara.sites;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.annotation.Resource;
@@ -26,40 +22,27 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.view.RedirectView;
 
-import com.viglet.shiohara.api.post.ShPostAPI;
 import com.viglet.shiohara.cache.ShCacheManager;
 import com.viglet.shiohara.cache.ShCachedObject;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
-import com.viglet.shiohara.persistence.model.post.type.ShPostType;
-import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.model.site.ShSite;
-import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
-import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
-import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.post.type.ShSystemPostType;
 import com.viglet.shiohara.post.type.ShSystemPostTypeAttr;
 import com.viglet.shiohara.utils.ShFolderUtils;
+import com.viglet.shiohara.utils.ShFormUtils;
 import com.viglet.shiohara.utils.ShPostUtils;
 import com.viglet.shiohara.utils.ShSiteUtils;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
-import com.viglet.shiohara.widget.ShWidgetImplementation;
-import com.viglet.shiohara.widget.ecommerce.ShPaymentWidget;
 
 @Controller
 public class ShSitesContext {
 	@Resource
 	private ApplicationContext applicationContext;
 	@Autowired
-	private ShPostTypeRepository shPostTypeRepository;
-	@Autowired
-	private ShPostTypeAttrRepository shPostTypeAttrRepository;
-	@Autowired
 	private ShPostRepository shPostRepository;
-	@Autowired
-	private ShFolderRepository shFolderRepository;
 	@Autowired
 	private ShFolderUtils shFolderUtils;
 	@Autowired
@@ -69,93 +52,30 @@ public class ShSitesContext {
 	@Autowired
 	private ShSitesContextComponent shSitesContextComponent;
 	@Autowired
-	private ShPostAPI shPostAPI;
-	@Autowired
 	private ShStaticFileUtils shStaticFileUtils;
 	@Autowired
 	private ShSitesContextURL shSitesContextURL;
 	@Autowired
-	private ShPaymentWidget shPaymentWidget;
+	private ShFormUtils shFormUtils;
 
 	@PostMapping("/sites/**")
 	private RedirectView sitesPostForm(HttpServletRequest request, HttpServletResponse response) throws IOException,
 			ScriptException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		shSitesContextURL.init(request, response);
 
-		this.siteContextPost(shSitesContextURL, request, response);
+		this.siteContextPost(shSitesContextURL);
 		RedirectView redirectView = new RedirectView(
 				new String((request.getRequestURL() + "/success").getBytes("UTF-8"), "ISO-8859-1"));
 		redirectView.setHttp10Compatible(false);
 		return redirectView;
 	}
 
-	public byte[] siteContextPost(ShSitesContextURL shSitesContextURL, HttpServletRequest request,
-			HttpServletResponse response) throws IOException, ScriptException, InstantiationException,
-			IllegalAccessException, ClassNotFoundException {
-		ShPost shPost = null;
-		if (request.getParameter("__sh-post-type-attr-__FORM_FOLDER_ID") != null
-				|| shSitesContextURL.getShObject() instanceof ShFolder
-				|| (shSitesContextURL.getShObject() instanceof ShPost && ((ShPost) shSitesContextURL.getShObject())
-						.getShPostType().getName().equals(ShSystemPostType.FOLDER_INDEX))) {
-			ShFolder shFolder = null;
-			
-			if (request.getParameter("__sh-post-type-attr-__FORM_FOLDER_ID") != null) {
-				shFolder = shFolderRepository.findById(request.getParameter("__sh-post-type-attr-__FORM_FOLDER_ID"))
-						.get();
-			} else {
-				if (shSitesContextURL.getShObject() instanceof ShFolder) {
-					shFolder = (ShFolder) shSitesContextURL.getShObject();
-				} else {
-					shFolder = ((ShPost) shSitesContextURL.getShObject()).getShFolder();
-				}
-			}
-			String shPostTypeName = request.getParameter("__sh-post-type");
-			ShPostType shPostType = shPostTypeRepository.findByName(shPostTypeName);
-
-			Enumeration<String> parameters = request.getParameterNames();
-			if (shPostTypeName != null) {
-				shPost = new ShPost();
-				shPost.setDate(new Date());
-				shPost.setOwner("anonymous");
-				shPost.setShFolder(shFolder);
-
-				shPost.setShPostType(shPostType);
-				Set<ShPostAttr> shPostAttrs = new HashSet<ShPostAttr>();
-				while (parameters.hasMoreElements()) {
-					String param = parameters.nextElement();
-					String paramValue = request.getParameter(param);
-
-					if (param.startsWith("__sh-post-type-attr-")
-							&& !param.equals("__sh-post-type-attr-__FORM_FOLDER_ID")) {
-						String attribute = param.replaceFirst("__sh-post-type-attr-", "");
-
-						ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType,
-								attribute);
-
-						String className = shPostTypeAttr.getShWidget().getClassName();
-						ShWidgetImplementation object = (ShWidgetImplementation) Class.forName(className).newInstance();
-						applicationContext.getAutowireCapableBeanFactory().autowireBean(object);
-
-						@SuppressWarnings("unused")
-						boolean attrStatus = object.validateForm(request, shPostTypeAttr);
-						// TODO: Create validation Form logic
-
-						ShPostAttr shPostAttr = new ShPostAttr();
-						shPostAttr.setShPost(shPost);
-						shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-						shPostAttr.setStrValue(paramValue);
-
-						shPostAttrs.add(shPostAttr);
-					}
-
-				}
-				shPost.setShPostAttrs(shPostAttrs);
-				shPostAPI.postSave(shPost);
-			}
-		}
-
-		shPaymentWidget.postRender(shPost, shSitesContextURL);
-		this.sitesFullGeneric(request, response);
+	public byte[] siteContextPost(ShSitesContextURL shSitesContextURL) throws IOException, ScriptException,
+			InstantiationException, IllegalAccessException, ClassNotFoundException {
+		
+		shFormUtils.execute(shSitesContextURL);
+		
+		this.sitesFullGeneric(shSitesContextURL.getRequest(), shSitesContextURL.getResponse());
 
 		return null;
 	}

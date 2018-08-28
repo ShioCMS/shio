@@ -5,7 +5,7 @@ var shQueryComponent = spring.getBean('shQueryComponent', Java
 var shSearchComponent = spring.getBean('shSearchComponent', Java
 		.type('com.viglet.shiohara.component.ShSearchComponent'));
 var shFormComponent = spring.getBean('shFormComponent', Java
-		.type('com.viglet.shiohara.component.ShFormComponent'));
+		.type('com.viglet.shiohara.component.form.ShFormComponent'));
 var shFolderUtils = spring.getBean('shFolderUtils', Java
 		.type('com.viglet.shiohara.utils.ShFolderUtils'));
 var shObjectUtils = spring.getBean('shObjectUtils', Java
