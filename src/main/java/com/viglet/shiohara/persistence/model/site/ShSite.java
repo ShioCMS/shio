@@ -33,7 +33,10 @@ public class ShSite extends ShObject {
 
 	@Column(name = "post_type_layout", length = 5 * 1024 * 1024) // 5Mb
 	private String postTypeLayout;
-
+	
+	@Column(name = "searchable_post_types", length = 5 * 1024 * 1024) // 5Mb
+	private String searchablePostTypes;
+	
 	@OneToMany(mappedBy = "shSite")
 	@Cascade({ CascadeType.ALL })
 	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
@@ -95,4 +98,14 @@ public class ShSite extends ShObject {
 	public void setObjectType(String objectType) {		
 		super.setObjectType(ShObjectType.SITE);
 	}
+
+	public String getSearchablePostTypes() {
+		return searchablePostTypes;
+	}
+
+	public void setSearchablePostTypes(String searchablePostTypes) {
+		this.searchablePostTypes = searchablePostTypes;
+	}
+	
+	
 }
