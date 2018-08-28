@@ -1,8 +1,9 @@
 ## 0.3.3
 
 #### NEW FEATURES
-- Semantic Navigation Settings into Post Type
-
+* Turing Semantic Navigation Settings into Post Type
+* Turing Semantic Navigation Search
+* Searchable Post Types
 #### IMPROVEMENTS
 
 ## 0.3.2

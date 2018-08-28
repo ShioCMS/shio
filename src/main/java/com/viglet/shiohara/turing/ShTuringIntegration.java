@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
+import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.post.type.ShSystemPostType;
 import com.viglet.shiohara.utils.ShPostUtils;
 
@@ -28,35 +30,47 @@ public class ShTuringIntegration {
 	private String turingServer = "http://localhost:2700";
 	private String site = "1";
 	public boolean showOutput = true;
-	
+
 	@Autowired
 	private ShPostUtils shPostUtils;
+
 	public void preparePost(ShPost shPost) throws ClientProtocolException, IOException {
-		JSONArray shPosts = new JSONArray();
-		JSONObject shPostJson = this.toJSON(shPost);
-		shPosts.put(shPostJson);
-		this.sendServer(shPosts, 1);
-		
+		ShSite shSite = shPostUtils.getSite(shPost);
+		if (StringUtils.isNotBlank(shSite.getSearchablePostTypes())) {
+			JSONObject searchablePostTypes = new JSONObject(shSite.getSearchablePostTypes());
+			if (searchablePostTypes.has(shPost.getShPostType().getName())) {
+				boolean isSearchable = searchablePostTypes.getBoolean(shPost.getShPostType().getName());
+				if (isSearchable) {
+					JSONArray shPosts = new JSONArray();
+					JSONObject shPostJson = this.toJSON(shPost);
+					shPosts.put(shPostJson);
+					this.sendServer(shPosts, 1);
+				}
+			}
+
+		}
 	}
-	
+
 	public JSONObject toJSON(ShPost shPost) {
 		JSONObject shPostItemAttrs = new JSONObject();
-	
+
 		shPostItemAttrs.put("id", shPost.getId());
 		shPostItemAttrs.put("type", shPost.getShPostType().getTitle());
 		shPostItemAttrs.put("title", shPost.getTitle());
 		shPostItemAttrs.put("text", shPost.getSummary());
-		shPostItemAttrs.put("url", "http://localhost:2710" + shPostUtils.generatePostLink(shPost));
+		shPostItemAttrs.put("url",  shPostUtils.generatePostLink(shPost));
 		if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE)) {
-			shPostItemAttrs.put("image","http://localhost:2710" + shPostUtils.generatePostLink(shPost));			
+			shPostItemAttrs.put("image", shPostUtils.generatePostLink(shPost));
 		}
 		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
 			if (shPostAttr.getShPostTypeAttr().getName() != null) {
-				shPostItemAttrs.put("sh_" + shPostAttr.getShPostTypeAttr().getName().toLowerCase(), shPostAttr.getStrValue());
+				shPostItemAttrs.put("sh_" + shPostAttr.getShPostTypeAttr().getName().toLowerCase(),
+						shPostAttr.getStrValue());
 			}
 		}
 		return shPostItemAttrs;
 	}
+
 	public void sendServer(JSONArray jsonResult, int chunkTotal) throws ClientProtocolException, IOException {
 		int initial = 1;
 		if (chunkTotal > chunk) {
@@ -89,6 +103,7 @@ public class ShTuringIntegration {
 		httpPost.setHeader("Content-type", "application/json");
 		httpPost.setHeader("Accept-Encoding", "UTF-8");
 
+		@SuppressWarnings("unused")
 		CloseableHttpResponse response = client.execute(httpPost);
 		// System.out.println(response.toString());
 		client.close();

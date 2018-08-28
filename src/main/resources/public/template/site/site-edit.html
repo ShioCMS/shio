@@ -12,7 +12,7 @@
 
 <div
 	style="background-color: #FFF0E8;; height: 55px; width: 100%; padding: 10px; margin-bottom: 10px"
-	class="affix-top" data-spy="affix" data-offset-top="147">
+	class="affix-top" data-spy="affix" data-offset-top="50">
 	<div class="form-actions">
 		<div class="pull-right">
 			<div class="btn-group">
@@ -43,10 +43,32 @@
 		<label for="field1">URL</label> <input type="text" id="url" name="url"
 			class="form-control" placeholder="Site URL" ng-model="shSite.url">
 	</div>
+	<style>
+.ace_editor {
+	height: 200px;
+}
+</style>
 	<div class="form-group">
 		<label for="field1">Post Type and Page Layout Association</label>
-		<textarea class="form-control" rows="4" cols="50"
-			ng-model="shSite.postTypeLayout">
-		</textarea>
+		<div
+			ui-ace="{
+  useWrapMode : true,
+  showGutter: true,
+  theme:'textmate',
+  mode: 'json'
+}"
+			ng-model="shSite.postTypeLayout"></div>
+	</div>
+	<div class="form-group">
+		<label for="field1">Searchable Post Types</label>
+		<div
+			ui-ace="{
+  useWrapMode : true,
+  showGutter: true,
+  theme:'textmate',
+  mode: 'json'
+}"
+			ng-model="shSite.searchablePostTypes"></div>
+
 	</div>
 </div>
