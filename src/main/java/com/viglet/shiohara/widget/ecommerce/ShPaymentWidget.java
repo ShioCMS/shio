@@ -106,6 +106,7 @@ public class ShPaymentWidget implements ShWidgetImplementation {
 		return true;
 	}
 
+	@Override
 	public void postRender(ShPost shPost, ShSitesContextURL shSitesContextURL) throws IOException {
 		shPaymentSlip.payment(shPost, shSitesContextURL);
 	}

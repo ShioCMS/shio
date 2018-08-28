@@ -1,5 +1,7 @@
 package com.viglet.shiohara.widget;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONObject;
@@ -9,7 +11,9 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import com.viglet.shiohara.persistence.model.object.ShObject;
+import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
+import com.viglet.shiohara.sites.ShSitesContextURL;
 
 @Component
 public class ShHiddenWidget implements ShWidgetImplementation {
@@ -33,5 +37,11 @@ public class ShHiddenWidget implements ShWidgetImplementation {
 	public boolean validateForm(HttpServletRequest request, ShPostTypeAttr shPostTypeAttr) {
 		// TODO Auto-generated method stub
 		return true;
+	}
+
+	@Override
+	public void postRender(ShPost shPost, ShSitesContextURL shSitesContextURL) throws IOException {
+		// TODO Auto-generated method stub
+		
 	}
 }

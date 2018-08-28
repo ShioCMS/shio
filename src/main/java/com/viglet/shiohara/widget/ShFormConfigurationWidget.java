@@ -15,20 +15,20 @@ import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.sites.ShSitesContextURL;
 
 @Component
-public class ShTextAreaWidget implements ShWidgetImplementation {
+public class ShFormConfigurationWidget implements ShWidgetImplementation {
 	@Autowired
 	private SpringTemplateEngine templateEngine;
 	
 	public String render(ShPostTypeAttr shPostTypeAttr, ShObject shObject) {
 		final Context ctx = new Context();
 		ctx.setVariable("shPostTypeAttr", shPostTypeAttr);
-		return templateEngine.process("widget/text-area/text-area-widget", ctx);
+		return templateEngine.process("widget/empty/empty-widget", ctx);
 	}
 
 	@Override
 	public boolean validateForm(HttpServletRequest request, ShPostTypeAttr shPostTypeAttr) {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
