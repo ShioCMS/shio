@@ -1,5 +1,7 @@
 package com.viglet.shiohara.widget;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +10,9 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import com.viglet.shiohara.persistence.model.object.ShObject;
+import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
+import com.viglet.shiohara.sites.ShSitesContextURL;
 
 @Component
 public class ShAceEditorWidget implements ShWidgetImplementation {
@@ -27,4 +31,12 @@ public class ShAceEditorWidget implements ShWidgetImplementation {
 		// TODO Auto-generated method stub
 		return true;
 	}
+
+	@Override
+	public void postRender(ShPost shPost, ShSitesContextURL shSitesContextURL) throws IOException {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
 }

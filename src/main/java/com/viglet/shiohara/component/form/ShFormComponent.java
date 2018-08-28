@@ -1,13 +1,17 @@
-package com.viglet.shiohara.component;
+package com.viglet.shiohara.component.form;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.web.csrf.CsrfToken;
@@ -39,7 +43,7 @@ public class ShFormComponent {
 	public String byPostType(String shPostTypeName, String shObjectId, HttpServletRequest request)
 			throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 		final Context ctx = new Context();
-
+		ShFormConfiguration shFormConfiguration = null;
 		ShObject shObject = shObjectRepository.findById(shObjectId).get();
 		ShPostType shPostType = shPostTypeRepository.findByName(shPostTypeName);
 		CsrfToken csrf = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
@@ -60,6 +64,11 @@ public class ShFormComponent {
 			ShWidgetImplementation object = (ShWidgetImplementation) Class.forName(className).newInstance();
 			applicationContext.getAutowireCapableBeanFactory().autowireBean(object);
 			fields.add(object.render(shPostTypeAttr, shObject));
+			
+			if (shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.FORM_CONFIGURATION)) {
+				JSONObject formConfiguration= new JSONObject(shPostTypeAttr.getWidgetSettings());	
+				shFormConfiguration = new ShFormConfiguration(formConfiguration);
+			}
 		}
 
 		String token = null;
@@ -71,6 +80,7 @@ public class ShFormComponent {
 		ctx.setVariable("shPostType", shPostType);
 		ctx.setVariable("shPostTypeAttrs", shPostType.getShPostTypeAttrs());
 		ctx.setVariable("fields", fields);
+		ctx.setVariable("shFormConfiguration", shFormConfiguration);
 
 		return templateEngine.process("form", ctx);
 	}

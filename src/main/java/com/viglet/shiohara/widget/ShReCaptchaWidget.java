@@ -1,6 +1,7 @@
 package com.viglet.shiohara.widget;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -15,7 +16,9 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import com.google.gson.Gson;
 import com.viglet.shiohara.persistence.model.object.ShObject;
+import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
+import com.viglet.shiohara.sites.ShSitesContextURL;
 
 @Component
 public class ShReCaptchaWidget implements ShWidgetImplementation {
@@ -91,5 +94,11 @@ public class ShReCaptchaWidget implements ShWidgetImplementation {
 			this.errorCodes = errorCodes;
 		}
 
+	}
+
+	@Override
+	public void postRender(ShPost shPost, ShSitesContextURL shSitesContextURL) throws IOException {
+		// TODO Auto-generated method stub
+		
 	}
 }
