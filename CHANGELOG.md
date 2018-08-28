@@ -1,4 +1,12 @@
+## 0.3.3
+
+#### NEW FEATURES
+- Semantic Navigation Settings into Post Type
+
+#### IMPROVEMENTS
+
 ## 0.3.2
+
 
 #### NEW FEATURES
 * MongoDB
