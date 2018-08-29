@@ -21,6 +21,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
@@ -29,6 +30,7 @@ import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.post.type.ShSystemPostType;
+import com.viglet.shiohara.utils.ShFolderUtils;
 import com.viglet.shiohara.utils.ShPostTypeUtils;
 import com.viglet.shiohara.utils.ShPostUtils;
 import com.viglet.shiohara.utils.ShUtils;
@@ -44,6 +46,8 @@ public class ShTuringIntegration {
 	@Autowired
 	private ShPostUtils shPostUtils;
 	@Autowired
+	private ShFolderUtils shFolderUtils;
+	@Autowired
 	private ShPostTypeRepository shPostTypeRepository;
 	@Autowired
 	private ShUtils shUtils;
@@ -53,27 +57,59 @@ public class ShTuringIntegration {
 	private ShPostTypeUtils shPostTypeUtils;
 
 	public void preparePost(ShPost shPost) throws ClientProtocolException, IOException {
-		System.out.println( "preparePost");
 		ShSite shSite = shPostUtils.getSite(shPost);
 		if (StringUtils.isNotBlank(shSite.getSearchablePostTypes())) {
-			System.out.println( "AA");
 			JSONObject searchablePostTypes = new JSONObject(shSite.getSearchablePostTypes());
 			if (searchablePostTypes.has(shPost.getShPostType().getName())) {
 				boolean isSearchable = searchablePostTypes.getBoolean(shPost.getShPostType().getName());
 				if (isSearchable) {
 					JSONArray shPosts = new JSONArray();
-					JSONObject shPostJson = this.toJSON(shPost);
+					JSONObject shPostJson = this.shPostToJSON(shPost);
 					shPosts.put(shPostJson);
 					this.sendServer(shPosts, 1);
 				}
 			}
 
-		} else {
-			System.out.println( "BB");
 		}
 	}
 
-	public JSONObject toJSON(ShPost shPost) {
+	public void prepareFolder(ShFolder shFolder) throws ClientProtocolException, IOException {
+		System.out.println("prepareFolder");
+		ShSite shSite = shFolderUtils.getSite(shFolder);
+		if (StringUtils.isNotBlank(shSite.getSearchablePostTypes())) {
+			System.out.println("getSearchablePostTypes");
+			JSONObject searchablePostTypes = new JSONObject(shSite.getSearchablePostTypes());
+			if (searchablePostTypes.has("FOLDER")) {
+				boolean isSearchable = searchablePostTypes.getBoolean("FOLDER");
+				if (isSearchable) {
+					JSONArray shFolders = new JSONArray();
+					JSONObject shFolderJson = this.shFolderToJSON(shFolder);
+					shFolders.put(shFolderJson);
+					this.sendServer(shFolders, 1);
+				}
+			}
+
+		} else {
+			System.out.println("BB");
+		}
+	}
+
+	public JSONObject shFolderToJSON(ShFolder shFolder) {
+		JSONObject shFolderJSON = new JSONObject();
+		shFolderJSON.put("id", shFolder.getId());
+		shFolderJSON.put("title", shFolder.getName());
+		shFolderJSON.put("url", shFolderUtils.generateFolderLink(shFolder));
+
+		TimeZone tz = TimeZone.getTimeZone("UTC");
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+		df.setTimeZone(tz);
+
+		shFolderJSON.put("publication_date", df.format(shFolder.getDate()));
+
+		return shFolderJSON;
+	}
+
+	public JSONObject shPostToJSON(ShPost shPost) {
 		Map<String, ShPostAttr> shPostMap = shPostUtils.postToMap(shPost);
 		JSONObject shPostItemAttrs = new JSONObject();
 		ShPostType shPostType = shPostTypeRepository.findById(shPost.getShPostType().getId()).get();
@@ -83,14 +119,13 @@ public class ShTuringIntegration {
 		shPostItemAttrs.put("title", shPost.getTitle());
 		shPostItemAttrs.put("text", shPost.getSummary());
 		shPostItemAttrs.put("url", shPostUtils.generatePostLink(shPost));
-		
+
 		TimeZone tz = TimeZone.getTimeZone("UTC");
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
 		df.setTimeZone(tz);
 
 		shPostItemAttrs.put("publication_date", df.format(shPost.getDate()));
-		
-		
+
 		if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE)) {
 			shPostItemAttrs.put("image", shPostUtils.generatePostLink(shPost));
 		}

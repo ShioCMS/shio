@@ -25,6 +25,7 @@ import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.object.ShObjectRepository;
+import com.viglet.shiohara.turing.ShTuringIntegration;
 import com.viglet.shiohara.url.ShURLFormatter;
 import com.viglet.shiohara.utils.ShFolderUtils;
 
@@ -44,7 +45,11 @@ public class ShFolderAPI {
 	private ShURLFormatter shURLFormatter;
 	@Autowired
 	private ShObjectRepository shObjectRepository;
-
+	@Autowired
+	private ShTuringIntegration shTuringIntegration;
+	
+	private boolean turingEnabled = true;
+	
 	@ApiOperation(value = "Folder list")
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
@@ -73,7 +78,9 @@ public class ShFolderAPI {
 		shFolderEdit.setFurl(shURLFormatter.format(shFolderEdit.getName()));
 
 		shFolderRepository.saveAndFlush(shFolderEdit);
-
+		if (turingEnabled) {
+			shTuringIntegration.prepareFolder(shFolderEdit);
+		}
 		return shFolderEdit;
 	}
 
@@ -97,7 +104,10 @@ public class ShFolderAPI {
 		shFolder.setDate(new Date());
 		shFolder.setFurl(shURLFormatter.format(shFolder.getName()));
 		shFolderRepository.save(shFolder);
-
+		
+		if (turingEnabled) {
+			shTuringIntegration.prepareFolder(shFolder);
+		}
 		return shFolder;
 
 	}
