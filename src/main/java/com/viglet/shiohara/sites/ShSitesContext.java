@@ -101,6 +101,7 @@ public class ShSitesContext {
 					} else {
 						MimetypesFileTypeMap mimetypesFileTypeMap = new MimetypesFileTypeMap();
 						response.setContentType(mimetypesFileTypeMap.getContentType(shSitesContextURL.getContextURL()));
+						response.setCharacterEncoding("UTF-8");
 					}
 					response.getOutputStream().write((byte[]) shCacheObject.object);
 				} else {
@@ -247,7 +248,7 @@ public class ShSitesContext {
 					pageLayoutHTML, request, shSite);
 
 			response.setContentType(MediaType.TEXT_HTML_VALUE);
-
+			response.setCharacterEncoding("UTF-8");
 			response.getWriter().write(shPageLayoutHTML);
 
 			return shPageLayoutHTML.getBytes();
