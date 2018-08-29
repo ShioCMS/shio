@@ -4,7 +4,10 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.ClientProtocolException;
@@ -36,7 +39,7 @@ public class ShTuringIntegration {
 	public String encoding = "UTF-8";
 	private String turingServer = "http://localhost:2700";
 	private String site = "1";
-	public boolean showOutput = false;
+	public boolean showOutput = true;
 
 	@Autowired
 	private ShPostUtils shPostUtils;
@@ -50,8 +53,10 @@ public class ShTuringIntegration {
 	private ShPostTypeUtils shPostTypeUtils;
 
 	public void preparePost(ShPost shPost) throws ClientProtocolException, IOException {
+		System.out.println( "preparePost");
 		ShSite shSite = shPostUtils.getSite(shPost);
 		if (StringUtils.isNotBlank(shSite.getSearchablePostTypes())) {
+			System.out.println( "AA");
 			JSONObject searchablePostTypes = new JSONObject(shSite.getSearchablePostTypes());
 			if (searchablePostTypes.has(shPost.getShPostType().getName())) {
 				boolean isSearchable = searchablePostTypes.getBoolean(shPost.getShPostType().getName());
@@ -63,6 +68,8 @@ public class ShTuringIntegration {
 				}
 			}
 
+		} else {
+			System.out.println( "BB");
 		}
 	}
 
@@ -76,7 +83,14 @@ public class ShTuringIntegration {
 		shPostItemAttrs.put("title", shPost.getTitle());
 		shPostItemAttrs.put("text", shPost.getSummary());
 		shPostItemAttrs.put("url", shPostUtils.generatePostLink(shPost));
+		
+		TimeZone tz = TimeZone.getTimeZone("UTC");
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+		df.setTimeZone(tz);
 
+		shPostItemAttrs.put("publication_date", df.format(shPost.getDate()));
+		
+		
 		if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE)) {
 			shPostItemAttrs.put("image", shPostUtils.generatePostLink(shPost));
 		}
