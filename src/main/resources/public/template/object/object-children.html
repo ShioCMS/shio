@@ -48,16 +48,16 @@
 	</dl>
 </div>
 <div class="panel panel-default"
-	ng-if="shCurrentFolder == null &&  commits > 0">
+	ng-if="shCurrentFolder == null">
 	<div class="panel-body">
 		<div class="row row-centered">
-			<div class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
+			<div class="col-lg-2 col-md-2 col-sm-5 col-xs-5">
 				<a ui-sref="content.commit({objectId: shSite.id})"
 					style="color: #6a737d;"> <i class="fa fa-history"
 					aria-hidden="true"></i> <b>{{commits}}</b> commits
 				</a>
 			</div>
-			<div class="col-lg-2 col-md-2 col-sm-3 col-xs-3">
+			<div class="col-lg-2 col-md-2 col-sm-5 col-xs-5">
 				<i class="fa fa-users" aria-hidden="true" style="color: #6a737d;"></i>
 				<b>1</b> contributor
 			</div>
@@ -116,6 +116,8 @@
 								class="fa fa-trash-o" aria-hidden="true"></i> Delete</a></li>
 					</ul>
 				</div>
+				<a ng-if="shCurrentFolder == null" ng-click="siteExport()" href
+					class="btn btn-success">Download Site</a>
 			</div>
 
 		</div>

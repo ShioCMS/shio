@@ -19,7 +19,8 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
     , "moment"
     , "shUserResource"
     , "shPostTypeResource"
-    , function ($scope, $state, $stateParams, $rootScope, $translate, $http, $window, shAPIServerService, vigLocale, shFolderFactory, shPostFactory, ShDialogSelectObject, ShDialogDeleteFactory, shPostResource, shFolderResource, $filter, Notification, moment, shUserResource, shPostTypeResource) {
+    , "shSiteFactory"
+    , function ($scope, $state, $stateParams, $rootScope, $translate, $http, $window, shAPIServerService, vigLocale, shFolderFactory, shPostFactory, ShDialogSelectObject, ShDialogDeleteFactory, shPostResource, shFolderResource, $filter, Notification, moment, shUserResource, shPostTypeResource, shSiteFactory) {
         $scope.objectId = $stateParams.objectId;
         $scope.vigLanguage = vigLocale.getLocale().substring(0, 2);
         $translate.use($scope.vigLanguage);
@@ -43,6 +44,11 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
                 }
             }
         }
+        
+    	$scope.siteExport = function() {
+			shSiteFactory.export($scope.shSite);
+		}
+    	
         $scope.sortableFolders = {
             stop: function (e, ui) {
                 var sortObject = {};
