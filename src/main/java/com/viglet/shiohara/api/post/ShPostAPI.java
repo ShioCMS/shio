@@ -66,7 +66,7 @@ public class ShPostAPI {
 	@Autowired
 	private ShTuringIntegration shTuringIntegration;
 
-	private boolean turingEnabled = false;
+	private boolean turingEnabled = true;
 
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })

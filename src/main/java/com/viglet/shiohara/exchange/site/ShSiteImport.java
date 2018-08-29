@@ -96,6 +96,7 @@ public class ShSiteImport {
 			shSite.setUrl(shSiteExchange.getUrl());
 			shSite.setDescription(shSiteExchange.getDescription());
 			shSite.setPostTypeLayout(shSiteExchange.getPostTypeLayout());
+			shSite.setSearchablePostTypes(shSiteExchange.getSearchablePostTypes());
 			if (shSiteExchange.getOwner() != null) {
 				shSite.setOwner(shSiteExchange.getOwner());
 			} else {

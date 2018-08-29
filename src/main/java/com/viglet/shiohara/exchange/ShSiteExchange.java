@@ -22,6 +22,8 @@ public class ShSiteExchange {
 
 	private String postTypeLayout;
 	
+	private String searchablePostTypes;
+	
 	private String owner;
 	
 	private String furl;
@@ -98,6 +100,14 @@ public class ShSiteExchange {
 
 	public void setFurl(String furl) {
 		this.furl = furl;
+	}
+
+	public String getSearchablePostTypes() {
+		return searchablePostTypes;
+	}
+
+	public void setSearchablePostTypes(String searchablePostTypes) {
+		this.searchablePostTypes = searchablePostTypes;
 	}
 
 }

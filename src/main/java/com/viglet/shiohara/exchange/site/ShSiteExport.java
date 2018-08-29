@@ -65,6 +65,7 @@ public class ShSiteExport {
 			shSiteExchange.setUrl(shSite.getUrl());
 			shSiteExchange.setDescription(shSite.getDescription());
 			shSiteExchange.setPostTypeLayout(shSite.getPostTypeLayout());
+			shSiteExchange.setSearchablePostTypes(shSite.getSearchablePostTypes());
 			shSiteExchange.setDate(shSite.getDate());
 			shSiteExchange.setRootFolders(rootFoldersUUID);
 			shSiteExchange.setOwner(shSite.getOwner());
