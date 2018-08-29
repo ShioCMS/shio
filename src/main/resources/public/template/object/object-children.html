@@ -48,7 +48,7 @@
 	</dl>
 </div>
 <div class="panel panel-default"
-	ng-if="shCurrentFolder == null">
+	ng-if="shCurrentFolder == null && loadedObjectList">
 	<div class="panel-body">
 		<div class="row row-centered">
 			<div class="col-lg-2 col-md-2 col-sm-5 col-xs-5">
@@ -68,7 +68,7 @@
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 		<div style="margin-bottom: 10px; height: 40px">
 			<div class="pull-left">
-				<div ng-if="shCurrentFolder != null" class="btn-group">
+				<div ng-if="shCurrentFolder != null && loadedObjectList" class="btn-group">
 					<a
 						ui-sref="content.post-type-item.post-item-new({folderId: shCurrentFolder.id, postTypeId: shUser.lastPostType})"
 						class="btn btn-default">New {{shLastPostType.title}}</a> <a
@@ -116,7 +116,7 @@
 								class="fa fa-trash-o" aria-hidden="true"></i> Delete</a></li>
 					</ul>
 				</div>
-				<a ng-if="shCurrentFolder == null" ng-click="siteExport()" href
+				<a ng-if="shCurrentFolder == null && loadedObjectList" ng-click="siteExport()" href
 					class="btn btn-success">Download Site</a>
 			</div>
 
