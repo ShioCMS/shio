@@ -4,7 +4,10 @@
 * Turing Semantic Navigation Settings into Post Type
 * Turing Semantic Navigation Search
 * Searchable Post Types
+
 #### IMPROVEMENTS
+* Sites Context: UTF-8 Encoding
+* Download Site Button into Object List View
 
 ## 0.3.2
 
