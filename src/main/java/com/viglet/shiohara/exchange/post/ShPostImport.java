@@ -111,8 +111,7 @@ public class ShPostImport {
 					shObjects);
 			
 			if (turingEnabled) {
-				System.out.println("turingEnabled");
-				shTuringIntegration.preparePost(shPost);
+				shTuringIntegration.indexObject(shPost);
 			}
 		}
 		return shPost;

@@ -1,10 +1,9 @@
 package com.viglet.shiohara.api.folder;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.function.Consumer;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,8 +47,6 @@ public class ShFolderAPI {
 	@Autowired
 	private ShTuringIntegration shTuringIntegration;
 	
-	private boolean turingEnabled = true;
-	
 	@ApiOperation(value = "Folder list")
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
@@ -78,9 +75,9 @@ public class ShFolderAPI {
 		shFolderEdit.setFurl(shURLFormatter.format(shFolderEdit.getName()));
 
 		shFolderRepository.saveAndFlush(shFolderEdit);
-		if (turingEnabled) {
-			shTuringIntegration.prepareFolder(shFolderEdit);
-		}
+		
+		shTuringIntegration.indexObject(shFolderEdit);
+
 		return shFolderEdit;
 	}
 
@@ -88,10 +85,16 @@ public class ShFolderAPI {
 	@ApiOperation(value = "Delete a folder")
 	@DeleteMapping("/{id}")
 	public boolean shFolderDelete(@PathVariable String id) throws Exception {
+		
 		shFolderRepository.findById(id).ifPresent(new Consumer<ShFolder>() {
 			@Override
 			public void accept(ShFolder shFolder) {
-				shFolderUtils.deleteFolder(shFolder);
+				try {					
+					shFolderUtils.deleteFolder(shFolder);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		});
 		return true;
@@ -105,9 +108,8 @@ public class ShFolderAPI {
 		shFolder.setFurl(shURLFormatter.format(shFolder.getName()));
 		shFolderRepository.save(shFolder);
 		
-		if (turingEnabled) {
-			shTuringIntegration.prepareFolder(shFolder);
-		}
+		shTuringIntegration.indexObject(shFolder);
+		
 		return shFolder;
 
 	}
