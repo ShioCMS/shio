@@ -4,6 +4,7 @@
 * Turing Semantic Navigation Settings into Post Type
 * Turing Semantic Navigation Search
 * Searchable Post Types
+* Turing Integration: Deindexing Content
 
 #### IMPROVEMENTS
 * Sites Context: UTF-8 Encoding

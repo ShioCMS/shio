@@ -1,11 +1,13 @@
 package com.viglet.shiohara.utils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.http.client.ClientProtocolException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,6 +23,7 @@ import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.reference.ShReferenceRepository;
+import com.viglet.shiohara.turing.ShTuringIntegration;
 import com.viglet.shiohara.url.ShURLScheme;
 
 @Component
@@ -33,9 +36,10 @@ public class ShFolderUtils {
 	private ShPostAttrRepository shPostAttrRepository;
 	@Autowired
 	private ShReferenceRepository shReferenceRepository;
-
 	@Autowired
 	private ShURLScheme shURLScheme;
+	@Autowired
+	private ShTuringIntegration shTuringIntegration;
 
 	public JSONObject toJSON(ShFolder shFolder) {
 		JSONObject shFolderItemAttrs = new JSONObject();
@@ -210,7 +214,8 @@ public class ShFolderUtils {
 	}
 
 	@Transactional
-	public boolean deleteFolder(ShFolder shFolder) {
+	public boolean deleteFolder(ShFolder shFolder) throws ClientProtocolException, IOException {
+		shTuringIntegration.deindexObject(shFolder);
 
 		for (ShPost shPost : shPostRepository.findByShFolder(shFolder)) {
 			// TODO: Check relation and show to user decides.
@@ -230,7 +235,9 @@ public class ShFolderUtils {
 		for (ShFolder shFolderChild : shFolderRepository.findByParentFolder(shFolder)) {
 			this.deleteFolder(shFolderChild);
 		}
+
 		shFolderRepository.delete(shFolder.getId());
+
 		return true;
 	}
 

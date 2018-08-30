@@ -91,7 +91,7 @@ public class ShSiteAPI {
 
 		List<ShFolder> shFolders = shFolderRepository.findByShSiteAndRootFolder(shSite, (byte) 1);
 
-		for (ShFolder shFolder : shFolders) {
+		for (ShFolder shFolder : shFolders) {			
 			shFolderUtils.deleteFolder(shFolder);
 		}
 
