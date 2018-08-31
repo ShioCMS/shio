@@ -1,6 +1,7 @@
 package com.viglet.shiohara.utils;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Component;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
+import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.object.ShObjectRepository;
 
@@ -24,6 +26,16 @@ public class ShObjectUtils {
 		ShFolder shFolder = null;
 		if (shObject instanceof ShFolder) {
 			shFolder = (ShFolder) shObject;
+			ShPost shFolderIndexPost = shFolderUtils.getFolderIndex(shFolder);
+			if (shFolderIndexPost != null) {
+				Map<String, ShPostAttr> shFolderIndexPostMap = shPostUtils.postToMap(shFolderIndexPost);
+				if (shFolderIndexPostMap.get("IS_VISIBLE_PAGE") != null
+						&& shFolderIndexPostMap.get("IS_VISIBLE_PAGE").getStrValue().equals("no")) {
+					return false;
+				}
+			} else {
+				return false;
+			}
 		} else if (shObject instanceof ShPost) {
 			ShPost shPost = (ShPost) shObject;
 			shFolder = shPost.getShFolder();
