@@ -13,9 +13,9 @@
         "ordinal" : 1,
         "widget" : "Text",
         "widgetSettings" : null,
+        "required" : true,
         "title" : true,
-        "summary" : false,
-        "required" : true
+        "summary" : false
       }
     },
     "owner" : "admin",
@@ -34,9 +34,9 @@
         "ordinal" : 1,
         "widget" : "Text",
         "widgetSettings" : null,
+        "required" : true,
         "title" : true,
-        "summary" : false,
-        "required" : true
+        "summary" : false
       }
     },
     "owner" : "admin",
@@ -55,9 +55,9 @@
         "ordinal" : 1,
         "widget" : "Text",
         "widgetSettings" : null,
+        "required" : true,
         "title" : true,
-        "summary" : false,
-        "required" : true
+        "summary" : false
       }
     },
     "owner" : "admin",
@@ -76,9 +76,9 @@
         "ordinal" : 1,
         "widget" : "Text",
         "widgetSettings" : null,
+        "required" : true,
         "title" : true,
-        "summary" : false,
-        "required" : true
+        "summary" : false
       }
     },
     "owner" : "admin",
@@ -97,9 +97,9 @@
         "ordinal" : 1,
         "widget" : "Text",
         "widgetSettings" : null,
+        "required" : true,
         "title" : true,
-        "summary" : false,
-        "required" : true
+        "summary" : false
       }
     },
     "owner" : "admin",
@@ -118,9 +118,9 @@
         "ordinal" : 1,
         "widget" : "File",
         "widgetSettings" : null,
+        "required" : true,
         "title" : true,
-        "summary" : false,
-        "required" : true
+        "summary" : false
       }
     },
     "owner" : "admin",
@@ -139,9 +139,9 @@
         "ordinal" : 1,
         "widget" : "Text Area",
         "widgetSettings" : null,
+        "required" : true,
         "title" : true,
-        "summary" : false,
-        "required" : true
+        "summary" : false
       }
     },
     "owner" : "admin",
@@ -153,6 +153,28 @@
     "label" : "Article",
     "description" : "Article Post Type",
     "fields" : {
+      "DESCRIPTION" : {
+        "id" : "0f46d6f0-e589-44ca-a246-3fd6c7ffe4b2",
+        "label" : "Description",
+        "description" : "Description",
+        "ordinal" : 2,
+        "widget" : "Text Area",
+        "widgetSettings" : null,
+        "required" : true,
+        "title" : false,
+        "summary" : true
+      },
+      "VIDEO" : {
+        "id" : "c9f329fe-8d5c-43d4-be93-c25df72fc0fd",
+        "label" : "Video URL",
+        "description" : "Video URL",
+        "ordinal" : 4,
+        "widget" : "Text",
+        "widgetSettings" : null,
+        "required" : false,
+        "title" : false,
+        "summary" : false
+      },
       "RELATION" : {
         "id" : "4c39181b-732a-4470-947e-26cc2cda1e45",
         "label" : "Relation",
@@ -172,16 +194,16 @@
                 "ordinal" : 9,
                 "widget" : "Text",
                 "widgetSettings" : null,
+                "required" : true,
                 "title" : true,
-                "summary" : false,
-                "required" : true
+                "summary" : false
               }
             },
             "widget" : "Relator",
             "widgetSettings" : null,
+            "required" : true,
             "title" : false,
-            "summary" : false,
-            "required" : true
+            "summary" : false
           },
           "TEXT_RELATION" : {
             "id" : "6de05406-c3cf-4657-937a-fcf2072dd4e7",
@@ -190,49 +212,16 @@
             "ordinal" : 7,
             "widget" : "Text",
             "widgetSettings" : null,
+            "required" : true,
             "title" : true,
-            "summary" : false,
-            "required" : true
+            "summary" : false
           }
         },
         "widget" : "Relator",
         "widgetSettings" : null,
+        "required" : true,
         "title" : false,
-        "summary" : false,
-        "required" : true
-      },
-      "DESCRIPTION" : {
-        "id" : "0f46d6f0-e589-44ca-a246-3fd6c7ffe4b2",
-        "label" : "Description",
-        "description" : "Description",
-        "ordinal" : 2,
-        "widget" : "Text Area",
-        "widgetSettings" : null,
-        "title" : false,
-        "summary" : true,
-        "required" : true
-      },
-      "VIDEO" : {
-        "id" : "c9f329fe-8d5c-43d4-be93-c25df72fc0fd",
-        "label" : "Video URL",
-        "description" : "Video URL",
-        "ordinal" : 4,
-        "widget" : "Text",
-        "widgetSettings" : null,
-        "title" : false,
-        "summary" : false,
-        "required" : false
-      },
-      "TITLE" : {
-        "id" : "c0c52b1e-08f4-4ae3-847c-a67e2f3712c0",
-        "label" : "Title",
-        "description" : "Title",
-        "ordinal" : 1,
-        "widget" : "Text",
-        "widgetSettings" : null,
-        "title" : true,
-        "summary" : false,
-        "required" : true
+        "summary" : false
       },
       "TEXT" : {
         "id" : "7fb41aed-5fe3-49bc-8ae8-e500173a0279",
@@ -241,9 +230,20 @@
         "ordinal" : 5,
         "widget" : "HTML Editor",
         "widgetSettings" : null,
+        "required" : true,
         "title" : false,
-        "summary" : false,
-        "required" : true
+        "summary" : false
+      },
+      "TITLE" : {
+        "id" : "c0c52b1e-08f4-4ae3-847c-a67e2f3712c0",
+        "label" : "Title",
+        "description" : "Title",
+        "ordinal" : 1,
+        "widget" : "Text",
+        "widgetSettings" : null,
+        "required" : true,
+        "title" : true,
+        "summary" : false
       },
       "FILE" : {
         "id" : "0015d0c2-9c64-4032-b3c3-424a07d3614d",
@@ -252,9 +252,9 @@
         "ordinal" : 3,
         "widget" : "File",
         "widgetSettings" : null,
+        "required" : false,
         "title" : false,
-        "summary" : false,
-        "required" : false
+        "summary" : false
       }
     },
     "owner" : "admin",
@@ -273,9 +273,9 @@
         "ordinal" : 3,
         "widget" : "Ace Editor - Javascript",
         "widgetSettings" : null,
+        "required" : true,
         "title" : false,
-        "summary" : false,
-        "required" : true
+        "summary" : false
       },
       "DESCRIPTION" : {
         "id" : "6f2e271c-8d1a-4748-9002-53c1dd08b2fb",
@@ -284,9 +284,9 @@
         "ordinal" : 2,
         "widget" : "Text Area",
         "widgetSettings" : null,
+        "required" : true,
         "title" : false,
-        "summary" : true,
-        "required" : true
+        "summary" : true
       },
       "TITLE" : {
         "id" : "bdcd9cc5-c0f3-4f12-963b-b97716b0bdc1",
@@ -295,9 +295,9 @@
         "ordinal" : 1,
         "widget" : "Text",
         "widgetSettings" : null,
+        "required" : true,
         "title" : true,
-        "summary" : false,
-        "required" : true
+        "summary" : false
       },
       "HTML" : {
         "id" : "8fa416d4-4468-4ecb-a63b-24dbec574b58",
@@ -306,9 +306,9 @@
         "ordinal" : 4,
         "widget" : "Ace Editor - HTML",
         "widgetSettings" : null,
+        "required" : true,
         "title" : false,
-        "summary" : false,
-        "required" : true
+        "summary" : false
       }
     },
     "owner" : "admin",
@@ -327,9 +327,9 @@
         "ordinal" : 4,
         "widget" : "Ace Editor - HTML",
         "widgetSettings" : null,
+        "required" : true,
         "title" : false,
-        "summary" : false,
-        "required" : true
+        "summary" : false
       },
       "CSS" : {
         "id" : "989ff943-7d49-4afa-be3d-851e437573ca",
@@ -338,9 +338,9 @@
         "ordinal" : 3,
         "widget" : "Ace Editor - HTML",
         "widgetSettings" : null,
+        "required" : true,
         "title" : false,
-        "summary" : false,
-        "required" : true
+        "summary" : false
       },
       "DESCRIPTION" : {
         "id" : "3cd69b44-f4dc-4780-b43b-8bcdec0450f5",
@@ -349,9 +349,9 @@
         "ordinal" : 2,
         "widget" : "Text Area",
         "widgetSettings" : null,
+        "required" : true,
         "title" : false,
-        "summary" : true,
-        "required" : true
+        "summary" : true
       },
       "TITLE" : {
         "id" : "018df4da-1a10-4a65-8e58-0d4a9006a2a2",
@@ -360,9 +360,9 @@
         "ordinal" : 1,
         "widget" : "Text",
         "widgetSettings" : null,
+        "required" : true,
         "title" : true,
-        "summary" : false,
-        "required" : true
+        "summary" : false
       }
     },
     "owner" : "admin",
@@ -381,9 +381,9 @@
         "ordinal" : 4,
         "widget" : "Ace Editor - Javascript",
         "widgetSettings" : null,
+        "required" : true,
         "title" : false,
-        "summary" : false,
-        "required" : true
+        "summary" : false
       },
       "DESCRIPTION" : {
         "id" : "db01cf5b-836f-49c7-9e7a-19bcac221978",
@@ -392,9 +392,9 @@
         "ordinal" : 2,
         "widget" : "Text",
         "widgetSettings" : null,
+        "required" : true,
         "title" : false,
-        "summary" : true,
-        "required" : true
+        "summary" : true
       },
       "THEME" : {
         "id" : "a5d27dcd-1372-43c5-950c-e6cbee1807da",
@@ -403,9 +403,9 @@
         "ordinal" : 3,
         "widget" : "Content Select",
         "widgetSettings" : null,
+        "required" : true,
         "title" : false,
-        "summary" : false,
-        "required" : true
+        "summary" : false
       },
       "TITLE" : {
         "id" : "d40eb842-55bd-48fa-9329-77d4c22644e6",
@@ -414,9 +414,9 @@
         "ordinal" : 1,
         "widget" : "Text",
         "widgetSettings" : null,
+        "required" : true,
         "title" : true,
-        "summary" : false,
-        "required" : true
+        "summary" : false
       },
       "HTML" : {
         "id" : "c02c23a9-51bb-4ddb-ab3d-252da57f9450",
@@ -425,52 +425,9 @@
         "ordinal" : 5,
         "widget" : "Ace Editor - HTML",
         "widgetSettings" : null,
+        "required" : true,
         "title" : false,
-        "summary" : false,
-        "required" : true
-      }
-    },
-    "owner" : "admin",
-    "system" : true
-  }, {
-    "id" : "10edbb4c-b2fa-481b-be8c-404e44050167",
-    "date" : "2018-06-14T13:53Z",
-    "name" : "PT-FOLDER-INDEX",
-    "label" : "Folder Index",
-    "description" : "Folder Index Post Type",
-    "fields" : {
-      "DESCRIPTION" : {
-        "id" : "325ea5c2-7a2b-4c53-828a-4a848b7b4c62",
-        "label" : "Description",
-        "description" : "Description",
-        "ordinal" : 2,
-        "widget" : "Text Area",
-        "widgetSettings" : null,
-        "title" : false,
-        "summary" : true,
-        "required" : true
-      },
-      "PAGE-LAYOUT" : {
-        "id" : "da6dbfeb-34a4-4019-a09d-6b457a1120d3",
-        "label" : "Page Layout",
-        "description" : "Page Layout",
-        "ordinal" : 2,
-        "widget" : "Content Select",
-        "widgetSettings" : null,
-        "title" : false,
-        "summary" : false,
-        "required" : true
-      },
-      "TITLE" : {
-        "id" : "fd63f8ae-9ff4-4ad4-bb9e-7965642a9ea8",
-        "label" : "Title",
-        "description" : "Title",
-        "ordinal" : 1,
-        "widget" : "Text",
-        "widgetSettings" : null,
-        "title" : true,
-        "summary" : false,
-        "required" : true
+        "summary" : false
       }
     },
     "owner" : "admin",
@@ -489,9 +446,9 @@
         "ordinal" : 2,
         "widget" : "Text Area",
         "widgetSettings" : null,
+        "required" : true,
         "title" : false,
-        "summary" : true,
-        "required" : true
+        "summary" : true
       },
       "TITLE" : {
         "id" : "319fa1e4-f0ff-490e-904d-f374ee1d2726",
@@ -500,9 +457,9 @@
         "ordinal" : 1,
         "widget" : "Text",
         "widgetSettings" : null,
+        "required" : true,
         "title" : true,
-        "summary" : false,
-        "required" : true
+        "summary" : false
       },
       "CONTENT" : {
         "id" : "fb34e99c-333a-4063-815f-54512a6feebf",
@@ -511,9 +468,9 @@
         "ordinal" : 3,
         "widget" : "Content Select",
         "widgetSettings" : null,
+        "required" : true,
         "title" : false,
-        "summary" : true,
-        "required" : true
+        "summary" : true
       }
     },
     "owner" : "admin",
@@ -532,9 +489,9 @@
         "ordinal" : 3,
         "widget" : "Payment Definition",
         "widgetSettings" : null,
+        "required" : true,
         "title" : false,
-        "summary" : false,
-        "required" : true
+        "summary" : false
       },
       "DESCRIPTION" : {
         "id" : "56c013a0-0b9c-496f-8a3e-cfac8036c416",
@@ -543,9 +500,9 @@
         "ordinal" : 2,
         "widget" : "Text Area",
         "widgetSettings" : "null",
+        "required" : false,
         "title" : false,
-        "summary" : true,
-        "required" : false
+        "summary" : true
       },
       "NAME" : {
         "id" : "7ef36270-4995-4b87-95a7-7a30efb8adfe",
@@ -554,12 +511,66 @@
         "ordinal" : 1,
         "widget" : "Text",
         "widgetSettings" : "null",
+        "required" : true,
         "title" : true,
-        "summary" : false,
-        "required" : true
+        "summary" : false
       }
     },
     "owner" : null,
     "system" : false
+  }, {
+    "id" : "10edbb4c-b2fa-481b-be8c-404e44050167",
+    "date" : "2018-08-30T15:52Z",
+    "name" : "PT-FOLDER-INDEX",
+    "label" : "Folder Index",
+    "description" : "Folder Index Post Type",
+    "fields" : {
+      "DESCRIPTION" : {
+        "id" : "325ea5c2-7a2b-4c53-828a-4a848b7b4c62",
+        "label" : "Description",
+        "description" : "Description",
+        "ordinal" : 2,
+        "widget" : "Text Area",
+        "widgetSettings" : "null",
+        "required" : true,
+        "title" : false,
+        "summary" : true
+      },
+      "IS_VISIBLE_PAGE" : {
+        "id" : "72b8e0d7-03f6-4a94-8f00-a7d2164b3522",
+        "label" : "Is Visable Page?",
+        "description" : null,
+        "ordinal" : 4,
+        "widget" : "Combo Box",
+        "widgetSettings" : "{\"choices\":\"yes: Yes\\nno: No\"}",
+        "required" : false,
+        "title" : false,
+        "summary" : false
+      },
+      "PAGE-LAYOUT" : {
+        "id" : "da6dbfeb-34a4-4019-a09d-6b457a1120d3",
+        "label" : "Page Layout",
+        "description" : "Page Layout",
+        "ordinal" : 3,
+        "widget" : "Content Select",
+        "widgetSettings" : "null",
+        "required" : true,
+        "title" : false,
+        "summary" : false
+      },
+      "TITLE" : {
+        "id" : "fd63f8ae-9ff4-4ad4-bb9e-7965642a9ea8",
+        "label" : "Title",
+        "description" : "Title",
+        "ordinal" : 1,
+        "widget" : "Text",
+        "widgetSettings" : "null",
+        "required" : true,
+        "title" : true,
+        "summary" : false
+      }
+    },
+    "owner" : "admin",
+    "system" : true
   } ]
 }

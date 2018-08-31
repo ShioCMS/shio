@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.http.client.ClientProtocolException;
@@ -17,12 +18,15 @@ import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
+import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.reference.ShReference;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
+import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.persistence.repository.reference.ShReferenceRepository;
+import com.viglet.shiohara.post.type.ShSystemPostType;
 import com.viglet.shiohara.turing.ShTuringIntegration;
 import com.viglet.shiohara.url.ShURLScheme;
 
@@ -40,6 +44,19 @@ public class ShFolderUtils {
 	private ShURLScheme shURLScheme;
 	@Autowired
 	private ShTuringIntegration shTuringIntegration;
+	@Autowired
+	private ShPostTypeRepository shPostTypeRepository;
+
+	public ShPost getFolderIndex(ShFolder shFolder) {
+		ShPostType shPostType = shPostTypeRepository.findByName(ShSystemPostType.FOLDER_INDEX);
+		List<ShPost> shFolderIndexPosts = shPostRepository.findByShFolderAndShPostTypeOrderByPositionAsc(shFolder,
+				shPostType);
+		if (shFolderIndexPosts.size() > 0) {
+			ShPost shFolderIndexPost = shFolderIndexPosts.get(0);
+			return shFolderIndexPost;
+		}
+		return null;
+	}
 
 	public JSONObject toJSON(ShFolder shFolder) {
 		JSONObject shFolderItemAttrs = new JSONObject();

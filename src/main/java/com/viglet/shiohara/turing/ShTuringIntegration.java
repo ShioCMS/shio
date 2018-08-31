@@ -32,6 +32,8 @@ import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.post.type.ShSystemPostType;
+import com.viglet.shiohara.post.type.ShSystemPostTypeAttr;
+import com.viglet.shiohara.utils.ShFolderUtils;
 import com.viglet.shiohara.utils.ShObjectUtils;
 import com.viglet.shiohara.utils.ShPostTypeUtils;
 import com.viglet.shiohara.utils.ShPostUtils;
@@ -46,7 +48,7 @@ public class ShTuringIntegration {
 	private boolean showOutput = false;
 	private final int INDEX_TYPE = 1;
 	private final int DEINDEX_TYPE = 2;
-	private final boolean turingEnabled = false;
+	private final boolean turingEnabled = true;
 
 	@Autowired
 	private ShPostUtils shPostUtils;
@@ -62,7 +64,9 @@ public class ShTuringIntegration {
 	private ShObjectUtils shObjectUtils;
 	@Autowired
 	private ShFolderRepository shFolderRepository;
-
+	@Autowired
+	private ShFolderUtils shFolderUtils;
+	
 	public void indexObject(ShObject shObject) throws ClientProtocolException, IOException {
 		if (turingEnabled) {
 			ShSite shSite = shObjectUtils.getSite(shObject);
@@ -159,8 +163,8 @@ public class ShTuringIntegration {
 
 			shObjectJSON.put("type", shPost.getShPostType().getTitle());
 			shObjectJSON.put("title", shPost.getTitle());
-			shObjectJSON.put("text", shPost.getSummary());
-
+			shObjectJSON.put("abstract", shPost.getSummary());
+			
 			if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE)) {
 				shObjectJSON.put("image", shPostUtils.generatePostLink(shPost));
 			}
@@ -210,6 +214,13 @@ public class ShTuringIntegration {
 		} else if (shObject instanceof ShFolder) {
 			ShFolder shFolder = (ShFolder) shObject;
 			shObjectJSON.put("title", shFolder.getName());
+			ShPost shFolderIndexPost = shFolderUtils.getFolderIndex(shFolder);
+			if (shFolderIndexPost != null) {
+				Map<String, ShPostAttr> shFolderIndexPostMap = shPostUtils.postToMap(shFolderIndexPost);	
+				if (shFolderIndexPostMap.containsKey(ShSystemPostTypeAttr.DESCRIPTION)) {
+					shObjectJSON.put("abstract", shFolderIndexPostMap.get(ShSystemPostTypeAttr.DESCRIPTION).getStrValue());
+				}
+			}
 		}
 
 		return shObjectJSON;
