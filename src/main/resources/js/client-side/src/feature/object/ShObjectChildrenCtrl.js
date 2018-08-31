@@ -19,8 +19,10 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
     , "moment"
     , "shUserResource"
     , "shPostTypeResource"
-    , function ($scope, $state, $stateParams, $rootScope, $translate, $http, $window, shAPIServerService, vigLocale, shFolderFactory, shPostFactory, ShDialogSelectObject, ShDialogDeleteFactory, shPostResource, shFolderResource, $filter, Notification, moment, shUserResource, shPostTypeResource) {
-        $scope.objectId = $stateParams.objectId;
+    , "shSiteFactory"
+    , function ($scope, $state, $stateParams, $rootScope, $translate, $http, $window, shAPIServerService, vigLocale, shFolderFactory, shPostFactory, ShDialogSelectObject, ShDialogDeleteFactory, shPostResource, shFolderResource, $filter, Notification, moment, shUserResource, shPostTypeResource, shSiteFactory) {
+        $scope.loadedObjectList = false;
+    	$scope.objectId = $stateParams.objectId;
         $scope.vigLanguage = vigLocale.getLocale().substring(0, 2);
         $translate.use($scope.vigLanguage);
         $scope.shCurrentFolder = null;
@@ -43,6 +45,11 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
                 }
             }
         }
+        
+    	$scope.siteExport = function() {
+			shSiteFactory.export($scope.shSite);
+		}
+    	
         $scope.sortableFolders = {
             stop: function (e, ui) {
                 var sortObject = {};
@@ -78,6 +85,7 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
         }));
         $scope.$evalAsync($http.get(shAPIServerService.get().concat("/v2/object/" + $scope.objectId + "/list")).then(function (response) {
             $scope.processResponse(response);
+            $scope.loadedObjectList = true;
         }));
         $scope.processResponse = function (response) {
             $scope.shFolders = response.data.shFolders;

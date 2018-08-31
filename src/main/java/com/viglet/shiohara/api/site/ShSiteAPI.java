@@ -78,6 +78,7 @@ public class ShSiteAPI {
 		shSiteEdit.setDate(new Date());
 		shSiteEdit.setName(shSite.getName());
 		shSiteEdit.setPostTypeLayout(shSite.getPostTypeLayout());
+		shSiteEdit.setSearchablePostTypes(shSite.getSearchablePostTypes());
 		shSiteEdit.setFurl(shURLFormatter.format(shSite.getName()));
 		shSiteRepository.save(shSiteEdit);
 		return shSiteEdit;
@@ -90,7 +91,7 @@ public class ShSiteAPI {
 
 		List<ShFolder> shFolders = shFolderRepository.findByShSiteAndRootFolder(shSite, (byte) 1);
 
-		for (ShFolder shFolder : shFolders) {
+		for (ShFolder shFolder : shFolders) {			
 			shFolderUtils.deleteFolder(shFolder);
 		}
 

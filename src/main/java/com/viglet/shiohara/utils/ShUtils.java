@@ -15,6 +15,9 @@ import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -120,5 +123,18 @@ public class ShUtils {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	public boolean isJSONValid(String test) {
+	    try {
+	        new JSONObject(test);
+	    } catch (JSONException ex) {
+	        try {
+	            new JSONArray(test);
+	        } catch (JSONException ex1) {
+	            return false;
+	        }
+	    }
+	    return true;
 	}
 }
