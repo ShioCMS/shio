@@ -1,10 +1,9 @@
 package com.viglet.shiohara.api.folder;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.function.Consumer;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +24,7 @@ import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.object.ShObjectRepository;
+import com.viglet.shiohara.turing.ShTuringIntegration;
 import com.viglet.shiohara.url.ShURLFormatter;
 import com.viglet.shiohara.utils.ShFolderUtils;
 
@@ -44,7 +44,9 @@ public class ShFolderAPI {
 	private ShURLFormatter shURLFormatter;
 	@Autowired
 	private ShObjectRepository shObjectRepository;
-
+	@Autowired
+	private ShTuringIntegration shTuringIntegration;
+	
 	@ApiOperation(value = "Folder list")
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
@@ -73,6 +75,8 @@ public class ShFolderAPI {
 		shFolderEdit.setFurl(shURLFormatter.format(shFolderEdit.getName()));
 
 		shFolderRepository.saveAndFlush(shFolderEdit);
+		
+		shTuringIntegration.indexObject(shFolderEdit);
 
 		return shFolderEdit;
 	}
@@ -81,10 +85,16 @@ public class ShFolderAPI {
 	@ApiOperation(value = "Delete a folder")
 	@DeleteMapping("/{id}")
 	public boolean shFolderDelete(@PathVariable String id) throws Exception {
+		
 		shFolderRepository.findById(id).ifPresent(new Consumer<ShFolder>() {
 			@Override
 			public void accept(ShFolder shFolder) {
-				shFolderUtils.deleteFolder(shFolder);
+				try {					
+					shFolderUtils.deleteFolder(shFolder);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		});
 		return true;
@@ -97,7 +107,9 @@ public class ShFolderAPI {
 		shFolder.setDate(new Date());
 		shFolder.setFurl(shURLFormatter.format(shFolder.getName()));
 		shFolderRepository.save(shFolder);
-
+		
+		shTuringIntegration.indexObject(shFolder);
+		
 		return shFolder;
 
 	}

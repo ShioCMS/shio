@@ -16,7 +16,7 @@ import org.springframework.security.web.firewall.StrictHttpFirewall;
 @EnableWebSecurity
 @Profile("development")
 public class ShSecurityConfigDevelopment extends WebSecurityConfigurerAdapter {
-	   
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.headers().frameOptions().disable().cacheControl().disable();

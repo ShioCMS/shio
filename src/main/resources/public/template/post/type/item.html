@@ -50,12 +50,12 @@ div.affix {
 
 
 	<div class="form-group">
-	<label>Name</label>
-		<input type="text" id="title" name="title" class="form-control"
-			placeholder="Post Type Title" ng-model="shPostType.title">
+		<label>Name</label> <input type="text" id="title" name="title"
+			class="form-control" placeholder="Post Type Title"
+			ng-model="shPostType.title">
 	</div>
 	<div class="form-group">
-	<label>Description</label>
+		<label>Description</label>
 		<textarea id="description" name="description" class="form-control"
 			placeholder="About this Post Type" ng-model="shPostType.description"></textarea>
 	</div>
@@ -81,13 +81,22 @@ div.affix {
 				{{shPostTypeAttr.ordinal}} <span style="display: none;">{{shPostTypeAttr.ordinal=$index+1}}</span>
 			</div>
 			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6" style="padding: 0px">{{shPostTypeAttr.label}}</div>
-			<div class="col-lg-3 col-md-3 col-sm-3 hidden-xs" style="padding: 0px">{{shPostTypeAttr.name}}</div>
-			<div class="col-lg-3 col-md-3 col-sm-3 hidden-xs" style="padding: 0px">{{shPostTypeAttr.shWidget.name}}</div>
+			<div class="col-lg-3 col-md-3 col-sm-3 hidden-xs"
+				style="padding: 0px">{{shPostTypeAttr.name}}</div>
+			<div class="col-lg-3 col-md-3 col-sm-3 hidden-xs"
+				style="padding: 0px">{{shPostTypeAttr.shWidget.name}}</div>
 		</div>
 		</uib-accordion-heading>
+		<uib-tabset active="active" style="margin:5px"> <uib-tab
+			index="0" heading="Details">
 		<div
 			ng-include="'template/widget/default/setting/default-setting.html'"></div>
 		<div ng-include="shPostTypeAttr.shWidget.settingPath"></div>
+		</uib-tab> <uib-tab index="1" heading="Semantic Navigation">
+		<div
+			ng-include="'template/widget/default/setting/default-search-setting.html'">
+		</div>
+		</uib-tab> </uib-tabset>
 	</div>
 	</uib-accordion>
 </div>

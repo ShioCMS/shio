@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.client.ClientProtocolException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +27,7 @@ import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrReposi
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.post.type.ShSystemPostType;
 import com.viglet.shiohara.post.type.ShSystemPostTypeAttr;
+import com.viglet.shiohara.turing.ShTuringIntegration;
 import com.viglet.shiohara.url.ShURLFormatter;
 import com.viglet.shiohara.utils.ShPostUtils;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
@@ -51,9 +53,13 @@ public class ShPostImport {
 	private ShPostUtils shPostUtils;
 	@Autowired
 	private ShURLFormatter shURLFormatter;
-
+	@Autowired
+	private ShTuringIntegration shTuringIntegration;
+	
+	private boolean turingEnabled = true;
+	
 	public ShPost createShPost(ShPostExchange shPostExchange, File extractFolder, String username,
-			Map<String, Object> shObjects) {
+			Map<String, Object> shObjects) throws ClientProtocolException, IOException {
 		ShPost shPost = null;
 		if (shPostRepository.findById(shPostExchange.getId()).isPresent()) {
 			shPost = shPostRepository.findById(shPostExchange.getId()).get();
@@ -100,16 +106,21 @@ public class ShPostImport {
 			}
 
 			shPostRepository.saveAndFlush(shPost);
-
+			
 			this.createShPostAttrs(shPostExchange, shPost, shPostExchange.getFields(), null, extractFolder, username,
 					shObjects);
+			
+			if (turingEnabled) {
+				shTuringIntegration.indexObject(shPost);
+			}
 		}
 		return shPost;
 	}
 
 	@SuppressWarnings({ "unchecked" })
 	private void createShPostAttrs(ShPostExchange shPostExchange, ShPost shPost, Map<String, Object> shPostFields,
-			ShRelatorItem shParentRelatorItem, File extractFolder, String username, Map<String, Object> shObjects) {
+			ShRelatorItem shParentRelatorItem, File extractFolder, String username, Map<String, Object> shObjects)
+			throws ClientProtocolException, IOException {
 		for (Entry<String, Object> shPostField : shPostFields.entrySet()) {
 			ShPostType shPostType = shPostTypeRepository.findByName(shPostExchange.getPostType());
 

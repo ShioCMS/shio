@@ -66,8 +66,6 @@ public class ShPostAPI {
 	@Autowired
 	private ShTuringIntegration shTuringIntegration;
 
-	private boolean turingEnabled = false;
-
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShPost> shPostList() throws Exception {
@@ -113,9 +111,8 @@ public class ShPostAPI {
 			shHistory.setOwner(principal.getName());
 		}
 
-		if (turingEnabled) {
-			shTuringIntegration.preparePost(shPost);
-		}
+		shTuringIntegration.indexObject(shPost);
+		
 		shHistory.setShObject(shPost.getId());
 		shHistory.setShSite(shPostUtils.getSite(shPost).getId());
 		shHistoryRepository.saveAndFlush(shHistory);
@@ -129,10 +126,9 @@ public class ShPostAPI {
 	public ShPost shPostAdd(@RequestBody ShPost shPost, Principal principal) throws Exception {
 
 		this.postSave(shPost);
-
-		if (turingEnabled) {
-			shTuringIntegration.preparePost(shPost);
-		}
+		
+		shTuringIntegration.indexObject(shPost);
+		
 		// History
 		ShHistory shHistory = new ShHistory();
 		shHistory.setDate(new Date());
@@ -153,6 +149,9 @@ public class ShPostAPI {
 	public boolean shPostDelete(@PathVariable String id, Principal principal) throws Exception {
 
 		ShPost shPost = shPostRepository.findById(id).get();
+		
+		shTuringIntegration.deindexObject(shPost);
+		
 		Set<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
 		if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE) && shPostAttrs.size() > 0) {
 			File file = shStaticFileUtils.filePath(shPost.getShFolder(), shPostAttrs.iterator().next().getStrValue());

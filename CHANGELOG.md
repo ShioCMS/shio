@@ -1,4 +1,17 @@
+## 0.3.3
+
+#### NEW FEATURES
+* Turing Semantic Navigation Settings into Post Type
+* Turing Semantic Navigation Search
+* Searchable Post Types
+* Turing Integration: Deindexing Content
+
+#### IMPROVEMENTS
+* Sites Context: UTF-8 Encoding
+* Download Site Button into Object List View
+
 ## 0.3.2
+
 
 #### NEW FEATURES
 * MongoDB
