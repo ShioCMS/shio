@@ -15,4 +15,5 @@ public class ShSystemWidget {
 	public static final String PAYMENT_DEFINITION = "Payment Definition";
 	public static final String PAYMENT = "Payment";
 	public static final String FORM_CONFIGURATION = "Form Configuration";
+	public static final String DATE = "Date";
 }
