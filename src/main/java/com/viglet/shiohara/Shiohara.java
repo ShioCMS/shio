@@ -2,6 +2,9 @@ package com.viglet.shiohara;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
+import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
+import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
 import org.springframework.boot.web.embedded.undertow.UndertowServletWebServerFactory;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.cache.annotation.EnableCaching;
@@ -16,16 +19,17 @@ import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 
 import io.undertow.UndertowOptions;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = {MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
 @EnableJms
 @EnableCaching
 public class Shiohara {
 
-	public static void main(String[] args) throws Exception {		
+	public static void main(String[] args) throws Exception {
 		System.out.println("Viglet Shiohara starting...");
 		SpringApplication.run(Shiohara.class, args);
 		System.out.println("Viglet Shiohara started");
 	}
+
 
 	@Bean
 	public FilterRegistrationBean<CharacterEncodingFilter> filterRegistrationBean() {
@@ -52,5 +56,5 @@ public class Shiohara {
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
-	}	
+	}
 }
