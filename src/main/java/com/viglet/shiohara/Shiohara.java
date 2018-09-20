@@ -21,11 +21,12 @@ import io.undertow.UndertowOptions;
 @EnableCaching
 public class Shiohara {
 
-	public static void main(String[] args) throws Exception {		
+	public static void main(String[] args) throws Exception {
 		System.out.println("Viglet Shiohara starting...");
 		SpringApplication.run(Shiohara.class, args);
 		System.out.println("Viglet Shiohara started");
 	}
+
 
 	@Bean
 	public FilterRegistrationBean<CharacterEncodingFilter> filterRegistrationBean() {
@@ -52,5 +53,5 @@ public class Shiohara {
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
-	}	
+	}
 }
