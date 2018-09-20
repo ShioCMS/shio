@@ -102,7 +102,8 @@ public class ShPostAPI {
 			throws Exception {
 
 		this.postSave(shPost);
-
+		shPostUtils.saveDoc(shPost);
+		
 		// History
 		ShHistory shHistory = new ShHistory();
 		shHistory.setDate(new Date());

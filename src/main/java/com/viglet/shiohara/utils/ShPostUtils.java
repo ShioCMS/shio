@@ -8,19 +8,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.bson.Document;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
+import com.viglet.shiohara.persistence.model.post.ShPostDoc;
+import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
 import com.viglet.shiohara.persistence.model.reference.ShReference;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.object.ShObjectRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
+import com.viglet.shiohara.persistence.repository.post.ShPostDocRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.reference.ShReferenceRepository;
 import com.viglet.shiohara.post.type.ShSystemPostType;
@@ -40,6 +47,47 @@ public class ShPostUtils {
 	private ShStaticFileUtils shStaticFileUtils;
 	@Autowired
 	private ShReferenceRepository shReferenceRepository;
+	@Autowired
+	private ShPostDocRepository shPostDocRepository;
+	@Autowired
+	private MongoTemplate mongoTemplate;
+
+	public void saveDoc(ShPost shPost) {
+
+		ObjectMapper mapper = new ObjectMapper();
+
+		try {
+			String jsonString = mapper.writeValueAsString(shPost);
+			JSONObject jsonObject = new JSONObject(jsonString);
+			jsonObject.put("_id", jsonObject.get("id"));
+			jsonObject.remove("id");
+
+			Document doc = Document.parse(jsonObject.toString());
+			mongoTemplate.save(doc, "shPosts");
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		/*
+		 * ShPostDoc shPostDoc = new ShPostDoc(); shPostDoc.setId(shPost.getId());
+		 * Map<String, Object> attributes = new HashMap<String, Object>();
+		 * Set<ShPostAttr> shPostAttrList = shPostAttrRepository.findByShPost(shPost);
+		 * 
+		 * for (ShPostAttr shPostAttr : shPostAttrList) { if
+		 * (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget
+		 * .RELATOR)) { Set<ShRelatorItem> shRelatorItems =
+		 * shPostAttr.getShChildrenRelatorItems(); for (ShRelatorItem shRelatorItem :
+		 * shRelatorItems) { Set<ShPostAttr> shPostAttrs =
+		 * shRelatorItem.getShChildrenPostAttrs(); Map<String, Object> subAttributes =
+		 * new HashMap<String, Object>(); for (ShPostAttr shPostAttrSub : shPostAttrs) {
+		 * subAttributes.put(shPostAttrSub.getShPostTypeAttr().getName(),
+		 * shPostAttrSub.getStrValue()); } attributes.put("relator", subAttributes); } }
+		 * else { attributes.put(shPostAttr.getShPostTypeAttr().getName(),
+		 * shPostAttr.getStrValue()); } }
+		 * 
+		 * shPostDoc.setAttributes(attributes); shPostDocRepository.save(shPostDoc);
+		 */
+	}
 
 	public JSONObject toJSON(ShPost shPost) {
 		JSONObject shPostItemAttrs = new JSONObject();
@@ -152,7 +200,7 @@ public class ShPostUtils {
 						shReferenceRepository.delete(shOldReference);
 
 					}
-					
+
 					// Find by shPostAttr.getReferenceObjects()
 					if (shPostAttr.getReferenceObjects() != null) {
 						for (ShObject shObject : shPostAttr.getReferenceObjects()) {

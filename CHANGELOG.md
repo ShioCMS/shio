@@ -9,6 +9,7 @@
 #### IMPROVEMENTS
 * Sites Context: UTF-8 Encoding
 * Download Site Button into Object List View
+* Spring Boot 2.0.5 and Gradle 4.10.1
 
 ## 0.3.2
 

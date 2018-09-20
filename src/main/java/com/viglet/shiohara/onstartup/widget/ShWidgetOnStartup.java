@@ -149,6 +149,16 @@ public class ShWidgetOnStartup {
 			shWidget.setType("TEXT,TEXTAREA");
 
 			shWidgetRepository.save(shWidget);
+			
+			shWidget = new ShWidget();
+			shWidget.setName(ShSystemWidget.DATE);
+			shWidget.setDescription("Date Widget");
+			shWidget.setClassName("com.viglet.shiohara.widget.ShDateWidget");
+			shWidget.setImplementationCode("template/widget/date/date.html");
+			shWidget.setSettingPath("template/widget/date/setting/date-setting.html");
+			shWidget.setType("DATE,TEXT,TEXTAREA");
+
+			shWidgetRepository.save(shWidget);
 		}
 
 	}
