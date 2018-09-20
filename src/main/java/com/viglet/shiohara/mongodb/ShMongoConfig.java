@@ -1,11 +1,13 @@
 package com.viglet.shiohara.mongodb;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.MongoDbFactory;
@@ -26,8 +28,11 @@ import de.flapdoodle.embed.mongo.distribution.Version;
 @Configuration
 public class ShMongoConfig {
 
-	private static final String MONGO_DB_URL = "localhost";
-	private static final int MONGO_DB_PORT = 12345;
+	@Value("${spring.shiohara.data.mongodb.host}")
+    private String MONGO_DB_URL;
+
+    @Value("${spring.shiohara.data.mongodb.port}")
+    private int MONGO_DB_PORT;
 
 	MongodStarter starter = MongodStarter.getDefaultInstance();
 	MongodExecutable mongodExecutable;
@@ -46,12 +51,21 @@ public class ShMongoConfig {
 
 	@PostConstruct
 	public void construct() throws UnknownHostException, IOException {
-		Storage replication = new Storage("/tmp/databaseDir",null,0);
+		File userDir = new File(System.getProperty("user.dir"));
+		if (userDir.exists() && userDir.isDirectory()) {
+			File documentDir = new File(
+					userDir.getAbsolutePath().concat(File.separator + "store" + File.separator + "document"));
+			if (!documentDir.exists()) {
+				documentDir.mkdirs();
+			}
 
-		IMongodConfig mongodConfig = new MongodConfigBuilder().replication(replication).version(Version.Main.PRODUCTION)
-				.net(new Net(MONGO_DB_URL, MONGO_DB_PORT, true)).build();
-		mongodExecutable = starter.prepare(mongodConfig);
-		MongodProcess mongod = mongodExecutable.start();
+			Storage replication = new Storage(documentDir.getAbsolutePath(), null, 0);
+
+			IMongodConfig mongodConfig = new MongodConfigBuilder().replication(replication)
+					.version(Version.Main.PRODUCTION).net(new Net(MONGO_DB_URL, MONGO_DB_PORT, true)).build();
+			mongodExecutable = starter.prepare(mongodConfig);
+			MongodProcess mongod = mongodExecutable.start();
+		}
 	}
 
 	@PreDestroy
