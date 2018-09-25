@@ -72,10 +72,10 @@ public class ShPostAPI {
 		return shPostRepository.findAll();
 	}
 
-	@GetMapping("/post-type/{postTypeNane}")
+	@GetMapping("/post-type/{postTypeName}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public List<ShPost> shPostListByPostType(@PathVariable String postTypeNane) throws Exception {
-		ShPostType shPostType = shPostTypeRepository.findByName(postTypeNane);
+	public List<ShPost> shPostListByPostType(@PathVariable String postTypeName) throws Exception {
+		ShPostType shPostType = shPostTypeRepository.findByName(postTypeName);
 		return shPostRepository.findByShPostType(shPostType);
 	}
 	
