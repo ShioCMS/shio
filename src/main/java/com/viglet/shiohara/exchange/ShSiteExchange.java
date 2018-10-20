@@ -30,6 +30,10 @@ public class ShSiteExchange {
 	
 	private List<String> rootFolders;
 
+	public ShSiteExchange() {
+		super();
+	}
+	
 	public String getId() {
 		return id;
 	}
