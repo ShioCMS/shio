@@ -1,6 +1,6 @@
 buildscript {
-    ext { springBootVersion = '2.0.6.RELEASE'
-	      hibernateVersion = '5.9.1.Final'
+    ext { springBootVersion = '2.1.0.RELEASE'
+	      hibernateVersion = '5.10.4.Final'
 		  httpClientVersion = '4.5.2'
 		  swaggerVersion = '2.8.0'
 		  jgitVersion = '4.11.0.201803080745-r'
@@ -93,7 +93,7 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-mongodb', version:"${springBootVersion}"  
   
   	// Spring
-  	compile group: 'org.springframework', name: 'spring-test', version: '5.0.10.RELEASE'
+  	compile group: 'org.springframework', name: 'spring-test', version: '5.1.2.RELEASE'
   	
   	// Jackson
     compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.9.7'
