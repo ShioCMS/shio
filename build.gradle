@@ -21,6 +21,7 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'com.eriwen.gradle.js'
 apply plugin: 'jacoco'
+apply plugin: 'org.sonarqube'
 
 jar {
     baseName = 'viglet-shiohara'
@@ -193,7 +194,12 @@ bootRun {
         args project.args.split(',')
     }
 }
-
+sonarqube {
+    properties {
+        property "sonar.projectName", "Java Gradle-based project analyzed on SonarCloud using Travis"
+        property "sonar.projectKey", "openviglet_shiohara"
+    }
+    
 check.dependsOn jacocoTestReport   
 
 }
