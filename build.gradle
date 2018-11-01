@@ -15,9 +15,6 @@ buildscript {
     			   classpath("com.eriwen:gradle-js-plugin:2.12.0") }
 }
 
-plugins {
-    id "org.sonarqube" version "2.2"
-}
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
@@ -36,7 +33,6 @@ bootJar {
 }
 
 repositories {
-	jcenter()
 	mavenCentral()
 	maven { url "https://repo.spring.io/snapshot" }
 	maven { url "https://repo.spring.io/milestone" }
@@ -196,13 +192,6 @@ test {
 bootRun {
     if (project.hasProperty('args')) {
         args project.args.split(',')
-    }
-}
-
-sonarqube {
-    properties {
-        property "sonar.projectName", "Viglet Shiohara CMS"
-        property "sonar.projectKey", "openviglet_shiohara"
     }
 }
    
