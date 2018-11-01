@@ -194,12 +194,14 @@ bootRun {
         args project.args.split(',')
     }
 }
+
 sonarqube {
     properties {
-        property "sonar.projectName", "Java Gradle-based project analyzed on SonarCloud using Travis"
+        property "sonar.projectName", "Viglet Shiohara CMS"
         property "sonar.projectKey", "openviglet_shiohara"
     }
-    
+}
+   
 check.dependsOn jacocoTestReport   
 
 }
