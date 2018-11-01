@@ -9,6 +9,7 @@ addons:
     token:
       secure: "a1yQPtWpMwHRLD4sjAZgYglHTRrvijorPWt3QkLm/7Z7Qm0ogy84RT3KyKcc1cBswRa+qZZ8ks3lXDOY/dnD1WNwe1/v6aGBBvpx0EV+1ezf0zQKdVO7/YhLYUmqrpIzWQazMuyQYn7HhoSoCSGbtmu9+wXsw8HGXhU5KvVxQYeJGF5qgKXlCfEtfcSgxzEYkvt7ez5C61mTBtijTTnvVXs0pZ0abqB731pjecfc0xLqwk/45vC6CPLAJlivOhidvVKTGvwLEt+V2iq686muMq4wuZgUMTkQXqTCOZw4WzFcdmjGQ8Mu8x6IrzGJu+RAnG7v8mQoNjPhm4LB3uPdvBuLQ8owzDCudHEc81FkiNgmyjMwF+ZbauJBej+0i51pRbGuzi3YoFAnPt9kiEW6eoflJRvZq0aXMz1ew1ivtQRQLLvcj5xevTcWd9FOjr64kiMrYKSGCKf6LqUKkoZoSgP90GISLHhDoPX6yF9at4bEGNBC9quUm9QiOcdqGSyz5J6pS+LfeOeCm58d7hx4Iy3uAosw4bEGis+So69sEEEnl3dpO0BZjDwnEgz+32gA6+eN87lrp2iAD4YHjHFFDv2rjYWuJKcZZy3lBDcGua7bTt16IY15/D/xB+i9PIjRbH7ZlrCZBiwqo9Jsp52bpRec62BrBydNgQEj/QevGuo="
 script:
+  - ./gradlew check
   -  sonar-scanner
 after_success:
   - bash <(curl -s https://codecov.io/bash)
