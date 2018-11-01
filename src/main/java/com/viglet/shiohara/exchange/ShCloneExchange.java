@@ -27,6 +27,8 @@ import java.util.Map;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
@@ -39,7 +41,7 @@ import com.viglet.shiohara.persistence.model.site.ShSite;
 
 @Component
 public class ShCloneExchange {
-
+	static final Logger logger = LogManager.getLogger(ShCloneExchange.class.getName());
 	@Autowired
 	private ShSiteImport shSiteImport;
 	@Autowired
@@ -83,8 +85,8 @@ public class ShCloneExchange {
 				if (parentExtractFolder != null) {
 					FileUtils.deleteDirectory(parentExtractFolder);
 				}
-			} catch (IOException ex) {
-				ex.printStackTrace();
+			} catch (IOException e) {
+				logger.error("cloneFromMultipartFileException", e);	
 			}
 			return shExchangeModified;
 		} else {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2018 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,8 @@ import java.util.UUID;
 import java.util.Map.Entry;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -45,8 +47,15 @@ import com.viglet.shiohara.post.type.ShSystemPostType;
 import com.viglet.shiohara.url.ShURLFormatter;
 import com.viglet.shiohara.widget.ShSystemWidget;
 
+/**
+ * Import Site.
+ *
+ * @author Alexandre Oliveira
+ * @since 0.3.0
+ */
 @Component
 public class ShSiteImport {
+	private static final Log logger = LogFactory.getLog(ShSiteImport.class);
 	@Autowired
 	private ShSiteRepository shSiteRepository;
 	@Autowired
@@ -281,8 +290,7 @@ public class ShSiteImport {
 				try {
 					FileUtils.moveFile(fileSource, fileDest);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.error("updateFieldRelationException", e);
 				}
 
 			} else if ((shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.FILE)

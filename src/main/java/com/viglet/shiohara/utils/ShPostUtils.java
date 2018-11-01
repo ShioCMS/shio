@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2018 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bson.Document;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,20 +40,25 @@ import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
-import com.viglet.shiohara.persistence.model.post.ShPostDoc;
-import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
 import com.viglet.shiohara.persistence.model.reference.ShReference;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.object.ShObjectRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
-import com.viglet.shiohara.persistence.repository.post.ShPostDocRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.reference.ShReferenceRepository;
 import com.viglet.shiohara.post.type.ShSystemPostType;
 import com.viglet.shiohara.widget.ShSystemWidget;
 
+/**
+ * Post Utils.
+ *
+ * @author Alexandre Oliveira
+ * @since 0.3.0
+ */
 @Component
 public class ShPostUtils {
+	private static final Log logger = LogFactory.getLog(ShPostUtils.class);
+	
 	@Autowired
 	private ShFolderUtils shFolderUtils;
 	@Autowired
@@ -64,8 +71,6 @@ public class ShPostUtils {
 	private ShStaticFileUtils shStaticFileUtils;
 	@Autowired
 	private ShReferenceRepository shReferenceRepository;
-	@Autowired
-	private ShPostDocRepository shPostDocRepository;
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
@@ -273,7 +278,9 @@ public class ShPostUtils {
 			File fileTo = shStaticFileUtils.filePath(shPost.getShFolder(), shPostAttr.getStrValue());
 			if (fileFrom != null && fileTo != null) {
 				if (fileFrom.exists()) {
-					fileFrom.renameTo(fileTo);
+					if (!fileFrom.renameTo(fileTo)) {
+						logger.error(String.format("Can't rename the file %s", fileFrom.getName()));
+					}
 				}
 			}
 

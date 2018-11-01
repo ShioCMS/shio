@@ -27,7 +27,15 @@ public class ShCachedObject implements ShCacheable {
 	/*
 	 * This contains the real "value". This is the object which needs to be shared.
 	 */
-	public Object object = null;
+	private Object object = null;
+
+	public Object getObject() {
+		return object;
+	}
+
+	public void setObject(Object object) {
+		this.object = object;
+	}
 
 	// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	public ShCachedObject(Object obj, Object id, int minutesToLive) {

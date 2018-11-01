@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2018 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,8 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,8 +48,16 @@ import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
 import com.viglet.shiohara.utils.ShUtils;
 
+/**
+ * Export Site.
+ *
+ * @author Alexandre Oliveira
+ * @since 0.3.0
+ */
 @Component
 public class ShSiteExport {
+	private static final Log logger = LogFactory.getLog(ShSiteExport.class);
+	
 	@Autowired
 	private ShSiteRepository shSiteRepository;
 	@Autowired
@@ -137,9 +147,9 @@ public class ShSiteExport {
 						FileUtils.deleteQuietly(zipFile);
 
 					} catch (IOException ex) {
-						ex.printStackTrace();
+						logger.error("exportObjectIOException", ex);
 					} catch (Exception e) {
-						e.printStackTrace();
+						logger.error("exportObjectException", e);
 					}
 				}
 			};
