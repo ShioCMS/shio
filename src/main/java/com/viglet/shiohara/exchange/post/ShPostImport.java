@@ -27,6 +27,8 @@ import java.util.Map.Entry;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -52,6 +54,7 @@ import com.viglet.shiohara.widget.ShSystemWidget;
 
 @Component
 public class ShPostImport {
+	static final Logger logger = LogManager.getLogger(ShPostImport.class.getName());
 	@Autowired
 	private ShFolderRepository shFolderRepository;
 	@Autowired
@@ -110,8 +113,7 @@ public class ShPostImport {
 					try {
 						FileUtils.copyFile(fileSource, fileDest);
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						logger.error("createShPostException", e);
 					}
 				}
 			}

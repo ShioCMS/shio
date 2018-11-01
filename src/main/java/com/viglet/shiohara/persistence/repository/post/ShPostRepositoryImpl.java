@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2018 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,15 +23,24 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.transaction.annotation.Transactional;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.search.Query;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
 
+import com.viglet.shiohara.exchange.site.ShSiteImport;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 
+/**
+ * Post Repository Implementation.
+ *
+ * @author Alexandre Oliveira
+ * @since 0.3.0
+ */
 public class ShPostRepositoryImpl implements ShPostRepositoryCustom {
-
+	private static final Log logger = LogFactory.getLog(ShSiteImport.class);
 	@PersistenceContext
 	private EntityManager em;
 
@@ -43,7 +52,7 @@ public class ShPostRepositoryImpl implements ShPostRepositoryCustom {
 			fullTextEntityManager.createIndexer().startAndWait();
 			status = true;
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			logger.error("initializeHibernateSearchException", e);
 		}
 		return status;
 	}

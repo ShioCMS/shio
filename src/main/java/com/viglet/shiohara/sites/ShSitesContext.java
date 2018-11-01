@@ -120,7 +120,7 @@ public class ShSitesContext {
 						response.setContentType(mimetypesFileTypeMap.getContentType(shSitesContextURL.getContextURL()));
 						response.setCharacterEncoding("UTF-8");
 					}
-					response.getOutputStream().write((byte[]) shCacheObject.object);
+					response.getOutputStream().write((byte[]) shCacheObject.getObject());
 				} else {
 					byte[] html = this.siteContext(shSitesContextURL, request, response);
 					if (html != null) {

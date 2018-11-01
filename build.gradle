@@ -92,7 +92,7 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-activemq', version:"${springBootVersion}"   
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf', version:"${springBootVersion}"  
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-mongodb', version:"${springBootVersion}"  
-  
+    
   	// Spring
   	compile group: 'org.springframework', name: 'spring-test', version: '5.1.2.RELEASE'
   	

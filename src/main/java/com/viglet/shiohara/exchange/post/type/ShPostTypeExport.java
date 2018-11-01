@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2018 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,8 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
@@ -45,8 +47,16 @@ import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.utils.ShUtils;
 
+/**
+ * Export PostType.
+ *
+ * @author Alexandre Oliveira
+ * @since 0.3.0
+ */
 @Component
 public class ShPostTypeExport {
+	private static final Log logger = LogFactory.getLog(ShPostTypeExport.class);
+
 	@Autowired
 	private ShPostTypeRepository shPostTypeRepository;
 	@Autowired
@@ -108,9 +118,9 @@ public class ShPostTypeExport {
 						FileUtils.deleteQuietly(zipFile);
 
 					} catch (IOException ex) {
-						ex.printStackTrace();
+						logger.error("exportObjectIOException", ex);
 					} catch (Exception e) {
-						e.printStackTrace();
+						logger.error("exportObjectException", e);
 					}
 				}
 			};
@@ -143,6 +153,7 @@ public class ShPostTypeExport {
 
 		return shPostTypeExchange;
 	}
+
 	public ShPostTypeFieldExchange exportPostTypeField(ShPostTypeAttr shPostTypeAttr) {
 		ShPostTypeFieldExchange shPostTypeFieldExchange = new ShPostTypeFieldExchange();
 		shPostTypeFieldExchange.setId(shPostTypeAttr.getId());
@@ -155,7 +166,7 @@ public class ShPostTypeExport {
 		shPostTypeFieldExchange.setTitle(shPostTypeAttr.getIsTitle() == (byte) 1 ? true : false);
 		shPostTypeFieldExchange.setWidget(shPostTypeAttr.getShWidget().getName());
 		shPostTypeFieldExchange.setWidgetSettings(shPostTypeAttr.getWidgetSettings());
-		
+
 		if (shPostTypeAttr.getShPostTypeAttrs().size() > 0) {
 			Map<String, ShPostTypeFieldExchange> shPostTypeFieldExchanges = new HashMap<String, ShPostTypeFieldExchange>();
 

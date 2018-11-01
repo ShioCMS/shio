@@ -23,6 +23,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.function.Consumer;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -52,7 +54,7 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/api/v2/folder")
 @Api(tags = "Folder", description = "Folder API")
 public class ShFolderAPI {
-
+	static final Logger logger = LogManager.getLogger(ShFolderAPI.class.getName());
 	@Autowired
 	private ShFolderRepository shFolderRepository;
 	@Autowired
@@ -109,8 +111,7 @@ public class ShFolderAPI {
 				try {					
 					shFolderUtils.deleteFolder(shFolder);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.error("FolderDeleteException", e);
 				}
 			}
 		});
