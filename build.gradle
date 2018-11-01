@@ -15,13 +15,16 @@ buildscript {
     			   classpath("com.eriwen:gradle-js-plugin:2.12.0") }
 }
 
+plugins {
+    id "org.sonarqube" version "2.2"
+}
+
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'com.eriwen.gradle.js'
 apply plugin: 'jacoco'
-apply plugin: 'org.sonarqube'
 
 jar {
     baseName = 'viglet-shiohara'
@@ -33,6 +36,7 @@ bootJar {
 }
 
 repositories {
+	jcenter()
 	mavenCentral()
 	maven { url "https://repo.spring.io/snapshot" }
 	maven { url "https://repo.spring.io/milestone" }
