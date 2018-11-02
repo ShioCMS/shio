@@ -58,7 +58,7 @@ import com.viglet.shiohara.widget.ShSystemWidget;
 @Component
 public class ShPostUtils {
 	private static final Log logger = LogFactory.getLog(ShPostUtils.class);
-	
+
 	@Autowired
 	private ShFolderUtils shFolderUtils;
 	@Autowired
@@ -277,10 +277,8 @@ public class ShPostUtils {
 			File fileFrom = shStaticFileUtils.filePath(shPost.getShFolder(), shPostAttrEdit.getStrValue());
 			File fileTo = shStaticFileUtils.filePath(shPost.getShFolder(), shPostAttr.getStrValue());
 			if (fileFrom != null && fileTo != null) {
-				if (fileFrom.exists()) {
-					if (!fileFrom.renameTo(fileTo)) {
-						logger.error(String.format("Can't rename the file %s", fileFrom.getName()));
-					}
+				if (fileFrom.exists() && !fileFrom.renameTo(fileTo)) {
+					logger.error(String.format("Can't rename the file %s", fileFrom.getName()));
 				}
 			}
 
