@@ -109,7 +109,7 @@ public class ShPostAPI {
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShPost shPostEdit(@PathVariable String id) throws Exception {
-		ShPost shPost = shPostRepository.findById(id).get();
+		ShPost shPost = shPostRepository.findById(id).orElse(null);
 		Set<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
 		shPost.setShPostAttrs(shPostAttrs);
 
@@ -176,7 +176,7 @@ public class ShPostAPI {
 	@DeleteMapping("/{id}")
 	public boolean shPostDelete(@PathVariable String id, Principal principal) throws Exception {
 
-		ShPost shPost = shPostRepository.findById(id).get();
+		ShPost shPost = shPostRepository.findById(id).orElse(null);
 
 		shTuringIntegration.deindexObject(shPost);
 

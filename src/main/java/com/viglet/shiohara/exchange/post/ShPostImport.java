@@ -82,12 +82,12 @@ public class ShPostImport {
 			Map<String, Object> shObjects) throws ClientProtocolException, IOException {
 		ShPost shPost = null;
 		if (shPostRepository.findById(shPostExchange.getId()).isPresent()) {
-			shPost = shPostRepository.findById(shPostExchange.getId()).get();
+			shPost = shPostRepository.findById(shPostExchange.getId()).orElse(null);
 		} else {
 			shPost = new ShPost();
 			shPost.setId(shPostExchange.getId());
 			shPost.setDate(shPostExchange.getDate());
-			shPost.setShFolder(shFolderRepository.findById(shPostExchange.getFolder()).get());
+			shPost.setShFolder(shFolderRepository.findById(shPostExchange.getFolder()).orElse(null));
 			shPost.setShPostType(shPostTypeRepository.findByName(shPostExchange.getPostType()));
 			if (shPostExchange.getOwner() != null) {
 				shPost.setOwner(shPostExchange.getOwner());

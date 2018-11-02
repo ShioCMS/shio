@@ -60,7 +60,7 @@ public class ShEcomPaymentTypeDefinitionAPI {
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShEcomPaymentTypeDefinition shEcomPaymentTypeDefinitioneGet(@PathVariable String id) throws Exception {
-		return shEcomPaymentTypeDefinitionRepository.findById(id).get();
+		return shEcomPaymentTypeDefinitionRepository.findById(id).orElse(null);
 	}
 
 	@ApiOperation(value = "Update a Payment Type")
@@ -69,7 +69,7 @@ public class ShEcomPaymentTypeDefinitionAPI {
 	public ShEcomPaymentTypeDefinition shEcomPaymentTypeDefinitionUpdate(@PathVariable String id,
 			@RequestBody ShEcomPaymentTypeDefinition shEcomPaymentTypeDefinition) throws Exception {
 
-		ShEcomPaymentTypeDefinition shEcomPaymentTypeDefinitionEdit = shEcomPaymentTypeDefinitionRepository.findById(id).get();
+		ShEcomPaymentTypeDefinition shEcomPaymentTypeDefinitionEdit = shEcomPaymentTypeDefinitionRepository.findById(id).orElse(null);
 
 		shEcomPaymentTypeDefinitionEdit.setDate(new Date());
 		shEcomPaymentTypeDefinitionEdit.setClassName(shEcomPaymentTypeDefinition.getClassName());

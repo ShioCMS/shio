@@ -189,7 +189,7 @@ public class ShPostUtils {
 	public String generatePostLinkById(String postID) {
 		if (postID != null) {
 			try {
-				ShPost shPost = shPostRepository.findById(postID).get();
+				ShPost shPost = shPostRepository.findById(postID).orElse(null);
 				return this.generatePostLink(shPost);
 
 			} catch (IllegalArgumentException exception) {

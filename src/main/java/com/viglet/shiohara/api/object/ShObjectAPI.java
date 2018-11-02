@@ -87,7 +87,7 @@ public class ShObjectAPI {
 	public RedirectView shObjectPreview(@PathVariable String id, HttpServletResponse response,
 			RedirectAttributes attributes) throws Exception {
 		String redirect = null;
-		ShObject shObject = shObjectRepository.findById(id).get();
+		ShObject shObject = shObjectRepository.findById(id).orElse(null);
 		if (shObject instanceof ShSite) {
 			redirect = shSiteUtils.generatePostLink((ShSite) shObject);
 		} else if (shObject instanceof ShPost) {
@@ -107,8 +107,8 @@ public class ShObjectAPI {
 			throws Exception {
 		List<ShObject> shObjects = new ArrayList<ShObject>();
 		for (String globalId : globalIds) {
-			ShObject shObject = shObjectRepository.findById(globalId).get();
-			ShObject shObjectDest = shObjectRepository.findById(globallIdDest).get();
+			ShObject shObject = shObjectRepository.findById(globalId).orElse(null);
+			ShObject shObjectDest = shObjectRepository.findById(globallIdDest).orElse(null);
 			if (shObjectDest instanceof ShFolder) {
 				ShFolder shFolderDest = (ShFolder) shObjectDest;
 				if (shObject instanceof ShPost) {
@@ -148,8 +148,8 @@ public class ShObjectAPI {
 			throws Exception {
 		List<ShObject> shObjects = new ArrayList<ShObject>();
 		for (String globalId : globalIds) {
-			ShObject shObject = shObjectRepository.findById(globalId).get();
-			ShObject shObjectDest = shObjectRepository.findById(globallIdDest).get();
+			ShObject shObject = shObjectRepository.findById(globalId).orElse(null);
+			ShObject shObjectDest = shObjectRepository.findById(globallIdDest).orElse(null);
 			if (shObjectDest instanceof ShFolder) {
 				ShFolder shFolderDest = (ShFolder) shObjectDest;
 				if (shObject instanceof ShPost) {
@@ -231,7 +231,7 @@ public class ShObjectAPI {
 	@GetMapping("/{id}/path")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShFolderPath shObjectPath(@PathVariable String id) throws Exception {
-		ShObject shObject = shObjectRepository.findById(id).get();
+		ShObject shObject = shObjectRepository.findById(id).orElse(null);
 		if (shObject instanceof ShSite) {
 			ShSite shSite = (ShSite) shObject;
 			if (shSite != null) {
@@ -282,7 +282,7 @@ public class ShObjectAPI {
 			int shObjectOrder = objectOrderItem.getValue();
 			String shObjectId = objectOrderItem.getKey();
 			
-			ShObject shObject = shObjectRepository.findById(shObjectId).get();
+			ShObject shObject = shObjectRepository.findById(shObjectId).orElse(null);
 			shObject.setPosition(shObjectOrder);
 			shObjectRepository.save(shObject);
 		}

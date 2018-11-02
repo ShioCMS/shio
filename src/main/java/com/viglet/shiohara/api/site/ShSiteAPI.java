@@ -85,13 +85,13 @@ public class ShSiteAPI {
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShSite shSiteEdit(@PathVariable String id) throws Exception {
-		return shSiteRepository.findById(id).get();
+		return shSiteRepository.findById(id).orElse(null);
 	}
 
 	@PutMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShSite shSiteUpdate(@PathVariable String id, @RequestBody ShSite shSite) throws Exception {
-		ShSite shSiteEdit = shSiteRepository.findById(id).get();
+		ShSite shSiteEdit = shSiteRepository.findById(id).orElse(null);
 		shSiteEdit.setDate(new Date());
 		shSiteEdit.setName(shSite.getName());
 		shSiteEdit.setPostTypeLayout(shSite.getPostTypeLayout());
@@ -104,7 +104,7 @@ public class ShSiteAPI {
 	@DeleteMapping("/{id}")
 	@Transactional
 	public boolean shSiteDelete(@PathVariable String id) throws Exception {
-		ShSite shSite = shSiteRepository.findById(id).get();
+		ShSite shSite = shSiteRepository.findById(id).orElse(null);
 
 		List<ShFolder> shFolders = shFolderRepository.findByShSiteAndRootFolder(shSite, (byte) 1);
 
@@ -162,7 +162,7 @@ public class ShSiteAPI {
 	@GetMapping("/{id}/folder")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShFolderList shSiteRootFolder(@PathVariable String id) throws Exception {
-		ShSite shSite = shSiteRepository.findById(id).get();
+		ShSite shSite = shSiteRepository.findById(id).orElse(null);
 		List<ShFolder> shFolders = shFolderRepository.findByShSiteAndRootFolder(shSite, (byte) 1);
 		ShFolderList shFolderList = new ShFolderList();
 		shFolderList.setShFolders(shFolders);

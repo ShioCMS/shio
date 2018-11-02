@@ -57,16 +57,20 @@ public class ShEcomOrderAPI {
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShEcomOrder ShEcomOrderGet(@PathVariable String id) throws Exception {
-		return shEcomOrderRepository.findById(id).get();
+		if (shEcomOrderRepository.findById(id).isPresent()) {
+			return shEcomOrderRepository.findById(id).get();
+		} else {
+			return null;
+		}
 	}
 
 	@ApiOperation(value = "Update a Order")
 	@PutMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShEcomOrder ShEcomOrderUpdate(@PathVariable String id,
-			@RequestBody ShEcomOrder shEcomOrder) throws Exception {
+	public ShEcomOrder ShEcomOrderUpdate(@PathVariable String id, @RequestBody ShEcomOrder shEcomOrder)
+			throws Exception {
 
-		ShEcomOrder shEcomOrderEdit = shEcomOrderRepository.findById(id).get();
+		ShEcomOrder shEcomOrderEdit = shEcomOrderRepository.findById(id).orElse(null);
 
 		shEcomOrderEdit.setDescription(shEcomOrder.getDescription());
 

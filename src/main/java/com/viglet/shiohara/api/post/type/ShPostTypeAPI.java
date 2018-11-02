@@ -75,7 +75,7 @@ public class ShPostTypeAPI {
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewPostType.class })
 	public ShPostType shPostTypeEdit(@PathVariable String id) throws Exception {
-		return shPostTypeRepository.findById(id).get();
+		return shPostTypeRepository.findById(id).orElse(null);
 	}
 
 	@GetMapping("/model")
@@ -90,7 +90,7 @@ public class ShPostTypeAPI {
 	@JsonView({ ShJsonView.ShJsonViewPostType.class })
 	public ShPost shPostTypePostStructure(@PathVariable String id) throws Exception {
 		ShPost shPost = new ShPost();
-		shPost.setShPostType(shPostTypeRepository.findById(id).get());
+		shPost.setShPostType(shPostTypeRepository.findById(id).orElse(null));
 		Set<ShPostAttr> shPostAttrs = new HashSet<ShPostAttr>();
 		for (ShPostTypeAttr shPostTypeAttr : shPost.getShPostType().getShPostTypeAttrs()) {
 			ShPostAttr shPostAttr = new ShPostAttr();

@@ -77,7 +77,7 @@ public class ShFolderAPI {
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShFolder shFolderGet(@PathVariable String id) throws Exception {
-		return shFolderRepository.findById(id).get();
+		return shFolderRepository.findById(id).orElse(null);
 	}
 
 	@ApiOperation(value = "Update a folder")
@@ -85,7 +85,7 @@ public class ShFolderAPI {
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShFolder shFolderUpdate(@PathVariable String id, @RequestBody ShFolder shFolder) throws Exception {
 
-		ShFolder shFolderEdit = shFolderRepository.findById(id).get();
+		ShFolder shFolderEdit = shFolderRepository.findById(id).orElse(null);
 
 		shFolderEdit.setDate(new Date());
 		shFolderEdit.setName(shFolder.getName());
@@ -143,7 +143,7 @@ public class ShFolderAPI {
 		shNewFolder.setName(shFolder.getName());
 		shNewFolder.setFurl(shURLFormatter.format(shNewFolder.getName()));
 
-		ShObject shParentObject = shObjectRepository.findById(objectId).get();
+		ShObject shParentObject = shObjectRepository.findById(objectId).orElse(null);
 		if (shParentObject instanceof ShFolder) {
 			ShFolder shParentFolder = (ShFolder) shParentObject;
 			shNewFolder.setParentFolder(shParentFolder);
@@ -166,7 +166,7 @@ public class ShFolderAPI {
 	@GetMapping("/{id}/path")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShFolderPath shFolderPath(@PathVariable String id) throws Exception {
-		ShFolder shFolder = shFolderRepository.findById(id).get();
+		ShFolder shFolder = shFolderRepository.findById(id).orElse(null);
 		if (shFolder != null) {
 			ShFolderPath shFolderPath = new ShFolderPath();
 			String folderPath = shFolderUtils.folderPath(shFolder, true);
