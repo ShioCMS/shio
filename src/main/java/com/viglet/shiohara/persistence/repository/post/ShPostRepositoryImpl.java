@@ -53,6 +53,8 @@ public class ShPostRepositoryImpl implements ShPostRepositoryCustom {
 			status = true;
 		} catch (InterruptedException e) {
 			logger.error("initializeHibernateSearchException", e);
+			// Restore interrupted state...
+		    Thread.currentThread().interrupt();
 		}
 		return status;
 	}

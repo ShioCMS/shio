@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.http.client.ClientProtocolException;
@@ -242,8 +243,12 @@ public class ShFolderUtils {
 	}
 
 	public String generateFolderLinkById(String folderID) {
-		ShFolder shFolder = shFolderRepository.findById(folderID).get();
-		return this.generateFolderLink(shFolder);
+		Optional<ShFolder> shFolderOptional = shFolderRepository.findById(folderID);
+		if (shFolderOptional.isPresent()) {
+			ShFolder shFolder = shFolderOptional.get();
+			return this.generateFolderLink(shFolder);
+		}
+		return null;
 	}
 
 	@Transactional

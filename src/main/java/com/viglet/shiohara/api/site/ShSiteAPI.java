@@ -23,6 +23,7 @@ import java.net.URL;
 import java.security.Principal;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
@@ -91,8 +92,9 @@ public class ShSiteAPI {
 	@PutMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShSite shSiteUpdate(@PathVariable String id, @RequestBody ShSite shSite) throws Exception {
-		if (shSiteRepository.findById(id).isPresent()) {
-			ShSite shSiteEdit = shSiteRepository.findById(id).get();
+		Optional<ShSite> shSiteOptional = shSiteRepository.findById(id);
+		if (shSiteOptional.isPresent()) {
+			ShSite shSiteEdit = shSiteOptional.get();
 			shSiteEdit.setDate(new Date());
 			shSiteEdit.setName(shSite.getName());
 			shSiteEdit.setPostTypeLayout(shSite.getPostTypeLayout());
@@ -100,9 +102,10 @@ public class ShSiteAPI {
 			shSiteEdit.setFurl(shURLFormatter.format(shSite.getName()));
 			shSiteRepository.save(shSiteEdit);
 			return shSiteEdit;
-		} else {
-			return null;
 		}
+
+		return null;
+
 	}
 
 	@DeleteMapping("/{id}")

@@ -118,7 +118,7 @@ public class ShSitesContextComponent {
 			Set<ShPostAttr> shPostAttrs = shPostItem.getShPostAttrs();
 			for (ShPostAttr shPostAttr : shPostAttrs) {
 				if (shPostAttr.getShPostTypeAttr().getName().equals(ShSystemPostTypeAttr.CONTENT)) {
-					shPostItem = shPostRepository.findById(shPostAttr.getStrValue()).get();
+					shPostItem = shPostRepository.findById(shPostAttr.getStrValue()).orElse(null);
 				}
 			}
 		}
@@ -168,7 +168,7 @@ public class ShSitesContextComponent {
 	}
 
 	public JSONObject shThemeFactory(String postThemeId) {
-		ShPost shTheme = shPostRepository.findById(postThemeId).get();
+		ShPost shTheme = shPostRepository.findById(postThemeId).orElse(null);
 
 		Map<String, ShPostAttr> shThemeMap = shPostUtils.postToMap(shTheme);
 
@@ -221,7 +221,7 @@ public class ShSitesContextComponent {
 			shPostFolderPageLayoutId = shFolderIndexMap.get(ShSystemPostTypeAttr.PAGE_LAYOUT).getStrValue();
 
 			if (shPostFolderPageLayoutId != null) {
-				shFolderPageLayout = shPostRepository.findById(shPostFolderPageLayoutId).get();
+				shFolderPageLayout = shPostRepository.findById(shPostFolderPageLayoutId).orElse(null);
 			}
 		} else if (shObjectItem instanceof ShFolder) {
 			// If Folder doesn't have PageLayout, it will try use default Folder Page Layout
