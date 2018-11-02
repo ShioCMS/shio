@@ -110,11 +110,15 @@ public class ShPostAPI {
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShPost shPostEdit(@PathVariable String id) throws Exception {
-		ShPost shPost = shPostRepository.findById(id).orElse(null);
-		Set<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
-		shPost.setShPostAttrs(shPostAttrs);
+		if (shPostRepository.findById(id).isPresent()) {
+			ShPost shPost = shPostRepository.findById(id).get();
+			Set<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
+			shPost.setShPostAttrs(shPostAttrs);
 
-		return shPost;
+			return shPost;
+		} else {
+			return null;
+		}
 	}
 
 	@GetMapping("/attr/model")
@@ -176,41 +180,45 @@ public class ShPostAPI {
 	@Transactional
 	@DeleteMapping("/{id}")
 	public boolean shPostDelete(@PathVariable String id, Principal principal) throws Exception {
+		if (shPostRepository.findById(id).isPresent()) {
+			ShPost shPost = shPostRepository.findById(id).get();
 
-		ShPost shPost = shPostRepository.findById(id).orElse(null);
+			shTuringIntegration.deindexObject(shPost);
 
-		shTuringIntegration.deindexObject(shPost);
-
-		Set<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
-		if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE) && shPostAttrs.size() > 0) {
-			File file = shStaticFileUtils.filePath(shPost.getShFolder(), shPostAttrs.iterator().next().getStrValue());
-			if (file != null) {
-				if (file.exists()) {					
-					Files.delete(file);					
+			Set<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
+			if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE) && shPostAttrs.size() > 0) {
+				File file = shStaticFileUtils.filePath(shPost.getShFolder(),
+						shPostAttrs.iterator().next().getStrValue());
+				if (file != null) {
+					if (file.exists()) {
+						Files.delete(file);
+					}
 				}
 			}
+
+			shPostAttrRepository.deleteInBatch(shPostAttrs);
+
+			shReferenceRepository.deleteInBatch(shReferenceRepository.findByShObjectFrom(shPost));
+
+			shReferenceRepository.deleteInBatch(shReferenceRepository.findByShObjectTo(shPost));
+
+			// History
+			ShHistory shHistory = new ShHistory();
+			shHistory.setDate(new Date());
+			shHistory.setDescription("Deleted " + shPost.getTitle() + " Post.");
+			if (principal != null) {
+				shHistory.setOwner(principal.getName());
+			}
+			shHistory.setShObject(shPost.getId());
+			shHistory.setShSite(shPostUtils.getSite(shPost).getId());
+			shHistoryRepository.saveAndFlush(shHistory);
+
+			shPostRepository.delete(id);
+
+			return true;
+		} else {
+			return false;
 		}
-
-		shPostAttrRepository.deleteInBatch(shPostAttrs);
-
-		shReferenceRepository.deleteInBatch(shReferenceRepository.findByShObjectFrom(shPost));
-
-		shReferenceRepository.deleteInBatch(shReferenceRepository.findByShObjectTo(shPost));
-
-		// History
-		ShHistory shHistory = new ShHistory();
-		shHistory.setDate(new Date());
-		shHistory.setDescription("Deleted " + shPost.getTitle() + " Post.");
-		if (principal != null) {
-			shHistory.setOwner(principal.getName());
-		}
-		shHistory.setShObject(shPost.getId());
-		shHistory.setShSite(shPostUtils.getSite(shPost).getId());
-		shHistoryRepository.saveAndFlush(shHistory);
-
-		shPostRepository.delete(id);
-
-		return true;
 	}
 
 	public void postSave(ShPost shPost) {

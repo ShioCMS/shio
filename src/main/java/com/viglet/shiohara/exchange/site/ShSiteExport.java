@@ -57,7 +57,7 @@ import com.viglet.shiohara.utils.ShUtils;
 @Component
 public class ShSiteExport {
 	private static final Log logger = LogFactory.getLog(ShSiteExport.class);
-	
+
 	@Autowired
 	private ShSiteRepository shSiteRepository;
 	@Autowired
@@ -77,82 +77,86 @@ public class ShSiteExport {
 			}
 
 			ShExchange shExchange = new ShExchange();
-			ShSite shSite = shSiteRepository.findById(id).orElse(null);
+			if (shSiteRepository.findById(id).isPresent()) {
+				ShSite shSite = shSiteRepository.findById(id).orElse(null);
 
-			List<ShFolder> rootFolders = shFolderRepository.findByShSiteAndRootFolder(shSite, (byte) 1);
+				List<ShFolder> rootFolders = shFolderRepository.findByShSiteAndRootFolder(shSite, (byte) 1);
 
-			List<String> rootFoldersUUID = new ArrayList<String>();
-			for (ShFolder shFolder : rootFolders) {
-				rootFoldersUUID.add(shFolder.getId());
-			}
-
-			ShSiteExchange shSiteExchange = new ShSiteExchange();
-			shSiteExchange.setId(shSite.getId());
-			shSiteExchange.setName(shSite.getName());
-			shSiteExchange.setUrl(shSite.getUrl());
-			shSiteExchange.setDescription(shSite.getDescription());
-			shSiteExchange.setPostTypeLayout(shSite.getPostTypeLayout());
-			shSiteExchange.setSearchablePostTypes(shSite.getSearchablePostTypes());
-			shSiteExchange.setDate(shSite.getDate());
-			shSiteExchange.setRootFolders(rootFoldersUUID);
-			shSiteExchange.setOwner(shSite.getOwner());
-			shSiteExchange.setFurl(shSite.getFurl());
-
-			List<ShSiteExchange> shSiteExchanges = new ArrayList<ShSiteExchange>();
-			shSiteExchanges.add(shSiteExchange);
-			shExchange.setSites(shSiteExchanges);
-
-			ShExchange shExchangeFolder = shFolderExport.shFolderExchangeIterate(rootFolders);
-
-			shExchange.setFolders(shExchangeFolder.getFolders());
-			shExchange.setPosts(shExchangeFolder.getPosts());
-			shExchange.setPostTypes(shExchangeFolder.getPostTypes());
-
-			File exportDir = new File(tmpDir.getAbsolutePath().concat(File.separator + folderName));
-			if (!exportDir.exists()) {
-				exportDir.mkdirs();
-			}
-
-			for (ShFileExchange fileExchange : shExchangeFolder.getFiles()) {
-				FileUtils.copyFile(fileExchange.getFile(),
-						new File(exportDir.getAbsolutePath().concat(File.separator + fileExchange.getId())));
-			}
-			// Object to JSON in file
-			ObjectMapper mapper = new ObjectMapper();
-			mapper.writerWithDefaultPrettyPrinter().writeValue(
-					new File(exportDir.getAbsolutePath().concat(File.separator + "export.json")), shExchange);
-
-			File zipFile = new File(tmpDir.getAbsolutePath().concat(File.separator + folderName + ".zip"));
-
-			shUtils.addFilesToZip(exportDir, zipFile);
-
-			String strDate = new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(new Date());
-			String zipFileName = shSite.getName() + "_" + strDate + ".zip";
-
-			response.addHeader("Content-disposition", "attachment;filename=" + zipFileName);
-			response.setContentType("application/octet-stream");
-			response.setStatus(HttpServletResponse.SC_OK);
-
-			return new StreamingResponseBody() {
-				@Override
-				public void writeTo(java.io.OutputStream output) throws IOException {
-
-					try {
-						java.nio.file.Path path = Paths.get(zipFile.getAbsolutePath());
-						byte[] data = Files.readAllBytes(path);
-						output.write(data);
-						output.flush();
-
-						FileUtils.deleteDirectory(exportDir);
-						FileUtils.deleteQuietly(zipFile);
-
-					} catch (IOException ex) {
-						logger.error("exportObjectIOException", ex);
-					} catch (Exception e) {
-						logger.error("exportObjectException", e);
-					}
+				List<String> rootFoldersUUID = new ArrayList<String>();
+				for (ShFolder shFolder : rootFolders) {
+					rootFoldersUUID.add(shFolder.getId());
 				}
-			};
+
+				ShSiteExchange shSiteExchange = new ShSiteExchange();
+				shSiteExchange.setId(shSite.getId());
+				shSiteExchange.setName(shSite.getName());
+				shSiteExchange.setUrl(shSite.getUrl());
+				shSiteExchange.setDescription(shSite.getDescription());
+				shSiteExchange.setPostTypeLayout(shSite.getPostTypeLayout());
+				shSiteExchange.setSearchablePostTypes(shSite.getSearchablePostTypes());
+				shSiteExchange.setDate(shSite.getDate());
+				shSiteExchange.setRootFolders(rootFoldersUUID);
+				shSiteExchange.setOwner(shSite.getOwner());
+				shSiteExchange.setFurl(shSite.getFurl());
+
+				List<ShSiteExchange> shSiteExchanges = new ArrayList<ShSiteExchange>();
+				shSiteExchanges.add(shSiteExchange);
+				shExchange.setSites(shSiteExchanges);
+
+				ShExchange shExchangeFolder = shFolderExport.shFolderExchangeIterate(rootFolders);
+
+				shExchange.setFolders(shExchangeFolder.getFolders());
+				shExchange.setPosts(shExchangeFolder.getPosts());
+				shExchange.setPostTypes(shExchangeFolder.getPostTypes());
+
+				File exportDir = new File(tmpDir.getAbsolutePath().concat(File.separator + folderName));
+				if (!exportDir.exists()) {
+					exportDir.mkdirs();
+				}
+
+				for (ShFileExchange fileExchange : shExchangeFolder.getFiles()) {
+					FileUtils.copyFile(fileExchange.getFile(),
+							new File(exportDir.getAbsolutePath().concat(File.separator + fileExchange.getId())));
+				}
+				// Object to JSON in file
+				ObjectMapper mapper = new ObjectMapper();
+				mapper.writerWithDefaultPrettyPrinter().writeValue(
+						new File(exportDir.getAbsolutePath().concat(File.separator + "export.json")), shExchange);
+
+				File zipFile = new File(tmpDir.getAbsolutePath().concat(File.separator + folderName + ".zip"));
+
+				shUtils.addFilesToZip(exportDir, zipFile);
+
+				String strDate = new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(new Date());
+				String zipFileName = shSite.getName() + "_" + strDate + ".zip";
+
+				response.addHeader("Content-disposition", "attachment;filename=" + zipFileName);
+				response.setContentType("application/octet-stream");
+				response.setStatus(HttpServletResponse.SC_OK);
+
+				return new StreamingResponseBody() {
+					@Override
+					public void writeTo(java.io.OutputStream output) throws IOException {
+
+						try {
+							java.nio.file.Path path = Paths.get(zipFile.getAbsolutePath());
+							byte[] data = Files.readAllBytes(path);
+							output.write(data);
+							output.flush();
+
+							FileUtils.deleteDirectory(exportDir);
+							FileUtils.deleteQuietly(zipFile);
+
+						} catch (IOException ex) {
+							logger.error("exportObjectIOException", ex);
+						} catch (Exception e) {
+							logger.error("exportObjectException", e);
+						}
+					}
+				};
+			} else {
+				return null;
+			}
 		} else {
 			return null;
 		}
