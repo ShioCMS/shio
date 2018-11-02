@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
@@ -112,9 +113,9 @@ public class ShSiteImport {
 
 	public ShSite createShSite(ShSiteExchange shSiteExchange, String username) {
 		ShSite shSite = null;
-
-		if (shSiteRepository.findById(shSiteExchange.getId()).isPresent()) {
-			shSite = shSiteRepository.findById(shSiteExchange.getId()).get();
+		Optional<ShSite> shSiteOptional = shSiteRepository.findById(shSiteExchange.getId());
+		if (shSiteOptional.isPresent()) {
+			shSite = shSiteOptional.get();
 		} else {
 			shSite = new ShSite();
 			shSite.setId(shSiteExchange.getId());

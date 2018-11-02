@@ -19,6 +19,7 @@ package com.viglet.shiohara.utils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -72,18 +73,16 @@ public class ShObjectUtils {
 
 	public String generateObjectLinkById(String objectId) {
 		if (objectId != null) {
-			try {
-
-				ShObject shObject = shObjectRepository.findById(objectId).get();
+			Optional<ShObject> shObjectOptional = shObjectRepository.findById(objectId);
+			if (shObjectOptional.isPresent()) {
+				ShObject shObject = shObjectOptional.get();
 				if (shObject instanceof ShPost) {
 					return shPostUtils.generatePostLink((ShPost) shObject);
 				} else if (shObject instanceof ShFolder) {
 					return shFolderUtils.generateFolderLink((ShFolder) shObject);
 				}
-
-			} catch (IllegalArgumentException exception) {
-				return null;
 			}
+
 		}
 		return null;
 	}

@@ -236,7 +236,7 @@ public class ShPostUtils {
 			}
 
 			try {
-				ShObject shObjectReferenced = shObjectRepository.findById(shPostAttr.getStrValue()).get();
+				ShObject shObjectReferenced = shObjectRepository.findById(shPostAttr.getStrValue()).orElse(null);
 				// Create new reference
 				ShReference shReference = new ShReference();
 				shReference.setShObjectFrom(shPost);
@@ -310,7 +310,7 @@ public class ShPostUtils {
 				}
 			}
 			try {
-				ShObject shObjectReferenced = shObjectRepository.findById(shPostAttr.getStrValue()).get();
+				ShObject shObjectReferenced = shObjectRepository.findById(shPostAttr.getStrValue()).orElse(null);
 
 				ShReference shReference = new ShReference();
 				shReference.setShObjectFrom(shPost);

@@ -25,6 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
@@ -77,8 +78,9 @@ public class ShSiteExport {
 			}
 
 			ShExchange shExchange = new ShExchange();
-			if (shSiteRepository.findById(id).isPresent()) {
-				ShSite shSite = shSiteRepository.findById(id).orElse(null);
+			Optional<ShSite> shSiteOptional = shSiteRepository.findById(id);
+			if (shSiteOptional.isPresent()) {
+				ShSite shSite = shSiteOptional.get();
 
 				List<ShFolder> rootFolders = shFolderRepository.findByShSiteAndRootFolder(shSite, (byte) 1);
 
