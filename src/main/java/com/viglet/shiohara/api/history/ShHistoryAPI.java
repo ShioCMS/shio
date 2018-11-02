@@ -56,7 +56,7 @@ public class ShHistoryAPI {
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public Set<ShHistory> shHistoryByObject(@PathVariable String globalId) throws Exception {
 		if (shObjectRepository.findById(globalId).isPresent()) {
-			ShObject shObject = shObjectRepository.findById(globalId).get();
+			ShObject shObject = shObjectRepository.findById(globalId).orElse(null);
 			if (shObject != null) {
 				if (shObject instanceof ShSite) {
 					ShSite shSite = (ShSite) shObject;

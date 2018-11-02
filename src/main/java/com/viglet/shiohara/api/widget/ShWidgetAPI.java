@@ -38,9 +38,9 @@ import io.swagger.annotations.Api;
 
 @RestController
 @RequestMapping("/api/v2/widget")
-@Api(tags="Widget", description="Widget API")
+@Api(tags = "Widget", description = "Widget API")
 public class ShWidgetAPI {
-	
+
 	@Autowired
 	private ShWidgetRepository shWidgetRepository;
 
@@ -48,7 +48,7 @@ public class ShWidgetAPI {
 	public List<ShWidget> shWidgetList() throws Exception {
 		return shWidgetRepository.findAll();
 	}
-	
+
 	@GetMapping("/{id}")
 	public ShWidget shWidgetEdit(@PathVariable String id) throws Exception {
 		return shWidgetRepository.findById(id).get();
@@ -56,14 +56,18 @@ public class ShWidgetAPI {
 
 	@PutMapping("/{id}")
 	public ShWidget shWidgetUpdate(@PathVariable String id, @RequestBody ShWidget shWidget) throws Exception {
-		ShWidget shWidgetEdit = shWidgetRepository.findById(id).get();
-		shWidgetEdit.setName(shWidget.getName());
-		shWidgetEdit.setType(shWidget.getType());
-		shWidgetEdit.setClassName(shWidget.getClassName());
-		shWidgetEdit.setDescription(shWidget.getDescription());
-		shWidgetEdit.setImplementationCode(shWidget.getImplementationCode());
-		shWidgetRepository.save(shWidgetEdit);
-		return shWidgetEdit;
+		if (shWidgetRepository.findById(id).isPresent()) {
+			ShWidget shWidgetEdit = shWidgetRepository.findById(id).get();
+			shWidgetEdit.setName(shWidget.getName());
+			shWidgetEdit.setType(shWidget.getType());
+			shWidgetEdit.setClassName(shWidget.getClassName());
+			shWidgetEdit.setDescription(shWidget.getDescription());
+			shWidgetEdit.setImplementationCode(shWidget.getImplementationCode());
+			shWidgetRepository.save(shWidgetEdit);
+			return shWidgetEdit;
+		} else {
+			return null;
+		}
 	}
 
 	@Transactional

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2018 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,12 +18,15 @@
 package com.viglet.shiohara.api.post;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.security.Principal;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -57,10 +60,18 @@ import com.viglet.shiohara.utils.ShStaticFileUtils;
 
 import io.swagger.annotations.Api;
 
+/**
+ * Post API.
+ *
+ * @author Alexandre Oliveira
+ * @since 0.3.0
+ */
 @RestController
 @RequestMapping("/api/v2/post")
 @Api(tags = "Post", description = "Post API")
 public class ShPostAPI {
+
+	private static final Log logger = LogFactory.getLog(ShPostAPI.class);
 
 	@Autowired
 	private ShPostRepository shPostRepository;
@@ -95,15 +106,19 @@ public class ShPostAPI {
 		ShPostType shPostType = shPostTypeRepository.findByName(postTypeName);
 		return shPostRepository.findByShPostType(shPostType);
 	}
-	
+
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShPost shPostEdit(@PathVariable String id) throws Exception {
-		ShPost shPost = shPostRepository.findById(id).get();
-		Set<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
-		shPost.setShPostAttrs(shPostAttrs);
+		if (shPostRepository.findById(id).isPresent()) {
+			ShPost shPost = shPostRepository.findById(id).get();
+			Set<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
+			shPost.setShPostAttrs(shPostAttrs);
 
-		return shPost;
+			return shPost;
+		} else {
+			return null;
+		}
 	}
 
 	@GetMapping("/attr/model")
@@ -120,7 +135,7 @@ public class ShPostAPI {
 
 		this.postSave(shPost);
 		shPostUtils.saveDoc(shPost);
-		
+
 		// History
 		ShHistory shHistory = new ShHistory();
 		shHistory.setDate(new Date());
@@ -130,7 +145,7 @@ public class ShPostAPI {
 		}
 
 		shTuringIntegration.indexObject(shPost);
-		
+
 		shHistory.setShObject(shPost.getId());
 		shHistory.setShSite(shPostUtils.getSite(shPost).getId());
 		shHistoryRepository.saveAndFlush(shHistory);
@@ -144,9 +159,9 @@ public class ShPostAPI {
 	public ShPost shPostAdd(@RequestBody ShPost shPost, Principal principal) throws Exception {
 
 		this.postSave(shPost);
-		
+
 		shTuringIntegration.indexObject(shPost);
-		
+
 		// History
 		ShHistory shHistory = new ShHistory();
 		shHistory.setDate(new Date());
@@ -165,41 +180,45 @@ public class ShPostAPI {
 	@Transactional
 	@DeleteMapping("/{id}")
 	public boolean shPostDelete(@PathVariable String id, Principal principal) throws Exception {
+		if (shPostRepository.findById(id).isPresent()) {
+			ShPost shPost = shPostRepository.findById(id).get();
 
-		ShPost shPost = shPostRepository.findById(id).get();
-		
-		shTuringIntegration.deindexObject(shPost);
-		
-		Set<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
-		if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE) && shPostAttrs.size() > 0) {
-			File file = shStaticFileUtils.filePath(shPost.getShFolder(), shPostAttrs.iterator().next().getStrValue());
-			if (file != null) {
-				if (file.exists()) {
-					file.delete();
+			shTuringIntegration.deindexObject(shPost);
+
+			Set<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
+			if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE) && shPostAttrs.size() > 0) {
+				File file = shStaticFileUtils.filePath(shPost.getShFolder(),
+						shPostAttrs.iterator().next().getStrValue());
+				if (file != null) {
+					if (file.exists()) {
+						Files.delete(file.toPath());
+					}
 				}
 			}
+
+			shPostAttrRepository.deleteInBatch(shPostAttrs);
+
+			shReferenceRepository.deleteInBatch(shReferenceRepository.findByShObjectFrom(shPost));
+
+			shReferenceRepository.deleteInBatch(shReferenceRepository.findByShObjectTo(shPost));
+
+			// History
+			ShHistory shHistory = new ShHistory();
+			shHistory.setDate(new Date());
+			shHistory.setDescription("Deleted " + shPost.getTitle() + " Post.");
+			if (principal != null) {
+				shHistory.setOwner(principal.getName());
+			}
+			shHistory.setShObject(shPost.getId());
+			shHistory.setShSite(shPostUtils.getSite(shPost).getId());
+			shHistoryRepository.saveAndFlush(shHistory);
+
+			shPostRepository.delete(id);
+
+			return true;
+		} else {
+			return false;
 		}
-
-		shPostAttrRepository.deleteInBatch(shPostAttrs);
-
-		shReferenceRepository.deleteInBatch(shReferenceRepository.findByShObjectFrom(shPost));
-
-		shReferenceRepository.deleteInBatch(shReferenceRepository.findByShObjectTo(shPost));
-
-		// History
-		ShHistory shHistory = new ShHistory();
-		shHistory.setDate(new Date());
-		shHistory.setDescription("Deleted " + shPost.getTitle() + " Post.");
-		if (principal != null) {
-			shHistory.setOwner(principal.getName());
-		}
-		shHistory.setShObject(shPost.getId());
-		shHistory.setShSite(shPostUtils.getSite(shPost).getId());
-		shHistoryRepository.saveAndFlush(shHistory);
-
-		shPostRepository.delete(id);
-
-		return true;
 	}
 
 	public void postSave(ShPost shPost) {

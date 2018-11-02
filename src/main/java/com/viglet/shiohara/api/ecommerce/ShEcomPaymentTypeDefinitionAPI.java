@@ -60,7 +60,7 @@ public class ShEcomPaymentTypeDefinitionAPI {
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShEcomPaymentTypeDefinition shEcomPaymentTypeDefinitioneGet(@PathVariable String id) throws Exception {
-		return shEcomPaymentTypeDefinitionRepository.findById(id).get();
+		return shEcomPaymentTypeDefinitionRepository.findById(id).orElse(null);
 	}
 
 	@ApiOperation(value = "Update a Payment Type")
@@ -68,18 +68,22 @@ public class ShEcomPaymentTypeDefinitionAPI {
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShEcomPaymentTypeDefinition shEcomPaymentTypeDefinitionUpdate(@PathVariable String id,
 			@RequestBody ShEcomPaymentTypeDefinition shEcomPaymentTypeDefinition) throws Exception {
+		if (shEcomPaymentTypeDefinitionRepository.findById(id).isPresent()) {
+			ShEcomPaymentTypeDefinition shEcomPaymentTypeDefinitionEdit = shEcomPaymentTypeDefinitionRepository
+					.findById(id).get();
 
-		ShEcomPaymentTypeDefinition shEcomPaymentTypeDefinitionEdit = shEcomPaymentTypeDefinitionRepository.findById(id).get();
+			shEcomPaymentTypeDefinitionEdit.setDate(new Date());
+			shEcomPaymentTypeDefinitionEdit.setClassName(shEcomPaymentTypeDefinition.getClassName());
+			shEcomPaymentTypeDefinitionEdit.setDescription(shEcomPaymentTypeDefinition.getDescription());
+			shEcomPaymentTypeDefinitionEdit.setName(shEcomPaymentTypeDefinition.getName());
+			shEcomPaymentTypeDefinitionEdit.setSettingPath(shEcomPaymentTypeDefinition.getSettingPath());
 
-		shEcomPaymentTypeDefinitionEdit.setDate(new Date());
-		shEcomPaymentTypeDefinitionEdit.setClassName(shEcomPaymentTypeDefinition.getClassName());
-		shEcomPaymentTypeDefinitionEdit.setDescription(shEcomPaymentTypeDefinition.getDescription());
-		shEcomPaymentTypeDefinitionEdit.setName(shEcomPaymentTypeDefinition.getName());
-		shEcomPaymentTypeDefinitionEdit.setSettingPath(shEcomPaymentTypeDefinition.getSettingPath());
+			shEcomPaymentTypeDefinitionRepository.saveAndFlush(shEcomPaymentTypeDefinitionEdit);
 
-		shEcomPaymentTypeDefinitionRepository.saveAndFlush(shEcomPaymentTypeDefinitionEdit);
-
-		return shEcomPaymentTypeDefinitionEdit;
+			return shEcomPaymentTypeDefinitionEdit;
+		} else {
+			return null;
+		}
 	}
 
 	@Transactional
@@ -98,7 +102,8 @@ public class ShEcomPaymentTypeDefinitionAPI {
 	@ApiOperation(value = "Create a Payment Type")
 	@PostMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShEcomPaymentTypeDefinition ShEcomPaymentTypeAdd(@RequestBody ShEcomPaymentTypeDefinition shEcomPaymentTypeDefinition) throws Exception {
+	public ShEcomPaymentTypeDefinition ShEcomPaymentTypeAdd(
+			@RequestBody ShEcomPaymentTypeDefinition shEcomPaymentTypeDefinition) throws Exception {
 		shEcomPaymentTypeDefinition.setDate(new Date());
 		shEcomPaymentTypeDefinitionRepository.save(shEcomPaymentTypeDefinition);
 
