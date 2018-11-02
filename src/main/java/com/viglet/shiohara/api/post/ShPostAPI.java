@@ -26,6 +26,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.assertj.core.util.Files;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -184,10 +185,8 @@ public class ShPostAPI {
 		if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE) && shPostAttrs.size() > 0) {
 			File file = shStaticFileUtils.filePath(shPost.getShFolder(), shPostAttrs.iterator().next().getStrValue());
 			if (file != null) {
-				if (file.exists()) {
-					if (!file.delete()) {
-						logger.error(String.format("Could not delete the file: %s", file.getName()));
-					}
+				if (file.exists()) {					
+					Files.delete(file);					
 				}
 			}
 		}
