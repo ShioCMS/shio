@@ -18,6 +18,7 @@
 package com.viglet.shiohara.api.post;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.security.Principal;
 import java.util.Date;
 import java.util.List;
@@ -26,7 +27,6 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.assertj.core.util.Files;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -191,7 +191,7 @@ public class ShPostAPI {
 						shPostAttrs.iterator().next().getStrValue());
 				if (file != null) {
 					if (file.exists()) {
-						Files.delete(file);
+						Files.delete(file.toPath());
 					}
 				}
 			}
