@@ -28,6 +28,8 @@ import java.util.UUID;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
@@ -40,7 +42,7 @@ import com.viglet.shiohara.utils.ShUtils;
 
 @Component
 public class ShImportExchange {
-
+	static final Logger logger = LogManager.getLogger(ShImportExchange.class.getName());
 	@Autowired
 	private ShUtils shUtils;
 	@Autowired
@@ -84,8 +86,8 @@ public class ShImportExchange {
 				if (parentExtractFolder != null) {
 					FileUtils.deleteDirectory(parentExtractFolder);
 				}
-			} catch (IOException ex) {
-				ex.printStackTrace();
+			} catch (IOException e) {
+				logger.error("importFromMultipartFileException", e);	
 			}
 			return shExchange;
 		} else {

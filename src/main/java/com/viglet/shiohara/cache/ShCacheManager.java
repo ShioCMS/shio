@@ -17,7 +17,11 @@
 
 package com.viglet.shiohara.cache;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class ShCacheManager {
+	static final Logger logger = LogManager.getLogger(ShCacheManager.class.getName());
 	/* This is the HashMap that contains all objects in the cache. */
 	private static java.util.HashMap cacheHashMap = new java.util.HashMap();
 	/* This object acts as a semaphore, which protects the HashMap */
@@ -82,7 +86,7 @@ public class ShCacheManager {
 							Thread.sleep(this.milliSecondSleepTime);
 						}
 					} catch (Exception e) {
-						e.printStackTrace();
+						logger.error("ShCacheManagerException", e);						
 					}
 					return;
 				} /* End run method */

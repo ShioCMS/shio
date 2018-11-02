@@ -23,6 +23,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.function.Consumer;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -52,7 +54,7 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/api/v2/folder")
 @Api(tags = "Folder", description = "Folder API")
 public class ShFolderAPI {
-
+	static final Logger logger = LogManager.getLogger(ShFolderAPI.class.getName());
 	@Autowired
 	private ShFolderRepository shFolderRepository;
 	@Autowired
@@ -63,7 +65,7 @@ public class ShFolderAPI {
 	private ShObjectRepository shObjectRepository;
 	@Autowired
 	private ShTuringIntegration shTuringIntegration;
-	
+
 	@ApiOperation(value = "Folder list")
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
@@ -75,42 +77,44 @@ public class ShFolderAPI {
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShFolder shFolderGet(@PathVariable String id) throws Exception {
-		return shFolderRepository.findById(id).get();
+		return shFolderRepository.findById(id).orElse(null);
 	}
 
 	@ApiOperation(value = "Update a folder")
 	@PutMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShFolder shFolderUpdate(@PathVariable String id, @RequestBody ShFolder shFolder) throws Exception {
+		if (shFolderRepository.findById(id).isPresent()) {
+			ShFolder shFolderEdit = shFolderRepository.findById(id).get();
 
-		ShFolder shFolderEdit = shFolderRepository.findById(id).get();
+			shFolderEdit.setDate(new Date());
+			shFolderEdit.setName(shFolder.getName());
+			shFolderEdit.setParentFolder(shFolder.getParentFolder());
+			shFolderEdit.setShSite(shFolder.getShSite());
+			shFolderEdit.setFurl(shURLFormatter.format(shFolderEdit.getName()));
 
-		shFolderEdit.setDate(new Date());
-		shFolderEdit.setName(shFolder.getName());
-		shFolderEdit.setParentFolder(shFolder.getParentFolder());
-		shFolderEdit.setShSite(shFolder.getShSite());
-		shFolderEdit.setFurl(shURLFormatter.format(shFolderEdit.getName()));
+			shFolderRepository.saveAndFlush(shFolderEdit);
 
-		shFolderRepository.saveAndFlush(shFolderEdit);
-		
-		shTuringIntegration.indexObject(shFolderEdit);
+			shTuringIntegration.indexObject(shFolderEdit);
 
-		return shFolderEdit;
+			return shFolderEdit;
+		} else {
+			return null;
+		}
 	}
 
 	@Transactional
 	@ApiOperation(value = "Delete a folder")
 	@DeleteMapping("/{id}")
 	public boolean shFolderDelete(@PathVariable String id) throws Exception {
-		
+
 		shFolderRepository.findById(id).ifPresent(new Consumer<ShFolder>() {
 			@Override
 			public void accept(ShFolder shFolder) {
-				try {					
+				try {
 					shFolderUtils.deleteFolder(shFolder);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.error("FolderDeleteException", e);
 				}
 			}
 		});
@@ -124,9 +128,9 @@ public class ShFolderAPI {
 		shFolder.setDate(new Date());
 		shFolder.setFurl(shURLFormatter.format(shFolder.getName()));
 		shFolderRepository.save(shFolder);
-		
+
 		shTuringIntegration.indexObject(shFolder);
-		
+
 		return shFolder;
 
 	}
@@ -142,7 +146,7 @@ public class ShFolderAPI {
 		shNewFolder.setName(shFolder.getName());
 		shNewFolder.setFurl(shURLFormatter.format(shNewFolder.getName()));
 
-		ShObject shParentObject = shObjectRepository.findById(objectId).get();
+		ShObject shParentObject = shObjectRepository.findById(objectId).orElse(null);
 		if (shParentObject instanceof ShFolder) {
 			ShFolder shParentFolder = (ShFolder) shParentObject;
 			shNewFolder.setParentFolder(shParentFolder);
@@ -165,7 +169,7 @@ public class ShFolderAPI {
 	@GetMapping("/{id}/path")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShFolderPath shFolderPath(@PathVariable String id) throws Exception {
-		ShFolder shFolder = shFolderRepository.findById(id).get();
+		ShFolder shFolder = shFolderRepository.findById(id).orElse(null);
 		if (shFolder != null) {
 			ShFolderPath shFolderPath = new ShFolderPath();
 			String folderPath = shFolderUtils.folderPath(shFolder, true);

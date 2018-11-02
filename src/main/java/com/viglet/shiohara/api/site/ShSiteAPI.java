@@ -85,30 +85,34 @@ public class ShSiteAPI {
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShSite shSiteEdit(@PathVariable String id) throws Exception {
-		return shSiteRepository.findById(id).get();
+		return shSiteRepository.findById(id).orElse(null);
 	}
 
 	@PutMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShSite shSiteUpdate(@PathVariable String id, @RequestBody ShSite shSite) throws Exception {
-		ShSite shSiteEdit = shSiteRepository.findById(id).get();
-		shSiteEdit.setDate(new Date());
-		shSiteEdit.setName(shSite.getName());
-		shSiteEdit.setPostTypeLayout(shSite.getPostTypeLayout());
-		shSiteEdit.setSearchablePostTypes(shSite.getSearchablePostTypes());
-		shSiteEdit.setFurl(shURLFormatter.format(shSite.getName()));
-		shSiteRepository.save(shSiteEdit);
-		return shSiteEdit;
+		if (shSiteRepository.findById(id).isPresent()) {
+			ShSite shSiteEdit = shSiteRepository.findById(id).get();
+			shSiteEdit.setDate(new Date());
+			shSiteEdit.setName(shSite.getName());
+			shSiteEdit.setPostTypeLayout(shSite.getPostTypeLayout());
+			shSiteEdit.setSearchablePostTypes(shSite.getSearchablePostTypes());
+			shSiteEdit.setFurl(shURLFormatter.format(shSite.getName()));
+			shSiteRepository.save(shSiteEdit);
+			return shSiteEdit;
+		} else {
+			return null;
+		}
 	}
 
 	@DeleteMapping("/{id}")
 	@Transactional
 	public boolean shSiteDelete(@PathVariable String id) throws Exception {
-		ShSite shSite = shSiteRepository.findById(id).get();
+		ShSite shSite = shSiteRepository.findById(id).orElse(null);
 
 		List<ShFolder> shFolders = shFolderRepository.findByShSiteAndRootFolder(shSite, (byte) 1);
 
-		for (ShFolder shFolder : shFolders) {			
+		for (ShFolder shFolder : shFolders) {
 			shFolderUtils.deleteFolder(shFolder);
 		}
 
@@ -155,14 +159,14 @@ public class ShSiteAPI {
 		ShExchange shExchange = this.importTemplateSite(shSite);
 		ShSiteExchange shSiteExchange = shExchange.getSites().get(0);
 		shSite.setId(shSiteExchange.getId());
-		
+
 		return shSite;
 	}
 
 	@GetMapping("/{id}/folder")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShFolderList shSiteRootFolder(@PathVariable String id) throws Exception {
-		ShSite shSite = shSiteRepository.findById(id).get();
+		ShSite shSite = shSiteRepository.findById(id).orElse(null);
 		List<ShFolder> shFolders = shFolderRepository.findByShSiteAndRootFolder(shSite, (byte) 1);
 		ShFolderList shFolderList = new ShFolderList();
 		shFolderList.setShFolders(shFolders);

@@ -64,13 +64,13 @@ public class ShReferenceAPI {
 	@GetMapping("/from/{fromId}")
 	@JsonView({  ShJsonView.ShJsonViewReference.class })
 	public List<ShReference> shReferenceFrom(@PathVariable String fromId) throws Exception {
-		ShObject shObject = shObjectRepository.findById(fromId).get();
+		ShObject shObject = shObjectRepository.findById(fromId).orElse(null);
 		return shReferenceRepository.findByShObjectFrom(shObject);
 	}
 	@GetMapping("/to/{toId}")
 	@JsonView({  ShJsonView.ShJsonViewReference.class })
 	public List<ShReference> shReferenceTo(@PathVariable String toId) throws Exception {
-		ShObject shObject = shObjectRepository.findById(toId).get();
+		ShObject shObject = shObjectRepository.findById(toId).orElse(null);
 		return shReferenceRepository.findByShObjectTo(shObject);
 	}
 
@@ -78,9 +78,9 @@ public class ShReferenceAPI {
 	@JsonView({  ShJsonView.ShJsonViewReference.class })
 	public List<ShReference> shReferenceToReplace(@PathVariable String toId, @PathVariable String otherId)
 			throws Exception {
-		ShObject shObject = shObjectRepository.findById(toId).get();
-		ShObject shObjectOther = shObjectRepository.findById(otherId).get();
-		ShPost shPostOther = shPostRepository.findById(shObjectOther.getId()).get();
+		ShObject shObject = shObjectRepository.findById(toId).orElse(null);
+		ShObject shObjectOther = shObjectRepository.findById(otherId).orElse(null);
+		ShPost shPostOther = shPostRepository.findById(shObjectOther.getId()).orElse(null);
 		List<ShReference> shReferences = shReferenceRepository.findByShObjectTo(shObject);
 
 		for (ShReference shReference : shReferences) {

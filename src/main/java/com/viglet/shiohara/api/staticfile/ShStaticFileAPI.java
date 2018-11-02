@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Date;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,7 +53,7 @@ import io.swagger.annotations.Api;
 @RequestMapping("/api/v2/staticfile")
 @Api(tags="Static File", description="Static File API")
 public class ShStaticFileAPI {
-
+	static final Logger logger = LogManager.getLogger(ShStaticFileAPI.class.getName());
 	@Autowired
 	private ShFolderRepository shFolderRepository;
 	@Autowired
@@ -70,7 +72,7 @@ public class ShStaticFileAPI {
 	public ShPost shStaticFileUpload(@RequestParam("file") MultipartFile file, @RequestParam("folderId") String folderId,
 			@RequestParam("createPost") boolean createPost) throws URISyntaxException, IOException {
 
-		ShFolder shFolder = shFolderRepository.findById(folderId).get();
+		ShFolder shFolder = shFolderRepository.findById(folderId).orElse(null);
 		File directoryPath = shStaticFileUtils.dirPath(shFolder);
 		ShPost shPost = new ShPost();
 		String filePath = null;
@@ -114,7 +116,7 @@ public class ShStaticFileAPI {
 					shPost.setTitle(filePath);
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error("shStaticFileUploadException", e);
 			}
 		}
 		return shPost;

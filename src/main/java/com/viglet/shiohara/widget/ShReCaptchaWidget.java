@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2018 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,8 @@ import java.net.URL;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -37,8 +39,16 @@ import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.sites.ShSitesContextURL;
 
+/**
+ * reCAPTCHA Widget.
+ *
+ * @author Alexandre Oliveira
+ * @since 0.3.0
+ */
 @Component
 public class ShReCaptchaWidget implements ShWidgetImplementation {
+
+	private static final Log logger = LogFactory.getLog(ShReCaptchaWidget.class);
 	@Autowired
 	private SpringTemplateEngine templateEngine;
 
@@ -86,7 +96,7 @@ public class ShReCaptchaWidget implements ShWidgetImplementation {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("validateFormException", e);
 			return false;
 		}
 	}
@@ -116,6 +126,6 @@ public class ShReCaptchaWidget implements ShWidgetImplementation {
 	@Override
 	public void postRender(ShPost shPost, ShSitesContextURL shSitesContextURL) throws IOException {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
