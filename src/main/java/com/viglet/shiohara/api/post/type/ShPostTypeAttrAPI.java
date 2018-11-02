@@ -18,6 +18,7 @@
 package com.viglet.shiohara.api.post.type;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -61,8 +62,9 @@ public class ShPostTypeAttrAPI {
 	@JsonView({ ShJsonView.ShJsonViewPostTypeAttr.class })
 	public ShPostTypeAttr shPostTypeAttrUpdate(@PathVariable String id, @RequestBody ShPostTypeAttr shPostTypeAttr)
 			throws Exception {
-		if (shPostTypeAttrRepository.findById(id).isPresent()) {
-			ShPostTypeAttr shPostTypeAttrEdit = shPostTypeAttrRepository.findById(id).get();
+		Optional<ShPostTypeAttr> shPostTypeAttrOptional = shPostTypeAttrRepository.findById(id);
+		if (shPostTypeAttrOptional.isPresent()) {
+			ShPostTypeAttr shPostTypeAttrEdit = shPostTypeAttrOptional.get();
 			shPostTypeAttrEdit.setIsSummary(shPostTypeAttr.getIsSummary());
 			shPostTypeAttrEdit.setIsTitle(shPostTypeAttr.getIsTitle());
 			shPostTypeAttrEdit.setLabel(shPostTypeAttr.getLabel());
@@ -73,23 +75,23 @@ public class ShPostTypeAttrAPI {
 			shPostTypeAttrEdit.setShWidget(shPostTypeAttr.getShWidget());
 			shPostTypeAttrRepository.save(shPostTypeAttrEdit);
 			return shPostTypeAttrEdit;
-		} else {
-			return null;
 		}
+		return null;
+
 	}
 
 	@DeleteMapping("/{id}")
 	public boolean shPostTypeAttrDelete(@PathVariable String id) throws Exception {
-		if (shPostTypeAttrRepository.findById(id).isPresent()) {
-			ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findById(id).get();
+		Optional<ShPostTypeAttr> shPostTypeAttrOptional = shPostTypeAttrRepository.findById(id);
+		if (shPostTypeAttrOptional.isPresent()) {
+			ShPostTypeAttr shPostTypeAttr = shPostTypeAttrOptional.get();
 			for (ShPostAttr shPostAttr : shPostTypeAttr.getShPostAttrs()) {
 				shPostAttrRepository.delete(shPostAttr.getId());
 			}
 			shPostTypeAttrRepository.delete(id);
 			return true;
-		} else {
-			return false;
 		}
+		return false;
 	}
 
 	@GetMapping("/model")

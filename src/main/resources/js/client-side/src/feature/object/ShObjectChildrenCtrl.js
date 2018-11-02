@@ -167,9 +167,7 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
             if (duration.as('minutes') >= -5) {
                 return true;
             }
-            else {
-                return false;
-            }
+           
             return false;
         }
         $scope.objectsCopy = function () {

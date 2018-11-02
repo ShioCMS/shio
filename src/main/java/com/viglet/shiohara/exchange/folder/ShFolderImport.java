@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -69,8 +70,9 @@ public class ShFolderImport {
 			String shObject, boolean importOnlyFolders, Map<String, Object> shObjects,
 			Map<String, List<String>> shChildObjects) throws IOException {
 		ShFolder shFolderChild = null;
-		if (shFolderRepository.findById(shFolderExchange.getId()).isPresent()) {
-			shFolderChild = shFolderRepository.findById(shFolderExchange.getId()).get();
+		Optional<ShFolder> shFolderOptional = shFolderRepository.findById(shFolderExchange.getId());
+		if (shFolderOptional.isPresent()) {
+			shFolderChild = shFolderOptional.get();
 		} else {
 			shFolderChild = new ShFolder();
 			shFolderChild.setId(shFolderExchange.getId());
@@ -87,7 +89,7 @@ public class ShFolderImport {
 				shFolderChild.setFurl(shURLFormatter.format(shFolderExchange.getName()));
 			}
 			if (shFolderExchange.getParentFolder() != null) {
-				ShFolder parentFolder = shFolderRepository.findById(shFolderExchange.getParentFolder()).get();
+				ShFolder parentFolder = shFolderRepository.findById(shFolderExchange.getParentFolder()).orElse(null);
 				shFolderChild.setParentFolder(parentFolder);
 				shFolderChild.setRootFolder((byte) 0);
 			} else {
@@ -95,7 +97,7 @@ public class ShFolderImport {
 					ShSiteExchange shSiteExchange = (ShSiteExchange) shObjects.get(shObject);
 					if (shSiteExchange.getRootFolders().contains(shFolderExchange.getId())) {
 						shFolderChild.setRootFolder((byte) 1);
-						ShSite parentSite = shSiteRepository.findById(shSiteExchange.getId()).get();
+						ShSite parentSite = shSiteRepository.findById(shSiteExchange.getId()).orElse(null);
 						shFolderChild.setShSite(parentSite);
 					}
 				}
