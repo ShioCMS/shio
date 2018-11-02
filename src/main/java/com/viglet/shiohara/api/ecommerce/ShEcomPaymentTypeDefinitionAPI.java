@@ -19,6 +19,7 @@ package com.viglet.shiohara.api.ecommerce;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,9 +69,10 @@ public class ShEcomPaymentTypeDefinitionAPI {
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShEcomPaymentTypeDefinition shEcomPaymentTypeDefinitionUpdate(@PathVariable String id,
 			@RequestBody ShEcomPaymentTypeDefinition shEcomPaymentTypeDefinition) throws Exception {
-		if (shEcomPaymentTypeDefinitionRepository.findById(id).isPresent()) {
-			ShEcomPaymentTypeDefinition shEcomPaymentTypeDefinitionEdit = shEcomPaymentTypeDefinitionRepository
-					.findById(id).get();
+		Optional<ShEcomPaymentTypeDefinition> shEcomPaymentTypeDefinitionOptional = shEcomPaymentTypeDefinitionRepository
+				.findById(id);
+		if (shEcomPaymentTypeDefinitionOptional.isPresent()) {
+			ShEcomPaymentTypeDefinition shEcomPaymentTypeDefinitionEdit = shEcomPaymentTypeDefinitionOptional.get();
 
 			shEcomPaymentTypeDefinitionEdit.setDate(new Date());
 			shEcomPaymentTypeDefinitionEdit.setClassName(shEcomPaymentTypeDefinition.getClassName());

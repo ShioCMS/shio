@@ -19,6 +19,7 @@ package com.viglet.shiohara.component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -57,13 +58,17 @@ public class ShNavigationComponent {
 	}
 
 	public List<ShFolder> navigationFolder(String folderId, boolean home) {
-		ShFolder shParentFolder = shFolderRepository.findById(folderId).get();
-		List<ShFolder> shFolders = shFolderRepository.findByParentFolderOrderByPositionAsc(shParentFolder);
-		if (home) {
-			if (shObjectUtils.isVisiblePage(shParentFolder)) {
-				shFolders.add(shParentFolder);
+		Optional<ShFolder> shFolderOptional = shFolderRepository.findById(folderId);
+		if (shFolderOptional.isPresent()) {
+			ShFolder shParentFolder = shFolderOptional.get();
+			List<ShFolder> shFolders = shFolderRepository.findByParentFolderOrderByPositionAsc(shParentFolder);
+			if (home) {
+				if (shObjectUtils.isVisiblePage(shParentFolder)) {
+					shFolders.add(shParentFolder);
+				}
 			}
+			return shFolders;
 		}
-		return shFolders;
+		return null;
 	}
 }

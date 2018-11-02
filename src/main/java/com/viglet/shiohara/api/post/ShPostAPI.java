@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.security.Principal;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -110,8 +111,9 @@ public class ShPostAPI {
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShPost shPostEdit(@PathVariable String id) throws Exception {
-		if (shPostRepository.findById(id).isPresent()) {
-			ShPost shPost = shPostRepository.findById(id).get();
+		Optional<ShPost> shPostOptional = shPostRepository.findById(id);
+		if (shPostOptional.isPresent()) {
+			ShPost shPost = shPostOptional.get();
 			Set<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
 			shPost.setShPostAttrs(shPostAttrs);
 
@@ -180,8 +182,11 @@ public class ShPostAPI {
 	@Transactional
 	@DeleteMapping("/{id}")
 	public boolean shPostDelete(@PathVariable String id, Principal principal) throws Exception {
-		if (shPostRepository.findById(id).isPresent()) {
-			ShPost shPost = shPostRepository.findById(id).get();
+
+		Optional<ShPost> shPostOptional = shPostRepository.findById(id);
+
+		if (shPostOptional.isPresent()) {
+			ShPost shPost = shPostOptional.get();
 
 			shTuringIntegration.deindexObject(shPost);
 

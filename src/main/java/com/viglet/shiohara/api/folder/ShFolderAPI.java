@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.apache.logging.log4j.LogManager;
@@ -84,8 +85,9 @@ public class ShFolderAPI {
 	@PutMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShFolder shFolderUpdate(@PathVariable String id, @RequestBody ShFolder shFolder) throws Exception {
-		if (shFolderRepository.findById(id).isPresent()) {
-			ShFolder shFolderEdit = shFolderRepository.findById(id).get();
+		Optional<ShFolder> shFolderOptional = shFolderRepository.findById(id);
+		if (shFolderOptional.isPresent()) {
+			ShFolder shFolderEdit = shFolderOptional.get();
 
 			shFolderEdit.setDate(new Date());
 			shFolderEdit.setName(shFolder.getName());

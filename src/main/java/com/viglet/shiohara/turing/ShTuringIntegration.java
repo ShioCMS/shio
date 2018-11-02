@@ -175,7 +175,7 @@ public class ShTuringIntegration {
 			ShPost shPost = (ShPost) shObject;
 			Map<String, ShPostAttr> shPostMap = shPostUtils.postToMap(shPost);
 
-			ShPostType shPostType = shPostTypeRepository.findById(shPost.getShPostType().getId()).get();
+			ShPostType shPostType = shPostTypeRepository.findById(shPost.getShPostType().getId()).orElse(null);
 			Map<String, ShPostTypeAttr> shPostTypeMap = shPostTypeUtils.toMap(shPostType);
 
 			shObjectJSON.put("type", shPost.getShPostType().getTitle());
@@ -196,7 +196,7 @@ public class ShTuringIntegration {
 								&& StringUtils.isNotBlank(searchSettings.getString("association"))) {
 							if (shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.FILE)) {
 								ShPost shFilePost = shPostRepository
-										.findById(shPostMap.get(shPostTypeAttr.getName()).getStrValue()).get();
+										.findById(shPostMap.get(shPostTypeAttr.getName()).getStrValue()).orElse(null);
 								shObjectJSON.put(searchSettings.getString("association"),
 										shPostUtils.generatePostLink(shFilePost));
 							} else {

@@ -18,6 +18,7 @@
 package com.viglet.shiohara.api.widget;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -51,13 +52,18 @@ public class ShWidgetAPI {
 
 	@GetMapping("/{id}")
 	public ShWidget shWidgetEdit(@PathVariable String id) throws Exception {
-		return shWidgetRepository.findById(id).get();
+		Optional<ShWidget> shWidgetOptional = shWidgetRepository.findById(id);
+		if (shWidgetOptional.isPresent()) {
+			return shWidgetOptional.get();
+		}
+		return null;
 	}
 
 	@PutMapping("/{id}")
 	public ShWidget shWidgetUpdate(@PathVariable String id, @RequestBody ShWidget shWidget) throws Exception {
-		if (shWidgetRepository.findById(id).isPresent()) {
-			ShWidget shWidgetEdit = shWidgetRepository.findById(id).get();
+		Optional<ShWidget> shWidgetOptional = shWidgetRepository.findById(id);
+		if (shWidgetOptional.isPresent()) {
+			ShWidget shWidgetEdit = shWidgetOptional.get();
 			shWidgetEdit.setName(shWidget.getName());
 			shWidgetEdit.setType(shWidget.getType());
 			shWidgetEdit.setClassName(shWidget.getClassName());
@@ -65,9 +71,9 @@ public class ShWidgetAPI {
 			shWidgetEdit.setImplementationCode(shWidget.getImplementationCode());
 			shWidgetRepository.save(shWidgetEdit);
 			return shWidgetEdit;
-		} else {
-			return null;
 		}
+		return null;
+
 	}
 
 	@Transactional

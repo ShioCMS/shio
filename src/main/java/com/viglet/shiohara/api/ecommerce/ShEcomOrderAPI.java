@@ -18,6 +18,7 @@
 package com.viglet.shiohara.api.ecommerce;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,8 +58,9 @@ public class ShEcomOrderAPI {
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShEcomOrder ShEcomOrderGet(@PathVariable String id) throws Exception {
-		if (shEcomOrderRepository.findById(id).isPresent()) {
-			return shEcomOrderRepository.findById(id).get();
+		Optional<ShEcomOrder> shEcomOrderOptional = shEcomOrderRepository.findById(id);
+		if (shEcomOrderOptional.isPresent()) {
+			return shEcomOrderOptional.get();
 		} else {
 			return null;
 		}
@@ -69,8 +71,9 @@ public class ShEcomOrderAPI {
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShEcomOrder ShEcomOrderUpdate(@PathVariable String id, @RequestBody ShEcomOrder shEcomOrder)
 			throws Exception {
-		if (shEcomOrderRepository.findById(id).isPresent()) {
-			ShEcomOrder shEcomOrderEdit = shEcomOrderRepository.findById(id).get();
+		Optional<ShEcomOrder> shEcomOrderOptional = shEcomOrderRepository.findById(id);
+		if (shEcomOrderOptional.isPresent()) {
+			ShEcomOrder shEcomOrderEdit = shEcomOrderOptional.get();
 
 			shEcomOrderEdit.setDescription(shEcomOrder.getDescription());
 

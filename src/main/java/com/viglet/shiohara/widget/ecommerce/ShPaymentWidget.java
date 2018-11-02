@@ -67,7 +67,7 @@ public class ShPaymentWidget implements ShWidgetImplementation {
 			JSONObject paymentType = paymentTypesJSON.getJSONObject(i);
 			paymentTypes.add(paymentType);
 			String paymentTypeId = paymentType.getString("id");
-			ShPost shPaymentTypePost = shPostRepository.findById(paymentTypeId).get();
+			ShPost shPaymentTypePost = shPostRepository.findById(paymentTypeId).orElse(null);
 			Map<String, ShPostAttr> shPaymentTypePostMap = shPostUtils.postToMap(shPaymentTypePost);
 
 			ShPostAttr shPaymentTypeDefinitionPostAttr = shPaymentTypePostMap.get("PAYMENT_TYPE_DEFINITION");

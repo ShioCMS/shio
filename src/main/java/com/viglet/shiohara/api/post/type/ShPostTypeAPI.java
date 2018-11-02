@@ -20,6 +20,7 @@ package com.viglet.shiohara.api.post.type;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
@@ -65,7 +66,7 @@ public class ShPostTypeAPI {
 	private ShPostRepository shPostRepository;
 	@Autowired
 	private ShPostTypeExport shPostTypeExport;
-	
+
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewPostType.class })
 	public List<ShPostType> shPostTypeList() throws Exception {
@@ -128,30 +129,35 @@ public class ShPostTypeAPI {
 	@Transactional
 	@DeleteMapping("/{id}")
 	public boolean shPostTypeDelete(@PathVariable String id) throws Exception {
-		ShPostType shPostType = shPostTypeRepository.findById(id).get();
+		Optional<ShPostType> shPostTypeOptional = shPostTypeRepository.findById(id);
+		if (shPostTypeOptional.isPresent()) {
+			ShPostType shPostType = shPostTypeOptional.get();
 
-		for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs()) {
-			for (ShPostAttr shPostAttr : shPostTypeAttr.getShPostAttrs()) {
-				shPostAttrRepository.delete(shPostAttr.getId());
+			for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs()) {
+				for (ShPostAttr shPostAttr : shPostTypeAttr.getShPostAttrs()) {
+					shPostAttrRepository.delete(shPostAttr.getId());
+				}
+				shPostTypeAttrRepository.delete(shPostTypeAttr.getId());
 			}
-			shPostTypeAttrRepository.delete(shPostTypeAttr.getId());
-		}
 
-		for (ShPost shPost : shPostType.getShPosts()) {
-			for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
-				shPostAttrRepository.delete(shPostAttr.getId());
-			}			
-			shPostRepository.delete(shPost.getId());
-		}
+			for (ShPost shPost : shPostType.getShPosts()) {
+				for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
+					shPostAttrRepository.delete(shPostAttr.getId());
+				}
+				shPostRepository.delete(shPost.getId());
+			}
 
-		shPostTypeRepository.delete(id);
-		return true;
+			shPostTypeRepository.delete(id);
+			return true;
+		}
+		return false;
+
 	}
 
 	@PostMapping
 	@JsonView({ ShJsonView.ShJsonViewPostType.class })
 	public ShPostType shPostTypeAdd(@RequestBody ShPostType shPostType) throws Exception {
-		
+
 		this.postTypeSave(shPostType);
 
 		return shPostType;
@@ -162,22 +168,24 @@ public class ShPostTypeAPI {
 	@JsonView({ ShJsonView.ShJsonViewPostType.class })
 	public ShPostTypeAttr shPostTypeAttrAdd(@PathVariable String id, @RequestBody ShPostTypeAttr shPostTypeAttr)
 			throws Exception {
-		ShPostType shPostType = shPostTypeRepository.findById(id).get();
-		if (shPostType != null) {
-			shPostTypeAttr.setShPostType(shPostType);
-			shPostTypeAttrRepository.save(shPostTypeAttr);
-			return shPostTypeAttr;
-		} else {
-			return null;
+		Optional<ShPostType> shPostTypeOptional = shPostTypeRepository.findById(id);
+		if (shPostTypeOptional.isPresent()) {
+			ShPostType shPostType = shPostTypeOptional.get();
+			if (shPostType != null) {
+				shPostTypeAttr.setShPostType(shPostType);
+				shPostTypeAttrRepository.save(shPostTypeAttr);
+				return shPostTypeAttr;
+			}
 		}
+		return null;
 
 	}
-	
+
 	@ResponseBody
 	@GetMapping(value = "/export", produces = "application/zip")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public StreamingResponseBody shPostTypeExport(HttpServletResponse response) throws Exception {
-		
+
 		return shPostTypeExport.exportObject(response);
 
 	}

@@ -76,7 +76,7 @@ public class ShFormUtils {
 			ShFolder shFolder = null;
 
 			if (StringUtils.isNotBlank(shFormConfiguration.getFolder().toString())) {
-				shFolder = shFolderRepository.findById(shFormConfiguration.getFolder().toString()).get();
+				shFolder = shFolderRepository.findById(shFormConfiguration.getFolder().toString()).orElse(null);
 			} else {
 				if (shSitesContextURL.getShObject() instanceof ShFolder) {
 					shFolder = (ShFolder) shSitesContextURL.getShObject();
