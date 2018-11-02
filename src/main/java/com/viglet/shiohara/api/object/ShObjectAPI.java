@@ -76,7 +76,7 @@ public class ShObjectAPI {
 	private ShPostUtils shPostUtils;
 	@Autowired
 	private ShURLFormatter shURLFormatter;
-	
+
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShObject> shObjectList() throws Exception {
@@ -273,7 +273,7 @@ public class ShObjectAPI {
 		}
 		return null;
 	}
-	
+
 	@ApiOperation(value = "Sort Object")
 	@PutMapping("/sort")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
@@ -281,10 +281,12 @@ public class ShObjectAPI {
 		for (Entry<String, Integer> objectOrderItem : objectOrder.entrySet()) {
 			int shObjectOrder = objectOrderItem.getValue();
 			String shObjectId = objectOrderItem.getKey();
-			
-			ShObject shObject = shObjectRepository.findById(shObjectId).orElse(null);
-			shObject.setPosition(shObjectOrder);
-			shObjectRepository.save(shObject);
+
+			if (shObjectRepository.findById(shObjectId).isPresent()) {
+				ShObject shObject = shObjectRepository.findById(shObjectId).get();
+				shObject.setPosition(shObjectOrder);
+				shObjectRepository.save(shObject);
+			}
 		}
 		return objectOrder;
 

@@ -69,14 +69,17 @@ public class ShEcomOrderAPI {
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShEcomOrder ShEcomOrderUpdate(@PathVariable String id, @RequestBody ShEcomOrder shEcomOrder)
 			throws Exception {
+		if (shEcomOrderRepository.findById(id).isPresent()) {
+			ShEcomOrder shEcomOrderEdit = shEcomOrderRepository.findById(id).get();
 
-		ShEcomOrder shEcomOrderEdit = shEcomOrderRepository.findById(id).orElse(null);
+			shEcomOrderEdit.setDescription(shEcomOrder.getDescription());
 
-		shEcomOrderEdit.setDescription(shEcomOrder.getDescription());
+			shEcomOrderRepository.saveAndFlush(shEcomOrderEdit);
 
-		shEcomOrderRepository.saveAndFlush(shEcomOrderEdit);
-
-		return shEcomOrderEdit;
+			return shEcomOrderEdit;
+		} else {
+			return null;
+		}
 	}
 
 	@Transactional

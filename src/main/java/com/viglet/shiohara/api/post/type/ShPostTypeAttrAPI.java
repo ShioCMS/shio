@@ -39,53 +39,62 @@ import io.swagger.annotations.Api;
 
 @RestController
 @RequestMapping("/api/v2/post/type/attr")
-@Api(tags="Post Type Attribute", description="Post Type Attribute API")
+@Api(tags = "Post Type Attribute", description = "Post Type Attribute API")
 public class ShPostTypeAttrAPI {
 	@Autowired
 	private ShPostTypeAttrRepository shPostTypeAttrRepository;
 	@Autowired
 	private ShPostAttrRepository shPostAttrRepository;
-	
+
 	@GetMapping
-	public List<ShPostTypeAttr>  shPostTypeAttrList() throws Exception {
+	public List<ShPostTypeAttr> shPostTypeAttrList() throws Exception {
 		return shPostTypeAttrRepository.findAll();
 	}
 
 	@GetMapping("/{id}")
-	@JsonView({ShJsonView.ShJsonViewPostTypeAttr.class})
-	public ShPostTypeAttr  shPostTypeAttrEdit(@PathVariable String id) throws Exception {
+	@JsonView({ ShJsonView.ShJsonViewPostTypeAttr.class })
+	public ShPostTypeAttr shPostTypeAttrEdit(@PathVariable String id) throws Exception {
 		return shPostTypeAttrRepository.findById(id).orElse(null);
 	}
 
 	@PutMapping("/{id}")
-	@JsonView({ShJsonView.ShJsonViewPostTypeAttr.class})
-	public ShPostTypeAttr  shPostTypeAttrUpdate(@PathVariable String id, @RequestBody ShPostTypeAttr shPostTypeAttr) throws Exception {
-		ShPostTypeAttr shPostTypeAttrEdit = shPostTypeAttrRepository.findById(id).orElse(null);
-		shPostTypeAttrEdit.setIsSummary(shPostTypeAttr.getIsSummary());
-		shPostTypeAttrEdit.setIsTitle(shPostTypeAttr.getIsTitle());
-		shPostTypeAttrEdit.setLabel(shPostTypeAttr.getLabel());
-		shPostTypeAttrEdit.setName(shPostTypeAttr.getName());
-		shPostTypeAttrEdit.setOrdinal(shPostTypeAttr.getOrdinal());
-		shPostTypeAttrEdit.setRequired(shPostTypeAttr.getRequired());
-		shPostTypeAttrEdit.setDescription(shPostTypeAttr.getDescription());
-		shPostTypeAttrEdit.setShWidget(shPostTypeAttr.getShWidget());
-		shPostTypeAttrRepository.save(shPostTypeAttrEdit);
-		return shPostTypeAttrEdit;
+	@JsonView({ ShJsonView.ShJsonViewPostTypeAttr.class })
+	public ShPostTypeAttr shPostTypeAttrUpdate(@PathVariable String id, @RequestBody ShPostTypeAttr shPostTypeAttr)
+			throws Exception {
+		if (shPostTypeAttrRepository.findById(id).isPresent()) {
+			ShPostTypeAttr shPostTypeAttrEdit = shPostTypeAttrRepository.findById(id).get();
+			shPostTypeAttrEdit.setIsSummary(shPostTypeAttr.getIsSummary());
+			shPostTypeAttrEdit.setIsTitle(shPostTypeAttr.getIsTitle());
+			shPostTypeAttrEdit.setLabel(shPostTypeAttr.getLabel());
+			shPostTypeAttrEdit.setName(shPostTypeAttr.getName());
+			shPostTypeAttrEdit.setOrdinal(shPostTypeAttr.getOrdinal());
+			shPostTypeAttrEdit.setRequired(shPostTypeAttr.getRequired());
+			shPostTypeAttrEdit.setDescription(shPostTypeAttr.getDescription());
+			shPostTypeAttrEdit.setShWidget(shPostTypeAttr.getShWidget());
+			shPostTypeAttrRepository.save(shPostTypeAttrEdit);
+			return shPostTypeAttrEdit;
+		} else {
+			return null;
+		}
 	}
 
 	@DeleteMapping("/{id}")
-	public boolean  shPostTypeAttrDelete(@PathVariable String id) throws Exception {
-		ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findById(id).orElse(null);
-		for ( ShPostAttr shPostAttr : shPostTypeAttr.getShPostAttrs()) {
-			shPostAttrRepository.delete(shPostAttr.getId());
+	public boolean shPostTypeAttrDelete(@PathVariable String id) throws Exception {
+		if (shPostTypeAttrRepository.findById(id).isPresent()) {
+			ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findById(id).get();
+			for (ShPostAttr shPostAttr : shPostTypeAttr.getShPostAttrs()) {
+				shPostAttrRepository.delete(shPostAttr.getId());
+			}
+			shPostTypeAttrRepository.delete(id);
+			return true;
+		} else {
+			return false;
 		}
-		shPostTypeAttrRepository.delete(id);
-		return true;
 	}
-	
+
 	@GetMapping("/model")
-	@JsonView({ShJsonView.ShJsonViewPostTypeAttr.class})
-	public ShPostTypeAttr  shPostTypeAttrStructure() throws Exception {
+	@JsonView({ ShJsonView.ShJsonViewPostTypeAttr.class })
+	public ShPostTypeAttr shPostTypeAttrStructure() throws Exception {
 		ShPostTypeAttr shPostTypeAttr = new ShPostTypeAttr();
 		return shPostTypeAttr;
 

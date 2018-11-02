@@ -91,14 +91,18 @@ public class ShSiteAPI {
 	@PutMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShSite shSiteUpdate(@PathVariable String id, @RequestBody ShSite shSite) throws Exception {
-		ShSite shSiteEdit = shSiteRepository.findById(id).orElse(null);
-		shSiteEdit.setDate(new Date());
-		shSiteEdit.setName(shSite.getName());
-		shSiteEdit.setPostTypeLayout(shSite.getPostTypeLayout());
-		shSiteEdit.setSearchablePostTypes(shSite.getSearchablePostTypes());
-		shSiteEdit.setFurl(shURLFormatter.format(shSite.getName()));
-		shSiteRepository.save(shSiteEdit);
-		return shSiteEdit;
+		if (shSiteRepository.findById(id).isPresent()) {
+			ShSite shSiteEdit = shSiteRepository.findById(id).get();
+			shSiteEdit.setDate(new Date());
+			shSiteEdit.setName(shSite.getName());
+			shSiteEdit.setPostTypeLayout(shSite.getPostTypeLayout());
+			shSiteEdit.setSearchablePostTypes(shSite.getSearchablePostTypes());
+			shSiteEdit.setFurl(shURLFormatter.format(shSite.getName()));
+			shSiteRepository.save(shSiteEdit);
+			return shSiteEdit;
+		} else {
+			return null;
+		}
 	}
 
 	@DeleteMapping("/{id}")
@@ -108,7 +112,7 @@ public class ShSiteAPI {
 
 		List<ShFolder> shFolders = shFolderRepository.findByShSiteAndRootFolder(shSite, (byte) 1);
 
-		for (ShFolder shFolder : shFolders) {			
+		for (ShFolder shFolder : shFolders) {
 			shFolderUtils.deleteFolder(shFolder);
 		}
 
@@ -155,7 +159,7 @@ public class ShSiteAPI {
 		ShExchange shExchange = this.importTemplateSite(shSite);
 		ShSiteExchange shSiteExchange = shExchange.getSites().get(0);
 		shSite.setId(shSiteExchange.getId());
-		
+
 		return shSite;
 	}
 

@@ -65,7 +65,7 @@ public class ShFolderAPI {
 	private ShObjectRepository shObjectRepository;
 	@Autowired
 	private ShTuringIntegration shTuringIntegration;
-	
+
 	@ApiOperation(value = "Folder list")
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
@@ -84,31 +84,34 @@ public class ShFolderAPI {
 	@PutMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShFolder shFolderUpdate(@PathVariable String id, @RequestBody ShFolder shFolder) throws Exception {
+		if (shFolderRepository.findById(id).isPresent()) {
+			ShFolder shFolderEdit = shFolderRepository.findById(id).get();
 
-		ShFolder shFolderEdit = shFolderRepository.findById(id).orElse(null);
+			shFolderEdit.setDate(new Date());
+			shFolderEdit.setName(shFolder.getName());
+			shFolderEdit.setParentFolder(shFolder.getParentFolder());
+			shFolderEdit.setShSite(shFolder.getShSite());
+			shFolderEdit.setFurl(shURLFormatter.format(shFolderEdit.getName()));
 
-		shFolderEdit.setDate(new Date());
-		shFolderEdit.setName(shFolder.getName());
-		shFolderEdit.setParentFolder(shFolder.getParentFolder());
-		shFolderEdit.setShSite(shFolder.getShSite());
-		shFolderEdit.setFurl(shURLFormatter.format(shFolderEdit.getName()));
+			shFolderRepository.saveAndFlush(shFolderEdit);
 
-		shFolderRepository.saveAndFlush(shFolderEdit);
-		
-		shTuringIntegration.indexObject(shFolderEdit);
+			shTuringIntegration.indexObject(shFolderEdit);
 
-		return shFolderEdit;
+			return shFolderEdit;
+		} else {
+			return null;
+		}
 	}
 
 	@Transactional
 	@ApiOperation(value = "Delete a folder")
 	@DeleteMapping("/{id}")
 	public boolean shFolderDelete(@PathVariable String id) throws Exception {
-		
+
 		shFolderRepository.findById(id).ifPresent(new Consumer<ShFolder>() {
 			@Override
 			public void accept(ShFolder shFolder) {
-				try {					
+				try {
 					shFolderUtils.deleteFolder(shFolder);
 				} catch (IOException e) {
 					logger.error("FolderDeleteException", e);
@@ -125,9 +128,9 @@ public class ShFolderAPI {
 		shFolder.setDate(new Date());
 		shFolder.setFurl(shURLFormatter.format(shFolder.getName()));
 		shFolderRepository.save(shFolder);
-		
+
 		shTuringIntegration.indexObject(shFolder);
-		
+
 		return shFolder;
 
 	}
