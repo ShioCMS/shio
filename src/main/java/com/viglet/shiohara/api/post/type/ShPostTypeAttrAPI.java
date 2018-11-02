@@ -54,13 +54,13 @@ public class ShPostTypeAttrAPI {
 	@GetMapping("/{id}")
 	@JsonView({ShJsonView.ShJsonViewPostTypeAttr.class})
 	public ShPostTypeAttr  shPostTypeAttrEdit(@PathVariable String id) throws Exception {
-		return shPostTypeAttrRepository.findById(id).get();
+		return shPostTypeAttrRepository.findById(id).orElse(null);
 	}
 
 	@PutMapping("/{id}")
 	@JsonView({ShJsonView.ShJsonViewPostTypeAttr.class})
 	public ShPostTypeAttr  shPostTypeAttrUpdate(@PathVariable String id, @RequestBody ShPostTypeAttr shPostTypeAttr) throws Exception {
-		ShPostTypeAttr shPostTypeAttrEdit = shPostTypeAttrRepository.findById(id).get();
+		ShPostTypeAttr shPostTypeAttrEdit = shPostTypeAttrRepository.findById(id).orElse(null);
 		shPostTypeAttrEdit.setIsSummary(shPostTypeAttr.getIsSummary());
 		shPostTypeAttrEdit.setIsTitle(shPostTypeAttr.getIsTitle());
 		shPostTypeAttrEdit.setLabel(shPostTypeAttr.getLabel());
@@ -75,7 +75,7 @@ public class ShPostTypeAttrAPI {
 
 	@DeleteMapping("/{id}")
 	public boolean  shPostTypeAttrDelete(@PathVariable String id) throws Exception {
-		ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findById(id).get();
+		ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findById(id).orElse(null);
 		for ( ShPostAttr shPostAttr : shPostTypeAttr.getShPostAttrs()) {
 			shPostAttrRepository.delete(shPostAttr.getId());
 		}

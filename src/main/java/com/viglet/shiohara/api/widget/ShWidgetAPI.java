@@ -56,7 +56,7 @@ public class ShWidgetAPI {
 
 	@PutMapping("/{id}")
 	public ShWidget shWidgetUpdate(@PathVariable String id, @RequestBody ShWidget shWidget) throws Exception {
-		ShWidget shWidgetEdit = shWidgetRepository.findById(id).get();
+		ShWidget shWidgetEdit = shWidgetRepository.findById(id).orElse(null);
 		shWidgetEdit.setName(shWidget.getName());
 		shWidgetEdit.setType(shWidget.getType());
 		shWidgetEdit.setClassName(shWidget.getClassName());

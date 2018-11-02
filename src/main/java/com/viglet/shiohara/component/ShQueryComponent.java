@@ -48,7 +48,7 @@ public class ShQueryComponent {
 	public List<Map<String, ShPostAttr>> findByFolderName(String folderId, String postTypeName ) {
 
 		ShPostType shPostType = shPostTypeRepository.findByName(postTypeName);
-		ShFolder shFolder = shFolderRepository.findById(folderId).get();
+		ShFolder shFolder = shFolderRepository.findById(folderId).orElse(null);
 		List<ShPost> shPostList = shPostRepository.findByShFolderAndShPostTypeOrderByPositionAsc(shFolder, shPostType);
 
 		List<Map<String, ShPostAttr>> shPosts = new ArrayList<Map<String, ShPostAttr>>();

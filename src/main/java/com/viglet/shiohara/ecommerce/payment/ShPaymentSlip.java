@@ -70,7 +70,7 @@ public class ShPaymentSlip {
 				if (shSitesContextURL.getShObject() instanceof ShPost) {
 					shProductPost = (ShPost) shSitesContextURL.getShObject();
 				} else {
-					shProductPost = shPostRepository.findById(product.getString("post")).get();
+					shProductPost = shPostRepository.findById(product.getString("post")).orElse(null);
 				}
 				payer = settings.getJSONObject("payer");
 				JSONArray paymentTypes = settings.getJSONArray("paymentTypes");
@@ -82,7 +82,7 @@ public class ShPaymentSlip {
 		}
 
 		if (paymentTypeId != null) {
-			ShPost shPaymentTypePost = shPostRepository.findById(paymentTypeId).get();
+			ShPost shPaymentTypePost = shPostRepository.findById(paymentTypeId).orElse(null);
 			Map<String, ShPostAttr> shPaymentTypePostMap = shPostUtils.postToMap(shPaymentTypePost);
 			ShPostAttr shPaymentTypeDefinitionPostAttr = shPaymentTypePostMap.get("PAYMENT_TYPE_DEFINITION");
 			ptdSettings = new JSONObject(shPaymentTypeDefinitionPostAttr.getStrValue()).getJSONObject("widgetSettings");

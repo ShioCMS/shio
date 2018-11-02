@@ -77,7 +77,7 @@ public class ShSiteExport {
 			}
 
 			ShExchange shExchange = new ShExchange();
-			ShSite shSite = shSiteRepository.findById(id).get();
+			ShSite shSite = shSiteRepository.findById(id).orElse(null);
 
 			List<ShFolder> rootFolders = shFolderRepository.findByShSiteAndRootFolder(shSite, (byte) 1);
 
