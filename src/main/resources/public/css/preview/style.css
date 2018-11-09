@@ -98,7 +98,6 @@ p {
 
 abbr[title],
 abbr[data-original-title] {
-  text-decoration: underline;
   -webkit-text-decoration: underline dotted;
   text-decoration: underline dotted;
   cursor: help;
@@ -506,7 +505,6 @@ pre {
       max-width: 1140px; } }
 
 .container-fluid {
-  width: 100%;
   margin-right: auto;
   margin-left: auto;
   padding-right: 15px;
@@ -10688,7 +10686,6 @@ button, input, optgroup, select, textarea {
     color: #96a2b7; }
 
 .list-social {
-  display: none !important;
   display: none !important; }
 
 .list-social--has-border {
@@ -10835,7 +10832,7 @@ button, input, optgroup, select, textarea {
     transform: translateX(-50%); } }
 
 .dropdown-menu--has-triangle {
-  margin-top: calc(10px*1.4); }
+  margin-top: calc(10px * 1.4); }
   @media (min-width: 576px) {
     .dropdown-menu--has-triangle:before, .dropdown-menu--has-triangle:after {
       bottom: 100%;
@@ -10859,7 +10856,7 @@ button, input, optgroup, select, textarea {
 
 .dropdown-menu--has-triangle--bottom {
   margin-top: auto;
-  margin-bottom: calc(10px*1.4); }
+  margin-bottom: calc(10px * 1.4); }
   @media (min-width: 576px) {
     .dropdown-menu--has-triangle--bottom:before, .dropdown-menu--has-triangle--bottom:after {
       bottom: auto;
@@ -10899,7 +10896,7 @@ button, input, optgroup, select, textarea {
   margin-right: 1.5rem; }
 
 .dropup .dropdown-menu--has-triangle--bottom {
-  margin-bottom: calc(10px*1.4); }
+  margin-bottom: calc(10px * 1.4); }
 
 /* SUBNAV */
 .sub-nav {
@@ -11004,7 +11001,6 @@ button, input, optgroup, select, textarea {
 .theme-card__body {
   position: relative;
   display: block;
-  -webkit-transition: all .2s ease-out;
   transition: all .2s ease-out;
   height: 0;
   padding-bottom: 74.5%;

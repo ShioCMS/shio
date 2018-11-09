@@ -33,7 +33,7 @@
     display: block;
     line-height: 0;
     width: 100%; 
-    height: 100px; //alterado era auto
+    height: 100px;
     min-height: 180px;
 }
 
@@ -45,7 +45,6 @@ img {
     right: 40px;
     bottom: 38px;
     background: rgba(0,0,0,0.3);
-    border-radius: 0;
     color: rgba(255,255,255,0.8);
     z-index: 2;
     border-radius: 2px;
@@ -126,7 +125,6 @@ img {
     right: 40px;
     bottom: 38px;
     background: rgba(0,0,0,0.3);
-    border-radius: 0;
     color: rgba(255,255,255,0.8);
     z-index: 2;
     border-radius: 2px;
