@@ -3,7 +3,11 @@ sudo: false
 dist: trusty
 jdk:
   - oraclejdk8
+-addons:
+  sonarcloud:
+    organization: "alegauss-github"
 script:
   - ./gradlew check
+  - sonar-scanner
 after_success:
   - bash <(curl -s https://codecov.io/bash)
