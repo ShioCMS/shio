@@ -106,12 +106,13 @@ dependencies {
     // JGit
     compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: "${jgitVersion}"
     compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit.archive', version: "${jgitVersion}"
-    
 
-    
     // H2
      compile group: 'com.h2database', name: 'h2', version:'1.4.197'
-     
+
+	// MariaDB
+    compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.3.0'
+
     // JSON
     compile group: 'org.json', name: 'json', version:'20140107'
     
