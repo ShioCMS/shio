@@ -8,15 +8,15 @@ services:
     - 80:80
     - 443:443
     volumes:
-    - ./nginx/conf.d:/etc/nginx/conf.d
+    - ./container/nginx/conf.d:/etc/nginx/conf.d
   shiohara-mariadb:
     container_name: shiohara-mariadb
-    image: mariadb    
+    build: ./container/mariadb
     environment:
-      MYSQL_DATABASE: viglet_shiohara
-      MYSQL_ROOT_PASSWORD: viglet_shiohara
-      MYSQL_USER: viglet_shiohara
-      MYSQL_PASSWORD: viglet_shiohara
+      MYSQL_DATABASE: shiohara
+      MYSQL_ROOT_PASSWORD: shiohara
+      MYSQL_USER: shiohara
+      MYSQL_PASSWORD: shiohara
     ports:
     - 3306:3306
     restart: always
@@ -31,10 +31,10 @@ services:
       - shiohara-nginx
       - shiohara-mariadb
     command: java -Xmx512m -Djava.security.egd=file:/dev/./urandom -jar /app/app.jar
-    environment:     
-      SPRING_DATASOURCE_URL: jdbc:mariadb://shiohara-mariadb:3306/viglet_shiohara
-      SPRING_DATASOURCE_USERNAME: viglet_shiohara
-      SPRING_DATASOURCE_PASSWORD: viglet_shiohara
-      SPRING_DATASOURCE_DRIVER-CLASS-NAME: org.mariadb.jdbc.Driver
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mariadb://shiohara-mariadb:3306/shiohara
+      SPRING_DATASOURCE_USERNAME: shiohara
+      SPRING_DATASOURCE_PASSWORD: shiohara
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.mariadb.jdbc.Driver
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL5InnoDBDialect
       
