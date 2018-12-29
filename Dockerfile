@@ -3,13 +3,14 @@ WORKDIR /app
 COPY . .
 RUN ./gradlew build
 
-FROM openjdk:8-jdk
+FROM openjdk:8-jre-alpine
 WORKDIR /app
 ENV JAVA_OPTS=${JAVA_OPTS:-'-Xmx512m'}
 ENV DEBUG_OPTS=${DEBUG_OPTS}
 ENV PORT=${PORT:-2710}
 
-RUN useradd -ms /bin/bash java
+RUN adduser -D -g '' java
+
 RUN sh -c 'mkdir -p /app/store'
 
 COPY --from=shioharabuild  /app/build/libs/viglet-shiohara.jar /app/app.jar
