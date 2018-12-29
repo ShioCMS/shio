@@ -12,20 +12,25 @@ services:
   shiohara-mariadb:
     container_name: shiohara-mariadb
     build: ./containers/mariadb
-    restart: always
+    restart: always    
+    ports:
+    - 3306:3306
+    volumes:
+    - ./volumes/mariadb/lib:/var/lib/mysql 
     environment:
       MYSQL_DATABASE: shiohara
       MYSQL_ROOT_PASSWORD: shiohara
       MYSQL_USER: shiohara
-      MYSQL_PASSWORD: shiohara
-    ports:
-    - 3306:3306    
+      MYSQL_PASSWORD: shiohara    
   shiohara-mongodb:
     container_name: shiohara-mongodb
     image: mongo
     restart: always
     ports:
-    - "27017:27017"
+    - 27017:27017
+    volumes:
+    - ./volumes/mongodb/db:/data/db
+    - ./volumes/mongodb/configdb:/data/configdb 
     environment:
       MONGODB_APPLICATION_DATABASE: shiohara
   shiohara:
@@ -35,7 +40,7 @@ services:
     ports:
      - 2710:2710
     volumes:
-    - ./containers/shiohara/volumes/store:/app/store   
+    - ./volumes/shiohara/store:/app/store   
     depends_on:
       - shiohara-nginx
       - shiohara-mariadb
