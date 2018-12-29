@@ -8,37 +8,38 @@ services:
     - 80:80
     - 443:443
     volumes:
-    - ./container/nginx/conf.d:/etc/nginx/conf.d
+    - ./containers/nginx/conf.d:/etc/nginx/conf.d
   shiohara-mariadb:
     container_name: shiohara-mariadb
-    build: ./container/mariadb
+    build: ./containers/mariadb
+    restart: always
     environment:
       MYSQL_DATABASE: shiohara
       MYSQL_ROOT_PASSWORD: shiohara
       MYSQL_USER: shiohara
       MYSQL_PASSWORD: shiohara
     ports:
-    - 3306:3306
-    restart: always
+    - 3306:3306    
   shiohara-mongodb:
     container_name: shiohara-mongodb
     image: mongo
+    restart: always
     ports:
     - "27017:27017"
     environment:
       MONGODB_APPLICATION_DATABASE: shiohara
   shiohara:
     container_name: shiohara
-    restart: always
-    build: .  
-    working_dir: /app  
+    build: .
+    restart: always    
     ports:
-     - 2710:2710  
+     - 2710:2710
+    volumes:
+    - ./containers/shiohara/volumes/store:/app/store   
     depends_on:
       - shiohara-nginx
       - shiohara-mariadb
-      - shiohara-mongodb
-    command: java -Xmx512m -Djava.security.egd=file:/dev/./urandom -jar /app/app.jar
+      - shiohara-mongodb    
     environment:
       SPRING_DATASOURCE_URL: jdbc:mariadb://shiohara-mariadb:3306/shiohara
       SPRING_DATASOURCE_USERNAME: shiohara
