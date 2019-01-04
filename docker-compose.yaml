@@ -1,0 +1,54 @@
+version: '3'
+services:
+  shiohara-nginx:
+    container_name: shiohara-nginx
+    image: nginx:1.13
+    restart: always
+    ports:
+    - 80:80
+    - 443:443
+    volumes:
+    - ./containers/nginx/conf.d:/etc/nginx/conf.d
+  shiohara-mariadb:
+    container_name: shiohara-mariadb
+    build: ./containers/mariadb
+    restart: always    
+    ports:
+    - 3306:3306
+    volumes:
+    - ./volumes/mariadb/lib:/var/lib/mysql 
+    environment:
+      MYSQL_DATABASE: shiohara
+      MYSQL_ROOT_PASSWORD: shiohara
+      MYSQL_USER: shiohara
+      MYSQL_PASSWORD: shiohara    
+  shiohara-mongodb:
+    container_name: shiohara-mongodb
+    image: mongo
+    restart: always
+    ports:
+    - 27017:27017
+    volumes:
+    - ./volumes/mongodb/db:/data/db
+    - ./volumes/mongodb/configdb:/data/configdb 
+    environment:
+      MONGODB_APPLICATION_DATABASE: shiohara
+  shiohara:
+    container_name: shiohara
+    build: .
+    restart: always    
+    ports:
+     - 2710:2710
+    volumes:
+    - ./volumes/shiohara/store:/app/store   
+    depends_on:
+      - shiohara-nginx
+      - shiohara-mariadb
+      - shiohara-mongodb    
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mariadb://shiohara-mariadb:3306/shiohara
+      SPRING_DATASOURCE_USERNAME: shiohara
+      SPRING_DATASOURCE_PASSWORD: shiohara
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.mariadb.jdbc.Driver
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL5InnoDBDialect
+      SPRING_DATA_MONGODB_URI: mongodb://shiohara-mongodb:27017/shiohara
