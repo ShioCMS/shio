@@ -1,17 +1,18 @@
-## 0.3.3
+## 0.3.3 (January 04, 2019)
 
 #### NEW FEATURES
 * Turing Semantic Navigation Settings into Post Type
 * Turing Semantic Navigation Search
 * Searchable Post Types
 * Turing Integration: Deindexing Content
+* Docker Compose
 
 #### IMPROVEMENTS
 * Sites Context: UTF-8 Encoding
 * Download Site Button into Object List View
-* Spring Boot 2.1.0 and Gradle 4.10.2
+* Spring Boot 2.1.1 and Gradle 5.1
 
-## 0.3.2
+## 0.3.2 (August 27, 2018)
 
 #### NEW FEATURES
 * MongoDB
