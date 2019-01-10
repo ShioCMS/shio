@@ -1,0 +1,3 @@
+[submodule "src/main/resources/ui"]
+	path = src/main/resources/ui
+	url = https://github.com/ShioharaCMS/shiohara-ui.git
