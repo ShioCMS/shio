@@ -27,10 +27,8 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bson.Document;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -71,46 +69,7 @@ public class ShPostUtils {
 	private ShStaticFileUtils shStaticFileUtils;
 	@Autowired
 	private ShReferenceRepository shReferenceRepository;
-	@Autowired
-	private MongoTemplate mongoTemplate;
-
-	public void saveDoc(ShPost shPost) {
-
-		ObjectMapper mapper = new ObjectMapper();
-
-		try {
-			String jsonString = mapper.writeValueAsString(shPost);
-			JSONObject jsonObject = new JSONObject(jsonString);
-			jsonObject.put("_id", jsonObject.get("id"));
-			jsonObject.remove("id");
-
-			Document doc = Document.parse(jsonObject.toString());
-			mongoTemplate.save(doc, "shPosts");
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		/*
-		 * ShPostDoc shPostDoc = new ShPostDoc(); shPostDoc.setId(shPost.getId());
-		 * Map<String, Object> attributes = new HashMap<String, Object>();
-		 * Set<ShPostAttr> shPostAttrList = shPostAttrRepository.findByShPost(shPost);
-		 * 
-		 * for (ShPostAttr shPostAttr : shPostAttrList) { if
-		 * (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget
-		 * .RELATOR)) { Set<ShRelatorItem> shRelatorItems =
-		 * shPostAttr.getShChildrenRelatorItems(); for (ShRelatorItem shRelatorItem :
-		 * shRelatorItems) { Set<ShPostAttr> shPostAttrs =
-		 * shRelatorItem.getShChildrenPostAttrs(); Map<String, Object> subAttributes =
-		 * new HashMap<String, Object>(); for (ShPostAttr shPostAttrSub : shPostAttrs) {
-		 * subAttributes.put(shPostAttrSub.getShPostTypeAttr().getName(),
-		 * shPostAttrSub.getStrValue()); } attributes.put("relator", subAttributes); } }
-		 * else { attributes.put(shPostAttr.getShPostTypeAttr().getName(),
-		 * shPostAttr.getStrValue()); } }
-		 * 
-		 * shPostDoc.setAttributes(attributes); shPostDocRepository.save(shPostDoc);
-		 */
-	}
-
+	
 	public JSONObject toJSON(ShPost shPost) {
 		JSONObject shPostItemAttrs = new JSONObject();
 
