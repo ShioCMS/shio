@@ -36,6 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Comment;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -270,18 +271,19 @@ public class ShSitesContextComponent {
 		Elements elements = doc.getElementsByAttribute("sh-region");
 
 		for (Element element : elements) {
-			element.addClass("sh-region");
+			// element.addClass("sh-region");
 
 			String regionAttr = element.attr("sh-region");
 
 			List<ShPost> shRegionPosts = shPostRepository.findByTitle(regionAttr);
 
 			Map<String, ShPostAttr> shRegionPostMap = null;
-
+			String elementId = null;
 			if (shRegionPosts != null) {
 
 				for (ShPost shRegionPost : shRegionPosts) {
-					element.attr("id", shRegionPost.getId());
+					elementId =  shRegionPost.getId();
+					// element.attr("id", shRegionPost.getId());
 					if (shPostUtils.getSite(shRegionPost).getId().equals(shSite.getId())) {
 						shRegionPostMap = shPostUtils.postToMap(shRegionPost);
 
@@ -300,9 +302,9 @@ public class ShSitesContextComponent {
 				String javascript = shObjectJS.toString() + javascriptVar + shRegionJS;
 
 				Object regionResultChild = engine.eval(javascript, bindings);
-
-				element.html(this.shRegionFactory(engine, bindings, javascriptVar, regionResultChild.toString(), shSite)
-						.html());
+				Comment comment = new Comment(String.format(" sh-region: %s, id: %s ", regionAttr, elementId));
+				element.html(comment.toString() + this.shRegionFactory(engine, bindings, javascriptVar, regionResultChild.toString(), shSite)
+						.html()).unwrap();
 			}
 		}
 
