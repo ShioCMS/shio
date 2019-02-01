@@ -12,6 +12,8 @@ var shObjectUtils = spring.getBean('shObjectUtils', Java
 		.type('com.viglet.shiohara.utils.ShObjectUtils'));
 var shPostUtils = spring.getBean('shPostUtils', Java
 		.type('com.viglet.shiohara.utils.ShPostUtils'));
+var shGetRelationComponent = spring.getBean('shGetRelationComponent', Java
+		.type('com.viglet.shiohara.component.ShGetRelationComponent'));
 
 var viglet = this.viglet || {};
 viglet.shiohara = viglet.shiohara || {};
@@ -75,6 +77,16 @@ viglet.shiohara.shObject = function() {
 				postTypeName));
 	}
 
+	/**
+	 * @desc Returns getRelation Component
+	 * @param shPostAttrId,
+	 *            Post Attribute Id.
+	 * @public
+	 */
+	this.getRelation = function(shPostAttrId) {
+		return Java.from(shGetRelationComponent.findByPostAttrId(shPostAttrId));
+	}
+	
 	/**
 	 * @desc Generate Post Link
 	 * @param postId,

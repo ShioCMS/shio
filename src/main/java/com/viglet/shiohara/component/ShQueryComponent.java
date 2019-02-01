@@ -45,7 +45,7 @@ public class ShQueryComponent {
 	@Autowired
 	private ShPostUtils shPostUtils;
 
-	public List<Map<String, ShPostAttr>> findByFolderName(String folderId, String postTypeName ) {
+	public List<Map<String, ShPostAttr>> findByFolderName(String folderId, String postTypeName) {
 
 		ShPostType shPostType = shPostTypeRepository.findByName(postTypeName);
 		ShFolder shFolder = shFolderRepository.findById(folderId).orElse(null);
@@ -56,6 +56,7 @@ public class ShQueryComponent {
 			Map<String, ShPostAttr> shPostObject = shPostUtils.postToMap(shPost);
 			shPosts.add(shPostObject);
 		}
+
 		return shPosts;
 	}
 }

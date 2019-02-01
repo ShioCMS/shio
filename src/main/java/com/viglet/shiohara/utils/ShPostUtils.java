@@ -18,6 +18,7 @@
 package com.viglet.shiohara.utils;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,12 +33,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
+import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
 import com.viglet.shiohara.persistence.model.reference.ShReference;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.object.ShObjectRepository;
@@ -69,7 +69,7 @@ public class ShPostUtils {
 	private ShStaticFileUtils shStaticFileUtils;
 	@Autowired
 	private ShReferenceRepository shReferenceRepository;
-	
+
 	public JSONObject toJSON(ShPost shPost) {
 		JSONObject shPostItemAttrs = new JSONObject();
 
@@ -102,6 +102,21 @@ public class ShPostUtils {
 			shPostMap.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr);
 
 		return shPostMap;
+
+	}
+
+	public List<Map<String, ShPostAttr>> relationToMap(ShPostAttr shPostAttr) {
+
+		List<Map<String, ShPostAttr>> relations = new ArrayList<Map<String, ShPostAttr>>();
+		for (ShRelatorItem shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
+			Map<String, ShPostAttr> shRelationMap = new HashMap<String, ShPostAttr>();
+			for (ShPostAttr shPostAttrRelation : shRelatorItem.getShChildrenPostAttrs()) {
+				shRelationMap.put(shPostAttrRelation.getShPostTypeAttr().getName(), shPostAttrRelation);
+			}
+			relations.add(shRelationMap);
+		}
+
+		return relations;
 
 	}
 
