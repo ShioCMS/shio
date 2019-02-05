@@ -108,6 +108,25 @@ viglet.shiohara.shObject = function() {
 	}
 
 	/**
+	 * @desc Get Post
+	 * @param postId,
+	 *            Post Id.
+	 * @public
+	 */
+	this.getPost = function(postId) {
+		return shPostUtils.toMap(postId);
+	}
+	
+	/**
+	 * @desc Get Parent Folder
+	 * @param folderId,
+	 *            Folder Id.
+	 * @public
+	 */
+	this.getParentFolder = function(folderId) {
+		return shFolderUtils.toMap(shFolderUtils.getParentFolder(folderId));
+	}
+	/**
 	 * @desc Generate Object Link
 	 * @param objectId,
 	 *            Object Id.
