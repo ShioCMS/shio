@@ -1,3 +1,9 @@
+## 0.3.4
+
+#### NEW FEATURES
+
+#### IMPROVEMENTS
+
 ## 0.3.3 (January 04, 2019)
 
 #### NEW FEATURES
