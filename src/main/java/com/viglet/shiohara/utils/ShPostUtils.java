@@ -90,6 +90,11 @@ public class ShPostUtils {
 		return shPostItemAttrs;
 	}
 
+	public Map<String, ShPostAttr> toMap(String postId) {
+
+		return this.postToMap(shPostRepository.findById(postId).get());
+	}
+
 	public Map<String, ShPostAttr> postToMap(ShPost shPost) {
 
 		Set<ShPostAttr> shPostAttrList = shPostAttrRepository.findByShPost(shPost);
@@ -212,13 +217,15 @@ public class ShPostUtils {
 			try {
 				ShObject shObjectReferenced = shObjectRepository.findById(shPostAttr.getStrValue()).orElse(null);
 				// Create new reference
-				ShReference shReference = new ShReference();
-				shReference.setShObjectFrom(shPost);
-				shReference.setShObjectTo(shObjectReferenced);
-				shReferenceRepository.saveAndFlush(shReference);
-				Set<ShObject> referenceObjects = new HashSet<ShObject>();
-				referenceObjects.add(shObjectReferenced);
-				shPostAttr.setReferenceObjects(referenceObjects);
+				if (shPost != null && shObjectReferenced != null) {
+					ShReference shReference = new ShReference();
+					shReference.setShObjectFrom(shPost);
+					shReference.setShObjectTo(shObjectReferenced);
+					shReferenceRepository.saveAndFlush(shReference);
+					Set<ShObject> referenceObjects = new HashSet<ShObject>();
+					referenceObjects.add(shObjectReferenced);
+					shPostAttr.setReferenceObjects(referenceObjects);
+				}
 			} catch (IllegalArgumentException iae) {
 				// TODO Re-thing about ignore this
 				shPostAttr.setReferenceObjects(null);
