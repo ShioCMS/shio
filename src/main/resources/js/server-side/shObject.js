@@ -12,6 +12,8 @@ var shObjectUtils = spring.getBean('shObjectUtils', Java
 		.type('com.viglet.shiohara.utils.ShObjectUtils'));
 var shPostUtils = spring.getBean('shPostUtils', Java
 		.type('com.viglet.shiohara.utils.ShPostUtils'));
+var shGetRelationComponent = spring.getBean('shGetRelationComponent', Java
+		.type('com.viglet.shiohara.component.ShGetRelationComponent'));
 
 var viglet = this.viglet || {};
 viglet.shiohara = viglet.shiohara || {};
@@ -76,6 +78,16 @@ viglet.shiohara.shObject = function() {
 	}
 
 	/**
+	 * @desc Returns getRelation Component
+	 * @param shPostAttrId,
+	 *            Post Attribute Id.
+	 * @public
+	 */
+	this.getRelation = function(shPostAttrId) {
+		return Java.from(shGetRelationComponent.findByPostAttrId(shPostAttrId));
+	}
+	
+	/**
 	 * @desc Generate Post Link
 	 * @param postId,
 	 *            Post Id.
@@ -95,6 +107,25 @@ viglet.shiohara.shObject = function() {
 		return shFolderUtils.generateFolderLinkById(folderId);
 	}
 
+	/**
+	 * @desc Get Post
+	 * @param postId,
+	 *            Post Id.
+	 * @public
+	 */
+	this.getPost = function(postId) {
+		return shPostUtils.toMap(postId);
+	}
+	
+	/**
+	 * @desc Get Parent Folder
+	 * @param folderId,
+	 *            Folder Id.
+	 * @public
+	 */
+	this.getParentFolder = function(folderId) {
+		return shFolderUtils.toMap(shFolderUtils.getParentFolder(folderId));
+	}
 	/**
 	 * @desc Generate Object Link
 	 * @param objectId,

@@ -18,6 +18,7 @@
 package com.viglet.shiohara.utils;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,19 +28,16 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bson.Document;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
+import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
 import com.viglet.shiohara.persistence.model.reference.ShReference;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.object.ShObjectRepository;
@@ -71,45 +69,6 @@ public class ShPostUtils {
 	private ShStaticFileUtils shStaticFileUtils;
 	@Autowired
 	private ShReferenceRepository shReferenceRepository;
-	@Autowired
-	private MongoTemplate mongoTemplate;
-
-	public void saveDoc(ShPost shPost) {
-
-		ObjectMapper mapper = new ObjectMapper();
-
-		try {
-			String jsonString = mapper.writeValueAsString(shPost);
-			JSONObject jsonObject = new JSONObject(jsonString);
-			jsonObject.put("_id", jsonObject.get("id"));
-			jsonObject.remove("id");
-
-			Document doc = Document.parse(jsonObject.toString());
-			mongoTemplate.save(doc, "shPosts");
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		/*
-		 * ShPostDoc shPostDoc = new ShPostDoc(); shPostDoc.setId(shPost.getId());
-		 * Map<String, Object> attributes = new HashMap<String, Object>();
-		 * Set<ShPostAttr> shPostAttrList = shPostAttrRepository.findByShPost(shPost);
-		 * 
-		 * for (ShPostAttr shPostAttr : shPostAttrList) { if
-		 * (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget
-		 * .RELATOR)) { Set<ShRelatorItem> shRelatorItems =
-		 * shPostAttr.getShChildrenRelatorItems(); for (ShRelatorItem shRelatorItem :
-		 * shRelatorItems) { Set<ShPostAttr> shPostAttrs =
-		 * shRelatorItem.getShChildrenPostAttrs(); Map<String, Object> subAttributes =
-		 * new HashMap<String, Object>(); for (ShPostAttr shPostAttrSub : shPostAttrs) {
-		 * subAttributes.put(shPostAttrSub.getShPostTypeAttr().getName(),
-		 * shPostAttrSub.getStrValue()); } attributes.put("relator", subAttributes); } }
-		 * else { attributes.put(shPostAttr.getShPostTypeAttr().getName(),
-		 * shPostAttr.getStrValue()); } }
-		 * 
-		 * shPostDoc.setAttributes(attributes); shPostDocRepository.save(shPostDoc);
-		 */
-	}
 
 	public JSONObject toJSON(ShPost shPost) {
 		JSONObject shPostItemAttrs = new JSONObject();
@@ -131,6 +90,11 @@ public class ShPostUtils {
 		return shPostItemAttrs;
 	}
 
+	public Map<String, ShPostAttr> toMap(String postId) {
+
+		return this.postToMap(shPostRepository.findById(postId).get());
+	}
+
 	public Map<String, ShPostAttr> postToMap(ShPost shPost) {
 
 		Set<ShPostAttr> shPostAttrList = shPostAttrRepository.findByShPost(shPost);
@@ -143,6 +107,21 @@ public class ShPostUtils {
 			shPostMap.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr);
 
 		return shPostMap;
+
+	}
+
+	public List<Map<String, ShPostAttr>> relationToMap(ShPostAttr shPostAttr) {
+
+		List<Map<String, ShPostAttr>> relations = new ArrayList<Map<String, ShPostAttr>>();
+		for (ShRelatorItem shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
+			Map<String, ShPostAttr> shRelationMap = new HashMap<String, ShPostAttr>();
+			for (ShPostAttr shPostAttrRelation : shRelatorItem.getShChildrenPostAttrs()) {
+				shRelationMap.put(shPostAttrRelation.getShPostTypeAttr().getName(), shPostAttrRelation);
+			}
+			relations.add(shRelationMap);
+		}
+
+		return relations;
 
 	}
 
@@ -238,13 +217,15 @@ public class ShPostUtils {
 			try {
 				ShObject shObjectReferenced = shObjectRepository.findById(shPostAttr.getStrValue()).orElse(null);
 				// Create new reference
-				ShReference shReference = new ShReference();
-				shReference.setShObjectFrom(shPost);
-				shReference.setShObjectTo(shObjectReferenced);
-				shReferenceRepository.saveAndFlush(shReference);
-				Set<ShObject> referenceObjects = new HashSet<ShObject>();
-				referenceObjects.add(shObjectReferenced);
-				shPostAttr.setReferenceObjects(referenceObjects);
+				if (shPost != null && shObjectReferenced != null) {
+					ShReference shReference = new ShReference();
+					shReference.setShObjectFrom(shPost);
+					shReference.setShObjectTo(shObjectReferenced);
+					shReferenceRepository.saveAndFlush(shReference);
+					Set<ShObject> referenceObjects = new HashSet<ShObject>();
+					referenceObjects.add(shObjectReferenced);
+					shPostAttr.setReferenceObjects(referenceObjects);
+				}
 			} catch (IllegalArgumentException iae) {
 				// TODO Re-thing about ignore this
 				shPostAttr.setReferenceObjects(null);
