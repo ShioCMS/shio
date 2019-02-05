@@ -4,7 +4,6 @@
 
 #### IMPROVEMENTS
 
-
 ## 0.3.3 (January 04, 2019)
 
 #### NEW FEATURES
@@ -12,6 +11,7 @@
 * Turing Semantic Navigation Search
 * Searchable Post Types
 * Turing Integration: Deindexing Content
+* Docker Compose
 
 #### IMPROVEMENTS
 * Sites Context: UTF-8 Encoding
