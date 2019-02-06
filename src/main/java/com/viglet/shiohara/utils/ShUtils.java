@@ -44,14 +44,10 @@ public class ShUtils {
 	/**
 	 * Unzip it
 	 * 
-	 * @param zipFile
-	 *            input zip file
-	 * @param outputFolder
-	 *            output Folder
-	 * @throws ArchiveException
-	 *             if creating or adding to the archive fails
-	 * @throws IOException
-	 *             if the io fails
+	 * @param zipFile      input zip file
+	 * @param outputFolder output Folder
+	 * @throws ArchiveException if creating or adding to the archive fails
+	 * @throws IOException      if the io fails
 	 */
 	public void unZipIt(File zipFile, File outputFolder) throws ArchiveException, IOException {
 
@@ -76,14 +72,10 @@ public class ShUtils {
 	/**
 	 * Add all files from the source directory to the destination zip file
 	 *
-	 * @param source
-	 *            the directory with files to add
-	 * @param destination
-	 *            the zip file that should contain the files
-	 * @throws IOException
-	 *             if the io fails
-	 * @throws ArchiveException
-	 *             if creating or adding to the archive fails
+	 * @param source      the directory with files to add
+	 * @param destination the zip file that should contain the files
+	 * @throws IOException      if the io fails
+	 * @throws ArchiveException if creating or adding to the archive fails
 	 */
 	public void addFilesToZip(File source, File destination) throws IOException, ArchiveException {
 		OutputStream archiveStream = new FileOutputStream(destination);
@@ -111,13 +103,10 @@ public class ShUtils {
 	/**
 	 * Remove the leading part of each entry that contains the source directory name
 	 *
-	 * @param source
-	 *            the directory where the file entry is found
-	 * @param file
-	 *            the file that is about to be added
+	 * @param source the directory where the file entry is found
+	 * @param file   the file that is about to be added
 	 * @return the name of an archive entry
-	 * @throws IOException
-	 *             if the io fails
+	 * @throws IOException if the io fails
 	 */
 	private String getEntryName(File source, File file) throws IOException {
 		int index = source.getAbsolutePath().length() + 1;
@@ -141,17 +130,21 @@ public class ShUtils {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	public boolean isJSONValid(String test) {
-	    try {
-	        new JSONObject(test);
-	    } catch (JSONException ex) {
-	        try {
-	            new JSONArray(test);
-	        } catch (JSONException ex1) {
-	            return false;
-	        }
-	    }
-	    return true;
+		if (test == null) {
+			return false;
+		} else {
+			try {
+				new JSONObject(test);
+			} catch (JSONException ex) {
+				try {
+					new JSONArray(test);
+				} catch (JSONException ex1) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 }
