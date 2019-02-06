@@ -38,6 +38,8 @@ public class ShFolderExchange {
 	
 	private String furl;
 
+	private int position;
+	
 	public String getId() {
 		return id;
 	}
@@ -84,6 +86,14 @@ public class ShFolderExchange {
 
 	public void setFurl(String furl) {
 		this.furl = furl;
+	}
+
+	public int getPosition() {
+		return position;
+	}
+
+	public void setPosition(int position) {
+		this.position = position;
 	}
 
 }

@@ -41,6 +41,8 @@ public class ShPostExchange {
 	
 	private String furl;
 
+	private int position;
+	
 	public String getId() {
 		return id;
 	}
@@ -94,6 +96,14 @@ public class ShPostExchange {
 
 	public void setFurl(String furl) {
 		this.furl = furl;
+	}
+
+	public int getPosition() {
+		return position;
+	}
+
+	public void setPosition(int position) {
+		this.position = position;
 	}
 
 	
