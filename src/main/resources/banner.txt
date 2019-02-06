@@ -1,10 +1,9 @@
+${AnsiColor.BRIGHT_MAGENTA} __   ___      _     _     ___ _    _     _                  
+${AnsiColor.BRIGHT_MAGENTA} \ \ / (_)__ _| |___| |_  / __| |_ (_)___| |_  __ _ _ _ __ _ 
+${AnsiColor.BRIGHT_MAGENTA}  \ V /| / _` | / -_)  _| \__ \ ' \| / _ \ ' \/ _` | '_/ _` |
+${AnsiColor.BRIGHT_MAGENTA}   \_/ |_\__, |_\___|\__| |___/_||_|_\___/_||_\__,_|_| \__,_| ${AnsiColor.BRIGHT_WHITE}v.${info.app.version:unknown}
+${AnsiColor.BRIGHT_MAGENTA}         |___/                                               
 
- __   ___      _     _     ___ _    _     _                  
- \ \ / (_)__ _| |___| |_  / __| |_ (_)___| |_  __ _ _ _ __ _ 
-  \ V /| / _` | / -_)  _| \__ \ ' \| / _ \ ' \/ _` | '_/ _` |
-   \_/ |_\__, |_\___|\__| |___/_||_|_\___/_||_\__,_|_| \__,_|
-         |___/                                               
+${AnsiColor.BRIGHT_WHITE}:: Copyright (C) 2016-2019, Viglet Team <opensource@viglet.com> 
 
-:: Copyright (C) 2016-2019, Viglet Team <opensource@viglet.com> 
-
-:: Built with Spring Boot :: ${spring-boot.version}
+${AnsiColor.BRIGHT_WHITE}:: Built with Spring Boot :: ${spring-boot.version}

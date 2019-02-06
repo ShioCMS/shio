@@ -137,12 +137,9 @@ public class ShSiteExport {
 					}
 					for (String postType : postTypes) {
 						if (!shExchangePostTypeMap.contains(postType)) {
-							System.out.println("A1: " + postType);
 							ShPostType shPostType = shPostTypeRepository.findByName(postType);
 							if (shPostType != null) {
 								shExchangePostTypes.add(shPostTypeExport.exportPostType(shPostType));
-							} else {
-								System.out.println("nulo");
 							}
 						}
 					}
