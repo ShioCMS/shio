@@ -24,8 +24,12 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
@@ -33,6 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,11 +46,15 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viglet.shiohara.exchange.ShExchange;
 import com.viglet.shiohara.exchange.ShFileExchange;
+import com.viglet.shiohara.exchange.ShPostTypeExchange;
 import com.viglet.shiohara.exchange.ShSiteExchange;
 import com.viglet.shiohara.exchange.folder.ShFolderExport;
+import com.viglet.shiohara.exchange.post.type.ShPostTypeExport;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
+import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
+import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
 import com.viglet.shiohara.utils.ShUtils;
 
@@ -67,6 +76,10 @@ public class ShSiteExport {
 	private ShUtils shUtils;
 	@Autowired
 	private ShFolderExport shFolderExport;
+	@Autowired
+	private ShPostTypeExport shPostTypeExport;
+	@Autowired
+	private ShPostTypeRepository shPostTypeRepository;
 
 	public StreamingResponseBody exportObject(@PathVariable String id, HttpServletResponse response) throws Exception {
 		String folderName = UUID.randomUUID().toString();
@@ -107,9 +120,38 @@ public class ShSiteExport {
 
 				ShExchange shExchangeFolder = shFolderExport.shFolderExchangeIterate(rootFolders);
 
+				List<ShPostTypeExchange> shExchangePostTypes = shExchangeFolder.getPostTypes();
+
+				if (shUtils.isJSONValid(shSiteExchange.getPostTypeLayout())) {
+					JSONObject postTypeLayout = null;
+					postTypeLayout = new JSONObject(shSiteExchange.getPostTypeLayout());
+					Set<String> postTypes = postTypeLayout.keySet();
+
+					Set<String> shExchangePostTypeMap = new HashSet<String>();
+					if (shExchangePostTypes != null) {
+						for (ShPostTypeExchange i : shExchangePostTypes) {
+							shExchangePostTypeMap.add(i.getName());
+						}
+					} else {
+						shExchangePostTypes = new ArrayList<ShPostTypeExchange>();
+					}
+					for (String postType : postTypes) {
+						if (!shExchangePostTypeMap.contains(postType)) {
+							System.out.println("A1: " + postType);
+							ShPostType shPostType = shPostTypeRepository.findByName(postType);
+							if (shPostType != null) {
+								shExchangePostTypes.add(shPostTypeExport.exportPostType(shPostType));
+							} else {
+								System.out.println("nulo");
+							}
+						}
+					}
+
+				}
+
 				shExchange.setFolders(shExchangeFolder.getFolders());
 				shExchange.setPosts(shExchangeFolder.getPosts());
-				shExchange.setPostTypes(shExchangeFolder.getPostTypes());
+				shExchange.setPostTypes(shExchangePostTypes);
 
 				File exportDir = new File(tmpDir.getAbsolutePath().concat(File.separator + folderName));
 				if (!exportDir.exists()) {
