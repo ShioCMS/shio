@@ -79,6 +79,7 @@ public class ShPostUtils {
 		shPostObject.put("title", shPost.getTitle());
 		shPostObject.put("summary", shPost.getSummary());
 		shPostObject.put("link", this.generatePostLink(shPost));
+		shPostObject.put("parentFolder", shPost.getShFolder().getId());
 		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
 			if (shPostAttr.getShPostTypeAttr().getName() != null) {
 				shPostItemAttrs.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());

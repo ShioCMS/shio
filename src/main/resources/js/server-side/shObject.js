@@ -108,7 +108,7 @@ viglet.shiohara.shObject = function() {
 	}
 
 	/**
-	 * @desc Get Post
+	 * @desc Get Post Map
 	 * @param postId,
 	 *            Post Id.
 	 * @public
@@ -118,7 +118,17 @@ viglet.shiohara.shObject = function() {
 	}
 	
 	/**
-	 * @desc Get Parent Folder
+	 * @desc Get Folder Map
+	 * @param folderId,
+	 *            Folder Id.
+	 * @public
+	 */
+	this.getFolderMap = function(folderId) {
+		return shFolderUtils.toMap(folderId);
+	}
+	
+	/**
+	 * @desc Get Parent Folder Map
 	 * @param folderId,
 	 *            Folder Id.
 	 * @public

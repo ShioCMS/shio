@@ -71,6 +71,7 @@ public class ShFolderUtils {
 		shFolder.getParentFolder();
 		return shFolder.getParentFolder();
 	}
+
 	public ShPost getFolderIndex(ShFolder shFolder) {
 		ShPostType shPostType = shPostTypeRepository.findByName(ShSystemPostType.FOLDER_INDEX);
 		List<ShPost> shFolderIndexPosts = shPostRepository.findByShFolderAndShPostTypeOrderByPositionAsc(shFolder,
@@ -82,16 +83,21 @@ public class ShFolderUtils {
 		return null;
 	}
 
+	public Map<String, Object> toMap(String shFolderId) {
+		ShFolder shFolder = shFolderRepository.findById(shFolderId).get();
+		return this.toMap(shFolder);
+	}
+
 	public Map<String, Object> toMap(ShFolder shFolder) {
 		Map<String, Object> shFolderItemAttrs = new HashMap<String, Object>();
-		
+
 		shFolderItemAttrs.put("id", shFolder.getId());
 		shFolderItemAttrs.put("title", shFolder.getName());
 		shFolderItemAttrs.put("link", this.folderPath(shFolder, true));
 
 		return shFolderItemAttrs;
 	}
-	
+
 	public JSONObject toJSON(ShFolder shFolder) {
 		JSONObject shFolderItemAttrs = new JSONObject();
 
