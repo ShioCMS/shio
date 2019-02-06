@@ -78,6 +78,9 @@ public class ShFolderImport {
 			shFolderChild.setId(shFolderExchange.getId());
 			shFolderChild.setDate(shFolderExchange.getDate());
 			shFolderChild.setName(shFolderExchange.getName());
+			if (shFolderExchange.getPosition() > 0) {
+				shFolderChild.setPosition(shFolderExchange.getPosition());
+			}
 			if (shFolderExchange.getOwner() != null) {
 				shFolderChild.setOwner(shFolderExchange.getOwner());
 			} else {
