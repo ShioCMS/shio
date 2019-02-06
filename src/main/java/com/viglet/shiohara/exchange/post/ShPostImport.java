@@ -75,9 +75,9 @@ public class ShPostImport {
 	private ShURLFormatter shURLFormatter;
 	@Autowired
 	private ShTuringIntegration shTuringIntegration;
-	
+
 	private boolean turingEnabled = true;
-	
+
 	public ShPost createShPost(ShPostExchange shPostExchange, File extractFolder, String username,
 			Map<String, Object> shObjects) throws ClientProtocolException, IOException {
 		ShPost shPost = null;
@@ -87,8 +87,12 @@ public class ShPostImport {
 			shPost = new ShPost();
 			shPost.setId(shPostExchange.getId());
 			shPost.setDate(shPostExchange.getDate());
+			if (shPostExchange.getPosition() > 0) {
+				shPost.setPosition(shPostExchange.getPosition());
+			}
 			shPost.setShFolder(shFolderRepository.findById(shPostExchange.getFolder()).orElse(null));
 			shPost.setShPostType(shPostTypeRepository.findByName(shPostExchange.getPostType()));
+
 			if (shPostExchange.getOwner() != null) {
 				shPost.setOwner(shPostExchange.getOwner());
 			} else {
@@ -125,10 +129,10 @@ public class ShPostImport {
 			}
 
 			shPostRepository.saveAndFlush(shPost);
-			
+
 			this.createShPostAttrs(shPostExchange, shPost, shPostExchange.getFields(), null, extractFolder, username,
 					shObjects);
-			
+
 			if (turingEnabled) {
 				shTuringIntegration.indexObject(shPost);
 			}

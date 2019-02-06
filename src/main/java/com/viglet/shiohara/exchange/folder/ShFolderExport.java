@@ -67,7 +67,8 @@ public class ShFolderExport {
 				shPostExchange.setPostType(shPost.getShPostType().getName());
 				shPostExchange.setOwner(shPost.getOwner());
 				shPostExchange.setFurl(shPost.getFurl());
-
+				shPostExchange.setPosition(shPost.getPosition());
+				
 				if (!shPostTypeExchanges.containsKey(shPost.getShPostType().getName())) {
 					shPostTypeExchanges.put(shPost.getShPostType().getName(),
 							shPostTypeExport.exportPostType(shPost.getShPostType()));
@@ -87,7 +88,8 @@ public class ShFolderExport {
 			shFolderExchangeChild.setName(shFolder.getName());
 			shFolderExchangeChild.setOwner(shFolder.getOwner());
 			shFolderExchangeChild.setFurl(shFolder.getFurl());
-
+			shFolderExchangeChild.setPosition(shFolder.getPosition());
+			
 			if (shFolder.getParentFolder() != null) {
 				shFolderExchangeChild.setParentFolder(shFolder.getParentFolder().getId());
 			}
