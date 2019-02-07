@@ -75,7 +75,7 @@ public class ShPostUtils {
 
 		JSONObject shPostObject = new JSONObject();
 		shPostObject.put("id", shPost.getId());
-		shPostObject.put("post-type-id", shPost.getShPostType().getId());
+		shPostObject.put("postTypeName", shPost.getShPostType().getName());
 		shPostObject.put("title", shPost.getTitle());
 		shPostObject.put("summary", shPost.getSummary());
 		shPostObject.put("link", this.generatePostLink(shPost));
