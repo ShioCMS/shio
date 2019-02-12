@@ -33,6 +33,10 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
 
+import jdk.nashorn.api.scripting.NashornException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
@@ -45,6 +49,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
+import com.viglet.shiohara.api.folder.ShFolderAPI;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
@@ -59,6 +64,7 @@ import com.viglet.shiohara.utils.ShPostUtils;
 
 @Component
 public class ShSitesContextComponent {
+	static final Logger logger = LogManager.getLogger(ShSitesContextComponent.class.getName());
 	@Autowired
 	private ShPostRepository shPostRepository;
 	@Autowired
@@ -282,7 +288,7 @@ public class ShSitesContextComponent {
 			if (shRegionPosts != null) {
 
 				for (ShPost shRegionPost : shRegionPosts) {
-					elementId =  shRegionPost.getId();
+					elementId = shRegionPost.getId();
 					// element.attr("id", shRegionPost.getId());
 					if (shPostUtils.getSite(shRegionPost).getId().equals(shSite.getId())) {
 						shRegionPostMap = shPostUtils.postToMap(shRegionPost);
@@ -301,10 +307,19 @@ public class ShSitesContextComponent {
 
 				String javascript = shObjectJS.toString() + javascriptVar + shRegionJS;
 
-				Object regionResultChild = engine.eval(javascript, bindings);
-				Comment comment = new Comment(String.format(" sh-region: %s, id: %s ", regionAttr, elementId));
-				element.html(comment.toString() + this.shRegionFactory(engine, bindings, javascriptVar, regionResultChild.toString(), shSite)
-						.html()).unwrap();
+				try {
+					Object regionResultChild = engine.eval(javascript, bindings);
+
+					Comment comment = new Comment(String.format(" sh-region: %s, id: %s ", regionAttr, elementId));
+					element.html(comment.toString() + this
+							.shRegionFactory(engine, bindings, javascriptVar, regionResultChild.toString(), shSite)
+							.html()).unwrap();
+				} catch (ScriptException e) {
+					if (e.getCause() instanceof NashornException) {
+						//logger.info(NashornException.getScriptStackString(e));
+						logger.info(e.getCause());
+					}
+				}
 			}
 		}
 
