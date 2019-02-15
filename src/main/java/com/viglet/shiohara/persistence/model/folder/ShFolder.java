@@ -40,7 +40,7 @@ import java.util.Set;
 
 @Entity
 @NamedQuery(name = "ShFolder.findAll", query = "SELECT c FROM ShFolder c")
-@JsonIgnoreProperties({ "shFolders", "shPosts" })
+@JsonIgnoreProperties({ "shFolders", "shPosts", "shPostAttrRefs" })
 @PrimaryKeyJoinColumn(name = "object_id")
 public class ShFolder extends ShObject {
 	private static final long serialVersionUID = 1L;

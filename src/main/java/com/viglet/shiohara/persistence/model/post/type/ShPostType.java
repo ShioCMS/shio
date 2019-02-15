@@ -46,7 +46,7 @@ import javax.persistence.PrimaryKeyJoinColumn;
  */
 @Entity
 @NamedQuery(name = "ShPostType.findAll", query = "SELECT s FROM ShPostType s")
-@JsonIgnoreProperties({ "shPosts", "shPostAttrs" })
+@JsonIgnoreProperties({ "shPosts", "shPostAttrs","shPostAttrRefs" })
 @PrimaryKeyJoinColumn(name = "object_id")
 public class ShPostType extends ShObject {
 	private static final long serialVersionUID = 1L;

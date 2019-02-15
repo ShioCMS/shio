@@ -43,7 +43,7 @@ import io.swagger.annotations.Api;
 
 @RestController
 @RequestMapping("/api/v2/reference")
-@Api(tags="Reference", description="Reference API")
+@Api(tags = "Reference", description = "Reference API")
 public class ShReferenceAPI {
 
 	@Autowired
@@ -62,25 +62,25 @@ public class ShReferenceAPI {
 	}
 
 	@GetMapping("/from/{fromId}")
-	@JsonView({  ShJsonView.ShJsonViewReference.class })
+	@JsonView({ ShJsonView.ShJsonViewReference.class })
 	public List<ShReference> shReferenceFrom(@PathVariable String fromId) throws Exception {
 		ShObject shObject = shObjectRepository.findById(fromId).orElse(null);
 		return shReferenceRepository.findByShObjectFrom(shObject);
 	}
+
 	@GetMapping("/to/{toId}")
-	@JsonView({  ShJsonView.ShJsonViewReference.class })
+	@JsonView({ ShJsonView.ShJsonViewReference.class })
 	public List<ShReference> shReferenceTo(@PathVariable String toId) throws Exception {
 		ShObject shObject = shObjectRepository.findById(toId).orElse(null);
 		return shReferenceRepository.findByShObjectTo(shObject);
 	}
 
 	@PostMapping("/to/{toId}/replace/{otherId}")
-	@JsonView({  ShJsonView.ShJsonViewReference.class })
+	@JsonView({ ShJsonView.ShJsonViewReference.class })
 	public List<ShReference> shReferenceToReplace(@PathVariable String toId, @PathVariable String otherId)
 			throws Exception {
 		ShObject shObject = shObjectRepository.findById(toId).orElse(null);
-		ShObject shObjectOther = shObjectRepository.findById(otherId).orElse(null);
-		ShPost shPostOther = shPostRepository.findById(shObjectOther.getId()).orElse(null);
+		ShObject shObjectOther = shObjectRepository.findById(otherId).orElse(null);	
 		List<ShReference> shReferences = shReferenceRepository.findByShObjectTo(shObject);
 
 		for (ShReference shReference : shReferences) {
@@ -88,19 +88,11 @@ public class ShReferenceAPI {
 					&& shReference.getShObjectFrom() instanceof ShPost) {
 				ShPost shPost = (ShPost) shReference.getShObjectFrom();
 				for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
-					Set<ShObject> newReferences = new HashSet<ShObject>();
-					for (ShObject shObjectReference : shPostAttr.getReferenceObjects()) {
-						if (shObjectReference.getId().toString()
-								.equals(shObject.getId().toString())) {
-							newReferences.add(shPostOther);
-							shPostAttr.setStrValue(shPostOther.getId().toString());
-						} else {
-							newReferences.add(shObjectReference);
-							shPostAttr.setStrValue(shObjectReference.getId().toString());
-						}
+					ShObject shObjectReference = shPostAttr.getReferenceObject();
+					if (shObjectReference.getId().toString().equals(shObject.getId().toString())) {
+						shPostAttr.setReferenceObject(shObjectOther);
+						shPostAttrRepository.saveAndFlush(shPostAttr);
 					}
-					shPostAttr.setReferenceObjects(newReferences);
-					shPostAttrRepository.saveAndFlush(shPostAttr);
 				}
 			}
 			shReference.setShObjectTo(shObjectOther);
