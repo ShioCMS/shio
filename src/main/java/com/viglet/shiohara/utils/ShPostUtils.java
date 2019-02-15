@@ -21,7 +21,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -142,7 +141,7 @@ public class ShPostUtils {
 			ShPostAttr shPostAttrClone = new ShPostAttr();
 			shPostAttrClone.setDateValue(shPostAttr.getDateValue());
 			shPostAttrClone.setIntValue(shPostAttr.getIntValue());
-			shPostAttrClone.setReferenceObjects(new HashSet<ShObject>(shPostAttr.getReferenceObjects()));
+			shPostAttrClone.setReferenceObject(shPostAttr.getReferenceObject());
 			shPostAttrClone.setShPost(shPostCopy);
 			shPostAttrClone.setShPostTypeAttr(shPostAttr.getShPostTypeAttr());
 			shPostAttrClone.setStrValue(shPostAttr.getStrValue());
@@ -189,7 +188,7 @@ public class ShPostUtils {
 	@Transactional
 	public void referencedPost(ShPostAttr shPostAttr, ShPost shPost) {
 		if (shPostAttr.getStrValue() == null) {
-			shPostAttr.setReferenceObjects(null);
+			shPostAttr.setReferenceObject(null);
 		} else {
 			// TODO Two or more attributes with FILE Widget and same file, it cannot remove
 			// a valid reference
@@ -203,13 +202,13 @@ public class ShPostUtils {
 
 					}
 
-					// Find by shPostAttr.getReferenceObjects()
-					if (shPostAttr.getReferenceObjects() != null) {
-						for (ShObject shObject : shPostAttr.getReferenceObjects()) {
-							if (shOldReference.getShObjectTo().getId().toString().equals(shObject.getId().toString())) {
-								shReferenceRepository.delete(shOldReference);
-							}
+					// Find by shPostAttr.getReferenceObject()
+					if (shPostAttr.getReferenceObject() != null) {
+						ShObject shObject = shPostAttr.getReferenceObject();
+						if (shOldReference.getShObjectTo().getId().toString().equals(shObject.getId().toString())) {
+							shReferenceRepository.delete(shOldReference);
 						}
+
 					}
 				}
 
@@ -223,13 +222,11 @@ public class ShPostUtils {
 					shReference.setShObjectFrom(shPost);
 					shReference.setShObjectTo(shObjectReferenced);
 					shReferenceRepository.saveAndFlush(shReference);
-					Set<ShObject> referenceObjects = new HashSet<ShObject>();
-					referenceObjects.add(shObjectReferenced);
-					shPostAttr.setReferenceObjects(referenceObjects);
+					shPostAttr.setReferenceObject(shObjectReferenced);
 				}
 			} catch (IllegalArgumentException iae) {
 				// TODO Re-thing about ignore this
-				shPostAttr.setReferenceObjects(null);
+				shPostAttr.setReferenceObject(null);
 			}
 		}
 	}
@@ -273,7 +270,7 @@ public class ShPostUtils {
 	@Transactional
 	public void referencedPost(ShPostAttr shPostAttrEdit, ShPostAttr shPostAttr, ShPost shPost) {
 		if (shPostAttr.getStrValue() == null) {
-			shPostAttr.setReferenceObjects(null);
+			shPostAttr.setReferenceObject(null);
 		} else {
 			// TODO Two or more attributes with FILE Widget and same file, it cannot remove
 			// a valid reference
@@ -281,13 +278,13 @@ public class ShPostUtils {
 			List<ShReference> shOldReferences = shReferenceRepository.findByShObjectFrom(shPost);
 			if (shOldReferences.size() > 0) {
 				for (ShReference shOldReference : shOldReferences) {
-					if (shPostAttrEdit.getReferenceObjects() != null) {
-						for (ShObject shObject : shPostAttrEdit.getReferenceObjects()) {
-							if (shOldReference.getShObjectTo().getId().toString().equals(shObject.getId().toString())) {
-								shReferenceRepository.delete(shOldReference);
-								break;
-							}
+					if (shPostAttrEdit.getReferenceObject() != null) {
+						ShObject shObject = shPostAttrEdit.getReferenceObject();
+						if (shOldReference.getShObjectTo().getId().toString().equals(shObject.getId().toString())) {
+							shReferenceRepository.delete(shOldReference);
+							break;
 						}
+
 					}
 				}
 			}
@@ -298,13 +295,10 @@ public class ShPostUtils {
 				shReference.setShObjectFrom(shPost);
 				shReference.setShObjectTo(shObjectReferenced);
 				shReferenceRepository.saveAndFlush(shReference);
-
-				Set<ShObject> referenceObjects = new HashSet<ShObject>();
-				referenceObjects.add(shObjectReferenced);
-				shPostAttr.setReferenceObjects(referenceObjects);
+				shPostAttr.setReferenceObject(shObjectReferenced);
 			} catch (IllegalArgumentException iae) {
 				// TODO Re-thing about ignore this
-				shPostAttr.setReferenceObjects(null);
+				shPostAttr.setReferenceObject(null);
 			}
 		}
 	}

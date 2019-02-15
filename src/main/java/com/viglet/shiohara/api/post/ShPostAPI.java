@@ -240,7 +240,7 @@ public class ShPostAPI {
 				summary = StringUtils.abbreviate(shPostAttr.getStrValue(), 255);
 
 			if (shPostAttr != null) {
-				shPostAttr.setReferenceObjects(null);
+				shPostAttr.setReferenceObject(null);
 			}
 		}
 
