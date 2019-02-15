@@ -56,7 +56,7 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @NamedQuery(name = "ShPostAttr.findAll", query = "SELECT s FROM ShPostAttr s")
-@JsonIgnoreProperties({ "shPostType", "shPost", "shParentRelatorItem" })
+@JsonIgnoreProperties({ "shPostType", "shPost", "shParentRelatorItem"})
 public class ShPostAttr implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -78,14 +78,11 @@ public class ShPostAttr implements Serializable {
 	@Column(name = "str_value", length = 5 * 1024 * 1024) // 5Mb
 	private String strValue;
 
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "object_post_attr", 
-	joinColumns = 
-		@JoinColumn(name = "post_attr_id", referencedColumnName = "id"), 
-	inverseJoinColumns = 
-		@JoinColumn(name = "object_id", referencedColumnName = "id"))
-	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
-	private Set<ShObject> referenceObjects;
+	// bi-directional many-to-one association to shObject
+	@ManyToOne
+	@JoinColumn(name = "object_id")
+	private ShObject referenceObject;
+	
 
 	private int type;
 
@@ -111,12 +108,12 @@ public class ShPostAttr implements Serializable {
 	@JoinColumn(name = "post_attr_id")
 	private ShRelatorItem shParentRelatorItem;
 	
-	public Set<ShObject> getReferenceObjects() {
-		return referenceObjects;
+	public ShObject getReferenceObject() {
+		return referenceObject;
 	}
 
-	public void setReferenceObjects(Set<ShObject> referenceObjects) {
-		this.referenceObjects = referenceObjects;
+	public void setReferenceObject(ShObject referenceObject) {
+		this.referenceObject = referenceObject;
 	}
 
 	public ShPostAttr() {
