@@ -19,6 +19,7 @@ package com.viglet.shiohara.persistence.model.object;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -27,19 +28,25 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @NamedQuery(name = "ShObject.findAll", query = "SELECT o FROM ShObject o")
+@JsonIgnoreProperties({ "shPostAttrRefs" })
 public class ShObject implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -50,9 +57,12 @@ public class ShObject implements Serializable {
 	@Column(name = "id", updatable = false, nullable = false)
 	private String id;
 
-	@ManyToMany(mappedBy = "referenceObjects")
-	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
-	private Set<ShPostAttr> shPostAttrRefs;
+	// bi-directional many-to-one association to ShObject
+	@OneToMany(mappedBy = "referenceObject", orphanRemoval = true)
+	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
+	@Cascade({ CascadeType.ALL })
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private Set<ShPostAttr> shPostAttrRefs = new HashSet<ShPostAttr>();
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date date;
@@ -144,12 +154,24 @@ public class ShObject implements Serializable {
 	public void setPosition(int position) {
 		this.position = position;
 	}
-	
+
 	public String getObjectType() {
 		return objectType;
 	}
-	
+
 	public void setObjectType(String objectType) {
 		this.objectType = objectType;
 	}
+
+	public Set<ShPostAttr> getShPostAttrRefs() {
+		return shPostAttrRefs;
+	}
+
+	public void setShPostAttrRefs(Set<ShPostAttr> shPostAttrRefs) {
+		this.shPostAttrRefs.clear();
+		if (shPostAttrRefs != null) {
+			this.shPostAttrRefs.addAll(shPostAttrRefs);
+		}
+	}
+
 }
