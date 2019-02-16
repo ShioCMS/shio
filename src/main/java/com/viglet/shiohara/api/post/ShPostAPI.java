@@ -42,6 +42,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
+import com.viglet.shiohara.persistence.model.reference.ShReference;
 import com.viglet.shiohara.persistence.model.user.ShUser;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
@@ -282,6 +283,11 @@ public class ShPostAPI {
 	}
 
 	private void postReferenceSave(ShPost shPost) {
+		
+		// Delete all old references to recreate  in next step
+		List<ShReference> shOldReferences = shReferenceRepository.findByShObjectFrom(shPost);
+		shReferenceRepository.deleteInBatch(shOldReferences);
+		
 		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
 			shPostUtils.referencedObject(shPostAttr, shPost);
 			for (ShRelatorItem shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
