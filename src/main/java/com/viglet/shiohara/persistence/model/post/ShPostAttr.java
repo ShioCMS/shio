@@ -28,7 +28,9 @@ import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.search.annotations.Field;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.viglet.shiohara.persistence.model.object.ShObject;
+import com.viglet.shiohara.persistence.model.post.json.ShReferenceObjectSerializer;
 import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 
@@ -38,12 +40,9 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -81,6 +80,7 @@ public class ShPostAttr implements Serializable {
 	// bi-directional many-to-one association to shObject
 	@ManyToOne
 	@JoinColumn(name = "object_id")
+	//@JsonSerialize(using = ShReferenceObjectSerializer.class)
 	private ShObject referenceObject;
 	
 

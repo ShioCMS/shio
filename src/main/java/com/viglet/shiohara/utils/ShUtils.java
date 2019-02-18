@@ -32,6 +32,7 @@ import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -131,15 +132,15 @@ public class ShUtils {
 		}
 	}
 
-	public boolean isJSONValid(String test) {
-		if (test == null) {
+	public boolean isJSONValid(String json) {
+		if (StringUtils.isNotBlank(json) || json == null) {
 			return false;
 		} else {
 			try {
-				new JSONObject(test);
+				new JSONObject(json);
 			} catch (JSONException ex) {
 				try {
-					new JSONArray(test);
+					new JSONArray(json);
 				} catch (JSONException ex1) {
 					return false;
 				}
