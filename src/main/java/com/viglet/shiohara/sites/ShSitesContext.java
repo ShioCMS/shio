@@ -76,8 +76,7 @@ public class ShSitesContext {
 	private ShFormUtils shFormUtils;
 
 	@PostMapping("/sites/**")
-	private RedirectView sitesPostForm(HttpServletRequest request, HttpServletResponse response) throws IOException,
-			ScriptException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+	private RedirectView sitesPostForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		shSitesContextURL.init(request, response);
 
 		this.siteContextPost(shSitesContextURL);
@@ -87,8 +86,7 @@ public class ShSitesContext {
 		return redirectView;
 	}
 
-	public byte[] siteContextPost(ShSitesContextURL shSitesContextURL) throws IOException, ScriptException,
-			InstantiationException, IllegalAccessException, ClassNotFoundException {
+	public byte[] siteContextPost(ShSitesContextURL shSitesContextURL) throws Exception {
 		
 		shFormUtils.execute(shSitesContextURL);
 		
@@ -99,7 +97,7 @@ public class ShSitesContext {
 
 	@RequestMapping("/sites/**")
 	private void sitesFullGeneric(HttpServletRequest request, HttpServletResponse response)
-			throws IOException, ScriptException {
+			throws Exception {
 
 		final int cacheMinutes = 1;
 
@@ -134,7 +132,7 @@ public class ShSitesContext {
 	}
 
 	public byte[] siteContext(ShSitesContextURL shSitesContextURL, HttpServletRequest request,
-			HttpServletResponse response) throws IOException, ScriptException {
+			HttpServletResponse response) throws Exception {
 		ShSite shSite = shSitesContextURL.getShSite();
 		File staticFile = null;
 		if (shSitesContextURL.getShObject() != null && shSitesContextURL.getShObject() instanceof ShPost
