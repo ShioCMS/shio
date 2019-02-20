@@ -34,8 +34,10 @@ import com.viglet.shiohara.persistence.model.post.json.ShReferenceObjectSerializ
 import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -55,7 +57,7 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @NamedQuery(name = "ShPostAttr.findAll", query = "SELECT s FROM ShPostAttr s")
-@JsonIgnoreProperties({ "shPostType", "shPost", "shParentRelatorItem"})
+@JsonIgnoreProperties({ "shPostType", "shPost", "shParentRelatorItem" })
 public class ShPostAttr implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -77,12 +79,15 @@ public class ShPostAttr implements Serializable {
 	@Column(name = "str_value", length = 5 * 1024 * 1024) // 5Mb
 	private String strValue;
 
+//	@Field
+	@Column(name = "array_value")
+	private String[] arrayValue;
+
 	// bi-directional many-to-one association to shObject
 	@ManyToOne
 	@JoinColumn(name = "object_id")
-	//@JsonSerialize(using = ShReferenceObjectSerializer.class)
+	// @JsonSerialize(using = ShReferenceObjectSerializer.class)
 	private ShObject referenceObject;
-	
 
 	private int type;
 
@@ -107,7 +112,7 @@ public class ShPostAttr implements Serializable {
 	@ManyToOne // (cascade = {CascadeType.ALL})
 	@JoinColumn(name = "post_attr_id")
 	private ShRelatorItem shParentRelatorItem;
-	
+
 	public ShObject getReferenceObject() {
 		return referenceObject;
 	}
@@ -149,6 +154,14 @@ public class ShPostAttr implements Serializable {
 
 	public void setStrValue(String strValue) {
 		this.strValue = strValue;
+	}
+
+	public String[] getArrayValue() {
+		return arrayValue;
+	}
+
+	public void setArrayValue(String[] arrayValue) {
+		this.arrayValue = arrayValue;
 	}
 
 	public int getType() {

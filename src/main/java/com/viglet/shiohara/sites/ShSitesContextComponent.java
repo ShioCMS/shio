@@ -35,11 +35,6 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptException;
-import jdk.nashorn.api.scripting.NashornException;
-import jdk.nashorn.api.scripting.ScriptObjectMirror;
-
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -321,34 +316,8 @@ public class ShSitesContextComponent {
 							.shRegionFactory(engine, bindings, javascriptVar, regionResultChild.toString(), shSite)
 							.html()).unwrap();
 				} catch (Throwable err) {
-					if (err instanceof NashornException) {
-						logger.info("Javascript Code: " + javascriptVar);
-						Throwable cause = err.getCause();
-						NashornException exc = ((NashornException) err);
-						String scriptStack = NashornException.getScriptStackString(exc);
-						scriptStack = ExceptionUtils.getStackTrace(exc);
-						int columnNumber = exc.getColumnNumber();
-						int lineNumber = exc.getLineNumber();
-						String fileName = exc.getFileName();
-						String message = exc.getMessage();
-						String[] javascriptLines = javascript.split("\\n");
-						StringBuffer errorCode = new StringBuffer();
-						for (int x = lineNumber - 5; x <= lineNumber + 5; x++) {
-							errorCode.append(javascriptLines[x] + "\n");
-							if (x == lineNumber - 1) {
-								String errorPos = IntStream.range(0, columnNumber).mapToObj(i -> "-")
-										.collect(Collectors.joining("")) + "^";
-								errorCode.append(errorPos + "\n");
-							}
 
-						}
-						logger.info(String.format("Javascript Code of %s Region:\n %s", regionAttr, errorCode));
-						String errorMessage = String.format("ScriptError: %s '%s' at: <%s>%d:%d\n%s", regionAttr,
-								message, fileName, lineNumber, columnNumber, scriptStack);
-						logger.info(errorMessage);
-					} else if (err instanceof ScriptException) {
-
-						Throwable cause = err.getCause();
+					if (err instanceof ScriptException) {
 						ScriptException exc = ((ScriptException) err);
 						String scriptStack = ExceptionUtils.getStackTrace(exc);
 						int columnNumber = exc.getColumnNumber();
@@ -371,7 +340,6 @@ public class ShSitesContextComponent {
 								message, fileName, lineNumber, columnNumber, scriptStack);
 						logger.info(errorMessage);
 					} else {
-						System.out.println("A2 " + err.getClass().getName());
 						logger.info((ExceptionUtils.getStackTrace(err)));
 					}
 				}
