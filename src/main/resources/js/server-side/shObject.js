@@ -78,6 +78,20 @@ viglet.shiohara.shObject = function() {
 	}
 
 	/**
+	 * @desc Returns Query Component
+	 * @param postTypeName,
+	 *            Post Type Name.
+	 * @param postAttrName,
+	 *            Post Type Attribute Name.
+	 * @param arrayValue,
+	 *            Array Value.            
+	 * @public
+	 */
+	this.queryByPostTypeIn = function(postTypeName, postAttrName, arrayValue) {
+		return Java.from(shQueryComponent.findByPostTypeNameIn(postTypeName, postAttrName, arrayValue));
+	}
+	
+	/**
 	 * @desc Returns getRelation Component
 	 * @param shPostAttrId,
 	 *            Post Attribute Id.
