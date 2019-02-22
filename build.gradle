@@ -1,5 +1,5 @@
 buildscript {
-    ext { springBootVersion = '2.1.2.RELEASE'
+    ext { springBootVersion = '2.1.3.RELEASE'
 	      hibernateVersion = '5.11.0.Final'
 		  httpClientVersion = '4.5.6'
 		  swaggerVersion = '2.9.2'
@@ -94,7 +94,7 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version:"${springBootVersion}"
     
   	// Spring
-  	compile group: 'org.springframework', name: 'spring-test', version: '5.1.3.RELEASE'
+  	compile group: 'org.springframework', name: 'spring-test', version: '5.1.5.RELEASE'
   	
   	// Jackson
     compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.9.8'
@@ -164,6 +164,7 @@ dependencies {
 	compile 'org.webjars.bower:angular-ui-notification:0.3.6'
 	compile 'org.webjars.bower:angular-ui-tinymce:0.0.19'
 	compile 'org.webjars.bower:angular-ui-sortable:0.14.3'
+	compile 'org.webjars.bower:angular-ui-select:0.19.8'
 	
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }

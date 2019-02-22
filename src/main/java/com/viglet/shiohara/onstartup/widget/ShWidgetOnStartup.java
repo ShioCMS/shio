@@ -176,6 +176,26 @@ public class ShWidgetOnStartup {
 			shWidget.setType("DATE,TEXT,TEXTAREA");
 
 			shWidgetRepository.save(shWidget);
+						
+			shWidget = new ShWidget();
+			shWidget.setName(ShSystemWidget.MULTI_SELECT);
+			shWidget.setDescription("Multi Select Widget");
+			shWidget.setClassName("com.viglet.shiohara.widget.ShMultiSelectWidget");
+			shWidget.setImplementationCode("template/widget/multi-select/multi-select.html");
+			shWidget.setSettingPath("template/widget/multi-select/setting/multi-select-setting.html");
+			shWidget.setType("TEXT,TEXTAREA");
+
+			shWidgetRepository.save(shWidget);
+			
+			shWidget = new ShWidget();
+			shWidget.setName(ShSystemWidget.TAB);
+			shWidget.setDescription("Tab Widget");
+			shWidget.setClassName("com.viglet.shiohara.widget.ShTabWidget");
+			shWidget.setImplementationCode("template/widget/tab/tab.html");
+			shWidget.setSettingPath("template/widget/tab/setting/tab-setting.html");
+			shWidget.setType("TEXT,TEXTAREA");
+
+			shWidgetRepository.save(shWidget);
 		}
 
 	}
