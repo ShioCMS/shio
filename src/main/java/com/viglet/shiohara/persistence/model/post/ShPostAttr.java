@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2019 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,20 +28,19 @@ import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.search.annotations.Field;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.viglet.shiohara.persistence.model.object.ShObject;
-import com.viglet.shiohara.persistence.model.post.json.ShReferenceObjectSerializer;
 import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -79,9 +78,11 @@ public class ShPostAttr implements Serializable {
 	@Column(name = "str_value", length = 5 * 1024 * 1024) // 5Mb
 	private String strValue;
 
-//	@Field
-	@Column(name = "array_value")
-	private String[] arrayValue;
+	@ElementCollection
+	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
+	@CollectionTable(name = "sh_post_attr_array_value")
+	@JoinColumn(name = "post_attr_id")
+	private Set<String> arrayValue = new HashSet<String>();
 
 	// bi-directional many-to-one association to shObject
 	@ManyToOne
@@ -156,12 +157,15 @@ public class ShPostAttr implements Serializable {
 		this.strValue = strValue;
 	}
 
-	public String[] getArrayValue() {
+	public Set<String> getArrayValue() {
 		return arrayValue;
 	}
 
-	public void setArrayValue(String[] arrayValue) {
-		this.arrayValue = arrayValue;
+	public void setArrayValue(Set<String> arrayValue) {
+		this.arrayValue.clear();
+		if (arrayValue != null) {
+			this.arrayValue.addAll(arrayValue);
+		}
 	}
 
 	public int getType() {
