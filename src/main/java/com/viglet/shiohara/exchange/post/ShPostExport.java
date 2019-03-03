@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2019 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.exchange.ShFileExchange;
 import com.viglet.shiohara.exchange.ShRelatorExchange;
+import com.viglet.shiohara.exchange.ShRelatorItemExchange;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
@@ -53,12 +54,15 @@ public class ShPostExport {
 					ShRelatorExchange shRelatorExchange = new ShRelatorExchange();
 					shRelatorExchange.setId(shPostAttr.getId());
 					shRelatorExchange.setName(shPostAttr.getStrValue());
-					Set<Object> relators = new HashSet<Object>();
+					Set<ShRelatorItemExchange> relators = new HashSet<ShRelatorItemExchange>();
 					for (ShRelatorItem shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
+						ShRelatorItemExchange shRelatorItemExchange = new ShRelatorItemExchange();
+						shRelatorItemExchange.setPosition(shRelatorItem.getOrdinal());
 						Map<String, Object> relatorFields = new HashMap<String, Object>();
 						this.shPostAttrExchangeIterate(shPost, shRelatorItem.getShChildrenPostAttrs(), relatorFields,
 								files);
-						relators.add(relatorFields);
+						shRelatorItemExchange.setFields(relatorFields);
+						relators.add(shRelatorItemExchange);
 					}
 					shRelatorExchange.setShSubPosts(relators);
 					fields.put(shPostAttr.getShPostTypeAttr().getName(), shRelatorExchange);
