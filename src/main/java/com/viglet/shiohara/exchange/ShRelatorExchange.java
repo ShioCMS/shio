@@ -28,7 +28,7 @@ public class ShRelatorExchange {
 
 	private String name;
 
-	private Set<Object> shSubPosts;
+	private Set<ShRelatorItemExchange> shSubPosts;
 
 	public String getId() {
 		return id;
@@ -46,11 +46,11 @@ public class ShRelatorExchange {
 		this.name = name;
 	}
 
-	public Set<Object> getShSubPosts() {
+	public Set<ShRelatorItemExchange> getShSubPosts() {
 		return shSubPosts;
 	}
 
-	public void setShSubPosts(Set<Object> shSubPosts) {
+	public void setShSubPosts(Set<ShRelatorItemExchange> shSubPosts) {
 		this.shSubPosts = shSubPosts;
 	}
 
