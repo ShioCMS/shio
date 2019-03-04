@@ -2,6 +2,7 @@
 
 ![banner_shiohara.jpg](https://shioharacms.github.io/shiohara/img/banner_shiohara.jpg) 
 ------
+
 **Viglet Shiohara** is a simple and intuitive Web Content Management.
  
 **If you'd like to contribute to Viglet Shiohara, be sure to review the [contribution
