@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2019 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.UUID;
 
-import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -38,7 +37,7 @@ public class ShSiteOnStartup {
 	@Autowired
 	private ShImportExchange shImportExchange;
 
-	public void createDefaultRows() throws IOException, IllegalStateException, ArchiveException {
+	public void createDefaultRows() throws IOException, IllegalStateException {
 
 		if (shSiteRepository.findAll().isEmpty()) {
 
@@ -52,7 +51,8 @@ public class ShSiteOnStartup {
 					tmpDir.mkdirs();
 				}
 
-				File sampleSiteFile = new File(tmpDir.getAbsolutePath().concat(File.separator + "sample-site-" + UUID.randomUUID() + ".zip"));
+				File sampleSiteFile = new File(
+						tmpDir.getAbsolutePath().concat(File.separator + "sample-site-" + UUID.randomUUID() + ".zip"));
 
 				FileUtils.copyURLToFile(sampleSiteRepository, sampleSiteFile);
 

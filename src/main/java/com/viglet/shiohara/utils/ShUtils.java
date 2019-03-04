@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2019 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,7 +50,7 @@ public class ShUtils {
 	 * @throws ArchiveException if creating or adding to the archive fails
 	 * @throws IOException      if the io fails
 	 */
-	public void unZipIt(File zipFile, File outputFolder) throws ArchiveException, IOException {
+	public void unZipIt(File zipFile, File outputFolder) throws IOException {
 
 		try (ZipArchiveInputStream zin = new ZipArchiveInputStream(new FileInputStream(zipFile))) {
 			ZipArchiveEntry entry;
