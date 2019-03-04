@@ -1,4 +1,12 @@
-## 0.3.4
+## 0.3.5
+
+#### NEW FEATURES
+
+
+#### IMPROVEMENTS
+
+
+## 0.3.4 (March 04, 2019)
 
 #### NEW FEATURES
 * Multi Select Widget
