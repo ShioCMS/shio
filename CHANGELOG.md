@@ -1,8 +1,33 @@
-## 0.3.4
+## 0.3.5
 
 #### NEW FEATURES
 
+
 #### IMPROVEMENTS
+
+
+## 0.3.4 (March 04, 2019)
+
+#### NEW FEATURES
+* Multi Select Widget
+* Export/Import MultiSelect (ArrayValue)
+* Banner: App Version and Color
+* Export Post Types from Post Type Page Layout as dependency
+* Sortable for Relator
+* Javascript: shObject.getRelation()
+* Kubernetes: Deployments files
+
+#### IMPROVEMENTS
+* Reference JSON and it shows Javascript Code error into logs
+* Delete old reference before update Post
+* Turing Integration: Index using SNJob
+* Reference Refactory
+* Import Relator with postion
+* FolderMap (JS)
+* Unwrap sh-region
+* Removed UI Local Files, using submodule shiohara-ui
+* Removed MongoDB
+* Spring Boot 2.1.3 and Gradle 5.2.1
 
 ## 0.3.3 (January 04, 2019)
 
