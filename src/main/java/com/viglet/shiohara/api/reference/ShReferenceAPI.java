@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2019 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,9 +17,7 @@
 
 package com.viglet.shiohara.api.reference;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,7 +34,6 @@ import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.reference.ShReference;
 import com.viglet.shiohara.persistence.repository.object.ShObjectRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
-import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.reference.ShReferenceRepository;
 
 import io.swagger.annotations.Api;
@@ -50,8 +47,6 @@ public class ShReferenceAPI {
 	private ShReferenceRepository shReferenceRepository;
 	@Autowired
 	private ShObjectRepository shObjectRepository;
-	@Autowired
-	private ShPostRepository shPostRepository;
 	@Autowired
 	private ShPostAttrRepository shPostAttrRepository;
 
@@ -80,24 +75,29 @@ public class ShReferenceAPI {
 	public List<ShReference> shReferenceToReplace(@PathVariable String toId, @PathVariable String otherId)
 			throws Exception {
 		ShObject shObject = shObjectRepository.findById(toId).orElse(null);
-		ShObject shObjectOther = shObjectRepository.findById(otherId).orElse(null);	
-		List<ShReference> shReferences = shReferenceRepository.findByShObjectTo(shObject);
+		ShObject shObjectOther = shObjectRepository.findById(otherId).orElse(null);
+		if (shObject != null && shObjectOther != null) {
+			List<ShReference> shReferences = shReferenceRepository.findByShObjectTo(shObject);
 
-		for (ShReference shReference : shReferences) {
-			if (shReference != null && shReference.getShObjectFrom() != null
-					&& shReference.getShObjectFrom() instanceof ShPost) {
-				ShPost shPost = (ShPost) shReference.getShObjectFrom();
-				for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
-					ShObject shObjectReference = shPostAttr.getReferenceObject();
-					if (shObjectReference.getId().toString().equals(shObject.getId().toString())) {
-						shPostAttr.setReferenceObject(shObjectOther);
-						shPostAttrRepository.saveAndFlush(shPostAttr);
+			for (ShReference shReference : shReferences) {
+				if (shReference != null && shReference.getShObjectFrom() != null
+						&& shReference.getShObjectFrom() instanceof ShPost) {
+					ShPost shPost = (ShPost) shReference.getShObjectFrom();
+					for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
+						ShObject shObjectReference = shPostAttr.getReferenceObject();
+						if (shObject.getId() != null
+								&& shObjectReference.getId().toString().equals(shObject.getId().toString())) {
+							shPostAttr.setReferenceObject(shObjectOther);
+							shPostAttrRepository.saveAndFlush(shPostAttr);
+						}
 					}
 				}
+				shReference.setShObjectTo(shObjectOther);
+				shReferenceRepository.saveAndFlush(shReference);
 			}
-			shReference.setShObjectTo(shObjectOther);
-			shReferenceRepository.saveAndFlush(shReference);
+			return shReferenceRepository.findByShObjectTo(shObject);
+		} else {
+			return null;
 		}
-		return shReferenceRepository.findByShObjectTo(shObject);
 	}
 }

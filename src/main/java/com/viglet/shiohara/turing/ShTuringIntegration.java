@@ -34,11 +34,14 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.viglet.shiohara.exchange.post.ShPostExport;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
@@ -63,6 +66,7 @@ import com.viglet.turing.api.sn.job.TurSNJobItems;
 
 @Component
 public class ShTuringIntegration {
+	static final Logger logger = LogManager.getLogger(ShTuringIntegration.class.getName());
 	private String encoding = "UTF-8";
 	private String turingServer = "http://localhost:2700";
 	private ShSite shSite = null;
@@ -258,7 +262,7 @@ public class ShTuringIntegration {
 
 			return turSNJobItem;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e);
 		}
 
 		return null;
