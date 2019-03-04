@@ -19,6 +19,8 @@ package com.viglet.shiohara.exchange.post;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -203,9 +205,9 @@ public class ShPostImport {
 
 				ObjectMapper mapper = new ObjectMapper();
 				ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
-				String subPostsJson = ow.writeValueAsString(relatorFields.get("shSubPosts"));				
+				String subPostsJson = ow.writeValueAsString(relatorFields.get("shSubPosts"));
 				ShRelatorItemExchanges subPosts = mapper.readValue(subPostsJson, ShRelatorItemExchanges.class);
-				
+
 				for (ShRelatorItemExchange shSubPost : subPosts) {
 					ShRelatorItem shRelatorItem = new ShRelatorItem();
 					shRelatorItem.setOrdinal(shSubPost.getPosition());
@@ -218,7 +220,11 @@ public class ShPostImport {
 				}
 			} else {
 				ShPostAttr shPostAttr = new ShPostAttr();
-				shPostAttr.setStrValue((String) shPostField.getValue());
+				System.out.println(shPostField.getValue() != null ? shPostField.getValue().getClass().getName() : null);
+				if (shPostField.getValue() instanceof ArrayList)
+					shPostAttr.setArrayValue((new HashSet<String>((ArrayList<String>) shPostField.getValue())));
+				else
+					shPostAttr.setStrValue((String) shPostField.getValue());
 
 				if (shParentRelatorItem != null) {
 					shPostAttr.setShPost(null);

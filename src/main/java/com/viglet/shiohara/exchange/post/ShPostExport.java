@@ -52,8 +52,8 @@ public class ShPostExport {
 			if (shPostAttr != null && shPostAttr.getShPostTypeAttr() != null) {
 				if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.RELATOR)) {
 					ShRelatorExchange shRelatorExchange = new ShRelatorExchange();
-					shRelatorExchange.setId(shPostAttr.getId());
-					shRelatorExchange.setName(shPostAttr.getStrValue());
+					shRelatorExchange.setId(shPostAttr.getId());					
+					shRelatorExchange.setName(shPostAttr.getStrValue());					
 					ShRelatorItemExchanges relators = new ShRelatorItemExchanges();
 					for (ShRelatorItem shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
 						ShRelatorItemExchange shRelatorItemExchange = new ShRelatorItemExchange();
@@ -67,7 +67,10 @@ public class ShPostExport {
 					shRelatorExchange.setShSubPosts(relators);
 					fields.put(shPostAttr.getShPostTypeAttr().getName(), shRelatorExchange);
 				} else {
-					fields.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
+					if (!shPostAttr.getArrayValue().isEmpty())
+						fields.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getArrayValue());
+					else
+						fields.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
 				}
 
 				if (shPostAttr.getShPostTypeAttr().getName().equals(ShSystemPostTypeAttr.FILE)
