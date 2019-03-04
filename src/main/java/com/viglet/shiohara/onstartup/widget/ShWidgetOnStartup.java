@@ -67,6 +67,7 @@ public class ShWidgetOnStartup {
 			shWidget.setDescription("File Widget");
 			shWidget.setClassName("com.viglet.shiohara.widget.ShFileWidget");
 			shWidget.setImplementationCode("template/widget/file.html");
+			shWidget.setSettingPath("template/widget/file/setting/file-setting.html");
 			shWidget.setType("TEXT,TEXTAREA");
 
 			shWidgetRepository.save(shWidget);
@@ -103,6 +104,7 @@ public class ShWidgetOnStartup {
 			shWidget.setDescription("Content Select Widget");
 			shWidget.setClassName("com.viglet.shiohara.widget.ShContentSelectWidget");
 			shWidget.setImplementationCode("template/widget/content-select.html");
+			shWidget.setSettingPath("template/widget/content-select/setting/content-select-setting.html");
 			shWidget.setType("TEXT,TEXTAREA");
 
 			shWidgetRepository.save(shWidget);
