@@ -17,7 +17,7 @@
 
 package com.viglet.shiohara.exchange;
 
-import java.util.Set;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -28,7 +28,7 @@ public class ShRelatorExchange {
 
 	private String name;
 
-	private Set<Object> shSubPosts;
+	private ShRelatorItemExchanges shSubPosts;
 
 	public String getId() {
 		return id;
@@ -46,11 +46,11 @@ public class ShRelatorExchange {
 		this.name = name;
 	}
 
-	public Set<Object> getShSubPosts() {
+	public List<ShRelatorItemExchange> getShSubPosts() {
 		return shSubPosts;
 	}
 
-	public void setShSubPosts(Set<Object> shSubPosts) {
+	public void setShSubPosts(ShRelatorItemExchanges shSubPosts) {
 		this.shSubPosts = shSubPosts;
 	}
 
