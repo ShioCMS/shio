@@ -220,7 +220,6 @@ public class ShPostImport {
 				}
 			} else {
 				ShPostAttr shPostAttr = new ShPostAttr();
-				System.out.println(shPostField.getValue() != null ? shPostField.getValue().getClass().getName() : null);
 				if (shPostField.getValue() instanceof ArrayList)
 					shPostAttr.setArrayValue((new HashSet<String>((ArrayList<String>) shPostField.getValue())));
 				else
