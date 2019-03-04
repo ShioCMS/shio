@@ -82,6 +82,7 @@ public class ShPostAttr implements Serializable {
 	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
 	@CollectionTable(name = "sh_post_attr_array_value")
 	@JoinColumn(name = "post_attr_id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Set<String> arrayValue = new HashSet<String>();
 
 	// bi-directional many-to-one association to shObject
