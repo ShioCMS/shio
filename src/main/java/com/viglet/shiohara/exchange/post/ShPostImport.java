@@ -20,6 +20,7 @@ package com.viglet.shiohara.exchange.post;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -32,7 +33,11 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.viglet.shiohara.exchange.ShPostExchange;
+import com.viglet.shiohara.exchange.ShRelatorItemExchange;
+import com.viglet.shiohara.exchange.ShRelatorItemExchanges;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
@@ -198,17 +203,27 @@ public class ShPostImport {
 
 				shPostAttrRepository.save(shPostAttr);
 
-				for (Object shSubPost : (ArrayList<Object>) relatorFields.get("shSubPosts")) {
+				ObjectMapper mapper = new ObjectMapper();
+				ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+				String subPostsJson = ow.writeValueAsString(relatorFields.get("shSubPosts"));
+				ShRelatorItemExchanges subPosts = mapper.readValue(subPostsJson, ShRelatorItemExchanges.class);
+
+				for (ShRelatorItemExchange shSubPost : subPosts) {
 					ShRelatorItem shRelatorItem = new ShRelatorItem();
+					shRelatorItem.setOrdinal(shSubPost.getPosition());
 					shRelatorItem.setShParentPostAttr(shPostAttr);
 
 					shRelatorItemRepository.save(shRelatorItem);
-					this.createShPostAttrs(shPostExchange, shPost, (Map<String, Object>) shSubPost, shRelatorItem,
-							extractFolder, username, shObjects);
+					this.createShPostAttrs(shPostExchange, shPost, (Map<String, Object>) shSubPost.getFields(),
+							shRelatorItem, extractFolder, username, shObjects);
+
 				}
 			} else {
 				ShPostAttr shPostAttr = new ShPostAttr();
-				shPostAttr.setStrValue((String) shPostField.getValue());
+				if (shPostField.getValue() instanceof ArrayList)
+					shPostAttr.setArrayValue((new HashSet<String>((ArrayList<String>) shPostField.getValue())));
+				else
+					shPostAttr.setStrValue((String) shPostField.getValue());
 
 				if (shParentRelatorItem != null) {
 					shPostAttr.setShPost(null);

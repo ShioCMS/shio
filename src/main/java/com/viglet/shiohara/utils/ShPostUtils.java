@@ -19,6 +19,8 @@ package com.viglet.shiohara.utils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +39,7 @@ import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
+import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.model.reference.ShReference;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.object.ShObjectRepository;
@@ -113,7 +116,18 @@ public class ShPostUtils {
 	public List<Map<String, ShPostAttr>> relationToMap(ShPostAttr shPostAttr) {
 
 		List<Map<String, ShPostAttr>> relations = new ArrayList<Map<String, ShPostAttr>>();
-		for (ShRelatorItem shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
+		
+		Set<ShRelatorItem> shRelatorItems = shPostAttr.getShChildrenRelatorItems();
+		List<ShRelatorItem> shRelatorItemsByOrdinal = new ArrayList<ShRelatorItem>();
+		shRelatorItemsByOrdinal.addAll(shRelatorItems);
+		
+		Collections.sort(shRelatorItemsByOrdinal, new Comparator<ShRelatorItem>() {
+			public int compare(ShRelatorItem o1, ShRelatorItem o2) {
+				return o1.getOrdinal() - o2.getOrdinal();
+			}
+		});
+		
+		for (ShRelatorItem shRelatorItem : shRelatorItemsByOrdinal) {
 			Map<String, ShPostAttr> shRelationMap = new HashMap<String, ShPostAttr>();
 			for (ShPostAttr shPostAttrRelation : shRelatorItem.getShChildrenPostAttrs()) {
 				shRelationMap.put(shPostAttrRelation.getShPostTypeAttr().getName(), shPostAttrRelation);
