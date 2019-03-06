@@ -21,9 +21,14 @@ import java.io.File;
 import java.nio.file.Files;
 import java.security.Principal;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -123,9 +128,38 @@ public class ShPostAPI {
 		Optional<ShPost> shPostOptional = shPostRepository.findById(id);
 		if (shPostOptional.isPresent()) {
 			ShPost shPost = shPostOptional.get();
-			Set<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
-			shPost.setShPostAttrs(shPostAttrs);
+			Set<ShPostAttr> shPostAttrs = new HashSet<ShPostAttr>();
 
+			// Sync Post Attributes with Post Type
+			Map<String, ShPostAttr> shPostAttrMap = new HashMap<String, ShPostAttr>();
+			for (ShPostAttr shPostAttr : shPostAttrRepository.findByShPost(shPost))
+				shPostAttrMap.put(shPostAttr.getShPostTypeAttr().getId(), shPostAttr);
+
+			Map<String, ShPostTypeAttr> shPostTypeAttrMap = new HashMap<String, ShPostTypeAttr>();
+			for (ShPostTypeAttr shPostTypeAttr : shPost.getShPostType().getShPostTypeAttrs())
+				shPostTypeAttrMap.put(shPostTypeAttr.getId(), shPostTypeAttr);
+
+			// Add only PostAttr that contains in Post Type
+			for (ShPostAttr shPostAttr : shPostAttrMap.values()) {
+				String postTypeAttrId = shPostAttr.getShPostTypeAttr().getId();
+				if (shPostTypeAttrMap.containsKey(postTypeAttrId)) {
+					ShPostAttr shPostAttrSync = new ShPostAttr();
+					shPostAttrSync.setShPostTypeAttr(shPostTypeAttrMap.get(postTypeAttrId));
+					shPostAttrs.add(shPostAttr);
+				}			
+			}
+			
+			// Add new PostAttrs that not contain into Post
+			for (ShPostTypeAttr shPostTypeAttr : shPostTypeAttrMap.values()) {
+				String postTypeAttrId = shPostTypeAttr.getId();
+				if (!shPostAttrMap.containsKey(postTypeAttrId)) {
+					ShPostAttr shPostAttrSync = new ShPostAttr();
+					shPostAttrSync.setShPostTypeAttr(shPostTypeAttr);
+					shPostAttrs.add(shPostAttrSync);
+				}
+			}
+
+			shPost.setShPostAttrs(shPostAttrs);
 			return shPost;
 		} else {
 			return null;
