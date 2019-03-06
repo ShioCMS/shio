@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2019 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
@@ -54,7 +53,7 @@ public class ShImportExchange {
 	private Map<String, List<String>> shChildObjects = new HashMap<String, List<String>>();
 
 	public ShExchange importFromMultipartFile(MultipartFile multipartFile, String username)
-			throws IllegalStateException, IOException, ArchiveException {
+			throws IllegalStateException, IOException {
 		File extractFolder = this.extractZipFile(multipartFile);
 		File parentExtractFolder = null;
 
@@ -96,7 +95,7 @@ public class ShImportExchange {
 	}
 
 	public ShExchange importFromFile(File file, String username)
-			throws IOException, IllegalStateException, ArchiveException {
+			throws IOException, IllegalStateException {
 
 		FileInputStream input = new FileInputStream(file);
 		MultipartFile multipartFile = new MockMultipartFile(file.getName(), IOUtils.toByteArray(input));
@@ -104,7 +103,7 @@ public class ShImportExchange {
 		return this.importFromMultipartFile(multipartFile, username);
 	}
 
-	public File extractZipFile(MultipartFile file) throws IllegalStateException, IOException, ArchiveException {
+	public File extractZipFile(MultipartFile file) throws IllegalStateException, IOException {
 		shObjects.clear();
 		shChildObjects.clear();
 

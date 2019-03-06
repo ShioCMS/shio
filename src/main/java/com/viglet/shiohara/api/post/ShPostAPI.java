@@ -21,9 +21,14 @@ import java.io.File;
 import java.nio.file.Files;
 import java.security.Principal;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -42,12 +47,17 @@ import org.springframework.web.bind.annotation.RestController;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
+import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.model.reference.ShReference;
 import com.viglet.shiohara.persistence.model.user.ShUser;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
+import com.viglet.shiohara.object.ShObjectType;
+import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.history.ShHistory;
+import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
+import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.history.ShHistoryRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
@@ -59,6 +69,7 @@ import com.viglet.shiohara.turing.ShTuringIntegration;
 import com.viglet.shiohara.url.ShURLFormatter;
 import com.viglet.shiohara.utils.ShPostUtils;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
+import com.viglet.shiohara.widget.ShSystemWidget;
 
 import io.swagger.annotations.Api;
 
@@ -80,6 +91,8 @@ public class ShPostAPI {
 	@Autowired
 	private ShPostAttrRepository shPostAttrRepository;
 	@Autowired
+	private ShFolderRepository shFolderRepository;
+	@Autowired
 	private ShUserRepository shUserRepository;
 	@Autowired
 	private ShStaticFileUtils shStaticFileUtils;
@@ -95,7 +108,6 @@ public class ShPostAPI {
 	private ShPostUtils shPostUtils;
 	@Autowired
 	private ShTuringIntegration shTuringIntegration;
-
 
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
@@ -116,9 +128,38 @@ public class ShPostAPI {
 		Optional<ShPost> shPostOptional = shPostRepository.findById(id);
 		if (shPostOptional.isPresent()) {
 			ShPost shPost = shPostOptional.get();
-			Set<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
-			shPost.setShPostAttrs(shPostAttrs);
+			Set<ShPostAttr> shPostAttrs = new HashSet<ShPostAttr>();
 
+			// Sync Post Attributes with Post Type
+			Map<String, ShPostAttr> shPostAttrMap = new HashMap<String, ShPostAttr>();
+			for (ShPostAttr shPostAttr : shPostAttrRepository.findByShPost(shPost))
+				shPostAttrMap.put(shPostAttr.getShPostTypeAttr().getId(), shPostAttr);
+
+			Map<String, ShPostTypeAttr> shPostTypeAttrMap = new HashMap<String, ShPostTypeAttr>();
+			for (ShPostTypeAttr shPostTypeAttr : shPost.getShPostType().getShPostTypeAttrs())
+				shPostTypeAttrMap.put(shPostTypeAttr.getId(), shPostTypeAttr);
+
+			// Add only PostAttr that contains in Post Type
+			for (ShPostAttr shPostAttr : shPostAttrMap.values()) {
+				String postTypeAttrId = shPostAttr.getShPostTypeAttr().getId();
+				if (shPostTypeAttrMap.containsKey(postTypeAttrId)) {
+					ShPostAttr shPostAttrSync = new ShPostAttr();
+					shPostAttrSync.setShPostTypeAttr(shPostTypeAttrMap.get(postTypeAttrId));
+					shPostAttrs.add(shPostAttr);
+				}			
+			}
+			
+			// Add new PostAttrs that not contain into Post
+			for (ShPostTypeAttr shPostTypeAttr : shPostTypeAttrMap.values()) {
+				String postTypeAttrId = shPostTypeAttr.getId();
+				if (!shPostAttrMap.containsKey(postTypeAttrId)) {
+					ShPostAttr shPostAttrSync = new ShPostAttr();
+					shPostAttrSync.setShPostTypeAttr(shPostTypeAttr);
+					shPostAttrs.add(shPostAttrSync);
+				}
+			}
+
+			shPost.setShPostAttrs(shPostAttrs);
 			return shPost;
 		} else {
 			return null;
@@ -138,7 +179,7 @@ public class ShPostAPI {
 			throws Exception {
 
 		this.postSave(shPost);
-		//shPostUtils.saveDoc(shPost);
+		// shPostUtils.saveDoc(shPost);
 
 		// History
 		ShHistory shHistory = new ShHistory();
@@ -253,7 +294,7 @@ public class ShPostAPI {
 
 		for (ShPostAttr shPostAttr : shPostAttrs) {
 			shPostAttr.setShPost(shPost);
-			this.postAttrSave(shPostAttr, shPost);
+			this.updateRelatorParent(shPostAttr, shPost);
 		}
 
 		shPostRepository.saveAndFlush(shPost);
@@ -266,37 +307,90 @@ public class ShPostAPI {
 
 	}
 
-	private void postAttrSave(ShPostAttr shPostAttr, ShPost shPost) {
+	private void updateRelatorParent(ShPostAttr shPostAttr, ShPost shPost) {
 		for (ShRelatorItem shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
 			shRelatorItem.setShParentPostAttr(shPostAttr);
 			for (ShPostAttr shChildrenPostAttr : shRelatorItem.getShChildrenPostAttrs()) {
-
-				if (shChildrenPostAttr.getShPostTypeAttr().getIsTitle() == 1)
-					shRelatorItem.setTitle(StringUtils.abbreviate(shChildrenPostAttr.getStrValue(), 255));
-
-				if (shChildrenPostAttr.getShPostTypeAttr().getIsSummary() == 1)
-					shRelatorItem.setSummary(StringUtils.abbreviate(shChildrenPostAttr.getStrValue(), 255));
-
 				shChildrenPostAttr.setShParentRelatorItem(shRelatorItem);
-				this.postAttrSave(shChildrenPostAttr, shPost);
+				this.updateRelatorParent(shChildrenPostAttr, shPost);
+			}
+		}
+	}
+
+	private void updateRelatorInfo(ShPostAttr shPostAttr, ShPost shPost) {
+		for (ShRelatorItem shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
+			shRelatorItem.setShParentPostAttr(shPostAttr);
+			for (ShPostAttr shChildrenPostAttr : shRelatorItem.getShChildrenPostAttrs()) {
+				ShPostTypeAttr shPostTypeAttr = shChildrenPostAttr.getShPostTypeAttr();
+				if (shPostTypeAttr.getIsTitle() == 1) {
+					String widgetName = shPostTypeAttr.getShWidget().getName();
+					String title = shChildrenPostAttr.getStrValue();
+					if (shChildrenPostAttr.getReferenceObject() != null
+							&& widgetName.equals(ShSystemWidget.CONTENT_SELECT)
+							|| widgetName.equals(ShSystemWidget.FILE)) {
+						ShObject shObject = shChildrenPostAttr.getReferenceObject();
+						if (shObject != null) {
+							if (shObject.getObjectType().equals(ShObjectType.POST)) {
+								ShPost shPostReferenced = shPostRepository.findById(shObject.getId()).get();
+								title = shPostReferenced.getTitle();
+							} else if (shObject.getObjectType().equals(ShObjectType.FOLDER)) {
+								ShFolder shFolderReferenced = shFolderRepository.findById(shObject.getId()).get();
+								title = shFolderReferenced.getName();
+							}
+						}
+
+					}
+					shRelatorItem.setTitle(StringUtils.abbreviate(title, 255));
+				}
+
+				if (shPostTypeAttr.getIsSummary() == 1) {
+					String widgetName = shPostTypeAttr.getShWidget().getName();
+					String summary = shChildrenPostAttr.getStrValue();
+					if (shChildrenPostAttr.getReferenceObject() != null
+							&& widgetName.equals(ShSystemWidget.CONTENT_SELECT)
+							|| widgetName.equals(ShSystemWidget.FILE)) {
+						ShObject shObject = shChildrenPostAttr.getReferenceObject();
+						if (shObject != null) {
+							if (shObject.getObjectType().equals(ShObjectType.POST)) {
+								ShPost shPostReferenced = shPostRepository.findById(shObject.getId()).get();
+								summary = shPostReferenced.getTitle();
+							} else if (shObject.getObjectType().equals(ShObjectType.FOLDER)) {
+								ShFolder shFolderReferenced = shFolderRepository.findById(shObject.getId()).get();
+								summary = shFolderReferenced.getName();
+							}
+						}
+					}
+					shRelatorItem.setSummary(StringUtils.abbreviate(summary, 255));
+				}
+
+				this.updateRelatorInfo(shChildrenPostAttr, shPost);
 			}
 		}
 	}
 
 	private void postReferenceSave(ShPost shPost) {
-		
-		// Delete all old references to recreate  in next step
+
+		// Delete all old references to recreate in next step
 		List<ShReference> shOldReferences = shReferenceRepository.findByShObjectFrom(shPost);
 		shReferenceRepository.deleteInBatch(shOldReferences);
-		
+
 		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
 			shPostUtils.referencedObject(shPostAttr, shPost);
-			for (ShRelatorItem shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
-				for (ShPostAttr shChildrenPostAttr : shRelatorItem.getShChildrenPostAttrs()) {
-					this.postAttrSave(shChildrenPostAttr, shPost);
-				}
+			this.nestedReferenceSave(shPostAttr, shPost);
+		}
+
+		for (ShPostAttr shPostAttr : shPost.getShPostAttrs())
+			this.updateRelatorInfo(shPostAttr, shPost);
+
+		shPostRepository.saveAndFlush(shPost);
+	}
+
+	private void nestedReferenceSave(ShPostAttr shPostAttr, ShPost shPost) {
+		for (ShRelatorItem shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
+			for (ShPostAttr shChildrenPostAttr : shRelatorItem.getShChildrenPostAttrs()) {
+				shPostUtils.referencedObject(shChildrenPostAttr, shPost);
+				this.nestedReferenceSave(shChildrenPostAttr, shPost);
 			}
 		}
-		shPostRepository.saveAndFlush(shPost);
 	}
 }
