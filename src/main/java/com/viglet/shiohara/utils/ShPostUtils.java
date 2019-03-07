@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 the original author or authors. 
+ * Copyright (C) 2016-2019 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONObject;
@@ -34,13 +35,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.viglet.shiohara.object.ShObjectType;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
+import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.model.reference.ShReference;
 import com.viglet.shiohara.persistence.model.site.ShSite;
+import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.object.ShObjectRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
@@ -64,6 +68,8 @@ public class ShPostUtils {
 	private ShPostRepository shPostRepository;
 	@Autowired
 	private ShPostAttrRepository shPostAttrRepository;
+	@Autowired
+	private ShFolderRepository shFolderRepository;
 	@Autowired
 	private ShObjectRepository shObjectRepository;
 	@Autowired
@@ -318,6 +324,57 @@ public class ShPostUtils {
 
 	public ShSite getSite(ShPost shPost) {
 		return shFolderUtils.getSite(shPost.getShFolder());
+	}
+	
+	public void updateRelatorInfo(ShPostAttr shPostAttr, ShPost shPost) {
+		for (ShRelatorItem shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
+			shRelatorItem.setShParentPostAttr(shPostAttr);
+			for (ShPostAttr shChildrenPostAttr : shRelatorItem.getShChildrenPostAttrs()) {
+				ShPostTypeAttr shPostTypeAttr = shChildrenPostAttr.getShPostTypeAttr();
+				if (shPostTypeAttr.getIsTitle() == 1) {
+					String widgetName = shPostTypeAttr.getShWidget().getName();
+					String title = shChildrenPostAttr.getStrValue();
+					if (shChildrenPostAttr.getReferenceObject() != null
+							&& widgetName.equals(ShSystemWidget.CONTENT_SELECT)
+							|| widgetName.equals(ShSystemWidget.FILE)) {
+						ShObject shObject = shChildrenPostAttr.getReferenceObject();
+						if (shObject != null) {
+							if (shObject.getObjectType().equals(ShObjectType.POST)) {
+								ShPost shPostReferenced = shPostRepository.findById(shObject.getId()).get();
+								title = shPostReferenced.getTitle();
+							} else if (shObject.getObjectType().equals(ShObjectType.FOLDER)) {
+								ShFolder shFolderReferenced = shFolderRepository.findById(shObject.getId()).get();
+								title = shFolderReferenced.getName();
+							}
+						}
+
+					}
+					shRelatorItem.setTitle(StringUtils.abbreviate(title, 255));
+				}
+
+				if (shPostTypeAttr.getIsSummary() == 1) {
+					String widgetName = shPostTypeAttr.getShWidget().getName();
+					String summary = shChildrenPostAttr.getStrValue();
+					if (shChildrenPostAttr.getReferenceObject() != null
+							&& widgetName.equals(ShSystemWidget.CONTENT_SELECT)
+							|| widgetName.equals(ShSystemWidget.FILE)) {
+						ShObject shObject = shChildrenPostAttr.getReferenceObject();
+						if (shObject != null) {
+							if (shObject.getObjectType().equals(ShObjectType.POST)) {
+								ShPost shPostReferenced = shPostRepository.findById(shObject.getId()).get();
+								summary = shPostReferenced.getTitle();
+							} else if (shObject.getObjectType().equals(ShObjectType.FOLDER)) {
+								ShFolder shFolderReferenced = shFolderRepository.findById(shObject.getId()).get();
+								summary = shFolderReferenced.getName();
+							}
+						}
+					}
+					shRelatorItem.setSummary(StringUtils.abbreviate(summary, 255));
+				}
+
+				this.updateRelatorInfo(shChildrenPostAttr, shPost);
+			}
+		}
 	}
 
 }

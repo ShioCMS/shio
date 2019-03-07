@@ -138,6 +138,7 @@ public class ShPostImport {
 			this.createShPostAttrs(shPostExchange, shPost, shPostExchange.getFields(), null, extractFolder, username,
 					shObjects);
 
+
 			if (turingEnabled) {
 				shTuringIntegration.indexObject(shPost);
 			}
@@ -186,12 +187,6 @@ public class ShPostImport {
 				if (shParentRelatorItem != null) {
 					shPostAttr.setShPost(null);
 					shPostAttr.setShParentRelatorItem(shParentRelatorItem);
-					if (shPostTypeAttr.getIsTitle() == 1) {
-						shParentRelatorItem.setTitle((String) relatorFields.get("name"));
-					}
-					if (shPostTypeAttr.getIsSummary() == 1) {
-						shParentRelatorItem.setTitle((String) relatorFields.get("name"));
-					}
 				} else {
 					shPostAttr.setShPost(shPost);
 				}
@@ -243,7 +238,7 @@ public class ShPostImport {
 				shPostAttrRepository.save(shPostAttr);
 
 				shPostUtils.referencedObject(shPostAttr, shPost);
-
+				shPostUtils.updateRelatorInfo(shPostAttr, shPost);
 				shPostAttrRepository.save(shPostAttr);
 			}
 		}
