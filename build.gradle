@@ -141,6 +141,9 @@ dependencies {
 	compile group: 'br.com.caelum.stella', name: 'caelum-stella-boleto', version: '2.1.2'
 	compile group: 'com.lowagie', name: 'itext', version: '2.1.7'
 
+	// Javadoc - Need this package
+	compile 'javax.interceptor:javax.interceptor-api:1.2.2'
+	
 	// WebJars
 	compile 'org.webjars.bower:jquery:1.12.4'
 	compile 'org.webjars.bower:jquery.ui:1.11.3'
@@ -165,7 +168,7 @@ dependencies {
 	compile 'org.webjars.bower:angular-ui-tinymce:0.0.19'
 	compile 'org.webjars.bower:angular-ui-sortable:0.14.3'
 	compile 'org.webjars.bower:angular-ui-select:0.19.8'
-	
+
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
