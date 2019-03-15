@@ -18,6 +18,7 @@
 package com.viglet.shiohara.api.post;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.security.Principal;
 import java.util.Date;
@@ -103,13 +104,13 @@ public class ShPostAPI {
 
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public List<ShPost> shPostList() throws Exception {
+	public List<ShPost> shPostList() {
 		return shPostRepository.findAll();
 	}
 
 	@GetMapping("/post-type/{postTypeName}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public List<ShPost> shPostListByPostType(@PathVariable String postTypeName) throws Exception {
+	public List<ShPost> shPostListByPostType(@PathVariable String postTypeName) {
 		ShPostType shPostType = shPostTypeRepository.findByName(postTypeName);
 		return shPostRepository.findByShPostType(shPostType);
 	}
@@ -128,9 +129,9 @@ public class ShPostAPI {
 			return null;
 
 		ShPost shPost = shPostOptional.get();
-		
+
 		syncWithPostType(shPost);
-		
+
 		return shPost;
 
 	}
@@ -142,10 +143,10 @@ public class ShPostAPI {
 	 */
 	private void syncWithPostType(ShPost shPost) {
 		Set<ShPostAttr> shPostAttrs = new HashSet<ShPostAttr>();
-		
+
 		Map<String, ShPostAttr> shPostAttrMap = postAttrMap(shPost);
 		Map<String, ShPostTypeAttr> shPostTypeAttrMap = postTypeAttrMap(shPost);
-		
+
 		postAttrInPostType(shPostAttrs, shPostAttrMap, shPostTypeAttrMap);
 		postAttrNotInPostType(shPostAttrs, shPostAttrMap, shPostTypeAttrMap);
 
@@ -187,7 +188,7 @@ public class ShPostAPI {
 	 * @param shPostTypeAttrMap
 	 */
 	private void postAttrNotInPostType(Set<ShPostAttr> shPostAttrs, Map<String, ShPostAttr> shPostAttrMap,
-			Map<String, ShPostTypeAttr> shPostTypeAttrMap) {		 
+			Map<String, ShPostTypeAttr> shPostTypeAttrMap) {
 		for (ShPostTypeAttr shPostTypeAttr : shPostTypeAttrMap.values()) {
 			String postTypeAttrId = shPostTypeAttr.getId();
 			if (!shPostAttrMap.containsKey(postTypeAttrId)) {
@@ -199,7 +200,7 @@ public class ShPostAPI {
 	}
 
 	/**
-	 * Add only PostAttr that contains in Post Type 
+	 * Add only PostAttr that contains in Post Type
 	 *
 	 * @param shPostAttrs
 	 * @param shPostAttrMap
@@ -219,15 +220,14 @@ public class ShPostAPI {
 
 	@GetMapping("/attr/model")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShPostAttr shPostAttrModel() throws Exception {
+	public ShPostAttr shPostAttrModel() {
 		ShPostAttr shPostAttr = new ShPostAttr();
 		return shPostAttr;
 	}
 
 	@PutMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShPost shPostUpdate(@PathVariable String id, @RequestBody ShPost shPost, Principal principal)
-			throws Exception {
+	public ShPost shPostUpdate(@PathVariable String id, @RequestBody ShPost shPost, Principal principal){
 
 		this.postSave(shPost);
 		// shPostUtils.saveDoc(shPost);
@@ -240,7 +240,12 @@ public class ShPostAPI {
 			shHistory.setOwner(principal.getName());
 		}
 
-		shTuringIntegration.indexObject(shPost);
+		try {
+			shTuringIntegration.indexObject(shPost);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		shHistory.setShObject(shPost.getId());
 		shHistory.setShSite(shPostUtils.getSite(shPost).getId());
@@ -252,11 +257,16 @@ public class ShPostAPI {
 
 	@PostMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShPost shPostAdd(@RequestBody ShPost shPost, Principal principal) throws Exception {
+	public ShPost shPostAdd(@RequestBody ShPost shPost, Principal principal) {
 
 		this.postSave(shPost);
 
-		shTuringIntegration.indexObject(shPost);
+		try {
+			shTuringIntegration.indexObject(shPost);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		// History
 		ShHistory shHistory = new ShHistory();
@@ -275,14 +285,19 @@ public class ShPostAPI {
 
 	@Transactional
 	@DeleteMapping("/{id}")
-	public boolean shPostDelete(@PathVariable String id, Principal principal) throws Exception {
+	public boolean shPostDelete(@PathVariable String id, Principal principal) {
 
 		Optional<ShPost> shPostOptional = shPostRepository.findById(id);
 
 		if (shPostOptional.isPresent()) {
 			ShPost shPost = shPostOptional.get();
 
-			shTuringIntegration.deindexObject(shPost);
+			try {
+				shTuringIntegration.deindexObject(shPost);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 			Set<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
 			if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE) && shPostAttrs.size() > 0) {
@@ -290,7 +305,12 @@ public class ShPostAPI {
 						shPostAttrs.iterator().next().getStrValue());
 				if (file != null) {
 					if (file.exists()) {
-						Files.delete(file.toPath());
+						try {
+							Files.delete(file.toPath());
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 				}
 			}
