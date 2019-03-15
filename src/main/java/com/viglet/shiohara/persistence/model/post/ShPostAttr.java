@@ -40,7 +40,6 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -88,7 +87,8 @@ public class ShPostAttr implements Serializable {
 	// bi-directional many-to-one association to shObject
 	@ManyToOne
 	@JoinColumn(name = "object_id")
-	// @JsonSerialize(using = ShReferenceObjectSerializer.class)
+	// Void Cyclic Reference
+	@JsonIgnoreProperties({ "shPostAttrs" })
 	private ShObject referenceObject;
 
 	private int type;
