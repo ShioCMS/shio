@@ -119,6 +119,7 @@ public class ShPostAPI {
 	 * Post Edit API
 	 * 
 	 * @param id
+	 * 		Post Id
 	 * @return ShPost
 	 */
 	@GetMapping("/{id}")
