@@ -77,6 +77,7 @@ import io.swagger.annotations.Api;
 @Api(tags = "Post", description = "Post API")
 public class ShPostAPI {
 
+	@SuppressWarnings("unused")
 	private static final Log logger = LogFactory.getLog(ShPostAPI.class);
 
 	@Autowired
@@ -113,47 +114,106 @@ public class ShPostAPI {
 		return shPostRepository.findByShPostType(shPostType);
 	}
 
+	/**
+	 * Post Edit API
+	 * 
+	 * @param id
+	 * @return ShPost
+	 */
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShPost shPostEdit(@PathVariable String id) throws Exception {
+	public ShPost shPostEdit(@PathVariable String id) {
 		Optional<ShPost> shPostOptional = shPostRepository.findById(id);
-		if (shPostOptional.isPresent()) {
-			ShPost shPost = shPostOptional.get();
-			Set<ShPostAttr> shPostAttrs = new HashSet<ShPostAttr>();
-
-			// Sync Post Attributes with Post Type
-			Map<String, ShPostAttr> shPostAttrMap = new HashMap<String, ShPostAttr>();
-			for (ShPostAttr shPostAttr : shPostAttrRepository.findByShPost(shPost))
-				shPostAttrMap.put(shPostAttr.getShPostTypeAttr().getId(), shPostAttr);
-
-			Map<String, ShPostTypeAttr> shPostTypeAttrMap = new HashMap<String, ShPostTypeAttr>();
-			for (ShPostTypeAttr shPostTypeAttr : shPost.getShPostType().getShPostTypeAttrs())
-				shPostTypeAttrMap.put(shPostTypeAttr.getId(), shPostTypeAttr);
-
-			// Add only PostAttr that contains in Post Type
-			for (ShPostAttr shPostAttr : shPostAttrMap.values()) {
-				String postTypeAttrId = shPostAttr.getShPostTypeAttr().getId();
-				if (shPostTypeAttrMap.containsKey(postTypeAttrId)) {
-					ShPostAttr shPostAttrSync = new ShPostAttr();
-					shPostAttrSync.setShPostTypeAttr(shPostTypeAttrMap.get(postTypeAttrId));
-					shPostAttrs.add(shPostAttr);
-				}			
-			}
-			
-			// Add new PostAttrs that not contain into Post
-			for (ShPostTypeAttr shPostTypeAttr : shPostTypeAttrMap.values()) {
-				String postTypeAttrId = shPostTypeAttr.getId();
-				if (!shPostAttrMap.containsKey(postTypeAttrId)) {
-					ShPostAttr shPostAttrSync = new ShPostAttr();
-					shPostAttrSync.setShPostTypeAttr(shPostTypeAttr);
-					shPostAttrs.add(shPostAttrSync);
-				}
-			}
-
-			shPost.setShPostAttrs(shPostAttrs);
-			return shPost;
-		} else {
+		if (!shPostOptional.isPresent())
 			return null;
+
+		ShPost shPost = shPostOptional.get();
+		
+		syncWithPostType(shPost);
+		
+		return shPost;
+
+	}
+
+	/**
+	 * Sync with Post Type
+	 * 
+	 * @param shPost
+	 */
+	private void syncWithPostType(ShPost shPost) {
+		Set<ShPostAttr> shPostAttrs = new HashSet<ShPostAttr>();
+		
+		Map<String, ShPostAttr> shPostAttrMap = postAttrMap(shPost);
+		Map<String, ShPostTypeAttr> shPostTypeAttrMap = postTypeAttrMap(shPost);
+		
+		postAttrInPostType(shPostAttrs, shPostAttrMap, shPostTypeAttrMap);
+		postAttrNotInPostType(shPostAttrs, shPostAttrMap, shPostTypeAttrMap);
+
+		shPost.setShPostAttrs(shPostAttrs);
+	}
+
+	/**
+	 * Convert ShPostTypeAttr List in Map
+	 * 
+	 * @param shPost
+	 * @return
+	 */
+	private Map<String, ShPostTypeAttr> postTypeAttrMap(ShPost shPost) {
+		Map<String, ShPostTypeAttr> shPostTypeAttrMap = new HashMap<String, ShPostTypeAttr>();
+		for (ShPostTypeAttr shPostTypeAttr : shPost.getShPostType().getShPostTypeAttrs())
+			shPostTypeAttrMap.put(shPostTypeAttr.getId(), shPostTypeAttr);
+		return shPostTypeAttrMap;
+	}
+
+	/**
+	 * Convert ShPostAttr List in Map
+	 * 
+	 * @param shPost
+	 * @return Post Attribute Map
+	 */
+	private Map<String, ShPostAttr> postAttrMap(ShPost shPost) {
+
+		Map<String, ShPostAttr> shPostAttrMap = new HashMap<String, ShPostAttr>();
+		for (ShPostAttr shPostAttr : shPostAttrRepository.findByShPost(shPost))
+			shPostAttrMap.put(shPostAttr.getShPostTypeAttr().getId(), shPostAttr);
+		return shPostAttrMap;
+	}
+
+	/**
+	 * Add new PostAttrs that not contain into Post
+	 * 
+	 * @param shPostAttrs
+	 * @param shPostAttrMap
+	 * @param shPostTypeAttrMap
+	 */
+	private void postAttrNotInPostType(Set<ShPostAttr> shPostAttrs, Map<String, ShPostAttr> shPostAttrMap,
+			Map<String, ShPostTypeAttr> shPostTypeAttrMap) {		 
+		for (ShPostTypeAttr shPostTypeAttr : shPostTypeAttrMap.values()) {
+			String postTypeAttrId = shPostTypeAttr.getId();
+			if (!shPostAttrMap.containsKey(postTypeAttrId)) {
+				ShPostAttr shPostAttrSync = new ShPostAttr();
+				shPostAttrSync.setShPostTypeAttr(shPostTypeAttr);
+				shPostAttrs.add(shPostAttrSync);
+			}
+		}
+	}
+
+	/**
+	 * Add only PostAttr that contains in Post Type 
+	 *
+	 * @param shPostAttrs
+	 * @param shPostAttrMap
+	 * @param shPostTypeAttrMap
+	 */
+	private void postAttrInPostType(Set<ShPostAttr> shPostAttrs, Map<String, ShPostAttr> shPostAttrMap,
+			Map<String, ShPostTypeAttr> shPostTypeAttrMap) {
+		for (ShPostAttr shPostAttr : shPostAttrMap.values()) {
+			String postTypeAttrId = shPostAttr.getShPostTypeAttr().getId();
+			if (shPostTypeAttrMap.containsKey(postTypeAttrId)) {
+				ShPostAttr shPostAttrSync = new ShPostAttr();
+				shPostAttrSync.setShPostTypeAttr(shPostTypeAttrMap.get(postTypeAttrId));
+				shPostAttrs.add(shPostAttr);
+			}
 		}
 	}
 
