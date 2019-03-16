@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2019 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,14 @@ import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 
 import io.undertow.UndertowOptions;
+
+/**
+ * Class that can be used to bootstrap and launch a Shiohara CMS from a Java main
+ * method.
+ *
+ * @author Alexandre Oliveira
+ *
+ **/
 
 @SpringBootApplication
 @EnableJms
