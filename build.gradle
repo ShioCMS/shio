@@ -9,10 +9,13 @@ buildscript {
 		mavenCentral()
 		maven { url "https://repo.spring.io/snapshot" }
 		maven { url "https://repo.spring.io/milestone" }
+		maven { url "https://repository-cdn.liferay.com/nexus/content/groups/public" }
 		jcenter()
 		}
     dependencies { classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-    			   classpath("com.eriwen:gradle-js-plugin:2.12.0") }
+    			   classpath("com.eriwen:gradle-js-plugin:2.12.0") 
+    			   classpath("com.liferay:com.liferay.gradle.plugins.jsdoc:2.0.21")
+    			  }
 }
 
 
@@ -22,7 +25,7 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'com.eriwen.gradle.js'
 apply plugin: 'jacoco'
-
+apply plugin: "com.liferay.app.jsdoc"
 jar {
     baseName = 'viglet-shiohara'
     version =  '0.3.5'
@@ -78,7 +81,13 @@ build.mustRunAfter clean
 javadoc {
     source = sourceSets.main.allJava
     classpath = configurations.compile
-    destinationDir = file("store/doc/javadoc")
+    destinationDir = file("docs/core")
+}
+
+appJSDoc {
+	sourceDirs = file("src/main/resources/js/server-side")
+	destinationDir = file("docs/javascript")
+	readmeFile = file("src/main/resources/js/server-side/README.md")
 }
 
 dependencies {
