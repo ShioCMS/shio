@@ -42,9 +42,9 @@ viglet.shiohara.shObject = function() {
 
 	/**
 	 * @desc Returns Folder Navigation Component
-	 * @param siteName,
+	 * @param siteName
 	 *            Site Name.
-	 * @param home,
+	 * @param home
 	 *            true or false to show the Home folder.
 	 * @public
 	 */
@@ -54,9 +54,9 @@ viglet.shiohara.shObject = function() {
 
 	/**
 	 * @desc Returns Folder Navigation Component from Parent Folder
-	 * @param folderId,
+	 * @param folderId
 	 *            Folder Id.
-	 * @param home,
+	 * @param home
 	 *            true or false to show the Home folder.
 	 * @public
 	 */
@@ -66,9 +66,9 @@ viglet.shiohara.shObject = function() {
 	},
 	/**
 	 * @desc Returns Query Component
-	 * @param folderId,
+	 * @param folderId
 	 *            Folder Id.
-	 * @param postTypeName,
+	 * @param postTypeName
 	 *            Post Type Name.
 	 * @public
 	 */
@@ -79,11 +79,11 @@ viglet.shiohara.shObject = function() {
 
 	/**
 	 * @desc Returns Query Component
-	 * @param postTypeName,
+	 * @param postTypeName
 	 *            Post Type Name.
-	 * @param postAttrName,
+	 * @param postAttrName
 	 *            Post Type Attribute Name.
-	 * @param arrayValue,
+	 * @param arrayValue
 	 *            Array Value.            
 	 * @public
 	 */
@@ -103,7 +103,7 @@ viglet.shiohara.shObject = function() {
 	
 	/**
 	 * @desc Generate Post Link
-	 * @param postId,
+	 * @param postId
 	 *            Post Id.
 	 * @public
 	 */
@@ -113,7 +113,7 @@ viglet.shiohara.shObject = function() {
 
 	/**
 	 * @desc Generate Folder Link
-	 * @param folderId,
+	 * @param folderId
 	 *            Folder Id.
 	 * @public
 	 */
@@ -123,7 +123,7 @@ viglet.shiohara.shObject = function() {
 
 	/**
 	 * @desc Get Post Map
-	 * @param postId,
+	 * @param postId
 	 *            Post Id.
 	 * @public
 	 */
@@ -143,7 +143,7 @@ viglet.shiohara.shObject = function() {
 	
 	/**
 	 * @desc Get Parent Folder Map
-	 * @param folderId,
+	 * @param folderId
 	 *            Folder Id.
 	 * @public
 	 */
@@ -152,7 +152,7 @@ viglet.shiohara.shObject = function() {
 	}
 	/**
 	 * @desc Generate Object Link
-	 * @param objectId,
+	 * @param objectId
 	 *            Object Id.
 	 * @public
 	 */
