@@ -1,0 +1,212 @@
+buildscript {
+    ext { springBootVersion = '2.1.6.RELEASE'
+	      hibernateVersion = '5.11.0.Final'
+		  httpClientVersion = '4.5.6'
+		  swaggerVersion = '2.9.2'
+		 }
+		repositories {
+		mavenCentral()
+		maven { url "https://repo.spring.io/snapshot" }
+		maven { url "https://repo.spring.io/milestone" }
+		maven { url "http://repo.spring.io/plugins-release/" }
+		maven { url "https://repository-cdn.liferay.com/nexus/content/groups/public" }
+		jcenter()
+		}
+    dependencies { classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    			   classpath("com.eriwen:gradle-js-plugin:2.12.0") 
+    			   classpath("com.liferay:com.liferay.gradle.plugins.jsdoc:2.0.21")
+    			  }
+}
+
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'com.eriwen.gradle.js'
+apply plugin: 'jacoco'
+apply plugin: "com.liferay.app.jsdoc"
+jar {
+    baseName = 'viglet-shiohara'
+    version =  '0.3.5'
+}
+
+bootJar {
+    launchScript()
+}
+
+repositories {
+	mavenCentral()
+	maven { url "https://repo.spring.io/snapshot" }
+	maven { url "https://repo.spring.io/milestone" }
+	maven { url "http://repo.spring.io/plugins-release/" }
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
+
+// Combine JS files
+task combineSystemJs(type: com.eriwen.gradle.js.tasks.CombineJsTask) {
+    source = "${projectDir}/src/main/resources/ui/js/src/system"
+    dest = "${projectDir}/src/main/resources/ui/js/build/shSystem.js"
+}
+
+task combineFeatureJs(dependsOn: ':combineSystemJs', type: com.eriwen.gradle.js.tasks.CombineJsTask) {
+    source = "${projectDir}/src/main/resources/ui/js/src/feature"
+    dest = "${projectDir}/src/main/resources/ui/js/build/shFeature.js"
+}
+
+task combineAllJs(dependsOn: ':combineFeatureJs', type: com.eriwen.gradle.js.tasks.CombineJsTask) {
+    source = ["${projectDir}/src/main/resources/ui/js/src/main/__shFactory.js", "${projectDir}/src/main/resources/ui/js/build/shSystem.js", "${projectDir}/src/main/resources/ui/js/build/shFeature.js"]
+    dest = "${projectDir}/src/main/resources/ui/js/build/shiohara.js"
+}
+
+task minifyAllJs(dependsOn: ':combineAllJs', type: com.eriwen.gradle.js.tasks.MinifyJsTask) {
+ 	source = "${projectDir}/src/main/resources/ui/js/build/shiohara.js"
+    dest = file("${projectDir}/src/main/resources/ui/public/js/dist/shiohara.min.js")
+    closure {
+        warningLevel = 'QUIET'
+    }
+}
+
+task stage(dependsOn: ['build', 'clean'])
+
+compileJava.dependsOn(minifyAllJs)
+
+build.mustRunAfter clean
+
+javadoc {
+    source = sourceSets.main.allJava
+    classpath = configurations.compile
+    destinationDir = file("docs/core")
+}
+
+appJSDoc {
+	sourceDirs = file("src/main/resources/js/server-side")
+	destinationDir = file("docs/javascript")
+	readmeFile = file("src/main/resources/js/server-side/README.md")
+}
+
+dependencies {
+    
+    // Spring Boot
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: "${springBootVersion}"
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version:"${springBootVersion}"
+    
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: "${springBootVersion}"
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-parent', version:"${springBootVersion}"
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version:"${springBootVersion}"
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-activemq', version:"${springBootVersion}"   
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf', version:"${springBootVersion}"
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version:"${springBootVersion}"
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-cache', version:"${springBootVersion}"
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version:"${springBootVersion}"
+    
+  	// Spring
+  	compile group: 'org.springframework', name: 'spring-test', version: '5.1.8.RELEASE'
+  	    
+  	// Jackson
+    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.9.8'
+   
+    // H2
+     compile group: 'com.h2database', name: 'h2', version:'1.4.199'
+
+	// MariaDB
+    compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.4.1'
+
+    // JSON
+    compile group: 'org.json', name: 'json', version:'20180813'
+    
+    // Apache Commons
+    compile group: 'org.apache.commons', name: 'commons-compress', version: '1.18'   
+    compile group: 'commons-io', name: 'commons-io', version:'2.6'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
+    
+    // HTTP Client
+    compile(group: 'org.apache.httpcomponents', name: 'httpclient', version:"${httpClientVersion}") {
+		exclude(module: 'commons-logging')
+    }
+    compile group: 'org.apache.httpcomponents', name: 'httpmime', version:"${httpClientVersion}"
+    
+    // JSoup
+	compile group: 'org.jsoup', name: 'jsoup', version: '1.11.3'
+	
+	// Hibernate
+	compile group: 'org.hibernate', name: 'hibernate-search-engine', version: "${hibernateVersion}"
+	compile group: 'org.hibernate', name: 'hibernate-search-orm', version: "${hibernateVersion}"
+	
+	//Hazelcast
+	compile group: 'com.hazelcast', name: 'hazelcast'
+	compile group: 'com.hazelcast', name: 'hazelcast-spring'
+	
+	// Swagger 2
+	compile group: 'io.springfox', name: 'springfox-swagger2', version: "${swaggerVersion}"
+	compile group: 'io.springfox', name: 'springfox-swagger-ui', version: "${swaggerVersion}"
+	
+	// Gson - is used by reCAPTCHA
+	compile group: 'com.google.code.gson', name: 'gson', version: '2.8.5'
+	
+	/// Payment Slip
+	compile group: 'br.com.caelum.stella', name: 'caelum-stella-boleto', version: '2.1.2'
+	compile group: 'com.lowagie', name: 'itext', version: '2.1.7'
+
+	// Thumbnailator
+    compile group: 'net.coobird', name: 'thumbnailator', version: '0.4.8'
+	
+	// Javadoc - Need this package
+	compile 'javax.interceptor:javax.interceptor-api:1.2.2'
+	
+	// WebJars
+	compile 'org.webjars.bower:jquery:1.12.4'
+	compile 'org.webjars.bower:jquery.ui:1.11.3'
+	compile 'org.webjars:bootstrap:3.3.7-1' // Content
+	compile 'org.webjars.bower:bootstrap:4.1.1' // Preview
+	compile 'org.webjars.bower:moment:2.20.1'
+	compile 'org.webjars.bower:angular:1.6.9'
+	compile 'org.webjars.bower:ace-builds:1.3.1'
+	compile 'org.webjars.bower:tinymce:4.5.8'
+	compile 'org.webjars.bower:angular-ui-router:1.0.14'
+	compile 'org.webjars.bower:angular-translate:2.17.0'
+	compile 'org.webjars.bower:angular-resource:1.6.9'
+	compile 'org.webjars.bower:angular-animate:1.6.9'
+	compile 'org.webjars.bower:angular-sanitize:1.6.9'
+	compile 'org.webjars.bower:angular-bootstrap:2.5.0'
+	compile 'org.webjars.bower:angular-cookies:1.6.9'
+	compile 'org.webjars.bower:angular-moment:1.2.0'
+	compile 'org.webjars.bower:angular-ui-ace:0.2.3'
+	compile 'org.webjars.bower:font-awesome:4.7.0'
+	compile 'org.webjars.bower:ng-file-upload:12.2.13'
+	compile 'org.webjars.bower:angular-ui-notification:0.3.6'
+	compile 'org.webjars.bower:angular-ui-tinymce:0.0.19'
+	compile 'org.webjars.bower:angular-ui-sortable:0.14.3'
+	compile 'org.webjars.bower:angular-ui-select:0.19.8'
+	
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+test {
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat "full"
+    }
+    
+ jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled false
+    }
+}
+
+bootRun {
+    if (project.hasProperty('args')) {
+        args project.args.split(',')
+    }
+}
+   
+check.dependsOn jacocoTestReport   
+
+}

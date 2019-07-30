@@ -1,0 +1,11 @@
+type ShPost {
+    id: ID!
+    title: String!
+    summary: String!
+    
+}
+
+# The Root Query for the application
+type Query {
+    recentPosts(count: Int, offset: Int): [ShPost]!
+}

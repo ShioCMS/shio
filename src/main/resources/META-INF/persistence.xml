@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1"
+	xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+	<persistence-unit name="shiohara-app">
+		<provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+		<!-- <non-jta-data-source>jdbc/ShioharaDS</non-jta-data-source> -->
+		<class>com.viglet.shiohara.persistence.model.ecommerce.ShEcomOrder</class>
+		<class>com.viglet.shiohara.persistence.model.ecommerce.ShEcomPaymentType</class>
+		<class>com.viglet.shiohara.persistence.model.folder.ShFolder</class>
+		<class>com.viglet.shiohara.persistence.model.history.ShHistory</class>
+		<class>com.viglet.shiohara.persistence.model.object.ShObject</class>
+		<class>com.viglet.shiohara.persistence.model.post.ShPost</class>
+		<class>com.viglet.shiohara.persistence.model.post.ShPostAttr</class>
+		<class>com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem</class>
+		<class>com.viglet.shiohara.persistence.model.post.type.ShPostType</class>
+		<class>com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr</class>
+		<class>com.viglet.shiohara.persistence.model.reference.ShReference</class>
+		<class>com.viglet.shiohara.persistence.model.site.ShSite</class>
+		<class>com.viglet.shiohara.persistence.model.system.ShConfigVar</class>
+		<class>com.viglet.shiohara.persistence.model.system.ShLocale</class>
+		<class>com.viglet.shiohara.persistence.model.user.ShUser</class>
+		<class>com.viglet.shiohara.persistence.model.user.ShUserRole</class>
+		<class>com.viglet.shiohara.persistence.model.widget.ShWidget</class>
+		<properties>
+			<property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema" />
+			<property name="openjpa.ConnectionURL" value="jdbc:h2:file:./store/db/shioharaDB" />
+			<property name="openjpa.ConnectionDriverName" value="org.h2.Driver" />
+			
+			<property name="openjpa.ConnectionUserName" value="sa" />
+			<property name="openjpa.ConnectionPassword" value="" />
+			<property name="openjpa.Log" value="DefaultLevel=WARN, Tool=INFO" />
+			<property name="openjpa.DynamicEnhancementAgent" value="false" />
+		</properties>
+	</persistence-unit>
+</persistence>

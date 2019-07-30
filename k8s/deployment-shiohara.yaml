@@ -1,0 +1,87 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: shiohara-pv
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  claimRef:
+    namespace: default
+    name: shiohara-claim0 
+  hostPath:
+    path: "/tmp/data"
+---    
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: shiohara-claim0
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi    
+status: {}
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: shiohara
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: shiohara
+    spec:
+      containers:
+      - env:
+        - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+          value: org.mariadb.jdbc.Driver
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: shiohara
+        - name: SPRING_DATASOURCE_URL
+          value: jdbc:mariadb://shiohara-mariadb:3306/shiohara
+        - name: SPRING_DATASOURCE_USERNAME
+          value: shiohara
+        - name: SPRING_DATA_MONGODB_URI
+          value: mongodb://shiohara-mongodb:27017/shiohara
+        - name: SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT
+          value: org.hibernate.dialect.MySQL5InnoDBDialect
+        image: viglet/shiohara
+        name: shiohara
+        ports:
+        - containerPort: 2710
+        resources: {}
+        volumeMounts:
+        - mountPath: /app/store
+          name: shiohara-claim0
+      restartPolicy: Always
+      volumes:
+      - name: shiohara-claim0
+        persistentVolumeClaim:
+          claimName: shiohara-claim0
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shiohara
+spec:
+  ports:
+  - name: "2710"
+    port: 2710
+    targetPort: 2710
+  selector:
+    io.kompose.service: shiohara
+  type: LoadBalancer
+status:
+  loadBalancer: {}

@@ -1,0 +1,90 @@
+<hazelcast
+	xsi:schemaLocation="http://www.hazelcast.com/schema/config hazelcast-config-3.11.xsd"
+	xmlns="http://www.hazelcast.com/schema/config"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<map name="shobject">
+		<time-to-live-seconds>86400</time-to-live-seconds>
+		<max-size>200</max-size>
+	</map>
+
+	<cache name="shobject">
+		<eviction size="200" />
+
+		<statistics-enabled>false</statistics-enabled>
+		<management-enabled>false</management-enabled>
+	</cache>
+
+
+	<map name="page">
+		<time-to-live-seconds>86400</time-to-live-seconds>
+		<max-size>200</max-size>
+	</map>
+
+	<cache name="page">
+		<eviction size="200" />
+
+		<statistics-enabled>false</statistics-enabled>
+		<management-enabled>false</management-enabled>
+	</cache>
+
+	<map name="pageLayout">
+		<time-to-live-seconds>86400</time-to-live-seconds>
+		<max-size>200</max-size>
+	</map>
+
+	<cache name="pageLayout">
+		<eviction size="200" />
+
+		<statistics-enabled>false</statistics-enabled>
+		<management-enabled>false</management-enabled>
+	</cache>
+
+	<map name="region">
+		<time-to-live-seconds>86400</time-to-live-seconds>
+		<max-size>200</max-size>
+	</map>
+
+	<cache name="region">
+		<eviction size="200" />
+
+		<statistics-enabled>false</statistics-enabled>
+		<management-enabled>false</management-enabled>
+	</cache>
+	<map name="javascript">
+		<time-to-live-seconds>86400</time-to-live-seconds>
+		<max-size>200</max-size>
+	</map>
+	<cache name="javascript">
+		<eviction size="200" />
+		<statistics-enabled>false</statistics-enabled>
+		<management-enabled>false</management-enabled>
+	</cache>	
+	<map name="component">
+		<time-to-live-seconds>86400</time-to-live-seconds>
+		<max-size>200</max-size>
+	</map>
+	<cache name="component">
+		<eviction size="200" />
+		<statistics-enabled>false</statistics-enabled>
+		<management-enabled>false</management-enabled>
+	</cache>
+	<map name="url">
+		<time-to-live-seconds>86400</time-to-live-seconds>
+		<max-size>200</max-size>
+	</map>
+	<cache name="url">
+		<eviction size="200" />
+		<statistics-enabled>false</statistics-enabled>
+		<management-enabled>false</management-enabled>
+	</cache>
+	<network>
+		<join>
+			<tcp-ip enabled="false" />
+			<multicast enabled="false" />
+		</join>
+	</network>
+	<management-center enabled="true">
+  http://localhost:8080/hazelcast-mancenter
+</management-center>
+</hazelcast>
