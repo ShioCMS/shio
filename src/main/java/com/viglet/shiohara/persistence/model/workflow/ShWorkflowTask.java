@@ -24,9 +24,13 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 
 import org.hibernate.annotations.GenericGenerator;
+
+import com.viglet.shiohara.persistence.model.object.ShObject;
 
 /**
  * The persistent class for the ShWidget database table.
@@ -47,9 +51,11 @@ public class ShWorkflowTask implements Serializable {
 
 	private Date date;
 
-	private String description;
+	private String title;
 
-	private String shObject;
+	@ManyToOne
+	@JoinColumn(name = "object_id")
+	private ShObject shObject;
 
 	private String requester;
 	
@@ -71,22 +77,6 @@ public class ShWorkflowTask implements Serializable {
 		this.date = date;
 	}
 
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public String getShObject() {
-		return shObject;
-	}
-
-	public void setShObject(String shObject) {
-		this.shObject = shObject;
-	}
-
 	public String getRequester() {
 		return requester;
 	}
@@ -101,6 +91,22 @@ public class ShWorkflowTask implements Serializable {
 
 	public void setRequested(String requested) {
 		this.requested = requested;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public ShObject getShObject() {
+		return shObject;
+	}
+
+	public void setShObject(ShObject shObject) {
+		this.shObject = shObject;
 	}
 
 }

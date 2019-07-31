@@ -42,6 +42,7 @@ import org.hibernate.annotations.GenericGenerator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.viglet.shiohara.persistence.model.auth.ShGroup;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
+import com.viglet.shiohara.persistence.model.workflow.ShWorkflowTask;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -91,8 +92,14 @@ public class ShObject implements Serializable {
 	@ManyToMany
 	private Set<ShGroup> shGroups = new HashSet<>();
 
+	// bi-directional many-to-one association to ShFolder
+	@OneToMany(mappedBy = "shObject", orphanRemoval = true)
+	@Cascade({ CascadeType.ALL })
+	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
+	private Set<ShWorkflowTask> shWorkflowTasks = new HashSet<>();
+
 	private String publishStatus;
-	
+
 	public String getId() {
 		return this.id;
 	}
@@ -210,7 +217,7 @@ public class ShObject implements Serializable {
 	public void setPublished(boolean published) {
 		this.published = published;
 	}
-	
+
 	public String getPublishStatus() {
 		return publishStatus;
 	}
@@ -218,5 +225,14 @@ public class ShObject implements Serializable {
 	public void setPublishStatus(String publishStatus) {
 		this.publishStatus = publishStatus;
 	}
+	public Set<ShWorkflowTask> getShWorkflowTasks() {
+		return this.shWorkflowTasks;
+	}
 
+	public void setShWorkflowTasks(Set<ShWorkflowTask> shWorkflowTasks) {
+		this.shWorkflowTasks.clear();
+		if (shWorkflowTasks != null) {
+			this.shWorkflowTasks.addAll(shWorkflowTasks);
+		}
+	}
 }

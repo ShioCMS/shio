@@ -97,6 +97,7 @@ public class ShObjectAPI {
 	private ShUserRepository shUserRepository;
 	@Autowired
 	private ShWorkflow shWorkflow;
+
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShObject> shObjectList() throws Exception {
@@ -127,11 +128,12 @@ public class ShObjectAPI {
 		shCacheObject.deleteCache(id);
 		return shObject;
 	}
-	
-	@GetMapping("{id}/request-workflow")
-	public ShObject shObjectRequestWorkflow(@PathVariable String id, HttpServletResponse response) {
+
+	@GetMapping("{id}/request-workflow/{publishStatus}")
+	public ShObject shObjectRequestWorkflow(@PathVariable String id, @PathVariable String publishStatus,
+			Principal principal) {
 		ShObject shObject = shObjectRepository.findById(id).orElse(null);
-		shWorkflow.requestWorkFlow(shObject);
+		shWorkflow.requestWorkFlow(shObject, principal);
 		return shObject;
 	}
 
