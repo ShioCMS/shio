@@ -3,7 +3,7 @@
 ![banner_shiohara.jpg](https://shioharacms.github.io/shiohara/img/banner_shiohara.jpg) 
 ------
 
-**Viglet Shiohara** is a simple and intuitive Web Content Management.
+** Viglet Shiohara CMS** - Model Content and Create Site using Javascript with Native Cache and Search.
  
 **If you'd like to contribute to Viglet Shiohara, be sure to review the [contribution
 guidelines](CONTRIBUTING.md).**
@@ -16,7 +16,7 @@ guidelines](CONTRIBUTING.md).**
 
 ### 1. Runtime
 
-Use Gradle to execute Viglet Shiohara, without generate jar file.
+Use Gradle to execute Shiohara CMS, without generate jar file.
 
 ```shell
 $ ./gradlew bootrun
@@ -25,7 +25,7 @@ $ ./gradlew bootrun
 
 ### 2. Or Generate JAR File
 
-Use Gradle to generate Viglet Shiohara executable JAR file.
+Use Gradle to generate Shiohara CMS executable JAR file.
 
 ```shell
 $ ./gradlew build
@@ -33,7 +33,7 @@ $ ./gradlew build
 
 #### 2.1 Run
 
-To run Viglet Shiohara executable JAR file, just execute the following line:
+To run Shiohara CMS executable JAR file, just execute the following line:
 
 ```shell
 $ java -jar build/libs/viglet-shiohara.jar
