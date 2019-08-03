@@ -18,14 +18,21 @@
 package com.viglet.shiohara.api.workflow;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.viglet.shiohara.persistence.model.auth.ShGroup;
+import com.viglet.shiohara.persistence.model.auth.ShUser;
 import com.viglet.shiohara.persistence.model.workflow.ShWorkflowTask;
+import com.viglet.shiohara.persistence.repository.auth.ShGroupRepository;
+import com.viglet.shiohara.persistence.repository.auth.ShUserRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.workflow.ShWorkflowTaskRepository;
 
@@ -39,16 +46,31 @@ public class ShWorkflowAPI {
 	@Autowired
 	private ShWorkflowTaskRepository shWorkflowTaskRepository;
 	@Autowired
+	private ShUserRepository shUserRepository;
+	@Autowired
+	private ShGroupRepository shGroupRepository;
+	@Autowired
 	private ShPostRepository shPostRepository;
 
 	@GetMapping("/task")
-	public List<ShWorkflowTask> shWorkflowTasksGet(Principal principal) {
-
-		List<ShWorkflowTask> shWorkflowTasks = shWorkflowTaskRepository.findAll();
+	public Set<ShWorkflowTask> shWorkflowTasksGet(Principal principal) {
+		ShUser shUser = shUserRepository.findByUsername(principal.getName());
+		System.out.println("Principal: " + principal.getName());
+		List<ShUser> shUsers = new ArrayList<>();
+		shUsers.add(shUser);
+		Set<ShGroup> shGroups = shGroupRepository.findByShUsersIn(shUsers);
+		List<String> requesters = new ArrayList<>();
 		
-		for ( ShWorkflowTask shWorkflowTask : shWorkflowTasks) {
+		for (ShGroup shGroup : shGroups) {
+			System.out.println("Groups: " + shGroup.getName());
+			requesters.add(shGroup.getName());
+		}
+		
+		Set<ShWorkflowTask> shWorkflowTasks = shWorkflowTaskRepository.findByRequestedIn(requesters);
+
+		for (ShWorkflowTask shWorkflowTask : shWorkflowTasks) {
 			String id = shWorkflowTask.getShObject().getId();
-			shWorkflowTask.setShObject(shPostRepository.findByIdFull(id).get());			
+			shWorkflowTask.setShObject(shPostRepository.findByIdFull(id).get());
 		}
 		return shWorkflowTasks;
 	}

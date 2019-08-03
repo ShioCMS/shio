@@ -57,8 +57,11 @@ public class ShWorkflowTask implements Serializable {
 	@JoinColumn(name = "object_id")
 	private ShObject shObject;
 
+	
+	// Who created
 	private String requester;
 	
+	// Who will be responsible for the action
 	private String requested;
 
 	public String getId() {

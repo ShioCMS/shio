@@ -17,8 +17,10 @@
 
 package com.viglet.shiohara.persistence.repository.workflow;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -35,6 +37,8 @@ public interface ShWorkflowTaskRepository extends JpaRepository<ShWorkflowTask, 
 	@SuppressWarnings("unchecked")
 	ShWorkflowTask save(ShWorkflowTask shWorkflowTask);
 
+	Set<ShWorkflowTask> findByRequestedIn(Collection<String> requested);
+	
 	@Modifying
 	@Query("delete from ShWorkflowTask wt where wt.id = ?1")
 	void delete(String id);
