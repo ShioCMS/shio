@@ -33,6 +33,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -99,6 +100,9 @@ public class ShObject implements Serializable {
 	private Set<ShWorkflowTask> shWorkflowTasks = new HashSet<>();
 
 	private String publishStatus;
+
+	@Transient
+	private boolean allowPublish;
 
 	public String getId() {
 		return this.id;
@@ -225,6 +229,7 @@ public class ShObject implements Serializable {
 	public void setPublishStatus(String publishStatus) {
 		this.publishStatus = publishStatus;
 	}
+
 	public Set<ShWorkflowTask> getShWorkflowTasks() {
 		return this.shWorkflowTasks;
 	}
@@ -235,4 +240,14 @@ public class ShObject implements Serializable {
 			this.shWorkflowTasks.addAll(shWorkflowTasks);
 		}
 	}
+
+	public boolean isAllowPublish() {
+		return allowPublish;
+	}
+
+	public void setAllowPublish(boolean allowPublish) {
+		this.allowPublish = allowPublish;
+	}
+
+
 }

@@ -26,6 +26,7 @@ import org.springframework.jms.annotation.EnableJms;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 
 /**
@@ -40,10 +41,10 @@ import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 @EnableJms
 @EnableCaching
 public class Shiohara {
-	
+
 	public static void main(String[] args) throws Exception {
 		System.out.println("Viglet Shiohara starting...");
-		SpringApplication application = new SpringApplication(Shiohara.class);		
+		SpringApplication application = new SpringApplication(Shiohara.class);
 		application.run(args);
 		System.out.println("Viglet Shiohara started");
 	}
@@ -61,5 +62,17 @@ public class Shiohara {
 	@Bean
 	public Module hibernate5Module() {
 		return new Hibernate5Module();
+	}
+	/**
+	 *  Allow Transient into Jackson
+	 * 
+	 * */
+	@Bean
+	public ObjectMapper includeTransientObjectMapper() {
+		Hibernate5Module hibernate5Module = new Hibernate5Module();
+		hibernate5Module.disable(Hibernate5Module.Feature.USE_TRANSIENT_ANNOTATION);
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.registerModule(hibernate5Module);
+		return mapper;
 	}
 }

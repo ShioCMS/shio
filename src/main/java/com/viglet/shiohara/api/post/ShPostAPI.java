@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -60,6 +61,7 @@ import com.viglet.shiohara.object.ShObjectPublishStatus;
 import com.viglet.shiohara.persistence.model.auth.ShUser;
 import com.viglet.shiohara.persistence.model.history.ShHistory;
 import com.viglet.shiohara.persistence.model.post.ShPost;
+import com.viglet.shiohara.persistence.repository.auth.ShGroupRepository;
 import com.viglet.shiohara.persistence.repository.auth.ShUserRepository;
 import com.viglet.shiohara.persistence.repository.history.ShHistoryRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
@@ -93,6 +95,8 @@ public class ShPostAPI {
 	private ShPostAttrRepository shPostAttrRepository;
 	@Autowired
 	private ShUserRepository shUserRepository;
+	@Autowired
+	private ShGroupRepository shGroupRepository;
 	@Autowired
 	private ShStaticFileUtils shStaticFileUtils;
 	@Autowired
@@ -133,10 +137,29 @@ public class ShPostAPI {
 	 */
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShPost shPostEdit(@PathVariable String id) {
+	public ShPost shPostEdit(@PathVariable String id, Principal principal) {
 		ShPost shPost = shPostUtils.loadLazyPost(id, false);
 		this.syncWithPostType(shPost);
+
+		shPost.setAllowPublish(this.allowPublish(shPost.getShPostType(), principal));
 		return shPost;
+	}
+
+	private boolean allowPublish(ShPostType shPostType, Principal principal) {
+		if (principal == null || (shPostType != null && StringUtils.isEmpty(shPostType.getWorkflowPublishEntity()))) {
+			return true;
+		} else {
+			ShUser shUser = shUserRepository.findByUsername(principal.getName());
+			List<ShUser> shUsers = new ArrayList<>();
+			shUsers.add(shUser);
+
+			if (shPostType != null && !StringUtils.isEmpty(shPostType.getWorkflowPublishEntity())
+					&& shGroupRepository.countByNameAndShUsersIn(shPostType.getWorkflowPublishEntity(), shUsers) > 0)
+				return true;
+			else
+				return false;
+		}
+
 	}
 
 	/**
@@ -257,7 +280,7 @@ public class ShPostAPI {
 		shHistory.setShSite(shPostUtils.getSite(shPost).getId());
 		shHistoryRepository.saveAndFlush(shHistory);
 
-		return this.shPostEdit(shPost.getId());
+		return this.shPostEdit(shPost.getId(), principal);
 
 	}
 
@@ -281,7 +304,7 @@ public class ShPostAPI {
 		shHistory.setShSite(shPostUtils.getSite(shPost).getId());
 		shHistoryRepository.saveAndFlush(shHistory);
 
-		return this.shPostEdit(shPost.getId());
+		return this.shPostEdit(shPost.getId(), principal);
 
 	}
 

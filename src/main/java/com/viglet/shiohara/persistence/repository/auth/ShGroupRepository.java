@@ -42,6 +42,8 @@ public interface ShGroupRepository extends JpaRepository<ShGroup, String> {
 	
 	Set<ShGroup> findByShObjectsIn(Collection<ShObject> shObjects);
 	
+	int countByNameAndShUsersIn(String name, Collection<ShUser> shUsers);
+	
 	@Modifying
 	@Query("delete from ShGroup g where g.id = ?1")
 	void delete(String id);
