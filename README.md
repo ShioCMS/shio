@@ -3,7 +3,7 @@
 ![banner_shiohara.jpg](https://shioharacms.github.io/shiohara/img/banner_shiohara.jpg) 
 ------
 
-** Viglet Shiohara CMS** - Model Content and Create Site using Javascript with Native Cache and Search.
+**Viglet Shiohara CMS** - Model Content and Create Site using Javascript with Native Cache and Search.
  
 **If you'd like to contribute to Viglet Shiohara, be sure to review the [contribution
 guidelines](CONTRIBUTING.md).**
