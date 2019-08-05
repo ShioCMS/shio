@@ -42,15 +42,14 @@ import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.viglet.shiohara.persistence.model.auth.ShGroup;
-import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.post.ShPostDraftAttr;
 import com.viglet.shiohara.persistence.model.workflow.ShWorkflowTask;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-@NamedQuery(name = "ShObject.findAll", query = "SELECT o FROM ShObject o")
+@NamedQuery(name = "ShObjectDraft.findAll", query = "SELECT od FROM ShObjectDraft od")
 @JsonIgnoreProperties({ "shPostAttrRefs", "shGroups" })
-public class ShObject implements Serializable {
+public class ShObjectDraft implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@Id
@@ -61,16 +60,11 @@ public class ShObject implements Serializable {
 	private String id;
 
 	// bi-directional many-to-one association to ShObject
-	@OneToMany(mappedBy = "referenceObject")
+	@OneToMany(mappedBy = "referenceObject") // , orphanRemoval = true)
 	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
 	@Cascade({ CascadeType.ALL })
-	private Set<ShPostAttr> shPostAttrRefs = new HashSet<ShPostAttr>();
-
-	// bi-directional many-to-one association to ShObject
-	@OneToMany(mappedBy = "referenceObject")
-	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
-	@Cascade({ CascadeType.ALL })
-	private Set<ShPostDraftAttr> shPostDraftAttrRefs = new HashSet<ShPostDraftAttr>();
+//	@OnDelete(action = OnDeleteAction.CASCADE)
+	private Set<ShPostDraftAttr> shPostAttrRefs = new HashSet<ShPostDraftAttr>();
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date date;
@@ -190,25 +184,14 @@ public class ShObject implements Serializable {
 		this.objectType = objectType;
 	}
 
-	public Set<ShPostAttr> getShPostAttrRefs() {
+	public Set<ShPostDraftAttr> getShPostAttrRefs() {
 		return shPostAttrRefs;
 	}
 
-	public void setShPostAttrRefs(Set<ShPostAttr> shPostAttrRefs) {
+	public void setShPostAttrRefs(Set<ShPostDraftAttr> shPostAttrRefs) {
 		this.shPostAttrRefs.clear();
 		if (shPostAttrRefs != null) {
 			this.shPostAttrRefs.addAll(shPostAttrRefs);
-		}
-	}
-
-	public Set<ShPostDraftAttr> getShPostDraftAttrRefs() {
-		return shPostDraftAttrRefs;
-	}
-
-	public void setShPostDraftAttrRefs(Set<ShPostDraftAttr> shPostDraftAttrRefs) {
-		this.shPostDraftAttrRefs.clear();
-		if (shPostDraftAttrRefs != null) {
-			this.shPostDraftAttrRefs.addAll(shPostDraftAttrRefs);
 		}
 	}
 
@@ -265,5 +248,6 @@ public class ShObject implements Serializable {
 	public void setAllowPublish(boolean allowPublish) {
 		this.allowPublish = allowPublish;
 	}
+
 
 }

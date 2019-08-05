@@ -38,23 +38,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.viglet.shiohara.api.ShJsonView;
 import com.viglet.shiohara.bean.ShPostTinyBean;
-import com.viglet.shiohara.exchange.ShPostExchange;
-import com.viglet.shiohara.exchange.post.ShPostImport;
 import com.viglet.shiohara.object.ShObjectType;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
+import com.viglet.shiohara.persistence.model.post.ShPostDraft;
+import com.viglet.shiohara.persistence.model.post.ShPostDraftAttr;
 import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
+import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItemDraft;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.model.reference.ShReference;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.object.ShObjectRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
+import com.viglet.shiohara.persistence.repository.post.ShPostDraftAttrRepository;
+import com.viglet.shiohara.persistence.repository.post.ShPostDraftRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
+import com.viglet.shiohara.persistence.repository.post.relator.ShRelatorItemDraftRepository;
 import com.viglet.shiohara.persistence.repository.post.relator.ShRelatorItemRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
 import com.viglet.shiohara.persistence.repository.reference.ShReferenceRepository;
@@ -76,7 +83,11 @@ public class ShPostUtils {
 	@Autowired
 	private ShPostRepository shPostRepository;
 	@Autowired
+	private ShPostDraftRepository shPostDraftRepository;
+	@Autowired
 	private ShPostAttrRepository shPostAttrRepository;
+	@Autowired
+	private ShPostDraftAttrRepository shPostDraftAttrRepository;
 	@Autowired
 	private ShFolderRepository shFolderRepository;
 	@Autowired
@@ -90,10 +101,10 @@ public class ShPostUtils {
 	@Autowired
 	private ShRelatorItemRepository shRelatorItemRepository;
 	@Autowired
-	private ShPostTypeAttrRepository shPostTypeAttrRepository;
+	private ShRelatorItemDraftRepository shRelatorItemDraftRepository;
 	@Autowired
-	private ShPostImport shPostImport;
-	
+	private ShPostTypeAttrRepository shPostTypeAttrRepository;
+
 	public JSONObject toJSON(ShPost shPost) {
 		JSONObject shPostItemAttrs = new JSONObject();
 
@@ -459,27 +470,54 @@ public class ShPostUtils {
 
 	public ShPost loadLazyPost(String id, boolean getPostPublished) {
 		Optional<ShPost> shPostOptional = shPostRepository.findByIdFull(id);
+		Optional<ShPostDraft> shPostDraftOptional = shPostDraftRepository.findByIdFull(id);
 		if (!shPostOptional.isPresent())
 			return null;
 
-		ShPost shPost = shPostOptional.get();	
-		if (!getPostPublished && shPost.isPublished() && shPost.getDraft() != null) {	
-			logger.debug("Get Draft");
-			ObjectMapper mapper = new ObjectMapper();
-			try {
-				
-				ShPostExchange shPostExchange = mapper.readValue(shPost.getDraft(), ShPostExchange.class);
-				shPost = shPostImport.getShPost(shPostExchange);
-			} catch (IOException e) {
-				logger.error("loadLazyPost Error:", e);
+		ShPost shPost = shPostOptional.get();
+		System.out.println("A: " + getPostPublished);
+		System.out.println("B: " + shPost.isPublished());
+		System.out.println("C: " + shPostDraftOptional.isPresent());
+
+		if (!getPostPublished && shPost.isPublished() && shPostDraftOptional.isPresent()) {
+			ShPost shPostDraft = loadPostDraft(shPostDraftOptional.get());
+			if (shPostDraft != null) {
+				shPost = shPostDraft;
 			}
 		} else {
+			System.out.println("Get Publish Content");
 			logger.debug("Get Publish Content");
 			shPost.setShPostAttrs(shPostAttrRepository.findByShPostAll(shPost));
 			this.loadPostAttribs(shPost.getShPostAttrs());
 
 		}
-		
+
+		return shPost;
+	}
+
+	private ShPost loadPostDraft(ShPostDraft shPostDraft) {
+		System.out.println("Get Draft");
+		logger.debug("Get Draft");
+		ShPost shPost = null;
+		if (shPostDraft != null) {
+
+			ObjectMapper mapper = new ObjectMapper();
+			try {
+				shPostDraft.setShPostAttrs(shPostDraftAttrRepository.findByShPostAll(shPostDraft));
+				this.loadPostDraftAttribs(shPostDraft.getShPostAttrs());
+				String jsonInString = mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+						.writerWithView(ShJsonView.ShJsonViewObject.class).writeValueAsString(shPostDraft);
+				System.out.println("Json: " + jsonInString);
+				shPost = mapper.readValue(jsonInString, ShPost.class);
+
+			} catch (JsonProcessingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		return shPost;
 	}
 
@@ -502,6 +540,31 @@ public class ShPostUtils {
 					shRelatorItem
 							.setShChildrenPostAttrs(shPostAttrRepository.findByShParentRelatorItemJoin(shRelatorItem));
 					this.loadPostAttribs(shRelatorItem.getShChildrenPostAttrs());
+				}
+			}
+		}
+
+	}
+
+	private void loadPostDraftAttribs(Set<ShPostDraftAttr> shPostAttrs) {
+		for (ShPostDraftAttr shPostAttr : shPostAttrs) {
+			shPostAttr.setShChildrenRelatorItems(shRelatorItemDraftRepository.findByShParentPostAttr(shPostAttr));
+			shPostAttr.getShPostTypeAttr().setShPostTypeAttrs(
+					shPostTypeAttrRepository.findByShParentPostTypeAttr(shPostAttr.getShPostTypeAttr()));
+			if (shPostAttr.getReferenceObject() != null) {
+				if (shPostAttr.getReferenceObject() instanceof ShPost) {
+					shPostAttr.setReferenceObject(
+							shPostRepository.findByIdFull(shPostAttr.getReferenceObject().getId()).orElse(null));
+				} else if (shPostAttr.getReferenceObject() instanceof ShFolder) {
+					shPostAttr.setReferenceObject(
+							shFolderRepository.findById(shPostAttr.getReferenceObject().getId()).orElse(null));
+				}
+			}
+			if (shPostAttr.getShChildrenRelatorItems().size() > 0) {
+				for (ShRelatorItemDraft shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
+					shRelatorItem.setShChildrenPostAttrs(
+							shPostDraftAttrRepository.findByShParentRelatorItemJoin(shRelatorItem));
+					this.loadPostDraftAttribs(shRelatorItem.getShChildrenPostAttrs());
 				}
 			}
 		}

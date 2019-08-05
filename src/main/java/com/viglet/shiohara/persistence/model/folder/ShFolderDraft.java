@@ -26,8 +26,7 @@ import org.hibernate.search.annotations.Field;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.viglet.shiohara.object.ShObjectType;
-import com.viglet.shiohara.persistence.model.object.ShObject;
-import com.viglet.shiohara.persistence.model.post.ShPost;
+import com.viglet.shiohara.persistence.model.object.ShObjectDraft;
 import com.viglet.shiohara.persistence.model.post.ShPostDraft;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 
@@ -40,10 +39,10 @@ import java.util.Set;
  */
 
 @Entity
-@NamedQuery(name = "ShFolder.findAll", query = "SELECT c FROM ShFolder c")
-@JsonIgnoreProperties({ "shFolders", "shPosts", "shPostAttrRefs", "shGroups",  "shPostDrafts", "shPostDraftAttrRefs", "$$_hibernate_interceptor", "hibernateLazyInitializer"  })
+@NamedQuery(name = "ShFolderDraft.findAll", query = "SELECT c FROM ShFolderDraft c")
+@JsonIgnoreProperties({ "shFolders", "shPosts", "shPostAttrRefs", "shGroups" })
 @PrimaryKeyJoinColumn(name = "object_id")
-public class ShFolder extends ShObject {
+public class ShFolderDraft extends ShObjectDraft {
 	private static final long serialVersionUID = 1L;
 
 	@Field
@@ -54,7 +53,7 @@ public class ShFolder extends ShObject {
 	// bi-directional many-to-one association to ShFolder
 	@ManyToOne
 	@JoinColumn(name = "parent_folder_id")
-	private ShFolder parentFolder;
+	private ShFolderDraft parentFolder;
 
 	// bi-directional many-to-one association to ShSite
 	@ManyToOne
@@ -63,23 +62,17 @@ public class ShFolder extends ShObject {
 
 	// bi-directional many-to-one association to ShFolder
 	@OneToMany(mappedBy = "parentFolder", orphanRemoval = true)
-	@Cascade({ CascadeType.ALL })
+	@Cascade({CascadeType.ALL})
 	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
-	private Set<ShFolder> shFolders = new HashSet<ShFolder>();
+	private Set<ShFolderDraft> shFolders = new HashSet<ShFolderDraft>();
 
 	// bi-directional many-to-one association to ShFolder
 	@OneToMany(mappedBy = "shFolder", orphanRemoval = true)
-	@Cascade({ CascadeType.ALL })
+	@Cascade({CascadeType.ALL})
 	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
-	private Set<ShPost> shPosts = new HashSet<ShPost>();
+	private Set<ShPostDraft> shPosts = new HashSet<ShPostDraft>();
 
-	// bi-directional many-to-one association to ShFolder
-	@OneToMany(mappedBy = "shFolder", orphanRemoval = true)
-	@Cascade({ CascadeType.ALL })
-	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
-	private Set<ShPostDraft> shPostDrafts = new HashSet<ShPostDraft>();
-
-	public ShFolder() {
+	public ShFolderDraft() {
 		this.setObjectType(ShObjectType.FOLDER);
 	}
 
@@ -91,11 +84,11 @@ public class ShFolder extends ShObject {
 		this.name = name;
 	}
 
-	public ShFolder getParentFolder() {
+	public ShFolderDraft getParentFolder() {
 		return parentFolder;
 	}
 
-	public void setParentFolder(ShFolder parentFolder) {
+	public void setParentFolder(ShFolderDraft parentFolder) {
 		this.parentFolder = parentFolder;
 	}
 
@@ -107,36 +100,25 @@ public class ShFolder extends ShObject {
 		this.shSite = shSite;
 	}
 
-	public Set<ShFolder> getShFolders() {
+	public Set<ShFolderDraft> getShFolders() {
 		return this.shFolders;
 	}
 
-	public void setShFolders(Set<ShFolder> shFolders) {
+	public void setShFolders(Set<ShFolderDraft> shFolders) {
 		this.shFolders.clear();
 		if (shFolders != null) {
 			this.shFolders.addAll(shFolders);
 		}
 	}
 
-	public Set<ShPost> getShPosts() {
+	public Set<ShPostDraft> getShPosts() {
 		return this.shPosts;
 	}
 
-	public void setShPosts(Set<ShPost> shPosts) {
+	public void setShPosts(Set<ShPostDraft> shPosts) {
 		this.shPosts.clear();
 		if (shPosts != null) {
 			this.shPosts.addAll(shPosts);
-		}
-	}
-
-	public Set<ShPostDraft> getShPostDrafts() {
-		return this.shPostDrafts;
-	}
-
-	public void setShPostDrafts(Set<ShPostDraft> shPostDrafts) {
-		this.shPostDrafts.clear();
-		if (shPostDrafts != null) {
-			this.shPostDrafts.addAll(shPostDrafts);
 		}
 	}
 
@@ -154,7 +136,7 @@ public class ShFolder extends ShObject {
 	}
 
 	@Override
-	public void setObjectType(String objectType) {
+	public void setObjectType(String objectType) {		
 		super.setObjectType(ShObjectType.FOLDER);
 	}
 }

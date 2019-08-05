@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 
@@ -46,7 +47,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
+import com.viglet.shiohara.persistence.model.post.ShPostDraft;
+import com.viglet.shiohara.persistence.model.post.ShPostDraftAttr;
 import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
+import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItemDraft;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.model.reference.ShReference;
@@ -55,8 +59,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viglet.shiohara.api.ShJsonView;
 import com.viglet.shiohara.cache.component.ShCacheObject;
-import com.viglet.shiohara.exchange.ShPostExchange;
-import com.viglet.shiohara.exchange.post.ShPostExport;
 import com.viglet.shiohara.object.ShObjectPublishStatus;
 import com.viglet.shiohara.persistence.model.auth.ShUser;
 import com.viglet.shiohara.persistence.model.history.ShHistory;
@@ -65,6 +67,7 @@ import com.viglet.shiohara.persistence.repository.auth.ShGroupRepository;
 import com.viglet.shiohara.persistence.repository.auth.ShUserRepository;
 import com.viglet.shiohara.persistence.repository.history.ShHistoryRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
+import com.viglet.shiohara.persistence.repository.post.ShPostDraftRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.persistence.repository.reference.ShReferenceRepository;
@@ -87,10 +90,13 @@ import io.swagger.annotations.Api;
 @Api(tags = "Post", description = "Post API")
 public class ShPostAPI {
 
+	@SuppressWarnings("unused")
 	private static final Log logger = LogFactory.getLog(ShPostAPI.class);
 
 	@Autowired
 	private ShPostRepository shPostRepository;
+	@Autowired
+	private ShPostDraftRepository shPostDraftRepository;
 	@Autowired
 	private ShPostAttrRepository shPostAttrRepository;
 	@Autowired
@@ -113,8 +119,6 @@ public class ShPostAPI {
 	private ShTuringIntegration shTuringIntegration;
 	@Autowired
 	private ShCacheObject shCacheObject;
-	@Autowired
-	private ShPostExport shPostExport;
 
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
@@ -174,7 +178,16 @@ public class ShPostAPI {
 			Map<String, ShPostAttr> shPostAttrMap = this.postAttrMap(shPost);
 			Map<String, ShPostTypeAttr> shPostTypeAttrMap = this.postTypeAttrMap(shPost);
 
-			this.postAttrInPostType(shPostAttrs, shPostAttrMap, shPostTypeAttrMap);
+			for (Entry<String, ShPostAttr> a : shPostAttrMap.entrySet()) {
+				System.out.println("AA: " + a.getKey() + ": " + a.getValue());
+				
+			}
+			
+			for (Entry<String, ShPostTypeAttr> a : shPostTypeAttrMap.entrySet()) {
+				System.out.println("BB: " + a.getKey() + ": " + a.getValue());
+				
+			}
+		    this.postAttrInPostType(shPostAttrs, shPostAttrMap, shPostTypeAttrMap);
 			this.postAttrNotInPostType(shPostAttrs, shPostAttrMap, shPostTypeAttrMap);
 
 			shPost.setShPostAttrs(shPostAttrs);
@@ -189,8 +202,9 @@ public class ShPostAPI {
 	 */
 	private Map<String, ShPostTypeAttr> postTypeAttrMap(ShPost shPost) {
 		Map<String, ShPostTypeAttr> shPostTypeAttrMap = new HashMap<String, ShPostTypeAttr>();
+		ShPostType shPostType = shPostTypeRepository.findByName(shPost.getShPostType().getName());
 		if (shPost != null) {
-			for (ShPostTypeAttr shPostTypeAttr : shPost.getShPostType().getShPostTypeAttrs())
+			for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs())
 				shPostTypeAttrMap.put(shPostTypeAttr.getId(), shPostTypeAttr);
 		}
 		return shPostTypeAttrMap;
@@ -257,6 +271,7 @@ public class ShPostAPI {
 		return shPostAttr;
 	}
 
+	@Transactional
 	@PutMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShPost shPostUpdate(@PathVariable String id, @RequestBody ShPost shPost, Principal principal) {
@@ -284,6 +299,7 @@ public class ShPostAPI {
 
 	}
 
+	@Transactional
 	@PostMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	@CacheEvict(value = { "page", "pageLayout", "region" }, allEntries = true)
@@ -412,18 +428,25 @@ public class ShPostAPI {
 
 	}
 
+
 	public void postPublishSave(ShPost shPost) {
 		shPost.setPublished(true);
-		shPostRepository.saveAndFlush(shPost);
+		shPostRepository.saveAndFlush(shPost);		
 		this.postReferenceSave(shPost);
+		this.postDraftDelete(shPost.getId());
+		
 	}
 
 	public void postUnpublishSave(ShPost shPost) {
 		shPost.setPublished(false);
 		shPostRepository.saveAndFlush(shPost);
 		this.postReferenceSave(shPost);
+		this.postDraftDelete(shPost.getId());
 	}
 
+	private void postDraftDelete(String id) {
+		shPostDraftRepository.delete(id);
+	}
 	public void postDraftSave(ShPost shPost) {
 		if (shPost.getId() == null) {
 			this.postUnpublishSave(shPost);
@@ -431,20 +454,40 @@ public class ShPostAPI {
 			if (shPost.isPublished()) {
 				ShPost shPostEdit = shPostRepository.findById(shPost.getId()).orElse(null);
 				if (shPostEdit != null) {
-					ShPostExchange postDraft = shPostExport.exportShPostDraft(shPost);
 					ObjectMapper mapper = new ObjectMapper();
-					String shPostJSON;
 					try {
-						shPostJSON = mapper.writeValueAsString(postDraft);
-
-						shPostEdit.setDraft(shPostJSON);
-
-						shPostRepository.saveAndFlush(shPostEdit);
-
+						String jsonInString = mapper.writeValueAsString(shPost);
+						ShPostDraft shPostDraft = mapper.readValue(jsonInString, ShPostDraft.class);
+						Set<ShPostDraftAttr> shPostAttrs = shPostDraft.getShPostAttrs();
+						for (ShPostDraftAttr shPostAttr : shPostAttrs) {
+							shPostAttr.setShPost(shPostDraft);
+							this.updateRelatorParentDraft(shPostAttr, shPostDraft);
+						}
+						
+						shPostDraftRepository.saveAndFlush(shPostDraft);
+						
 					} catch (JsonProcessingException e) {
-						logger.error("postDraft Save: ", e);
-
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
+					
+					/*
+					 * ShPostExchange postDraft = shPostExport.exportShPostDraft(shPost);
+					 * ObjectMapper mapper = new ObjectMapper(); 
+					 * String shPostJSON; try { shPostJSON
+					 * = mapper.writeValueAsString(postDraft);
+					 * 
+					 * shPostEdit.setDraft(shPostJSON);
+					 * 
+					 * shPostRepository.saveAndFlush(shPostEdit);
+					 * 
+					 * } catch (JsonProcessingException e) { logger.error("postDraft Save: ", e);
+					 * 
+					 * }
+					 */
 				}
 			} else {
 				this.postUnpublishSave(shPost);
@@ -458,6 +501,16 @@ public class ShPostAPI {
 			for (ShPostAttr shChildrenPostAttr : shRelatorItem.getShChildrenPostAttrs()) {
 				shChildrenPostAttr.setShParentRelatorItem(shRelatorItem);
 				this.updateRelatorParent(shChildrenPostAttr, shPost);
+			}
+		}
+	}
+	
+	private void updateRelatorParentDraft(ShPostDraftAttr shPostAttr, ShPostDraft shPost) {
+		for (ShRelatorItemDraft shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
+			shRelatorItem.setShParentPostAttr(shPostAttr);
+			for (ShPostDraftAttr shChildrenPostAttr : shRelatorItem.getShChildrenPostAttrs()) {
+				shChildrenPostAttr.setShParentRelatorItem(shRelatorItem);
+				this.updateRelatorParentDraft(shChildrenPostAttr, shPost);
 			}
 		}
 	}

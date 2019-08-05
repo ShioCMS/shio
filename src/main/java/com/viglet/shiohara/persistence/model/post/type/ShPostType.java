@@ -29,6 +29,7 @@ import com.viglet.shiohara.api.ShJsonView;
 import com.viglet.shiohara.object.ShObjectType;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
+import com.viglet.shiohara.persistence.model.post.ShPostDraft;
 import com.viglet.shiohara.post.type.ShSystemPostType;
 
 import java.util.HashSet;
@@ -46,7 +47,7 @@ import javax.persistence.PrimaryKeyJoinColumn;
  */
 @Entity
 @NamedQuery(name = "ShPostType.findAll", query = "SELECT s FROM ShPostType s")
-@JsonIgnoreProperties({ "shPosts", "shPostAttrs","shPostAttrRefs", "shGroups" })
+@JsonIgnoreProperties({ "shPosts", "shPostDrafts", "shPostAttrs", "shPostDraftAttrs", "shPostAttrRefs", "shPostDraftAttrRefs", "shGroups", "$$_hibernate_interceptor", "hibernateLazyInitializer" })
 @PrimaryKeyJoinColumn(name = "object_id")
 public class ShPostType extends ShObject {
 	private static final long serialVersionUID = 1L;
@@ -64,6 +65,9 @@ public class ShPostType extends ShObject {
 	@OneToMany(mappedBy = "shPostType", orphanRemoval = true, fetch = FetchType.LAZY)
 	private Set<ShPost> shPosts = new HashSet<ShPost>();
 
+	@OneToMany(mappedBy = "shPostType", orphanRemoval = true, fetch = FetchType.LAZY)
+	private Set<ShPostDraft> shPostDrafts = new HashSet<ShPostDraft>();
+
 	// bi-directional many-to-one association to ShPostTypeAttr
 	@OneToMany(mappedBy = "shPostType", orphanRemoval = true, fetch = FetchType.LAZY)
 	@Cascade({ CascadeType.ALL })
@@ -72,7 +76,7 @@ public class ShPostType extends ShObject {
 	private Set<ShPostTypeAttr> shPostTypeAttrs = new HashSet<ShPostTypeAttr>();
 
 	private String workflowPublishEntity;
-	
+
 	public ShPostType() {
 		this.setObjectType(ShObjectType.POST_TYPE);
 	}
@@ -113,6 +117,17 @@ public class ShPostType extends ShObject {
 		this.shPosts.clear();
 		if (shPosts != null) {
 			this.shPosts.addAll(shPosts);
+		}
+	}
+
+	public Set<ShPostDraft> getShPostDrafts() {
+		return this.shPostDrafts;
+	}
+
+	public void setShPostDrafts(Set<ShPostDraft> shPostDrafts) {
+		this.shPostDrafts.clear();
+		if (shPostDrafts != null) {
+			this.shPostDrafts.addAll(shPostDrafts);
 		}
 	}
 
@@ -162,14 +177,14 @@ public class ShPostType extends ShObject {
 	public void setSystem(byte system) {
 		this.system = system;
 	}
-	
+
 	@Override
 	public String getObjectType() {
 		return ShObjectType.POST_TYPE;
 	}
 
 	@Override
-	public void setObjectType(String objectType) {		
+	public void setObjectType(String objectType) {
 		super.setObjectType(ShObjectType.POST_TYPE);
 	}
 
@@ -181,6 +196,4 @@ public class ShPostType extends ShObject {
 		this.workflowPublishEntity = workflowPublishEntity;
 	}
 
-	
-	
 }

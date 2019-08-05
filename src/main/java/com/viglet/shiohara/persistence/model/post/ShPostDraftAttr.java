@@ -25,11 +25,10 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.hibernate.search.annotations.Field;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.viglet.shiohara.persistence.model.object.ShObject;
-import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
+import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItemDraft;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 
 import java.util.Date;
@@ -55,9 +54,9 @@ import javax.persistence.TemporalType;
  * 
  */
 @Entity
-@NamedQuery(name = "ShPostAttr.findAll", query = "SELECT s FROM ShPostAttr s")
+@NamedQuery(name = "ShPostDraftAttr.findAll", query = "SELECT pda FROM ShPostDraftAttr pda")
 @JsonIgnoreProperties({ "shPostType", "shPost", "shParentRelatorItem", "tab" })
-public class ShPostAttr implements Serializable {
+public class ShPostDraftAttr implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -74,13 +73,12 @@ public class ShPostAttr implements Serializable {
 	@Column(name = "int_value")
 	private int intValue;
 
-	@Field
 	@Column(name = "str_value", length = 5 * 1024 * 1024) // 5Mb
 	private String strValue;
 
 	@ElementCollection
 	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
-	@CollectionTable(name = "sh_post_attr_array_value")
+	@CollectionTable(name = "sh_post_draft_attr_array_value")
 	@JoinColumn(name = "post_attr_id")
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Set<String> arrayValue = new HashSet<String>();
@@ -98,12 +96,12 @@ public class ShPostAttr implements Serializable {
 	@OneToMany(mappedBy = "shParentPostAttr", orphanRemoval = true, fetch = FetchType.LAZY)
 	@Cascade({ CascadeType.ALL })
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	private Set<ShRelatorItem> shChildrenRelatorItems = new HashSet<ShRelatorItem>();
+	private Set<ShRelatorItemDraft> shChildrenRelatorItems = new HashSet<ShRelatorItemDraft>();
 
 	// bi-directional many-to-one association to ShPost
 	@ManyToOne(fetch = FetchType.LAZY) // (cascade = {CascadeType.ALL})
 	@JoinColumn(name = "post_id")
-	private ShPost shPost;
+	private ShPostDraft shPost;
 
 	// bi-directional many-to-one association to ShPostTypeAttr
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -114,7 +112,7 @@ public class ShPostAttr implements Serializable {
 	// TODO: Change name of Column
 	@ManyToOne(fetch = FetchType.LAZY) // (cascade = {CascadeType.ALL})
 	@JoinColumn(name = "post_attr_id")
-	private ShRelatorItem shParentRelatorItem;
+	private ShRelatorItemDraft shParentRelatorItem;
 
 	public ShObject getReferenceObject() {
 		return referenceObject;
@@ -124,7 +122,7 @@ public class ShPostAttr implements Serializable {
 		this.referenceObject = referenceObject;
 	}
 
-	public ShPostAttr() {
+	public ShPostDraftAttr() {
 	}
 
 	public String getId() {
@@ -178,11 +176,11 @@ public class ShPostAttr implements Serializable {
 		this.type = type;
 	}
 
-	public ShPost getShPost() {
+	public ShPostDraft getShPost() {
 		return this.shPost;
 	}
 
-	public void setShPost(ShPost shPost) {
+	public void setShPost(ShPostDraft shPost) {
 		this.shPost = shPost;
 	}
 
@@ -194,22 +192,22 @@ public class ShPostAttr implements Serializable {
 		this.shPostTypeAttr = shPostTypeAttr;
 	}
 
-	public Set<ShRelatorItem> getShChildrenRelatorItems() {
+	public Set<ShRelatorItemDraft> getShChildrenRelatorItems() {
 		return shChildrenRelatorItems;
 	}
 
-	public void setShChildrenRelatorItems(Set<ShRelatorItem> shChildrenRelatorItems) {
+	public void setShChildrenRelatorItems(Set<ShRelatorItemDraft> shChildrenRelatorItems) {
 		this.shChildrenRelatorItems.clear();
 		if (shChildrenRelatorItems != null) {
 			this.shChildrenRelatorItems.addAll(shChildrenRelatorItems);
 		}
 	}
 
-	public ShRelatorItem getShParentRelatorItem() {
+	public ShRelatorItemDraft getShParentRelatorItem() {
 		return shParentRelatorItem;
 	}
 
-	public void setShParentRelatorItem(ShRelatorItem shParentRelatorItem) {
+	public void setShParentRelatorItem(ShRelatorItemDraft shParentRelatorItem) {
 		this.shParentRelatorItem = shParentRelatorItem;
 	}
 

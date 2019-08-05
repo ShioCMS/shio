@@ -22,14 +22,12 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.viglet.shiohara.object.ShObjectType;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
-import com.viglet.shiohara.persistence.model.object.ShObject;
+import com.viglet.shiohara.persistence.model.object.ShObjectDraft;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 
 import java.util.HashSet;
@@ -47,40 +45,35 @@ import javax.persistence.PrimaryKeyJoinColumn;
  * The persistent class for the ShPost database table.
  * 
  */
-@Indexed
 @Entity
-@NamedQuery(name = "ShPost.findAll", query = "SELECT s FROM ShPost s")
+@NamedQuery(name = "ShPostDraft.findAll", query = "SELECT pd FROM ShPostDraft pd")
 @PrimaryKeyJoinColumn(name = "object_id")
 @JsonIgnoreProperties({ "shPostAttrRefs", "shGroups", "shPostDraftAttrRefs" })
-public class ShPost extends ShObject {
+public class ShPostDraft extends ShObjectDraft {
 	private static final long serialVersionUID = 1L;
 
-	@Field(store = Store.YES)
 	private String summary;
 
 	@Field(store = Store.YES)
 	private String title;
 
 	// bi-directional many-to-one association to ShPostType
-	@IndexedEmbedded
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "post_type_id")
 	private ShPostType shPostType;
 
 	// bi-directional many-to-one association to ShFolder
-	@IndexedEmbedded
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "folder_id")
 	private ShFolder shFolder;
 
 	// bi-directional many-to-one association to ShPostAttr
-	@IndexedEmbedded
 	@OneToMany(mappedBy = "shPost", orphanRemoval = true, fetch = FetchType.LAZY)
 	@Cascade({CascadeType.ALL})
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	private Set<ShPostAttr> shPostAttrs = new HashSet<ShPostAttr>();
+	private Set<ShPostDraftAttr> shPostAttrs = new HashSet<ShPostDraftAttr>();
 	
-	public ShPost() {
+	public ShPostDraft() {
 		this.setObjectType(ShObjectType.POST);
 	}
 
@@ -108,25 +101,25 @@ public class ShPost extends ShObject {
 		this.shPostType = shPostType;
 	}
 
-	public Set<ShPostAttr> getShPostAttrs() {
+	public Set<ShPostDraftAttr> getShPostAttrs() {
 		return this.shPostAttrs;
 	}
 
-	public void setShPostAttrs(Set<ShPostAttr> shPostAttrs) {
+	public void setShPostAttrs(Set<ShPostDraftAttr> shPostAttrs) {
 		this.shPostAttrs.clear();
 		if (shPostAttrs != null) {
 			this.shPostAttrs.addAll(shPostAttrs);
 		}
 	}
 
-	public ShPostAttr addShPostAttr(ShPostAttr shPostAttr) {
+	public ShPostDraftAttr addShPostAttr(ShPostDraftAttr shPostAttr) {
 		getShPostAttrs().add(shPostAttr);
 		shPostAttr.setShPost(this);
 
 		return shPostAttr;
 	}
 
-	public ShPostAttr removeShPostAttr(ShPostAttr shPostAttr) {
+	public ShPostDraftAttr removeShPostAttr(ShPostDraftAttr shPostAttr) {
 		getShPostAttrs().remove(shPostAttr);
 		shPostAttr.setShPost(null);
 

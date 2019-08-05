@@ -31,6 +31,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
+import com.viglet.shiohara.persistence.model.post.ShPostDraftAttr;
 import com.viglet.shiohara.persistence.model.widget.ShWidget;
 
 import java.util.HashSet;
@@ -42,7 +43,7 @@ import java.util.Set;
  */
 @Entity
 @NamedQuery(name = "ShPostTypeAttr.findAll", query = "SELECT s FROM ShPostTypeAttr s")
-@JsonIgnoreProperties({ "shPostAttrs" })
+@JsonIgnoreProperties({ "shPostAttrs", "shPostDraftAttrs", "$$_hibernate_interceptor", "hibernateLazyInitializer" })
 // Removed shPostType ignore, because it is used in JSON from new Post
 public class ShPostTypeAttr implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -77,6 +78,10 @@ public class ShPostTypeAttr implements Serializable {
 	@Cascade({ CascadeType.ALL })
 	private Set<ShPostAttr> shPostAttrs = new HashSet<ShPostAttr>();
 
+	@OneToMany(mappedBy = "shPostTypeAttr", fetch = FetchType.LAZY)
+	@Cascade({ CascadeType.ALL })
+	private Set<ShPostDraftAttr> shPostDraftAttrs = new HashSet<ShPostDraftAttr>();
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "postType_id")
 	@JsonView({ ShJsonView.ShJsonViewPostTypeAttr.class })
@@ -90,7 +95,7 @@ public class ShPostTypeAttr implements Serializable {
 
 	@Column(name = "widget_settings", length = 5 * 1024 * 1024) // 5Mb
 	private String widgetSettings;
-	
+
 	// bi-directional many-to-one association to ShPostTypeAttr
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "parent_relator_id")
@@ -182,6 +187,17 @@ public class ShPostTypeAttr implements Serializable {
 		this.shPostAttrs.clear();
 		if (shPostAttrs != null) {
 			this.shPostAttrs.addAll(shPostAttrs);
+		}
+	}
+
+	public Set<ShPostDraftAttr> getShPostDraftAttrs() {
+		return this.shPostDraftAttrs;
+	}
+
+	public void setShPostDraftAttrs(Set<ShPostDraftAttr> shPostDraftAttrs) {
+		this.shPostDraftAttrs.clear();
+		if (shPostDraftAttrs != null) {
+			this.shPostDraftAttrs.addAll(shPostDraftAttrs);
 		}
 	}
 
