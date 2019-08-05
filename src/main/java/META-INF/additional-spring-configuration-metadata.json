@@ -1,5 +1,12 @@
-{"properties": [{
-  "name": "info.app.version",
-  "type": "java.lang.String",
-  "description": "A description for 'info.app.version'"
-}]}
+{"properties": [
+  {
+    "name": "info.app.version",
+    "type": "java.lang.String",
+    "description": "A description for 'info.app.version'"
+  },
+  {
+    "name": "shiohara.mgmt.enabled",
+    "type": "java.lang.Boolean",
+    "description": "Define if is Mgmt'"
+  }
+]}

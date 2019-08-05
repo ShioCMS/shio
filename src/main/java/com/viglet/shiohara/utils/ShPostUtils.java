@@ -52,9 +52,7 @@ import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.post.ShPostDraft;
-import com.viglet.shiohara.persistence.model.post.ShPostDraftAttr;
 import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
-import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItemDraft;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.model.reference.ShReference;
@@ -67,7 +65,6 @@ import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostDraftAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostDraftRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
-import com.viglet.shiohara.persistence.repository.post.relator.ShRelatorItemDraftRepository;
 import com.viglet.shiohara.persistence.repository.post.relator.ShRelatorItemRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
@@ -107,8 +104,6 @@ public class ShPostUtils {
 	private ShObjectUtils shObjectUtils;
 	@Autowired
 	private ShRelatorItemRepository shRelatorItemRepository;
-	@Autowired
-	private ShRelatorItemDraftRepository shRelatorItemDraftRepository;
 	@Autowired
 	private ShPostTypeAttrRepository shPostTypeAttrRepository;
 	@Autowired
@@ -487,10 +482,7 @@ public class ShPostUtils {
 		if (!shPostOptional.isPresent())
 			return null;
 
-		ShPost shPost = shPostOptional.get();
-		System.out.println("A: " + getPostPublished);
-		System.out.println("B: " + shPost.isPublished());
-		System.out.println("C: " + shPostDraftOptional.isPresent());
+		ShPost shPost = shPostOptional.get();	
 
 		if (!getPostPublished && shPost.isPublished() && shPostDraftOptional.isPresent()) {
 			ShPost shPostDraft = loadPostDraft(shPostDraftOptional.get());
@@ -498,7 +490,6 @@ public class ShPostUtils {
 				shPost = shPostDraft;
 			}
 		} else {
-			System.out.println("Get Publish Content");
 			logger.debug("Get Publish Content");
 			shPost.setShPostAttrs(shPostAttrRepository.findByShPostAll(shPost));
 			this.loadPostAttribs(shPost.getShPostAttrs());
@@ -509,7 +500,6 @@ public class ShPostUtils {
 	}
 
 	private ShPost loadPostDraft(ShPostDraft shPostDraft) {
-		System.out.println("Get Draft");
 		logger.debug("Get Draft");
 		ShPost shPost = null;
 		if (shPostDraft != null) {
@@ -517,11 +507,9 @@ public class ShPostUtils {
 			ObjectMapper mapper = new ObjectMapper();
 			try {
 				shPostDraft.setShPostAttrs(shPostDraftAttrRepository.findByShPostAll(shPostDraft));
-				//this.loadPostDraftAttribs(shPostDraft.getShPostAttrs());
 				String jsonInString = mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 						.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
 						.writerWithView(ShJsonView.ShJsonViewObject.class).writeValueAsString(shPostDraft);
-				System.out.println("Json: " + jsonInString);
 				shPost = mapper.readValue(jsonInString, ShPost.class);
 				this.loadPostDraftAttribs2(shPost.getShPostAttrs());
 				

@@ -39,11 +39,11 @@ public class ShNavigationComponent {
 	private ShFolderRepository shFolderRepository;
 	@Autowired
 	private ShObjectUtils shObjectUtils;
-
+	
 	public List<ShFolder> navigation(String siteName, boolean home) {
 		ShSite shSite = shSiteRepository.findByName(siteName);
 		ShFolder homeFolder = shFolderRepository.findByShSiteAndName(shSite, "Home");
-		List<ShFolder> shFolders = new ArrayList<ShFolder>();
+				List<ShFolder> shFolders = new ArrayList<ShFolder>();
 		if (home) {
 			if (shObjectUtils.isVisiblePage(homeFolder)) {
 				shFolders.add(homeFolder);

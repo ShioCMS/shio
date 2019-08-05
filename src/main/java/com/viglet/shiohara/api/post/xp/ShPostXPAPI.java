@@ -31,6 +31,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
 import com.viglet.shiohara.bean.xp.ShPostXP;
 import com.viglet.shiohara.persistence.model.post.ShPost;
+import com.viglet.shiohara.property.ShMgmtProperties;
 import com.viglet.shiohara.utils.ShPostUtils;
 
 import io.swagger.annotations.Api;
@@ -45,12 +46,13 @@ import io.swagger.annotations.Api;
 @RequestMapping("/api/v2/post/xp")
 @Api(tags = "Post XP", description = "Post XP API")
 public class ShPostXPAPI {
-
 	@SuppressWarnings("unused")
 	private static final Log logger = LogFactory.getLog(ShPostXPAPI.class);
 
 	@Autowired
 	private ShPostUtils shPostUtils;
+	@Autowired
+	private ShMgmtProperties shMgmtProperties;
 
 	/**
 	 * Post XP Edit API
@@ -61,6 +63,8 @@ public class ShPostXPAPI {
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShPostXP shPostEdit(@PathVariable String id, Principal principal) {
+		
+		System.out.println("Mgmt: " + shMgmtProperties.isEnabled());
 		ShPostXP shPostXP = new ShPostXP();
 
 		ShPost shPost = shPostUtils.loadLazyPost(id, false);

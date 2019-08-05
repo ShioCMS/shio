@@ -65,6 +65,7 @@ import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.persistence.repository.reference.ShReferenceRepository;
 import com.viglet.shiohara.post.type.ShSystemPostType;
+import com.viglet.shiohara.property.ShMgmtProperties;
 import com.viglet.shiohara.turing.ShTuringIntegration;
 import com.viglet.shiohara.url.ShURLFormatter;
 import com.viglet.shiohara.utils.ShPostUtils;
@@ -110,7 +111,7 @@ public class ShPostAPI {
 	private ShTuringIntegration shTuringIntegration;
 	@Autowired
 	private ShCacheObject shCacheObject;
-
+	 
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShPost> shPostList() {

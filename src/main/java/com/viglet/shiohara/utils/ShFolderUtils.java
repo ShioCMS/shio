@@ -46,6 +46,7 @@ import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.persistence.repository.reference.ShReferenceRepository;
 import com.viglet.shiohara.post.type.ShSystemPostType;
+import com.viglet.shiohara.property.ShMgmtProperties;
 import com.viglet.shiohara.turing.ShTuringIntegration;
 import com.viglet.shiohara.url.ShURLScheme;
 
@@ -65,7 +66,9 @@ public class ShFolderUtils {
 	private ShTuringIntegration shTuringIntegration;
 	@Autowired
 	private ShPostTypeRepository shPostTypeRepository;
-
+	@Autowired
+	private ShMgmtProperties shMgmtProperties;
+	
 	public ShFolder getParentFolder(String shFolderId) {
 		ShFolder shFolder = shFolderRepository.findById(shFolderId).get();
 		shFolder.getParentFolder();

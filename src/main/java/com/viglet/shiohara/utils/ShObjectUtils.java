@@ -30,6 +30,7 @@ import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.object.ShObjectRepository;
+import com.viglet.shiohara.property.ShMgmtProperties;
 
 @Component
 public class ShObjectUtils {
@@ -39,7 +40,9 @@ public class ShObjectUtils {
 	private ShObjectRepository shObjectRepository;
 	@Autowired
 	private ShPostUtils shPostUtils;
-
+	@Autowired
+	private ShMgmtProperties shMgmtProperties;
+	
 	public boolean isVisiblePage(ShObject shObject) {
 		ShFolder shFolder = null;
 		if (shObject instanceof ShFolder) {
