@@ -21,13 +21,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 
@@ -52,7 +47,6 @@ import com.viglet.shiohara.persistence.model.post.ShPostDraftAttr;
 import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
 import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItemDraft;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
-import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.model.reference.ShReference;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -63,7 +57,6 @@ import com.viglet.shiohara.object.ShObjectPublishStatus;
 import com.viglet.shiohara.persistence.model.auth.ShUser;
 import com.viglet.shiohara.persistence.model.history.ShHistory;
 import com.viglet.shiohara.persistence.model.post.ShPost;
-import com.viglet.shiohara.persistence.repository.auth.ShGroupRepository;
 import com.viglet.shiohara.persistence.repository.auth.ShUserRepository;
 import com.viglet.shiohara.persistence.repository.history.ShHistoryRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
@@ -101,8 +94,6 @@ public class ShPostAPI {
 	private ShPostAttrRepository shPostAttrRepository;
 	@Autowired
 	private ShUserRepository shUserRepository;
-	@Autowired
-	private ShGroupRepository shGroupRepository;
 	@Autowired
 	private ShStaticFileUtils shStaticFileUtils;
 	@Autowired
@@ -143,126 +134,13 @@ public class ShPostAPI {
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShPost shPostEdit(@PathVariable String id, Principal principal) {
 		ShPost shPost = shPostUtils.loadLazyPost(id, false);
-		this.syncWithPostType(shPost);
+		shPostUtils.syncWithPostType(shPost);
 
-		shPost.setAllowPublish(this.allowPublish(shPost.getShPostType(), principal));
 		return shPost;
 	}
 
-	private boolean allowPublish(ShPostType shPostType, Principal principal) {
-		if (principal == null || (shPostType != null && StringUtils.isEmpty(shPostType.getWorkflowPublishEntity()))) {
-			return true;
-		} else {
-			ShUser shUser = shUserRepository.findByUsername(principal.getName());
-			List<ShUser> shUsers = new ArrayList<>();
-			shUsers.add(shUser);
 
-			if (shPostType != null && !StringUtils.isEmpty(shPostType.getWorkflowPublishEntity())
-					&& shGroupRepository.countByNameAndShUsersIn(shPostType.getWorkflowPublishEntity(), shUsers) > 0)
-				return true;
-			else
-				return false;
-		}
 
-	}
-
-	/**
-	 * Sync with Post Type
-	 * 
-	 * @param shPost
-	 */
-	private void syncWithPostType(ShPost shPost) {
-		if (shPost != null) {
-			Set<ShPostAttr> shPostAttrs = new HashSet<ShPostAttr>();
-
-			Map<String, ShPostAttr> shPostAttrMap = this.postAttrMap(shPost);
-			Map<String, ShPostTypeAttr> shPostTypeAttrMap = this.postTypeAttrMap(shPost);
-
-			for (Entry<String, ShPostAttr> a : shPostAttrMap.entrySet()) {
-				System.out.println("AA: " + a.getKey() + ": " + a.getValue());
-				
-			}
-			
-			for (Entry<String, ShPostTypeAttr> a : shPostTypeAttrMap.entrySet()) {
-				System.out.println("BB: " + a.getKey() + ": " + a.getValue());
-				
-			}
-		    this.postAttrInPostType(shPostAttrs, shPostAttrMap, shPostTypeAttrMap);
-			this.postAttrNotInPostType(shPostAttrs, shPostAttrMap, shPostTypeAttrMap);
-
-			shPost.setShPostAttrs(shPostAttrs);
-		}
-	}
-
-	/**
-	 * Convert ShPostTypeAttr List in Map
-	 * 
-	 * @param shPost
-	 * @return
-	 */
-	private Map<String, ShPostTypeAttr> postTypeAttrMap(ShPost shPost) {
-		Map<String, ShPostTypeAttr> shPostTypeAttrMap = new HashMap<String, ShPostTypeAttr>();
-		ShPostType shPostType = shPostTypeRepository.findByName(shPost.getShPostType().getName());
-		if (shPost != null) {
-			for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs())
-				shPostTypeAttrMap.put(shPostTypeAttr.getId(), shPostTypeAttr);
-		}
-		return shPostTypeAttrMap;
-	}
-
-	/**
-	 * Convert ShPostAttr List in Map
-	 * 
-	 * @param shPost
-	 * @return Post Attribute Map
-	 */
-	private Map<String, ShPostAttr> postAttrMap(ShPost shPost) {
-
-		Map<String, ShPostAttr> shPostAttrMap = new HashMap<String, ShPostAttr>();
-		if (shPost != null) {
-			for (ShPostAttr shPostAttr : shPost.getShPostAttrs())
-				shPostAttrMap.put(shPostAttr.getShPostTypeAttr().getId(), shPostAttr);
-		}
-		return shPostAttrMap;
-	}
-
-	/**
-	 * Add new PostAttrs that not contain into Post
-	 * 
-	 * @param shPostAttrs
-	 * @param shPostAttrMap
-	 * @param shPostTypeAttrMap
-	 */
-	private void postAttrNotInPostType(Set<ShPostAttr> shPostAttrs, Map<String, ShPostAttr> shPostAttrMap,
-			Map<String, ShPostTypeAttr> shPostTypeAttrMap) {
-		for (ShPostTypeAttr shPostTypeAttr : shPostTypeAttrMap.values()) {
-			String postTypeAttrId = shPostTypeAttr.getId();
-			if (!shPostAttrMap.containsKey(postTypeAttrId)) {
-				ShPostAttr shPostAttrSync = new ShPostAttr();
-				shPostAttrSync.setShPostTypeAttr(shPostTypeAttr);
-				shPostAttrs.add(shPostAttrSync);
-			}
-		}
-	}
-
-	/**
-	 * Add only PostAttr that contains in Post Type
-	 *
-	 * @param shPostAttrs
-	 * @param shPostAttrMap
-	 * @param shPostTypeAttrMap
-	 */
-	private void postAttrInPostType(Set<ShPostAttr> shPostAttrs, Map<String, ShPostAttr> shPostAttrMap,
-			Map<String, ShPostTypeAttr> shPostTypeAttrMap) {
-		for (ShPostAttr shPostAttr : shPostAttrMap.values()) {
-			String postTypeAttrId = shPostAttr.getShPostTypeAttr().getId();
-			if (shPostTypeAttrMap.containsKey(postTypeAttrId)) {
-				ShPostAttr shPostAttrSync = new ShPostAttr();
-				shPostAttrSync.setShPostTypeAttr(shPostTypeAttrMap.get(postTypeAttrId));
-				shPostAttrs.add(shPostAttr);
-			}
-		}
-	}
 
 	@GetMapping("/attr/model")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
@@ -447,6 +325,7 @@ public class ShPostAPI {
 	private void postDraftDelete(String id) {
 		shPostDraftRepository.delete(id);
 	}
+	
 	public void postDraftSave(ShPost shPost) {
 		if (shPost.getId() == null) {
 			this.postUnpublishSave(shPost);

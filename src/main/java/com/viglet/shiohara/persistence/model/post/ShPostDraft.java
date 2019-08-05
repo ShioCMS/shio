@@ -21,8 +21,6 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Store;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.viglet.shiohara.object.ShObjectType;
@@ -54,7 +52,6 @@ public class ShPostDraft extends ShObjectDraft {
 
 	private String summary;
 
-	@Field(store = Store.YES)
 	private String title;
 
 	// bi-directional many-to-one association to ShPostType

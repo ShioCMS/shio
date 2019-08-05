@@ -33,7 +33,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -49,7 +48,7 @@ import com.viglet.shiohara.persistence.model.workflow.ShWorkflowTask;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @NamedQuery(name = "ShObject.findAll", query = "SELECT o FROM ShObject o")
-@JsonIgnoreProperties({ "shPostAttrRefs", "shGroups" })
+@JsonIgnoreProperties({ "shPostAttrRefs", "shGroups", "summary" })
 public class ShObject implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -106,9 +105,6 @@ public class ShObject implements Serializable {
 	private Set<ShWorkflowTask> shWorkflowTasks = new HashSet<>();
 
 	private String publishStatus;
-
-	@Transient
-	private boolean allowPublish;
 
 	public String getId() {
 		return this.id;
@@ -257,13 +253,4 @@ public class ShObject implements Serializable {
 			this.shWorkflowTasks.addAll(shWorkflowTasks);
 		}
 	}
-
-	public boolean isAllowPublish() {
-		return allowPublish;
-	}
-
-	public void setAllowPublish(boolean allowPublish) {
-		this.allowPublish = allowPublish;
-	}
-
 }

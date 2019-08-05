@@ -19,6 +19,7 @@ package com.viglet.shiohara.utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -39,11 +40,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.viglet.shiohara.api.ShJsonView;
 import com.viglet.shiohara.bean.ShPostTinyBean;
 import com.viglet.shiohara.object.ShObjectType;
+import com.viglet.shiohara.persistence.model.auth.ShUser;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
@@ -52,9 +55,12 @@ import com.viglet.shiohara.persistence.model.post.ShPostDraft;
 import com.viglet.shiohara.persistence.model.post.ShPostDraftAttr;
 import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
 import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItemDraft;
+import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.model.reference.ShReference;
 import com.viglet.shiohara.persistence.model.site.ShSite;
+import com.viglet.shiohara.persistence.repository.auth.ShGroupRepository;
+import com.viglet.shiohara.persistence.repository.auth.ShUserRepository;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.object.ShObjectRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
@@ -64,6 +70,7 @@ import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.relator.ShRelatorItemDraftRepository;
 import com.viglet.shiohara.persistence.repository.post.relator.ShRelatorItemRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
+import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.persistence.repository.reference.ShReferenceRepository;
 import com.viglet.shiohara.post.type.ShSystemPostType;
 import com.viglet.shiohara.widget.ShSystemWidget;
@@ -104,6 +111,12 @@ public class ShPostUtils {
 	private ShRelatorItemDraftRepository shRelatorItemDraftRepository;
 	@Autowired
 	private ShPostTypeAttrRepository shPostTypeAttrRepository;
+	@Autowired
+	private ShPostTypeRepository shPostTypeRepository;
+	@Autowired
+	private ShUserRepository shUserRepository;
+	@Autowired
+	private ShGroupRepository shGroupRepository;
 
 	public JSONObject toJSON(ShPost shPost) {
 		JSONObject shPostItemAttrs = new JSONObject();
@@ -504,12 +517,14 @@ public class ShPostUtils {
 			ObjectMapper mapper = new ObjectMapper();
 			try {
 				shPostDraft.setShPostAttrs(shPostDraftAttrRepository.findByShPostAll(shPostDraft));
-				this.loadPostDraftAttribs(shPostDraft.getShPostAttrs());
-				String jsonInString = mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+				//this.loadPostDraftAttribs(shPostDraft.getShPostAttrs());
+				String jsonInString = mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+						.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
 						.writerWithView(ShJsonView.ShJsonViewObject.class).writeValueAsString(shPostDraft);
 				System.out.println("Json: " + jsonInString);
 				shPost = mapper.readValue(jsonInString, ShPost.class);
-
+				this.loadPostDraftAttribs2(shPost.getShPostAttrs());
+				
 			} catch (JsonProcessingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -543,30 +558,129 @@ public class ShPostUtils {
 				}
 			}
 		}
-
 	}
 
-	private void loadPostDraftAttribs(Set<ShPostDraftAttr> shPostAttrs) {
-		for (ShPostDraftAttr shPostAttr : shPostAttrs) {
-			shPostAttr.setShChildrenRelatorItems(shRelatorItemDraftRepository.findByShParentPostAttr(shPostAttr));
-			shPostAttr.getShPostTypeAttr().setShPostTypeAttrs(
-					shPostTypeAttrRepository.findByShParentPostTypeAttr(shPostAttr.getShPostTypeAttr()));
+	private void loadPostDraftAttribs2(Set<ShPostAttr> shPostAttrs) {
+		for (ShPostAttr shPostAttr : shPostAttrs) {
 			if (shPostAttr.getReferenceObject() != null) {
-				if (shPostAttr.getReferenceObject() instanceof ShPost) {
+				if (shPostAttr.getReferenceObject().getObjectType().equals(ShObjectType.POST)) {
 					shPostAttr.setReferenceObject(
 							shPostRepository.findByIdFull(shPostAttr.getReferenceObject().getId()).orElse(null));
-				} else if (shPostAttr.getReferenceObject() instanceof ShFolder) {
+				} else if (shPostAttr.getReferenceObject().getObjectType().equals(ShObjectType.FOLDER)) {
 					shPostAttr.setReferenceObject(
 							shFolderRepository.findById(shPostAttr.getReferenceObject().getId()).orElse(null));
 				}
 			}
 			if (shPostAttr.getShChildrenRelatorItems().size() > 0) {
-				for (ShRelatorItemDraft shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
-					shRelatorItem.setShChildrenPostAttrs(
-							shPostDraftAttrRepository.findByShParentRelatorItemJoin(shRelatorItem));
-					this.loadPostDraftAttribs(shRelatorItem.getShChildrenPostAttrs());
+				for (ShRelatorItem shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
+					this.loadPostDraftAttribs2(shRelatorItem.getShChildrenPostAttrs());
 				}
 			}
+		}
+	}
+	
+	/**
+	 * Sync with Post Type
+	 * 
+	 * @param shPost
+	 */
+	public void syncWithPostType(ShPost shPost) {
+		if (shPost != null) {
+			Set<ShPostAttr> shPostAttrs = new HashSet<ShPostAttr>();
+
+			Map<String, ShPostAttr> shPostAttrMap = this.postAttrMap(shPost);
+			Map<String, ShPostTypeAttr> shPostTypeAttrMap = this.postTypeAttrMap(shPost);
+
+			this.postAttrInPostType(shPostAttrs, shPostAttrMap, shPostTypeAttrMap);
+			this.postAttrNotInPostType(shPostAttrs, shPostAttrMap, shPostTypeAttrMap);
+
+			shPost.setShPostAttrs(shPostAttrs);
+		}
+	}
+
+	/**
+	 * Convert ShPostTypeAttr List in Map
+	 * 
+	 * @param shPost
+	 * @return
+	 */
+	private Map<String, ShPostTypeAttr> postTypeAttrMap(ShPost shPost) {
+		Map<String, ShPostTypeAttr> shPostTypeAttrMap = new HashMap<String, ShPostTypeAttr>();
+		ShPostType shPostType = shPostTypeRepository.findByName(shPost.getShPostType().getName());
+		if (shPost != null) {
+			for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs())
+				shPostTypeAttrMap.put(shPostTypeAttr.getId(), shPostTypeAttr);
+		}
+		return shPostTypeAttrMap;
+	}
+
+	/**
+	 * Convert ShPostAttr List in Map
+	 * 
+	 * @param shPost
+	 * @return Post Attribute Map
+	 */
+	private Map<String, ShPostAttr> postAttrMap(ShPost shPost) {
+
+		Map<String, ShPostAttr> shPostAttrMap = new HashMap<String, ShPostAttr>();
+		if (shPost != null) {
+			for (ShPostAttr shPostAttr : shPost.getShPostAttrs())
+				shPostAttrMap.put(shPostAttr.getShPostTypeAttr().getId(), shPostAttr);
+		}
+		return shPostAttrMap;
+	}
+
+	/**
+	 * Add new PostAttrs that not contain into Post
+	 * 
+	 * @param shPostAttrs
+	 * @param shPostAttrMap
+	 * @param shPostTypeAttrMap
+	 */
+	private void postAttrNotInPostType(Set<ShPostAttr> shPostAttrs, Map<String, ShPostAttr> shPostAttrMap,
+			Map<String, ShPostTypeAttr> shPostTypeAttrMap) {
+		for (ShPostTypeAttr shPostTypeAttr : shPostTypeAttrMap.values()) {
+			String postTypeAttrId = shPostTypeAttr.getId();
+			if (!shPostAttrMap.containsKey(postTypeAttrId)) {
+				ShPostAttr shPostAttrSync = new ShPostAttr();
+				shPostAttrSync.setShPostTypeAttr(shPostTypeAttr);
+				shPostAttrs.add(shPostAttrSync);
+			}
+		}
+	}
+
+	/**
+	 * Add only PostAttr that contains in Post Type
+	 *
+	 * @param shPostAttrs
+	 * @param shPostAttrMap
+	 * @param shPostTypeAttrMap
+	 */
+	private void postAttrInPostType(Set<ShPostAttr> shPostAttrs, Map<String, ShPostAttr> shPostAttrMap,
+			Map<String, ShPostTypeAttr> shPostTypeAttrMap) {
+		for (ShPostAttr shPostAttr : shPostAttrMap.values()) {
+			String postTypeAttrId = shPostAttr.getShPostTypeAttr().getId();
+			if (shPostTypeAttrMap.containsKey(postTypeAttrId)) {
+				ShPostAttr shPostAttrSync = new ShPostAttr();
+				shPostAttrSync.setShPostTypeAttr(shPostTypeAttrMap.get(postTypeAttrId));
+				shPostAttrs.add(shPostAttr);
+			}
+		}
+	}
+
+	public boolean allowPublish(ShPostType shPostType, Principal principal) {
+		if (principal == null || (shPostType != null && StringUtils.isEmpty(shPostType.getWorkflowPublishEntity()))) {
+			return true;
+		} else {
+			ShUser shUser = shUserRepository.findByUsername(principal.getName());
+			List<ShUser> shUsers = new ArrayList<>();
+			shUsers.add(shUser);
+
+			if (shPostType != null && !StringUtils.isEmpty(shPostType.getWorkflowPublishEntity())
+					&& shGroupRepository.countByNameAndShUsersIn(shPostType.getWorkflowPublishEntity(), shUsers) > 0)
+				return true;
+			else
+				return false;
 		}
 
 	}

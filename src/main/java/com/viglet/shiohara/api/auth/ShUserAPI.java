@@ -80,11 +80,13 @@ public class ShUserAPI {
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShUser shUserEdit(@PathVariable String username) {
 		ShUser shUser = shUserRepository.findByUsername(username);
-		shUser.setPassword(null);
-		List<ShUser> shUsers = new ArrayList<>();
-		shUsers.add(shUser);
-		shUser.setShGroups(shGroupRepository.findByShUsersIn(shUsers));
-		return shUserRepository.findByUsername(username);
+		if (shUser != null) {
+			shUser.setPassword(null);
+			List<ShUser> shUsers = new ArrayList<>();
+			shUsers.add(shUser);
+			shUser.setShGroups(shGroupRepository.findByShUsersIn(shUsers));
+		}
+		return shUser;
 	}
 
 	@PutMapping("/{username}")
