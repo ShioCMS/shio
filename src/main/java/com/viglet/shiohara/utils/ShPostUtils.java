@@ -21,8 +21,6 @@ import java.io.File;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,7 +32,6 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,6 +49,7 @@ import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.post.ShPostDraft;
+import com.viglet.shiohara.persistence.model.post.ShPostDraftAttr;
 import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
@@ -101,8 +99,6 @@ public class ShPostUtils {
 	@Autowired
 	private ShReferenceRepository shReferenceRepository;
 	@Autowired
-	private ShObjectUtils shObjectUtils;
-	@Autowired
 	private ShRelatorItemRepository shRelatorItemRepository;
 	@Autowired
 	private ShPostTypeAttrRepository shPostTypeAttrRepository;
@@ -112,105 +108,6 @@ public class ShPostUtils {
 	private ShUserRepository shUserRepository;
 	@Autowired
 	private ShGroupRepository shGroupRepository;
-
-	public JSONObject toJSON(ShPost shPost) {
-		JSONObject shPostItemAttrs = new JSONObject();
-
-		JSONObject shPostObject = new JSONObject();
-		shPostObject.put("id", shPost.getId());
-		shPostObject.put("postTypeName", shPost.getShPostType().getName());
-		shPostObject.put("title", shPost.getTitle());
-		shPostObject.put("summary", shPost.getSummary());
-		shPostObject.put("link", this.generatePostLink(shPost));
-		shPostObject.put("parentFolder", shPost.getShFolder().getId());
-		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
-			if (shPostAttr.getShPostTypeAttr().getName() != null) {
-				shPostItemAttrs.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
-			}
-		}
-
-		shPostItemAttrs.put("system", shPostObject);
-
-		return shPostItemAttrs;
-	}
-
-	public Map<String, Object> toSystemMap(ShPost shPost) {
-		Map<String, Object> shPostItemAttrs = new HashMap<>();
-
-		Map<String, Object> shPostObject = new HashMap<>();
-		shPostObject.put("id", shPost.getId());
-		shPostObject.put("postTypeName", shPost.getShPostType().getName());
-		shPostObject.put("title", shPost.getTitle());
-		shPostObject.put("summary", shPost.getSummary());
-		shPostObject.put("link", this.generatePostLink(shPost));
-		shPostObject.put("parentFolder", shPost.getShFolder().getId());
-		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
-			if (shPostAttr.getShPostTypeAttr().getName() != null) {
-				shPostItemAttrs.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
-			}
-		}
-
-		shPostItemAttrs.put("system", shPostObject);
-
-		return shPostItemAttrs;
-	}
-
-	public Map<String, ShPostAttr> toMap(String postId) {
-
-		return this.postToMap(shPostRepository.findById(postId).get());
-	}
-
-	public Map<String, ShPostAttr> postToMap(ShPost shPost) {
-
-		if (shPost != null) {
-			Set<ShPostAttr> shPostAttrList = shPostAttrRepository.findByShPost(shPost);
-
-			Map<String, ShPostAttr> shPostMap = new HashMap<String, ShPostAttr>();
-			ShPostAttr shPostAttrId = new ShPostAttr();
-			shPostAttrId.setStrValue(shPost.getId().toString());
-			shPostMap.put("id", shPostAttrId);
-			for (ShPostAttr shPostAttr : shPostAttrList)
-				shPostMap.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr);
-
-			return shPostMap;
-		} else {
-			return null;
-		}
-
-	}
-
-	public List<Map<String, ShPostAttr>> relationToMap(ShPostAttr shPostAttr) {
-
-		if (shPostAttr != null) {
-			List<Map<String, ShPostAttr>> relations = new ArrayList<Map<String, ShPostAttr>>();
-
-			Set<ShRelatorItem> shRelatorItems = shPostAttr.getShChildrenRelatorItems();
-			List<ShRelatorItem> shRelatorItemsByOrdinal = new ArrayList<ShRelatorItem>();
-			shRelatorItemsByOrdinal.addAll(shRelatorItems);
-
-			Collections.sort(shRelatorItemsByOrdinal, new Comparator<ShRelatorItem>() {
-				public int compare(ShRelatorItem o1, ShRelatorItem o2) {
-					return o1.getOrdinal() - o2.getOrdinal();
-				}
-			});
-
-			for (ShRelatorItem shRelatorItem : shRelatorItemsByOrdinal) {
-				Map<String, ShPostAttr> shRelationMap = new HashMap<String, ShPostAttr>();
-				ShPostAttr shPostAttrId = new ShPostAttr();
-				shPostAttrId.setStrValue(shRelatorItem.getId());
-				shRelationMap.put("id", shPostAttrId);
-				for (ShPostAttr shPostAttrRelation : shRelatorItem.getShChildrenPostAttrs()) {
-					shRelationMap.put(shPostAttrRelation.getShPostTypeAttr().getName(), shPostAttrRelation);
-				}
-				relations.add(shRelationMap);
-			}
-
-			return relations;
-		} else {
-			return null;
-		}
-
-	}
 
 	public ShPost copy(ShPost shPost, ShFolder shFolderDest) {
 
@@ -270,33 +167,7 @@ public class ShPostUtils {
 		return shPostCopy;
 	}
 
-	public String generatePostLink(ShPost shPost) {
-		ShFolder shFolder = shPost.getShFolder();
-		String link = null;
-		if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE.toString())) {
-			link = shStaticFileUtils.getFileSourceBase() + "/" + shFolderUtils.getSite(shFolder).getName()
-					+ shFolderUtils.folderPath(shFolder, false, true) + shPost.getTitle();
-		} else if (shObjectUtils.isVisiblePage(shPost)) {
-			link = shFolderUtils.generateFolderLink(shFolder);
-			link = link + shPost.getFurl();
-		}
-		return link;
-	}
-
-	public String generatePostLinkById(String postID) {
-		if (postID != null) {
-			try {
-				ShPost shPost = shPostRepository.findById(postID).orElse(null);
-				return this.generatePostLink(shPost);
-
-			} catch (IllegalArgumentException exception) {
-				return null;
-			}
-		} else {
-			return null;
-		}
-	}
-
+	
 	public void referencedFile(ShPostAttr shPostAttr, ShPost shPost) {
 		if (!shPost.getShPostType().getName().equals(ShSystemPostType.FILE.toString())) {
 			this.referencedPost(shPostAttr, shPost);
@@ -482,7 +353,7 @@ public class ShPostUtils {
 		if (!shPostOptional.isPresent())
 			return null;
 
-		ShPost shPost = shPostOptional.get();	
+		ShPost shPost = shPostOptional.get();
 
 		if (!getPostPublished && shPost.isPublished() && shPostDraftOptional.isPresent()) {
 			ShPost shPostDraft = loadPostDraft(shPostDraftOptional.get());
@@ -499,7 +370,7 @@ public class ShPostUtils {
 		return shPost;
 	}
 
-	private ShPost loadPostDraft(ShPostDraft shPostDraft) {
+	public ShPost loadPostDraft(ShPostDraft shPostDraft) {
 		logger.debug("Get Draft");
 		ShPost shPost = null;
 		if (shPostDraft != null) {
@@ -511,8 +382,8 @@ public class ShPostUtils {
 						.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
 						.writerWithView(ShJsonView.ShJsonViewObject.class).writeValueAsString(shPostDraft);
 				shPost = mapper.readValue(jsonInString, ShPost.class);
-				this.loadPostDraftAttribs2(shPost.getShPostAttrs());
-				
+				this.loadPostDraftAttribs(shPost.getShPostAttrs());
+
 			} catch (JsonProcessingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -522,6 +393,29 @@ public class ShPostUtils {
 			}
 		}
 		return shPost;
+	}
+
+	public ShPostAttr loadPostDraftAttr(ShPostDraftAttr shPostDraftAttr) {
+		logger.debug("Get Draft");
+		ShPostAttr shPostAttr = null;
+		if (shPostDraftAttr != null) {
+
+			ObjectMapper mapper = new ObjectMapper();
+			try {
+				String jsonInString = mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+						.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+						.writerWithView(ShJsonView.ShJsonViewObject.class).writeValueAsString(shPostDraftAttr);
+				shPostAttr = mapper.readValue(jsonInString, ShPostAttr.class);
+
+			} catch (JsonProcessingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return shPostAttr;
 	}
 
 	private void loadPostAttribs(Set<ShPostAttr> shPostAttrs) {
@@ -548,7 +442,7 @@ public class ShPostUtils {
 		}
 	}
 
-	private void loadPostDraftAttribs2(Set<ShPostAttr> shPostAttrs) {
+	private void loadPostDraftAttribs(Set<ShPostAttr> shPostAttrs) {
 		for (ShPostAttr shPostAttr : shPostAttrs) {
 			if (shPostAttr.getReferenceObject() != null) {
 				if (shPostAttr.getReferenceObject().getObjectType().equals(ShObjectType.POST)) {
@@ -561,12 +455,12 @@ public class ShPostUtils {
 			}
 			if (shPostAttr.getShChildrenRelatorItems().size() > 0) {
 				for (ShRelatorItem shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
-					this.loadPostDraftAttribs2(shRelatorItem.getShChildrenPostAttrs());
+					this.loadPostDraftAttribs(shRelatorItem.getShChildrenPostAttrs());
 				}
 			}
 		}
 	}
-	
+
 	/**
 	 * Sync with Post Type
 	 * 
@@ -672,4 +566,5 @@ public class ShPostUtils {
 		}
 
 	}
+
 }

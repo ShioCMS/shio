@@ -21,14 +21,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+
 import java.util.Set;
 
 import org.apache.http.client.ClientProtocolException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,18 +34,13 @@ import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
-import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.reference.ShReference;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
-import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.persistence.repository.reference.ShReferenceRepository;
-import com.viglet.shiohara.post.type.ShSystemPostType;
-import com.viglet.shiohara.property.ShMgmtProperties;
 import com.viglet.shiohara.turing.ShTuringIntegration;
-import com.viglet.shiohara.url.ShURLScheme;
 
 @Component
 public class ShFolderUtils {
@@ -61,13 +53,8 @@ public class ShFolderUtils {
 	@Autowired
 	private ShReferenceRepository shReferenceRepository;
 	@Autowired
-	private ShURLScheme shURLScheme;
-	@Autowired
 	private ShTuringIntegration shTuringIntegration;
-	@Autowired
-	private ShPostTypeRepository shPostTypeRepository;
-	@Autowired
-	private ShMgmtProperties shMgmtProperties;
+
 	
 	public ShFolder getParentFolder(String shFolderId) {
 		ShFolder shFolder = shFolderRepository.findById(shFolderId).get();
@@ -86,52 +73,7 @@ public class ShFolderUtils {
 		return null;
 	}
 
-	public ShPost getFolderIndex(ShFolder shFolder) {
-		ShPostType shPostType = shPostTypeRepository.findByName(ShSystemPostType.FOLDER_INDEX);
-		List<ShPost> shFolderIndexPosts = shPostRepository.findByShFolderAndShPostTypeOrderByPositionAsc(shFolder,
-				shPostType);
-		if (shFolderIndexPosts.size() > 0) {
-			ShPost shFolderIndexPost = shFolderIndexPosts.get(0);
-			return shFolderIndexPost;
-		}
-		return null;
-	}
-
-	public Map<String, Object> toMap(String shFolderId) {
-		ShFolder shFolder = shFolderRepository.findById(shFolderId).get();
-		return this.toMap(shFolder);
-	}
-
-	public Map<String, Object> toSystemMap(ShFolder shFolder) {
-		Map<String, Object> shFolderItemAttrs = new HashMap<>();
-
-		shFolderItemAttrs.put("system", this.toMap(shFolder));
-		
-		return shFolderItemAttrs;
-
-	}
-	public Map<String, Object> toMap(ShFolder shFolder) {
-		Map<String, Object> shFolderItemAttrs = new HashMap<String, Object>();
-
-		shFolderItemAttrs.put("id", shFolder.getId());
-		shFolderItemAttrs.put("title", shFolder.getName());
-		shFolderItemAttrs.put("link", this.folderPath(shFolder, true, false));
-		
-		return shFolderItemAttrs;
-	}
-
-	public JSONObject toJSON(ShFolder shFolder) {
-		JSONObject shFolderItemAttrs = new JSONObject();
-
-		JSONObject shFolderItemSystemAttrs = new JSONObject();
-		shFolderItemSystemAttrs.put("id", shFolder.getId());
-		shFolderItemSystemAttrs.put("title", shFolder.getName());
-		shFolderItemSystemAttrs.put("link", this.folderPath(shFolder, true, false));
-
-		shFolderItemAttrs.put("system", shFolderItemSystemAttrs);
-
-		return shFolderItemAttrs;
-	}
+	
 	
 	public ArrayList<ShFolder> breadcrumb(ShFolder shFolder) {
 		if (shFolder != null) {
@@ -283,21 +225,6 @@ public class ShFolderUtils {
 			}
 		}
 		return currentFolder;
-	}
-
-	public String generateFolderLink(ShFolder shFolder) {
-		String link = shURLScheme.get(shFolder).toString();
-		link = link + this.folderPath(shFolder, true, false);
-		return link;
-	}
-
-	public String generateFolderLinkById(String folderID) {
-		Optional<ShFolder> shFolderOptional = shFolderRepository.findById(folderID);
-		if (shFolderOptional.isPresent()) {
-			ShFolder shFolder = shFolderOptional.get();
-			return this.generateFolderLink(shFolder);
-		}
-		return null;
 	}
 
 	@Transactional

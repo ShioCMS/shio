@@ -35,6 +35,7 @@ import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.utils.ShPostUtils;
+import com.viglet.shiohara.utils.stage.ShStagePostUtils;
 
 @Component
 public class ShQueryComponentCache {
@@ -48,7 +49,7 @@ public class ShQueryComponentCache {
 	@Autowired
 	private ShPostTypeRepository shPostTypeRepository;
 	@Autowired
-	private ShPostUtils shPostUtils;
+	private ShStagePostUtils shStagePostUtils;
 
 	//@Cacheable(value = "component", key = "{ #root.methodName, #folderId, #postTypeName }")
 	public List<Map<String, ShPostAttr>> findByFolderName(String folderId, String postTypeName) {
@@ -59,7 +60,7 @@ public class ShQueryComponentCache {
 
 		List<Map<String, ShPostAttr>> shPosts = new ArrayList<Map<String, ShPostAttr>>();
 		for (ShPost shPost : shPostList) {
-			Map<String, ShPostAttr> shPostObject = shPostUtils.postToMap(shPost);
+			Map<String, ShPostAttr> shPostObject = shStagePostUtils.postToMap(shPost);
 			shPosts.add(shPostObject);
 		}
 
@@ -80,7 +81,7 @@ public class ShQueryComponentCache {
 		
 		List<Map<String, ShPostAttr>> shPosts = new ArrayList<Map<String, ShPostAttr>>();
 		for (ShPost shPost : shPostList) {
-			Map<String, ShPostAttr> shPostObject = shPostUtils.postToMap(shPost);
+			Map<String, ShPostAttr> shPostObject = shStagePostUtils.postToMap(shPost);
 			shPosts.add(shPostObject);
 		}
 

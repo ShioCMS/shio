@@ -41,7 +41,7 @@ import com.viglet.shiohara.sites.ShSitesContextComponent;
 import com.viglet.shiohara.sites.ShSitesContextURL;
 import com.viglet.shiohara.sites.components.ShSitesPage;
 import com.viglet.shiohara.sites.components.ShSitesPageLayout;
-import com.viglet.shiohara.utils.ShPostUtils;
+import com.viglet.shiohara.utils.stage.ShStagePostUtils;
 
 @Component
 public class ShCachePage {
@@ -57,7 +57,7 @@ public class ShCachePage {
 	@Autowired
 	private ShCacheObject shCacheObject;
 	@Autowired
-	private ShPostUtils shPostUtils;
+	private ShStagePostUtils shStagePostUtils;
 
 	@Cacheable(value = "page", key = "{#shSitesContextURL.getInfo().getObjectId(), #shSitesContextURL.getInfo().getContextURLOriginal()}", sync = true)
 	public ShCachePageBean cache(ShSitesContextURL shSitesContextURL) {
@@ -88,7 +88,7 @@ public class ShCachePage {
 			ShPost shPost = (ShPost) shObject;
 			if (shPost.getShPostType().getName().equals(ShSystemPostType.FOLDER_INDEX)) {
 				String format = shSitesContextURL.getInfo().getShFormat();
-				Map<String, ShPostAttr> shFolderIndexMap = shPostUtils.postToMap(shPost);
+				Map<String, ShPostAttr> shFolderIndexMap = shStagePostUtils.postToMap(shPost);
 				// TTL
 				ShPostAttr shPostAttrCacheTTL = shFolderIndexMap.get("CACHE_TTL");
 				if (shPostAttrCacheTTL != null && shPostAttrCacheTTL.getStrValue() != null) {
@@ -104,7 +104,7 @@ public class ShCachePage {
 						mimeType = "json";
 				} else {
 					ShPostAttr shPostAttrFormats = shFolderIndexMap.get("FORMATS");
-					List<Map<String, ShPostAttr>> shPostAttrFormatList = shPostUtils.relationToMap(shPostAttrFormats);
+					List<Map<String, ShPostAttr>> shPostAttrFormatList = shStagePostUtils.relationToMap(shPostAttrFormats);
 					if (shPostAttrFormatList != null) {
 						for (Map<String, ShPostAttr> shPostAttrFormat : shPostAttrFormatList) {
 							if (shPostAttrFormat.get("NAME").getStrValue().equals(format))

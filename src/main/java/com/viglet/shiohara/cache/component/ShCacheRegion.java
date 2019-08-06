@@ -33,13 +33,13 @@ import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.post.type.ShSystemPostTypeAttr;
 import com.viglet.shiohara.sites.ShSitesContextComponent;
 import com.viglet.shiohara.sites.components.ShSitesPageLayout;
-import com.viglet.shiohara.utils.ShPostUtils;
+import com.viglet.shiohara.utils.stage.ShStagePostUtils;
 
 @Component
 public class ShCacheRegion {
 	static final Logger logger = LogManager.getLogger(ShCacheRegion.class.getName());
 	@Autowired
-	private ShPostUtils shPostUtils;
+	private ShStagePostUtils shStagePostUtils;
 	@Autowired
 	private ShSitesContextComponent shSitesContextComponent;
 
@@ -54,7 +54,7 @@ public class ShCacheRegion {
 	public boolean isCached(String regionName, String siteId) {
 		ShPost shRegion = shSitesContextComponent.getRegion(regionName, siteId);
 		if (shRegion != null) {
-			Map<String, ShPostAttr> shRegionPostMap = shPostUtils.postToMap(shRegion);
+			Map<String, ShPostAttr> shRegionPostMap = shStagePostUtils.postToMap(shRegion);
 			if (shRegionPostMap.get(ShSystemPostTypeAttr.CACHED) != null) {
 				return shRegionPostMap.get(ShSystemPostTypeAttr.CACHED).getStrValue().equals("yes") ? true : false;
 			} else {

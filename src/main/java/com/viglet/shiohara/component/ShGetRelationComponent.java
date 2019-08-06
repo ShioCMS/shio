@@ -34,7 +34,7 @@ import com.viglet.shiohara.persistence.model.post.ShPostDraftAttr;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostDraftAttrRepository;
 import com.viglet.shiohara.property.ShMgmtProperties;
-import com.viglet.shiohara.utils.ShPostUtils;
+import com.viglet.shiohara.utils.stage.ShStagePostUtils;
 
 @Component
 public class ShGetRelationComponent {
@@ -44,7 +44,7 @@ public class ShGetRelationComponent {
 	@Autowired
 	private ShPostDraftAttrRepository shPostDraftAttrRepository;
 	@Autowired
-	private ShPostUtils shPostUtils;
+	private ShStagePostUtils shStagePostUtils;
 	@Autowired
 	private ShMgmtProperties shMgmtProperties;
 
@@ -59,7 +59,7 @@ public class ShGetRelationComponent {
 							.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
 							.writerWithView(ShJsonView.ShJsonViewObject.class).writeValueAsString(shPostDraftAttr);
 					ShPostAttr shPostAttr = mapper.readValue(jsonInString, ShPostAttr.class);
-					return shPostUtils.relationToMap(shPostAttr);
+					return shStagePostUtils.relationToMap(shPostAttr);
 				} catch (JsonProcessingException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -71,6 +71,6 @@ public class ShGetRelationComponent {
 		}
 
 		ShPostAttr shPostAttr = shPostAttrRepository.findById(postAttrId).get();
-		return shPostUtils.relationToMap(shPostAttr);
+		return shStagePostUtils.relationToMap(shPostAttr);
 	}
 }

@@ -21,9 +21,9 @@ import com.viglet.shiohara.component.ShNavigationComponent;
 import com.viglet.shiohara.component.ShQueryComponent;
 import com.viglet.shiohara.component.ShSearchComponent;
 import com.viglet.shiohara.component.form.ShFormComponent;
-import com.viglet.shiohara.utils.ShFolderUtils;
-import com.viglet.shiohara.utils.ShObjectUtils;
-import com.viglet.shiohara.utils.ShPostUtils;
+import com.viglet.shiohara.utils.stage.ShStageFolderUtils;
+import com.viglet.shiohara.utils.stage.ShStageObjectUtils;
+import com.viglet.shiohara.utils.stage.ShStagePostUtils;
 
 @Configuration
 public class ShNashornEngineConfiguration {
@@ -41,11 +41,11 @@ public class ShNashornEngineConfiguration {
 	@Autowired
 	private ShFormComponent shFormComponent;
 	@Autowired
-	private ShFolderUtils shFolderUtils;
+	private ShStageFolderUtils shStageFolderUtils;
 	@Autowired
-	private ShObjectUtils shObjectUtils;
+	private ShStageObjectUtils shStageObjectUtils;
 	@Autowired
-	private ShPostUtils shPostUtils;
+	private ShStagePostUtils shStagePostUtils;
 	@Autowired
 	private ShGetRelationComponent shGetRelationComponent;
 
@@ -67,10 +67,11 @@ public class ShNashornEngineConfiguration {
 			bindings.put("shQueryComponent", shQueryComponent);
 			bindings.put("shSearchComponent", shSearchComponent);
 			bindings.put("shFormComponent", shFormComponent);
-			bindings.put("shFolderUtils", shFolderUtils);
-			bindings.put("shObjectUtils", shObjectUtils);
-			bindings.put("shPostUtils", shPostUtils);
 			bindings.put("shGetRelationComponent", shGetRelationComponent);
+			bindings.put("shStageFolderUtils", shStageFolderUtils);
+			bindings.put("shStageObjectUtils", shStageObjectUtils);
+			bindings.put("shStagePostUtils", shStagePostUtils);
+
 
 			engine.setBindings(bindings, ScriptContext.GLOBAL_SCOPE);
 

@@ -60,9 +60,11 @@ import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.url.ShURLFormatter;
 import com.viglet.shiohara.utils.ShFolderUtils;
-import com.viglet.shiohara.utils.ShObjectUtils;
 import com.viglet.shiohara.utils.ShPostUtils;
 import com.viglet.shiohara.utils.ShSiteUtils;
+import com.viglet.shiohara.utils.stage.ShStageFolderUtils;
+import com.viglet.shiohara.utils.stage.ShStageObjectUtils;
+import com.viglet.shiohara.utils.stage.ShStagePostUtils;
 import com.viglet.shiohara.workflow.ShWorkflow;
 
 import io.swagger.annotations.Api;
@@ -82,17 +84,21 @@ public class ShObjectAPI {
 	@Autowired
 	private ShFolderUtils shFolderUtils;
 	@Autowired
+	private ShStageFolderUtils shStageFolderUtils;
+	@Autowired
 	private ShPostTypeRepository shPostTypeRepository;
 	@Autowired
 	private ShObjectRepository shObjectRepository;
 	@Autowired
 	private ShPostUtils shPostUtils;
 	@Autowired
+	private ShStagePostUtils shStagePostUtils;
+	@Autowired
 	private ShURLFormatter shURLFormatter;
 	@Autowired
 	private ShCacheObject shCacheObject;
 	@Autowired
-	private ShObjectUtils shObjectUtils;
+	private ShStageObjectUtils shStageObjectUtils;
 	@Autowired
 	private ShUserRepository shUserRepository;
 	@Autowired
@@ -112,9 +118,9 @@ public class ShObjectAPI {
 		if (shObject instanceof ShSite) {
 			redirect = shSiteUtils.generatePostLink((ShSite) shObject);
 		} else if (shObject instanceof ShPost) {
-			redirect = shPostUtils.generatePostLink((ShPost) shObject);
+			redirect = shStagePostUtils.generatePostLink((ShPost) shObject);
 		} else if (shObject instanceof ShFolder) {
-			redirect = shFolderUtils.generateFolderLink((ShFolder) shObject);
+			redirect = shStageFolderUtils.generateFolderLink((ShFolder) shObject);
 		}
 
 		RedirectView redirectView = new RedirectView(new String(redirect.getBytes("UTF-8"), "ISO-8859-1"));
@@ -347,7 +353,7 @@ public class ShObjectAPI {
 			label = ((ShSite) shObject).getName();
 		}
 
-		return String.format("{ \"url\" : \"%s\", \"label\" : \"%s\"}", shObjectUtils.generateObjectLinkById(id),
+		return String.format("{ \"url\" : \"%s\", \"label\" : \"%s\"}", shStageObjectUtils.generateObjectLinkById(id),
 				label);
 	}
 

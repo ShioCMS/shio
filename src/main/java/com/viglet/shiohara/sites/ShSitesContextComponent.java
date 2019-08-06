@@ -60,6 +60,8 @@ import com.viglet.shiohara.post.type.ShSystemPostTypeAttr;
 import com.viglet.shiohara.sites.components.ShSitesPageLayout;
 import com.viglet.shiohara.utils.ShFolderUtils;
 import com.viglet.shiohara.utils.ShPostUtils;
+import com.viglet.shiohara.utils.stage.ShStageFolderUtils;
+import com.viglet.shiohara.utils.stage.ShStagePostUtils;
 
 @Component
 public class ShSitesContextComponent {
@@ -71,7 +73,11 @@ public class ShSitesContextComponent {
 	@Autowired
 	private ShFolderUtils shFolderUtils;
 	@Autowired
+	private ShStageFolderUtils shStageFolderUtils;
+	@Autowired
 	private ShPostUtils shPostUtils;
+	@Autowired
+	private ShStagePostUtils shStagePostUtils;
 	@Autowired
 	private ShCacheRegion shCacheRegion;
 	@Autowired
@@ -167,7 +173,7 @@ public class ShSitesContextComponent {
 	public Map<String, Object> shThemeFactory(String postThemeId) {
 		ShPost shTheme = shPostRepository.findById(postThemeId).orElse(null);
 
-		Map<String, ShPostAttr> shThemeMap = shPostUtils.postToMap(shTheme);
+		Map<String, ShPostAttr> shThemeMap = shStagePostUtils.postToMap(shTheme);
 
 		Map<String, Object> shThemeAttrs = new HashMap<>();
 		shThemeAttrs.put("javascript", shThemeMap.get(ShSystemPostTypeAttr.JAVASCRIPT).getStrValue());
@@ -182,7 +188,7 @@ public class ShSitesContextComponent {
 
 		for (ShPost shPost : shPosts) {
 			if (!shPost.getShPostType().getName().equals(ShSystemPostType.FOLDER_INDEX)) {
-				Map<String, Object> shPostItemAttrs = shPostUtils.toSystemMap(shPost);
+				Map<String, Object> shPostItemAttrs = shStagePostUtils.toSystemMap(shPost);
 				shPostItems.add(shPostItemAttrs);
 			}
 		}
@@ -195,7 +201,7 @@ public class ShSitesContextComponent {
 		Set<ShFolder> shFolders = shFolderRepository.findByParentFolder(shFolderItem);
 
 		for (ShFolder shChildFolder : shFolders) {
-			shChildFolderItems.add(shFolderUtils.toSystemMap(shChildFolder));
+			shChildFolderItems.add(shStageFolderUtils.toSystemMap(shChildFolder));
 		}
 		return shChildFolderItems;
 	}
@@ -214,11 +220,11 @@ public class ShSitesContextComponent {
 		ShPost shFolderPageLayout = null;
 
 		if (shObjectItem instanceof ShPost) {
-			Map<String, ShPostAttr> shFolderIndexMap = shPostUtils.postToMap((ShPost) shObjectItem);
+			Map<String, ShPostAttr> shFolderIndexMap = shStagePostUtils.postToMap((ShPost) shObjectItem);
 			shPostFolderPageLayoutId = shFolderIndexMap.get(ShSystemPostTypeAttr.PAGE_LAYOUT).getStrValue();
 			if (!format.toLowerCase().equals("default")) {
 				ShPostAttr shPostAttrFormats = shFolderIndexMap.get("FORMATS");
-				List<Map<String, ShPostAttr>> shPostAttrFormatList = shPostUtils.relationToMap(shPostAttrFormats);
+				List<Map<String, ShPostAttr>> shPostAttrFormatList = shStagePostUtils.relationToMap(shPostAttrFormats);
 				if (shPostAttrFormatList != null) {
 					for (Map<String, ShPostAttr> shPostAttrFormat : shPostAttrFormatList) {
 						if (shPostAttrFormat.get("NAME").getStrValue().equals(format)) {
@@ -250,7 +256,7 @@ public class ShSitesContextComponent {
 			}
 		}
 
-		return shPostUtils.postToMap(shFolderPageLayout);
+		return shStagePostUtils.postToMap(shFolderPageLayout);
 	}
 
 	public String shPageLayoutFactory(ShSitesPageLayout shSitesPageLayout, HttpServletRequest request, ShSite shSite,
@@ -292,7 +298,7 @@ public class ShSitesContextComponent {
 		ShPost shRegion = getRegion(regionName, shSite.getId());
 		if (shRegion != null) {
 			Stopwatch stopwatch = Stopwatch.createStarted();
-			Map<String, ShPostAttr> shRegionPostMap = shPostUtils.postToMap(shRegion);
+			Map<String, ShPostAttr> shRegionPostMap = shStagePostUtils.postToMap(shRegion);
 
 			String shRegionJS = shRegionPostMap.get(ShSystemPostTypeAttr.JAVASCRIPT).getStrValue();
 

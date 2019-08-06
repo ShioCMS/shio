@@ -37,7 +37,7 @@ import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.repository.object.ShObjectRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.sites.ShSitesContextURL;
-import com.viglet.shiohara.utils.ShPostUtils;
+import com.viglet.shiohara.utils.stage.ShStagePostUtils;
 import com.viglet.shiohara.widget.ShSystemWidget;
 
 import br.com.caelum.stella.boleto.Banco;
@@ -52,7 +52,7 @@ import br.com.caelum.stella.boleto.transformer.GeradorDeBoleto;
 @Component
 public class ShPaymentSlip {
 	@Autowired
-	private ShPostUtils shPostUtils;
+	private ShStagePostUtils shStagePostUtils;
 	@Autowired
 	private ShPostRepository shPostRepository;
 	@Autowired
@@ -87,7 +87,7 @@ public class ShPaymentSlip {
 
 		if (paymentTypeId != null) {
 			ShPost shPaymentTypePost = shPostRepository.findById(paymentTypeId).orElse(null);
-			Map<String, ShPostAttr> shPaymentTypePostMap = shPostUtils.postToMap(shPaymentTypePost);
+			Map<String, ShPostAttr> shPaymentTypePostMap = shStagePostUtils.postToMap(shPaymentTypePost);
 			ShPostAttr shPaymentTypeDefinitionPostAttr = shPaymentTypePostMap.get("PAYMENT_TYPE_DEFINITION");
 			ptdSettings = new JSONObject(shPaymentTypeDefinitionPostAttr.getStrValue()).getJSONObject("widgetSettings");
 		}
@@ -124,8 +124,8 @@ public class ShPaymentSlip {
 					.comDigitoNossoNumero(ptdSettings.getString("ourNumberDigit"));
 
 			// Quem paga o boleto
-			Map<String, ShPostAttr> shPostMap = shPostUtils.postToMap(shPost);
-			Map<String, ShPostAttr> shProductPostMap = shPostUtils.postToMap(shProductPost);
+			Map<String, ShPostAttr> shPostMap = shStagePostUtils.postToMap(shPost);
+			Map<String, ShPostAttr> shProductPostMap = shStagePostUtils.postToMap(shProductPost);
 			double paymentSlipValue = Double
 					.parseDouble(shProductPostMap.get(product.getString("value")).getStrValue());
 

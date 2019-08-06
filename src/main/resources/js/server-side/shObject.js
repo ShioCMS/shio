@@ -102,7 +102,7 @@ viglet.shiohara.shObject = function() {
 	 * @public
 	 */
 	this.generatePostLink = function(postId) {
-		return shPostUtils.generatePostLinkById(postId);
+		return shStagePostUtils.generatePostLinkById(postId);
 	}
 
 	/**
@@ -112,7 +112,7 @@ viglet.shiohara.shObject = function() {
 	 * @public
 	 */
 	this.generateFolderLink = function(folderId) {
-		return shFolderUtils.generateFolderLinkById(folderId);
+		return shStageFolderUtils.generateFolderLinkById(folderId);
 	}
 
 	/**
@@ -122,7 +122,7 @@ viglet.shiohara.shObject = function() {
 	 * @public
 	 */
 	this.getPost = function(postId) {
-		return shPostUtils.toMap(postId);
+		return shStagePostUtils.toMap(postId);
 	}
 	
 	/**
@@ -132,7 +132,7 @@ viglet.shiohara.shObject = function() {
 	 * @public
 	 */
 	this.getFolderMap = function(folderId) {
-		return shFolderUtils.toMap(folderId);
+		return shStageFolderUtils.toMap(folderId);
 	}
 	
 	/**
@@ -142,7 +142,7 @@ viglet.shiohara.shObject = function() {
 	 * @public
 	 */
 	this.getParentFolder = function(folderId) {
-		return shFolderUtils.toMap(shFolderUtils.getParentFolder(folderId));
+		return shStageFolderUtils.toMap(shFolderUtils.getParentFolder(folderId));
 	}
 	/**
 	 * @desc Generate Object Link
@@ -151,7 +151,7 @@ viglet.shiohara.shObject = function() {
 	 * @public
 	 */
 	this.generateObjectLink = function(objectId) {
-		return shObjectUtils.generateObjectLinkById(objectId);
+		return shStageObjectUtils.generateObjectLinkById(objectId);
 	}
 	
 	/**
@@ -163,7 +163,7 @@ viglet.shiohara.shObject = function() {
 	 * @public
 	 */
 	this.generateImageLink = function(objectId, scale) {
-		return shObjectUtils.generateImageLinkById(objectId, scale);
+		return shStageObjectUtils.generateImageLinkById(objectId, scale);
 	}
 
 };

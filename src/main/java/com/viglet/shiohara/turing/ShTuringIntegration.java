@@ -56,11 +56,12 @@ import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.post.type.ShSystemPostType;
 import com.viglet.shiohara.post.type.ShSystemPostTypeAttr;
-import com.viglet.shiohara.utils.ShFolderUtils;
 import com.viglet.shiohara.utils.ShObjectUtils;
 import com.viglet.shiohara.utils.ShPostTypeUtils;
-import com.viglet.shiohara.utils.ShPostUtils;
 import com.viglet.shiohara.utils.ShUtils;
+import com.viglet.shiohara.utils.stage.ShStageFolderUtils;
+import com.viglet.shiohara.utils.stage.ShStageObjectUtils;
+import com.viglet.shiohara.utils.stage.ShStagePostUtils;
 import com.viglet.shiohara.widget.ShSystemWidget;
 import com.viglet.turing.api.sn.job.TurSNJobAction;
 import com.viglet.turing.api.sn.job.TurSNJobItem;
@@ -76,7 +77,7 @@ public class ShTuringIntegration {
 	private final boolean turingEnabled = true;
 
 	@Autowired
-	private ShPostUtils shPostUtils;
+	private ShStagePostUtils shStagePostUtils;
 	@Autowired
 	private ShPostTypeRepository shPostTypeRepository;
 	@Autowired
@@ -88,9 +89,11 @@ public class ShTuringIntegration {
 	@Autowired
 	private ShObjectUtils shObjectUtils;
 	@Autowired
+	private ShStageObjectUtils shStageObjectUtils;
+	@Autowired
 	private ShFolderRepository shFolderRepository;
 	@Autowired
-	private ShFolderUtils shFolderUtils;
+	private ShStageFolderUtils shStageFolderUtils;
 
 	public void indexObject(ShObject shObject) {
 
@@ -220,7 +223,7 @@ public class ShTuringIntegration {
 	private void addGenericAttributes(ShObject shObject, Map<String, Object> attributes) {
 		attributes.put("id", shObject.getId());
 		attributes.put("publication_date", formatDateToTuring(shObject.getDate()));
-		attributes.put("url", shObjectUtils.generateObjectLink(shObject));
+		attributes.put("url", shStageObjectUtils.generateObjectLink(shObject));
 	}
 
 	private String formatDateToTuring(Date date) {
@@ -233,9 +236,9 @@ public class ShTuringIntegration {
 	private void addFolder(ShObject shObject, Map<String, Object> attributes) {
 		ShFolder shFolder = (ShFolder) shObject;
 		attributes.put("title", shFolder.getName());
-		ShPost shFolderIndexPost = shFolderUtils.getFolderIndex(shFolder);
+		ShPost shFolderIndexPost = shStageFolderUtils.getFolderIndex(shFolder);
 		if (shFolderIndexPost != null) {
-			Map<String, ShPostAttr> shFolderIndexPostMap = shPostUtils.postToMap(shFolderIndexPost);
+			Map<String, ShPostAttr> shFolderIndexPostMap = shStagePostUtils.postToMap(shFolderIndexPost);
 			if (shFolderIndexPostMap.containsKey(ShSystemPostTypeAttr.DESCRIPTION)) {
 				attributes.put("abstract", shFolderIndexPostMap.get(ShSystemPostTypeAttr.DESCRIPTION).getStrValue());
 			}
@@ -356,14 +359,14 @@ public class ShTuringIntegration {
 	}
 
 	private void addAssociationAttributes(Map<String, Object> attributes, ShPost shPost, ShPostType shPostType) {
-		Map<String, ShPostAttr> shPostMap = shPostUtils.postToMap(shPost);
+		Map<String, ShPostAttr> shPostMap = shStagePostUtils.postToMap(shPost);
 		for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs()) {
 			if (hasAssociation(shPostTypeAttr)) {
 				if (shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.FILE)) {
 					String shPostFileId = shPostMap.get(shPostTypeAttr.getName()).getStrValue();
 					if (StringUtils.isNotBlank(shPostFileId)) {
 						ShPost shFilePost = shPostRepository.findById(shPostFileId).orElse(null);
-						attributes.put(getAssociation(shPostTypeAttr), shPostUtils.generatePostLink(shFilePost));
+						attributes.put(getAssociation(shPostTypeAttr), shStagePostUtils.generatePostLink(shFilePost));
 					}
 				} else if (shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.DATE)) {
 					attributes.put(getAssociation(shPostTypeAttr),
@@ -381,7 +384,7 @@ public class ShTuringIntegration {
 		attributes.put("abstract", shPost.getSummary());
 
 		if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE)) {
-			attributes.put("image", shPostUtils.generatePostLink(shPost));
+			attributes.put("image", shStagePostUtils.generatePostLink(shPost));
 		}
 	}
 

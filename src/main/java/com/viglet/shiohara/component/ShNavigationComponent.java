@@ -29,7 +29,7 @@ import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
-import com.viglet.shiohara.utils.ShObjectUtils;
+import com.viglet.shiohara.utils.stage.ShStageObjectUtils;
 
 @Component
 public class ShNavigationComponent {
@@ -38,20 +38,20 @@ public class ShNavigationComponent {
 	@Autowired
 	private ShFolderRepository shFolderRepository;
 	@Autowired
-	private ShObjectUtils shObjectUtils;
+	private ShStageObjectUtils shStageObjectUtils;
 	
 	public List<ShFolder> navigation(String siteName, boolean home) {
 		ShSite shSite = shSiteRepository.findByName(siteName);
 		ShFolder homeFolder = shFolderRepository.findByShSiteAndName(shSite, "Home");
 				List<ShFolder> shFolders = new ArrayList<ShFolder>();
 		if (home) {
-			if (shObjectUtils.isVisiblePage(homeFolder)) {
+			if (shStageObjectUtils.isVisiblePage(homeFolder)) {
 				shFolders.add(homeFolder);
 			}
 		}
 
 		for (ShFolder shFolder : shFolderRepository.findByParentFolderOrderByPositionAsc(homeFolder)) {
-			if (shObjectUtils.isVisiblePage(shFolder)) {
+			if (shStageObjectUtils.isVisiblePage(shFolder)) {
 				shFolders.add(shFolder);
 			}
 		}
@@ -64,7 +64,7 @@ public class ShNavigationComponent {
 			ShFolder shParentFolder = shFolderOptional.get();
 			List<ShFolder> shFolders = shFolderRepository.findByParentFolderOrderByPositionAsc(shParentFolder);
 			if (home) {
-				if (shObjectUtils.isVisiblePage(shParentFolder)) {
+				if (shStageObjectUtils.isVisiblePage(shParentFolder)) {
 					shFolders.add(shParentFolder);
 				}
 			}

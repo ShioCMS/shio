@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
-import com.viglet.shiohara.utils.ShPostUtils;
+import com.viglet.shiohara.utils.stage.ShStagePostUtils;
 
 @Component
 public class ShSearchComponent {
@@ -35,12 +35,12 @@ public class ShSearchComponent {
 	@Autowired
 	private ShPostRepository shPostRepository;
 	@Autowired
-	private ShPostUtils shPostUtils;
+	private ShStagePostUtils shStagePostUtils;
 	
 	public List<Map<String, ShPostAttr>> search(String q) {
 		List<Map<String, ShPostAttr>> shPosts = new ArrayList<Map<String, ShPostAttr>>();
 		for (ShPost shPost : shPostRepository.fuzzySearch(q)) {
-			Map<String, ShPostAttr> shPostObject = shPostUtils.postToMap(shPost);
+			Map<String, ShPostAttr> shPostObject = shStagePostUtils.postToMap(shPost);
 			shPosts.add(shPostObject);
 		}
 		return shPosts;

@@ -37,6 +37,8 @@ import com.viglet.shiohara.sites.ShSitesContextURL;
 import com.viglet.shiohara.utils.ShFolderUtils;
 import com.viglet.shiohara.utils.ShPostUtils;
 import com.viglet.shiohara.utils.ShSiteUtils;
+import com.viglet.shiohara.utils.stage.ShStageFolderUtils;
+import com.viglet.shiohara.utils.stage.ShStagePostUtils;
 
 @Component
 public class ShSitesPage {
@@ -45,9 +47,11 @@ public class ShSitesPage {
 	@Autowired
 	private ShFolderRepository shFolderRepository;
 	@Autowired
-	private ShFolderUtils shFolderUtils;
+	private ShStageFolderUtils shStageFolderUtils;
 	@Autowired
 	private ShPostUtils shPostUtils;
+	@Autowired
+	private ShStagePostUtils shStagePostUtils;
 	@Autowired
 	private ShSiteUtils shSiteUtils;
 	@Autowired
@@ -77,7 +81,7 @@ public class ShSitesPage {
 
 				shPostItemAttrs.put("theme", shThemeAttrs);
 
-				Map<String, Object> shFolderItemAttrs = shFolderUtils.toSystemMap(shFolderItem);
+				Map<String, Object> shFolderItemAttrs = shStageFolderUtils.toSystemMap(shFolderItem);
 
 				shFolderItemAttrs.put("theme", shThemeAttrs);
 				shFolderItemAttrs.put("posts", shSitesContextComponent.shPostItemsFactory(shFolderItem));
@@ -103,7 +107,7 @@ public class ShSitesPage {
 				if (shPostPageLayouts != null) {
 					for (ShPost shPostPageLayout : shPostPageLayouts) {
 						if (shPostUtils.getSite(shPostPageLayout).getId().equals(shSite.getId())) {
-							shPostPageLayoutMap = shPostUtils.postToMap(shPostPageLayout);
+							shPostPageLayoutMap = shStagePostUtils.postToMap(shPostPageLayout);
 
 						}
 					}
@@ -120,7 +124,7 @@ public class ShSitesPage {
 
 					Map<String, Object> shSiteItemAttrs = shSiteUtils.toSystemMap(shSite);
 
-					Map<String, Object> shPostItemAttrs = shPostUtils.toSystemMap(shPostItem);
+					Map<String, Object> shPostItemAttrs = shStagePostUtils.toSystemMap(shPostItem);
 
 					shPostItemAttrs.put("theme", shThemeAttrs);
 					shPostItemAttrs.put("site", shSiteItemAttrs);
@@ -136,7 +140,7 @@ public class ShSitesPage {
 	public void shFolderPage(ShSitesPageLayout shSitesPageLayout, ShSite shSite, ShSitesContextURL shSitesContextURL) {
 		ShFolder shFolderItem = shFolderRepository.findById(shSitesContextURL.getInfo().getObjectId()).orElse(null);
 		Map<String, Object> shPostItemAttrs = new HashMap<>();
-		Map<String, Object> shFolderItemAttrs = shFolderUtils.toSystemMap(shFolderItem);
+		Map<String, Object> shFolderItemAttrs = shStageFolderUtils.toSystemMap(shFolderItem);
 
 		Map<String, ShPostAttr> shFolderPageLayoutMap = shSitesContextComponent
 				.shFolderPageLayoutMapFactory(shFolderItem, shSite, shSitesContextURL.getInfo().getShFormat());
