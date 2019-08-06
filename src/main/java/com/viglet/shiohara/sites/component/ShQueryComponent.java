@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.viglet.shiohara.component;
+package com.viglet.shiohara.sites.component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
-import com.viglet.shiohara.utils.stage.ShStagePostUtils;
+import com.viglet.shiohara.sites.utils.ShSitesPostUtils;
 
 @Component
 public class ShQueryComponent {
@@ -47,7 +47,7 @@ public class ShQueryComponent {
 	@Autowired
 	private ShPostTypeRepository shPostTypeRepository;
 	@Autowired
-	private ShStagePostUtils shStagePostUtils;
+	private ShSitesPostUtils shSitesPostUtils;
 
 	public List<Map<String, ShPostAttr>> findByFolderName(String folderId, String postTypeName) {
 
@@ -57,7 +57,7 @@ public class ShQueryComponent {
 
 		List<Map<String, ShPostAttr>> shPosts = new ArrayList<Map<String, ShPostAttr>>();
 		for (ShPost shPost : shPostList) {
-			Map<String, ShPostAttr> shPostObject = shStagePostUtils.postToMap(shPost);
+			Map<String, ShPostAttr> shPostObject = shSitesPostUtils.postToMap(shPost);
 			shPosts.add(shPostObject);
 		}
 
@@ -71,7 +71,7 @@ public class ShQueryComponent {
 
 		List<Map<String, ShPostAttr>> shPosts = new ArrayList<Map<String, ShPostAttr>>();
 		for (ShPost shPost : shPostList) {
-			Map<String, ShPostAttr> shPostObject = shStagePostUtils.postToMap(shPost);
+			Map<String, ShPostAttr> shPostObject = shSitesPostUtils.postToMap(shPost);
 			shPosts.add(shPostObject);
 		}
 
@@ -89,7 +89,7 @@ public class ShQueryComponent {
 		
 		List<Map<String, ShPostAttr>> shPosts = new ArrayList<Map<String, ShPostAttr>>();
 		for (ShPost shPost : shPostList) {
-			Map<String, ShPostAttr> shPostObject = shStagePostUtils.postToMap(shPost);
+			Map<String, ShPostAttr> shPostObject = shSitesPostUtils.postToMap(shPost);
 			shPosts.add(shPostObject);
 		}
 

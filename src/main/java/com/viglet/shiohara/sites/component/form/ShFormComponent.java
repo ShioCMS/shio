@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.viglet.shiohara.component.form;
+package com.viglet.shiohara.sites.component.form;
 
 import java.util.ArrayList;
 import java.util.Collections;

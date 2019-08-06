@@ -1,4 +1,4 @@
-package com.viglet.shiohara.utils.stage;
+package com.viglet.shiohara.sites.utils;
 
 import java.util.List;
 import java.util.Map;
@@ -15,23 +15,23 @@ import com.viglet.shiohara.persistence.repository.object.ShObjectRepository;
 import com.viglet.shiohara.utils.ShFolderUtils;
 
 @Component
-public class ShStageObjectUtils {
+public class ShSitesObjectUtils {
 	@Autowired
 	private ShFolderUtils shFolderUtils;
 	@Autowired
-	private ShStageFolderUtils shStageFolderUtils;
+	private ShSitesFolderUtils shSitesFolderUtils;
 	@Autowired
 	private ShObjectRepository shObjectRepository;
 	@Autowired
-	private ShStagePostUtils shStagePostUtils;
+	private ShSitesPostUtils shSitesPostUtils;
 	
 	public boolean isVisiblePage(ShObject shObject) {
 		ShFolder shFolder = null;
 		if (shObject instanceof ShFolder) {
 			shFolder = (ShFolder) shObject;
-			ShPost shFolderIndexPost = shStageFolderUtils.getFolderIndex(shFolder);
+			ShPost shFolderIndexPost = shSitesFolderUtils.getFolderIndex(shFolder);
 			if (shFolderIndexPost != null) {
-				Map<String, ShPostAttr> shFolderIndexPostMap = shStagePostUtils.postToMap(shFolderIndexPost);
+				Map<String, ShPostAttr> shFolderIndexPostMap = shSitesPostUtils.postToMap(shFolderIndexPost);
 				if (shFolderIndexPostMap.get("IS_VISIBLE_PAGE") != null && shFolderIndexPostMap.get("IS_VISIBLE_PAGE").getStrValue() != null
 						&& shFolderIndexPostMap.get("IS_VISIBLE_PAGE").getStrValue().equals("no")) {
 					return false;
@@ -62,9 +62,9 @@ public class ShStageObjectUtils {
 			if (shObjectOptional.isPresent()) {
 				ShObject shObject = shObjectOptional.get();
 				if (shObject instanceof ShPost) {
-					return shStagePostUtils.generatePostLink((ShPost) shObject);
+					return shSitesPostUtils.generatePostLink((ShPost) shObject);
 				} else if (shObject instanceof ShFolder) {
-					return shStageFolderUtils.generateFolderLink((ShFolder) shObject);
+					return shSitesFolderUtils.generateFolderLink((ShFolder) shObject);
 				}
 			}
 
@@ -79,9 +79,9 @@ public class ShStageObjectUtils {
 				ShObject shObject = shObjectOptional.get();
 				if (shObject instanceof ShPost) {
 					if (scale == 1) {
-						return shStagePostUtils.generatePostLink((ShPost) shObject);
+						return shSitesPostUtils.generatePostLink((ShPost) shObject);
 					} else {
-						return shStagePostUtils.generatePostLink((ShPost) shObject).replaceAll("^/store/file_source",
+						return shSitesPostUtils.generatePostLink((ShPost) shObject).replaceAll("^/store/file_source",
 								String.format("/image/scale/%d", scale));
 					}
 				} else {

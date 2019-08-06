@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.viglet.shiohara.cache.component;
+package com.viglet.shiohara.sites.cache.component;
 
 import java.util.Calendar;
 import java.util.List;
@@ -39,9 +39,9 @@ import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
 import com.viglet.shiohara.post.type.ShSystemPostType;
 import com.viglet.shiohara.sites.ShSitesContextComponent;
 import com.viglet.shiohara.sites.ShSitesContextURL;
-import com.viglet.shiohara.sites.components.ShSitesPage;
-import com.viglet.shiohara.sites.components.ShSitesPageLayout;
-import com.viglet.shiohara.utils.stage.ShStagePostUtils;
+import com.viglet.shiohara.sites.component.ShSitesPage;
+import com.viglet.shiohara.sites.component.ShSitesPageLayout;
+import com.viglet.shiohara.sites.utils.ShSitesPostUtils;
 
 @Component
 public class ShCachePage {
@@ -57,7 +57,7 @@ public class ShCachePage {
 	@Autowired
 	private ShCacheObject shCacheObject;
 	@Autowired
-	private ShStagePostUtils shStagePostUtils;
+	private ShSitesPostUtils shSitesPostUtils;
 
 	@Cacheable(value = "page", key = "{#shSitesContextURL.getInfo().getObjectId(), #shSitesContextURL.getInfo().getContextURLOriginal()}", sync = true)
 	public ShCachePageBean cache(ShSitesContextURL shSitesContextURL) {
@@ -88,7 +88,7 @@ public class ShCachePage {
 			ShPost shPost = (ShPost) shObject;
 			if (shPost.getShPostType().getName().equals(ShSystemPostType.FOLDER_INDEX)) {
 				String format = shSitesContextURL.getInfo().getShFormat();
-				Map<String, ShPostAttr> shFolderIndexMap = shStagePostUtils.postToMap(shPost);
+				Map<String, ShPostAttr> shFolderIndexMap = shSitesPostUtils.postToMap(shPost);
 				// TTL
 				ShPostAttr shPostAttrCacheTTL = shFolderIndexMap.get("CACHE_TTL");
 				if (shPostAttrCacheTTL != null && shPostAttrCacheTTL.getStrValue() != null) {
@@ -104,7 +104,7 @@ public class ShCachePage {
 						mimeType = "json";
 				} else {
 					ShPostAttr shPostAttrFormats = shFolderIndexMap.get("FORMATS");
-					List<Map<String, ShPostAttr>> shPostAttrFormatList = shStagePostUtils.relationToMap(shPostAttrFormats);
+					List<Map<String, ShPostAttr>> shPostAttrFormatList = shSitesPostUtils.relationToMap(shPostAttrFormats);
 					if (shPostAttrFormatList != null) {
 						for (Map<String, ShPostAttr> shPostAttrFormat : shPostAttrFormatList) {
 							if (shPostAttrFormat.get("NAME").getStrValue().equals(format))

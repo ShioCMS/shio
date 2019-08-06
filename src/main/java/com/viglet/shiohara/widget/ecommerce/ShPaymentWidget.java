@@ -41,7 +41,7 @@ import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.repository.ecommerce.ShEcomPaymentTypeDefinitionRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.sites.ShSitesContextURL;
-import com.viglet.shiohara.utils.stage.ShStagePostUtils;
+import com.viglet.shiohara.sites.utils.ShSitesPostUtils;
 import com.viglet.shiohara.widget.ShWidgetImplementation;
 
 @Component
@@ -53,7 +53,7 @@ public class ShPaymentWidget implements ShWidgetImplementation {
 	@Autowired
 	private ShPostRepository shPostRepository;
 	@Autowired
-	private ShStagePostUtils shStagePostUtils;
+	private ShSitesPostUtils shSitesPostUtils;
 	@Autowired
 	private ShEcomPaymentTypeDefinitionRepository shEcomPaymentTypeDefinitionRepository;
 
@@ -68,7 +68,7 @@ public class ShPaymentWidget implements ShWidgetImplementation {
 			paymentTypes.add(paymentType);
 			String paymentTypeId = paymentType.getString("id");
 			ShPost shPaymentTypePost = shPostRepository.findById(paymentTypeId).orElse(null);
-			Map<String, ShPostAttr> shPaymentTypePostMap = shStagePostUtils.postToMap(shPaymentTypePost);
+			Map<String, ShPostAttr> shPaymentTypePostMap = shSitesPostUtils.postToMap(shPaymentTypePost);
 
 			ShPostAttr shPaymentTypeDefinitionPostAttr = shPaymentTypePostMap.get("PAYMENT_TYPE_DEFINITION");
 			JSONObject ptdJSON = new JSONObject(shPaymentTypeDefinitionPostAttr.getStrValue());
@@ -89,7 +89,7 @@ public class ShPaymentWidget implements ShWidgetImplementation {
 			shProductPost = shPostRepository.findById(product.getString("post")).get();
 		}
 		
-		Map<String, ShPostAttr> shProductPostMap = shStagePostUtils.postToMap(shProductPost);
+		Map<String, ShPostAttr> shProductPostMap = shSitesPostUtils.postToMap(shProductPost);
 
 		ShEcomProductBean shProduct = new ShEcomProductBean();
 		shProduct.setName(shProductPostMap.get(product.getString("name")).getStrValue());

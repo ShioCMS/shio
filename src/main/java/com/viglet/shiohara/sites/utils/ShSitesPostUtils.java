@@ -1,4 +1,4 @@
-package com.viglet.shiohara.utils.stage;
+package com.viglet.shiohara.sites.utils;
 /*
  * Copyright (C) 2016-2019 the original author or authors. 
  * 
@@ -54,14 +54,14 @@ import com.viglet.shiohara.utils.ShStaticFileUtils;
  * @since 0.3.5
  */
 @Component
-public class ShStagePostUtils {
+public class ShSitesPostUtils {
 	@SuppressWarnings("unused")
-	private static final Log logger = LogFactory.getLog(ShStagePostUtils.class);
+	private static final Log logger = LogFactory.getLog(ShSitesPostUtils.class);
 
 	@Autowired
 	private ShFolderUtils shFolderUtils;
 	@Autowired
-	private ShStageFolderUtils shStageFolderUtils;
+	private ShSitesFolderUtils shSitesFolderUtils;
 	@Autowired
 	private ShPostRepository shPostRepository;
 	@Autowired
@@ -73,7 +73,7 @@ public class ShStagePostUtils {
 	@Autowired
 	private ShStaticFileUtils shStaticFileUtils;
 	@Autowired
-	private ShStageObjectUtils shStageObjectUtils;
+	private ShSitesObjectUtils shSitesObjectUtils;
 	@Autowired
 	private ShMgmtProperties shMgmtProperties;
 	@Autowired
@@ -207,8 +207,8 @@ public class ShStagePostUtils {
 		if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE.toString())) {
 			link = shStaticFileUtils.getFileSourceBase() + "/" + shFolderUtils.getSite(shFolder).getName()
 					+ shFolderUtils.folderPath(shFolder, false, true) + shPost.getTitle();
-		} else if (shStageObjectUtils.isVisiblePage(shPost)) {
-			link = shStageFolderUtils.generateFolderLink(shFolder);
+		} else if (shSitesObjectUtils.isVisiblePage(shPost)) {
+			link = shSitesFolderUtils.generateFolderLink(shFolder);
 			link = link + shPost.getFurl();
 		}
 		return link;

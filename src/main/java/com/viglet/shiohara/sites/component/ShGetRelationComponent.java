@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.viglet.shiohara.component;
+package com.viglet.shiohara.sites.component;
 
 import java.io.IOException;
 import java.util.List;
@@ -34,7 +34,7 @@ import com.viglet.shiohara.persistence.model.post.ShPostDraftAttr;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostDraftAttrRepository;
 import com.viglet.shiohara.property.ShMgmtProperties;
-import com.viglet.shiohara.utils.stage.ShStagePostUtils;
+import com.viglet.shiohara.sites.utils.ShSitesPostUtils;
 
 @Component
 public class ShGetRelationComponent {
@@ -44,7 +44,7 @@ public class ShGetRelationComponent {
 	@Autowired
 	private ShPostDraftAttrRepository shPostDraftAttrRepository;
 	@Autowired
-	private ShStagePostUtils shStagePostUtils;
+	private ShSitesPostUtils shSitesPostUtils;
 	@Autowired
 	private ShMgmtProperties shMgmtProperties;
 
@@ -59,7 +59,7 @@ public class ShGetRelationComponent {
 							.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
 							.writerWithView(ShJsonView.ShJsonViewObject.class).writeValueAsString(shPostDraftAttr);
 					ShPostAttr shPostAttr = mapper.readValue(jsonInString, ShPostAttr.class);
-					return shStagePostUtils.relationToMap(shPostAttr);
+					return shSitesPostUtils.relationToMap(shPostAttr);
 				} catch (JsonProcessingException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -71,6 +71,6 @@ public class ShGetRelationComponent {
 		}
 
 		ShPostAttr shPostAttr = shPostAttrRepository.findById(postAttrId).get();
-		return shStagePostUtils.relationToMap(shPostAttr);
+		return shSitesPostUtils.relationToMap(shPostAttr);
 	}
 }

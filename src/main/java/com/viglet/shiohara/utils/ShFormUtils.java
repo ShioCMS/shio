@@ -32,7 +32,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.api.post.ShPostAPI;
-import com.viglet.shiohara.component.form.ShFormConfiguration;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
@@ -46,6 +45,7 @@ import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrReposi
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.post.type.ShSystemPostType;
 import com.viglet.shiohara.sites.ShSitesContextURL;
+import com.viglet.shiohara.sites.component.form.ShFormConfiguration;
 import com.viglet.shiohara.widget.ShSystemWidget;
 import com.viglet.shiohara.widget.ShWidgetImplementation;
 

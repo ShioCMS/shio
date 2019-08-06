@@ -1,4 +1,4 @@
-package com.viglet.shiohara.nashorn;
+package com.viglet.shiohara.sites.nashorn;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -16,7 +16,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.viglet.shiohara.cache.component.ShCacheJavascript;
+import com.viglet.shiohara.sites.cache.component.ShCacheJavascript;
 
 @Component
 public class ShNashornEngineProcess {

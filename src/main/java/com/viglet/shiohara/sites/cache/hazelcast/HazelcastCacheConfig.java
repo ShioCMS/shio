@@ -1,4 +1,4 @@
-package com.viglet.shiohara.cache.hazelcast;
+package com.viglet.shiohara.sites.cache.hazelcast;
 
 import com.hazelcast.config.Config;
 import com.hazelcast.config.EvictionPolicy;

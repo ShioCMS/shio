@@ -1,4 +1,4 @@
-package com.viglet.shiohara.cache.component;
+package com.viglet.shiohara.sites.cache.component;
 
 import java.io.IOException;
 
@@ -12,10 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import com.viglet.shiohara.nashorn.ShNashornEngineProcess;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.sites.ShSitesContextComponent;
-import com.viglet.shiohara.sites.components.ShSitesPageLayout;
+import com.viglet.shiohara.sites.component.ShSitesPageLayout;
+import com.viglet.shiohara.sites.nashorn.ShNashornEngineProcess;
 
 @Component
 public class ShCachePageLayout {

@@ -35,10 +35,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.view.RedirectView;
 
-import com.viglet.shiohara.cache.component.ShCachePage;
-import com.viglet.shiohara.cache.component.ShCachePageBean;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
+import com.viglet.shiohara.sites.cache.component.ShCachePage;
+import com.viglet.shiohara.sites.cache.component.ShCachePageBean;
 import com.viglet.shiohara.utils.ShFormUtils;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
 

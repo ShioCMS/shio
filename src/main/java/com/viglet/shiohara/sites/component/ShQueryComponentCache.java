@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.viglet.shiohara.component;
+package com.viglet.shiohara.sites.component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
@@ -34,8 +33,7 @@ import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
-import com.viglet.shiohara.utils.ShPostUtils;
-import com.viglet.shiohara.utils.stage.ShStagePostUtils;
+import com.viglet.shiohara.sites.utils.ShSitesPostUtils;
 
 @Component
 public class ShQueryComponentCache {
@@ -49,9 +47,8 @@ public class ShQueryComponentCache {
 	@Autowired
 	private ShPostTypeRepository shPostTypeRepository;
 	@Autowired
-	private ShStagePostUtils shStagePostUtils;
+	private ShSitesPostUtils shSitesPostUtils;
 
-	//@Cacheable(value = "component", key = "{ #root.methodName, #folderId, #postTypeName }")
 	public List<Map<String, ShPostAttr>> findByFolderName(String folderId, String postTypeName) {
 
 		ShPostType shPostType = shPostTypeRepository.findByName(postTypeName);
@@ -60,7 +57,7 @@ public class ShQueryComponentCache {
 
 		List<Map<String, ShPostAttr>> shPosts = new ArrayList<Map<String, ShPostAttr>>();
 		for (ShPost shPost : shPostList) {
-			Map<String, ShPostAttr> shPostObject = shStagePostUtils.postToMap(shPost);
+			Map<String, ShPostAttr> shPostObject = shSitesPostUtils.postToMap(shPost);
 			shPosts.add(shPostObject);
 		}
 
@@ -81,7 +78,7 @@ public class ShQueryComponentCache {
 		
 		List<Map<String, ShPostAttr>> shPosts = new ArrayList<Map<String, ShPostAttr>>();
 		for (ShPost shPost : shPostList) {
-			Map<String, ShPostAttr> shPostObject = shStagePostUtils.postToMap(shPost);
+			Map<String, ShPostAttr> shPostObject = shSitesPostUtils.postToMap(shPost);
 			shPosts.add(shPostObject);
 		}
 

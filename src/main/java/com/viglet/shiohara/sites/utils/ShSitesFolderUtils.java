@@ -1,4 +1,4 @@
-package com.viglet.shiohara.utils.stage;
+package com.viglet.shiohara.sites.utils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +20,7 @@ import com.viglet.shiohara.url.ShURLScheme;
 import com.viglet.shiohara.utils.ShFolderUtils;
 
 @Component
-public class ShStageFolderUtils {
+public class ShSitesFolderUtils {
 	@Autowired
 	private ShFolderRepository shFolderRepository;
 	@Autowired
@@ -30,7 +30,7 @@ public class ShStageFolderUtils {
 	@Autowired
 	private ShPostTypeRepository shPostTypeRepository;
 	@Autowired
-	private ShStagePostUtils shStagePostUtils;
+	private ShSitesPostUtils shSitesPostUtils;
 	@Autowired
 	private ShFolderUtils shFolderUtils;
 	
@@ -39,7 +39,7 @@ public class ShStageFolderUtils {
 		List<ShPost> shFolderIndexPosts = shPostRepository.findByShFolderAndShPostTypeOrderByPositionAsc(shFolder,
 				shPostType);
 		if (shFolderIndexPosts.size() > 0) {
-			ShPost shFolderIndexPost = shStagePostUtils.getPostByStage(shFolderIndexPosts.get(0));
+			ShPost shFolderIndexPost = shSitesPostUtils.getPostByStage(shFolderIndexPosts.get(0));
 			return shFolderIndexPost;
 		}
 		return null;

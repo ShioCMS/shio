@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.viglet.shiohara.component;
+package com.viglet.shiohara.sites.component;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,7 +29,7 @@ import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
-import com.viglet.shiohara.utils.stage.ShStageObjectUtils;
+import com.viglet.shiohara.sites.utils.ShSitesObjectUtils;
 
 @Component
 public class ShNavigationComponent {
@@ -38,20 +38,20 @@ public class ShNavigationComponent {
 	@Autowired
 	private ShFolderRepository shFolderRepository;
 	@Autowired
-	private ShStageObjectUtils shStageObjectUtils;
+	private ShSitesObjectUtils shSitesObjectUtils;
 	
 	public List<ShFolder> navigation(String siteName, boolean home) {
 		ShSite shSite = shSiteRepository.findByName(siteName);
 		ShFolder homeFolder = shFolderRepository.findByShSiteAndName(shSite, "Home");
 				List<ShFolder> shFolders = new ArrayList<ShFolder>();
 		if (home) {
-			if (shStageObjectUtils.isVisiblePage(homeFolder)) {
+			if (shSitesObjectUtils.isVisiblePage(homeFolder)) {
 				shFolders.add(homeFolder);
 			}
 		}
 
 		for (ShFolder shFolder : shFolderRepository.findByParentFolderOrderByPositionAsc(homeFolder)) {
-			if (shStageObjectUtils.isVisiblePage(shFolder)) {
+			if (shSitesObjectUtils.isVisiblePage(shFolder)) {
 				shFolders.add(shFolder);
 			}
 		}
@@ -64,7 +64,7 @@ public class ShNavigationComponent {
 			ShFolder shParentFolder = shFolderOptional.get();
 			List<ShFolder> shFolders = shFolderRepository.findByParentFolderOrderByPositionAsc(shParentFolder);
 			if (home) {
-				if (shStageObjectUtils.isVisiblePage(shParentFolder)) {
+				if (shSitesObjectUtils.isVisiblePage(shParentFolder)) {
 					shFolders.add(shParentFolder);
 				}
 			}

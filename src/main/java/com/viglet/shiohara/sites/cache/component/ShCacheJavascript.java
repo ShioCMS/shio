@@ -1,4 +1,4 @@
-package com.viglet.shiohara.cache.component;
+package com.viglet.shiohara.sites.cache.component;
 
 import java.io.BufferedReader;
 import java.io.IOException;

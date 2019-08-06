@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.viglet.shiohara.sites.components;
+package com.viglet.shiohara.sites.component;
 
 import java.util.HashMap;
 import java.util.List;
@@ -34,11 +34,10 @@ import com.viglet.shiohara.post.type.ShSystemPostType;
 import com.viglet.shiohara.post.type.ShSystemPostTypeAttr;
 import com.viglet.shiohara.sites.ShSitesContextComponent;
 import com.viglet.shiohara.sites.ShSitesContextURL;
-import com.viglet.shiohara.utils.ShFolderUtils;
+import com.viglet.shiohara.sites.utils.ShSitesFolderUtils;
+import com.viglet.shiohara.sites.utils.ShSitesPostUtils;
 import com.viglet.shiohara.utils.ShPostUtils;
 import com.viglet.shiohara.utils.ShSiteUtils;
-import com.viglet.shiohara.utils.stage.ShStageFolderUtils;
-import com.viglet.shiohara.utils.stage.ShStagePostUtils;
 
 @Component
 public class ShSitesPage {
@@ -47,11 +46,11 @@ public class ShSitesPage {
 	@Autowired
 	private ShFolderRepository shFolderRepository;
 	@Autowired
-	private ShStageFolderUtils shStageFolderUtils;
+	private ShSitesFolderUtils shSitesFolderUtils;
 	@Autowired
 	private ShPostUtils shPostUtils;
 	@Autowired
-	private ShStagePostUtils shStagePostUtils;
+	private ShSitesPostUtils shSitesPostUtils;
 	@Autowired
 	private ShSiteUtils shSiteUtils;
 	@Autowired
@@ -81,7 +80,7 @@ public class ShSitesPage {
 
 				shPostItemAttrs.put("theme", shThemeAttrs);
 
-				Map<String, Object> shFolderItemAttrs = shStageFolderUtils.toSystemMap(shFolderItem);
+				Map<String, Object> shFolderItemAttrs = shSitesFolderUtils.toSystemMap(shFolderItem);
 
 				shFolderItemAttrs.put("theme", shThemeAttrs);
 				shFolderItemAttrs.put("posts", shSitesContextComponent.shPostItemsFactory(shFolderItem));
@@ -107,7 +106,7 @@ public class ShSitesPage {
 				if (shPostPageLayouts != null) {
 					for (ShPost shPostPageLayout : shPostPageLayouts) {
 						if (shPostUtils.getSite(shPostPageLayout).getId().equals(shSite.getId())) {
-							shPostPageLayoutMap = shStagePostUtils.postToMap(shPostPageLayout);
+							shPostPageLayoutMap = shSitesPostUtils.postToMap(shPostPageLayout);
 
 						}
 					}
@@ -124,7 +123,7 @@ public class ShSitesPage {
 
 					Map<String, Object> shSiteItemAttrs = shSiteUtils.toSystemMap(shSite);
 
-					Map<String, Object> shPostItemAttrs = shStagePostUtils.toSystemMap(shPostItem);
+					Map<String, Object> shPostItemAttrs = shSitesPostUtils.toSystemMap(shPostItem);
 
 					shPostItemAttrs.put("theme", shThemeAttrs);
 					shPostItemAttrs.put("site", shSiteItemAttrs);
@@ -140,7 +139,7 @@ public class ShSitesPage {
 	public void shFolderPage(ShSitesPageLayout shSitesPageLayout, ShSite shSite, ShSitesContextURL shSitesContextURL) {
 		ShFolder shFolderItem = shFolderRepository.findById(shSitesContextURL.getInfo().getObjectId()).orElse(null);
 		Map<String, Object> shPostItemAttrs = new HashMap<>();
-		Map<String, Object> shFolderItemAttrs = shStageFolderUtils.toSystemMap(shFolderItem);
+		Map<String, Object> shFolderItemAttrs = shSitesFolderUtils.toSystemMap(shFolderItem);
 
 		Map<String, ShPostAttr> shFolderPageLayoutMap = shSitesContextComponent
 				.shFolderPageLayoutMapFactory(shFolderItem, shSite, shSitesContextURL.getInfo().getShFormat());

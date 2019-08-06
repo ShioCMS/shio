@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.viglet.shiohara.cache.component;
+package com.viglet.shiohara.sites.cache.component;
 
 import java.util.Map;
 
@@ -32,14 +32,14 @@ import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.post.type.ShSystemPostTypeAttr;
 import com.viglet.shiohara.sites.ShSitesContextComponent;
-import com.viglet.shiohara.sites.components.ShSitesPageLayout;
-import com.viglet.shiohara.utils.stage.ShStagePostUtils;
+import com.viglet.shiohara.sites.component.ShSitesPageLayout;
+import com.viglet.shiohara.sites.utils.ShSitesPostUtils;
 
 @Component
 public class ShCacheRegion {
 	static final Logger logger = LogManager.getLogger(ShCacheRegion.class.getName());
 	@Autowired
-	private ShStagePostUtils shStagePostUtils;
+	private ShSitesPostUtils shSitesPostUtils;
 	@Autowired
 	private ShSitesContextComponent shSitesContextComponent;
 
@@ -54,7 +54,7 @@ public class ShCacheRegion {
 	public boolean isCached(String regionName, String siteId) {
 		ShPost shRegion = shSitesContextComponent.getRegion(regionName, siteId);
 		if (shRegion != null) {
-			Map<String, ShPostAttr> shRegionPostMap = shStagePostUtils.postToMap(shRegion);
+			Map<String, ShPostAttr> shRegionPostMap = shSitesPostUtils.postToMap(shRegion);
 			if (shRegionPostMap.get(ShSystemPostTypeAttr.CACHED) != null) {
 				return shRegionPostMap.get(ShSystemPostTypeAttr.CACHED).getStrValue().equals("yes") ? true : false;
 			} else {

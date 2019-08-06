@@ -1,4 +1,4 @@
-package com.viglet.shiohara.nashorn;
+package com.viglet.shiohara.sites.nashorn;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -16,14 +16,14 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.viglet.shiohara.component.ShGetRelationComponent;
-import com.viglet.shiohara.component.ShNavigationComponent;
-import com.viglet.shiohara.component.ShQueryComponent;
-import com.viglet.shiohara.component.ShSearchComponent;
-import com.viglet.shiohara.component.form.ShFormComponent;
-import com.viglet.shiohara.utils.stage.ShStageFolderUtils;
-import com.viglet.shiohara.utils.stage.ShStageObjectUtils;
-import com.viglet.shiohara.utils.stage.ShStagePostUtils;
+import com.viglet.shiohara.sites.component.ShGetRelationComponent;
+import com.viglet.shiohara.sites.component.ShNavigationComponent;
+import com.viglet.shiohara.sites.component.ShQueryComponent;
+import com.viglet.shiohara.sites.component.ShSearchComponent;
+import com.viglet.shiohara.sites.component.form.ShFormComponent;
+import com.viglet.shiohara.sites.utils.ShSitesFolderUtils;
+import com.viglet.shiohara.sites.utils.ShSitesObjectUtils;
+import com.viglet.shiohara.sites.utils.ShSitesPostUtils;
 
 @Configuration
 public class ShNashornEngineConfiguration {
@@ -41,11 +41,11 @@ public class ShNashornEngineConfiguration {
 	@Autowired
 	private ShFormComponent shFormComponent;
 	@Autowired
-	private ShStageFolderUtils shStageFolderUtils;
+	private ShSitesFolderUtils shSitesFolderUtils;
 	@Autowired
-	private ShStageObjectUtils shStageObjectUtils;
+	private ShSitesObjectUtils shSitesObjectUtils;
 	@Autowired
-	private ShStagePostUtils shStagePostUtils;
+	private ShSitesPostUtils shSitesPostUtils;
 	@Autowired
 	private ShGetRelationComponent shGetRelationComponent;
 
@@ -68,9 +68,9 @@ public class ShNashornEngineConfiguration {
 			bindings.put("shSearchComponent", shSearchComponent);
 			bindings.put("shFormComponent", shFormComponent);
 			bindings.put("shGetRelationComponent", shGetRelationComponent);
-			bindings.put("shStageFolderUtils", shStageFolderUtils);
-			bindings.put("shStageObjectUtils", shStageObjectUtils);
-			bindings.put("shStagePostUtils", shStagePostUtils);
+			bindings.put("shSitesFolderUtils", shSitesFolderUtils);
+			bindings.put("shSitesObjectUtils", shSitesObjectUtils);
+			bindings.put("shSitesPostUtils", shSitesPostUtils);
 
 
 			engine.setBindings(bindings, ScriptContext.GLOBAL_SCOPE);

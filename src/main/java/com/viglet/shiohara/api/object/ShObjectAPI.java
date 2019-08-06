@@ -45,7 +45,6 @@ import com.viglet.shiohara.api.folder.ShFolderList;
 import com.viglet.shiohara.api.folder.ShFolderPath;
 import com.viglet.shiohara.bean.ShFolderTinyBean;
 import com.viglet.shiohara.bean.ShPostTinyBean;
-import com.viglet.shiohara.cache.component.ShCacheObject;
 import com.viglet.shiohara.persistence.model.auth.ShGroup;
 import com.viglet.shiohara.persistence.model.auth.ShUser;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
@@ -58,13 +57,14 @@ import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.object.ShObjectRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
+import com.viglet.shiohara.sites.cache.component.ShCacheObject;
+import com.viglet.shiohara.sites.utils.ShSitesFolderUtils;
+import com.viglet.shiohara.sites.utils.ShSitesObjectUtils;
+import com.viglet.shiohara.sites.utils.ShSitesPostUtils;
 import com.viglet.shiohara.url.ShURLFormatter;
 import com.viglet.shiohara.utils.ShFolderUtils;
 import com.viglet.shiohara.utils.ShPostUtils;
 import com.viglet.shiohara.utils.ShSiteUtils;
-import com.viglet.shiohara.utils.stage.ShStageFolderUtils;
-import com.viglet.shiohara.utils.stage.ShStageObjectUtils;
-import com.viglet.shiohara.utils.stage.ShStagePostUtils;
 import com.viglet.shiohara.workflow.ShWorkflow;
 
 import io.swagger.annotations.Api;
@@ -84,7 +84,7 @@ public class ShObjectAPI {
 	@Autowired
 	private ShFolderUtils shFolderUtils;
 	@Autowired
-	private ShStageFolderUtils shStageFolderUtils;
+	private ShSitesFolderUtils shSitesFolderUtils;
 	@Autowired
 	private ShPostTypeRepository shPostTypeRepository;
 	@Autowired
@@ -92,13 +92,13 @@ public class ShObjectAPI {
 	@Autowired
 	private ShPostUtils shPostUtils;
 	@Autowired
-	private ShStagePostUtils shStagePostUtils;
+	private ShSitesPostUtils shSitesPostUtils;
 	@Autowired
 	private ShURLFormatter shURLFormatter;
 	@Autowired
 	private ShCacheObject shCacheObject;
 	@Autowired
-	private ShStageObjectUtils shStageObjectUtils;
+	private ShSitesObjectUtils shSitesObjectUtils;
 	@Autowired
 	private ShUserRepository shUserRepository;
 	@Autowired
@@ -118,9 +118,9 @@ public class ShObjectAPI {
 		if (shObject instanceof ShSite) {
 			redirect = shSiteUtils.generatePostLink((ShSite) shObject);
 		} else if (shObject instanceof ShPost) {
-			redirect = shStagePostUtils.generatePostLink((ShPost) shObject);
+			redirect = shSitesPostUtils.generatePostLink((ShPost) shObject);
 		} else if (shObject instanceof ShFolder) {
-			redirect = shStageFolderUtils.generateFolderLink((ShFolder) shObject);
+			redirect = shSitesFolderUtils.generateFolderLink((ShFolder) shObject);
 		}
 
 		RedirectView redirectView = new RedirectView(new String(redirect.getBytes("UTF-8"), "ISO-8859-1"));
@@ -353,7 +353,7 @@ public class ShObjectAPI {
 			label = ((ShSite) shObject).getName();
 		}
 
-		return String.format("{ \"url\" : \"%s\", \"label\" : \"%s\"}", shStageObjectUtils.generateObjectLinkById(id),
+		return String.format("{ \"url\" : \"%s\", \"label\" : \"%s\"}", shSitesObjectUtils.generateObjectLinkById(id),
 				label);
 	}
 
