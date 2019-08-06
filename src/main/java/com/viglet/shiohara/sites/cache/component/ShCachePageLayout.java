@@ -25,26 +25,28 @@ public class ShCachePageLayout {
 	@Autowired
 	private ShNashornEngineProcess shNashornEngineProcess;
 
-	// @Cacheable(value = "pageLayout", sync = true)
 	public String cache(ShSitesPageLayout shSitesPageLayout, HttpServletRequest request, ShSite shSite,
 			ApplicationContext context, String mimeType) {
-		logger.debug(String.format("ShCachePageLayout.cache Key: %s %s", shSitesPageLayout.getId(),
-				shSitesPageLayout.getPageCacheKey()));
-		try {
-			Object pageLayoutResult = shNashornEngineProcess.render(shSitesPageLayout.getJavascriptCode(),
-					shSitesPageLayout.getHTML(), request, shSitesPageLayout.getShContent());
+		if (shSitesPageLayout.getId() != null) {
+			logger.debug(String.format("ShCachePageLayout.cache Key: %s %s", shSitesPageLayout.getId(),
+					shSitesPageLayout.getPageCacheKey()));
+			try {
+				Object pageLayoutResult = shNashornEngineProcess.render(
+						String.format("Page Layout: %s", shSitesPageLayout.getId()),
+						shSitesPageLayout.getJavascriptCode(), shSitesPageLayout.getHTML(), request,
+						shSitesPageLayout.getShContent());
 
-			return shSitesContextComponent
-					.shRegionFactory(shSitesPageLayout, pageLayoutResult.toString(), shSite, mimeType, request).html();
-		} catch (ScriptException e) {
-			logger.error("ShCachePageLayout Script Exception: ", e);
-			return null;
-		} catch (IOException e) {
-			logger.error("ShCachePageLayout IOException: ", e);
-			return null;
-		} catch (Exception e) {
-			logger.error("ShCachePageLayout Exception: ", e);
-			return null;
+				return shSitesContextComponent
+						.shRegionFactory(shSitesPageLayout, pageLayoutResult.toString(), shSite, mimeType, request)
+						.html();
+			} catch (ScriptException e) {
+				logger.error("ShCachePageLayout Script Exception: ", e);
+			} catch (IOException e) {
+				logger.error("ShCachePageLayout IOException: ", e);
+			} catch (Exception e) {
+				logger.error("ShCachePageLayout Exception: ", e);
+			}
 		}
+		return null;
 	}
 }

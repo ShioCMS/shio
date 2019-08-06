@@ -53,7 +53,8 @@ public class ShQueryComponent {
 
 		ShPostType shPostType = shPostTypeRepository.findByName(postTypeName);
 		ShFolder shFolder = shFolderRepository.findById(folderId).orElse(null);
-		List<ShPost> shPostList = shPostRepository.findByShFolderAndShPostTypeOrderByPositionAsc(shFolder, shPostType);
+		List<ShPost> shPostList = shSitesPostUtils
+				.getPostsByStage(shPostRepository.findByShFolderAndShPostTypeOrderByPositionAsc(shFolder, shPostType));
 
 		List<Map<String, ShPostAttr>> shPosts = new ArrayList<Map<String, ShPostAttr>>();
 		for (ShPost shPost : shPostList) {
@@ -63,7 +64,7 @@ public class ShQueryComponent {
 
 		return shPosts;
 	}
-	
+
 	public List<Map<String, ShPostAttr>> findByPostTypeName(String postTypeName) {
 
 		ShPostType shPostType = shPostTypeRepository.findByName(postTypeName);
@@ -77,16 +78,18 @@ public class ShQueryComponent {
 
 		return shPosts;
 	}
-	public List<Map<String, ShPostAttr>> findByPostTypeNameIn(String postTypeName, String postAttrName, Set<String> arrayValue) {
-		
+
+	public List<Map<String, ShPostAttr>> findByPostTypeNameIn(String postTypeName, String postAttrName,
+			Set<String> arrayValue) {
+
 		ShPostType shPostType = shPostTypeRepository.findByName(postTypeName);
 		Set<ShPostAttr> shPostAttrs = shPostAttrRepository.findByArrayValueIn(arrayValue);
-		
+
 		List<ShPostAttr> shPostAttrList = new ArrayList<ShPostAttr>();
 		shPostAttrList.addAll(shPostAttrs);
-		
-		Set<ShPost> shPostList  = shPostRepository.findByShPostTypeAndShPostAttrsIn(shPostType, shPostAttrList);
-		
+
+		Set<ShPost> shPostList = shPostRepository.findByShPostTypeAndShPostAttrsIn(shPostType, shPostAttrList);
+
 		List<Map<String, ShPostAttr>> shPosts = new ArrayList<Map<String, ShPostAttr>>();
 		for (ShPost shPost : shPostList) {
 			Map<String, ShPostAttr> shPostObject = shSitesPostUtils.postToMap(shPost);

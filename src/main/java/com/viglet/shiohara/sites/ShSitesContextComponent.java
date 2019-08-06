@@ -23,14 +23,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import javax.annotation.Resource;
-import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
@@ -220,22 +216,26 @@ public class ShSitesContextComponent {
 		ShPost shFolderPageLayout = null;
 
 		if (shObjectItem instanceof ShPost) {
-			Map<String, ShPostAttr> shFolderIndexMap = shSitesPostUtils.postToMap((ShPost) shObjectItem);
-			shPostFolderPageLayoutId = shFolderIndexMap.get(ShSystemPostTypeAttr.PAGE_LAYOUT).getStrValue();
-			if (!format.toLowerCase().equals("default")) {
-				ShPostAttr shPostAttrFormats = shFolderIndexMap.get("FORMATS");
-				List<Map<String, ShPostAttr>> shPostAttrFormatList = shSitesPostUtils.relationToMap(shPostAttrFormats);
-				if (shPostAttrFormatList != null) {
-					for (Map<String, ShPostAttr> shPostAttrFormat : shPostAttrFormatList) {
-						if (shPostAttrFormat.get("NAME").getStrValue().equals(format)) {
-							shPostFolderPageLayoutId = shPostAttrFormat.get("PAGE_LAYOUT").getStrValue();
+			ShPost shSelectedPost = shSitesPostUtils.getPostByStage((ShPost) shObjectItem);
+			if (shSelectedPost != null) {
+				Map<String, ShPostAttr> shFolderIndexMap = shSitesPostUtils.postToMap((ShPost) shSelectedPost);
+				shPostFolderPageLayoutId = shFolderIndexMap.get(ShSystemPostTypeAttr.PAGE_LAYOUT).getStrValue();
+				if (!format.toLowerCase().equals("default")) {
+					ShPostAttr shPostAttrFormats = shFolderIndexMap.get("FORMATS");
+					List<Map<String, ShPostAttr>> shPostAttrFormatList = shSitesPostUtils
+							.relationToMap(shPostAttrFormats);
+					if (shPostAttrFormatList != null) {
+						for (Map<String, ShPostAttr> shPostAttrFormat : shPostAttrFormatList) {
+							if (shPostAttrFormat.get("NAME").getStrValue().equals(format)) {
+								shPostFolderPageLayoutId = shPostAttrFormat.get("PAGE_LAYOUT").getStrValue();
+							}
 						}
 					}
 				}
-			}
 
-			if (shPostFolderPageLayoutId != null) {
-				shFolderPageLayout = shPostRepository.findById(shPostFolderPageLayoutId).orElse(null);
+				if (shPostFolderPageLayoutId != null) {
+					shFolderPageLayout = shPostRepository.findById(shPostFolderPageLayoutId).orElse(null);
+				}
 			}
 		} else if (shObjectItem instanceof ShFolder) {
 			// If Folder doesn't have PageLayout, it will try use default Folder Page Layout
@@ -304,7 +304,7 @@ public class ShSitesContextComponent {
 
 			String shRegionHTML = shRegionPostMap.get(ShSystemPostTypeAttr.HTML).getStrValue();
 
-			Object regionResultChild = shNashornEngineProcess.render(shRegionJS, shRegionHTML, request,
+			Object regionResultChild = shNashornEngineProcess.render(regionName, shRegionJS, shRegionHTML, request,
 					shSitesPageLayout.getShContent());
 			try {
 
@@ -320,7 +320,7 @@ public class ShSitesContextComponent {
 						shRegion.getId(), String.valueOf(timeProcess)));
 				return String.format("%s%s", comment.toString(), regionHTML);
 			} catch (Throwable err) {
-				regionError(regionName, shRegionJS, err);
+
 				return null;
 			}
 		}
@@ -339,32 +339,5 @@ public class ShSitesContextComponent {
 
 		}
 		return shRegion;
-	}
-
-	public void regionError(String regionAttr, String javascript, Throwable err) {
-		if (err instanceof ScriptException) {
-			ScriptException exc = ((ScriptException) err);
-			String scriptStack = ExceptionUtils.getStackTrace(exc);
-			int columnNumber = exc.getColumnNumber();
-			int lineNumber = exc.getLineNumber();
-			String fileName = exc.getFileName();
-			String message = exc.getMessage();
-			String[] javascriptLines = javascript.split("\\n");
-			StringBuffer errorCode = new StringBuffer();
-			for (int x = lineNumber - 5; x <= lineNumber + 5; x++) {
-				errorCode.append(javascriptLines[x] + "\n");
-				if (x == lineNumber - 1) {
-					String errorPos = IntStream.range(0, columnNumber).mapToObj(i -> "-")
-							.collect(Collectors.joining("")) + "^";
-					errorCode.append(errorPos + "\n");
-				}
-
-			}
-			logger.error(String.format("Javascript Code of %s Region:\n %s", regionAttr, errorCode));
-			logger.error(String.format("ScriptError: %s '%s' at: <%s>%d:%d\n%s", regionAttr, message, fileName,
-					lineNumber, columnNumber, scriptStack));
-		} else {
-			logger.error((ExceptionUtils.getStackTrace(err)));
-		}
 	}
 }

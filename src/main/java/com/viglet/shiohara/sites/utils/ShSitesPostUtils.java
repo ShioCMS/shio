@@ -80,25 +80,60 @@ public class ShSitesPostUtils {
 	private ShPostUtils shPostUtils;
 
 	public ShPost getPostByStage(ShPost shPost) {
-
-		if (shMgmtProperties.isEnabled() && shPost != null) {
-			Optional<ShPostDraft> shPostDraftOptional = shPostDraftRepository.findByIdFull(shPost.getId());
-			if (shPostDraftOptional.isPresent()) {
-				ShPost shPostDraft = shPostUtils.loadPostDraft(shPostDraftOptional.get());
-				if (shPostDraft != null)
-					shPost = shPostDraft;
+		System.out.println("getPostByStage: " + shPost.getTitle());
+		if (shPost != null) {
+			if (shMgmtProperties.isEnabled()) {
+				System.out.println("mgmt is enabled: ");
+				Optional<ShPostDraft> shPostDraftOptional = shPostDraftRepository.findByIdFull(shPost.getId());
+				if (shPostDraftOptional.isPresent()) {
+					ShPost shPostDraft = shPostUtils.loadPostDraft(shPostDraftOptional.get());
+					if (shPostDraft != null)
+						return shPostDraft;
+				}
+				return shPost;
+			} else {
+				System.out.println("mgmt is not enabled: ");
+				if (shPost.isPublished()) {
+					System.out.println("is Published ");
+					return shPost;
+				}
+				else {
+					System.out.println("is not Published ");
+				}
+					
 			}
 		}
-		return shPost;
+		return null;
+	}
+
+	public List<ShPost> getPostsByStage(List<ShPost> shPosts) {
+		List<ShPost> shSelectedPosts = new ArrayList<>();
+		for (ShPost shPost : shPosts) {
+			ShPost shSelectedPost = this.getPostByStage(shPost);
+			if (shSelectedPost != null)
+				shSelectedPosts.add(shSelectedPost);
+		}
+		return shSelectedPosts;
 	}
 
 	public ShPostAttr getPostAttrByStage(ShPostAttr shPostAttr) {
-		if (shMgmtProperties.isEnabled() && shPostAttr != null) {
-			Optional<ShPostDraftAttr> shPostDraftAttrOptional = shPostDraftAttrRepository.findById(shPostAttr.getId());
-			if (shPostDraftAttrOptional.isPresent())
-				shPostAttr = shPostUtils.loadPostDraftAttr(shPostDraftAttrOptional.get());
+		if (shPostAttr != null) {
+			if (shMgmtProperties.isEnabled()) {
+				Optional<ShPostDraftAttr> shPostDraftAttrOptional = shPostDraftAttrRepository
+						.findById(shPostAttr.getId());
+				if (shPostDraftAttrOptional.isPresent()) {
+					return shPostUtils.loadPostDraftAttr(shPostDraftAttrOptional.get());
+				}
+				return shPostAttr;
+			} else {
+				if (shPostAttr.getShPost() != null && shPostAttr.getShPost().isPublished()) {
+					return shPostAttr;
+				}
+			}
+
 		}
-		return shPostAttr;
+		return null;
+
 	}
 
 	public Map<String, ShPostAttr> toMap(String postId) {
@@ -158,8 +193,8 @@ public class ShSitesPostUtils {
 			shPostAttrId.setStrValue(shPost.getId().toString());
 			shPostMap.put("id", shPostAttrId);
 			for (ShPostAttr shPostAttr : shPostAttrList) {
-				ShPostAttr shPostAttrStage = this.getPostAttrByStage(shPostAttr);
-				shPostMap.put(shPostAttrStage.getShPostTypeAttr().getName(), shPostAttrStage);
+				if (shPostAttr != null)
+					shPostMap.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr);
 			}
 			return shPostMap;
 		} else {
