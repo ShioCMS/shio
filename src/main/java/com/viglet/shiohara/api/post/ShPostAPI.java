@@ -21,6 +21,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.security.Principal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -64,12 +68,12 @@ import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.persistence.repository.reference.ShReferenceRepository;
 import com.viglet.shiohara.post.type.ShSystemPostType;
-import com.viglet.shiohara.property.ShMgmtProperties;
 import com.viglet.shiohara.sites.cache.component.ShCacheObject;
 import com.viglet.shiohara.turing.ShTuringIntegration;
 import com.viglet.shiohara.url.ShURLFormatter;
 import com.viglet.shiohara.utils.ShPostUtils;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
+import com.viglet.shiohara.widget.ShSystemWidget;
 
 import io.swagger.annotations.Api;
 
@@ -111,7 +115,7 @@ public class ShPostAPI {
 	private ShTuringIntegration shTuringIntegration;
 	@Autowired
 	private ShCacheObject shCacheObject;
-	 
+
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShPost> shPostList() {
@@ -139,9 +143,6 @@ public class ShPostAPI {
 
 		return shPost;
 	}
-
-
-
 
 	@GetMapping("/attr/model")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
@@ -258,27 +259,50 @@ public class ShPostAPI {
 	}
 
 	public void postSave(ShPost shPost) {
-		String title = shPost.getTitle();
-		String summary = shPost.getSummary();
+		// String title = shPost.getTitle();
+		// String summary = shPost.getSummary();
 		// Get PostAttrs before save, because JPA Lazy
 		Set<ShPostAttr> shPostAttrs = shPost.getShPostAttrs();
 
-		for (ShPostAttr shPostAttr : shPostAttrs) {
-			if (shPostAttr.getShPostTypeAttr().getIsTitle() == 1)
-				title = StringUtils.abbreviate(shPostAttr.getStrValue(), 255);
+		StringBuffer title = new StringBuffer();
+		StringBuffer summary = new StringBuffer();
 
-			if (shPostAttr.getShPostTypeAttr().getIsSummary() == 1)
-				summary = StringUtils.abbreviate(shPostAttr.getStrValue(), 255);
+		List<ShPostAttr> shPostAttrsByOrdinal = new ArrayList<ShPostAttr>(shPostAttrs);
 
+		Collections.sort(shPostAttrsByOrdinal, new Comparator<ShPostAttr>() {
+
+			public int compare(ShPostAttr o1, ShPostAttr o2) {
+				return o1.getShPostTypeAttr().getOrdinal() - o2.getShPostTypeAttr().getOrdinal();
+			}
+		});
+		for (ShPostAttr shPostAttr : shPostAttrsByOrdinal) {
+			if (shPostAttr.getShPostTypeAttr().getIsTitle() == 1) {
+				if (!StringUtils.isEmpty(title.toString()))
+					title.append(", ");
+				if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.DATE)) {
+					SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyyy");
+					title.append(dt.format(shPostAttr.getDateValue()));
+				} else
+					title.append(StringUtils.abbreviate(shPostAttr.getStrValue(), 255));
+			}
+			if (shPostAttr.getShPostTypeAttr().getIsSummary() == 1) {
+				if (!StringUtils.isEmpty(summary.toString()))
+					summary.append(", ");
+				if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.DATE)) {
+					SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyyy");
+					summary.append(dt.format(shPostAttr.getDateValue()));
+				} else
+					summary.append(StringUtils.abbreviate(shPostAttr.getStrValue(), 255));
+			}
 			if (shPostAttr != null) {
 				shPostAttr.setReferenceObject(null);
 			}
 		}
 
 		shPost.setDate(new Date());
-		shPost.setTitle(title);
-		shPost.setSummary(summary);
-		shPost.setFurl(shURLFormatter.format(title));
+		shPost.setTitle(title.toString());
+		shPost.setSummary(summary.toString());
+		shPost.setFurl(shURLFormatter.format(title.toString()));
 
 		for (ShPostAttr shPostAttr : shPostAttrs) {
 			shPostAttr.setShPost(shPost);
@@ -307,13 +331,12 @@ public class ShPostAPI {
 
 	}
 
-
 	public void postPublishSave(ShPost shPost) {
 		shPost.setPublished(true);
-		shPostRepository.saveAndFlush(shPost);		
+		shPostRepository.saveAndFlush(shPost);
 		this.postReferenceSave(shPost);
 		this.postDraftDelete(shPost.getId());
-		
+
 	}
 
 	public void postUnpublishSave(ShPost shPost) {
@@ -326,7 +349,7 @@ public class ShPostAPI {
 	private void postDraftDelete(String id) {
 		shPostDraftRepository.delete(id);
 	}
-	
+
 	public void postDraftSave(ShPost shPost) {
 		if (shPost.getId() == null) {
 			this.postUnpublishSave(shPost);
@@ -343,9 +366,9 @@ public class ShPostAPI {
 							shPostAttr.setShPost(shPostDraft);
 							this.updateRelatorParentDraft(shPostAttr, shPostDraft);
 						}
-						
+
 						shPostDraftRepository.saveAndFlush(shPostDraft);
-						
+
 					} catch (JsonProcessingException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -353,21 +376,6 @@ public class ShPostAPI {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					
-					/*
-					 * ShPostExchange postDraft = shPostExport.exportShPostDraft(shPost);
-					 * ObjectMapper mapper = new ObjectMapper(); 
-					 * String shPostJSON; try { shPostJSON
-					 * = mapper.writeValueAsString(postDraft);
-					 * 
-					 * shPostEdit.setDraft(shPostJSON);
-					 * 
-					 * shPostRepository.saveAndFlush(shPostEdit);
-					 * 
-					 * } catch (JsonProcessingException e) { logger.error("postDraft Save: ", e);
-					 * 
-					 * }
-					 */
 				}
 			} else {
 				this.postUnpublishSave(shPost);
@@ -384,7 +392,7 @@ public class ShPostAPI {
 			}
 		}
 	}
-	
+
 	private void updateRelatorParentDraft(ShPostDraftAttr shPostAttr, ShPostDraft shPost) {
 		for (ShRelatorItemDraft shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
 			shRelatorItem.setShParentPostAttr(shPostAttr);

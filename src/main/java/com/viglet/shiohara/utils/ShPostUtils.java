@@ -20,7 +20,10 @@ package com.viglet.shiohara.utils;
 import java.io.File;
 import java.io.IOException;
 import java.security.Principal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -167,7 +170,6 @@ public class ShPostUtils {
 		return shPostCopy;
 	}
 
-	
 	public void referencedFile(ShPostAttr shPostAttr, ShPost shPost) {
 		if (!shPost.getShPostType().getName().equals(ShSystemPostType.FILE.toString())) {
 			this.referencedPost(shPostAttr, shPost);
@@ -299,32 +301,54 @@ public class ShPostUtils {
 	public void updateRelatorInfo(ShPostAttr shPostAttr, ShPost shPost) {
 		for (ShRelatorItem shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
 			shRelatorItem.setShParentPostAttr(shPostAttr);
-			for (ShPostAttr shChildrenPostAttr : shRelatorItem.getShChildrenPostAttrs()) {
+			StringBuffer title = new StringBuffer();
+			StringBuffer summary = new StringBuffer();
+
+			List<ShPostAttr> shPostAttrsByOrdinal = new ArrayList<ShPostAttr>(shRelatorItem.getShChildrenPostAttrs());
+			Collections.sort(shPostAttrsByOrdinal, new Comparator<ShPostAttr>() {
+
+				public int compare(ShPostAttr o1, ShPostAttr o2) {
+					return o1.getShPostTypeAttr().getOrdinal() - o2.getShPostTypeAttr().getOrdinal();
+				}
+			});
+			for (ShPostAttr shChildrenPostAttr : shPostAttrsByOrdinal) {
 				ShPostTypeAttr shPostTypeAttr = shChildrenPostAttr.getShPostTypeAttr();
 				if (shPostTypeAttr.getIsTitle() == 1) {
 					String widgetName = shPostTypeAttr.getShWidget().getName();
-					String title = shChildrenPostAttr.getStrValue();
+
 					if (shChildrenPostAttr.getReferenceObject() != null
 							&& widgetName.equals(ShSystemWidget.CONTENT_SELECT)
 							|| widgetName.equals(ShSystemWidget.FILE)) {
 						ShObject shObject = shChildrenPostAttr.getReferenceObject();
 						if (shObject != null) {
 							if (shObject.getObjectType().equals(ShObjectType.POST)) {
+
 								ShPost shPostReferenced = shPostRepository.findById(shObject.getId()).get();
-								title = shPostReferenced.getTitle();
+								if (!StringUtils.isEmpty(title.toString()))
+									title.append(", ");
+								title.append(shPostReferenced.getTitle());
 							} else if (shObject.getObjectType().equals(ShObjectType.FOLDER)) {
 								ShFolder shFolderReferenced = shFolderRepository.findById(shObject.getId()).get();
-								title = shFolderReferenced.getName();
+								if (!StringUtils.isEmpty(title.toString()))
+									title.append(", ");
+								title.append(shFolderReferenced.getName());
 							}
 						}
-
+					} else if (widgetName.equals(ShSystemWidget.DATE)) {
+						SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyyy");
+						if (!StringUtils.isEmpty(title.toString()))
+							title.append(", ");
+						title.append(dt.format(shChildrenPostAttr.getDateValue()));
+					} else {
+						if (!StringUtils.isEmpty(title.toString()))
+							title.append(", ");
+						title.append(shChildrenPostAttr.getStrValue());
 					}
-					shRelatorItem.setTitle(StringUtils.abbreviate(title, 255));
+					shRelatorItem.setTitle(StringUtils.abbreviate(title.toString(), 255));
 				}
 
 				if (shPostTypeAttr.getIsSummary() == 1) {
 					String widgetName = shPostTypeAttr.getShWidget().getName();
-					String summary = shChildrenPostAttr.getStrValue();
 					if (shChildrenPostAttr.getReferenceObject() != null
 							&& widgetName.equals(ShSystemWidget.CONTENT_SELECT)
 							|| widgetName.equals(ShSystemWidget.FILE)) {
@@ -332,14 +356,27 @@ public class ShPostUtils {
 						if (shObject != null) {
 							if (shObject.getObjectType().equals(ShObjectType.POST)) {
 								ShPost shPostReferenced = shPostRepository.findById(shObject.getId()).get();
-								summary = shPostReferenced.getTitle();
+								if (!StringUtils.isEmpty(title.toString()))
+									title.append(", ");
+								summary.append(shPostReferenced.getTitle());
 							} else if (shObject.getObjectType().equals(ShObjectType.FOLDER)) {
 								ShFolder shFolderReferenced = shFolderRepository.findById(shObject.getId()).get();
-								summary = shFolderReferenced.getName();
+								if (!StringUtils.isEmpty(title.toString()))
+									title.append(", ");
+								summary.append(shFolderReferenced.getName());
 							}
 						}
+					} else if (widgetName.equals(ShSystemWidget.DATE)) {
+						SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyyy");
+						if (!StringUtils.isEmpty(title.toString()))
+							title.append(", ");
+						summary.append(dt.format(shPostAttr.getDateValue()));
+					} else {
+						if (!StringUtils.isEmpty(title.toString()))
+							title.append(", ");
+						summary.append(shChildrenPostAttr.getStrValue());
 					}
-					shRelatorItem.setSummary(StringUtils.abbreviate(summary, 255));
+					shRelatorItem.setSummary(StringUtils.abbreviate(summary.toString(), 255));
 				}
 
 				this.updateRelatorInfo(shChildrenPostAttr, shPost);
