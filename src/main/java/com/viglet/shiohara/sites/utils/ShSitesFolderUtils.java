@@ -33,7 +33,11 @@ public class ShSitesFolderUtils {
 	private ShSitesPostUtils shSitesPostUtils;
 	@Autowired
 	private ShFolderUtils shFolderUtils;
-	
+
+	public ShFolder getParentFolder(String shFolderId) {
+		return shFolderUtils.getParentFolder(shFolderId);
+	}
+
 	public ShPost getFolderIndex(ShFolder shFolder) {
 		ShPostType shPostType = shPostTypeRepository.findByName(ShSystemPostType.FOLDER_INDEX);
 		List<ShPost> shFolderIndexPosts = shPostRepository.findByShFolderAndShPostTypeOrderByPositionAsc(shFolder,
@@ -54,17 +58,18 @@ public class ShSitesFolderUtils {
 		Map<String, Object> shFolderItemAttrs = new HashMap<>();
 
 		shFolderItemAttrs.put("system", this.toMap(shFolder));
-		
+
 		return shFolderItemAttrs;
 
 	}
+
 	public Map<String, Object> toMap(ShFolder shFolder) {
 		Map<String, Object> shFolderItemAttrs = new HashMap<String, Object>();
 
 		shFolderItemAttrs.put("id", shFolder.getId());
 		shFolderItemAttrs.put("title", shFolder.getName());
 		shFolderItemAttrs.put("link", shFolderUtils.folderPath(shFolder, true, false));
-		
+
 		return shFolderItemAttrs;
 	}
 
@@ -80,7 +85,7 @@ public class ShSitesFolderUtils {
 
 		return shFolderItemAttrs;
 	}
-	
+
 	public String generateFolderLink(ShFolder shFolder) {
 		String link = shURLScheme.get(shFolder).toString();
 		link = link + shFolderUtils.folderPath(shFolder, true, false);

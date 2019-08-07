@@ -30,7 +30,8 @@ public class ShNashornEngineProcess {
 	@Autowired
 	private ShCacheJavascript shCacheJavascript;
 
-	public Object render(String objectName, String javascript, String html, HttpServletRequest request, Map<String, Object> shContent) {
+	public Object render(String objectName, String javascript, String html, HttpServletRequest request,
+			Map<String, Object> shContent) {
 		try {
 			ScriptContext sc = new SimpleScriptContext();
 			SimpleScriptContext ssc = new SimpleScriptContext();
@@ -76,7 +77,6 @@ public class ShNashornEngineProcess {
 		}
 		return sc;
 	}
-	
 
 	public void regionError(String regionAttr, String javascript, Throwable err) {
 		if (err instanceof ScriptException) {
@@ -88,7 +88,16 @@ public class ShNashornEngineProcess {
 			String message = exc.getMessage();
 			String[] javascriptLines = javascript.split("\\n");
 			StringBuffer errorCode = new StringBuffer();
-			for (int x = lineNumber - 5; x <= lineNumber + 5; x++) {
+			int minlines = 0;
+			if (lineNumber - 5 > minlines) {
+				minlines = lineNumber - 5;
+			}
+			int maxlines = javascriptLines.length;
+			
+			if (lineNumber + 5 < maxlines)
+				maxlines = lineNumber + 5;
+			System.out.println("max: " + maxlines);
+			for (int x = minlines; x <= maxlines; x++) {
 				errorCode.append(javascriptLines[x] + "\n");
 				if (x == lineNumber - 1) {
 					String errorPos = IntStream.range(0, columnNumber).mapToObj(i -> "-")

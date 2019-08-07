@@ -142,7 +142,7 @@ viglet.shiohara.shObject = function() {
 	 * @public
 	 */
 	this.getParentFolder = function(folderId) {
-		return shSitesFolderUtils.toMap(shFolderUtils.getParentFolder(folderId));
+		return shSitesFolderUtils.toMap(shSitesFolderUtils.getParentFolder(folderId));
 	}
 	/**
 	 * @desc Generate Object Link
