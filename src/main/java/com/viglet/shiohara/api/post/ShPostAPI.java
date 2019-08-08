@@ -52,6 +52,7 @@ import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
 import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItemDraft;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.reference.ShReference;
+import com.viglet.shiohara.persistence.model.reference.ShReferenceDraft;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -63,9 +64,11 @@ import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.repository.auth.ShUserRepository;
 import com.viglet.shiohara.persistence.repository.history.ShHistoryRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
+import com.viglet.shiohara.persistence.repository.post.ShPostDraftAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostDraftRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
+import com.viglet.shiohara.persistence.repository.reference.ShReferenceDraftRepository;
 import com.viglet.shiohara.persistence.repository.reference.ShReferenceRepository;
 import com.viglet.shiohara.post.type.ShSystemPostType;
 import com.viglet.shiohara.sites.cache.component.ShCacheObject;
@@ -98,11 +101,15 @@ public class ShPostAPI {
 	@Autowired
 	private ShPostAttrRepository shPostAttrRepository;
 	@Autowired
+	private ShPostDraftAttrRepository shPostDraftAttrRepository;
+	@Autowired
 	private ShUserRepository shUserRepository;
 	@Autowired
 	private ShStaticFileUtils shStaticFileUtils;
 	@Autowired
 	private ShReferenceRepository shReferenceRepository;
+	@Autowired
+	private ShReferenceDraftRepository shReferenceDraftRepository;
 	@Autowired
 	private ShHistoryRepository shHistoryRepository;
 	@Autowired
@@ -347,7 +354,19 @@ public class ShPostAPI {
 	}
 
 	private void postDraftDelete(String id) {
-		shPostDraftRepository.delete(id);
+		Optional<ShPostDraft> shPostOptional = shPostDraftRepository.findById(id);
+
+		if (shPostOptional.isPresent()) {
+			ShPostDraft shPost = shPostOptional.get();
+			
+			Set<ShPostDraftAttr> shPostAttrs = shPostDraftAttrRepository.findByShPost(shPost);
+			
+			shPostDraftAttrRepository.deleteInBatch(shPostAttrs);
+
+			shReferenceDraftRepository.deleteInBatch(shReferenceDraftRepository.findByShObjectFrom(shPost));
+
+			shPostDraftRepository.delete(id);
+		}
 	}
 
 	public void postDraftSave(ShPost shPost) {
@@ -368,7 +387,7 @@ public class ShPostAPI {
 						}
 
 						shPostDraftRepository.saveAndFlush(shPostDraft);
-
+						this.postReferenceSaveDraft(shPostDraft);
 					} catch (JsonProcessingException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -425,6 +444,32 @@ public class ShPostAPI {
 			for (ShPostAttr shChildrenPostAttr : shRelatorItem.getShChildrenPostAttrs()) {
 				shPostUtils.referencedObject(shChildrenPostAttr, shPost);
 				this.nestedReferenceSave(shChildrenPostAttr, shPost);
+			}
+		}
+	}
+
+	private void postReferenceSaveDraft(ShPostDraft shPost) {
+
+		// Delete all old references to recreate in next step
+		List<ShReferenceDraft> shOldReferences = shReferenceDraftRepository.findByShObjectFrom(shPost);
+		shReferenceDraftRepository.deleteInBatch(shOldReferences);
+
+		for (ShPostDraftAttr shPostAttr : shPost.getShPostAttrs()) {
+			shPostUtils.referencedObjectDraft(shPostAttr, shPost);
+			this.nestedReferenceSaveDraft(shPostAttr, shPost);
+		}
+
+		for (ShPostDraftAttr shPostAttr : shPost.getShPostAttrs())
+			shPostUtils.updateRelatorInfoDraft(shPostAttr, shPost);
+
+		shPostDraftRepository.saveAndFlush(shPost);
+	}
+
+	private void nestedReferenceSaveDraft(ShPostDraftAttr shPostAttr, ShPostDraft shPost) {
+		for (ShRelatorItemDraft shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
+			for (ShPostDraftAttr shChildrenPostAttr : shRelatorItem.getShChildrenPostAttrs()) {
+				shPostUtils.referencedObjectDraft(shChildrenPostAttr, shPost);
+				this.nestedReferenceSaveDraft(shChildrenPostAttr, shPost);
 			}
 		}
 	}
