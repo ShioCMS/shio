@@ -38,6 +38,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
+import com.viglet.shiohara.bean.ShCurrentUser;
+import com.viglet.shiohara.persistence.model.auth.ShGroup;
 import com.viglet.shiohara.persistence.model.auth.ShUser;
 import com.viglet.shiohara.persistence.repository.auth.ShGroupRepository;
 import com.viglet.shiohara.persistence.repository.auth.ShUserRepository;
@@ -64,13 +66,26 @@ public class ShUserAPI {
 
 	@GetMapping("/current")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShUser shUserCurrent() {
+	public ShCurrentUser shUserCurrent() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (!(authentication instanceof AnonymousAuthenticationToken)) {
+			boolean isAdmin = false;
 			String currentUserName = authentication.getName();
 			ShUser shUser = shUserRepository.findByUsername(currentUserName);
 			shUser.setPassword(null);
-			return shUser;
+			if (shUser.getShGroups() != null) {
+				for (ShGroup shGroup : shUser.getShGroups()) {
+					if (shGroup.getName().equals("Administrator"))
+						isAdmin = true;
+				}
+			}
+			ShCurrentUser shCurrentUser = new ShCurrentUser();
+			shCurrentUser.setUsername(shUser.getUsername());
+			shCurrentUser.setFirstName(shUser.getFirstName());
+			shCurrentUser.setLastName(shUser.getLastName());
+			shCurrentUser.setAdmin(isAdmin);
+
+			return shCurrentUser;
 		}
 
 		return null;
