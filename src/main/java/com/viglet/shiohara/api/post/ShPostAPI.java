@@ -91,7 +91,6 @@ import io.swagger.annotations.Api;
 @Api(tags = "Post", description = "Post API")
 public class ShPostAPI {
 
-	@SuppressWarnings("unused")
 	private static final Log logger = LogFactory.getLog(ShPostAPI.class);
 
 	@Autowired
@@ -166,7 +165,6 @@ public class ShPostAPI {
 		shCacheObject.deleteCache(id);
 
 		this.postSave(shPost);
-		// shPostUtils.saveDoc(shPost);
 
 		// History
 		ShHistory shHistory = new ShHistory();
@@ -175,8 +173,6 @@ public class ShPostAPI {
 		if (principal != null) {
 			shHistory.setOwner(principal.getName());
 		}
-
-		shTuringIntegration.indexObject(shPost);
 
 		shHistory.setShObject(shPost.getId());
 		shHistory.setShSite(shPostUtils.getSite(shPost).getId());
@@ -193,8 +189,6 @@ public class ShPostAPI {
 	public ShPost shPostAdd(@RequestBody ShPost shPost, Principal principal) {
 
 		this.postSave(shPost);
-
-		shTuringIntegration.indexObject(shPost);
 
 		// History
 		ShHistory shHistory = new ShHistory();
@@ -246,6 +240,8 @@ public class ShPostAPI {
 
 			shReferenceRepository.deleteInBatch(shReferenceRepository.findByShObjectTo(shPost));
 
+			shReferenceDraftRepository.deleteInBatch(shReferenceDraftRepository.findByShObjectTo(shPost));
+
 			// History
 			ShHistory shHistory = new ShHistory();
 			shHistory.setDate(new Date());
@@ -266,8 +262,6 @@ public class ShPostAPI {
 	}
 
 	public void postSave(ShPost shPost) {
-		// String title = shPost.getTitle();
-		// String summary = shPost.getSummary();
 		// Get PostAttrs before save, because JPA Lazy
 		Set<ShPostAttr> shPostAttrs = shPost.getShPostAttrs();
 
@@ -343,6 +337,7 @@ public class ShPostAPI {
 		shPostRepository.saveAndFlush(shPost);
 		this.postReferenceSave(shPost);
 		this.postDraftDelete(shPost.getId());
+		shTuringIntegration.indexObject(shPost);
 
 	}
 
@@ -351,6 +346,7 @@ public class ShPostAPI {
 		shPostRepository.saveAndFlush(shPost);
 		this.postReferenceSave(shPost);
 		this.postDraftDelete(shPost.getId());
+		shTuringIntegration.deindexObject(shPost);
 	}
 
 	private void postDraftDelete(String id) {
@@ -358,9 +354,9 @@ public class ShPostAPI {
 
 		if (shPostOptional.isPresent()) {
 			ShPostDraft shPost = shPostOptional.get();
-			
+
 			Set<ShPostDraftAttr> shPostAttrs = shPostDraftAttrRepository.findByShPost(shPost);
-			
+
 			shPostDraftAttrRepository.deleteInBatch(shPostAttrs);
 
 			shReferenceDraftRepository.deleteInBatch(shReferenceDraftRepository.findByShObjectFrom(shPost));
@@ -389,11 +385,9 @@ public class ShPostAPI {
 						shPostDraftRepository.saveAndFlush(shPostDraft);
 						this.postReferenceSaveDraft(shPostDraft);
 					} catch (JsonProcessingException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						logger.error("postDraftSave JsonProcessingException:", e);
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						logger.error("postDraftSave IOException:", e);
 					}
 				}
 			} else {

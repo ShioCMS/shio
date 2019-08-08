@@ -229,8 +229,8 @@ public class ShObjectAPI {
 				ArrayList<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shFolder);
 				ShSite shSite = breadcrumb.get(0).getShSite();
 				ShFolderList shFolderList = new ShFolderList();
-				shFolderList.setShFolders(allowedFolders(shUser, shObject));
-				shFolderList.setShPosts(allowedPosts(shUser, shObject));
+				shFolderList.setShFolders(this.allowedFolders(shUser, shObject));
+				shFolderList.setShPosts(this.allowedPosts(shUser, shObject));
 				shFolderList.setFolderPath(folderPath);
 				shFolderList.setBreadcrumb(breadcrumb);
 				shFolderList.setShSite(shSite);
@@ -239,7 +239,7 @@ public class ShObjectAPI {
 			} else if (shObject instanceof ShSite) {
 				ShSite shSite = (ShSite) shObject;
 				ShFolderList shFolderList = new ShFolderList();
-				shFolderList.setShFolders(allowedFolders(shUser, shObject));
+				shFolderList.setShFolders(this.allowedFolders(shUser, shObject));
 				shFolderList.setShSite(shSite);
 				return shFolderList;
 			} else {
@@ -262,16 +262,27 @@ public class ShObjectAPI {
 		}
 
 		Set<ShGroup> shGroups = new HashSet<>();
+		Set<String> shUsers = new HashSet<>();
 		if (shUser != null && shUser.getShGroups() != null) {
-			Set<ShFolderTinyBean> shFolders = new HashSet<>();
-			shGroups = shUser.getShGroups();
+			boolean fullAccess = false;
+			for (ShGroup shGroup : shUser.getShGroups()) {
+				if (shGroup.getName().equals("Administrator")) {
+					fullAccess = true;
+				}
+			}
+			if (fullAccess) {
+				return folders;
+			} else {
+				Set<ShFolderTinyBean> shFolders = new HashSet<>();
+				shGroups = shUser.getShGroups();
+				shUsers.add(shUser.getUsername());
+				for (ShFolderTinyBean folder : folders)
+					if (shObjectRepository.countByIdAndShGroupsInOrIdAndShUsersInOrIdAndShGroupsIsNullAndShUsersIsNull(
+							folder.getId(), shGroups, folder.getId(), shUsers, folder.getId()) > 0)
+						shFolders.add(folder);
 
-			for (ShFolderTinyBean folder : folders)
-				if (shObjectRepository.countByIdAndShGroupsInOrIdAndShGroupsIsNull(folder.getId(), shGroups,
-						folder.getId()) > 0)
-					shFolders.add(folder);
-
-			return shFolders;
+				return shFolders;
+			}
 		} else {
 			return folders;
 		}
@@ -287,14 +298,26 @@ public class ShObjectAPI {
 		}
 
 		Set<ShGroup> shGroups = new HashSet<>();
+		Set<String> shUsers = new HashSet<>();
 		if (shUser != null && shUser.getShGroups() != null) {
-			List<ShPostTinyBean> shPosts = new ArrayList<>();
-			shGroups = shUser.getShGroups();
-			for (ShPostTinyBean post : posts)
-				if (shObjectRepository.countByIdAndShGroupsInOrIdAndShGroupsIsNull(post.getId(), shGroups,
-						post.getId()) > 0)
-					shPosts.add(post);
-			return shPosts;
+			boolean fullAccess = false;
+			for (ShGroup shGroup : shUser.getShGroups()) {
+				if (shGroup.getName().equals("Administrator")) {
+					fullAccess = true;
+				}
+			}
+			if (fullAccess) {
+				return posts;
+			} else {
+				List<ShPostTinyBean> shPosts = new ArrayList<>();
+				shGroups = shUser.getShGroups();
+				shUsers.add(shUser.getUsername());
+				for (ShPostTinyBean post : posts)
+					if (shObjectRepository.countByIdAndShGroupsInOrIdAndShUsersInOrIdAndShGroupsIsNullAndShUsersIsNull(
+							post.getId(), shGroups, post.getId(), shUsers, post.getId()) > 0)
+						shPosts.add(post);
+				return shPosts;
+			}
 		} else {
 			return posts;
 		}

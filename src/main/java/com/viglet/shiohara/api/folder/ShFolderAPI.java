@@ -40,6 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
+import com.viglet.shiohara.bean.ShSecurityBean;
 import com.viglet.shiohara.persistence.model.auth.ShGroup;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.object.ShObject;
@@ -86,26 +87,30 @@ public class ShFolderAPI {
 		return shFolderRepository.findById(id).orElse(null);
 	}
 
-	@ApiOperation(value = "Show folder groups")
-	@GetMapping("/{id}/groups")
+	@ApiOperation(value = "Show folder users and groups")
+	@GetMapping("/{id}/security")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public Set<ShGroup> shFolderGroupsGet(@PathVariable String id) {
+	public ShSecurityBean shFolderGroupsGet(@PathVariable String id) {
 		ShFolder shFolder = shFolderRepository.findById(id).orElse(null);
 		List<ShObject> shObjects = new ArrayList<>();
 		shObjects.add(shFolder);
-		return shGroupRepository.findByShObjectsIn(shObjects);
+		ShSecurityBean shSecurityBean = new ShSecurityBean();
+		shSecurityBean.setShGroups(shGroupRepository.findByShObjectsIn(shObjects));
+		shSecurityBean.setShUsers(shFolder.getShUsers());
+		return shSecurityBean;
 	}
 
-	@ApiOperation(value = "Update folder groups")
-	@PutMapping("/{id}/groups")
+	@ApiOperation(value = "Update folder users and groups")
+	@PutMapping("/{id}/security")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public Set<ShGroup> shFolderGroupsUpdate(@PathVariable String id, @RequestBody Set<ShGroup> shGroups) {
+	public ShSecurityBean shFolderGroupsUpdate(@PathVariable String id, @RequestBody ShSecurityBean shSecurityBean) {
 		ShFolder shFolder = shFolderRepository.findById(id).orElse(null);
 		if (shFolder != null) {
-			shFolder.setShGroups(shGroups);
+			shFolder.setShGroups(shSecurityBean.getShGroups());
+			shFolder.setShUsers(shSecurityBean.getShUsers());
 			shFolderRepository.saveAndFlush(shFolder);
-		}
-		return shGroups;
+		}		
+		return shSecurityBean;
 	}
 
 	@ApiOperation(value = "Update a folder")

@@ -22,12 +22,15 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -38,6 +41,8 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.viglet.shiohara.persistence.model.auth.ShGroup;
@@ -97,6 +102,13 @@ public class ShObject implements Serializable {
 
 	@ManyToMany
 	private Set<ShGroup> shGroups = new HashSet<>();
+	
+	@ElementCollection
+	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
+	@CollectionTable(name = "sh_object_users")
+	@JoinColumn(name = "object_id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private Set<String> shUsers = new HashSet<>();
 
 	// bi-directional many-to-one association to ShFolder
 	@OneToMany(mappedBy = "shObject", orphanRemoval = true)
@@ -253,4 +265,14 @@ public class ShObject implements Serializable {
 			this.shWorkflowTasks.addAll(shWorkflowTasks);
 		}
 	}
+
+	public Set<String> getShUsers() {
+		return shUsers;
+	}
+
+	public void setShUsers(Set<String> shUsers) {
+		this.shUsers = shUsers;
+	}
+	
+	
 }
