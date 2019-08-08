@@ -111,6 +111,7 @@ public class ShUserAPI {
 		if (shUserEdit != null) {
 			shUserEdit.setFirstName(shUser.getFirstName());
 			shUserEdit.setLastName(shUser.getLastName());
+			shUserEdit.setEmail(shUser.getEmail());
 			if (shUser.getPassword() != null && shUser.getPassword().trim().length() > 0) {
 				shUserEdit.setPassword(passwordEncoder.encode(shUser.getPassword()));
 			}

@@ -139,6 +139,7 @@ public class ShObjectAPI {
 	public ShObject shObjectRequestWorkflow(@PathVariable String id, @PathVariable String publishStatus,
 			Principal principal) {
 		ShObject shObject = shObjectRepository.findById(id).orElse(null);
+		System.out.println("request-workflow");
 		shWorkflow.requestWorkFlow(shObject, principal);
 		return shObject;
 	}
