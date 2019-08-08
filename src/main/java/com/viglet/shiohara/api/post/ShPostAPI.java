@@ -366,12 +366,17 @@ public class ShPostAPI {
 	}
 
 	public void postDraftSave(ShPost shPost) {
+		System.out.println("postDraftSave");
 		if (shPost.getId() == null) {
+			System.out.println("postDraftSave A");
 			this.postUnpublishSave(shPost);
 		} else {
+			System.out.println("postDraftSave B");
 			if (shPost.isPublished()) {
-				ShPost shPostEdit = shPostRepository.findById(shPost.getId()).orElse(null);
+				System.out.println("postDraftSave C");
+				ShPost shPostEdit = shPostRepository.findById(shPost.getId()).orElse(null);			
 				if (shPostEdit != null) {
+					System.out.println("postDraftSave D");
 					ObjectMapper mapper = new ObjectMapper();
 					try {
 						String jsonInString = mapper.writeValueAsString(shPost);
@@ -384,6 +389,9 @@ public class ShPostAPI {
 
 						shPostDraftRepository.saveAndFlush(shPostDraft);
 						this.postReferenceSaveDraft(shPostDraft);
+						shPostEdit.setPublishStatus("DRAFT");
+						shPostRepository.saveAndFlush(shPostEdit);
+						System.out.println("Alterado para Draft");
 					} catch (JsonProcessingException e) {
 						logger.error("postDraftSave JsonProcessingException:", e);
 					} catch (IOException e) {

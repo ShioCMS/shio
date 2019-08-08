@@ -20,14 +20,21 @@ public class ShPostTinyBean {
 
 	private String objectType;
 
+	private String publishStatus;
+
+	private boolean published;
+
 	public ShPostTinyBean(String id, String title, String summary, int position, Date date, String shPostTypeId,
-			String shPosTypeName, String shPosTypeTitle, String objectType) {
+			String shPosTypeName, String shPosTypeTitle, String objectType, String publishStatus, boolean published) {
 		this.id = id;
 		this.title = title;
 		this.summary = summary;
 		this.position = position;
 		this.date = date;
 		this.objectType = objectType;
+		this.publishStatus = publishStatus;
+		this.published = published;
+
 		this.shPostType = new ShPostType();
 		this.shPostType.setId(shPostTypeId);
 		this.shPostType.setName(shPosTypeName);
@@ -88,6 +95,22 @@ public class ShPostTinyBean {
 
 	public void setShPostType(ShPostType shPostType) {
 		this.shPostType = shPostType;
+	}
+
+	public String getPublishStatus() {
+		return publishStatus;
+	}
+
+	public void setPublishStatus(String publishStatus) {
+		this.publishStatus = publishStatus;
+	}
+
+	public boolean isPublished() {
+		return published;
+	}
+
+	public void setPublished(boolean published) {
+		this.published = published;
 	}
 
 }

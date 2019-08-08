@@ -52,7 +52,7 @@ import com.viglet.shiohara.persistence.model.workflow.ShWorkflowTask;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @NamedQuery(name = "ShObjectDraft.findAll", query = "SELECT od FROM ShObjectDraft od")
-@JsonIgnoreProperties({ "shPostAttrRefs", "shGroups" })
+@JsonIgnoreProperties({ "shPostAttrRefs", "shGroups", "shUsers", "summary" })
 public class ShObjectDraft implements Serializable {
 
 	private static final long serialVersionUID = 1L;

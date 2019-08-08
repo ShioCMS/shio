@@ -46,7 +46,7 @@ import javax.persistence.PrimaryKeyJoinColumn;
 @Entity
 @NamedQuery(name = "ShPostDraft.findAll", query = "SELECT pd FROM ShPostDraft pd")
 @PrimaryKeyJoinColumn(name = "object_id")
-@JsonIgnoreProperties({ "shPostAttrRefs", "shGroups", "shPostDraftAttrRefs" })
+@JsonIgnoreProperties({ "shPostAttrRefs", "shGroups", "shUsers", "shPostDraftAttrRefs" })
 public class ShPostDraft extends ShObjectDraft {
 	private static final long serialVersionUID = 1L;
 

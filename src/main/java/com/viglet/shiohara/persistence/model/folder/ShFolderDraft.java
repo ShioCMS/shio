@@ -40,7 +40,7 @@ import java.util.Set;
 
 @Entity
 @NamedQuery(name = "ShFolderDraft.findAll", query = "SELECT c FROM ShFolderDraft c")
-@JsonIgnoreProperties({ "shFolders", "shPosts", "shPostAttrRefs", "shGroups" })
+@JsonIgnoreProperties({ "shFolders", "shPosts", "shPostAttrRefs", "shGroups", "shUsers", "shPostDrafts", "shPostDraftAttrRefs", "$$_hibernate_interceptor", "hibernateLazyInitializer" })
 @PrimaryKeyJoinColumn(name = "object_id")
 public class ShFolderDraft extends ShObjectDraft {
 	private static final long serialVersionUID = 1L;
