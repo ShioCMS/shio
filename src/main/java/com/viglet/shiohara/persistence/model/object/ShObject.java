@@ -53,7 +53,7 @@ import com.viglet.shiohara.persistence.model.workflow.ShWorkflowTask;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @NamedQuery(name = "ShObject.findAll", query = "SELECT o FROM ShObject o")
-@JsonIgnoreProperties({ "shPostAttrRefs", "shGroups", "shUsers", "summary" })
+@JsonIgnoreProperties({ "shPostAttrRefs", "shGroups", "shUsers", "summary", "shWorkflowTasks" })
 public class ShObject implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -110,10 +110,10 @@ public class ShObject implements Serializable {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Set<String> shUsers = new HashSet<>();
 
-	// bi-directional many-to-one association to ShFolder
-	@OneToMany(mappedBy = "shObject", orphanRemoval = true)
+	// bi-directional many-to-one association to shWorkflowTasks
+	@OneToMany(mappedBy = "shObject")
+	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
 	@Cascade({ CascadeType.ALL })
-	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
 	private Set<ShWorkflowTask> shWorkflowTasks = new HashSet<>();
 
 	private String publishStatus;

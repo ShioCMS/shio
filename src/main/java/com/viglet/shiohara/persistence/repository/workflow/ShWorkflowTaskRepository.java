@@ -26,6 +26,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.workflow.ShWorkflowTask;
 
 public interface ShWorkflowTaskRepository extends JpaRepository<ShWorkflowTask, String> {
@@ -38,6 +39,10 @@ public interface ShWorkflowTaskRepository extends JpaRepository<ShWorkflowTask, 
 	ShWorkflowTask save(ShWorkflowTask shWorkflowTask);
 
 	Set<ShWorkflowTask> findByRequestedIn(Collection<String> requested);
+	
+	int countByShObject(ShObject shObject);
+	
+	Set<ShWorkflowTask> findByShObject(ShObject shObject);
 	
 	@Modifying
 	@Query("delete from ShWorkflowTask wt where wt.id = ?1")

@@ -19,7 +19,6 @@ package com.viglet.shiohara.api.workflow;
 
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -55,14 +54,12 @@ public class ShWorkflowAPI {
 	@GetMapping("/task")
 	public Set<ShWorkflowTask> shWorkflowTasksGet(Principal principal) {
 		ShUser shUser = shUserRepository.findByUsername(principal.getName());
-		System.out.println("Principal: " + principal.getName());
 		List<ShUser> shUsers = new ArrayList<>();
 		shUsers.add(shUser);
 		Set<ShGroup> shGroups = shGroupRepository.findByShUsersIn(shUsers);
 		List<String> requesters = new ArrayList<>();
 		
 		for (ShGroup shGroup : shGroups) {
-			System.out.println("Groups: " + shGroup.getName());
 			requesters.add(shGroup.getName());
 		}
 		

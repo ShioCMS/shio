@@ -70,6 +70,7 @@ import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.persistence.repository.reference.ShReferenceDraftRepository;
 import com.viglet.shiohara.persistence.repository.reference.ShReferenceRepository;
+import com.viglet.shiohara.persistence.repository.workflow.ShWorkflowTaskRepository;
 import com.viglet.shiohara.post.type.ShSystemPostType;
 import com.viglet.shiohara.sites.cache.component.ShCacheObject;
 import com.viglet.shiohara.turing.ShTuringIntegration;
@@ -121,7 +122,9 @@ public class ShPostAPI {
 	private ShTuringIntegration shTuringIntegration;
 	@Autowired
 	private ShCacheObject shCacheObject;
-
+	@Autowired
+	private ShWorkflowTaskRepository shWorkflowTaskRepository;
+	
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShPost> shPostList() {
@@ -334,18 +337,30 @@ public class ShPostAPI {
 
 	public void postPublishSave(ShPost shPost) {
 		shPost.setPublished(true);
+		
 		shPostRepository.saveAndFlush(shPost);
+		
 		this.postReferenceSave(shPost);
+		
 		this.postDraftDelete(shPost.getId());
+		
+		shWorkflowTaskRepository.deleteInBatch(shWorkflowTaskRepository.findByShObject(shPost));
+		
 		shTuringIntegration.indexObject(shPost);
 
 	}
 
 	public void postUnpublishSave(ShPost shPost) {
 		shPost.setPublished(false);
+		
 		shPostRepository.saveAndFlush(shPost);
+		
 		this.postReferenceSave(shPost);
+		
 		this.postDraftDelete(shPost.getId());
+		
+		shWorkflowTaskRepository.deleteInBatch(shWorkflowTaskRepository.findByShObject(shPost));
+		
 		shTuringIntegration.deindexObject(shPost);
 	}
 
@@ -366,17 +381,12 @@ public class ShPostAPI {
 	}
 
 	public void postDraftSave(ShPost shPost) {
-		System.out.println("postDraftSave");
 		if (shPost.getId() == null) {
-			System.out.println("postDraftSave A");
 			this.postUnpublishSave(shPost);
 		} else {
-			System.out.println("postDraftSave B");
 			if (shPost.isPublished()) {
-				System.out.println("postDraftSave C");
 				ShPost shPostEdit = shPostRepository.findById(shPost.getId()).orElse(null);			
 				if (shPostEdit != null) {
-					System.out.println("postDraftSave D");
 					ObjectMapper mapper = new ObjectMapper();
 					try {
 						String jsonInString = mapper.writeValueAsString(shPost);
@@ -390,8 +400,7 @@ public class ShPostAPI {
 						shPostDraftRepository.saveAndFlush(shPostDraft);
 						this.postReferenceSaveDraft(shPostDraft);
 						shPostEdit.setPublishStatus("DRAFT");
-						shPostRepository.saveAndFlush(shPostEdit);
-						System.out.println("Alterado para Draft");
+						shPostRepository.saveAndFlush(shPostEdit);						
 					} catch (JsonProcessingException e) {
 						logger.error("postDraftSave JsonProcessingException:", e);
 					} catch (IOException e) {

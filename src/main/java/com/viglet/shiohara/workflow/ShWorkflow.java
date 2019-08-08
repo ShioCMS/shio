@@ -20,15 +20,17 @@ public class ShWorkflow {
 	public void requestWorkFlow(ShObject shObject, Principal principal) {
 
 		if (shObject != null && shObject instanceof ShPost) {
-			ShWorkflowTask shWorkflowTask = new ShWorkflowTask();
-			shWorkflowTask.setDate(new Date());
-			shWorkflowTask.setTitle("Content Publishing");
-			shWorkflowTask.setShObject(shObject);
-			shWorkflowTask.setRequester(principal.getName());
-			ShPost shPost = (ShPost) shObject;
-			shWorkflowTask.setRequested(shPost.getShPostType().getWorkflowPublishEntity());
-			
-			shWorkflowTaskRepository.save(shWorkflowTask);
+			if (shWorkflowTaskRepository.countByShObject(shObject) == 0) {
+				ShWorkflowTask shWorkflowTask = new ShWorkflowTask();
+				shWorkflowTask.setDate(new Date());
+				shWorkflowTask.setTitle("Request to Publish");
+				shWorkflowTask.setShObject(shObject);
+				shWorkflowTask.setRequester(principal.getName());
+				ShPost shPost = (ShPost) shObject;
+				shWorkflowTask.setRequested(shPost.getShPostType().getWorkflowPublishEntity());
+
+				shWorkflowTaskRepository.save(shWorkflowTask);
+			}
 
 		}
 

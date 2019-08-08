@@ -103,12 +103,6 @@ public class ShObjectDraft implements Serializable {
 	@JoinColumn(name = "object_id")
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Set<String> shUsers = new HashSet<>();
-	
-	// bi-directional many-to-one association to ShFolder
-	@OneToMany(mappedBy = "shObject", orphanRemoval = true)
-	@Cascade({ CascadeType.ALL })
-	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
-	private Set<ShWorkflowTask> shWorkflowTasks = new HashSet<>();
 
 	private String publishStatus;
 
@@ -236,17 +230,6 @@ public class ShObjectDraft implements Serializable {
 
 	public void setPublishStatus(String publishStatus) {
 		this.publishStatus = publishStatus;
-	}
-
-	public Set<ShWorkflowTask> getShWorkflowTasks() {
-		return this.shWorkflowTasks;
-	}
-
-	public void setShWorkflowTasks(Set<ShWorkflowTask> shWorkflowTasks) {
-		this.shWorkflowTasks.clear();
-		if (shWorkflowTasks != null) {
-			this.shWorkflowTasks.addAll(shWorkflowTasks);
-		}
 	}
 
 }
