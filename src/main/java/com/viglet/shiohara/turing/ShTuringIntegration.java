@@ -73,7 +73,6 @@ public class ShTuringIntegration {
 	private String encoding = "UTF-8";
 	private String turingServer = "http://localhost:2700";
 	private ShSite shSite = null;
-	private boolean showOutput = true;
 	private final boolean turingEnabled = true;
 
 	@Autowired
@@ -413,9 +412,9 @@ public class ShTuringIntegration {
 			String serviceAPI = "%s/api/sn/%s/import";
 
 			HttpPost httpPost = new HttpPost(String.format(serviceAPI, turingServer, shSite.getName()));
-			if (showOutput) {
-				System.out.println(jsonUTF8);
-			}
+			if (logger.isDebugEnabled())
+				logger.debug(jsonUTF8);
+
 			StringEntity entity = new StringEntity(new String(jsonUTF8), "UTF-8");
 			httpPost.setEntity(entity);
 			httpPost.setHeader("Accept", "application/json");

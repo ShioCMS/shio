@@ -114,12 +114,7 @@ public class ShPostImport {
 		}
 		
 		this.getShPostAttrs(shPostExchange, shPost, shPostExchange.getFields(), null);
-
-		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
-			System.out.println(shPostAttr.getShPostTypeAttr().getName() +  " = " + shPostAttr.getStrValue());
-			//shPostUtils.updateRelatorInfo(shPostAttr, shPost);
-		}
-
+		
 		return shPost;
 	}
 
@@ -214,8 +209,7 @@ public class ShPostImport {
 				}
 
 				shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-				shPostAttr.setType(1);
-				System.out.println("ZZ " + shPostAttr.getShPostTypeAttr().getName() +  " = " + shPostAttr.getStrValue());
+				shPostAttr.setType(1);				
 				//shPostUtils.referencedObject(shPostAttr, shPost);				
 			}
 		}

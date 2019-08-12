@@ -38,7 +38,6 @@ public class ShWorkflow {
 
 
 	public void requestWorkFlow(ShObject shObject, Principal principal) {
-		System.out.println("requestWorkFlow");
 		if (shObject != null && shObject instanceof ShPost) {
 			if (shWorkflowTaskRepository.countByShObject(shObject) == 0) {
 				ShWorkflowTask shWorkflowTask = new ShWorkflowTask();
@@ -58,7 +57,6 @@ public class ShWorkflow {
 
 	}
 	public String sendWorkflowEmail(ShWorkflowTask shWorkflowTask) {
-		System.out.println("sendWorkflowEmail");
 		try {
 
 			String title = "";
@@ -71,13 +69,11 @@ public class ShWorkflow {
 			}
 
 			List<ShGroup> shGroups = new ArrayList<ShGroup>();
-			System.out.println("Requested: " + shWorkflowTask.getRequested());
 			ShGroup shGroup = shGroupRepository.findByName(shWorkflowTask.getRequested());
 			shGroups.add(shGroup);
 			Set<ShUser> shUsers = shUserRepository.findByShGroupsIn(shGroups);
 
 			for (ShUser shUser : shUsers) {
-				System.out.println("shUser.getEmail(): " + shUser.getEmail());
 				SimpleMailMessage msg = new SimpleMailMessage();
 				msg.setTo(shUser.getEmail());
 
@@ -88,7 +84,6 @@ public class ShWorkflow {
 				javaMailSender.send(msg);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 			if (logger.isDebugEnabled()) {
 				logger.debug("Test Connection Email failed");
 			}

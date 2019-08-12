@@ -95,8 +95,7 @@ public class ShNashornEngineProcess {
 			int maxlines = javascriptLines.length;
 			
 			if (lineNumber + 5 < maxlines)
-				maxlines = lineNumber + 5;
-			System.out.println("max: " + maxlines);
+				maxlines = lineNumber + 5;			
 			for (int x = minlines; x <= maxlines; x++) {
 				errorCode.append(javascriptLines[x] + "\n");
 				if (x == lineNumber - 1) {

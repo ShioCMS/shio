@@ -46,7 +46,6 @@ import io.swagger.annotations.Api;
 @RequestMapping("/api/v2/post/xp")
 @Api(tags = "Post XP", description = "Post XP API")
 public class ShPostXPAPI {
-	@SuppressWarnings("unused")
 	private static final Log logger = LogFactory.getLog(ShPostXPAPI.class);
 
 	@Autowired
@@ -63,8 +62,9 @@ public class ShPostXPAPI {
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShPostXP shPostEdit(@PathVariable String id, Principal principal) {
-		
-		System.out.println("Mgmt: " + shMgmtProperties.isEnabled());
+
+		if (logger.isDebugEnabled())
+			logger.debug("Mgmt: " + shMgmtProperties.isEnabled());
 		ShPostXP shPostXP = new ShPostXP();
 
 		ShPost shPost = shPostUtils.loadLazyPost(id, false);

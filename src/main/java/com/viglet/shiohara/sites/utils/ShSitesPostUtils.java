@@ -80,10 +80,10 @@ public class ShSitesPostUtils {
 	private ShPostUtils shPostUtils;
 
 	public ShPost getPostByStage(ShPost shPost) {
-		System.out.println("getPostByStage: " + shPost.getTitle());
 		if (shPost != null) {
 			if (shMgmtProperties.isEnabled()) {
-				System.out.println("mgmt is enabled: ");
+				if (logger.isDebugEnabled())
+					logger.debug("mgmt is enabled");
 				Optional<ShPostDraft> shPostDraftOptional = shPostDraftRepository.findByIdFull(shPost.getId());
 				if (shPostDraftOptional.isPresent()) {
 					ShPost shPostDraft = shPostUtils.loadPostDraft(shPostDraftOptional.get());
@@ -92,15 +92,17 @@ public class ShSitesPostUtils {
 				}
 				return shPost;
 			} else {
-				System.out.println("mgmt is not enabled: ");
+				if (logger.isDebugEnabled())
+					logger.debug("mgmt is not enabled: ");
 				if (shPost.isPublished()) {
-					System.out.println("is Published ");
+					if (logger.isDebugEnabled())
+						logger.debug("is Published ");
 					return shPost;
+				} else {
+					if (logger.isDebugEnabled())
+						logger.debug("is not Published ");
 				}
-				else {
-					System.out.println("is not Published ");
-				}
-					
+
 			}
 		}
 		return null;
