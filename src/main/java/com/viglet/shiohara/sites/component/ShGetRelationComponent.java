@@ -48,7 +48,6 @@ public class ShGetRelationComponent {
 	@Autowired
 	private ShMgmtProperties shMgmtProperties;
 
-	// @Cacheable(value = "component", key = "{ #root.methodName, #postAttrId}")
 	public List<Map<String, ShPostAttr>> findByPostAttrId(String postAttrId) {
 		if (shMgmtProperties.isEnabled()) {
 			ShPostDraftAttr shPostDraftAttr = shPostDraftAttrRepository.findById(postAttrId).get();

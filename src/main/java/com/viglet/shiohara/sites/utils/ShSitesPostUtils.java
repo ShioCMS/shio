@@ -55,7 +55,6 @@ import com.viglet.shiohara.utils.ShStaticFileUtils;
  */
 @Component
 public class ShSitesPostUtils {
-	@SuppressWarnings("unused")
 	private static final Log logger = LogFactory.getLog(ShSitesPostUtils.class);
 
 	@Autowired
@@ -193,6 +192,9 @@ public class ShSitesPostUtils {
 			Map<String, ShPostAttr> shPostMap = new HashMap<String, ShPostAttr>();
 			ShPostAttr shPostAttrId = new ShPostAttr();
 			shPostAttrId.setStrValue(shPost.getId().toString());
+			ShPostAttr shPostAttrType = new ShPostAttr();
+			shPostAttrType.setStrValue(shPost.getShPostType().getName());
+			shPostMap.put("__type__", shPostAttrType);
 			shPostMap.put("id", shPostAttrId);
 			for (ShPostAttr shPostAttr : shPostAttrList) {
 				if (shPostAttr != null)
