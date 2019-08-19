@@ -116,7 +116,7 @@ public class ShStaticFileAPI {
 					shPost.setSummary(null);
 					shPost.setTitle(filePath);
 					shPost.setShFolder(shFolder);
-
+					shPost.setPublished(true);
 					shPostRepository.save(shPost);
 
 					ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType,

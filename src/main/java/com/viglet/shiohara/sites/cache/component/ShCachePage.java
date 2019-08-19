@@ -84,7 +84,8 @@ public class ShCachePage {
 
 		} else if (shObject instanceof ShPost) {
 
-			shSitesPage.shPostPage(shSitesPageLayout, shSite, shSitesContextURL);
+			mimeType = shSitesPage.shPostPage(shSitesPageLayout, shSite, shSitesContextURL, mimeType);
+
 			ShPost shPost = (ShPost) shObject;
 			if (shPost.getShPostType().getName().equals(ShSystemPostType.FOLDER_INDEX)) {
 				String format = shSitesContextURL.getInfo().getShFormat();

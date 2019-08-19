@@ -17,6 +17,7 @@
 
 package com.viglet.shiohara.sites;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Comment;
@@ -39,7 +41,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Stopwatch;
+import com.viglet.shiohara.bean.ShSitePostTypeLayout;
+import com.viglet.shiohara.bean.ShSitePostTypeLayouts;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
@@ -241,16 +246,36 @@ public class ShSitesContextComponent {
 			// If Folder doesn't have PageLayout, it will try use default Folder Page Layout
 			if (shSite.getPostTypeLayout() != null) {
 				JSONObject postTypeLayout = new JSONObject(shSite.getPostTypeLayout());
-				if (postTypeLayout.has("FOLDER")) {
-					String pageLayoutName = (String) postTypeLayout.get("FOLDER");
-					List<ShPost> shPostPageLayouts = shPostRepository.findByTitle(pageLayoutName);
 
-					if (shPostPageLayouts != null) {
-						for (ShPost shPostPageLayout : shPostPageLayouts) {
-							if (shPostUtils.getSite(shPostPageLayout).getId().equals(shSite.getId())) {
-								shFolderPageLayout = shPostPageLayout;
+				if (postTypeLayout.has("FOLDER")) {
+					ObjectMapper mapper = new ObjectMapper();
+
+					ShSitePostTypeLayouts shSitePostTypeLayouts;
+					try {
+						shSitePostTypeLayouts = mapper.readValue(postTypeLayout.get("FOLDER").toString(),
+								ShSitePostTypeLayouts.class);
+
+						String pageLayoutName = null;
+						if (format == null)
+							format = "default";
+
+						for (ShSitePostTypeLayout shSitePostTypeLayout : shSitePostTypeLayouts) {
+							if (shSitePostTypeLayout.getFormat().equals(format)) {
+								pageLayoutName = shSitePostTypeLayout.getLayout();
 							}
 						}
+						List<ShPost> shPostPageLayouts = shPostRepository.findByTitle(pageLayoutName);
+
+						if (shPostPageLayouts != null) {
+							for (ShPost shPostPageLayout : shPostPageLayouts) {
+								if (shPostUtils.getSite(shPostPageLayout).getId().equals(shSite.getId())) {
+									shFolderPageLayout = shPostPageLayout;
+								}
+							}
+						}
+					} catch (JSONException | IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 				}
 			}

@@ -190,9 +190,13 @@ public class ShPostAPI {
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	@CacheEvict(value = { "page", "pageLayout", "region" }, allEntries = true)
 	public ShPost shPostAdd(@RequestBody ShPost shPost, Principal principal) {
-
+		if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE)) {
+			shPost.setPublishStatus("PUBLISH");
+			shPost.setPublished(true);
+		}
 		this.postSave(shPost);
 
+		
 		// History
 		ShHistory shHistory = new ShHistory();
 		shHistory.setDate(new Date());
