@@ -116,11 +116,8 @@ public class ShSitesPage {
 					for (ShSitePostTypeLayout shSitePostTypeLayout : shSitePostTypeLayouts) {
 						if (shSitePostTypeLayout.getFormat().equals(format)) {
 							pageLayoutName = shSitePostTypeLayout.getLayout();
-							System.out.println("Default MimeType" + mimeType);
 							if (shSitePostTypeLayout.getMimeType() != null) {
-								
 								mimeType = shSitePostTypeLayout.getMimeType();
-								System.out.println("After MimeType" + mimeType);
 							}
 						}
 					}

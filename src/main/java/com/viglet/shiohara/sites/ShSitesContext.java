@@ -18,6 +18,7 @@
 package com.viglet.shiohara.sites;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 
 import javax.activation.MimetypesFileTypeMap;
@@ -33,7 +34,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
@@ -59,22 +60,17 @@ public class ShSitesContext {
 	private ShPostRepository shPostRepository;
 
 	@PostMapping("/sites/**")
-	private RedirectView sitesPostForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
+	private ModelAndView sitesPostForm(HttpServletRequest request, HttpServletResponse response){
 		// TODO: Use Database, need to be cached
 		ShSitesContextURL shSitesContextURL = shSitesContextURLProcess.getContextURL(request, response);
 
-		this.siteContextPost(shSitesContextURL);
-		RedirectView redirectView = new RedirectView(
-				new String((request.getRequestURL() + "/success").getBytes("UTF-8"), "ISO-8859-1"));
-		redirectView.setHttp10Compatible(false);
-		return redirectView;
-	}
-
-	public byte[] siteContextPost(ShSitesContextURL shSitesContextURL) throws Exception {
-		shFormUtils.execute(shSitesContextURL);
-		this.sitesFullGeneric(shSitesContextURL.getRequest(), shSitesContextURL.getResponse());
-		return null;
+		try {
+			shFormUtils.execute(shSitesContextURL);
+		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+		return new ModelAndView("redirect:" + request.getRequestURL() + "/success");
 	}
 
 	@RequestMapping("/sites/**")
@@ -114,7 +110,7 @@ public class ShSitesContext {
 			}
 			shSitesContextURL.getResponse().setContentType(shCachePageBean.getContentType());
 			shSitesContextURL.getResponse().setCharacterEncoding("UTF-8");
-			if (shCachePageBean != null && shCachePageBean.getBody() !=null) {
+			if (shCachePageBean != null && shCachePageBean.getBody() != null) {
 				shSitesContextURL.getResponse().getWriter().write(shCachePageBean.getBody());
 			}
 		} else
