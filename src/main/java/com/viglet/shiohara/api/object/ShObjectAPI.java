@@ -45,6 +45,7 @@ import com.viglet.shiohara.api.folder.ShFolderList;
 import com.viglet.shiohara.api.folder.ShFolderPath;
 import com.viglet.shiohara.bean.ShFolderTinyBean;
 import com.viglet.shiohara.bean.ShPostTinyBean;
+import com.viglet.shiohara.bean.ShSecurityBean;
 import com.viglet.shiohara.persistence.model.auth.ShGroup;
 import com.viglet.shiohara.persistence.model.auth.ShUser;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
@@ -52,6 +53,7 @@ import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.site.ShSite;
+import com.viglet.shiohara.persistence.repository.auth.ShGroupRepository;
 import com.viglet.shiohara.persistence.repository.auth.ShUserRepository;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.object.ShObjectRepository;
@@ -102,6 +104,8 @@ public class ShObjectAPI {
 	@Autowired
 	private ShUserRepository shUserRepository;
 	@Autowired
+	private ShGroupRepository shGroupRepository;
+	@Autowired
 	private ShWorkflow shWorkflow;
 
 	@GetMapping
@@ -141,6 +145,32 @@ public class ShObjectAPI {
 		ShObject shObject = shObjectRepository.findById(id).orElse(null);
 		shWorkflow.requestWorkFlow(shObject, principal);
 		return shObject;
+	}
+
+	@ApiOperation(value = "Show object users and groups")
+	@GetMapping("/{id}/security")
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
+	public ShSecurityBean shObjectGroupsGet(@PathVariable String id) {
+		ShObject shObject = shObjectRepository.findById(id).orElse(null);
+		List<ShObject> shObjects = new ArrayList<>();
+		shObjects.add(shObject);
+		ShSecurityBean shSecurityBean = new ShSecurityBean();
+		shSecurityBean.setShGroups(shGroupRepository.findByShObjectsIn(shObjects));
+		shSecurityBean.setShUsers(shObject.getShUsers());
+		return shSecurityBean;
+	}
+
+	@ApiOperation(value = "Update object users and groups")
+	@PutMapping("/{id}/security")
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
+	public ShSecurityBean shObjectGroupsUpdate(@PathVariable String id, @RequestBody ShSecurityBean shSecurityBean) {
+		ShObject shObject = shObjectRepository.findById(id).orElse(null);
+		if (shObject != null) {
+			shObject.setShGroups(shSecurityBean.getShGroups());
+			shObject.setShUsers(shSecurityBean.getShUsers());
+			shObjectRepository.saveAndFlush(shObject);
+		}
+		return shSecurityBean;
 	}
 
 	@PutMapping("/moveto/{globallIdDest}")

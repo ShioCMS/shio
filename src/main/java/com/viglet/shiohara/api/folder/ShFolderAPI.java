@@ -39,11 +39,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
-import com.viglet.shiohara.bean.ShSecurityBean;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.site.ShSite;
-import com.viglet.shiohara.persistence.repository.auth.ShGroupRepository;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.object.ShObjectRepository;
 import com.viglet.shiohara.turing.ShTuringIntegration;
@@ -67,8 +65,6 @@ public class ShFolderAPI {
 	@Autowired
 	private ShObjectRepository shObjectRepository;
 	@Autowired
-	private ShGroupRepository shGroupRepository;
-	@Autowired
 	private ShTuringIntegration shTuringIntegration;
 
 	@ApiOperation(value = "Folder list")
@@ -83,32 +79,6 @@ public class ShFolderAPI {
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShFolder shFolderGet(@PathVariable String id) {
 		return shFolderRepository.findById(id).orElse(null);
-	}
-
-	@ApiOperation(value = "Show folder users and groups")
-	@GetMapping("/{id}/security")
-	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShSecurityBean shFolderGroupsGet(@PathVariable String id) {
-		ShFolder shFolder = shFolderRepository.findById(id).orElse(null);
-		List<ShObject> shObjects = new ArrayList<>();
-		shObjects.add(shFolder);
-		ShSecurityBean shSecurityBean = new ShSecurityBean();
-		shSecurityBean.setShGroups(shGroupRepository.findByShObjectsIn(shObjects));
-		shSecurityBean.setShUsers(shFolder.getShUsers());
-		return shSecurityBean;
-	}
-
-	@ApiOperation(value = "Update folder users and groups")
-	@PutMapping("/{id}/security")
-	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShSecurityBean shFolderGroupsUpdate(@PathVariable String id, @RequestBody ShSecurityBean shSecurityBean) {
-		ShFolder shFolder = shFolderRepository.findById(id).orElse(null);
-		if (shFolder != null) {
-			shFolder.setShGroups(shSecurityBean.getShGroups());
-			shFolder.setShUsers(shSecurityBean.getShUsers());
-			shFolderRepository.saveAndFlush(shFolder);
-		}		
-		return shSecurityBean;
 	}
 
 	@ApiOperation(value = "Update a folder")
