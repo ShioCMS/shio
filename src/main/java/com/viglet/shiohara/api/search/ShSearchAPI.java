@@ -74,10 +74,11 @@ public class ShSearchAPI {
 	public List<ShPostWithBreadcrumb> shSearch(@RequestParam(value = "q") String q) throws Exception {
 		List<ShPostWithBreadcrumb> searchResults = new ArrayList<ShPostWithBreadcrumb>();
 		for (ShPost shPost : shPostRepository.fuzzySearch(q)) {
-			ArrayList<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shPost.getShFolder());
+			ShPost shPostLazy =  shPostUtils.loadLazyPost(shPost.getId(), false);
+			ArrayList<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shPostLazy.getShFolder());
 			ShSite shSite = breadcrumb.get(0).getShSite();
 			ShPostWithBreadcrumb shPostWithBreadcrumb = new ShPostWithBreadcrumb();
-			shPostWithBreadcrumb.setShPost(shPost);
+			shPostWithBreadcrumb.setShPost(shPostLazy);
 			shPostWithBreadcrumb.setBreadcrumb(breadcrumb);
 			shPostWithBreadcrumb.setShSite(shSite);
 			searchResults.add(shPostWithBreadcrumb);
@@ -86,6 +87,25 @@ public class ShSearchAPI {
 		return searchResults;
 	}
 
+	@GetMapping("/type/{objectName}")
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
+	public List<ShPostWithBreadcrumb> shSearchBytType(@PathVariable String objectName) throws Exception {
+		
+		ShPostType shPostType = shPostTypeRepository.findByName(objectName);
+		List<ShPostWithBreadcrumb> searchResults = new ArrayList<ShPostWithBreadcrumb>();
+		for (ShPost shPost : shPostRepository.findByShPostType(shPostType)) {
+			ShPost shPostLazy =  shPostUtils.loadLazyPost(shPost.getId(), false);
+			ArrayList<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shPostLazy.getShFolder());
+			ShSite shSite = breadcrumb.get(0).getShSite();
+			ShPostWithBreadcrumb shPostWithBreadcrumb = new ShPostWithBreadcrumb();
+			shPostWithBreadcrumb.setShPost(shPostLazy);
+			shPostWithBreadcrumb.setBreadcrumb(breadcrumb);
+			shPostWithBreadcrumb.setShSite(shSite);
+			searchResults.add(shPostWithBreadcrumb);
+		}
+
+		return searchResults;
+	}
 	@ApiOperation(value = "Indexing by Post Type")
 	@GetMapping("/indexing/{siteName}/{objectName}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })

@@ -272,12 +272,13 @@ public class ShPostUtils {
 			}
 		}
 	}
-	
+
 	public void referencedFileDraft(ShPostDraftAttr shPostAttr, ShPostDraft shPost) {
 		if (!shPost.getShPostType().getName().equals(ShSystemPostType.FILE.toString())) {
 			this.referencedPostDraft(shPostAttr, shPost);
 		}
 	}
+
 	@Transactional
 	public void referencedPostDraft(ShPostDraftAttr shPostAttr, ShPostDraft shPost) {
 		if (shPostAttr.getStrValue() == null) {
@@ -321,6 +322,7 @@ public class ShPostUtils {
 			}
 		}
 	}
+
 	@Transactional
 	public void referencedPost(ShPostAttr shPostAttrEdit, ShPostAttr shPostAttr, ShPost shPost) {
 		if (shPostAttr.getStrValue() == null) {
@@ -453,7 +455,8 @@ public class ShPostUtils {
 			StringBuffer title = new StringBuffer();
 			StringBuffer summary = new StringBuffer();
 
-			List<ShPostDraftAttr> shPostAttrsByOrdinal = new ArrayList<ShPostDraftAttr>(shRelatorItem.getShChildrenPostAttrs());
+			List<ShPostDraftAttr> shPostAttrsByOrdinal = new ArrayList<ShPostDraftAttr>(
+					shRelatorItem.getShChildrenPostAttrs());
 			Collections.sort(shPostAttrsByOrdinal, new Comparator<ShPostDraftAttr>() {
 
 				public int compare(ShPostDraftAttr o1, ShPostDraftAttr o2) {
@@ -532,6 +535,7 @@ public class ShPostUtils {
 			}
 		}
 	}
+
 	public ShPost loadLazyPost(String id, boolean getPostPublished) {
 		Optional<ShPost> shPostOptional = shPostRepository.findByIdFull(id);
 		Optional<ShPostDraft> shPostDraftOptional = shPostDraftRepository.findByIdFull(id);
@@ -659,7 +663,7 @@ public class ShPostUtils {
 			Map<String, ShPostTypeAttr> shPostTypeAttrMap = this.postTypeAttrMap(shPost);
 
 			this.postAttrInPostType(shPostAttrs, shPostAttrMap, shPostTypeAttrMap);
-			this.postAttrNotInPostType(shPostAttrs, shPostAttrMap, shPostTypeAttrMap);
+		    this.postAttrNotInPostType(shPostAttrs, shPostAttrMap, shPostTypeAttrMap);
 
 			shPost.setShPostAttrs(shPostAttrs);
 		}
@@ -675,8 +679,20 @@ public class ShPostUtils {
 		Map<String, ShPostTypeAttr> shPostTypeAttrMap = new HashMap<String, ShPostTypeAttr>();
 		ShPostType shPostType = shPostTypeRepository.findByName(shPost.getShPostType().getName());
 		if (shPost != null) {
-			for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs())
+			for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs()) {
 				shPostTypeAttrMap.put(shPostTypeAttr.getId(), shPostTypeAttr);
+			}
+		}
+		return shPostTypeAttrMap;
+	}
+
+	private Map<String, ShPostTypeAttr> postTypeAttrMap(ShPostTypeAttr shPostTypeAttr) {
+		Map<String, ShPostTypeAttr> shPostTypeAttrMap = new HashMap<String, ShPostTypeAttr>();
+		Set<ShPostTypeAttr> shPostTypeAttrs = shPostTypeAttrRepository.findByShParentPostTypeAttr(shPostTypeAttr);
+		if (shPostTypeAttrs != null) {
+			for (ShPostTypeAttr shPostTypeAttrChild : shPostTypeAttrs) {
+				shPostTypeAttrMap.put(shPostTypeAttrChild.getId(), shPostTypeAttrChild);
+			}
 		}
 		return shPostTypeAttrMap;
 	}
@@ -691,8 +707,22 @@ public class ShPostUtils {
 
 		Map<String, ShPostAttr> shPostAttrMap = new HashMap<String, ShPostAttr>();
 		if (shPost != null) {
-			for (ShPostAttr shPostAttr : shPost.getShPostAttrs())
+			for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
 				shPostAttrMap.put(shPostAttr.getShPostTypeAttr().getId(), shPostAttr);
+			}
+
+		}
+		return shPostAttrMap;
+	}
+
+	private Map<String, ShPostAttr> postAttrMap(ShRelatorItem shRelatorItem) {
+
+		Map<String, ShPostAttr> shPostAttrMap = new HashMap<String, ShPostAttr>();
+		if (shRelatorItem.getShChildrenPostAttrs() != null) {
+			for (ShPostAttr shPostAttr : shRelatorItem.getShChildrenPostAttrs()) {
+				shPostAttrMap.put(shPostAttr.getShPostTypeAttr().getId(), shPostAttr);
+			}
+
 		}
 		return shPostAttrMap;
 	}
@@ -712,6 +742,37 @@ public class ShPostUtils {
 				ShPostAttr shPostAttrSync = new ShPostAttr();
 				shPostAttrSync.setShPostTypeAttr(shPostTypeAttr);
 				shPostAttrs.add(shPostAttrSync);
+
+			}
+		}
+
+		for (ShPostAttr shPostAttr : shPostAttrs) {
+			this.postAttrNotInPostTypeNested(shPostAttr);
+		}
+	}
+
+	private void postAttrNotInPostTypeNested(ShPostAttr shPostAttr) {
+		if (shPostAttr.getShChildrenRelatorItems() != null) {
+			for (ShRelatorItem shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
+				if (shRelatorItem.getShChildrenPostAttrs() != null) {
+					Map<String, ShPostTypeAttr> shPostTypeAttrChildMap = this
+							.postTypeAttrMap(shPostAttr.getShPostTypeAttr());
+					Map<String, ShPostAttr> shPostAttrChildMap = this.postAttrMap(shRelatorItem);
+
+					for (ShPostTypeAttr shPostTypeAttr : shPostTypeAttrChildMap.values()) {
+						String postTypeAttrId = shPostTypeAttr.getId();
+						if (!shPostAttrChildMap.containsKey(postTypeAttrId)) {
+							ShPostAttr shPostAttrSync = new ShPostAttr();
+							shPostAttrSync.setShPostTypeAttr(shPostTypeAttr);
+							shRelatorItem.getShChildrenPostAttrs().add(shPostAttrSync);
+						}
+					}
+
+					for (ShPostAttr shPostAttrRelator : shRelatorItem.getShChildrenPostAttrs()) {
+						this.postAttrNotInPostTypeNested(shPostAttrRelator);
+					}
+
+				}
 			}
 		}
 	}
@@ -728,9 +789,28 @@ public class ShPostUtils {
 		for (ShPostAttr shPostAttr : shPostAttrMap.values()) {
 			String postTypeAttrId = shPostAttr.getShPostTypeAttr().getId();
 			if (shPostTypeAttrMap.containsKey(postTypeAttrId)) {
-				ShPostAttr shPostAttrSync = new ShPostAttr();
-				shPostAttrSync.setShPostTypeAttr(shPostTypeAttrMap.get(postTypeAttrId));
 				shPostAttrs.add(shPostAttr);
+			}
+			this.postAttrInPostTypeNested(shPostAttr);
+		}
+	}
+
+	private void postAttrInPostTypeNested(ShPostAttr shPostAttr) {
+		if (shPostAttr.getShChildrenRelatorItems() != null) {
+			for (ShRelatorItem shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
+				Set<ShPostAttr> shChildrenPostAttrs = new HashSet<>();
+				if (shRelatorItem.getShChildrenPostAttrs() != null) {
+					Map<String, ShPostTypeAttr> shPostTypeAttrChildMap = this
+							.postTypeAttrMap(shPostAttr.getShPostTypeAttr());
+					for (ShPostAttr shPostAttrRelator : shRelatorItem.getShChildrenPostAttrs()) {
+						String postTypeAttrRelatorId = shPostAttrRelator.getShPostTypeAttr().getId();
+						if (shPostTypeAttrChildMap.containsKey(postTypeAttrRelatorId)) {
+							shChildrenPostAttrs.add(shPostAttrRelator);
+							this.postAttrInPostTypeNested(shPostAttrRelator);
+						}
+					}
+				}
+				shRelatorItem.setShChildrenPostAttrs(shChildrenPostAttrs);
 			}
 		}
 	}
