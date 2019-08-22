@@ -20,26 +20,19 @@ package com.viglet.shiohara.persistence.repository.history;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
 import com.viglet.shiohara.persistence.model.history.ShHistory;
 
-public interface ShHistoryRepository extends JpaRepository<ShHistory, String> {
+public interface ShHistoryPageableRepository extends PagingAndSortingRepository<ShHistory, String> {
 
 	List<ShHistory> findAll();
 
+	List<ShHistory> findByShObjectOrderByDateDesc(String shObject,  Pageable pageable);
+	
+	List<ShHistory> findByShSiteOrderByDateDesc(String shSite,  Pageable pageable);
+	
 	Optional<ShHistory> findById(String id);
-
-	@SuppressWarnings("unchecked")
-	ShHistory save(ShHistory shHistory);
-
-	int countByShObject(String shObject);
-
-	int countByShSite(String shSite);
-
-	@Modifying
-	@Query("delete from ShHistory h where h.id = ?1")
-	void delete(String id);
+	
 }

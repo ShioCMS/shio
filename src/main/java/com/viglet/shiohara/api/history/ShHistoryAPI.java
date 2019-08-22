@@ -18,9 +18,10 @@
 package com.viglet.shiohara.api.history;
 
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
 import com.viglet.shiohara.persistence.model.history.ShHistory;
 import com.viglet.shiohara.persistence.model.object.ShObject;
+import com.viglet.shiohara.persistence.repository.history.ShHistoryPageableRepository;
 import com.viglet.shiohara.persistence.repository.history.ShHistoryRepository;
 import com.viglet.shiohara.persistence.repository.object.ShObjectRepository;
 
@@ -45,6 +47,8 @@ public class ShHistoryAPI {
 	private ShObjectRepository shObjectRepository;
 	@Autowired
 	private ShHistoryRepository shHistoryRepository;
+	@Autowired
+	private ShHistoryPageableRepository shHistoryPageableRepository;
 
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
@@ -52,21 +56,39 @@ public class ShHistoryAPI {
 		return shHistoryRepository.findAll();
 	}
 
-	@GetMapping("/object/{globalId}")
+	@GetMapping("/object/{globalId}/{page}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public Set<ShHistory> shHistoryByObject(@PathVariable String globalId) throws Exception {
+	public List<ShHistory> shHistoryByObject(@PathVariable String globalId, @PathVariable int page) throws Exception {
+		Pageable pageable = PageRequest.of(page, 50);
 		if (shObjectRepository.findById(globalId).isPresent()) {
 			ShObject shObject = shObjectRepository.findById(globalId).orElse(null);
 			if (shObject != null) {
 				if (shObject instanceof ShSite) {
 					ShSite shSite = (ShSite) shObject;
-					return shHistoryRepository.findByShSite(shSite.getId());
+					return shHistoryPageableRepository.findByShSiteOrderByDateDesc(shSite.getId(), pageable);
 				} else {
-					return shHistoryRepository.findByShObject(shObject.getId());
+					return shHistoryPageableRepository.findByShObjectOrderByDateDesc(shObject.getId(), pageable);
 				}
 			}
 		}
 		return null;
 	}
 
+
+	@GetMapping("/object/{globalId}/count")
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
+	public int shHistoryByObjectCount(@PathVariable String globalId) throws Exception {
+		if (shObjectRepository.findById(globalId).isPresent()) {
+			ShObject shObject = shObjectRepository.findById(globalId).orElse(null);
+			if (shObject != null) {
+				if (shObject instanceof ShSite) {
+					ShSite shSite = (ShSite) shObject;
+					return shHistoryRepository.countByShSite(shSite.getId());
+				} else {
+					return shHistoryRepository.countByShObject(shObject.getId());
+				}
+			}
+		}
+		return 0;
+	}
 }
