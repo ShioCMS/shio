@@ -409,7 +409,17 @@ public class ShPostUtils {
 							title.append(", ");
 						title.append(shChildrenPostAttr.getStrValue());
 					}
-					shRelatorItem.setTitle(StringUtils.abbreviate(title.toString(), 255));
+
+					String titleStr = title.toString();
+					if (StringUtils.isEmpty(titleStr) || titleStr.equals("null")) {
+						title = new StringBuffer();
+						titleStr = shChildrenPostAttr.getId();
+						if (StringUtils.isEmpty(titleStr) || titleStr.equals("null")) {
+							titleStr = "Untitled";
+						}
+					}
+
+					shRelatorItem.setTitle(StringUtils.abbreviate(titleStr, 255));
 				}
 
 				if (shPostTypeAttr.getIsSummary() == 1) {
@@ -422,25 +432,26 @@ public class ShPostUtils {
 							if (shObject.getObjectType().equals(ShObjectType.POST)) {
 								ShPost shPostReferenced = shPostRepository.findById(shObject.getId()).get();
 								if (!StringUtils.isEmpty(title.toString()))
-									title.append(", ");
+									summary.append(", ");
 								summary.append(shPostReferenced.getTitle());
 							} else if (shObject.getObjectType().equals(ShObjectType.FOLDER)) {
 								ShFolder shFolderReferenced = shFolderRepository.findById(shObject.getId()).get();
 								if (!StringUtils.isEmpty(title.toString()))
-									title.append(", ");
+									summary.append(", ");
 								summary.append(shFolderReferenced.getName());
 							}
 						}
 					} else if (widgetName.equals(ShSystemWidget.DATE)) {
 						SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyyy");
 						if (!StringUtils.isEmpty(title.toString()))
-							title.append(", ");
+							summary.append(", ");
 						summary.append(dt.format(shPostAttr.getDateValue()));
 					} else {
 						if (!StringUtils.isEmpty(title.toString()))
 							title.append(", ");
 						summary.append(shChildrenPostAttr.getStrValue());
 					}
+
 					shRelatorItem.setSummary(StringUtils.abbreviate(summary.toString(), 255));
 				}
 
@@ -496,7 +507,17 @@ public class ShPostUtils {
 							title.append(", ");
 						title.append(shChildrenPostAttr.getStrValue());
 					}
-					shRelatorItem.setTitle(StringUtils.abbreviate(title.toString(), 255));
+
+					String titleStr = title.toString();
+					if (StringUtils.isEmpty(titleStr) || titleStr.equals("null")) {
+						title = new StringBuffer();
+						titleStr = shChildrenPostAttr.getId();
+						if (StringUtils.isEmpty(titleStr) || titleStr.equals("null")) {
+							titleStr = "Untitled";
+						}
+					}
+
+					shRelatorItem.setTitle(StringUtils.abbreviate(titleStr, 255));
 				}
 
 				if (shPostTypeAttr.getIsSummary() == 1) {
@@ -663,7 +684,7 @@ public class ShPostUtils {
 			Map<String, ShPostTypeAttr> shPostTypeAttrMap = this.postTypeAttrMap(shPost);
 
 			this.postAttrInPostType(shPostAttrs, shPostAttrMap, shPostTypeAttrMap);
-		    this.postAttrNotInPostType(shPostAttrs, shPostAttrMap, shPostTypeAttrMap);
+			this.postAttrNotInPostType(shPostAttrs, shPostAttrMap, shPostTypeAttrMap);
 
 			shPost.setShPostAttrs(shPostAttrs);
 		}
