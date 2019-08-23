@@ -30,6 +30,8 @@ import java.util.Set;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -65,6 +67,7 @@ import com.viglet.shiohara.sites.utils.ShSitesObjectUtils;
 import com.viglet.shiohara.sites.utils.ShSitesPostUtils;
 import com.viglet.shiohara.url.ShURLFormatter;
 import com.viglet.shiohara.utils.ShFolderUtils;
+import com.viglet.shiohara.utils.ShObjectUtils;
 import com.viglet.shiohara.utils.ShPostUtils;
 import com.viglet.shiohara.utils.ShSiteUtils;
 import com.viglet.shiohara.workflow.ShWorkflow;
@@ -105,6 +108,8 @@ public class ShObjectAPI {
 	private ShUserRepository shUserRepository;
 	@Autowired
 	private ShGroupRepository shGroupRepository;
+	@Autowired
+	private ShObjectUtils shObjectUtils;
 	@Autowired
 	private ShWorkflow shWorkflow;
 
@@ -245,39 +250,40 @@ public class ShObjectAPI {
 
 	@GetMapping("/{id}/list")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShFolderList shObjectListItem(@PathVariable String id, final Principal principal) {
-		Optional<ShObject> shObjectOptional = shObjectRepository.findById(id);
-		if (shObjectOptional.isPresent()) {
-			ShUser shUser = null;
-			if (principal != null)
-				shUser = shUserRepository.findByUsername(principal.getName());
-			ShObject shObject = shObjectOptional.get();
-			if (shObject instanceof ShFolder) {
+	public ResponseEntity<?> shObjectListItem(@PathVariable String id, final Principal principal) {
+		if (shObjectUtils.canAccess(principal, id)) {
+			Optional<ShObject> shObjectOptional = shObjectRepository.findById(id);
+			if (shObjectOptional.isPresent()) {
+				ShUser shUser = null;
+				if (principal != null)
+					shUser = shUserRepository.findByUsername(principal.getName());
+				ShObject shObject = shObjectOptional.get();
+				if (shObject instanceof ShFolder) {
 
-				ShFolder shFolder = (ShFolder) shObject;
-				String folderPath = shFolderUtils.folderPath(shFolder, true, false);
-				ArrayList<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shFolder);
-				ShSite shSite = breadcrumb.get(0).getShSite();
-				ShFolderList shFolderList = new ShFolderList();
-				shFolderList.setShFolders(this.allowedFolders(shUser, shObject));
-				shFolderList.setShPosts(this.allowedPosts(shUser, shObject));
-				shFolderList.setFolderPath(folderPath);
-				shFolderList.setBreadcrumb(breadcrumb);
-				shFolderList.setShSite(shSite);
+					ShFolder shFolder = (ShFolder) shObject;
+					String folderPath = shFolderUtils.folderPath(shFolder, true, false);
+					ArrayList<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shFolder);
+					ShSite shSite = breadcrumb.get(0).getShSite();
+					ShFolderList shFolderList = new ShFolderList();
+					shFolderList.setShFolders(this.allowedFolders(shUser, shObject));
+					shFolderList.setShPosts(this.allowedPosts(shUser, shObject));
+					shFolderList.setFolderPath(folderPath);
+					shFolderList.setBreadcrumb(breadcrumb);
+					shFolderList.setShSite(shSite);
 
-				return shFolderList;
-			} else if (shObject instanceof ShSite) {
-				ShSite shSite = (ShSite) shObject;
-				ShFolderList shFolderList = new ShFolderList();
-				shFolderList.setShFolders(this.allowedFolders(shUser, shObject));
-				shFolderList.setShSite(shSite);
-				return shFolderList;
-			} else {
-				return null;
+					return new ResponseEntity<>(shFolderList, HttpStatus.OK);
+				} else if (shObject instanceof ShSite) {
+					ShSite shSite = (ShSite) shObject;
+					ShFolderList shFolderList = new ShFolderList();
+					shFolderList.setShFolders(this.allowedFolders(shUser, shObject));
+					shFolderList.setShSite(shSite);
+					return new ResponseEntity<>(shFolderList, HttpStatus.OK);
+				} else {
+					return new ResponseEntity<>(null, HttpStatus.OK);
+				}
 			}
-		} else {
-			return null;
 		}
+		return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
 	}
 
 	private Set<ShFolderTinyBean> allowedFolders(ShUser shUser, ShObject shObject) {

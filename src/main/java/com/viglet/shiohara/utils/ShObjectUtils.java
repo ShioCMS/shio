@@ -17,20 +17,32 @@
 
 package com.viglet.shiohara.utils;
 
+import java.security.Principal;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.viglet.shiohara.persistence.model.auth.ShGroup;
+import com.viglet.shiohara.persistence.model.auth.ShUser;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.site.ShSite;
+import com.viglet.shiohara.persistence.repository.auth.ShUserRepository;
+import com.viglet.shiohara.persistence.repository.object.ShObjectRepository;
 
 @Component
 public class ShObjectUtils {
 	@Autowired
 	private ShFolderUtils shFolderUtils;
 	@Autowired
-	private ShPostUtils shPostUtils;	
+	private ShObjectRepository shObjectRepository;
+	@Autowired
+	private ShUserRepository shUserRepository;
+	@Autowired
+	private ShPostUtils shPostUtils;
 
 	public ShSite getSite(ShObject shObject) {
 		if (shObject instanceof ShPost) {
@@ -40,5 +52,38 @@ public class ShObjectUtils {
 		} else {
 			return null;
 		}
+	}
+
+	public boolean canAccess(Principal principal, String shObjectId) {
+		ShUser shUser = null;
+		ShObject shObject = shObjectRepository.findById(shObjectId).orElse(null);
+		if (shObject != null) {
+			if (principal != null)
+				shUser = shUserRepository.findByUsername(principal.getName());
+			Set<ShGroup> shGroups = new HashSet<>();
+			Set<String> shUsers = new HashSet<>();
+			if (shUser != null && shUser.getShGroups() != null) {
+				boolean fullAccess = false;
+				for (ShGroup shGroup : shUser.getShGroups()) {
+					if (shGroup.getName().equals("Administrator")) {
+						fullAccess = true;
+					}
+				}
+				if (fullAccess) {
+					return true;
+				} else {
+					shGroups = shUser.getShGroups();
+					shUsers.add(shUser.getUsername());
+					if (shObjectRepository.countByIdAndShGroupsInOrIdAndShUsersInOrIdAndShGroupsIsNullAndShUsersIsNull(
+							shObject.getId(), shGroups, shObject.getId(), shUsers, shObject.getId()) > 0) {
+						return true;
+					}
+				}
+			} else {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }

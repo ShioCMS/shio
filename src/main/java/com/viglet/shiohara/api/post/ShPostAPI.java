@@ -35,6 +35,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -75,6 +77,7 @@ import com.viglet.shiohara.post.type.ShSystemPostType;
 import com.viglet.shiohara.sites.cache.component.ShCacheObject;
 import com.viglet.shiohara.turing.ShTuringIntegration;
 import com.viglet.shiohara.url.ShURLFormatter;
+import com.viglet.shiohara.utils.ShObjectUtils;
 import com.viglet.shiohara.utils.ShPostUtils;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
 import com.viglet.shiohara.widget.ShSystemWidget;
@@ -124,7 +127,9 @@ public class ShPostAPI {
 	private ShCacheObject shCacheObject;
 	@Autowired
 	private ShWorkflowTaskRepository shWorkflowTaskRepository;
-	
+	@Autowired
+	private ShObjectUtils shObjectUtils;
+
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShPost> shPostList() {
@@ -146,11 +151,15 @@ public class ShPostAPI {
 	 */
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShPost shPostEdit(@PathVariable String id, Principal principal) {
-		ShPost shPost = shPostUtils.loadLazyPost(id, false);
-		shPostUtils.syncWithPostType(shPost);
+	public ResponseEntity<?> shPostEdit(@PathVariable String id, Principal principal) {
+		if (shObjectUtils.canAccess(principal, id)) {
+			ShPost shPost = shPostUtils.loadLazyPost(id, false);
+			shPostUtils.syncWithPostType(shPost);
 
-		return shPost;
+			return new ResponseEntity<>(shPost, HttpStatus.OK);
+		}
+
+		return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
 	}
 
 	@GetMapping("/attr/model")
@@ -163,25 +172,27 @@ public class ShPostAPI {
 	@Transactional
 	@PutMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShPost shPostUpdate(@PathVariable String id, @RequestBody ShPost shPost, Principal principal) {
+	public ResponseEntity<?> shPostUpdate(@PathVariable String id, @RequestBody ShPost shPost, Principal principal) {
+		if (shObjectUtils.canAccess(principal, id)) {
+			shCacheObject.deleteCache(id);
 
-		shCacheObject.deleteCache(id);
+			this.postSave(shPost);
 
-		this.postSave(shPost);
+			// History
+			ShHistory shHistory = new ShHistory();
+			shHistory.setDate(new Date());
+			shHistory.setDescription("Updated " + shPost.getTitle() + " Post.");
+			if (principal != null) {
+				shHistory.setOwner(principal.getName());
+			}
 
-		// History
-		ShHistory shHistory = new ShHistory();
-		shHistory.setDate(new Date());
-		shHistory.setDescription("Updated " + shPost.getTitle() + " Post.");
-		if (principal != null) {
-			shHistory.setOwner(principal.getName());
+			shHistory.setShObject(shPost.getId());
+			shHistory.setShSite(shPostUtils.getSite(shPost).getId());
+			shHistoryRepository.saveAndFlush(shHistory);
+
+			return this.shPostEdit(shPost.getId(), principal);
 		}
-
-		shHistory.setShObject(shPost.getId());
-		shHistory.setShSite(shPostUtils.getSite(shPost).getId());
-		shHistoryRepository.saveAndFlush(shHistory);
-
-		return this.shPostEdit(shPost.getId(), principal);
+		return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
 
 	}
 
@@ -189,70 +200,18 @@ public class ShPostAPI {
 	@PostMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	@CacheEvict(value = { "page", "pageLayout", "region" }, allEntries = true)
-	public ShPost shPostAdd(@RequestBody ShPost shPost, Principal principal) {
-		if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE)) {
-			shPost.setPublishStatus("PUBLISH");
-			shPost.setPublished(true);
-		}
-		this.postSave(shPost);
-
-		
-		// History
-		ShHistory shHistory = new ShHistory();
-		shHistory.setDate(new Date());
-		shHistory.setDescription("Created " + shPost.getTitle() + " Post.");
-		if (principal != null) {
-			shHistory.setOwner(principal.getName());
-		}
-		shHistory.setShObject(shPost.getId());
-		shHistory.setShSite(shPostUtils.getSite(shPost).getId());
-		shHistoryRepository.saveAndFlush(shHistory);
-
-		return this.shPostEdit(shPost.getId(), principal);
-
-	}
-
-	@Transactional
-	@DeleteMapping("/{id}")
-	public boolean shPostDelete(@PathVariable String id, Principal principal) {
-
-		shCacheObject.deleteCache(id);
-
-		Optional<ShPost> shPostOptional = shPostRepository.findById(id);
-
-		if (shPostOptional.isPresent()) {
-			ShPost shPost = shPostOptional.get();
-
-			shTuringIntegration.deindexObject(shPost);
-
-			Set<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
-			if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE) && shPostAttrs.size() > 0) {
-				File file = shStaticFileUtils.filePath(shPost.getShFolder(),
-						shPostAttrs.iterator().next().getStrValue());
-				if (file != null) {
-					if (file.exists()) {
-						try {
-							Files.delete(file.toPath());
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-				}
+	public ResponseEntity<?> shPostAdd(@RequestBody ShPost shPost, Principal principal) {
+		if (shObjectUtils.canAccess(principal, shPost.getShFolder().getId())) {
+			if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE)) {
+				shPost.setPublishStatus("PUBLISH");
+				shPost.setPublished(true);
 			}
-
-			shPostAttrRepository.deleteInBatch(shPostAttrs);
-
-			shReferenceRepository.deleteInBatch(shReferenceRepository.findByShObjectFrom(shPost));
-
-			shReferenceRepository.deleteInBatch(shReferenceRepository.findByShObjectTo(shPost));
-
-			shReferenceDraftRepository.deleteInBatch(shReferenceDraftRepository.findByShObjectTo(shPost));
+			this.postSave(shPost);
 
 			// History
 			ShHistory shHistory = new ShHistory();
 			shHistory.setDate(new Date());
-			shHistory.setDescription("Deleted " + shPost.getTitle() + " Post.");
+			shHistory.setDescription("Created " + shPost.getTitle() + " Post.");
 			if (principal != null) {
 				shHistory.setOwner(principal.getName());
 			}
@@ -260,12 +219,65 @@ public class ShPostAPI {
 			shHistory.setShSite(shPostUtils.getSite(shPost).getId());
 			shHistoryRepository.saveAndFlush(shHistory);
 
-			shPostRepository.delete(id);
-
-			return true;
-		} else {
-			return false;
+			return this.shPostEdit(shPost.getId(), principal);
 		}
+		return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+	}
+
+	@Transactional
+	@DeleteMapping("/{id}")
+	public ResponseEntity<?> shPostDelete(@PathVariable String id, Principal principal) {
+		if (shObjectUtils.canAccess(principal, id)) {
+			shCacheObject.deleteCache(id);
+
+			Optional<ShPost> shPostOptional = shPostRepository.findById(id);
+
+			if (shPostOptional.isPresent()) {
+				ShPost shPost = shPostOptional.get();
+
+				shTuringIntegration.deindexObject(shPost);
+
+				Set<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
+				if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE) && shPostAttrs.size() > 0) {
+					File file = shStaticFileUtils.filePath(shPost.getShFolder(),
+							shPostAttrs.iterator().next().getStrValue());
+					if (file != null) {
+						if (file.exists()) {
+							try {
+								Files.delete(file.toPath());
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+					}
+				}
+
+				shPostAttrRepository.deleteInBatch(shPostAttrs);
+
+				shReferenceRepository.deleteInBatch(shReferenceRepository.findByShObjectFrom(shPost));
+
+				shReferenceRepository.deleteInBatch(shReferenceRepository.findByShObjectTo(shPost));
+
+				shReferenceDraftRepository.deleteInBatch(shReferenceDraftRepository.findByShObjectTo(shPost));
+
+				// History
+				ShHistory shHistory = new ShHistory();
+				shHistory.setDate(new Date());
+				shHistory.setDescription("Deleted " + shPost.getTitle() + " Post.");
+				if (principal != null) {
+					shHistory.setOwner(principal.getName());
+				}
+				shHistory.setShObject(shPost.getId());
+				shHistory.setShSite(shPostUtils.getSite(shPost).getId());
+				shHistoryRepository.saveAndFlush(shHistory);
+
+				shPostRepository.delete(id);
+
+				return new ResponseEntity<>(true, HttpStatus.OK);
+			}
+		}
+		return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
 	}
 
 	public void postSave(ShPost shPost) {
@@ -341,30 +353,30 @@ public class ShPostAPI {
 
 	public void postPublishSave(ShPost shPost) {
 		shPost.setPublished(true);
-		
+
 		shPostRepository.saveAndFlush(shPost);
-		
+
 		this.postReferenceSave(shPost);
-		
+
 		this.postDraftDelete(shPost.getId());
-		
+
 		shWorkflowTaskRepository.deleteInBatch(shWorkflowTaskRepository.findByShObject(shPost));
-		
+
 		shTuringIntegration.indexObject(shPost);
 
 	}
 
 	public void postUnpublishSave(ShPost shPost) {
 		shPost.setPublished(false);
-		
+
 		shPostRepository.saveAndFlush(shPost);
-		
+
 		this.postReferenceSave(shPost);
-		
+
 		this.postDraftDelete(shPost.getId());
-		
+
 		shWorkflowTaskRepository.deleteInBatch(shWorkflowTaskRepository.findByShObject(shPost));
-		
+
 		shTuringIntegration.deindexObject(shPost);
 	}
 
@@ -389,7 +401,7 @@ public class ShPostAPI {
 			this.postUnpublishSave(shPost);
 		} else {
 			if (shPost.isPublished()) {
-				ShPost shPostEdit = shPostRepository.findById(shPost.getId()).orElse(null);			
+				ShPost shPostEdit = shPostRepository.findById(shPost.getId()).orElse(null);
 				if (shPostEdit != null) {
 					ObjectMapper mapper = new ObjectMapper();
 					try {
@@ -404,7 +416,7 @@ public class ShPostAPI {
 						shPostDraftRepository.saveAndFlush(shPostDraft);
 						this.postReferenceSaveDraft(shPostDraft);
 						shPostEdit.setPublishStatus("DRAFT");
-						shPostRepository.saveAndFlush(shPostEdit);						
+						shPostRepository.saveAndFlush(shPostEdit);
 					} catch (JsonProcessingException e) {
 						logger.error("postDraftSave JsonProcessingException:", e);
 					} catch (IOException e) {

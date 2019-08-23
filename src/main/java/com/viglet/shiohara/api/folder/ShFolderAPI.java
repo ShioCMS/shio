@@ -18,6 +18,7 @@
 package com.viglet.shiohara.api.folder;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,6 +28,8 @@ import java.util.function.Consumer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,6 +50,7 @@ import com.viglet.shiohara.persistence.repository.object.ShObjectRepository;
 import com.viglet.shiohara.turing.ShTuringIntegration;
 import com.viglet.shiohara.url.ShURLFormatter;
 import com.viglet.shiohara.utils.ShFolderUtils;
+import com.viglet.shiohara.utils.ShObjectUtils;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -65,6 +69,8 @@ public class ShFolderAPI {
 	@Autowired
 	private ShObjectRepository shObjectRepository;
 	@Autowired
+	private ShObjectUtils shObjectUtils;
+	@Autowired
 	private ShTuringIntegration shTuringIntegration;
 
 	@ApiOperation(value = "Folder list")
@@ -77,92 +83,108 @@ public class ShFolderAPI {
 	@ApiOperation(value = "Show a folder")
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShFolder shFolderGet(@PathVariable String id) {
-		return shFolderRepository.findById(id).orElse(null);
+	public ResponseEntity<?> shFolderGet(@PathVariable String id, Principal principal) {
+		if (shObjectUtils.canAccess(principal, id)) {
+			return new ResponseEntity<>(shFolderRepository.findById(id).orElse(null), HttpStatus.OK);
+		}
+		return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
 	}
 
 	@ApiOperation(value = "Update a folder")
 	@PutMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShFolder shFolderUpdate(@PathVariable String id, @RequestBody ShFolder shFolder) {
-		Optional<ShFolder> shFolderOptional = shFolderRepository.findById(id);
-		if (shFolderOptional.isPresent()) {
-			ShFolder shFolderEdit = shFolderOptional.get();
+	public ResponseEntity<?> shFolderUpdate(@PathVariable String id, @RequestBody ShFolder shFolder,
+			Principal principal) {
+		if (shObjectUtils.canAccess(principal, id)) {
+			Optional<ShFolder> shFolderOptional = shFolderRepository.findById(id);
+			if (shFolderOptional.isPresent()) {
+				ShFolder shFolderEdit = shFolderOptional.get();
 
-			shFolderEdit.setDate(new Date());
-			shFolderEdit.setName(shFolder.getName());
-			shFolderEdit.setParentFolder(shFolder.getParentFolder());
-			shFolderEdit.setShSite(shFolder.getShSite());
-			shFolderEdit.setFurl(shURLFormatter.format(shFolderEdit.getName()));
-			shFolderRepository.saveAndFlush(shFolderEdit);
+				shFolderEdit.setDate(new Date());
+				shFolderEdit.setName(shFolder.getName());
+				shFolderEdit.setParentFolder(shFolder.getParentFolder());
+				shFolderEdit.setShSite(shFolder.getShSite());
+				shFolderEdit.setFurl(shURLFormatter.format(shFolderEdit.getName()));
+				shFolderRepository.saveAndFlush(shFolderEdit);
 
-			shTuringIntegration.indexObject(shFolderEdit);
+				shTuringIntegration.indexObject(shFolderEdit);
 
-			return shFolderEdit;
-		} else {
-			return null;
+				return new ResponseEntity<>(shFolderEdit, HttpStatus.OK);
+			}
 		}
+		return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+
 	}
 
 	@Transactional
 	@ApiOperation(value = "Delete a folder")
 	@DeleteMapping("/{id}")
-	public boolean shFolderDelete(@PathVariable String id) {
-
-		shFolderRepository.findById(id).ifPresent(new Consumer<ShFolder>() {
-			@Override
-			public void accept(ShFolder shFolder) {
-				try {
-					shFolderUtils.deleteFolder(shFolder);
-				} catch (IOException e) {
-					logger.error("FolderDeleteException", e);
+	public ResponseEntity<?> shFolderDelete(@PathVariable String id, Principal principal) {
+		if (shObjectUtils.canAccess(principal, id)) {
+			shFolderRepository.findById(id).ifPresent(new Consumer<ShFolder>() {
+				@Override
+				public void accept(ShFolder shFolder) {
+					try {
+						shFolderUtils.deleteFolder(shFolder);
+					} catch (IOException e) {
+						logger.error("FolderDeleteException", e);
+					}
 				}
-			}
-		});
-		return true;
+			});
+			return new ResponseEntity<>(true, HttpStatus.OK);
+		}
+		return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
 	}
 
 	@ApiOperation(value = "Create a folder")
 	@PostMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShFolder shFolderAdd(@RequestBody ShFolder shFolder) {
-		shFolder.setDate(new Date());
-		shFolder.setFurl(shURLFormatter.format(shFolder.getName()));
-		shFolderRepository.save(shFolder);
+	public ResponseEntity<?> shFolderAdd(@RequestBody ShFolder shFolder, Principal principal) {
+		if (shObjectUtils.canAccess(principal, shFolder.getParentFolder().getId())) {
 
-		shTuringIntegration.indexObject(shFolder);
+			shFolder.setDate(new Date());
+			shFolder.setFurl(shURLFormatter.format(shFolder.getName()));
+			shFolderRepository.save(shFolder);
 
-		return shFolder;
+			shTuringIntegration.indexObject(shFolder);
+
+			return new ResponseEntity<>(shFolder, HttpStatus.OK);
+		}
+		return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
 
 	}
 
 	@ApiOperation(value = "Create a folder from Parent Object")
 	@PostMapping("/object/{objectId}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShFolder shFolderAddFromParentObject(@RequestBody ShFolder shFolder, @PathVariable String objectId) {
+	public ResponseEntity<?> shFolderAddFromParentObject(@RequestBody ShFolder shFolder, @PathVariable String objectId,
+			Principal principal) {
+		if (shObjectUtils.canAccess(principal, objectId)) {
+			ShFolder shNewFolder = new ShFolder();
+			shNewFolder.setDate(new Date());
+			shNewFolder.setName(shFolder.getName());
+			shNewFolder.setFurl(shURLFormatter.format(shNewFolder.getName()));
 
-		ShFolder shNewFolder = new ShFolder();
-		shNewFolder.setDate(new Date());
-		shNewFolder.setName(shFolder.getName());
-		shNewFolder.setFurl(shURLFormatter.format(shNewFolder.getName()));
+			ShObject shParentObject = shObjectRepository.findById(objectId).orElse(null);
+			if (shParentObject instanceof ShFolder) {
+				ShFolder shParentFolder = (ShFolder) shParentObject;
+				shNewFolder.setParentFolder(shParentFolder);
+				shNewFolder.setRootFolder((byte) 0);
+				shNewFolder.setShSite(null);
 
-		ShObject shParentObject = shObjectRepository.findById(objectId).orElse(null);
-		if (shParentObject instanceof ShFolder) {
-			ShFolder shParentFolder = (ShFolder) shParentObject;
-			shNewFolder.setParentFolder(shParentFolder);
-			shNewFolder.setRootFolder((byte) 0);
-			shNewFolder.setShSite(null);
+			} else if (shParentObject instanceof ShSite) {
+				ShSite shSite = (ShSite) shParentObject;
+				shNewFolder.setParentFolder(null);
+				shNewFolder.setRootFolder((byte) 1);
+				shNewFolder.setShSite(shSite);
+			}
 
-		} else if (shParentObject instanceof ShSite) {
-			ShSite shSite = (ShSite) shParentObject;
-			shNewFolder.setParentFolder(null);
-			shNewFolder.setRootFolder((byte) 1);
-			shNewFolder.setShSite(shSite);
+			shFolderRepository.save(shNewFolder);
+
+			return new ResponseEntity<>(shFolder, HttpStatus.OK);
 		}
 
-		shFolderRepository.save(shNewFolder);
-
-		return shFolder;
+		return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
 	}
 
 	@ApiOperation(value = "Folder path")

@@ -21,6 +21,8 @@ import java.security.Principal;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -32,6 +34,7 @@ import com.viglet.shiohara.api.ShJsonView;
 import com.viglet.shiohara.bean.xp.ShPostXP;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.property.ShMgmtProperties;
+import com.viglet.shiohara.utils.ShObjectUtils;
 import com.viglet.shiohara.utils.ShPostUtils;
 
 import io.swagger.annotations.Api;
@@ -51,6 +54,8 @@ public class ShPostXPAPI {
 	@Autowired
 	private ShPostUtils shPostUtils;
 	@Autowired
+	private ShObjectUtils shObjectUtils;
+	@Autowired
 	private ShMgmtProperties shMgmtProperties;
 
 	/**
@@ -61,17 +66,19 @@ public class ShPostXPAPI {
 	 */
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShPostXP shPostEdit(@PathVariable String id, Principal principal) {
+	public ResponseEntity<?> shPostEdit(@PathVariable String id, Principal principal) {
+		if (shObjectUtils.canAccess(principal, id)) {
+			if (logger.isDebugEnabled())
+				logger.debug("Mgmt: " + shMgmtProperties.isEnabled());
+			ShPostXP shPostXP = new ShPostXP();
 
-		if (logger.isDebugEnabled())
-			logger.debug("Mgmt: " + shMgmtProperties.isEnabled());
-		ShPostXP shPostXP = new ShPostXP();
+			ShPost shPost = shPostUtils.loadLazyPost(id, false);
+			shPostUtils.syncWithPostType(shPost);
 
-		ShPost shPost = shPostUtils.loadLazyPost(id, false);
-		shPostUtils.syncWithPostType(shPost);
-
-		shPostXP.setShPost(shPost);
-		shPostXP.setAllowPublish(shPostUtils.allowPublish(shPost.getShPostType(), principal));
-		return shPostXP;
+			shPostXP.setShPost(shPost);
+			shPostXP.setAllowPublish(shPostUtils.allowPublish(shPost.getShPostType(), principal));
+			return new ResponseEntity<>(shPostXP, HttpStatus.OK);
+		}
+		return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
 	}
 }
