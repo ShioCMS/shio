@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -60,11 +61,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viglet.shiohara.api.ShJsonView;
 import com.viglet.shiohara.object.ShObjectPublishStatus;
+import com.viglet.shiohara.persistence.model.auth.ShGroup;
 import com.viglet.shiohara.persistence.model.auth.ShUser;
 import com.viglet.shiohara.persistence.model.history.ShHistory;
+import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.repository.auth.ShUserRepository;
 import com.viglet.shiohara.persistence.repository.history.ShHistoryRepository;
+import com.viglet.shiohara.persistence.repository.object.ShObjectRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostDraftAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostDraftRepository;
@@ -117,6 +121,8 @@ public class ShPostAPI {
 	private ShHistoryRepository shHistoryRepository;
 	@Autowired
 	private ShPostTypeRepository shPostTypeRepository;
+	@Autowired
+	private ShObjectRepository shObjectRepository;
 	@Autowired
 	private ShURLFormatter shURLFormatter;
 	@Autowired
@@ -206,6 +212,14 @@ public class ShPostAPI {
 				shPost.setPublishStatus("PUBLISH");
 				shPost.setPublished(true);
 			}
+
+			ShObject shObject = shObjectRepository.findById(shPost.getShFolder().getId()).get();
+			List<ShObject> shObjects = new ArrayList<>();
+			shObjects.add(shObject);
+			
+			shPost.setShGroups(new HashSet<ShGroup>(shObject.getShGroups()));
+			shPost.setShUsers(new HashSet<String>(shObject.getShUsers()));
+
 			this.postSave(shPost);
 
 			// History

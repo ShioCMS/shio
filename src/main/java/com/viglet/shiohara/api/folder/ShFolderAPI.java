@@ -21,8 +21,10 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import org.apache.logging.log4j.LogManager;
@@ -42,9 +44,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
+import com.viglet.shiohara.persistence.model.auth.ShGroup;
+import com.viglet.shiohara.persistence.model.auth.ShUser;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.site.ShSite;
+import com.viglet.shiohara.persistence.repository.auth.ShGroupRepository;
+import com.viglet.shiohara.persistence.repository.auth.ShUserRepository;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.object.ShObjectRepository;
 import com.viglet.shiohara.turing.ShTuringIntegration;
@@ -72,6 +78,10 @@ public class ShFolderAPI {
 	private ShObjectUtils shObjectUtils;
 	@Autowired
 	private ShTuringIntegration shTuringIntegration;
+	@Autowired
+	private ShUserRepository shUserRepository;
+	@Autowired
+	private ShGroupRepository shGroupRepository;
 
 	@ApiOperation(value = "Folder list")
 	@GetMapping
@@ -140,16 +150,23 @@ public class ShFolderAPI {
 	@PostMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ResponseEntity<?> shFolderAdd(@RequestBody ShFolder shFolder, Principal principal) {
-		String id = null;
+		ShObject shParentObject = null;
 		if (shFolder != null) {
 			if (shFolder.getRootFolder() == 1 && shFolder.getShSite() != null && shFolder.getShSite().getId() != null)
-				id = shFolder.getShSite().getId();
+				shParentObject = shFolder.getShSite();
 			else if (shFolder.getParentFolder() != null && shFolder.getParentFolder().getId() != null)
-				id = shFolder.getParentFolder().getId();
+				shParentObject = shFolder.getParentFolder();
 
-			if (shObjectUtils.canAccess(principal, id)) {
+			if (shObjectUtils.canAccess(principal, shParentObject.getId())) {
+				List<ShObject> shObjects = new ArrayList<>();
+				shObjects.add(shParentObject);
+
+				ShObject shObject = shObjectRepository.findById(shParentObject.getId()).get();
+
 				shFolder.setDate(new Date());
 				shFolder.setFurl(shURLFormatter.format(shFolder.getName()));
+				shFolder.setShGroups(new HashSet<ShGroup>(shObject.getShGroups()));
+				shFolder.setShUsers(new HashSet<String>(shObject.getShUsers()));
 				shFolderRepository.save(shFolder);
 
 				shTuringIntegration.indexObject(shFolder);
@@ -167,9 +184,17 @@ public class ShFolderAPI {
 	public ResponseEntity<?> shFolderAddFromParentObject(@RequestBody ShFolder shFolder, @PathVariable String objectId,
 			Principal principal) {
 		if (shObjectUtils.canAccess(principal, objectId)) {
+
+			ShObject shObject = shObjectRepository.findById(objectId).get();
+
+			List<ShObject> shObjects = new ArrayList<>();
+			shObjects.add(shObject);
+	
 			ShFolder shNewFolder = new ShFolder();
 			shNewFolder.setDate(new Date());
 			shNewFolder.setName(shFolder.getName());
+			shNewFolder.setShGroups(new HashSet<ShGroup>(shObject.getShGroups()));
+			shNewFolder.setShUsers(new HashSet<String>(shObject.getShUsers()));
 			shNewFolder.setFurl(shURLFormatter.format(shNewFolder.getName()));
 
 			ShObject shParentObject = shObjectRepository.findById(objectId).orElse(null);
