@@ -140,15 +140,22 @@ public class ShFolderAPI {
 	@PostMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ResponseEntity<?> shFolderAdd(@RequestBody ShFolder shFolder, Principal principal) {
-		if (shObjectUtils.canAccess(principal, shFolder.getParentFolder().getId())) {
+		String id = null;
+		if (shFolder != null) {
+			if (shFolder.getRootFolder() == 1 && shFolder.getShSite() != null && shFolder.getShSite().getId() != null)
+				id = shFolder.getShSite().getId();
+			else if (shFolder.getParentFolder() != null && shFolder.getParentFolder().getId() != null)
+				id = shFolder.getParentFolder().getId();
 
-			shFolder.setDate(new Date());
-			shFolder.setFurl(shURLFormatter.format(shFolder.getName()));
-			shFolderRepository.save(shFolder);
+			if (shObjectUtils.canAccess(principal, id)) {
+				shFolder.setDate(new Date());
+				shFolder.setFurl(shURLFormatter.format(shFolder.getName()));
+				shFolderRepository.save(shFolder);
 
-			shTuringIntegration.indexObject(shFolder);
+				shTuringIntegration.indexObject(shFolder);
 
-			return new ResponseEntity<>(shFolder, HttpStatus.OK);
+				return new ResponseEntity<>(shFolder, HttpStatus.OK);
+			}
 		}
 		return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
 
