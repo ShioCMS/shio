@@ -55,7 +55,6 @@ import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.model.site.ShSite;
-import com.viglet.shiohara.persistence.repository.auth.ShGroupRepository;
 import com.viglet.shiohara.persistence.repository.auth.ShUserRepository;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.object.ShObjectRepository;
@@ -106,8 +105,6 @@ public class ShObjectAPI {
 	private ShSitesObjectUtils shSitesObjectUtils;
 	@Autowired
 	private ShUserRepository shUserRepository;
-	@Autowired
-	private ShGroupRepository shGroupRepository;
 	@Autowired
 	private ShObjectUtils shObjectUtils;
 	@Autowired
@@ -160,7 +157,7 @@ public class ShObjectAPI {
 		List<ShObject> shObjects = new ArrayList<>();
 		shObjects.add(shObject);
 		ShSecurityBean shSecurityBean = new ShSecurityBean();
-		shSecurityBean.setShGroups(shGroupRepository.findByShObjectsIn(shObjects));
+		shSecurityBean.setShGroups(shObject.getShGroups());
 		shSecurityBean.setShUsers(shObject.getShUsers());
 		return shSecurityBean;
 	}
@@ -297,7 +294,7 @@ public class ShObjectAPI {
 			folders = shFolderRepository.findByShSiteAndRootFolderTiny(shSite, (byte) 1);
 		}
 
-		Set<ShGroup> shGroups = new HashSet<>();
+		Set<String> shGroups = new HashSet<>();
 		Set<String> shUsers = new HashSet<>();
 		if (shUser != null && shUser.getShGroups() != null) {
 			boolean fullAccess = false;
@@ -310,7 +307,10 @@ public class ShObjectAPI {
 				return folders;
 			} else {
 				Set<ShFolderTinyBean> shFolders = new HashSet<>();
-				shGroups = shUser.getShGroups();
+				
+				for (ShGroup shGroup : shUser.getShGroups()) {
+					shGroups.add(shGroup.getName());
+				}
 				shUsers.add(shUser.getUsername());
 				for (ShFolderTinyBean folder : folders)
 					if (shObjectRepository.countByIdAndShGroupsInOrIdAndShUsersInOrIdAndShGroupsIsNullAndShUsersIsNull(
@@ -333,7 +333,7 @@ public class ShObjectAPI {
 			posts = shPostRepository.findByShFolderTiny(shFolder.getId());
 		}
 
-		Set<ShGroup> shGroups = new HashSet<>();
+		Set<String> shGroups = new HashSet<>();
 		Set<String> shUsers = new HashSet<>();
 		if (shUser != null && shUser.getShGroups() != null) {
 			boolean fullAccess = false;
@@ -346,7 +346,9 @@ public class ShObjectAPI {
 				return posts;
 			} else {
 				List<ShPostTinyBean> shPosts = new ArrayList<>();
-				shGroups = shUser.getShGroups();
+				for (ShGroup shGroup : shUser.getShGroups()) {
+					shGroups.add(shGroup.getName());
+				}				
 				shUsers.add(shUser.getUsername());
 				for (ShPostTinyBean post : posts)
 					if (shObjectRepository.countByIdAndShGroupsInOrIdAndShUsersInOrIdAndShGroupsIsNullAndShUsersIsNull(

@@ -61,7 +61,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viglet.shiohara.api.ShJsonView;
 import com.viglet.shiohara.object.ShObjectPublishStatus;
-import com.viglet.shiohara.persistence.model.auth.ShGroup;
 import com.viglet.shiohara.persistence.model.auth.ShUser;
 import com.viglet.shiohara.persistence.model.history.ShHistory;
 import com.viglet.shiohara.persistence.model.object.ShObject;
@@ -217,7 +216,7 @@ public class ShPostAPI {
 			List<ShObject> shObjects = new ArrayList<>();
 			shObjects.add(shObject);
 			
-			shPost.setShGroups(new HashSet<ShGroup>(shObject.getShGroups()));
+			shPost.setShGroups(new HashSet<String>(shObject.getShGroups()));
 			shPost.setShUsers(new HashSet<String>(shObject.getShUsers()));
 
 			this.postSave(shPost);

@@ -31,7 +31,6 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
@@ -45,7 +44,6 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.viglet.shiohara.persistence.model.auth.ShGroup;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.post.ShPostDraftAttr;
 import com.viglet.shiohara.persistence.model.workflow.ShWorkflowTask;
@@ -97,11 +95,12 @@ public class ShObject implements Serializable {
 
 	private boolean published;
 
-	@Column(name = "draft", length = 5 * 1024 * 1024) // 5Mb
-	private String draft;
-
-	@ManyToMany
-	private Set<ShGroup> shGroups = new HashSet<>();
+	@ElementCollection
+	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
+	@CollectionTable(name = "sh_object_groups")
+	@JoinColumn(name = "object_id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private Set<String> shGroups = new HashSet<>();
 	
 	@ElementCollection
 	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
@@ -220,25 +219,6 @@ public class ShObject implements Serializable {
 		}
 	}
 
-	public Set<ShGroup> getShGroups() {
-		return this.shGroups;
-	}
-
-	public void setShGroups(Set<ShGroup> shGroups) {
-		this.shGroups.clear();
-		if (shGroups != null) {
-			this.shGroups.addAll(shGroups);
-		}
-	}
-
-	public String getDraft() {
-		return draft;
-	}
-
-	public void setDraft(String draft) {
-		this.draft = draft;
-	}
-
 	public boolean isPublished() {
 		return published;
 	}
@@ -273,6 +253,13 @@ public class ShObject implements Serializable {
 	public void setShUsers(Set<String> shUsers) {
 		this.shUsers = shUsers;
 	}
-	
+
+	public Set<String> getShGroups() {
+		return shGroups;
+	}
+
+	public void setShGroups(Set<String> shGroups) {
+		this.shGroups = shGroups;
+	}
 	
 }

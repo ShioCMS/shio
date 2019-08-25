@@ -60,7 +60,7 @@ public class ShObjectUtils {
 		if (shObject != null) {
 			if (principal != null)
 				shUser = shUserRepository.findByUsername(principal.getName());
-			Set<ShGroup> shGroups = new HashSet<>();
+			Set<String> shGroups = new HashSet<>();
 			Set<String> shUsers = new HashSet<>();
 			if (shUser != null && shUser.getShGroups() != null) {
 				boolean fullAccess = false;
@@ -72,7 +72,9 @@ public class ShObjectUtils {
 				if (fullAccess) {
 					return true;
 				} else {
-					shGroups = shUser.getShGroups();
+					for (ShGroup shGroup: shUser.getShGroups()) {
+						shGroups.add(shGroup.getName());
+					}
 					shUsers.add(shUser.getUsername());
 					if (shObjectRepository.countByIdAndShGroupsInOrIdAndShUsersInOrIdAndShGroupsIsNullAndShUsersIsNull(
 							shObject.getId(), shGroups, shObject.getId(), shUsers, shObject.getId()) > 0) {

@@ -27,7 +27,6 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.viglet.shiohara.persistence.model.auth.ShGroup;
 import com.viglet.shiohara.persistence.model.auth.ShUser;
-import com.viglet.shiohara.persistence.model.object.ShObject;
 
 public interface ShGroupRepository extends JpaRepository<ShGroup, String> {
 
@@ -39,8 +38,6 @@ public interface ShGroupRepository extends JpaRepository<ShGroup, String> {
 	ShGroup findByName(String name);
 	
 	Set<ShGroup> findByShUsersIn(Collection<ShUser> users);
-	
-	Set<ShGroup> findByShObjectsIn(Collection<ShObject> shObjects);
 	
 	int countByNameAndShUsersIn(String name, Collection<ShUser> shUsers);
 	

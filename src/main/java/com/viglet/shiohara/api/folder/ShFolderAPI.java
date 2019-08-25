@@ -24,7 +24,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Consumer;
 
 import org.apache.logging.log4j.LogManager;
@@ -44,13 +43,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
-import com.viglet.shiohara.persistence.model.auth.ShGroup;
-import com.viglet.shiohara.persistence.model.auth.ShUser;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.site.ShSite;
-import com.viglet.shiohara.persistence.repository.auth.ShGroupRepository;
-import com.viglet.shiohara.persistence.repository.auth.ShUserRepository;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.object.ShObjectRepository;
 import com.viglet.shiohara.turing.ShTuringIntegration;
@@ -78,10 +73,6 @@ public class ShFolderAPI {
 	private ShObjectUtils shObjectUtils;
 	@Autowired
 	private ShTuringIntegration shTuringIntegration;
-	@Autowired
-	private ShUserRepository shUserRepository;
-	@Autowired
-	private ShGroupRepository shGroupRepository;
 
 	@ApiOperation(value = "Folder list")
 	@GetMapping
@@ -165,7 +156,7 @@ public class ShFolderAPI {
 
 				shFolder.setDate(new Date());
 				shFolder.setFurl(shURLFormatter.format(shFolder.getName()));
-				shFolder.setShGroups(new HashSet<ShGroup>(shObject.getShGroups()));
+				shFolder.setShGroups(new HashSet<String>(shObject.getShGroups()));
 				shFolder.setShUsers(new HashSet<String>(shObject.getShUsers()));
 				shFolderRepository.save(shFolder);
 
@@ -193,7 +184,7 @@ public class ShFolderAPI {
 			ShFolder shNewFolder = new ShFolder();
 			shNewFolder.setDate(new Date());
 			shNewFolder.setName(shFolder.getName());
-			shNewFolder.setShGroups(new HashSet<ShGroup>(shObject.getShGroups()));
+			shNewFolder.setShGroups(new HashSet<String>(shObject.getShGroups()));
 			shNewFolder.setShUsers(new HashSet<String>(shObject.getShUsers()));
 			shNewFolder.setFurl(shURLFormatter.format(shNewFolder.getName()));
 

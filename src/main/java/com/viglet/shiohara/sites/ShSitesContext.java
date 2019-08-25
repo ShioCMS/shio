@@ -70,7 +70,7 @@ public class ShSitesContext {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	
-		return new ModelAndView("redirect:" + request.getRequestURL() + "/success");
+		return new ModelAndView("redirect:" + request.getRequestURL() + "success");
 	}
 
 	@RequestMapping("/sites/**")

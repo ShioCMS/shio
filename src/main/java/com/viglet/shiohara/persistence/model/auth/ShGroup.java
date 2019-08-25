@@ -8,8 +8,6 @@ import javax.persistence.*;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import com.viglet.shiohara.persistence.model.object.ShObject;
-
 /**
  * The persistent class for the ShGroup database table.
  * 
@@ -32,9 +30,6 @@ public class ShGroup implements Serializable {
 
 	@ManyToMany(mappedBy = "shGroups")
 	private Set<ShRole> shRoles = new HashSet<>();
-
-	@ManyToMany(mappedBy = "shGroups")
-	private Set<ShObject> shObjects = new HashSet<>();
 
 	@ManyToMany(mappedBy = "shGroups")
 	private Set<ShUser> shUsers = new HashSet<>();
@@ -74,17 +69,6 @@ public class ShGroup implements Serializable {
 		this.shUsers.clear();
 		if (shUsers != null) {
 			this.shUsers.addAll(shUsers);
-		}
-	}
-
-	public Set<ShObject> getShObjects() {
-		return this.shObjects;
-	}
-
-	public void setShObjects(Set<ShObject> shObjects) {
-		this.shObjects.clear();
-		if (shObjects != null) {
-			this.shObjects.addAll(shObjects);
 		}
 	}
 }

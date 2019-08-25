@@ -25,7 +25,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-import com.viglet.shiohara.persistence.model.auth.ShGroup;
 import com.viglet.shiohara.persistence.model.object.ShObjectDraft;
 
 public interface ShObjectDraftRepository extends JpaRepository<ShObjectDraft, String> {
@@ -37,7 +36,7 @@ public interface ShObjectDraftRepository extends JpaRepository<ShObjectDraft, St
 	@SuppressWarnings("unchecked")
 	ShObjectDraft save(ShObjectDraft shObject);
 
-	int countByIdAndShGroupsInOrIdAndShGroupsIsNull(String id,Collection<ShGroup> groups, String id2);
+	int countByIdAndShGroupsInOrIdAndShGroupsIsNull(String id,Collection<String> groups, String id2);
 	@Modifying
 	@Query("delete from ShObjectDraft od where od.id = ?1")
 	void delete(String shObjectId);

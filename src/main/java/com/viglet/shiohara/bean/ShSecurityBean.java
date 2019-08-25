@@ -2,12 +2,10 @@ package com.viglet.shiohara.bean;
 
 import java.util.Set;
 
-import com.viglet.shiohara.persistence.model.auth.ShGroup;
-
 public class ShSecurityBean {
 
 	private Set<String> shUsers;
-	private Set<ShGroup> shGroups;
+	private Set<String> shGroups;
 
 	public Set<String> getShUsers() {
 		return shUsers;
@@ -17,11 +15,11 @@ public class ShSecurityBean {
 		this.shUsers = shUsers;
 	}
 
-	public Set<ShGroup> getShGroups() {
+	public Set<String> getShGroups() {
 		return shGroups;
 	}
 
-	public void setShGroups(Set<ShGroup> shGroups) {
+	public void setShGroups(Set<String> shGroups) {
 		this.shGroups = shGroups;
 	}
 
