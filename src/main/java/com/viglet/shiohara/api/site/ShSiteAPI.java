@@ -133,7 +133,7 @@ public class ShSiteAPI {
 
 	public ShExchange importTemplateSite(ShSite shSite) throws IOException, IllegalStateException, ArchiveException {
 
-		URL templateSiteRepository = new URL("https://github.com/openshio/bootstrap-site/archive/master.zip");
+		URL templateSiteRepository = new URL("https://github.com/ShioharaCMS/bootstrap-site/archive/0.3.5.zip");
 
 		File userDir = new File(System.getProperty("user.dir"));
 		if (userDir.exists() && userDir.isDirectory()) {
