@@ -78,7 +78,7 @@ public class ShFormUtils {
 				&& ((ShPost) shObject).getShPostType().getName().equals(ShSystemPostType.FOLDER_INDEX))) {
 			ShFolder shFolder = null;
 
-			if (StringUtils.isNotBlank(shFormConfiguration.getFolder().toString())) {
+			if (shFormConfiguration != null && StringUtils.isNotBlank(shFormConfiguration.getFolder().toString())) {
 				shFolder = shFolderRepository.findById(shFormConfiguration.getFolder().toString()).orElse(null);
 			} else {
 				if (shObject instanceof ShFolder) {
@@ -154,7 +154,7 @@ public class ShFormUtils {
 
 		}
 
-		if (!shFormConfiguration.isCreatePost()) {
+		if (shFormConfiguration != null && !shFormConfiguration.isCreatePost()) {
 			shPostRepository.delete(shPost);
 		}
 	}

@@ -37,9 +37,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.viglet.shiohara.persistence.model.post.ShPost;
+import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
+import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
 import com.viglet.shiohara.sites.cache.component.ShCachePage;
 import com.viglet.shiohara.sites.cache.component.ShCachePageBean;
+import com.viglet.shiohara.sites.utils.ShSitesObjectUtils;
 import com.viglet.shiohara.utils.ShFormUtils;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
 
@@ -55,9 +58,13 @@ public class ShSitesContext {
 	@Autowired
 	private ShFormUtils shFormUtils;
 	@Autowired
+	private ShSitesObjectUtils shSitesObjectUtils;
+	@Autowired
 	private ShCachePage shCachePage;
 	@Autowired
 	private ShPostRepository shPostRepository;
+	@Autowired
+	private ShSiteRepository shSiteRepository;
 
 	@PostMapping("/sites/**")
 	private ModelAndView sitesPostForm(HttpServletRequest request, HttpServletResponse response){
@@ -70,7 +77,10 @@ public class ShSitesContext {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	
-		return new ModelAndView("redirect:" + request.getRequestURL() + "success");
+		
+		ShSite shSite = shSiteRepository.findById(shSitesContextURL.getInfo().getSiteId()).get();
+		String successUrl = shSitesObjectUtils.generateObjectLinkById(shSite.getFormSuccess());
+		return new ModelAndView("redirect:" + successUrl);
 	}
 
 	@RequestMapping("/sites/**")

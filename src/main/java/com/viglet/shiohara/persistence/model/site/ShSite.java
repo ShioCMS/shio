@@ -59,6 +59,8 @@ public class ShSite extends ShObject {
 	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
 	private Set<ShFolder> shFolders = new HashSet<ShFolder>();
 
+	private String formSuccess;
+	
 	public ShSite() {
 		this.setObjectType(ShObjectType.SITE);
 	}
@@ -123,6 +125,13 @@ public class ShSite extends ShObject {
 	public void setSearchablePostTypes(String searchablePostTypes) {
 		this.searchablePostTypes = searchablePostTypes;
 	}
-	
+
+	public String getFormSuccess() {
+		return formSuccess;
+	}
+
+	public void setFormSuccess(String formSuccess) {
+		this.formSuccess = formSuccess;
+	}
 	
 }

@@ -105,6 +105,7 @@ public class ShSiteAPI {
 			shSiteEdit.setName(shSite.getName());
 			shSiteEdit.setPostTypeLayout(shSite.getPostTypeLayout());
 			shSiteEdit.setSearchablePostTypes(shSite.getSearchablePostTypes());
+			shSiteEdit.setFormSuccess(shSite.getFormSuccess());
 			shSiteEdit.setFurl(shURLFormatter.format(shSite.getName()));
 			shSiteRepository.save(shSiteEdit);
 			return shSiteEdit;

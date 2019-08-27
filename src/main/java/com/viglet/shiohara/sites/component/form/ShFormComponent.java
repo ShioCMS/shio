@@ -88,11 +88,15 @@ public class ShFormComponent {
 			token = csrf.getToken();
 		}
 
+		String method = "POST";
+		if (shFormConfiguration != null) {
+			method = shFormConfiguration.getMethod().toString();
+		}
 		ctx.setVariable("token", token);
 		ctx.setVariable("shPostType", shPostType);
 		ctx.setVariable("shPostTypeAttrs", shPostType.getShPostTypeAttrs());
-		ctx.setVariable("fields", fields);
-		ctx.setVariable("shFormConfiguration", shFormConfiguration);
+		ctx.setVariable("fields", fields);		
+		ctx.setVariable("method", method);
 
 		return templateEngine.process("form", ctx);
 	}
