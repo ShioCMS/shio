@@ -369,13 +369,7 @@ public class ShPostUtils {
 			StringBuffer title = new StringBuffer();
 			StringBuffer summary = new StringBuffer();
 
-			List<ShPostAttr> shPostAttrsByOrdinal = new ArrayList<ShPostAttr>(shRelatorItem.getShChildrenPostAttrs());
-			Collections.sort(shPostAttrsByOrdinal, new Comparator<ShPostAttr>() {
-
-				public int compare(ShPostAttr o1, ShPostAttr o2) {
-					return o1.getShPostTypeAttr().getOrdinal() - o2.getShPostTypeAttr().getOrdinal();
-				}
-			});
+			List<ShPostAttr> shPostAttrsByOrdinal = postAttrsSort(shRelatorItem.getShChildrenPostAttrs());
 			for (ShPostAttr shChildrenPostAttr : shPostAttrsByOrdinal) {
 				ShPostTypeAttr shPostTypeAttr = shChildrenPostAttr.getShPostTypeAttr();
 				if (shPostTypeAttr.getIsTitle() == 1) {
@@ -458,6 +452,17 @@ public class ShPostUtils {
 				this.updateRelatorInfo(shChildrenPostAttr, shPost);
 			}
 		}
+	}
+
+	public List<ShPostAttr> postAttrsSort(Set<ShPostAttr> shPostAttrs) {
+		List<ShPostAttr> shPostAttrsByOrdinal = new ArrayList<ShPostAttr>(shPostAttrs);
+		Collections.sort(shPostAttrsByOrdinal, new Comparator<ShPostAttr>() {
+
+			public int compare(ShPostAttr o1, ShPostAttr o2) {
+				return o1.getShPostTypeAttr().getOrdinal() - o2.getShPostTypeAttr().getOrdinal();
+			}
+		});
+		return shPostAttrsByOrdinal;
 	}
 
 	public void updateRelatorInfoDraft(ShPostDraftAttr shPostAttr, ShPostDraft shPost) {

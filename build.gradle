@@ -126,6 +126,11 @@ dependencies {
     compile group: 'commons-io', name: 'commons-io', version:'2.6'
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
     
+    // Apache POI
+    compile group: 'org.apache.poi', name: 'poi', version: '4.1.0'
+    compile group: 'org.apache.poi', name: 'poi-ooxml', version: '4.1.0'
+    
+    
     // HTTP Client
     compile(group: 'org.apache.httpcomponents', name: 'httpclient', version:"${httpClientVersion}") {
 		exclude(module: 'commons-logging')
