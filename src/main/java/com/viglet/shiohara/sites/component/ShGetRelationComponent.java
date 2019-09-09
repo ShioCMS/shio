@@ -38,7 +38,6 @@ public class ShGetRelationComponent {
 	
 	public List<Map<String, ShPostAttr>> findByPostAttrId(String postAttrId) {		
 		ShPostAttr shPostAttr = shPostAttrRepository.findById(postAttrId).get();
-		shSitesPostUtils.getPostAttrByStage(shPostAttr);
-		return shSitesPostUtils.relationToMap(shSitesPostUtils.getPostAttrByStage(shPostAttr));
+		return shSitesPostUtils.relationToMap(shSitesPostUtils.getPostAttrByStage(shPostAttr));		
 	}
 }

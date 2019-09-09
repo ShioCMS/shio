@@ -127,7 +127,8 @@ public class ShSitesPostUtils {
 				}
 				return shPostAttr;
 			} else {
-				if (shPostAttr.getShPost() != null && shPostAttr.getShPost().isPublished()) {
+				ShPost shPost = this.getPost(shPostAttr);
+				if (shPost != null && shPost.isPublished()) {
 					return shPostAttr;
 				}
 			}
@@ -135,6 +136,26 @@ public class ShSitesPostUtils {
 		}
 		return null;
 
+	}
+
+	public ShPost getPost(ShPostAttr shPostAttr) {
+		if (shPostAttr.getShPost() != null) {
+			return shPostAttr.getShPost();
+		} else {
+			return this.getPostNested(shPostAttr);
+		}
+	}
+
+	private ShPost getPostNested(ShPostAttr shPostAttr) {
+		if (shPostAttr.getShParentRelatorItem() != null
+				&& shPostAttr.getShParentRelatorItem().getShParentPostAttr() != null) {
+			if (shPostAttr.getShParentRelatorItem().getShParentPostAttr().getShPost() != null)
+				return shPostAttr.getShParentRelatorItem().getShParentPostAttr().getShPost();
+			else
+				return this.getPostNested(shPostAttr.getShParentRelatorItem().getShParentPostAttr());
+
+		}
+		return null;
 	}
 
 	public Map<String, ShPostAttr> toMap(String postId) {
