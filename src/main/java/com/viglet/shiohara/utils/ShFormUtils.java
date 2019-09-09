@@ -102,7 +102,6 @@ public class ShFormUtils {
 
 					if (param.startsWith("__sh-post-type-attr-")) {
 						String attribute = param.replaceFirst("__sh-post-type-attr-", "").replaceAll("\\[\\]", "");
-						System.out.println(attribute);
 						ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType,
 								attribute);
 
@@ -119,11 +118,9 @@ public class ShFormUtils {
 
 						if (shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.CHECK_BOX)) {
 							String[] paramArray = shSitesContextURL.getRequest().getParameterValues(param);
-							System.out.println(paramValue);
 
 							Set<String> arrayValue = new HashSet<>();
 							for (String paramArrayItem : paramArray) {
-								System.out.println("paramArrayItem: " + paramArrayItem);
 								arrayValue.add(paramArrayItem);
 							}
 							shPostAttr.setArrayValue(arrayValue);

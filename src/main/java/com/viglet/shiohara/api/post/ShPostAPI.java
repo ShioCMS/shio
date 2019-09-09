@@ -215,7 +215,7 @@ public class ShPostAPI {
 			ShObject shObject = shObjectRepository.findById(shPost.getShFolder().getId()).get();
 			List<ShObject> shObjects = new ArrayList<>();
 			shObjects.add(shObject);
-			
+
 			shPost.setShGroups(new HashSet<String>(shObject.getShGroups()));
 			shPost.setShUsers(new HashSet<String>(shObject.getShUsers()));
 
@@ -335,7 +335,10 @@ public class ShPostAPI {
 		shPost.setDate(new Date());
 		shPost.setTitle(title.toString());
 		shPost.setSummary(summary.toString());
-		shPost.setFurl(shURLFormatter.format(title.toString()));
+		if (shPost.getPublicationDate() == null) {
+			shPost.setFurl(shURLFormatter.format(title.toString()));
+		}
+		shPost.setModifiedDate(new Date());
 
 		for (ShPostAttr shPostAttr : shPostAttrs) {
 			shPostAttr.setShPost(shPost);
@@ -365,6 +368,7 @@ public class ShPostAPI {
 	}
 
 	public void postPublishSave(ShPost shPost) {
+		shPost.setPublicationDate(new Date());
 		shPost.setPublished(true);
 
 		shPostRepository.saveAndFlush(shPost);
