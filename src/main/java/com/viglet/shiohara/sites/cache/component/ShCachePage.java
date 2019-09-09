@@ -115,6 +115,14 @@ public class ShCachePage {
 				}
 
 			}
+			else {
+				
+				if (shSitesPageLayout.getCacheTTL() != null) {
+					Calendar expirationDate = Calendar.getInstance(); 
+					expirationDate.add(Calendar.MINUTE, shSitesPageLayout.getCacheTTL());
+					shCachePageBean.setExpirationDate(expirationDate.getTime());
+				}
+			}
 		}
 
 		if (mimeType.equals("json"))
