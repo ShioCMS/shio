@@ -18,6 +18,7 @@
 package com.viglet.shiohara.utils;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -120,9 +121,7 @@ public class ShFormUtils {
 							String[] paramArray = shSitesContextURL.getRequest().getParameterValues(param);
 
 							Set<String> arrayValue = new HashSet<>();
-							for (String paramArrayItem : paramArray) {
-								arrayValue.add(paramArrayItem);
-							}
+							Collections.addAll(arrayValue, paramArray);						
 							shPostAttr.setArrayValue(arrayValue);
 
 						} else {

@@ -455,7 +455,7 @@ public class ShPostUtils {
 	}
 
 	public List<ShPostAttr> postAttrsSort(Set<ShPostAttr> shPostAttrs) {
-		List<ShPostAttr> shPostAttrsByOrdinal = new ArrayList<ShPostAttr>(shPostAttrs);
+		List<ShPostAttr> shPostAttrsByOrdinal = new ArrayList<>(shPostAttrs);
 		Collections.sort(shPostAttrsByOrdinal, new Comparator<ShPostAttr>() {
 
 			public int compare(ShPostAttr o1, ShPostAttr o2) {
