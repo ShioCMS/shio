@@ -80,6 +80,7 @@ public class ShSitesContext {
 		
 		ShSite shSite = shSiteRepository.findById(shSitesContextURL.getInfo().getSiteId()).get();
 		String successUrl = shSitesObjectUtils.generateObjectLinkById(shSite.getFormSuccess());
+		
 		return new ModelAndView("redirect:" + successUrl);
 	}
 

@@ -4,6 +4,7 @@ public class ShSitePostTypeLayout {
 	private String format;
 	private String layout;
 	private String mimeType;
+	private Integer cacheTTL;
 
 	public String getFormat() {
 		return format;
@@ -27,6 +28,14 @@ public class ShSitePostTypeLayout {
 
 	public void setMimeType(String mimeType) {
 		this.mimeType = mimeType;
+	}
+
+	public Integer getCacheTTL() {
+		return cacheTTL;
+	}
+
+	public void setCacheTTL(Integer cacheTTL) {
+		this.cacheTTL = cacheTTL;
 	}
 
 }

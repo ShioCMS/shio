@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +50,7 @@ import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.object.ShObjectRepository;
+import com.viglet.shiohara.spreedsheet.ShSpreadsheet;
 import com.viglet.shiohara.turing.ShTuringIntegration;
 import com.viglet.shiohara.url.ShURLFormatter;
 import com.viglet.shiohara.utils.ShFolderUtils;
@@ -73,6 +76,8 @@ public class ShFolderAPI {
 	private ShObjectUtils shObjectUtils;
 	@Autowired
 	private ShTuringIntegration shTuringIntegration;
+	@Autowired
+	private ShSpreadsheet shSpreadsheet;
 
 	@ApiOperation(value = "Folder list")
 	@GetMapping
@@ -180,7 +185,7 @@ public class ShFolderAPI {
 
 			List<ShObject> shObjects = new ArrayList<>();
 			shObjects.add(shObject);
-	
+
 			ShFolder shNewFolder = new ShFolder();
 			shNewFolder.setDate(new Date());
 			shNewFolder.setName(shFolder.getName());
@@ -237,5 +242,14 @@ public class ShFolderAPI {
 		ShFolder shFolder = new ShFolder();
 		return shFolder;
 
+	}
+
+	@ApiOperation(value = "Export SpreadSheet from Folder")
+	@GetMapping("/{id}/spreadsheet")
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
+	public void shFolderSpreadSheet(@PathVariable String id, HttpServletResponse response) {
+		ShFolder shFolder = shFolderRepository.findById(id).orElse(null);
+		if (shFolder != null)
+			shSpreadsheet.generate(shFolder, response);
 	}
 }

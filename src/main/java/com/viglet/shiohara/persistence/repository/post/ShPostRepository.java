@@ -39,6 +39,8 @@ public interface ShPostRepository extends JpaRepository<ShPost, String>, ShPostR
 	List<ShPost> findAll();
 
 	List<ShPost> findByShFolder(ShFolder shFolder);
+	
+	List<ShPost> findByShFolderOrderByShPostType(ShFolder shFolder);
 
 	@Query("select new com.viglet.shiohara.bean.ShPostTinyBean(p.id, p.title, p.summary, p.position, p.date, p.shPostType.id, p.shPostType.name, p.shPostType.title, p.objectType, p.publishStatus, p.published) from ShPost p where p.shFolder.id = ?1")
 	List<ShPostTinyBean> findByShFolderTiny(String shFolderId);

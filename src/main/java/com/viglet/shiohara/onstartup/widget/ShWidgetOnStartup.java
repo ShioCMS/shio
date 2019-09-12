@@ -198,6 +198,16 @@ public class ShWidgetOnStartup {
 			shWidget.setType("TEXT,TEXTAREA");
 
 			shWidgetRepository.save(shWidget);
+			
+			shWidget = new ShWidget();
+			shWidget.setName(ShSystemWidget.CHECK_BOX);
+			shWidget.setDescription("Check Box Widget");
+			shWidget.setClassName("com.viglet.shiohara.widget.ShCheckBoxWidget");
+			shWidget.setImplementationCode("template/widget/check-box/check-box.html");
+			shWidget.setSettingPath("template/widget/check-box/setting/check-box-setting.html");
+			shWidget.setType("TEXT,TEXTAREA");
+
+			shWidgetRepository.save(shWidget);
 		}
 
 	}

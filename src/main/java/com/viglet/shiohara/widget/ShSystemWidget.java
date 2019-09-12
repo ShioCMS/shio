@@ -35,4 +35,5 @@ public class ShSystemWidget {
 	public static final String DATE = "Date";
 	public static final String MULTI_SELECT = "Multi Select";
 	public static final String TAB = "Tab";
+	public static final String CHECK_BOX = "Check Box";
 }

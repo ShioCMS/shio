@@ -12,6 +12,13 @@ guidelines](CONTRIBUTING.md).**
 
 # Installation
 
+## Download
+
+```shell
+git clone --recurse-submodules https://github.com/ShioharaCMS/shiohara.git
+cd shiohara
+```
+
 ## Deploy 
 
 ### 1. Runtime

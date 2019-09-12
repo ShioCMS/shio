@@ -1,5 +1,5 @@
 buildscript {
-    ext { springBootVersion = '2.1.7.RELEASE'
+    ext { springBootVersion = '2.1.8.RELEASE'
 	      hibernateVersion = '5.11.0.Final'
 		  httpClientVersion = '4.5.6'
 		  swaggerVersion = '2.9.2'
@@ -106,6 +106,11 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-cache', version:"${springBootVersion}"
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version:"${springBootVersion}"
     
+	compile group: 'org.apache.axis', name: 'axis', version: '1.4'
+	compile group: 'org.apache.axis', name: 'axis-jaxrpc', version: '1.4'
+	compile group: 'commons-discovery', name: 'commons-discovery', version: '0.4'
+	
+    
   	// Spring
   	compile group: 'org.springframework', name: 'spring-test', version: '5.1.9.RELEASE'
   	    
@@ -125,6 +130,11 @@ dependencies {
     compile group: 'org.apache.commons', name: 'commons-compress', version: '1.18'   
     compile group: 'commons-io', name: 'commons-io', version:'2.6'
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
+    
+    // Apache POI
+    compile group: 'org.apache.poi', name: 'poi', version: '4.1.0'
+    compile group: 'org.apache.poi', name: 'poi-ooxml', version: '4.1.0'
+    
     
     // HTTP Client
     compile(group: 'org.apache.httpcomponents', name: 'httpclient', version:"${httpClientVersion}") {

@@ -43,7 +43,6 @@ import com.viglet.shiohara.persistence.repository.object.ShObjectRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
-import com.viglet.shiohara.post.type.ShSystemPostType;
 import com.viglet.shiohara.sites.ShSitesContextURL;
 import com.viglet.shiohara.sites.component.form.ShFormConfiguration;
 import com.viglet.shiohara.widget.ShSystemWidget;
@@ -74,8 +73,8 @@ public class ShFormUtils {
 		Enumeration<String> parameters = shSitesContextURL.getRequest().getParameterNames();
 		ShPost shPost = null;
 		ShObject shObject = shObjectRepository.findById(shSitesContextURL.getInfo().getObjectId()).orElse(null);
-		if (shFormConfiguration != null || shObject instanceof ShFolder || (shObject instanceof ShPost
-				&& ((ShPost) shObject).getShPostType().getName().equals(ShSystemPostType.FOLDER_INDEX))) {
+		if (shFormConfiguration != null || shObject instanceof ShFolder
+				|| (shObject instanceof ShPost && ((ShPost) shObject).getTitle().equals("index"))) {
 			ShFolder shFolder = null;
 
 			if (shFormConfiguration != null && StringUtils.isNotBlank(shFormConfiguration.getFolder().toString())) {
@@ -102,8 +101,7 @@ public class ShFormUtils {
 					String paramValue = shSitesContextURL.getRequest().getParameter(param);
 
 					if (param.startsWith("__sh-post-type-attr-")) {
-						String attribute = param.replaceFirst("__sh-post-type-attr-", "");
-
+						String attribute = param.replaceFirst("__sh-post-type-attr-", "").replaceAll("\\[\\]", "");
 						ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType,
 								attribute);
 
@@ -113,12 +111,23 @@ public class ShFormUtils {
 
 						@SuppressWarnings("unused")
 						boolean attrStatus = object.validateForm(shSitesContextURL.getRequest(), shPostTypeAttr);
-						// TODO: Create validation Form logic
 
 						ShPostAttr shPostAttr = new ShPostAttr();
 						shPostAttr.setShPost(shPost);
 						shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-						shPostAttr.setStrValue(paramValue);
+
+						if (shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.CHECK_BOX)) {
+							String[] paramArray = shSitesContextURL.getRequest().getParameterValues(param);
+
+							Set<String> arrayValue = new HashSet<>();
+							for (String paramArrayItem : paramArray) {
+								arrayValue.add(paramArrayItem);
+							}
+							shPostAttr.setArrayValue(arrayValue);
+
+						} else {
+							shPostAttr.setStrValue(paramValue);
+						}
 
 						shPostAttrs.add(shPostAttr);
 					}
