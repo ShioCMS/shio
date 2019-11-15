@@ -53,7 +53,7 @@ public class ShSecurityConfigProduction extends WebSecurityConfigurerAdapter {
 		http.headers().frameOptions().disable().cacheControl().disable();
 		http.httpBasic().authenticationEntryPoint(shAuthenticationEntryPoint).and().authorizeRequests()
 				.antMatchers("/index.html", "/welcome/**", "/", "/store/**", "/thirdparty/**", "/js/**", "/css/**",
-						"/template/**", "/img/**", "/sites/**", "/__tur/**", "/swagger-resources/**", "/h2/**","/image/**")
+						"/template/**", "/img/**", "/sites/**", "/__tur/**", "/swagger-resources/**", "/h2/**","/image/**", "/login-page/**", "/logout-page/**")
 				.permitAll()
 				.anyRequest().authenticated().and()
 				.addFilterAfter(new ShCsrfHeaderFilter(), CsrfFilter.class).csrf()

@@ -62,8 +62,14 @@ public class ShSitesContextURLProcessCache {
 				shSitesContextURLInfo.setStaticFile(true);
 			else
 				shSitesContextURLInfo.setStaticFile(false);
-		} else
+
+			shSitesContextURLInfo.setPageAllowGuestUser(shObject.isPageAllowGuestUser());
+			shSitesContextURLInfo.setPageAllowRegisterUser(shObject.isPageAllowRegisterUser());
+		} else {
+			shSitesContextURLInfo.setPageAllowGuestUser(true);
+			shSitesContextURLInfo.setPageAllowRegisterUser(false);
 			shSitesContextURLInfo.setStaticFile(false);
+		}
 
 		if (logger.isDebugEnabled())
 			logger.debug("detectContextURL After: " + shSitesContextURL.toString());

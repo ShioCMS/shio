@@ -101,7 +101,7 @@ public class ShObject implements Serializable {
 	@JoinColumn(name = "object_id")
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Set<String> shGroups = new HashSet<>();
-	
+
 	@ElementCollection
 	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
 	@CollectionTable(name = "sh_object_users")
@@ -116,6 +116,17 @@ public class ShObject implements Serializable {
 	private Set<ShWorkflowTask> shWorkflowTasks = new HashSet<>();
 
 	private String publishStatus;
+
+	private boolean pageAllowRegisterUser = false;
+
+	private boolean pageAllowGuestUser = true;
+
+	@ElementCollection
+	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
+	@CollectionTable(name = "sh_object_page_groups")
+	@JoinColumn(name = "object_id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private Set<String> shPageGroups = new HashSet<>();
 
 	public String getId() {
 		return this.id;
@@ -261,5 +272,29 @@ public class ShObject implements Serializable {
 	public void setShGroups(Set<String> shGroups) {
 		this.shGroups = shGroups;
 	}
-	
+
+	public boolean isPageAllowRegisterUser() {
+		return pageAllowRegisterUser;
+	}
+
+	public void setPageAllowRegisterUser(boolean pageAllowRegisterUser) {
+		this.pageAllowRegisterUser = pageAllowRegisterUser;
+	}
+
+	public boolean isPageAllowGuestUser() {
+		return pageAllowGuestUser;
+	}
+
+	public void setPageAllowGuestUser(boolean pageAllowGuestUser) {
+		this.pageAllowGuestUser = pageAllowGuestUser;
+	}
+
+	public Set<String> getShPageGroups() {
+		return shPageGroups;
+	}
+
+	public void setShPageGroups(Set<String> shPageGroups) {
+		this.shPageGroups = shPageGroups;
+	}
+
 }

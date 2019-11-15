@@ -19,25 +19,40 @@ package com.viglet.shiohara.sites;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 
+import com.viglet.shiohara.persistence.model.auth.ShUser;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.site.ShSite;
+import com.viglet.shiohara.persistence.repository.auth.ShUserRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
 import com.viglet.shiohara.sites.cache.component.ShCachePage;
@@ -65,9 +80,11 @@ public class ShSitesContext {
 	private ShPostRepository shPostRepository;
 	@Autowired
 	private ShSiteRepository shSiteRepository;
+	@Autowired
+	private ShUserRepository shUserRepository;
 
 	@PostMapping("/sites/**")
-	private ModelAndView sitesPostForm(HttpServletRequest request, HttpServletResponse response){
+	private ModelAndView sitesPostForm(HttpServletRequest request, HttpServletResponse response) {
 		// TODO: Use Database, need to be cached
 		ShSitesContextURL shSitesContextURL = shSitesContextURLProcess.getContextURL(request, response);
 
@@ -76,21 +93,87 @@ public class ShSitesContext {
 		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}	
-		
+		}
+
 		ShSite shSite = shSiteRepository.findById(shSitesContextURL.getInfo().getSiteId()).get();
 		String successUrl = shSitesObjectUtils.generateObjectLinkById(shSite.getFormSuccess());
-		
+
 		return new ModelAndView("redirect:" + successUrl);
 	}
 
 	@RequestMapping("/sites/**")
-	private void sitesFullGeneric(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	private void sitesFullGeneric(HttpServletRequest request, HttpServletResponse response, HttpSession session)
+			throws Exception {
 
-		// TODO: Use Database, need be cached
+		boolean showPage = false;
+
 		ShSitesContextURL shSitesContextURL = shSitesContextURLProcess.getContextURL(request, response);
-		if (shSitesContextURL.getInfo().getSiteId() != null)
-			this.siteContext(shSitesContextURL);
+
+		String username = (String) session.getAttribute("shUsername");
+
+		if (username == null && shSitesContextURL.getInfo().isPageAllowGuestUser())
+			showPage = true;
+		else if (username != null && shSitesContextURL.getInfo().isPageAllowRegisterUser())
+			showPage = true;
+
+		if (showPage) {
+			if (shSitesContextURL.getInfo().getSiteId() != null)
+				this.siteContext(shSitesContextURL);
+			else
+				response.sendError(HttpServletResponse.SC_NOT_FOUND);
+		} else {
+			String callback = this.getCurrentUrlFromRequest(request);
+			session.setAttribute("shLoginCallBack", callback);
+			response.sendRedirect("/login-page");
+		}
+	}
+
+	@RequestMapping("/login-page")
+	private String sitesLoginPage(HttpServletRequest request, HttpServletResponse response) {
+
+		return "login/login";
+	}
+
+	@RequestMapping("/logout-page")
+	private void sitesLogoutPage(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+		session.removeAttribute("shUsername");
+		try {
+			response.sendRedirect("/login-page");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@PostMapping("/login-page")
+	private void sitesLoginPagePost(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+		try {
+			String username = request.getParameter("username");
+			String password = request.getParameter("password");
+			BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+			ShUser shUser = shUserRepository.findByUsername(username);
+
+			if (shUser != null && passwordEncoder.matches(password, shUser.getPassword())) {
+				String callback = (String) session.getAttribute("shLoginCallBack");
+				session.setAttribute("shUsername", username);
+				if (callback != null)
+					response.sendRedirect(callback);
+				else
+					response.sendRedirect("/");
+			} else
+				response.sendRedirect("/login-page");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public String getCurrentUrlFromRequest(HttpServletRequest request) {
+		StringBuffer requestURL = request.getRequestURL();
+		String queryString = request.getQueryString();
+
+		if (queryString == null)
+			return requestURL.toString();
+
+		return requestURL.append('?').append(queryString).toString();
 	}
 
 	public void siteContext(ShSitesContextURL shSitesContextURL) throws Exception {
