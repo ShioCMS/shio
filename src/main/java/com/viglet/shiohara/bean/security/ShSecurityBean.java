@@ -1,26 +1,25 @@
-package com.viglet.shiohara.bean;
-
-import java.util.Set;
+package com.viglet.shiohara.bean.security;
 
 public class ShSecurityBean {
 
-	private Set<String> shUsers;
-	private Set<String> shGroups;
+	private ShConsoleSecurityBean console;
+	
+	private ShPageSecurityBean page;
 
-	public Set<String> getShUsers() {
-		return shUsers;
+	public ShConsoleSecurityBean getConsole() {
+		return console;
 	}
 
-	public void setShUsers(Set<String> shUsers) {
-		this.shUsers = shUsers;
+	public void setConsole(ShConsoleSecurityBean console) {
+		this.console = console;
 	}
 
-	public Set<String> getShGroups() {
-		return shGroups;
+	public ShPageSecurityBean getPage() {
+		return page;
 	}
 
-	public void setShGroups(Set<String> shGroups) {
-		this.shGroups = shGroups;
+	public void setPage(ShPageSecurityBean page) {
+		this.page = page;
 	}
 
 }

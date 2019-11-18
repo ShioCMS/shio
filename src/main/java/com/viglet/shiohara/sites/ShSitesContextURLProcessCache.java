@@ -25,10 +25,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
+import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.repository.object.ShObjectRepository;
 import com.viglet.shiohara.post.type.ShSystemPostType;
+import com.viglet.shiohara.utils.ShFolderUtils;
 
 @Component
 public class ShSitesContextURLProcessCache {
@@ -37,6 +39,8 @@ public class ShSitesContextURLProcessCache {
 	ShSitesContextURLProcess shSitesContextURLProcess;
 	@Autowired
 	ShObjectRepository shObjectRepository;
+	@Autowired
+	ShFolderUtils shFolderUtils;
 
 	@Cacheable(value = "url", key = "{#shSitesContextURL.getInfo().getContextURL(), #shSitesContextURL.getInfo().getContextURLOriginal()}", sync = true)
 	public ShSitesContextURLInfo detectContextURL(ShSitesContextURL shSitesContextURL) {
@@ -63,12 +67,26 @@ public class ShSitesContextURLProcessCache {
 			else
 				shSitesContextURLInfo.setStaticFile(false);
 
-			shSitesContextURLInfo.setPageAllowGuestUser(shObject.isPageAllowGuestUser());
-			shSitesContextURLInfo.setPageAllowRegisterUser(shObject.isPageAllowRegisterUser());
+			if (shObject instanceof ShPost && shObject.getFurl().equals("index")) {
+				ShFolder shFolder = shFolderUtils.getParentFolder(shObject);
+				shSitesContextURLInfo.setPageAllowGuestUser(shFolder.isPageAllowGuestUser());
+				shSitesContextURLInfo.setPageAllowRegisterUser(shFolder.isPageAllowRegisterUser());
+
+				shSitesContextURLInfo.setShPageGroups(shFolder.getShPageGroups() != null
+						? shFolder.getShPageGroups().toArray(new String[shFolder.getShPageGroups().size()])
+						: null);
+			} else {
+				shSitesContextURLInfo.setPageAllowGuestUser(shObject.isPageAllowGuestUser());
+				shSitesContextURLInfo.setPageAllowRegisterUser(shObject.isPageAllowRegisterUser());
+				shSitesContextURLInfo.setShPageGroups(shObject.getShPageGroups() != null
+						? (String[]) shObject.getShPageGroups().toArray(new String[shObject.getShPageGroups().size()])
+						: null);
+			}
 		} else {
 			shSitesContextURLInfo.setPageAllowGuestUser(true);
 			shSitesContextURLInfo.setPageAllowRegisterUser(false);
 			shSitesContextURLInfo.setStaticFile(false);
+			shSitesContextURLInfo.setShPageGroups(null);
 		}
 
 		if (logger.isDebugEnabled())

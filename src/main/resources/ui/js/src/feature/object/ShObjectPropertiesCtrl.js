@@ -40,19 +40,28 @@ shioharaApp.controller('ShObjectPropertiesCtrl', [
 			$uibModalInstance.dismiss('cancel');
 		};
 
-		$ctrl.addGroups = function () {
-			shObjectFactory.addGroups($ctrl.shSecurity.shGroups);
+		$ctrl.addConsoleGroups = function () {
+			shObjectFactory.addGroups($ctrl.shSecurity.console.shGroups);
 		}
 
-		$ctrl.addUsers = function () {
-			shObjectFactory.addUsers($ctrl.shSecurity.shUsers);
+		$ctrl.addConsoleUsers = function () {
+			shObjectFactory.addUsers($ctrl.shSecurity.console.shUsers);
 		}
 
-		$ctrl.removeGroup = function (index) {
+		$ctrl.removeConsoleGroup = function (index) {
 			$ctrl.shSecurity.shGroups.splice(index, 1);
 		}
 
-		$ctrl.removeUser = function (index) {
+		$ctrl.removeConsoleUser = function (index) {
 			$ctrl.shSecurity.shUsers.splice(index, 1);
 		}
+
+		$ctrl.addPageGroups = function () {
+			shObjectFactory.addGroups($ctrl.shSecurity.page.shGroups);
+		}
+
+		$ctrl.removePageGroup = function (index) {
+			$ctrl.shSecurity.page.shGroups.splice(index, 1);
+		}
+
 	}]);

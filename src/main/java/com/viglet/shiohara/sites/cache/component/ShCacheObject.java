@@ -17,6 +17,7 @@ import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.repository.object.ShObjectRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 import com.viglet.shiohara.sites.ShSitesContextURL;
+import com.viglet.shiohara.sites.utils.ShSitesObjectUtils;
 import com.viglet.shiohara.utils.ShFolderUtils;
 
 @Component
@@ -25,6 +26,8 @@ public class ShCacheObject {
 	@Autowired
 	ShCachePage shCachePage;
 	@Autowired
+	ShCacheURL shCacheURL;
+	@Autowired
 	ShCacheObject shCacheObject;
 	@Autowired
 	ShObjectRepository shObjectRepository;
@@ -32,6 +35,8 @@ public class ShCacheObject {
 	ShPostRepository shPostRepository;
 	@Autowired
 	ShFolderUtils shFolderUtils;
+	@Autowired
+	ShSitesObjectUtils shSitesObjectUtils;
 
 	@Cacheable(value = "shObject", key = "#id", sync = true)
 	public List<String> cache(String id) {
@@ -77,6 +82,23 @@ public class ShCacheObject {
 			if (logger.isDebugEnabled())
 				logger.debug("Deleting the page with id: " + id + " and URL: " + url);
 			shCachePage.deleteCache(id, url);
+
+			ShObject shObject = shObjectRepository.findById(id).orElse(null);
+			String contextURL = null;
+			if (shObject instanceof ShPost && shObject.getFurl().equals("index")) {
+				ShFolder shFolder = shFolderUtils.getParentFolder(shObject);
+				contextURL = shSitesObjectUtils.generateObjectLinkById(shFolder.getId());
+			} else
+				contextURL = shSitesObjectUtils.generateObjectLinkById(id);
+
+			/**
+			 * If the URL doesn't end with slash,remove the slash of contextURL
+			 */
+			if (!url.endsWith("/"))
+				contextURL = contextURL.trim().replaceFirst(".$", "");
+
+			shCacheURL.deleteCache(contextURL, url);
+
 		}
 
 	}

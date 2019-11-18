@@ -35,6 +35,7 @@ public class ShSitesContextURLInfo implements Serializable {
 	private boolean staticFile = false;
 	private boolean pageAllowGuestUser = true;
 	private boolean pageAllowRegisterUser = true;
+	private String[] shPageGroups = null;
 
 	public String toString() {
 		return String.format(
@@ -136,6 +137,14 @@ public class ShSitesContextURLInfo implements Serializable {
 
 	public void setPageAllowRegisterUser(boolean pageAllowRegisterUser) {
 		this.pageAllowRegisterUser = pageAllowRegisterUser;
+	}
+
+	public String[] getShPageGroups() {
+		return shPageGroups;
+	}
+
+	public void setShPageGroups(String[] shPageGroups) {
+		this.shPageGroups = shPageGroups;
 	}
 
 	public static long getSerialversionuid() {
