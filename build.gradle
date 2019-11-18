@@ -28,7 +28,7 @@ apply plugin: 'jacoco'
 apply plugin: "com.liferay.app.jsdoc"
 jar {
     baseName = 'viglet-shiohara'
-    version =  '0.3.5'
+    version =  '0.3.6'
 }
 
 bootJar {
