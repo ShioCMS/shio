@@ -31,7 +31,6 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
@@ -45,9 +44,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.viglet.shiohara.persistence.model.auth.ShGroup;
 import com.viglet.shiohara.persistence.model.post.ShPostDraftAttr;
-import com.viglet.shiohara.persistence.model.workflow.ShWorkflowTask;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -94,8 +91,12 @@ public class ShObjectDraft implements Serializable {
 	@Column(name = "draft", length = 5 * 1024 * 1024) // 5Mb
 	private String draft;
 
-	@ManyToMany
-	private Set<ShGroup> shGroups = new HashSet<>();
+	@ElementCollection
+	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
+	@CollectionTable(name = "sh_object_draft_groups")
+	@JoinColumn(name = "object_id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private Set<String> shGroups = new HashSet<>();
 
 	@ElementCollection
 	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
@@ -105,6 +106,17 @@ public class ShObjectDraft implements Serializable {
 	private Set<String> shUsers = new HashSet<>();
 
 	private String publishStatus;
+
+	private boolean pageAllowRegisterUser = false;
+
+	private boolean pageAllowGuestUser = true;
+
+	@ElementCollection
+	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
+	@CollectionTable(name = "sh_object_draft_page_groups")
+	@JoinColumn(name = "object_id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private Set<String> shPageGroups = new HashSet<>();
 
 	public String getId() {
 		return this.id;
@@ -197,15 +209,12 @@ public class ShObjectDraft implements Serializable {
 		}
 	}
 
-	public Set<ShGroup> getShGroups() {
-		return this.shGroups;
+	public Set<String> getShGroups() {
+		return shGroups;
 	}
 
-	public void setShGroups(Set<ShGroup> shGroups) {
-		this.shGroups.clear();
-		if (shGroups != null) {
-			this.shGroups.addAll(shGroups);
-		}
+	public void setShGroups(Set<String> shGroups) {
+		this.shGroups = shGroups;
 	}
 
 	public String getDraft() {
@@ -230,6 +239,38 @@ public class ShObjectDraft implements Serializable {
 
 	public void setPublishStatus(String publishStatus) {
 		this.publishStatus = publishStatus;
+	}
+
+	public Set<String> getShUsers() {
+		return shUsers;
+	}
+
+	public void setShUsers(Set<String> shUsers) {
+		this.shUsers = shUsers;
+	}
+
+	public boolean isPageAllowRegisterUser() {
+		return pageAllowRegisterUser;
+	}
+
+	public void setPageAllowRegisterUser(boolean pageAllowRegisterUser) {
+		this.pageAllowRegisterUser = pageAllowRegisterUser;
+	}
+
+	public boolean isPageAllowGuestUser() {
+		return pageAllowGuestUser;
+	}
+
+	public void setPageAllowGuestUser(boolean pageAllowGuestUser) {
+		this.pageAllowGuestUser = pageAllowGuestUser;
+	}
+
+	public Set<String> getShPageGroups() {
+		return shPageGroups;
+	}
+
+	public void setShPageGroups(Set<String> shPageGroups) {
+		this.shPageGroups = shPageGroups;
 	}
 
 }

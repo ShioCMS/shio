@@ -43,7 +43,7 @@ public class ShCheckBoxWidget implements ShWidgetImplementation {
 		String widgetSettings = shPostTypeAttr.getWidgetSettings();
 		JSONObject settings = new JSONObject(widgetSettings);
 		String[] choicesArray = settings.getString("choices").split("\n");
-		Map<String, String> choices = new HashMap<String, String>();
+		Map<String, String> choices = new HashMap<>();
 		for (String choice : choicesArray) {
 			String[] choiceKV = choice.split(":");
 			String name = choiceKV[0].trim();
@@ -59,14 +59,12 @@ public class ShCheckBoxWidget implements ShWidgetImplementation {
 	}
 
 	@Override
-	public boolean validateForm(HttpServletRequest request, ShPostTypeAttr shPostTypeAttr) {
-		// TODO Auto-generated method stub
+	public boolean validateForm(HttpServletRequest request, ShPostTypeAttr shPostTypeAttr) {		
 		return true;
 	}
 
 	@Override
 	public void postRender(ShPost shPost, ShSitesContextURL shSitesContextURL) throws IOException {
-		// TODO Auto-generated method stub
-		
+		// Post Render		
 	}
 }

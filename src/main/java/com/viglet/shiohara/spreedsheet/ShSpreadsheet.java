@@ -41,8 +41,8 @@ import com.viglet.shiohara.widget.ShSystemWidget;
 @Component
 public class ShSpreadsheet {
 	static final Logger logger = LogManager.getLogger(ShSpreadsheet.class.getName());
-	public static int minColWidth = 20 << 8;
-	public static int maxColWidth = 100 << 8;
+	static final int MIN_COL_WIDTH = 20 << 8;
+	static final int MAX_COL_WIDTH = 100 << 8;
 
 	@Autowired
 	private ShPostRepository shPostRepository;
@@ -229,7 +229,7 @@ public class ShSpreadsheet {
 			sheet.autoSizeColumn(i);
 
 			int cw = (int) (sheet.getColumnWidth(i) * 0.8);
-			sheet.setColumnWidth(i, Math.max(Math.min(cw, maxColWidth), minColWidth));
+			sheet.setColumnWidth(i, Math.max(Math.min(cw, MAX_COL_WIDTH), MIN_COL_WIDTH));
 		}
 		maxCol = 0;
 		return maxCol;

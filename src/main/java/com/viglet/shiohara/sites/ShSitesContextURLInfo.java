@@ -33,6 +33,9 @@ public class ShSitesContextURLInfo implements Serializable {
 	private String objectId = null;
 	private boolean cacheEnabled = true;
 	private boolean staticFile = false;
+	private boolean pageAllowGuestUser = true;
+	private boolean pageAllowRegisterUser = true;
+	private String[] shPageGroups = null;
 
 	public String toString() {
 		return String.format(
@@ -118,6 +121,30 @@ public class ShSitesContextURLInfo implements Serializable {
 
 	public void setStaticFile(boolean staticFile) {
 		this.staticFile = staticFile;
+	}
+
+	public boolean isPageAllowGuestUser() {
+		return pageAllowGuestUser;
+	}
+
+	public void setPageAllowGuestUser(boolean pageAllowGuestUser) {
+		this.pageAllowGuestUser = pageAllowGuestUser;
+	}
+
+	public boolean isPageAllowRegisterUser() {
+		return pageAllowRegisterUser;
+	}
+
+	public void setPageAllowRegisterUser(boolean pageAllowRegisterUser) {
+		this.pageAllowRegisterUser = pageAllowRegisterUser;
+	}
+
+	public String[] getShPageGroups() {
+		return shPageGroups;
+	}
+
+	public void setShPageGroups(String[] shPageGroups) {
+		this.shPageGroups = shPageGroups;
 	}
 
 	public static long getSerialversionuid() {

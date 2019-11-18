@@ -75,11 +75,10 @@ public class ShSitesContextURLProcess {
 			if (request.getParameter("sh-format") != null) {
 				String[] contexts = context.split("/");
 				contexts[3] = request.getParameter("sh-format");
-				context = StringUtils.join(contexts, "/");
-				shSitesContextURL.getInfo().setContextURLOriginal(context);
-			} else {
-				shSitesContextURL.getInfo().setContextURLOriginal(context);
+				context = StringUtils.join(contexts, "/");			
 			}
+			
+			shSitesContextURL.getInfo().setContextURLOriginal(context);
 			shSitesContextURL.getInfo().setContextURL(shSitesContextURL.getInfo().getContextURLOriginal());
 		}
 

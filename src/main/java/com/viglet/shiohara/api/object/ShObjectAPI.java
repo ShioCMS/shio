@@ -47,7 +47,9 @@ import com.viglet.shiohara.api.folder.ShFolderList;
 import com.viglet.shiohara.api.folder.ShFolderPath;
 import com.viglet.shiohara.bean.ShFolderTinyBean;
 import com.viglet.shiohara.bean.ShPostTinyBean;
-import com.viglet.shiohara.bean.ShSecurityBean;
+import com.viglet.shiohara.bean.security.ShConsoleSecurityBean;
+import com.viglet.shiohara.bean.security.ShPageSecurityBean;
+import com.viglet.shiohara.bean.security.ShSecurityBean;
 import com.viglet.shiohara.persistence.model.auth.ShGroup;
 import com.viglet.shiohara.persistence.model.auth.ShUser;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
@@ -157,8 +159,17 @@ public class ShObjectAPI {
 		List<ShObject> shObjects = new ArrayList<>();
 		shObjects.add(shObject);
 		ShSecurityBean shSecurityBean = new ShSecurityBean();
-		shSecurityBean.setShGroups(shObject.getShGroups());
-		shSecurityBean.setShUsers(shObject.getShUsers());
+		ShConsoleSecurityBean shConsoleSecurityBean = new ShConsoleSecurityBean();
+		shConsoleSecurityBean.setShGroups(shObject.getShGroups());
+		shConsoleSecurityBean.setShUsers(shObject.getShUsers());
+
+		ShPageSecurityBean shPageSecurityBean = new ShPageSecurityBean();
+		shPageSecurityBean.setAllowGuestUser(shObject.isPageAllowGuestUser());
+		shPageSecurityBean.setAllowRegisterUser(shObject.isPageAllowRegisterUser());
+		shPageSecurityBean.setShGroups(shObject.getShPageGroups());
+
+		shSecurityBean.setConsole(shConsoleSecurityBean);
+		shSecurityBean.setPage(shPageSecurityBean);
 		return shSecurityBean;
 	}
 
@@ -167,9 +178,18 @@ public class ShObjectAPI {
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShSecurityBean shObjectGroupsUpdate(@PathVariable String id, @RequestBody ShSecurityBean shSecurityBean) {
 		ShObject shObject = shObjectRepository.findById(id).orElse(null);
-		if (shObject != null) {
-			shObject.setShGroups(shSecurityBean.getShGroups());
-			shObject.setShUsers(shSecurityBean.getShUsers());
+		if (shObject != null && shSecurityBean != null) {
+			if (shSecurityBean.getConsole() != null) {
+				shObject.setShGroups(shSecurityBean.getConsole().getShGroups());
+				shObject.setShUsers(shSecurityBean.getConsole().getShUsers());
+			}
+
+			if (shSecurityBean.getPage() != null) {
+				shObject.setPageAllowGuestUser(shSecurityBean.getPage().isAllowGuestUser());
+				shObject.setPageAllowRegisterUser(shSecurityBean.getPage().isAllowRegisterUser());
+				shObject.setShPageGroups(shSecurityBean.getPage().getShGroups());
+			}
+			
 			shObjectRepository.saveAndFlush(shObject);
 		}
 		return shSecurityBean;
@@ -307,7 +327,7 @@ public class ShObjectAPI {
 				return folders;
 			} else {
 				Set<ShFolderTinyBean> shFolders = new HashSet<>();
-				
+
 				for (ShGroup shGroup : shUser.getShGroups()) {
 					shGroups.add(shGroup.getName());
 				}
@@ -348,7 +368,7 @@ public class ShObjectAPI {
 				List<ShPostTinyBean> shPosts = new ArrayList<>();
 				for (ShGroup shGroup : shUser.getShGroups()) {
 					shGroups.add(shGroup.getName());
-				}				
+				}
 				shUsers.add(shUser.getUsername());
 				for (ShPostTinyBean post : posts)
 					if (shObjectRepository.countByIdAndShGroupsInOrIdAndShUsersInOrIdAndShGroupsIsNullAndShUsersIsNull(

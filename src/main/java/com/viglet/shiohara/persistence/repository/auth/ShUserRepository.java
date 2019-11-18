@@ -33,6 +33,8 @@ public interface ShUserRepository extends JpaRepository<ShUser, String> {
 	List<ShUser> findAll();
 
 	ShUser findByUsername(String username);
+	
+	boolean existsByUsernameAndPassword(String username, String password);
 
 	@SuppressWarnings("unchecked")
 	ShUser save(ShUser shUser);

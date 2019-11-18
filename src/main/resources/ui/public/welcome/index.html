@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="shioharaWelcome">
+<head>
+<meta charset="UTF-8">
+<title>Sign in | Viglet Shiohara</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+
+<link href="/thirdparty/font-awesome/4.7.0/css/font-awesome.min.css"
+	rel="stylesheet"></link>
+
+<link rel="stylesheet" href="../css/login.css">
+<link href="https://viglet.ai/ui/favicon.ico" rel="shortcut icon"
+	type="image/x-icon" />
+</head>
+
+<body ng-controller="ShWelcomeCtrl">
+	<div class="login-form" ng-if="showLogin">
+		<div style="text-align: center; margin-bottom: 30px">
+			<img src="img/viglet_logo.png" />			
+		</div>
+		<form role="form" ng-submit="login()">
+			<div class="form-group ">
+				<input type="text" class="form-control" placeholder="Username"
+					id="username" name="username" ng-model="credentials.username">
+				<i class="fa fa-user"></i>
+			</div>
+			<div class="form-group log-status">
+				<input type="password" class="form-control" placeholder="Password"
+					id="password" name="password" ng-model="credentials.password">
+				<i class="fa fa-lock"></i>
+			</div>
+			<span class="alert">Invalid Credentials</span>
+			<button type="submit" class="log-btn">Log in</button>
+		</form>
+
+	</div>
+	<script src="/thirdparty/jquery/1.12.4/dist/jquery.min.js"></script>
+	<script src="/thirdparty/tinymce/4.5.8/tinymce.min.js"></script>
+	<script src="/thirdparty/ace-builds/1.3.1/src-min-noconflict/ace.js"></script>
+
+	<script src="/thirdparty/moment/2.20.1/min/moment-with-locales.min.js"></script>
+	<script src="/thirdparty/angular/1.6.9/angular.min.js"></script>
+	<script
+		src="/thirdparty/angular-ui-router/1.0.14/release/angular-ui-router.min.js"></script>
+	<script
+		src="/thirdparty/angular-translate/2.17.0/angular-translate.min.js"></script>
+	<script
+		src="/thirdparty/angular-resource/1.6.9/angular-resource.min.js"></script>
+	<script src="/thirdparty/angular-animate/1.6.9/angular-animate.min.js"></script>
+	<script src="/thirdparty/angular-cookies/1.6.9/angular-cookies.min.js"></script>
+	<script
+		src="/thirdparty/angular-sanitize/1.6.9/angular-sanitize.min.js"></script>
+	<script src="/thirdparty/angular-moment/1.2.0/angular-moment.min.js"></script>
+	<!-- shim is needed to support non-HTML5 FormData browsers (IE8-9)-->
+	<script
+		src="/thirdparty/angular-ui-notification/0.3.6/dist/angular-ui-notification.min.js"></script>
+
+	<script src="/js/welcome.js"></script>
+</body>
+</html>

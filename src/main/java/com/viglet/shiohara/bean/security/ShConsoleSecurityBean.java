@@ -1,10 +1,11 @@
-package com.viglet.shiohara.bean;
+package com.viglet.shiohara.bean.security;
 
 import java.util.Set;
 
-public class ShSecurityBean {
+public class ShConsoleSecurityBean {
 
 	private Set<String> shUsers;
+	
 	private Set<String> shGroups;
 
 	public Set<String> getShUsers() {
