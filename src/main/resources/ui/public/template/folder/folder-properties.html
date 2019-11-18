@@ -1,0 +1,51 @@
+<div class="modal-header">
+	<h3 class="modal-title" id="modal-title">Folder Properties</h3>
+</div>
+<div class="modal-body">
+	<uib-tabset active="active">
+		<uib-tab index="" heading="Security">
+			<div style="padding: 15px 0px;min-height: 150px;">
+				<div style="border-color: #f5f5f5; border-style: solid; border-width: 2px; margin-bottom: 20px;">
+					<div style="background-color: #f5f5f5; padding: 10px">
+						<button ng-click="$ctrl.addGroups()" class="btn btn-viglet">Add Groups</button>
+					</div>
+					<div style="padding: 10px">
+						<div class="list-group-item" ng-repeat="shGroup in $ctrl.shSecurity.shGroups">
+							<div style="display: inline-table; width: calc(100% - 120px);">
+								{{shGroup.name}}
+							</div>
+							<div style="display: inline-table">
+								<button type="button" class="btn btn-link btn-xs pull-right" style="display: block;"
+									ng-click="$ctrl.removeGroup($index)">
+									<i class="fa fa-trash-o" aria-hidden="true"></i> Remove
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div style="border-color: #f5f5f5; border-style: solid; border-width: 2px;">
+					<div style="background-color: #f5f5f5; padding: 10px">
+						<button ng-click="$ctrl.addUsers()" class="btn btn-viglet">Add Users</button>
+					</div>
+					<div style="padding: 10px">
+						<div class="list-group-item" ng-repeat="shUser in $ctrl.shSecurity.shUsers">
+							<div style="display: inline-table; width: calc(100% - 120px);">
+								{{shUser}}
+							</div>
+							<div style="display: inline-table">
+								<button type="button" class="btn btn-link btn-xs pull-right" style="display: block;"
+									ng-click="$ctrl.removeUser($index)">
+									<i class="fa fa-trash-o" aria-hidden="true"></i> Remove
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</uib-tab>
+	</uib-tabset>
+</div>
+<div class="modal-footer">
+	<button class="btn btn-default" type="button" ng-click="$ctrl.ok()">Save</button>
+	<button class="btn btn-default" type="button" ng-click="$ctrl.cancel()">Close</button>
+</div>

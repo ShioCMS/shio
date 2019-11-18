@@ -1,0 +1,137 @@
+<div ng-controller="ShWidgetPaymentTypeCtrl" ng-init="init(shPostTypeAttr)">
+	<table class="table" style="margin: 0px;">
+		<tr>
+			<td style="background: #F9F9F9; width: 20%;">
+				<p>
+					<b>Product Post Type</b>
+				</p>
+			</td>
+			<td><select class="form-control" ng-change="getProductPosts()"
+				ng-model="shPostTypeAttr.widgetSettingsObject.product.postType"
+				ng-options="postType.id as postType.title for postType in postTypes | orderBy: 'title'">
+					<option value="">-- Pick One --</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td style="background: #F9F9F9; width: 20%;">
+				<p>
+					<b>Product Name Field</b>
+				</p>
+			</td>
+			<td><select class="form-control"
+				ng-model="shPostTypeAttr.widgetSettingsObject.product.name"
+				ng-options="shPostTypeAttr.name as shPostTypeAttr.name for shPostTypeAttr in postTypeMap[shPostTypeAttr.widgetSettingsObject.product.postType].shPostTypeAttrs | orderBy: 'ordinal'">
+					<option value="">-- Pick One --</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td style="background: #F9F9F9; width: 20%;">
+				<p>
+					<b>Product Description Field</b>
+				</p>
+			</td>
+			<td><select class="form-control"
+				ng-model="shPostTypeAttr.widgetSettingsObject.product.description"
+				ng-options="shPostTypeAttr.name as shPostTypeAttr.name for shPostTypeAttr in postTypeMap[shPostTypeAttr.widgetSettingsObject.product.postType].shPostTypeAttrs | orderBy: 'ordinal'">
+					<option value="">-- Pick One --</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td style="background: #F9F9F9; width: 20%;">
+				<p>
+					<b>Product Value Field</b>
+				</p>
+			</td>
+			<td><select class="form-control"
+				ng-model="shPostTypeAttr.widgetSettingsObject.product.value"
+				ng-options="shPostTypeAttr.name as shPostTypeAttr.name for shPostTypeAttr in postTypeMap[shPostTypeAttr.widgetSettingsObject.product.postType].shPostTypeAttrs | orderBy: 'ordinal'">
+					<option value="">-- Pick One --</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td style="background: #F9F9F9; width: 20%;">
+				<p>
+					<b>Product Item Field</b>
+				</p>
+			</td>
+			<td><select class="form-control"
+				ng-model="shPostTypeAttr.widgetSettingsObject.product.field"
+				ng-options="shPostTypeAttr.name as shPostTypeAttr.name for shPostTypeAttr in shPostType.shPostTypeAttrs | orderBy: 'ordinal'">
+					<option value="">-- Pick One --</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td style="background: #F9F9F9; width: 20%;">
+				<p>
+					<b>Product Item Select</b>
+				</p>
+			</td>
+			<td><select class="form-control"
+				ng-model="shPostTypeAttr.widgetSettingsObject.product.post"
+				ng-options="productPost.id as productPost.title for productPost in productPosts">
+					<option value="">-- Pick One --</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td style="background: #F9F9F9; width: 20%;">
+				<p>
+					<b>Payer Name Field</b>
+				</p>
+			</td>
+			<td><select class="form-control"
+				ng-model="shPostTypeAttr.widgetSettingsObject.payer.name"
+				ng-options="shPostTypeAttr.name as shPostTypeAttr.name for shPostTypeAttr in shPostType.shPostTypeAttrs | orderBy: 'ordinal'">
+					<option value="">-- Pick One --</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td style="background: #F9F9F9; width: 20%;">
+				<p>
+					<b>Payer Document ID Field</b>
+				</p>
+			</td>
+			<td><select class="form-control"
+				ng-model="shPostTypeAttr.widgetSettingsObject.payer.documentId"
+				ng-options="shPostTypeAttr.name as shPostTypeAttr.name for shPostTypeAttr in shPostType.shPostTypeAttrs | orderBy: 'ordinal'">
+					<option value="">-- Pick One --</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td style="background: #F9F9F9; width: 20%;">
+				<p>
+					<b>Payment Types</b>
+				</p>
+			</td>
+			<td><uib-accordion>
+				<div uib-accordion-group class="panel-default"
+					template-url="template/widget/payment/setting/payment-setting-accordion-header.html">
+				</div>
+				<div uib-accordion-group
+					ng-repeat=" paymentType in shPostTypeAttr.widgetSettingsObject.paymentTypes | orderBy: 'ordinal'"
+					class="panel-default"
+					template-url="template/widget/payment/setting/payment-setting-accordion.html">
+					<uib-accordion-heading>
+					<div class="row" style="margin: 0px">
+						<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6"
+							style="padding: 0px">
+							<i class="fa fa-bars" aria-hidden="true"></i>
+							{{paymentType.ordinal}} <span style="display: none;">{{paymentType.ordinal=$index+1}}</span>
+						</div>
+						<div class="col-lg-3 col-md-3 col-sm-3 hidden-xs"
+							style="padding: 0px">{{paymentType.name}}</div>
+							<div class="col-lg-3 col-md-3 col-sm-3 hidden-xs"
+							style="padding: 0px">{{paymentType.identifier}}</div>
+						<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6"
+							style="padding: 0px">{{
+							$parent.$parent.getPaymentType(paymentType.id).title }}</div>
+						
+
+					</div>
+					</uib-accordion-heading>
+					<div
+						ng-include="'template/widget/payment/setting/payment-default-setting.html'"></div>
+				</div>
+				</uib-accordion>
+		</tr>
+	</table>
+</div>
