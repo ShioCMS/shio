@@ -13,10 +13,11 @@ shioharaApp
 			"vigLocale",
 			"$translate",
 			"Notification",
+			"shObjectFactory",
 			function ($scope, $http, $state, $stateParams,
 				$rootScope, shFolderResource,
 				shAPIServerService, shFolderFactory, vigLocale,
-				$translate, Notification) {
+				$translate, Notification, shObjectFactory) {
 				$scope.folderId = $stateParams.folderId;
 
 				$scope.vigLanguage = vigLocale.getLocale()
@@ -72,6 +73,6 @@ shioharaApp
 						});
 				}
 				$scope.openProperties = function () {
-					shFolderFactory.openProperties($scope.shFolder);
+					shObjectFactory.openProperties($scope.shFolder);
 				}
 			}]);

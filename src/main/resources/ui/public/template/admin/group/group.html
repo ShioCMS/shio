@@ -23,7 +23,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="group in groups">
+				<tr ng-repeat="group in groups | orderBy:'name'">
 					<td><a ui-sref="admin.group-edit({groupId: group.id})">{{group.name}}</a></td>
 					<td><a ui-sref="admin.group-edit({groupId: group.id})">{{group.description}}</a></td>
 					<td style="text-align: right">

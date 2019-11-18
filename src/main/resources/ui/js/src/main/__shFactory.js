@@ -1,4 +1,4 @@
-var shioharaApp = angular.module('shioharaApp', [ 'ngCookies', 'ngResource',
+var shioharaApp = angular.module('shioharaApp', [ 'infinite-scroll', 'ngCookies', 'ngResource',
 		'ngAnimate', 'ngSanitize', 'ui.router', 'ui.bootstrap',
 		'pascalprecht.translate', 'angularMoment', 'ui.ace', 'ngFileUpload',
 		'ui-notification', 'ui.tinymce', 'ui.sortable', 'ui.select']);

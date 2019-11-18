@@ -16,8 +16,7 @@
 <body ng-controller="ShWelcomeCtrl">
 	<div class="login-form" ng-if="showLogin">
 		<div style="text-align: center; margin-bottom: 30px">
-			<img src="img/viglet_logo.png" />
-			<p>try admin/admin</p>
+			<img src="img/viglet_logo.png" />			
 		</div>
 		<form role="form" ng-submit="login()">
 			<div class="form-group ">
@@ -30,8 +29,7 @@
 					id="password" name="password" ng-model="credentials.password">
 				<i class="fa fa-lock"></i>
 			</div>
-			<span class="alert">Invalid Credentials</span> <a class="link"
-				href="#">Lost your password?</a>
+			<span class="alert">Invalid Credentials</span>
 			<button type="submit" class="log-btn">Log in</button>
 		</form>
 

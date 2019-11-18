@@ -1,5 +1,5 @@
 <div class="modal-header">
-	<h3 class="modal-title" id="modal-title">Folder Properties</h3>
+	<h3 class="modal-title" id="modal-title">Properties</h3>
 </div>
 <div class="modal-body">
 	<uib-tabset active="active">
@@ -12,7 +12,7 @@
 					<div style="padding: 10px">
 						<div class="list-group-item" ng-repeat="shGroup in $ctrl.shSecurity.shGroups">
 							<div style="display: inline-table; width: calc(100% - 120px);">
-								{{shGroup.name}}
+								{{shGroup}}
 							</div>
 							<div style="display: inline-table">
 								<button type="button" class="btn btn-link btn-xs pull-right" style="display: block;"

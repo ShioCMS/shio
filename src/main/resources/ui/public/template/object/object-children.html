@@ -108,10 +108,12 @@
 					title="Search within this Folder"><i class="fa fa-search" aria-hidden="true"></i></a>
 				<a href class="btn" ng-click="uploadFiles(shCurrentFolder.id)" data-toggle="tooltip"
 					title="Upload Files"><i class="fa fa-upload" aria-hidden="true"></i></a>
-				<a href class="btn" ng-hide="thumbs" ng-click="thumbs=true" data-toggle="tooltip" title="Thumbnails"><span
-						class="glyphicon glyphicon-th-large" aria-hidden="true"></span></a>
+				<a href class="btn" ng-hide="thumbs" ng-click="thumbs=true" data-toggle="tooltip"
+					title="Thumbnails"><span class="glyphicon glyphicon-th-large" aria-hidden="true"></span></a>
 				<a href class="btn" ng-show="thumbs" ng-click="thumbs=false" data-toggle="tooltip" title="List"><span
 						class="glyphicon glyphicon-th-list" aria-hidden="true"></span></a>
+				<a  ng-if="shCurrentFolder != null" ng-href="/api/v2/folder/{{shCurrentFolder.id}}/spreadsheet" class="btn" data-toggle="tooltip"
+					title="Spreadsheet"><i class="fa fa-file-excel-o" aria-hidden="true"></i></a>
 			</div>
 		</div>
 		<div>

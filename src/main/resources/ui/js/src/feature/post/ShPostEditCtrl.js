@@ -12,8 +12,9 @@ shioharaApp.controller('ShPostEditCtrl', [
 	"shPostFactory",
 	"$filter",
 	"shPostXPResource",
+	"shObjectFactory",
 	function ($scope, $http, $window, $stateParams, $rootScope,
-		shPostResource, shAPIServerService, Notification, $q, shStaticFileFactory, shPostFactory, $filter, shPostXPResource) {
+		shPostResource, shAPIServerService, Notification, $q, shStaticFileFactory, shPostFactory, $filter, shPostXPResource, shObjectFactory) {
 
 		$scope.tinymceOptions = {
 			plugins: 'shTinyMCE link image code lists paste advlist anchor autolink autoresize charmap codesample directionality emoticons hr insertdatetime legacyoutput media nonbreaking noneditable pagebreak preview print searchreplace tabfocus table template textpattern toc visualblocks visualchars wordcount',
@@ -72,7 +73,7 @@ shioharaApp.controller('ShPostEditCtrl', [
 											'g'), "-"));
 							}
 						));
-			}			
+			}
 
 			$scope.tabs = [];
 			var tabName = $scope.shPost.shPostType.title;
@@ -111,7 +112,7 @@ shioharaApp.controller('ShPostEditCtrl', [
 				else {
 					$scope.publishStatus = "Published";
 				}
-			}        
+			}
 		}
 
 		$scope.openPreviewURL = function () {
@@ -172,10 +173,10 @@ shioharaApp.controller('ShPostEditCtrl', [
 			$q
 				.all(promiseFiles)
 				.then(
-					function (dataThatWasPassed) {						
+					function (dataThatWasPassed) {
 						$scope.shPost.publishStatus = publishStatus;
 						shPostResource.update({ id: $scope.shPost.id }, $scope.shPost, function (response) {
-							$scope.shPost = response; 
+							$scope.shPost = response;
 							angular
 								.forEach($scope.shPost.shPostAttrs,
 									function (shPostAttr, key) {
@@ -218,5 +219,10 @@ shioharaApp.controller('ShPostEditCtrl', [
 				shFolderId, shPostAttr,
 				postType);
 		}
+
+		$scope.openProperties = function () {
+			shObjectFactory.openProperties($scope.shPost);
+		}
 	}
+
 ]);

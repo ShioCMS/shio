@@ -112,6 +112,13 @@ shioharaApp.config([
 				data : {
 					pageTitle : 'Search | Viglet Shiohara'
 				}
+			}).state('content.search-type', {
+				url : '/search/type/:type',
+				templateUrl : 'template/search/search.html',
+				controller : 'ShSearchTypeCtrl',
+				data : {
+					pageTitle : 'Search | Viglet Shiohara'
+				}
 			}).state('content.search-query', {
 				url : '/search/:query',
 				templateUrl : 'template/search/search.html',

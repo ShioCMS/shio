@@ -64,6 +64,9 @@ shioharaApp.controller('ShWidgetRelatorAddCtrl', [
 
 			});
 			$scope.title = $scope.titles.join(", ");
+			if ($scope.title === null || ($scope.title !== null && $scope.title.trim().length === 0)) {
+				$scope.title = "Untitled";
+			}
 			$scope.summary = $scope.summaries.join(", ");
 			$uibModalInstance.close({
 				shPostAttrs: $scope.shPostAttrs,

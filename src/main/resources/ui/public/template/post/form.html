@@ -13,10 +13,8 @@ div.affix {
 	class="affix-top" data-spy="affix" data-offset-top="147">
 	<div class="form-actions">
 		<div class="pull-right">
-
-
+			<button ng-if="principal.admin" ng-click="openProperties()" class="btn btn-default">Properties</button>
 			<div class="btn-group">
-
 				<a href ng-click="postSave('DRAFT')" class="btn btn-viglet">Save Draft</a>
 				<a class="btn btn-viglet dropdown-toggle" data-toggle="dropdown"
 					href><span class="caret"></span></a>
@@ -40,7 +38,7 @@ div.affix {
 		ng-repeat="shPostAttr in shPost.shPostAttrs | filter:{ tab:  tab.name } | orderBy : 'shPostTypeAttr.ordinal'"
 		ng-if="shPostAttr.shPostTypeAttr.shWidget.name !== 'Tab'" >
 
-		<div>
+		<div ng-if="shPostAttr.shPostTypeAttr.shWidget.implementationCode !== null">
 			<label>{{shPostAttr.shPostTypeAttr.label}}</label>
 			<div
 				ng-include="shPostAttr.shPostTypeAttr.shWidget.implementationCode"></div>

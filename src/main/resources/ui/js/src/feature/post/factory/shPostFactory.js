@@ -22,8 +22,8 @@ shioharaApp.factory('shPostFactory', [
                 }, function () {
                     // Selected NO
                 });
-            }
-            , delete: function (shPost) {
+            },
+            delete: function (shPost) {
                 var modalInstance = this.modalDelete(shPost);
                 modalInstance.result.then(function (removeInstance) {
                     deletedMessage = 'The ' + shPost.title + ' Post was deleted.';
@@ -38,8 +38,8 @@ shioharaApp.factory('shPostFactory', [
                 }, function () {
                     // Selected NO
                 });
-            }
-            , modalDelete: function (shPost) {
+            },
+            modalDelete: function (shPost) {
                 var $ctrl = this;
                 return $uibModal.open({
                     animation: true

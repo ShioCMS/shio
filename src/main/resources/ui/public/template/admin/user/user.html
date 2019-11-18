@@ -30,7 +30,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="user in users">
+				<tr ng-repeat="user in users | orderBy:'username'">
 					<td><a ui-sref="admin.user-edit({userId: user.username})" >{{user.username}}</a></td>
 					<td><a ui-sref="admin.user-edit({userId: user.username})" >{{user.firstName}}</a></td>
 					<td><a ui-sref="admin.user-edit({userId: user.username})" >{{user.lastName}}</a></td>

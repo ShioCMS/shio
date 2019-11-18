@@ -174,8 +174,8 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
                 id: $scope.shUser.lastPostType
             });
         });
-        $scope.$evalAsync($http.get(shAPIServerService.get().concat("/v2/history/object/" + $scope.objectId)).then(function (response) {
-            $scope.commits = response.data.length;
+        $scope.$evalAsync($http.get(shAPIServerService.get().concat("/v2/history/object/" + $scope.objectId + "/count")).then(function (response) {
+            $scope.commits = response.data;
         }));
         $scope.loadObjects = function () {
             $scope.$evalAsync($http.get(shAPIServerService.get().concat("/v2/object/" + $scope.objectId + "/list")).then(function (response) {
@@ -183,6 +183,7 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
                 $scope.loadedObjectList = true;
             }));
         }
+                
         $scope.processResponse = function (response) {
             $scope.shFolders = response.data.shFolders;
             $scope.shFolders = $filter('orderBy')($scope.shFolders, 'position');

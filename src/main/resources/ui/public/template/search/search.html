@@ -20,11 +20,11 @@
 				<ul class="breadcrumb"
 					style="background-color: white; padding: 0px; margin: 0px; font-size: 12px;">
 					<li><a
-						ui-sref="content.children.site-children({siteId: shPostWithBreadCrumb.shSite.id})"
+						ui-sref="content.children({objectId: shPostWithBreadCrumb.shSite.id})"
 						ui-sref-opts="{reload:true}">{{shPostWithBreadCrumb.shSite.name}}
 							(Site)</a></li>
 					<li ng-repeat="breacrumbItem in shPostWithBreadCrumb.breadcrumb"><a
-						ui-sref="content.children.folder-children({folderId: breacrumbItem.id})"
+						ui-sref="content.children({objectId: breacrumbItem.id})"
 						ui-sref-opts="{reload:true}">{{breacrumbItem.name}}</a></li>
 				</ul>
 
