@@ -21,7 +21,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -45,18 +44,9 @@ import com.viglet.shiohara.api.ShJsonView;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
-import com.viglet.shiohara.persistence.model.post.ShPostAttr;
-import com.viglet.shiohara.persistence.model.post.type.ShPostType;
-import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.model.site.ShSite;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.object.ShObjectRepository;
-import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
-import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
-import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
-import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
-import com.viglet.shiohara.post.type.ShSystemPostType;
-import com.viglet.shiohara.post.type.ShSystemPostTypeAttr;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
 
 import io.swagger.annotations.Api;
@@ -72,18 +62,10 @@ public class ShStaticFileAPI {
 	@Autowired
 	private ShStaticFileUtils shStaticFileUtils;
 	@Autowired
-	private ShPostTypeRepository shPostTypeRepository;
-	@Autowired
-	private ShPostRepository shPostRepository;
-	@Autowired
-	private ShPostTypeAttrRepository shPostTypeAttrRepository;
-	@Autowired
-	private ShPostAttrRepository shPostAttrRepository;
-	@Autowired
 	private ShObjectRepository shObjectRepository;
 	@Autowired
 	private ResourceLoader resourceloader;
-
+	
 	@PostMapping("/upload")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShPost shStaticFileUpload(@RequestParam("file") MultipartFile file,
@@ -91,53 +73,8 @@ public class ShStaticFileAPI {
 			throws URISyntaxException, IOException {
 
 		ShFolder shFolder = shFolderRepository.findById(folderId).orElse(null);
-		File directoryPath = shStaticFileUtils.dirPath(shFolder);
-		ShPost shPost = new ShPost();
-		String filePath = null;
-		if (directoryPath != null) {
-			if (!directoryPath.exists()) {
-				directoryPath.mkdirs();
-			}
-
-			try {
-
-				filePath = file.getOriginalFilename();
-
-				String destFile = directoryPath.getAbsolutePath().concat("/" + filePath);
-
-				file.transferTo(new File(destFile));
-
-				if (createPost) {
-					// Post File
-					ShPostType shPostType = shPostTypeRepository.findByName(ShSystemPostType.FILE);
-
-					shPost.setDate(new Date());
-					shPost.setShPostType(shPostType);
-					shPost.setSummary(null);
-					shPost.setTitle(filePath);
-					shPost.setShFolder(shFolder);
-					shPost.setPublished(true);
-					shPostRepository.save(shPost);
-
-					ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType,
-							ShSystemPostTypeAttr.FILE);
-
-					ShPostAttr shPostAttr = new ShPostAttr();
-					shPostAttr.setShPost(shPost);
-					shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-					shPostAttr.setStrValue(shPost.getTitle());
-					shPostAttr.setType(1);
-
-					shPostAttrRepository.save(shPostAttr);
-
-				} else {
-					shPost.setTitle(filePath);
-				}
-			} catch (IOException e) {
-				logger.error("shStaticFileUploadException", e);
-			}
-		}
-		return shPost;
+		
+		return shStaticFileUtils.createFilePost(file, file.getOriginalFilename(), shFolder, createPost);
 	}
 
 	@RequestMapping("/{id}/thumbnail")

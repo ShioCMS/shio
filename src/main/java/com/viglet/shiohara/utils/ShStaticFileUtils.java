@@ -18,19 +18,43 @@
 package com.viglet.shiohara.utils;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Date;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.post.ShPost;
+import com.viglet.shiohara.persistence.model.post.ShPostAttr;
+import com.viglet.shiohara.persistence.model.post.type.ShPostType;
+import com.viglet.shiohara.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shiohara.persistence.model.site.ShSite;
+import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
+import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
+import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeAttrRepository;
+import com.viglet.shiohara.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shiohara.post.type.ShSystemPostType;
+import com.viglet.shiohara.post.type.ShSystemPostTypeAttr;
 
 @Component
 public class ShStaticFileUtils {
+	private static final Log logger = LogFactory.getLog(ShStaticFileUtils.class);
 	@Autowired
 	private ShFolderUtils shFolderUtils;
+	@Autowired
+	private ShStaticFileUtils shStaticFileUtils;
+	@Autowired
+	private ShPostTypeRepository shPostTypeRepository;
+	@Autowired
+	private ShPostRepository shPostRepository;
+	@Autowired
+	private ShPostTypeAttrRepository shPostTypeAttrRepository;
+	@Autowired
+	private ShPostAttrRepository shPostAttrRepository;
 
 	private String fileSourceBase = File.separator + "store" + File.separator + "file_source";
 
@@ -98,5 +122,52 @@ public class ShStaticFileUtils {
 
 	public String getFileSourceBase() {
 		return fileSourceBase;
+	}
+
+	public ShPost createFilePost(MultipartFile file, String fileName, ShFolder shFolder, boolean createPost) {
+		File directoryPath = shStaticFileUtils.dirPath(shFolder);
+		ShPost shPost = new ShPost();
+		if (directoryPath != null) {
+			if (!directoryPath.exists()) {
+				directoryPath.mkdirs();
+			}
+
+			try {
+				
+				String destFile = directoryPath.getAbsolutePath().concat("/" + fileName);
+
+				file.transferTo(new File(destFile));
+
+				if (createPost) {
+					// Post File
+					ShPostType shPostType = shPostTypeRepository.findByName(ShSystemPostType.FILE);
+
+					shPost.setDate(new Date());
+					shPost.setShPostType(shPostType);
+					shPost.setSummary(null);
+					shPost.setTitle(fileName);
+					shPost.setShFolder(shFolder);
+					shPost.setPublished(true);
+					shPostRepository.save(shPost);
+
+					ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType,
+							ShSystemPostTypeAttr.FILE);
+
+					ShPostAttr shPostAttr = new ShPostAttr();
+					shPostAttr.setShPost(shPost);
+					shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+					shPostAttr.setStrValue(shPost.getTitle());
+					shPostAttr.setType(1);
+
+					shPostAttrRepository.save(shPostAttr);
+
+				} else {
+					shPost.setTitle(fileName);
+				}
+			} catch (IOException e) {
+				logger.error("shStaticFileUploadException", e);
+			}
+		}
+		return shPost;
 	}
 }

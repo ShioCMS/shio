@@ -167,6 +167,10 @@ dependencies {
 	// Thumbnailator
     compile group: 'net.coobird', name: 'thumbnailator', version: '0.4.8'
 	
+	// Tika
+    compile group: 'org.apache.tika', name: 'tika-core', version:'1.5'
+    compile group: 'org.apache.tika', name: 'tika-parsers', version:'1.5'
+    
 	// Javadoc - Need this package
 	compile 'javax.interceptor:javax.interceptor-api:1.2.2'
 	
