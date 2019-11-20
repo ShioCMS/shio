@@ -69,7 +69,7 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
                 else {
                     return "Published";
                 }
-            }        
+            }
         }
         $scope.uploadFiles = function (folderId) {
             var modalInstance = shStaticFileUploadFactory.modalUploadFiles(folderId);
@@ -184,7 +184,7 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
                 $scope.loadedObjectList = true;
             }));
         }
-                
+
         $scope.processResponse = function (response) {
             $scope.shFolders = response.data.shFolders;
             $scope.shFolders = $filter('orderBy')($scope.shFolders, 'position');
@@ -284,9 +284,15 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
             $scope.objectsCopyDialog(objectGlobalIds);
         }
 
-        $scope.importFromProvider = function (objectGlobalIds) {
+        $scope.importFromProvider = function (folderId) {
             var modalInstance = ShDialogImportFromProvider.dialog(2000, "shFolder");
-            modalInstance.result.then(function (shObjectSelected) {            
+            modalInstance.result.then(function (providerItem) {
+                console.log(providerItem);
+                $http.post(shAPIServerService.get().concat("/v2/provider/otds/import/" + providerItem.id + "/to/" + folderId)).then(function (response) {
+                    var shPost = response.data;
+                    $scope.shPosts.push(shPost);
+                    Notification.warning(shPost.title + " Asset was imported.");
+                });
             }, function () {
                 // Selected CANCEL
             });

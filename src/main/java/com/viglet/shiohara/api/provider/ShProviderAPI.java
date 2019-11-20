@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -57,7 +58,7 @@ public class ShProviderAPI {
 		shOTCSProvider.init("http://localhost/OTCS/cs.exe", "admin", "admin");
 	}
 
-	@GetMapping("/{folderId}/import/{providerId}/{providerItemId}")
+	@PostMapping("/{providerId}/import/{providerItemId}/to/{folderId}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShPost shProviderImportItem(@PathVariable String folderId, @PathVariable String providerId,
 			@PathVariable int providerItemId) {
