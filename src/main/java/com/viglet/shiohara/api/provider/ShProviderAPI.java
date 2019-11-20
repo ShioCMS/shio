@@ -1,16 +1,22 @@
 package com.viglet.shiohara.api.provider;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
@@ -29,9 +35,31 @@ import io.swagger.annotations.Api;
 @RequestMapping("/api/v2/provider")
 @Api(tags = "Provider", description = "Provider API")
 public class ShProviderAPI {
-
+	private static final Log logger = LogFactory.getLog(ShProviderAPI.class);
 	@Autowired
 	private ShOTCSProvider shOTCSProvider;
+
+	@GetMapping("/{id}/download")
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
+	public StreamingResponseBody shProviderDownloadItem(@PathVariable int id) {
+		shOTCSProvider.init("http://localhost/OTCS/cs.exe", "admin", "admin");
+
+		InputStream is = shOTCSProvider.getDownload(id);
+
+		return new StreamingResponseBody() {
+			@Override
+			public void writeTo(java.io.OutputStream output) throws IOException {
+
+				try {
+					IOUtils.copy(is, output);
+				} catch (IOException ex) {
+					logger.error("shProviderDownloadItemIOException", ex);
+				} catch (Exception e) {
+					logger.error("shProviderDownloadItemtException", e);
+				}
+			}
+		};
+	}
 
 	@GetMapping("/{id}/list")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })

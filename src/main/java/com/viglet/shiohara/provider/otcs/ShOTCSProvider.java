@@ -1,6 +1,7 @@
 package com.viglet.shiohara.provider.otcs;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -126,5 +127,26 @@ public class ShOTCSProvider {
 			logger.error("rootFolder IOException: ", e);
 		}
 		return sOTCSTicketBean;
+	}
+
+	public InputStream getDownload(int id) {
+		ShOTCSTicketBean sOTCSTicketBean = this.otcsAuth();
+		InputStream inputStream = null;
+		try {
+			HttpGet httpGet = new HttpGet(String.format("%s/api/v2/nodes/%d/content", this.baseURL, id));
+			httpGet.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
+			httpGet.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString());
+			httpGet.setHeader(OTCS_TICKET, sOTCSTicketBean.getTicket());
+			HttpResponse response = httpClient.execute(httpGet);
+			inputStream = response.getEntity().getContent();
+		} catch (UnsupportedOperationException e) {
+			logger.error("rootFolder UnsupportedOperationException: ", e);
+			e.printStackTrace();
+		} catch (IOException e) {
+			logger.error("rootFolder IOException: ", e);
+		}
+
+		return inputStream;
+
 	}
 }
