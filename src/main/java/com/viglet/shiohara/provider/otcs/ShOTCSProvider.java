@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.net.HttpHeaders;
 import com.viglet.shiohara.provider.otcs.bean.folder.ShOTCSFolderBean;
+import com.viglet.shiohara.provider.otcs.bean.object.ShOTCSObjectBean;
 import com.viglet.shiohara.provider.otcs.bean.ticket.ShOTCSTicketBean;
 
 import org.apache.commons.logging.Log;
@@ -52,12 +53,17 @@ public class ShOTCSProvider {
 		this.password = password;
 	}
 
-	public ShOTCSFolderBean rootFolder() {
+	public ShOTCSFolderBean getRootFolder() {
+
+		return this.getFolder(2000);
+	}
+
+	public ShOTCSFolderBean getFolder(int id) {
 		ShOTCSTicketBean sOTCSTicketBean = this.otcsAuth();
 
 		ShOTCSFolderBean shOTCSFolderBean = null;
 		try {
-			HttpGet httpGet = new HttpGet(String.format("%s/api/v2/nodes/2000/nodes", this.baseURL));
+			HttpGet httpGet = new HttpGet(String.format("%s/api/v2/nodes/%d/nodes", this.baseURL, id));
 			httpGet.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
 			httpGet.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString());
 			httpGet.setHeader(OTCS_TICKET, sOTCSTicketBean.getTicket());
@@ -72,6 +78,28 @@ public class ShOTCSProvider {
 		}
 
 		return shOTCSFolderBean;
+	}
+
+	public ShOTCSObjectBean getObject(int id) {
+		ShOTCSTicketBean sOTCSTicketBean = this.otcsAuth();
+
+		ShOTCSObjectBean shOTCSObjetBean = null;
+		try {
+			HttpGet httpGet = new HttpGet(String.format("%s/api/v2/nodes/%d", this.baseURL, id));
+			httpGet.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
+			httpGet.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString());
+			httpGet.setHeader(OTCS_TICKET, sOTCSTicketBean.getTicket());
+			HttpResponse response = httpClient.execute(httpGet);
+			shOTCSObjetBean = objectMapper.readValue(responseHandler.handleResponse(response), ShOTCSObjectBean.class);
+
+		} catch (UnsupportedOperationException e) {
+			logger.error("rootFolder UnsupportedOperationException: ", e);
+			e.printStackTrace();
+		} catch (IOException e) {
+			logger.error("rootFolder IOException: ", e);
+		}
+
+		return shOTCSObjetBean;
 	}
 
 	private ShOTCSTicketBean otcsAuth() {

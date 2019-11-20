@@ -1,8 +1,12 @@
 package com.viglet.shiohara.provider.otcs.bean.collection;
 
+import com.viglet.shiohara.provider.otcs.bean.link.ShOTCSLinksBean;
+
 public class ShOTCSPagingBean {
 
 	private int limit;
+	
+	private ShOTCSLinksBean links;
 	
 	private int page;
 	
@@ -20,6 +24,14 @@ public class ShOTCSPagingBean {
 
 	public void setLimit(int limit) {
 		this.limit = limit;
+	}
+
+	public ShOTCSLinksBean getLinks() {
+		return links;
+	}
+
+	public void setLinks(ShOTCSLinksBean links) {
+		this.links = links;
 	}
 
 	public int getPage() {

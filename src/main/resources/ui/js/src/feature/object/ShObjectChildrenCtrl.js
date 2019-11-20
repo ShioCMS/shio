@@ -11,6 +11,7 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
     , "shFolderFactory"
     , "shPostFactory"
     , "ShDialogSelectObject"
+    , "ShDialogImportFromProvider"
     , "ShDialogDeleteFactory"
     , "shPostResource"
     , "shFolderResource"
@@ -22,7 +23,7 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
     , "shSiteFactory"
     , "focus"
     , "shStaticFileUploadFactory"
-    , function ($scope, $state, $stateParams, $rootScope, $translate, $http, $window, shAPIServerService, vigLocale, shFolderFactory, shPostFactory, ShDialogSelectObject, ShDialogDeleteFactory, shPostResource, shFolderResource, $filter, Notification, moment, shUserResource, shPostTypeResource, shSiteFactory, focus, shStaticFileUploadFactory) {
+    , function ($scope, $state, $stateParams, $rootScope, $translate, $http, $window, shAPIServerService, vigLocale, shFolderFactory, shPostFactory, ShDialogSelectObject, ShDialogImportFromProvider, ShDialogDeleteFactory, shPostResource, shFolderResource, $filter, Notification, moment, shUserResource, shPostTypeResource, shSiteFactory, focus, shStaticFileUploadFactory) {
         $scope.loadedObjectList = false;
         $scope.objectId = $stateParams.objectId;
         $scope.vigLanguage = vigLocale.getLocale().substring(0, 2);
@@ -282,6 +283,15 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
             objectGlobalIds.push(shObject.id);
             $scope.objectsCopyDialog(objectGlobalIds);
         }
+
+        $scope.importFromProvider = function (objectGlobalIds) {
+            var modalInstance = ShDialogImportFromProvider.dialog(2000, "shFolder");
+            modalInstance.result.then(function (shObjectSelected) {            
+            }, function () {
+                // Selected CANCEL
+            });
+        }
+
         $scope.objectsCopyDialog = function (objectGlobalIds) {
             var modalInstance = ShDialogSelectObject.dialog($scope.objectId, "shFolder");
             modalInstance.result.then(function (shObjectSelected) {

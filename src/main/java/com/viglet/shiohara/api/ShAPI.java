@@ -17,13 +17,10 @@
 
 package com.viglet.shiohara.api;
 
-import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.viglet.shiohara.provider.otcs.ShOTCSProvider;
 
 import io.swagger.annotations.Api;
 
@@ -34,19 +31,13 @@ public class ShAPI {
 
 	@Autowired
 	private ShAPIBean shAPIBean;
-	@Autowired
-	private ShOTCSProvider shOTCSProvider;
+	
 	@GetMapping
-	public ShAPIBean shApiInfo() throws JSONException {
+	public ShAPIBean shApiInfo() {
 
 		shAPIBean.setProduct("Viglet Shiohara");
 
 		return shAPIBean;
 	}
 	
-	@GetMapping("/test")
-	public void shApiTest() {
-		shOTCSProvider.init("http://localhost/OTCS/cs.exe", "admin", "admin");
-		System.out.println(shOTCSProvider.rootFolder().getCollection().getPaging().getLimit());
-	}
 }

@@ -2,6 +2,7 @@ package com.viglet.shiohara.provider.otcs.bean.result;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class ShOTCSPropertiesBean {
 
@@ -19,7 +20,7 @@ public class ShOTCSPropertiesBean {
 
 	private String description;
 
-	private ShOTCSMultilingualBean description_multilingual;
+	private Map<String, Object> description_multilingual;
 
 	private Date external_create_date;
 
@@ -49,7 +50,7 @@ public class ShOTCSPropertiesBean {
 
 	private String name;
 
-	private ShOTCSMultilingualBean name_multilingual;
+	private Map<String, Object> name_multilingual;
 
 	private String owner;
 
@@ -131,11 +132,11 @@ public class ShOTCSPropertiesBean {
 		this.description = description;
 	}
 
-	public ShOTCSMultilingualBean getDescription_multilingual() {
+	public Map<String, Object> getDescription_multilingual() {
 		return description_multilingual;
 	}
 
-	public void setDescription_multilingual(ShOTCSMultilingualBean description_multilingual) {
+	public void setDescription_multilingual(Map<String, Object> description_multilingual) {
 		this.description_multilingual = description_multilingual;
 	}
 
@@ -227,11 +228,11 @@ public class ShOTCSPropertiesBean {
 		this.name = name;
 	}
 
-	public ShOTCSMultilingualBean getName_multilingual() {
+	public Map<String, Object> getName_multilingual() {
 		return name_multilingual;
 	}
 
-	public void setName_multilingual(ShOTCSMultilingualBean name_multilingual) {
+	public void setName_multilingual(Map<String, Object> name_multilingual) {
 		this.name_multilingual = name_multilingual;
 	}
 

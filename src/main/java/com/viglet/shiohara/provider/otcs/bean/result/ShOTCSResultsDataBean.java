@@ -5,12 +5,14 @@ import java.util.Map;
 
 public class ShOTCSResultsDataBean {
 
-	private String[] categories;
+	private List<Map<String, Object>> categories;
 
-	private String[] categories_inheritance;
+	private List<Map<String, Boolean>> categories_inheritance;
 
 	private List<ShOTCSResultsDataColumnsBean> columns;
 
+	private List<String> followups;
+	
 	private List<ShOTCSNicknameBean> nicknames;
 
 	private List<ShOTCSPermissionsBean> permissions;
@@ -21,21 +23,22 @@ public class ShOTCSResultsDataBean {
 
 	private Map<String, String> systemattributes;
 
-	private List<ShOTCSVersionsBean> versions;
+	private List<ShOTCSVersionsBean> versions;	
 
-	public String[] getCategories() {
+
+	public List<Map<String, Object>> getCategories() {
 		return categories;
 	}
 
-	public void setCategories(String[] categories) {
+	public void setCategories(List<Map<String, Object>> categories) {
 		this.categories = categories;
 	}
 
-	public String[] getCategories_inheritance() {
+	public List<Map<String, Boolean>> getCategories_inheritance() {
 		return categories_inheritance;
 	}
 
-	public void setCategories_inheritance(String[] categories_inheritance) {
+	public void setCategories_inheritance(List<Map<String, Boolean>> categories_inheritance) {
 		this.categories_inheritance = categories_inheritance;
 	}
 
@@ -93,6 +96,14 @@ public class ShOTCSResultsDataBean {
 
 	public void setVersions(List<ShOTCSVersionsBean> versions) {
 		this.versions = versions;
+	}
+
+	public List<String> getFollowups() {
+		return followups;
+	}
+
+	public void setFollowups(List<String> followups) {
+		this.followups = followups;
 	}
 
 }
