@@ -3,6 +3,7 @@ package com.viglet.shiohara.provider.otcs;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.http.client.HttpClient;
@@ -19,10 +20,16 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.net.HttpHeaders;
+import com.viglet.shiohara.provider.ShProvider;
+import com.viglet.shiohara.provider.ShProviderBreadcrumbItem;
+import com.viglet.shiohara.provider.ShProviderFolder;
+import com.viglet.shiohara.provider.ShProviderPost;
 import com.viglet.shiohara.provider.otcs.bean.folder.ShOTCSFolderBean;
 import com.viglet.shiohara.provider.otcs.bean.object.ShOTCSObjectBean;
+import com.viglet.shiohara.provider.otcs.bean.result.ShOTCSResultsBean;
 import com.viglet.shiohara.provider.otcs.bean.ticket.ShOTCSTicketBean;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.Consts;
@@ -30,11 +37,13 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 
 @Component
-public class ShOTCSProvider {
+public class ShOTCSProvider implements ShProvider {
 
 	private static final Log logger = LogFactory.getLog(ShOTCSProvider.class);
 
 	private final static String OTCS_TICKET = "OTCSTicket";
+	
+	private final static String PROVIDER_NAME = "OTCS";
 
 	private ObjectMapper objectMapper = new ObjectMapper().enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
 
@@ -54,17 +63,17 @@ public class ShOTCSProvider {
 		this.password = password;
 	}
 
-	public ShOTCSFolderBean getRootFolder() {
+	public ShProviderFolder getRootFolder() {
 
-		return this.getFolder(2000);
+		return this.getFolder("200");
 	}
 
-	public ShOTCSFolderBean getFolder(int id) {
+	public ShProviderFolder getFolder(String id) {
 		ShOTCSTicketBean sOTCSTicketBean = this.otcsAuth();
 
 		ShOTCSFolderBean shOTCSFolderBean = null;
 		try {
-			HttpGet httpGet = new HttpGet(String.format("%s/api/v2/nodes/%d/nodes", this.baseURL, id));
+			HttpGet httpGet = new HttpGet(String.format("%s/api/v2/nodes/%s/nodes", this.baseURL, id));
 			httpGet.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
 			httpGet.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString());
 			httpGet.setHeader(OTCS_TICKET, sOTCSTicketBean.getTicket());
@@ -78,15 +87,64 @@ public class ShOTCSProvider {
 			logger.error("rootFolder IOException: ", e);
 		}
 
-		return shOTCSFolderBean;
+		ShProviderPost shProviderPost = this.getObject(id);
+		ShProviderFolder shProviderFolder = new ShProviderFolder();
+
+		shProviderFolder.setId(id);
+		shProviderFolder.setName(shProviderPost.getTitle());
+		shProviderFolder.setBreadcrumb(this.getBreadcrumb(id));
+		shProviderFolder.setProviderName(PROVIDER_NAME);
+		shProviderFolder.setParentId(shProviderPost.getParentId());
+		
+		for (ShOTCSResultsBean results : shOTCSFolderBean.getResults()) {
+
+			if (results.getData().getProperties().getType_name().equals("Folder")) {
+
+				String resultId = Integer.toString(results.getData().getProperties().getId());
+
+				String resultName = results.getData().getProperties().getName();
+
+				Date resultDate = results.getData().getProperties().getCreate_date();
+
+				ShProviderFolder shProviderFolderChild = new ShProviderFolder();
+				shProviderFolderChild.setId(resultId);
+				shProviderFolderChild.setName(resultName);
+				shProviderFolderChild.setDate(resultDate);
+
+				shProviderFolder.getFolders().add(shProviderFolderChild);
+			} else {
+
+				String postId = Integer.toString(results.getData().getProperties().getId());
+
+				String postTitle = results.getData().getProperties().getName();
+
+				Date postDate = results.getData().getProperties().getCreate_date();
+
+				String postType = results.getData().getProperties().getType_name();
+
+				ShProviderPost shProviderPostChild = new ShProviderPost();
+
+				shProviderPostChild.setId(postId);
+				shProviderPostChild.setTitle(postTitle);
+				shProviderPostChild.setDate(postDate);
+				shProviderPostChild.setType(postType);
+
+				shProviderFolder.getPosts().add(shProviderPostChild);
+
+			}
+		}
+
+		return shProviderFolder;
 	}
 
-	public ShOTCSObjectBean getObject(int id) {
+	public ShProviderPost getObject(String id) {
 		ShOTCSTicketBean sOTCSTicketBean = this.otcsAuth();
 
 		ShOTCSObjectBean shOTCSObjetBean = null;
 		try {
-			HttpGet httpGet = new HttpGet(String.format("%s/api/v2/nodes/%d", this.baseURL, id));
+			System.out.println("AA: " + String.format("%s/api/v2/nodes/%s", this.baseURL, id));
+			System.out.println("BB: " + sOTCSTicketBean.getTicket());
+			HttpGet httpGet = new HttpGet(String.format("%s/api/v2/nodes/%s", this.baseURL, id));
 			httpGet.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
 			httpGet.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString());
 			httpGet.setHeader(OTCS_TICKET, sOTCSTicketBean.getTicket());
@@ -100,7 +158,11 @@ public class ShOTCSProvider {
 			logger.error("rootFolder IOException: ", e);
 		}
 
-		return shOTCSObjetBean;
+		ShProviderPost shProviderPost = new ShProviderPost();
+		shProviderPost.setId(id);
+		shProviderPost.setTitle(shOTCSObjetBean.getResults().getData().getProperties().getName());
+		shProviderPost.setParentId(Integer.toString(shOTCSObjetBean.getResults().getData().getProperties().getParent_id()));
+		return shProviderPost;
 	}
 
 	private ShOTCSTicketBean otcsAuth() {
@@ -129,11 +191,11 @@ public class ShOTCSProvider {
 		return sOTCSTicketBean;
 	}
 
-	public InputStream getDownload(int id) {
+	public InputStream getDownload(String id) {
 		ShOTCSTicketBean sOTCSTicketBean = this.otcsAuth();
 		InputStream inputStream = null;
 		try {
-			HttpGet httpGet = new HttpGet(String.format("%s/api/v2/nodes/%d/content", this.baseURL, id));
+			HttpGet httpGet = new HttpGet(String.format("%s/api/v2/nodes/%s/content", this.baseURL, id));
 			httpGet.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
 			httpGet.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString());
 			httpGet.setHeader(OTCS_TICKET, sOTCSTicketBean.getTicket());
@@ -148,5 +210,26 @@ public class ShOTCSProvider {
 
 		return inputStream;
 
+	}
+
+	private List<ShProviderBreadcrumbItem> getBreadcrumb(String id) {
+		ArrayList<ShProviderBreadcrumbItem> breadcrumb = new ArrayList<>();
+		
+		this.getParentBreadcrumbItem(id, breadcrumb);
+		
+		return breadcrumb;
+	}
+
+	private void getParentBreadcrumbItem(String id, ArrayList<ShProviderBreadcrumbItem> breadcrumb) {
+		if (!StringUtils.isBlank(id) && Integer.parseInt(id) > 0) {
+			ShProviderPost shProviderPost = this.getObject(id);
+
+			ShProviderBreadcrumbItem shProviderBreadcrumbItem = new ShProviderBreadcrumbItem();
+			shProviderBreadcrumbItem.setId(shProviderPost.getId());
+			shProviderBreadcrumbItem.setTitle(shProviderPost.getTitle());
+
+			this.getParentBreadcrumbItem(shProviderPost.getParentId(), breadcrumb);
+			breadcrumb.add(shProviderBreadcrumbItem);
+		}
 	}
 }

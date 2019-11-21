@@ -32,11 +32,8 @@ shioharaApp.controller('ShImportFromProviderCtrl', [
 			$ctrl.shObjectSelected = null;
 			$uibModalInstance.dismiss('cancel');
 		};
-		$scope.shSite = null;
-		$scope.shFolders = null;
-		$scope.shPosts = null;
-		$scope.breadcrumb = null;
-		$scope.isSiteList = false;
+	
+		$scope.isProviderList = false;
 		$scope.currentFolderId = null;
 		$ctrl.orderAsc = true;
 		$ctrl.orderBy = 'name';
@@ -91,26 +88,19 @@ shioharaApp.controller('ShImportFromProviderCtrl', [
 			$scope.$evalAsync($http.get(
 				shAPIServerService.get().concat(objectListURL))
 				.then(function (response) {
-					$scope.shSites = null;
-					$scope.shFolders = response.data.shFolders;
-					$scope.shPosts = response.data.shPosts;
-					$scope.breadcrumb = response.data.breadcrumb;
-					$scope.shSite = response.data.shSite;
+					$ctrl.providerItem = response.data;
 				}));
 		}
 
-		$scope.siteList = function () {
-			$scope.isSiteList = true;
+		$scope.providerList = function () {
+			$scope.isProviderList = true;
 			$ctrl.enableInsertButton = false;
 			$ctrl.shPostSelected = null;
 			$scope.$evalAsync($http.get(
 				shAPIServerService.get().concat(
-					"/v2/site/"))
+					"/v2/provider/"))
 				.then(function (response) {
-					$scope.shSites = response.data;
-					$scope.shFolders = null;
-					$scope.shPosts = null;
-					$scope.breadcrumb = null;
+					$ctrl.providers = response.data;
 				}));
 		}
 		$scope.selectedObject = function (shObject) {
@@ -118,33 +108,6 @@ shioharaApp.controller('ShImportFromProviderCtrl', [
 			$ctrl.enableInsertButton = true;
 		}
 
-		$scope.uploadFile = function (file, errFiles) {
-			$scope.f = file;
-			$scope.errFile = errFiles && errFiles[0];
-			if (file) {
-				file.upload = Upload.upload({
-					url: shAPIServerService.get().concat('/v2/staticfile/upload'),
-					data: {
-						file: file,
-						folderId: $scope.currentFolderId,
-						createPost: true
-					}
-				});
-				file.upload.then(function (response) {
-					$timeout(function () {
-						console.log("Adicionado o Arquivo");
-						$scope.shPosts.unshift(response.data);
-						file.result = response.data;
-					});
-				}, function (response) {
-					if (response.status > 0)
-						$scope.errorMsg = response.status + ': ' + response.data;
-				}, function (evt) {
-					file.progress = Math.min(100, parseInt(100.0 *
-						evt.loaded / evt.total));
-				});
-			}
-		}
 		// END Functions
 
 		$scope.objectList(objectId);
