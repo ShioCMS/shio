@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2016-2019 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.viglet.shiohara.provider.otcs;
 
 import java.io.IOException;
@@ -5,6 +22,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
@@ -15,7 +33,6 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,14 +53,15 @@ import org.apache.http.Consts;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 
-@Component
 public class ShOTCSProvider implements ShProvider {
 
 	private static final Log logger = LogFactory.getLog(ShOTCSProvider.class);
-
-	private final static String OTCS_TICKET = "OTCSTicket";
-	
-	private final static String PROVIDER_NAME = "OTCS";
+	private static final String OTCS_TICKET = "OTCSTicket";
+	private static final String ROOT_FOLDER_ID = "2000";
+	private static final String PROVIDER_NAME = "OTCS";
+	private static final String URL = "URL";
+	private static final String USERNAME = "USERNAME";
+	private static final String PASSWORD = "PASSWORD";
 
 	private ObjectMapper objectMapper = new ObjectMapper().enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
 
@@ -57,15 +75,15 @@ public class ShOTCSProvider implements ShProvider {
 
 	private String password = null;
 
-	public void init(String baseURL, String username, String password) {
-		this.baseURL = baseURL;
-		this.username = username;
-		this.password = password;
+	public void init(Map<String, String> variables) {
+		this.baseURL = variables.get(URL);
+		this.username = variables.get(USERNAME);
+		this.password = variables.get(PASSWORD);
 	}
 
 	public ShProviderFolder getRootFolder() {
 
-		return this.getFolder("200");
+		return this.getFolder(ROOT_FOLDER_ID);
 	}
 
 	public ShProviderFolder getFolder(String id) {
@@ -95,7 +113,7 @@ public class ShOTCSProvider implements ShProvider {
 		shProviderFolder.setBreadcrumb(this.getBreadcrumb(id));
 		shProviderFolder.setProviderName(PROVIDER_NAME);
 		shProviderFolder.setParentId(shProviderPost.getParentId());
-		
+
 		for (ShOTCSResultsBean results : shOTCSFolderBean.getResults()) {
 
 			if (results.getData().getProperties().getType_name().equals("Folder")) {
@@ -142,8 +160,6 @@ public class ShOTCSProvider implements ShProvider {
 
 		ShOTCSObjectBean shOTCSObjetBean = null;
 		try {
-			System.out.println("AA: " + String.format("%s/api/v2/nodes/%s", this.baseURL, id));
-			System.out.println("BB: " + sOTCSTicketBean.getTicket());
 			HttpGet httpGet = new HttpGet(String.format("%s/api/v2/nodes/%s", this.baseURL, id));
 			httpGet.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
 			httpGet.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString());
@@ -152,16 +168,17 @@ public class ShOTCSProvider implements ShProvider {
 			shOTCSObjetBean = objectMapper.readValue(responseHandler.handleResponse(response), ShOTCSObjectBean.class);
 
 		} catch (UnsupportedOperationException e) {
-			logger.error("rootFolder UnsupportedOperationException: ", e);
+			logger.error("getObject UnsupportedOperationException: ", e);
 			e.printStackTrace();
 		} catch (IOException e) {
-			logger.error("rootFolder IOException: ", e);
+			logger.error("getObject IOException: ", e);
 		}
 
 		ShProviderPost shProviderPost = new ShProviderPost();
 		shProviderPost.setId(id);
 		shProviderPost.setTitle(shOTCSObjetBean.getResults().getData().getProperties().getName());
-		shProviderPost.setParentId(Integer.toString(shOTCSObjetBean.getResults().getData().getProperties().getParent_id()));
+		shProviderPost
+				.setParentId(Integer.toString(shOTCSObjetBean.getResults().getData().getProperties().getParent_id()));
 		return shProviderPost;
 	}
 
@@ -214,9 +231,9 @@ public class ShOTCSProvider implements ShProvider {
 
 	private List<ShProviderBreadcrumbItem> getBreadcrumb(String id) {
 		ArrayList<ShProviderBreadcrumbItem> breadcrumb = new ArrayList<>();
-		
+
 		this.getParentBreadcrumbItem(id, breadcrumb);
-		
+
 		return breadcrumb;
 	}
 

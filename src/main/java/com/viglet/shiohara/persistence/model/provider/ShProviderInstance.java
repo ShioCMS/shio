@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2019 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,22 +15,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.viglet.shiohara.persistence.model.system;
+package com.viglet.shiohara.persistence.model.provider;
 
-import java.io.Serializable;
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 
+import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.GenericGenerator;
 
 /**
- * The persistent class for the vigNLPSolutions database table.
+ * The persistent class for the ShProviderVendor database table.
  * 
  */
 @Entity
-@Table(name = "shConfigVar")
-@NamedQuery(name = "ShConfigVar.findAll", query = "SELECT cv FROM ShConfigVar cv")
-public class ShConfigVar implements Serializable {
-	private static final long serialVersionUID = 1L;
+@NamedQuery(name = "ShProviderInstance.findAll", query = "SELECT pi FROM ShProviderInstance pi")
+public class ShProviderInstance {
 
 	@Id
 	@GenericGenerator(name = "UUID", strategy = "com.viglet.shiohara.jpa.ShUUIDGenerator")
@@ -39,14 +43,14 @@ public class ShConfigVar implements Serializable {
 	@Column(name = "id", updatable = false, nullable = false)
 	private String id;
 
-	@Column(nullable = true, length = 255)
-	private String path;
-
-	@Column(nullable = true, length = 255)
 	private String name;
-	
-	@Column(nullable = true, length = 255)
-	private String value;
+
+	private String description;
+
+	@ManyToOne
+	@JoinColumn(name = "vendor_id")
+	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
+	private ShProviderVendor shProviderVendor;
 
 	public String getId() {
 		return id;
@@ -54,10 +58,6 @@ public class ShConfigVar implements Serializable {
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	public String getPath() {
-		return path;
 	}
 
 	public String getName() {
@@ -68,17 +68,19 @@ public class ShConfigVar implements Serializable {
 		this.name = name;
 	}
 
-	public void setPath(String path) {
-		this.path = path;
+	public String getDescription() {
+		return description;
 	}
 
-	public String getValue() {
-		return value;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
-	public void setValue(String value) {
-		this.value = value;
+	public ShProviderVendor getShProviderVendor() {
+		return shProviderVendor;
 	}
 
-
+	public void setShProviderVendor(ShProviderVendor shProviderVendor) {
+		this.shProviderVendor = shProviderVendor;
+	}
 }

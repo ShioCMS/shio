@@ -1,10 +1,11 @@
 package com.viglet.shiohara.provider;
 
 import java.io.InputStream;
+import java.util.Map;
 
 public interface ShProvider {
 
-	public void init(String baseURL, String username, String password);
+	public void init(Map<String, String> variables);
 
 	public ShProviderFolder getRootFolder();
 

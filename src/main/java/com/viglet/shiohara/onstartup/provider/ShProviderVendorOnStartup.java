@@ -15,41 +15,34 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.viglet.shiohara.onstartup.system;
+package com.viglet.shiohara.onstartup.provider;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.viglet.shiohara.persistence.model.system.ShConfigVar;
-import com.viglet.shiohara.persistence.repository.system.ShConfigVarRepository;
+import com.viglet.shiohara.persistence.model.provider.ShProviderVendor;
+import com.viglet.shiohara.persistence.repository.provider.ShProviderVendorRepository;
+import com.viglet.shiohara.provider.ShSystemProviderVendor;
 
 @Component
-public class ShConfigVarOnStartup {
-	public static final String FIRST_TIME_PATH = "/system";
-	public static final String FIRST_TIME_NAME = "FIRST_TIME";
-	
+public class ShProviderVendorOnStartup {
+
 	@Autowired
-	private ShConfigVarRepository shConfigVarRepository;
+	private ShProviderVendorRepository shProviderVendorRepository;
 
 	public void createDefaultRows() {
 
-		ShConfigVar shConfigVar = new ShConfigVar();
+		if (shProviderVendorRepository.findAll().isEmpty()) {
 
-		if (!shConfigVarRepository.existsByPathAndName(FIRST_TIME_PATH, FIRST_TIME_NAME)) {
-
-			shConfigVar.setPath(FIRST_TIME_PATH);
-			shConfigVar.setName(FIRST_TIME_NAME);
-			shConfigVar.setValue("true");
-			shConfigVarRepository.save(shConfigVar);
-
-			shConfigVar = new ShConfigVar();
-		
-			shConfigVar.setPath("/email");
-			shConfigVar.setName("HOST");
-			shConfigVar.setValue("localhost");
-
-			shConfigVarRepository.save(shConfigVar);
+			ShProviderVendor shProviderVendor = new ShProviderVendor();
+			shProviderVendor.setId("OTCS");
+			shProviderVendor.setName(ShSystemProviderVendor.OTCS);
+			shProviderVendor.setDescription("OpenText Content Server");
+			shProviderVendor.setClassName("com.viglet.shiohara.provider.otcs.ShOTCSProvider");
+			shProviderVendor.setImplementationCode("template/provider/otcs/configuration.html");
+	
+			shProviderVendorRepository.save(shProviderVendor);
 		}
-	}
 
+	}
 }

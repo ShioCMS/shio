@@ -24,6 +24,8 @@ import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.onstartup.ecommerce.ShEcomPaymentTypeDefinitionOnStartup;
 import com.viglet.shiohara.onstartup.post.type.ShPostTypeOnStartup;
+import com.viglet.shiohara.onstartup.provider.ShProviderInstanceOnStartup;
+import com.viglet.shiohara.onstartup.provider.ShProviderVendorOnStartup;
 import com.viglet.shiohara.onstartup.site.ShSiteOnStartup;
 import com.viglet.shiohara.onstartup.system.ShConfigVarOnStartup;
 import com.viglet.shiohara.onstartup.system.ShLocaleOnStartup;
@@ -40,7 +42,7 @@ public class ShOnStartup implements ApplicationRunner {
 	@Autowired
 	private ShLocaleOnStartup shLocaleOnStartup;
 	@Autowired
-	private ShWidgetOnStartup shWidgetOnStartup;	
+	private ShWidgetOnStartup shWidgetOnStartup;
 	@Autowired
 	private ShPostTypeOnStartup shPostTypeOnStartup;
 	@Autowired
@@ -52,25 +54,31 @@ public class ShOnStartup implements ApplicationRunner {
 	@Autowired
 	private ShUserOnStartup shUserOnStartup;
 	@Autowired
+	private ShProviderVendorOnStartup shProviderVendorOnStartup;
+	@Autowired
+	private ShProviderInstanceOnStartup shProviderInstanceOnStartup;
+	@Autowired
 	private ShEcomPaymentTypeDefinitionOnStartup shEcomPaymentTypeDefinitionOnStartup;
-	
+
 	@Override
 	public void run(ApplicationArguments arg0) throws Exception {
-		final String FIRST_TIME = "FIRST_TIME";
-	
-		if (!shConfigVarRepository.findById(FIRST_TIME).isPresent()) {
-			
+
+		if (!shConfigVarRepository.existsByPathAndName(ShConfigVarOnStartup.FIRST_TIME_PATH,
+				ShConfigVarOnStartup.FIRST_TIME_NAME)) {
+
 			System.out.println("First Time Configuration ...");
 
-			shLocaleOnStartup.createDefaultRows();			
+			shLocaleOnStartup.createDefaultRows();
 			shWidgetOnStartup.createDefaultRows();
 			shPostTypeOnStartup.createDefaultRows();
 			shGroupOnStartup.createDefaultRows();
-			shUserOnStartup.createDefaultRows();			
+			shUserOnStartup.createDefaultRows();
+			shProviderVendorOnStartup.createDefaultRows();
+			shProviderInstanceOnStartup.createDefaultRows();
 			shConfigVarOnStartup.createDefaultRows();
 			shSiteOnStartup.createDefaultRows();
 			shEcomPaymentTypeDefinitionOnStartup.createDefaultRows();
-			
+
 			System.out.println("Configuration finished.");
 		}
 

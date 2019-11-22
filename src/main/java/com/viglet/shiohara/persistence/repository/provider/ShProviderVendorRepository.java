@@ -15,29 +15,27 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.viglet.shiohara.persistence.repository.system;
-
-import com.viglet.shiohara.persistence.model.system.ShConfigVar;
+package com.viglet.shiohara.persistence.repository.provider;
 
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 
-public interface ShConfigVarRepository extends JpaRepository<ShConfigVar, String> {
+import com.viglet.shiohara.persistence.model.provider.ShProviderVendor;
 
-	List<ShConfigVar> findAll();
-	
-	boolean existsByPathAndName(String path, String name);
-	
-	boolean existsByPath(String path);
+public interface ShProviderVendorRepository extends JpaRepository<ShProviderVendor, String> {
 
-	List<ShConfigVar> findByPath(String path);
-	
-	Optional<ShConfigVar> findById(String id);
+	List<ShProviderVendor> findAll();
+
+	Optional<ShProviderVendor> findById(String id);
 
 	@SuppressWarnings("unchecked")
-	ShConfigVar save(ShConfigVar turConfigVar);
+	ShProviderVendor save(ShProviderVendor shProviderVendor);
 
-	void delete(ShConfigVar turConfigVar);
+	@Modifying
+	@Query("delete from ShProviderVendor p where p.id = ?1")
+	void delete(String id);
 }
