@@ -47,7 +47,7 @@ public class ShProviderInstanceOnStartup {
 			ShProviderInstance shProviderInstance = new ShProviderInstance();
 			shProviderInstance.setName("Content Server");
 			shProviderInstance.setDescription("Content Server");
-			shProviderInstance.setShProviderVendor(shProviderVendorRepository.findById("OTCS").orElse(null));
+			shProviderInstance.setVendor(shProviderVendorRepository.findById("OTCS").orElse(null));
 
 			shProviderInstanceRepository.save(shProviderInstance);
 

@@ -19,6 +19,7 @@ package com.viglet.shiohara.api.provider;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
@@ -68,6 +69,12 @@ public class ShProviderAPI {
 	@Autowired
 	private ShProviderInstanceRepository shProviderInstanceRepository;
 
+	@GetMapping
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
+	public List<ShProviderInstance> shProviderInstanceListItem() {
+		return shProviderInstanceRepository.findAll();
+	}
+
 	private void initProvider(String providerInstanceId) {
 		ShProviderInstance shProviderInstance = shProviderInstanceRepository.findById(providerInstanceId).orElse(null);
 		if (shProviderInstance != null) {
@@ -75,8 +82,7 @@ public class ShProviderAPI {
 					.getVariablesFromPath(String.format("/provider/%s", providerInstanceId));
 
 			try {
-				shProvider = (ShProvider) Class.forName(shProviderInstance.getShProviderVendor().getClassName())
-						.newInstance();
+				shProvider = (ShProvider) Class.forName(shProviderInstance.getVendor().getClassName()).newInstance();
 			} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
 				logger.error("initProvider: ", e);
 			}
@@ -92,6 +98,7 @@ public class ShProviderAPI {
 		this.initProvider(providerInstanceId);
 
 		ShProviderPost shProviderPost = shProvider.getObject(providerItemId);
+
 		String fileName = shProviderPost.getTitle();
 		InputStream is = shProvider.getDownload(providerItemId);
 
@@ -124,9 +131,10 @@ public class ShProviderAPI {
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShProviderFolder shObjectListItem(@PathVariable String providerInstanceId, @PathVariable String id) {
 		this.initProvider(providerInstanceId);
+		if (id.equals("_root"))
+			return shProvider.getRootFolder();
+		else
+			return shProvider.getFolder(id);
 
-		ShProviderFolder shProviderFolder = shProvider.getFolder(id);
-
-		return shProviderFolder;
 	}
 }

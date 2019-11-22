@@ -1,8 +1,14 @@
 <div class="modal-header">
-	<h3 class="modal-title" id="modal-title">Select a Asset</h3>
+	<div class=pull-right ng-if="$ctrl.loadData">
+		<i class="fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom"></i>
+		<span class="sr-only">Loading...</span>
+	</div>
+
+	<div>
+		<h3 class="modal-title" id="modal-title">Select a Content</h3>
+	</div>
 </div>
-<div class="modal-body"
-	ng-include="'/template/provider/provider-explorer.html'"></div>
+<div class="modal-body" ng-include="'/template/provider/provider-explorer.html'"></div>
 <div class="modal-footer">
 	<button class="btn btn-default" ng-disabled="!$ctrl.enableInsertButton" type="button" ng-click="$ctrl.ok()"
 		ng-class="{'btn-viglet': $ctrl.enableInsertButton }">Insert</button>

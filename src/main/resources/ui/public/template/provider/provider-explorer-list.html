@@ -1,24 +1,7 @@
 <div class="row list-group" style="overflow-x: hidden;overflow-y: scroll;max-height: 400px;padding: 15px;">
 	<!--  Sites  -->
-	<a ng-repeat="provider in $ctrl.providerItem.providers | filter:$ctrl.shSearchFilter | orderBy:$ctrl.orderByFolderSelected"
-		class="list-group-item" ng-dblclick="objectList(provider.id)" ng-click="selectedObject(provider)" href
-		style="color: #337ab7;" ng-if="$ctrl.folderDoubleClick">
-		<div class="row">
-			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-				<i class="fa fa-sitemap fa-2x" aria-hidden="true"></i>
-			</div>
-			<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-				<div>{{provider.name}}</div>
-				<div><span am-time-ago="shFolder.date" style="color: gray"></span></div>
-			</div>
-			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-				<span class="label label-primary">Provider</span>
-			</div>
-		</div>
-
-	</a> <a ng-repeat="provider in $ctrl.providerItem.providers | filter:$ctrl.shSearchFilter | orderBy:$ctrl.orderByFolderSelected"
-		class="list-group-item" ng-click="objectList(provider.id)" href style="color: #337ab7;"
-		ng-if="$ctrl.folderDoubleClick == false">
+	<a ng-repeat="provider in $ctrl.providers | filter:$ctrl.shSearchFilter | orderBy:$ctrl.orderByFolderSelected"
+		class="list-group-item" ng-click="rootList(provider.id)" href style="color: #337ab7;">
 		<div class="row">
 			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
 				<i class="fa fa-folder-open fa-2x" aria-hidden="true"></i>
@@ -35,24 +18,7 @@
 	</a>
 	<!--  Folders  -->
 	<a ng-repeat="folder in $ctrl.providerItem.folders | filter:$ctrl.shSearchFilter | orderBy:$ctrl.orderByFolderSelected"
-		class="list-group-item" ng-dblclick="objectList(folder.id)" ng-click="selectedObject(folder)" href
-		style="color: #337ab7;" ng-if="$ctrl.folderDoubleClick">
-		<div class="row">
-			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-				<i class="fa fa-folder-open fa-2x" aria-hidden="true"></i>
-			</div>
-			<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-				<div>{{folder.name}}</div>
-				<div><span am-time-ago="shFolder.date" style="color: gray"></span></div>
-			</div>
-			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-				<span class="label label-primary">Folder</span>
-			</div>
-		</div>
-
-	</a> <a ng-repeat="folder in $ctrl.providerItem.folders | filter:$ctrl.shSearchFilter | orderBy:$ctrl.orderByFolderSelected"
-		class="list-group-item" ng-click="objectList(folder.id)" href style="color: #337ab7;"
-		ng-if="$ctrl.folderDoubleClick == false">
+		class="list-group-item" ng-click="objectList(folder.id)" href style="color: #337ab7;">
 		<div class="row">
 			<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
 				<i class="fa fa-folder-open fa-2x" aria-hidden="true"></i>

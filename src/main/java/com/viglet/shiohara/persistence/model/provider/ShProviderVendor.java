@@ -50,8 +50,8 @@ public class ShProviderVendor {
 	@Column(name = "implementation_code")
 	private String implementationCode;
 
-	@OneToMany(mappedBy = "shProviderVendor")
-	private List<ShProviderInstance> shProviderInstances;
+	@OneToMany(mappedBy = "vendor")
+	private List<ShProviderInstance> instances;
 
 	public String getId() {
 		return id;
@@ -93,12 +93,12 @@ public class ShProviderVendor {
 		this.implementationCode = implementationCode;
 	}
 
-	public List<ShProviderInstance> getShProviderInstances() {
-		return shProviderInstances;
+	public List<ShProviderInstance> getInstances() {
+		return instances;
 	}
 
-	public void setShProviderInstances(List<ShProviderInstance> shProviderInstances) {
-		this.shProviderInstances = shProviderInstances;
+	public void setInstances(List<ShProviderInstance> instances) {
+		this.instances = instances;
 	}
 
 }

@@ -39,8 +39,8 @@
 </div>
 <div>
 	<ul class="breadcrumb" style="margin-top: 0px; margin-bottom: 5px;">
-		<li><a ng-click="providerList()" ng-if="!isProviderList" href>Provider</a><a ng-if="isProviderList"
-				href>Provider</a></li>
+		<li><a ng-click="providerList()" ng-if="!isProviderList" href>Providers</a><a ng-if="isProviderList"
+				href>Providers</a></li>
 		<li ng-if="!isProviderList && $ctrl.providerItem.breadcrumb == null"><span>{{$ctrl.providerItem.providerName}}</span></li>
 		<li ng-if="!isProviderList" ng-repeat="breacrumbItem in $ctrl.providerItem.breadcrumb"
 			ng-class="{'active':$last}">

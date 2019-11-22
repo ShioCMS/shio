@@ -50,7 +50,7 @@ public class ShProviderInstance {
 	@ManyToOne
 	@JoinColumn(name = "vendor_id")
 	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
-	private ShProviderVendor shProviderVendor;
+	private ShProviderVendor vendor;
 
 	public String getId() {
 		return id;
@@ -76,11 +76,12 @@ public class ShProviderInstance {
 		this.description = description;
 	}
 
-	public ShProviderVendor getShProviderVendor() {
-		return shProviderVendor;
+	public ShProviderVendor getVendor() {
+		return vendor;
 	}
 
-	public void setShProviderVendor(ShProviderVendor shProviderVendor) {
-		this.shProviderVendor = shProviderVendor;
+	public void setVendor(ShProviderVendor vendor) {
+		this.vendor = vendor;
 	}
+
 }
