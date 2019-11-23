@@ -15,18 +15,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.viglet.shiohara.provider.otmm.bean.sessions;
+package com.viglet.shiohara.provider.otmm.bean.assets;
 
-public class ShOTMMSessionsResourceBean {
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-	private ShOTMMSessionsSessionBean session;
+public class ShOTMMAssetDetailBean {
 
-	public ShOTMMSessionsSessionBean getSession() {
-		return session;
+	@JsonProperty("asset_resource")
+	private ShOTMMAssetResourceBean assetResource;
+
+	public ShOTMMAssetResourceBean getAssetResource() {
+		return assetResource;
 	}
 
-	public void setSession(ShOTMMSessionsSessionBean session) {
-		this.session = session;
+	public void setAssetResource(ShOTMMAssetResourceBean assetResource) {
+		this.assetResource = assetResource;
 	}
 
 }

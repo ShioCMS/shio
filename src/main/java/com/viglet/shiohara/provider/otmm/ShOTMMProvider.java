@@ -43,10 +43,8 @@ import com.viglet.shiohara.provider.ShProvider;
 import com.viglet.shiohara.provider.ShProviderBreadcrumbItem;
 import com.viglet.shiohara.provider.ShProviderFolder;
 import com.viglet.shiohara.provider.ShProviderPost;
-import com.viglet.shiohara.provider.otcs.bean.folder.ShOTCSFolderBean;
-import com.viglet.shiohara.provider.otcs.bean.object.ShOTCSObjectBean;
-import com.viglet.shiohara.provider.otcs.bean.result.ShOTCSResultsBean;
 import com.viglet.shiohara.provider.otmm.bean.assets.ShOTMMAssetBean;
+import com.viglet.shiohara.provider.otmm.bean.assets.ShOTMMAssetDetailBean;
 import com.viglet.shiohara.provider.otmm.bean.assets.ShOTMMAssetsBean;
 import com.viglet.shiohara.provider.otmm.bean.folders.ShOTMMFolderBean;
 import com.viglet.shiohara.provider.otmm.bean.folders.ShOTMMFoldersBean;
@@ -62,8 +60,6 @@ import org.apache.http.NameValuePair;
 public class ShOTMMProvider implements ShProvider {
 
 	private static final Log logger = LogFactory.getLog(ShOTMMProvider.class);
-	private static final String OTCS_TICKET = "OTCSTicket";
-	private static final String ROOT_FOLDER_ID = "2000";
 	private static final String PROVIDER_NAME = "OTMM";
 	private static final String URL = "URL";
 	private static final String USERNAME = "USERNAME";
@@ -103,10 +99,10 @@ public class ShOTMMProvider implements ShProvider {
 					ShOTMMFoldersBean.class);
 
 		} catch (UnsupportedOperationException e) {
-			logger.error("rootFolder UnsupportedOperationException: ", e);
+			logger.error("getRootFolder UnsupportedOperationException: ", e);
 			e.printStackTrace();
 		} catch (IOException e) {
-			logger.error("rootFolder IOException: ", e);
+			logger.error("getRootFolder IOException: ", e);
 		}
 
 		ShProviderFolder shProviderFolder = new ShProviderFolder();
@@ -164,10 +160,10 @@ public class ShOTMMProvider implements ShProvider {
 					ShOTMMFoldersBean.class);
 
 		} catch (UnsupportedOperationException e) {
-			logger.error("rootFolder UnsupportedOperationException: ", e);
+			logger.error("getOTMMFolders UnsupportedOperationException: ", e);
 			e.printStackTrace();
 		} catch (IOException e) {
-			logger.error("rootFolder IOException: ", e);
+			logger.error("getOTMMFolders IOException: ", e);
 		}
 
 		for (ShOTMMFolderBean folder : shOTMMFoldersBean.getFoldersResource().getFolderList()) {
@@ -197,10 +193,10 @@ public class ShOTMMProvider implements ShProvider {
 			shOTMMAssetsBean = objectMapper.readValue(responseHandler.handleResponse(response), ShOTMMAssetsBean.class);
 
 		} catch (UnsupportedOperationException e) {
-			logger.error("rootFolder UnsupportedOperationException: ", e);
+			logger.error("getOTMMAssets UnsupportedOperationException: ", e);
 			e.printStackTrace();
 		} catch (IOException e) {
-			logger.error("rootFolder IOException: ", e);
+			logger.error("getOTMMAssets IOException: ", e);
 		}
 
 		for (ShOTMMAssetBean asset : shOTMMAssetsBean.getAssetsResource().getAssetList()) {
@@ -225,16 +221,17 @@ public class ShOTMMProvider implements ShProvider {
 	}
 
 	public ShProviderPost getObject(String id) {
-		ShOTMMSessionsBean shOTMMSessionsBean = this.otmmAuth();
+		this.otmmAuth();
 
-		ShOTCSObjectBean shOTCSObjetBean = null;
+		ShOTMMAssetDetailBean shOTMMAssetDetailBean = null;
+
 		try {
-			HttpGet httpGet = new HttpGet(String.format("%s/api/v2/nodes/%s", this.baseURL, id));
+			HttpGet httpGet = new HttpGet(String.format("%s/otmmapi/v5/assets/%s", this.baseURL, id));
 			httpGet.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
 			httpGet.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString());
-			httpGet.setHeader(OTCS_TICKET, shOTMMSessionsBean.getSessionResource().getSession().getLoginName());
 			HttpResponse response = httpClient.execute(httpGet);
-			shOTCSObjetBean = objectMapper.readValue(responseHandler.handleResponse(response), ShOTCSObjectBean.class);
+			shOTMMAssetDetailBean = objectMapper.readValue(responseHandler.handleResponse(response),
+					ShOTMMAssetDetailBean.class);
 
 		} catch (UnsupportedOperationException e) {
 			logger.error("getObject UnsupportedOperationException: ", e);
@@ -245,9 +242,8 @@ public class ShOTMMProvider implements ShProvider {
 
 		ShProviderPost shProviderPost = new ShProviderPost();
 		shProviderPost.setId(id);
-		shProviderPost.setTitle(shOTCSObjetBean.getResults().getData().getProperties().getName());
-		shProviderPost
-				.setParentId(Integer.toString(shOTCSObjetBean.getResults().getData().getProperties().getParent_id()));
+		shProviderPost.setTitle(shOTMMAssetDetailBean.getAssetResource().getAsset().getName());
+		shProviderPost.setParentId(null);
 		return shProviderPost;
 	}
 
@@ -268,31 +264,31 @@ public class ShOTMMProvider implements ShProvider {
 
 			shOTMMSessionsBean = objectMapper.readValue(responseHandler.handleResponse(response),
 					ShOTMMSessionsBean.class);
-		
+
 		} catch (UnsupportedOperationException e) {
-			logger.error("rootFolder UnsupportedOperationException: ", e);
+			logger.error("otmmAuth UnsupportedOperationException: ", e);
 			e.printStackTrace();
 		} catch (IOException e) {
-			logger.error("rootFolder IOException: ", e);
+			logger.error("otmmAuth IOException: ", e);
 		}
 		return shOTMMSessionsBean;
 	}
 
 	public InputStream getDownload(String id) {
-		ShOTMMSessionsBean shOTMMSessionsBean = this.otmmAuth();
+		this.otmmAuth();
 		InputStream inputStream = null;
+
 		try {
-			HttpGet httpGet = new HttpGet(String.format("%s/api/v2/nodes/%s/content", this.baseURL, id));
+			HttpGet httpGet = new HttpGet(String.format("%s/otmmapi/v5/assets/%s/contents", this.baseURL, id));
 			httpGet.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
 			httpGet.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString());
-			httpGet.setHeader(OTCS_TICKET, shOTMMSessionsBean.getSessionResource().getSession().getLoginName());
 			HttpResponse response = httpClient.execute(httpGet);
 			inputStream = response.getEntity().getContent();
 		} catch (UnsupportedOperationException e) {
-			logger.error("rootFolder UnsupportedOperationException: ", e);
+			logger.error("getDownload UnsupportedOperationException: ", e);
 			e.printStackTrace();
 		} catch (IOException e) {
-			logger.error("rootFolder IOException: ", e);
+			logger.error("getDownload IOException: ", e);
 		}
 
 		return inputStream;

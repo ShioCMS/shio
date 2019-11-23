@@ -15,18 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.viglet.shiohara.provider.otmm.bean.sessions;
+package com.viglet.shiohara.provider.otmm.bean.assets;
 
-public class ShOTMMSessionsResourceBean {
+public class ShOTMMAssetResourceBean {
 
-	private ShOTMMSessionsSessionBean session;
+	private ShOTMMAssetBean asset;
 
-	public ShOTMMSessionsSessionBean getSession() {
-		return session;
+	public ShOTMMAssetBean getAsset() {
+		return asset;
 	}
 
-	public void setSession(ShOTMMSessionsSessionBean session) {
-		this.session = session;
+	public void setAsset(ShOTMMAssetBean asset) {
+		this.asset = asset;
 	}
 
 }
