@@ -9,7 +9,7 @@ public interface ShProvider {
 
 	public ShProviderFolder getRootFolder();
 
-	public ShProviderPost getObject(String id);
+	public ShProviderPost getObject(String id, boolean isFolder);
 
 	public ShProviderFolder getFolder(String id);
 

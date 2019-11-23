@@ -49,6 +49,8 @@ import com.viglet.shiohara.persistence.repository.provider.ShProviderInstanceRep
 import com.viglet.shiohara.provider.ShProvider;
 import com.viglet.shiohara.provider.ShProviderFolder;
 import com.viglet.shiohara.provider.ShProviderPost;
+import com.viglet.shiohara.provider.otmm.ShOTMMProvider;
+import com.viglet.shiohara.provider.otmm.bean.folders.ShOTMMFoldersBean;
 import com.viglet.shiohara.utils.ShConfigVarUtils;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
 
@@ -97,7 +99,7 @@ public class ShProviderAPI {
 
 		this.initProvider(providerInstanceId);
 
-		ShProviderPost shProviderPost = shProvider.getObject(providerItemId);
+		ShProviderPost shProviderPost = shProvider.getObject(providerItemId, false);
 
 		String fileName = shProviderPost.getTitle();
 		InputStream is = shProvider.getDownload(providerItemId);
@@ -136,5 +138,27 @@ public class ShProviderAPI {
 		else
 			return shProvider.getFolder(id);
 
+	}
+	
+	@GetMapping("/test/{id}")
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
+	public void shObjectTesttem(@PathVariable String id) {
+	
+		ShOTMMProvider shOTMMProvider = new ShOTMMProvider();
+		Map<String, String> variables = shConfigVarUtils
+				.getVariablesFromPath(String.format("/provider/%s", "c1044181-77bc-4a90-aa50-eeb4b19eb5b4"));
+
+		shOTMMProvider.init(variables);
+		System.out.println("Inicio");
+		ShOTMMFoldersBean shOTMMFoldersBean = shOTMMProvider.getOTMMFolderParents(id);
+		if (shOTMMFoldersBean != null) {
+			System.out.println("Not null");
+		}
+		else {
+			System.out.println("null");
+		}
+		System.out.println("Fim"  );
+		
+		shOTMMProvider.getFolder(id);
 	}
 }

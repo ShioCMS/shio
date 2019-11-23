@@ -27,12 +27,14 @@ import java.util.Map;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.springframework.http.MediaType;
 
@@ -47,6 +49,7 @@ import com.viglet.shiohara.provider.otmm.bean.assets.ShOTMMAssetBean;
 import com.viglet.shiohara.provider.otmm.bean.assets.ShOTMMAssetDetailBean;
 import com.viglet.shiohara.provider.otmm.bean.assets.ShOTMMAssetsBean;
 import com.viglet.shiohara.provider.otmm.bean.folders.ShOTMMFolderBean;
+import com.viglet.shiohara.provider.otmm.bean.folders.ShOTMMFolderDetailBean;
 import com.viglet.shiohara.provider.otmm.bean.folders.ShOTMMFoldersBean;
 import com.viglet.shiohara.provider.otmm.bean.sessions.ShOTMMSessionsBean;
 
@@ -61,15 +64,20 @@ public class ShOTMMProvider implements ShProvider {
 
 	private static final Log logger = LogFactory.getLog(ShOTMMProvider.class);
 	private static final String PROVIDER_NAME = "OTMM";
+	private static final String ROOT_FOLDER_ID = "_root";
+	private static final String ROOT_FOLDER_NAME = "OTMM Root Folder";
 	private static final String URL = "URL";
 	private static final String USERNAME = "USERNAME";
 	private static final String PASSWORD = "PASSWORD";
 
 	private ObjectMapper objectMapper = new ObjectMapper().enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
 
+	private int timeout = 5;
+	private RequestConfig config = RequestConfig.custom().setConnectTimeout(timeout * 1000)
+			.setConnectionRequestTimeout(timeout * 1000).setSocketTimeout(timeout * 1000).build();
 	private CookieStore httpCookieStore = new BasicCookieStore();
 
-	private HttpClient httpClient = HttpClientBuilder.create().setDefaultCookieStore(httpCookieStore).build();
+	private HttpClient httpClient = null;
 
 	private ResponseHandler<String> responseHandler = new BasicResponseHandler();
 
@@ -83,11 +91,11 @@ public class ShOTMMProvider implements ShProvider {
 		this.baseURL = variables.get(URL);
 		this.username = variables.get(USERNAME);
 		this.password = variables.get(PASSWORD);
+		this.otmmAuth();
 	}
 
 	public ShProviderFolder getRootFolder() {
 
-		this.otmmAuth();
 		ShOTMMFoldersBean shOTMMFoldersBean = null;
 		try {
 			HttpGet httpGet = new HttpGet(String.format("%s/otmmapi/v5/folders/rootfolders", this.baseURL));
@@ -97,7 +105,6 @@ public class ShOTMMProvider implements ShProvider {
 
 			shOTMMFoldersBean = objectMapper.readValue(responseHandler.handleResponse(response),
 					ShOTMMFoldersBean.class);
-
 		} catch (UnsupportedOperationException e) {
 			logger.error("getRootFolder UnsupportedOperationException: ", e);
 			e.printStackTrace();
@@ -107,9 +114,9 @@ public class ShOTMMProvider implements ShProvider {
 
 		ShProviderFolder shProviderFolder = new ShProviderFolder();
 
-		shProviderFolder.setId("_root");
-		shProviderFolder.setName("OTMM Root");
-		shProviderFolder.setBreadcrumb(null);
+		shProviderFolder.setId(ROOT_FOLDER_ID);
+		shProviderFolder.setName(ROOT_FOLDER_NAME);
+		shProviderFolder.setBreadcrumb(this.getBreadcrumb(ROOT_FOLDER_ID));
 		shProviderFolder.setProviderName(PROVIDER_NAME);
 		shProviderFolder.setParentId(null);
 
@@ -118,7 +125,7 @@ public class ShOTMMProvider implements ShProvider {
 
 			String resultName = folder.getName();
 
-			Date resultDate = new Date();
+			Date resultDate = folder.getDateLastUpdated();
 
 			ShProviderFolder shProviderFolderChild = new ShProviderFolder();
 			shProviderFolderChild.setId(resultId);
@@ -133,15 +140,21 @@ public class ShOTMMProvider implements ShProvider {
 	}
 
 	public ShProviderFolder getFolder(String id) {
-		this.otmmAuth();
 		ShProviderFolder shProviderFolder = new ShProviderFolder();
 
+		ShProviderPost shProviderPost = this.getObject(id, true);
 		shProviderFolder.setId(id);
-		shProviderFolder.setName("OTMM Folder");
-		shProviderFolder.setBreadcrumb(null);
+		shProviderFolder.setName(shProviderPost.getTitle());
+		shProviderFolder.setBreadcrumb(this.getBreadcrumb(id));
 		shProviderFolder.setProviderName(PROVIDER_NAME);
-		shProviderFolder.setParentId(null);
-
+		ShOTMMFoldersBean shOTMMFoldersBean = this.getOTMMFolderParents(id);
+		if (shOTMMFoldersBean != null) {
+			List<ShOTMMFolderBean> parentFolderList = shOTMMFoldersBean.getFoldersResource().getFolderList();
+			if (!parentFolderList.isEmpty())
+				shProviderFolder.setParentId(parentFolderList.get(0).getAssetId());
+		} else {
+			shProviderFolder.setParentId(null);
+		}
 		this.getOTMMFolders(id, shProviderFolder);
 
 		this.getOTMMAssets(id, shProviderFolder);
@@ -149,10 +162,32 @@ public class ShOTMMProvider implements ShProvider {
 		return shProviderFolder;
 	}
 
-	private void getOTMMFolders(String id, ShProviderFolder shProviderFolder) {
+	public ShOTMMFoldersBean getOTMMFolderParents(String id) {
+
 		ShOTMMFoldersBean shOTMMFoldersBean = null;
 		try {
-			HttpGet httpGet = new HttpGet(String.format("%s/otmmapi/v5/folders/%s/folders", this.baseURL, id));
+
+			HttpGet httpGet = new HttpGet(String.format("%s/otmmapi/v5/folders/%s/parents", this.baseURL, id));
+			httpGet.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
+			httpGet.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString());
+			HttpResponse response = httpClient.execute(httpGet);
+			if (response.getStatusLine().getStatusCode() == 200)
+				shOTMMFoldersBean = objectMapper.readValue(responseHandler.handleResponse(response),
+						ShOTMMFoldersBean.class);
+		} catch (UnsupportedOperationException e) {
+			logger.error("getOTMMFolders UnsupportedOperationException: ", e);
+		} catch (IOException e) {
+			logger.error("getOTMMFolders IOException: ", e);
+		}
+
+		return shOTMMFoldersBean;
+	}
+
+	private ShOTMMFoldersBean getOTMMAssetParents(String id) {
+
+		ShOTMMFoldersBean shOTMMFoldersBean = null;
+		try {
+			HttpGet httpGet = new HttpGet(String.format("%s/otmmapi/v5/assets/%s/parents", this.baseURL, id));
 			httpGet.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
 			httpGet.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString());
 			HttpResponse response = httpClient.execute(httpGet);
@@ -166,12 +201,32 @@ public class ShOTMMProvider implements ShProvider {
 			logger.error("getOTMMFolders IOException: ", e);
 		}
 
+		return shOTMMFoldersBean;
+	}
+
+	private void getOTMMFolders(String id, ShProviderFolder shProviderFolder) {
+
+		ShOTMMFoldersBean shOTMMFoldersBean = null;
+		try {
+			HttpGet httpGet = new HttpGet(String.format("%s/otmmapi/v5/folders/%s/folders", this.baseURL, id));
+			httpGet.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
+			httpGet.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString());
+			HttpResponse response = httpClient.execute(httpGet);
+			shOTMMFoldersBean = objectMapper.readValue(responseHandler.handleResponse(response),
+					ShOTMMFoldersBean.class);
+		} catch (UnsupportedOperationException e) {
+			logger.error("getOTMMFolders UnsupportedOperationException: ", e);
+			e.printStackTrace();
+		} catch (IOException e) {
+			logger.error("getOTMMFolders IOException: ", e);
+		}
+
 		for (ShOTMMFolderBean folder : shOTMMFoldersBean.getFoldersResource().getFolderList()) {
 			String resultId = folder.getAssetId();
 
 			String resultName = folder.getName();
 
-			Date resultDate = new Date();
+			Date resultDate = folder.getDateLastUpdated();
 
 			ShProviderFolder shProviderFolderChild = new ShProviderFolder();
 			shProviderFolderChild.setId(resultId);
@@ -184,6 +239,7 @@ public class ShOTMMProvider implements ShProvider {
 	}
 
 	private void getOTMMAssets(String id, ShProviderFolder shProviderFolder) {
+
 		ShOTMMAssetsBean shOTMMAssetsBean = null;
 		try {
 			HttpGet httpGet = new HttpGet(String.format("%s/otmmapi/v5/folders/%s/assets", this.baseURL, id));
@@ -191,7 +247,6 @@ public class ShOTMMProvider implements ShProvider {
 			httpGet.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString());
 			HttpResponse response = httpClient.execute(httpGet);
 			shOTMMAssetsBean = objectMapper.readValue(responseHandler.handleResponse(response), ShOTMMAssetsBean.class);
-
 		} catch (UnsupportedOperationException e) {
 			logger.error("getOTMMAssets UnsupportedOperationException: ", e);
 			e.printStackTrace();
@@ -204,7 +259,7 @@ public class ShOTMMProvider implements ShProvider {
 
 			String postTitle = asset.getName();
 
-			Date postDate = new Date();
+			Date postDate = asset.getDateLastUpdated();
 
 			String postType = asset.getContentType();
 
@@ -220,34 +275,76 @@ public class ShOTMMProvider implements ShProvider {
 		}
 	}
 
-	public ShProviderPost getObject(String id) {
-		this.otmmAuth();
+	public ShProviderPost getObject(String id, boolean isFolder) {
 
-		ShOTMMAssetDetailBean shOTMMAssetDetailBean = null;
+		if (isFolder) {
+			ShOTMMFolderDetailBean shOTMMFolderDetailBean = null;
+			try {
+				HttpGet httpGet = new HttpGet(String.format("%s/otmmapi/v5/folders/%s", this.baseURL, id));
+				httpGet.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
+				httpGet.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString());
+				HttpResponse response = httpClient.execute(httpGet);
+				shOTMMFolderDetailBean = objectMapper.readValue(responseHandler.handleResponse(response),
+						ShOTMMFolderDetailBean.class);
+			} catch (UnsupportedOperationException e) {
+				logger.error("getObject UnsupportedOperationException: ", e);
+				e.printStackTrace();
+			} catch (IOException e) {
+				logger.error("getObject IOException: ", e);
+			}
 
-		try {
-			HttpGet httpGet = new HttpGet(String.format("%s/otmmapi/v5/assets/%s", this.baseURL, id));
-			httpGet.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
-			httpGet.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString());
-			HttpResponse response = httpClient.execute(httpGet);
-			shOTMMAssetDetailBean = objectMapper.readValue(responseHandler.handleResponse(response),
-					ShOTMMAssetDetailBean.class);
+			ShProviderPost shProviderPost = new ShProviderPost();
+			shProviderPost.setId(id);
+			shProviderPost.setTitle(shOTMMFolderDetailBean.getFolderResource().getFolder().getName());
+			ShOTMMFoldersBean shOTMMFoldersBean = this.getOTMMFolderParents(id);
+			if (shOTMMFoldersBean != null) {
+				List<ShOTMMFolderBean> parentFolderList = shOTMMFoldersBean.getFoldersResource().getFolderList();
+				if (!parentFolderList.isEmpty()) {
+					shProviderPost.setParentId(parentFolderList.get(0).getAssetId());
+				}
+			} else {
+				shProviderPost.setParentId(null);
+			}
+			return shProviderPost;
+		} else {
+			ShOTMMAssetDetailBean shOTMMAssetDetailBean = null;
+			try {
+				HttpGet httpGet = new HttpGet(String.format("%s/otmmapi/v5/assets/%s", this.baseURL, id));
+				httpGet.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
+				httpGet.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString());
+				HttpResponse response = httpClient.execute(httpGet);
+				shOTMMAssetDetailBean = objectMapper.readValue(responseHandler.handleResponse(response),
+						ShOTMMAssetDetailBean.class);
 
-		} catch (UnsupportedOperationException e) {
-			logger.error("getObject UnsupportedOperationException: ", e);
-			e.printStackTrace();
-		} catch (IOException e) {
-			logger.error("getObject IOException: ", e);
+			} catch (UnsupportedOperationException e) {
+				logger.error("getObject UnsupportedOperationException: ", e);
+				e.printStackTrace();
+			} catch (IOException e) {
+				logger.error("getObject IOException: ", e);
+			}
+
+			ShProviderPost shProviderPost = new ShProviderPost();
+			shProviderPost.setId(id);
+			shProviderPost.setTitle(shOTMMAssetDetailBean.getAssetResource().getAsset().getName());
+			ShOTMMFoldersBean shOTMMFoldersBean = this.getOTMMAssetParents(id);
+			if (shOTMMFoldersBean != null) {
+				List<ShOTMMFolderBean> parentFolderList = shOTMMFoldersBean.getFoldersResource().getFolderList();
+				if (!parentFolderList.isEmpty())
+					shProviderPost.setParentId(parentFolderList.get(0).getAssetId());
+			} else {
+				shProviderPost.setParentId(null);
+			}
+			return shProviderPost;
 		}
-
-		ShProviderPost shProviderPost = new ShProviderPost();
-		shProviderPost.setId(id);
-		shProviderPost.setTitle(shOTMMAssetDetailBean.getAssetResource().getAsset().getName());
-		shProviderPost.setParentId(null);
-		return shProviderPost;
 	}
 
 	private ShOTMMSessionsBean otmmAuth() {
+		PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
+		cm.setMaxTotal(10000);
+		cm.setDefaultMaxPerRoute(10000);
+		cm.setValidateAfterInactivity(3000);
+		httpClient = HttpClientBuilder.create().setDefaultRequestConfig(config).setDefaultCookieStore(httpCookieStore)
+				.setConnectionManager(cm).build();
 		List<NameValuePair> form = new ArrayList<>();
 		form.add(new BasicNameValuePair("username", this.username));
 		form.add(new BasicNameValuePair("password", this.password));
@@ -275,7 +372,7 @@ public class ShOTMMProvider implements ShProvider {
 	}
 
 	public InputStream getDownload(String id) {
-		this.otmmAuth();
+
 		InputStream inputStream = null;
 
 		try {
@@ -284,6 +381,7 @@ public class ShOTMMProvider implements ShProvider {
 			httpGet.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString());
 			HttpResponse response = httpClient.execute(httpGet);
 			inputStream = response.getEntity().getContent();
+
 		} catch (UnsupportedOperationException e) {
 			logger.error("getDownload UnsupportedOperationException: ", e);
 			e.printStackTrace();
@@ -304,14 +402,19 @@ public class ShOTMMProvider implements ShProvider {
 	}
 
 	private void getParentBreadcrumbItem(String id, ArrayList<ShProviderBreadcrumbItem> breadcrumb) {
-		if (!StringUtils.isBlank(id) && Integer.parseInt(id) > 0) {
-			ShProviderPost shProviderPost = this.getObject(id);
+		if (!StringUtils.isBlank(id) && !id.equals(ROOT_FOLDER_ID)) {
+			ShProviderPost shProviderPost = this.getObject(id, true);
 
 			ShProviderBreadcrumbItem shProviderBreadcrumbItem = new ShProviderBreadcrumbItem();
 			shProviderBreadcrumbItem.setId(shProviderPost.getId());
 			shProviderBreadcrumbItem.setTitle(shProviderPost.getTitle());
 
 			this.getParentBreadcrumbItem(shProviderPost.getParentId(), breadcrumb);
+			breadcrumb.add(shProviderBreadcrumbItem);
+		} else {
+			ShProviderBreadcrumbItem shProviderBreadcrumbItem = new ShProviderBreadcrumbItem();
+			shProviderBreadcrumbItem.setId(ROOT_FOLDER_ID);
+			shProviderBreadcrumbItem.setTitle(ROOT_FOLDER_NAME);
 			breadcrumb.add(shProviderBreadcrumbItem);
 		}
 	}

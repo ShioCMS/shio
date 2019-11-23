@@ -105,7 +105,7 @@ public class ShOTCSProvider implements ShProvider {
 			logger.error("rootFolder IOException: ", e);
 		}
 
-		ShProviderPost shProviderPost = this.getObject(id);
+		ShProviderPost shProviderPost = this.getObject(id, true);
 		ShProviderFolder shProviderFolder = new ShProviderFolder();
 
 		shProviderFolder.setId(id);
@@ -155,7 +155,7 @@ public class ShOTCSProvider implements ShProvider {
 		return shProviderFolder;
 	}
 
-	public ShProviderPost getObject(String id) {
+	public ShProviderPost getObject(String id, boolean isFolder) {
 		ShOTCSTicketBean sOTCSTicketBean = this.otcsAuth();
 
 		ShOTCSObjectBean shOTCSObjetBean = null;
@@ -239,7 +239,7 @@ public class ShOTCSProvider implements ShProvider {
 
 	private void getParentBreadcrumbItem(String id, ArrayList<ShProviderBreadcrumbItem> breadcrumb) {
 		if (!StringUtils.isBlank(id) && Integer.parseInt(id) > 0) {
-			ShProviderPost shProviderPost = this.getObject(id);
+			ShProviderPost shProviderPost = this.getObject(id, true);
 
 			ShProviderBreadcrumbItem shProviderBreadcrumbItem = new ShProviderBreadcrumbItem();
 			shProviderBreadcrumbItem.setId(shProviderPost.getId());
