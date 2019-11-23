@@ -44,34 +44,67 @@ public class ShProviderInstanceOnStartup {
 
 		if (shProviderInstanceRepository.findAll().isEmpty()) {
 
-			ShProviderInstance shProviderInstance = new ShProviderInstance();
-			shProviderInstance.setName("Content Server");
-			shProviderInstance.setDescription("Content Server");
-			shProviderInstance.setVendor(shProviderVendorRepository.findById("OTCS").orElse(null));
-
-			shProviderInstanceRepository.save(shProviderInstance);
-
-			String providerInstance = String.format(PROVIDER_PATH, shProviderInstance.getId());
-
-			ShConfigVar shConfigVar = new ShConfigVar();
-			shConfigVar.setPath(providerInstance);
-			shConfigVar.setName(URL);
-			shConfigVar.setValue("http://localhost/OTCS/cs.exe");
-			shConfigVarRepository.save(shConfigVar);
-
-			shConfigVar = new ShConfigVar();
-			shConfigVar.setPath(providerInstance);
-			shConfigVar.setName(USERNAME);
-			shConfigVar.setValue("admin");
-			shConfigVarRepository.save(shConfigVar);
-
-			shConfigVar = new ShConfigVar();
-			shConfigVar.setPath(providerInstance);
-			shConfigVar.setName(PASSWORD);
-			shConfigVar.setValue("password");
-			shConfigVarRepository.save(shConfigVar);
-
+			this.createOTCSInstance();
+			this.createOTMMInstance();
 		}
+	}
+
+	private void createOTCSInstance() {
+		ShProviderInstance shProviderInstance = new ShProviderInstance();
+		shProviderInstance.setName("OpenText Content Server");
+		shProviderInstance.setDescription("OpenText Content Server");
+		shProviderInstance.setVendor(shProviderVendorRepository.findById("OTCS").orElse(null));
+
+		shProviderInstanceRepository.save(shProviderInstance);
+
+		String providerInstance = String.format(PROVIDER_PATH, shProviderInstance.getId());
+
+		ShConfigVar shConfigVar = new ShConfigVar();
+		shConfigVar.setPath(providerInstance);
+		shConfigVar.setName(URL);
+		shConfigVar.setValue("http://localhost/OTCS/cs.exe");
+		shConfigVarRepository.save(shConfigVar);
+
+		shConfigVar = new ShConfigVar();
+		shConfigVar.setPath(providerInstance);
+		shConfigVar.setName(USERNAME);
+		shConfigVar.setValue("admin");
+		shConfigVarRepository.save(shConfigVar);
+
+		shConfigVar = new ShConfigVar();
+		shConfigVar.setPath(providerInstance);
+		shConfigVar.setName(PASSWORD);
+		shConfigVar.setValue("password");
+		shConfigVarRepository.save(shConfigVar);
+	}
+
+	private void createOTMMInstance() {
+		ShProviderInstance shProviderInstance = new ShProviderInstance();
+		shProviderInstance.setName("OpenText Media Management");
+		shProviderInstance.setDescription("OpenText Media Management");
+		shProviderInstance.setVendor(shProviderVendorRepository.findById("OTMM").orElse(null));
+
+		shProviderInstanceRepository.save(shProviderInstance);
+
+		String providerInstance = String.format(PROVIDER_PATH, shProviderInstance.getId());
+
+		ShConfigVar shConfigVar = new ShConfigVar();
+		shConfigVar.setPath(providerInstance);
+		shConfigVar.setName(URL);
+		shConfigVar.setValue("http://localhost:11090");
+		shConfigVarRepository.save(shConfigVar);
+
+		shConfigVar = new ShConfigVar();
+		shConfigVar.setPath(providerInstance);
+		shConfigVar.setName(USERNAME);
+		shConfigVar.setValue("admin");
+		shConfigVarRepository.save(shConfigVar);
+
+		shConfigVar = new ShConfigVar();
+		shConfigVar.setPath(providerInstance);
+		shConfigVar.setName(PASSWORD);
+		shConfigVar.setValue("password");
+		shConfigVarRepository.save(shConfigVar);
 	}
 
 }

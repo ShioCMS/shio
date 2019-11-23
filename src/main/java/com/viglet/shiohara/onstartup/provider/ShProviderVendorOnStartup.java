@@ -37,10 +37,19 @@ public class ShProviderVendorOnStartup {
 			ShProviderVendor shProviderVendor = new ShProviderVendor();
 			shProviderVendor.setId("OTCS");
 			shProviderVendor.setName(ShSystemProviderVendor.OTCS);
-			shProviderVendor.setDescription("OpenText Content Server");
+			shProviderVendor.setDescription(ShSystemProviderVendor.OTCS);
 			shProviderVendor.setClassName("com.viglet.shiohara.provider.otcs.ShOTCSProvider");
 			shProviderVendor.setImplementationCode("template/provider/otcs/configuration.html");
-	
+
+			shProviderVendorRepository.save(shProviderVendor);
+
+			shProviderVendor = new ShProviderVendor();
+			shProviderVendor.setId("OTMM");
+			shProviderVendor.setName(ShSystemProviderVendor.OTMM);
+			shProviderVendor.setDescription(ShSystemProviderVendor.OTMM);
+			shProviderVendor.setClassName("com.viglet.shiohara.provider.otmm.ShOTMMProvider");
+			shProviderVendor.setImplementationCode("template/provider/otmm/configuration.html");
+
 			shProviderVendorRepository.save(shProviderVendor);
 		}
 
