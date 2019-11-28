@@ -44,14 +44,12 @@ import org.springframework.security.web.firewall.StrictHttpFirewall;
 public class ShSecurityConfigProduction extends WebSecurityConfigurerAdapter {
 	@Autowired
 	UserDetailsService userDetailsService;
-	@Autowired
-	ShAuthenticationEntryPoint shAuthenticationEntryPoint;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		// Prevent the HTTP response header of "Pragma: no-cache".
 		http.headers().frameOptions().disable().cacheControl().disable();
-		http.httpBasic().authenticationEntryPoint(shAuthenticationEntryPoint).and().authorizeRequests()
+		http.httpBasic().and().authorizeRequests()
 				.antMatchers("/index.html", "/welcome/**", "/", "/store/**", "/thirdparty/**", "/js/**", "/css/**",
 						"/template/**", "/img/**", "/sites/**", "/__tur/**", "/swagger-resources/**", "/h2/**","/image/**", "/login-page/**", "/logout-page/**")
 				.permitAll()
@@ -62,7 +60,6 @@ public class ShSecurityConfigProduction extends WebSecurityConfigurerAdapter {
 
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		// TODO Auto-generated method stub
 		web.ignoring().antMatchers("/h2/**");
 		super.configure(web);
 		web.httpFirewall(allowUrlEncodedSlashHttpFirewall());

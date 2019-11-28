@@ -18,7 +18,6 @@
 package com.viglet.shiohara.utils;
 
 import java.io.File;
-import java.io.IOException;
 import java.security.Principal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -602,9 +601,6 @@ public class ShPostUtils {
 			} catch (JsonProcessingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 		}
 		return shPost;
@@ -623,9 +619,6 @@ public class ShPostUtils {
 				shPostAttr = mapper.readValue(jsonInString, ShPostAttr.class);
 
 			} catch (JsonProcessingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

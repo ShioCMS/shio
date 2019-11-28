@@ -33,8 +33,6 @@ import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItemDraft;
 
 public interface ShPostDraftAttrRepository extends JpaRepository<ShPostDraftAttr, String> {
 
-	List<ShPostDraftAttr> findByArrayValue(Set<String> values);
-
 	Set<ShPostDraftAttr> findByArrayValueIn(Collection<String> values);
 
 	List<ShPostDraftAttr> findAll();

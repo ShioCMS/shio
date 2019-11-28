@@ -32,10 +32,6 @@ import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
 
 public interface ShPostAttrRepository extends JpaRepository<ShPostAttr, String> {
-
-
-	
-	List<ShPostAttr> findByArrayValue(Set<String> values);
 	
 	Set<ShPostAttr> findByArrayValueIn(Collection<String> values);
 	

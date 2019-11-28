@@ -436,8 +436,6 @@ public class ShPostAPI {
 						shPostRepository.saveAndFlush(shPostEdit);
 					} catch (JsonProcessingException e) {
 						logger.error("postDraftSave JsonProcessingException:", e);
-					} catch (IOException e) {
-						logger.error("postDraftSave IOException:", e);
 					}
 				}
 			} else {
