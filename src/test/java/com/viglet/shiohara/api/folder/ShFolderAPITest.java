@@ -75,13 +75,13 @@ public class ShFolderAPITest {
 	@Test
 	public void shFolderList() throws Exception {
 		mockMvc.perform(get("/api/v2/folder")).andExpect(status().isOk())
-				.andExpect(content().contentType("application/json;charset=UTF-8"));
+				.andExpect(content().contentType("application/json"));
 	}
 	
 	@Test
 	public void shFolderStructure() throws Exception {
 		mockMvc.perform(get("/api/v2/folder/model")).andExpect(status().isOk())
-				.andExpect(content().contentType("application/json;charset=UTF-8"));
+				.andExpect(content().contentType("application/json"));
 	}
 	
 	@Test
@@ -95,7 +95,7 @@ public class ShFolderAPITest {
 		String requestBody = ShUtils.asJsonString(shSite);
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/v2/site").principal(mockPrincipal)
-				.accept(MediaType.APPLICATION_JSON).content(requestBody).contentType("application/json;charset=UTF-8")
+				.accept(MediaType.APPLICATION_JSON).content(requestBody).contentType("application/json")
 				.header("X-Requested-With", "XMLHttpRequest");
 
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
@@ -111,7 +111,7 @@ public class ShFolderAPITest {
 
 		RequestBuilder folderRequestBuilder = MockMvcRequestBuilders.post("/api/v2/folder").principal(mockPrincipal)
 				.accept(MediaType.APPLICATION_JSON).content(folderRequestBody)
-				.contentType("application/json;charset=UTF-8").header("X-Requested-With", "XMLHttpRequest");
+				.contentType("application/json").header("X-Requested-With", "XMLHttpRequest");
 
 		mockMvc.perform(folderRequestBuilder).andExpect(status().isOk());
 	}
@@ -119,13 +119,13 @@ public class ShFolderAPITest {
 	@Test
 	public void stage02ShFolderGet() throws Exception {
 		mockMvc.perform(get("/api/v2/folder/" + newFolderId)).andExpect(status().isOk())
-		.andExpect(content().contentType("application/json;charset=UTF-8"));
+		.andExpect(content().contentType("application/json"));
 	}
 	
 	@Test
 	public void stage03ShFolderPath() throws Exception {
 		mockMvc.perform(get("/api/v2/folder/" + newFolderId + "/path")).andExpect(status().isOk())
-		.andExpect(content().contentType("application/json;charset=UTF-8"));
+		.andExpect(content().contentType("application/json"));
 	}
 	
 	@Test
@@ -143,7 +143,7 @@ public class ShFolderAPITest {
 
 		RequestBuilder folderRequestBuilder = MockMvcRequestBuilders.put("/api/v2/folder/" + newFolderId)
 				.principal(mockPrincipal).accept(MediaType.APPLICATION_JSON).content(folderRequestBody)
-				.contentType("application/json;charset=UTF-8").header("X-Requested-With", "XMLHttpRequest");
+				.contentType("application/json").header("X-Requested-With", "XMLHttpRequest");
 
 		mockMvc.perform(folderRequestBuilder).andExpect(status().isOk());
 	}
@@ -158,7 +158,7 @@ public class ShFolderAPITest {
 
 		RequestBuilder folderRequestBuilder = MockMvcRequestBuilders.post("/api/v2/folder/object/" + newSiteId)
 				.principal(mockPrincipal).accept(MediaType.APPLICATION_JSON).content(folderRequestBody)
-				.contentType("application/json;charset=UTF-8").header("X-Requested-With", "XMLHttpRequest");
+				.contentType("application/json").header("X-Requested-With", "XMLHttpRequest");
 
 		mockMvc.perform(folderRequestBuilder).andExpect(status().isOk());
 	}
@@ -173,7 +173,7 @@ public class ShFolderAPITest {
 
 		RequestBuilder folderRequestBuilder = MockMvcRequestBuilders.post("/api/v2/folder/object/" + newFolderId)
 				.principal(mockPrincipal).accept(MediaType.APPLICATION_JSON).content(folderRequestBody)
-				.contentType("application/json;charset=UTF-8").header("X-Requested-With", "XMLHttpRequest");
+				.contentType("application/json").header("X-Requested-With", "XMLHttpRequest");
 
 		mockMvc.perform(folderRequestBuilder).andExpect(status().isOk());
 	}

@@ -80,14 +80,14 @@ public class ShPostTypeAPITest {
 	@Test
 	public void shPostTypeList() throws Exception {
 		mockMvc.perform(get("/api/v2/post/type")).andExpect(status().isOk())
-				.andExpect(content().contentType("application/json;charset=UTF-8"));
+				.andExpect(content().contentType("application/json"));
 
 	}
 
 	@Test
 	public void shPostTypeStructure() throws Exception {
 		mockMvc.perform(get("/api/v2/post/type/model")).andExpect(status().isOk())
-				.andExpect(content().contentType("application/json;charset=UTF-8"));
+				.andExpect(content().contentType("application/json"));
 
 	}
 
@@ -120,7 +120,7 @@ public class ShPostTypeAPITest {
 
 		RequestBuilder folderRequestBuilder = MockMvcRequestBuilders.post("/api/v2/post/type").principal(mockPrincipal)
 				.accept(MediaType.APPLICATION_JSON).content(postTypeRequestBody)
-				.contentType("application/json;charset=UTF-8");
+				.contentType("application/json");
 
 		mockMvc.perform(folderRequestBuilder).andExpect(status().isOk());
 	}
@@ -128,19 +128,19 @@ public class ShPostTypeAPITest {
 	@Test
 	public void stage02ShPostTypeGet() throws Exception {
 		mockMvc.perform(get("/api/v2/post/type/" + newPostTypeId)).andExpect(status().isOk())
-				.andExpect(content().contentType("application/json;charset=UTF-8"));
+				.andExpect(content().contentType("application/json"));
 	}
 
 	@Test
 	public void stage03ShPostTypePostStructure() throws Exception {
 		mockMvc.perform(get("/api/v2/post/type/" + newPostTypeId + "/post/model")).andExpect(status().isOk())
-				.andExpect(content().contentType("application/json;charset=UTF-8"));
+				.andExpect(content().contentType("application/json"));
 	}
 
 	@Test
 	public void stage04ShPostTypeByNamePostStructure() throws Exception {
 		mockMvc.perform(get("/api/v2/post/type/name/PT-TEST/post/model")).andExpect(status().isOk())
-				.andExpect(content().contentType("application/json;charset=UTF-8"));
+				.andExpect(content().contentType("application/json"));
 	}
 
 	@Test
@@ -163,7 +163,7 @@ public class ShPostTypeAPITest {
 		RequestBuilder folderRequestBuilder = MockMvcRequestBuilders
 				.post("/api/v2/post/type/" + newPostTypeId + "/attr").principal(mockPrincipal)
 				.accept(MediaType.APPLICATION_JSON).content(postTypeAttrRequestBody)
-				.contentType("application/json;charset=UTF-8");
+				.contentType("application/json");
 
 		mockMvc.perform(folderRequestBuilder).andExpect(status().isOk());
 	}
@@ -182,7 +182,7 @@ public class ShPostTypeAPITest {
 
 		RequestBuilder folderRequestBuilder = MockMvcRequestBuilders.put("/api/v2/post/type/" + newPostTypeId)
 				.principal(mockPrincipal).accept(MediaType.APPLICATION_JSON).content(postTypeRequestBody)
-				.contentType("application/json;charset=UTF-8");
+				.contentType("application/json");
 
 		mockMvc.perform(folderRequestBuilder).andExpect(status().isOk());
 	}

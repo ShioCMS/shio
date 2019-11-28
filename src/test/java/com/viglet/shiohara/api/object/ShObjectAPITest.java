@@ -92,7 +92,7 @@ public class ShObjectAPITest {
 
 		RequestBuilder folderRequestBuilder = MockMvcRequestBuilders.post("/api/v2/folder").principal(mockPrincipal)
 				.accept(MediaType.APPLICATION_JSON).content(folderRequestBody)
-				.contentType("application/json;charset=UTF-8");
+				.contentType("application/json");
 		
 		mockMvc.perform(folderRequestBuilder).andExpect(status().isOk());
 		
@@ -104,7 +104,7 @@ public class ShObjectAPITest {
 		
 		RequestBuilder moveRequestBuilder = MockMvcRequestBuilders.put("/api/v2/object/moveto/" + folderObjectId)
 				.principal(mockPrincipal).accept(MediaType.APPLICATION_JSON).content(objectIdsRequestBody)
-				.contentType("application/json;charset=UTF-8");
+				.contentType("application/json");
 
 		mockMvc.perform(moveRequestBuilder).andExpect(status().isOk());
 	}
@@ -125,7 +125,7 @@ public class ShObjectAPITest {
 
 		RequestBuilder folderRequestBuilder = MockMvcRequestBuilders.post("/api/v2/folder").principal(mockPrincipal)
 				.accept(MediaType.APPLICATION_JSON).content(folderRequestBody)
-				.contentType("application/json;charset=UTF-8");
+				.contentType("application/json");
 		
 		mockMvc.perform(folderRequestBuilder).andExpect(status().isOk());
 		
@@ -137,7 +137,7 @@ public class ShObjectAPITest {
 		
 		RequestBuilder moveRequestBuilder = MockMvcRequestBuilders.put("/api/v2/object/moveto/" + siteObjectId)
 				.principal(mockPrincipal).accept(MediaType.APPLICATION_JSON).content(objectIdsRequestBody)
-				.contentType("application/json;charset=UTF-8");
+				.contentType("application/json");
 
 		mockMvc.perform(moveRequestBuilder).andExpect(status().isOk());
 	}
@@ -160,7 +160,7 @@ public class ShObjectAPITest {
 
 			RequestBuilder folderRequestBuilder = MockMvcRequestBuilders.post("/api/v2/folder").principal(mockPrincipal)
 					.accept(MediaType.APPLICATION_JSON).content(folderRequestBody)
-					.contentType("application/json;charset=UTF-8");
+					.contentType("application/json");
 			
 			mockMvc.perform(folderRequestBuilder).andExpect(status().isOk());
 			
@@ -172,7 +172,7 @@ public class ShObjectAPITest {
 			
 			RequestBuilder moveRequestBuilder = MockMvcRequestBuilders.put("/api/v2/object/copyto/" + folderObjectId)
 					.principal(mockPrincipal).accept(MediaType.APPLICATION_JSON).content(objectIdsRequestBody)
-					.contentType("application/json;charset=UTF-8");
+					.contentType("application/json");
 
 			mockMvc.perform(moveRequestBuilder).andExpect(status().isOk());
 		}
@@ -193,7 +193,7 @@ public class ShObjectAPITest {
 
 			RequestBuilder folderRequestBuilder = MockMvcRequestBuilders.post("/api/v2/folder").principal(mockPrincipal)
 					.accept(MediaType.APPLICATION_JSON).content(folderRequestBody)
-					.contentType("application/json;charset=UTF-8");
+					.contentType("application/json");
 			
 			mockMvc.perform(folderRequestBuilder).andExpect(status().isOk());
 			
@@ -205,7 +205,7 @@ public class ShObjectAPITest {
 			
 			RequestBuilder moveRequestBuilder = MockMvcRequestBuilders.put("/api/v2/object/copyto/" + siteObjectId)
 					.principal(mockPrincipal).accept(MediaType.APPLICATION_JSON).content(objectIdsRequestBody)
-					.contentType("application/json;charset=UTF-8");
+					.contentType("application/json");
 
 			mockMvc.perform(moveRequestBuilder).andExpect(status().isOk());
 		}
@@ -235,14 +235,14 @@ public class ShObjectAPITest {
 	@Test
 	public void shObjectListItemSite() throws Exception {
 		mockMvc.perform(get("/api/v2/object/" + siteObjectId + "/list")).andExpect(status().isOk())
-				.andExpect(content().contentType("application/json;charset=UTF-8"));
+				.andExpect(content().contentType("application/json"));
 
 	}
 
 	@Test
 	public void shObjectListItemFolder() throws Exception {
 		mockMvc.perform(get("/api/v2/object/" + folderObjectId + "/list")).andExpect(status().isOk())
-				.andExpect(content().contentType("application/json;charset=UTF-8"));
+				.andExpect(content().contentType("application/json"));
 
 	}
 
@@ -251,14 +251,14 @@ public class ShObjectAPITest {
 	@Test
 	public void shFolderListByPostTypeSite() throws Exception {
 		mockMvc.perform(get("/api/v2/object/" + siteObjectId + "/list/PT-TEXT")).andExpect(status().isOk())
-				.andExpect(content().contentType("application/json;charset=UTF-8"));
+				.andExpect(content().contentType("application/json"));
 
 	}
 
 	@Test
 	public void shFolderListByPostTypeFolder() throws Exception {
 		mockMvc.perform(get("/api/v2/object/" + folderObjectId + "/list/PT-TEXT")).andExpect(status().isOk())
-				.andExpect(content().contentType("application/json;charset=UTF-8"));
+				.andExpect(content().contentType("application/json"));
 
 	}
 
@@ -267,21 +267,21 @@ public class ShObjectAPITest {
 	@Test
 	public void shObjectPathSite() throws Exception {
 		mockMvc.perform(get("/api/v2/object/" + siteObjectId + "/path")).andExpect(status().isOk())
-				.andExpect(content().contentType("application/json;charset=UTF-8"));
+				.andExpect(content().contentType("application/json"));
 
 	}
 
 	@Test
 	public void shObjectPathFolder() throws Exception {
 		mockMvc.perform(get("/api/v2/object/" + folderObjectId + "/path")).andExpect(status().isOk())
-				.andExpect(content().contentType("application/json;charset=UTF-8"));
+				.andExpect(content().contentType("application/json"));
 
 	}
 
 	@Test
 	public void shObjectPathPost() throws Exception {
 		mockMvc.perform(get("/api/v2/object/" + postObjectId + "/path")).andExpect(status().isOk())
-				.andExpect(content().contentType("application/json;charset=UTF-8"));
+				.andExpect(content().contentType("application/json"));
 
 	}
 

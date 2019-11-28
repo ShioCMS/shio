@@ -45,7 +45,6 @@ import com.viglet.shiohara.api.ShJsonView;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
-import com.viglet.shiohara.persistence.model.post.relator.ShRelatorItem;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
@@ -90,14 +89,14 @@ public class ShPostAPITest {
 	@Test
 	public void shPostList() throws Exception {
 		mockMvc.perform(get("/api/v2/post")).andExpect(status().isOk())
-				.andExpect(content().contentType("application/json;charset=UTF-8"));
+				.andExpect(content().contentType("application/json"));
 
 	}
 
 	@Test
 	public void shPostAttrModel() throws Exception {
 		mockMvc.perform(get("/api/v2/post/attr/model")).andExpect(status().isOk())
-				.andExpect(content().contentType("application/json;charset=UTF-8"));
+				.andExpect(content().contentType("application/json"));
 
 	}
 
@@ -156,7 +155,7 @@ public class ShPostAPITest {
 
 		RequestBuilder folderRequestBuilder = MockMvcRequestBuilders.post("/api/v2/post").principal(mockPrincipal)
 				.accept(MediaType.APPLICATION_JSON).content(postRequestBody)
-				.contentType("application/json;charset=UTF-8");
+				.contentType("application/json");
 
 		mockMvc.perform(folderRequestBuilder).andExpect(status().isOk());
 	}
@@ -164,7 +163,7 @@ public class ShPostAPITest {
 	@Test
 	public void stage02ShPostEdit() throws Exception {
 		mockMvc.perform(get("/api/v2/post/" + newPostId)).andExpect(status().isOk())
-				.andExpect(content().contentType("application/json;charset=UTF-8"));
+				.andExpect(content().contentType("application/json"));
 	}
 
 	@Test
@@ -180,7 +179,7 @@ public class ShPostAPITest {
 
 		RequestBuilder folderRequestBuilder = MockMvcRequestBuilders.put("/api/v2/post/" + newPostId)
 				.principal(mockPrincipal).accept(MediaType.APPLICATION_JSON).content(postRequestBody)
-				.contentType("application/json;charset=UTF-8");
+				.contentType("application/json");
 
 		mockMvc.perform(folderRequestBuilder).andExpect(status().isOk());
 	}
@@ -190,10 +189,10 @@ public class ShPostAPITest {
 
 		RequestBuilder folderRequestBuilder = MockMvcRequestBuilders.delete("/api/v2/post/" + newPostId)
 				.principal(mockPrincipal).accept(MediaType.APPLICATION_JSON)
-				.contentType("application/json;charset=UTF-8");
+				.contentType("application/json");
 
 		mockMvc.perform(folderRequestBuilder).andExpect(status().isOk())
-				.andExpect(content().contentType("application/json;charset=UTF-8"));
+				.andExpect(content().contentType("application/json"));
 	}
 
 }

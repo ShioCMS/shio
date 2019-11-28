@@ -68,7 +68,7 @@ public class ShWidgetAPITest {
 	@Test
 	public void shWidgetList() throws Exception {
 		mockMvc.perform(get("/api/v2/widget")).andExpect(status().isOk())
-				.andExpect(content().contentType("application/json;charset=UTF-8"));
+				.andExpect(content().contentType("application/json"));
 
 	}
 
@@ -86,7 +86,7 @@ public class ShWidgetAPITest {
 		String requestBody = ShUtils.asJsonString(shWidget);
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/v2/widget").principal(mockPrincipal)
-				.accept(MediaType.APPLICATION_JSON).content(requestBody).contentType("application/json;charset=UTF-8");
+				.accept(MediaType.APPLICATION_JSON).content(requestBody).contentType("application/json");
 
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
@@ -106,7 +106,7 @@ public class ShWidgetAPITest {
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/api/v2/widget/" + newWidgetId)
 				.principal(mockPrincipal).accept(MediaType.APPLICATION_JSON).content(requestBody)
-				.contentType("application/json;charset=UTF-8");
+				.contentType("application/json");
 
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
@@ -114,12 +114,12 @@ public class ShWidgetAPITest {
 	@Test
 	public void stage03ShWidgetEdit() throws Exception {
 		mockMvc.perform(get("/api/v2/widget/" + newWidgetId)).andExpect(status().isOk())
-				.andExpect(content().contentType("application/json;charset=UTF-8"));
+				.andExpect(content().contentType("application/json"));
 	}
 	
 	@Test
 	public void stage04ShWidgetDelete() throws Exception {
 		mockMvc.perform(delete("/api/v2/widget/" + newWidgetId)).andExpect(status().isOk())
-				.andExpect(content().contentType("application/json;charset=UTF-8"));
+				.andExpect(content().contentType("application/json"));
 	}
 }
