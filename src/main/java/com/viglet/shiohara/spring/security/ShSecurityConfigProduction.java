@@ -44,18 +44,20 @@ import org.springframework.security.web.firewall.StrictHttpFirewall;
 public class ShSecurityConfigProduction extends WebSecurityConfigurerAdapter {
 	@Autowired
 	UserDetailsService userDetailsService;
+	@Autowired
+	ShAuthenticationEntryPoint shAuthenticationEntryPoint;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		// Prevent the HTTP response header of "Pragma: no-cache".
 		http.headers().frameOptions().disable().cacheControl().disable();
-		http.httpBasic().and().authorizeRequests()
+		http.httpBasic().authenticationEntryPoint(shAuthenticationEntryPoint).and().authorizeRequests()
 				.antMatchers("/index.html", "/welcome/**", "/", "/store/**", "/thirdparty/**", "/js/**", "/css/**",
-						"/template/**", "/img/**", "/sites/**", "/__tur/**", "/swagger-resources/**", "/h2/**","/image/**", "/login-page/**", "/logout-page/**")
-				.permitAll()
-				.anyRequest().authenticated().and()
+						"/template/**", "/img/**", "/sites/**", "/__tur/**", "/swagger-resources/**", "/h2/**",
+						"/image/**", "/login-page/**", "/logout-page/**")
+				.permitAll().anyRequest().authenticated().and()
 				.addFilterAfter(new ShCsrfHeaderFilter(), CsrfFilter.class).csrf()
-				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and().logout();		
+				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and().logout();
 	}
 
 	@Override

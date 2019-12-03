@@ -6,7 +6,7 @@ shioharaApp.config([
 		'NotificationProvider',
 		'$httpProvider',
 		function($stateProvider, $urlRouterProvider,
-				$locationProvider, $translateProvider, NotificationProvider,$httpProvider) {	
+				$locationProvider, $translateProvider, NotificationProvider, $httpProvider) {	
 
 			$httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 			$httpProvider.interceptors.push('shAuthInterceptor');
