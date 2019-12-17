@@ -1,5 +1,5 @@
 buildscript {
-    ext { springBootVersion = '2.2.1.RELEASE'
+    ext { springBootVersion = '2.2.2.RELEASE'
 	      hibernateVersion = '5.11.0.Final'
 		  httpClientVersion = '4.5.6'
 		  swaggerVersion = '2.9.2'
@@ -13,19 +13,20 @@ buildscript {
 		jcenter()
 		}
     dependencies { classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-    			   classpath("com.eriwen:gradle-js-plugin:2.12.0") 
-    			   classpath("com.liferay:com.liferay.gradle.plugins.jsdoc:2.0.21")
+    			   classpath files("lib/gradle-js-plugin-2.14.2-SNAPSHOT.jar")     			   
     			  }
 }
 
+plugins {
+  id "com.eriwen.gradle.js" version "2.14.1"
+}
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
-apply plugin: 'com.eriwen.gradle.js'
 apply plugin: 'jacoco'
-apply plugin: "com.liferay.app.jsdoc"
+
 jar {
     baseName = 'viglet-shiohara'
     version =  '0.3.6'
@@ -47,6 +48,11 @@ targetCompatibility = 1.8
 
 tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
+}
+
+task jsdocjs(type: com.eriwen.gradle.js.tasks.JsDocTask) {
+    source = ["src/main/resources/js/server-side"]
+    destinationDir = file("docs/javascript")
 }
 
 // Combine JS files
@@ -85,12 +91,6 @@ javadoc {
     destinationDir = file("docs/core")
 }
 
-appJSDoc {
-	sourceDirs = file("src/main/resources/js/server-side")
-	destinationDir = file("docs/javascript")
-	readmeFile = file("src/main/resources/js/server-side/README.md")
-}
-
 dependencies {
     
     // Spring Boot
@@ -112,7 +112,7 @@ dependencies {
 	
     
   	// Spring
-  	compile group: 'org.springframework', name: 'spring-test', version: '5.1.10.RELEASE'
+  	compile group: 'org.springframework', name: 'spring-test', version: '5.2.2.RELEASE'
   	    
   	// Jackson
     compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.9.8'
