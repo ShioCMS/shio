@@ -23,6 +23,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -38,6 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
+import com.viglet.shiohara.auth.otds.provider.ShOTDSService;
 import com.viglet.shiohara.bean.ShCurrentUser;
 import com.viglet.shiohara.persistence.model.auth.ShGroup;
 import com.viglet.shiohara.persistence.model.auth.ShUser;
@@ -57,7 +59,12 @@ public class ShUserAPI {
 	private ShUserRepository shUserRepository;
 	@Autowired
 	private ShGroupRepository shGroupRepository;
-
+	@Autowired
+	private ShOTDSService shOTDSService;
+	
+	@Value("${shiohara.auth.otds.enabled}")
+	boolean isOTDS;
+	
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShUser> shUserList() {
@@ -71,12 +78,19 @@ public class ShUserAPI {
 		if (!(authentication instanceof AnonymousAuthenticationToken)) {
 			boolean isAdmin = false;
 			String currentUserName = authentication.getName();
-			ShUser shUser = shUserRepository.findByUsername(currentUserName);
-			shUser.setPassword(null);
-			if (shUser.getShGroups() != null) {
-				for (ShGroup shGroup : shUser.getShGroups()) {
-					if (shGroup.getName().equals("Administrator"))
-						isAdmin = true;
+
+			ShUser shUser = null;
+			if (isOTDS) {
+				shUser = shOTDSService.getCurrentUser();					
+			} else {
+				shUser = shUserRepository.findByUsername(currentUserName);
+
+				shUser.setPassword(null);
+				if (shUser.getShGroups() != null) {
+					for (ShGroup shGroup : shUser.getShGroups()) {
+						if (shGroup.getName().equals("Administrator"))
+							isAdmin = true;
+					}
 				}
 			}
 			ShCurrentUser shCurrentUser = new ShCurrentUser();

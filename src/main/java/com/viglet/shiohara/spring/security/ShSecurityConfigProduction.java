@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2019 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,10 +18,12 @@
 package com.viglet.shiohara.spring.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -37,19 +39,34 @@ import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 
+import com.viglet.shiohara.auth.otds.provider.ShOTDSAuthenticationProvider;
+
 @Configuration
 @EnableWebSecurity
 @Profile("production")
 @ComponentScan(basePackageClasses = ShCustomUserDetailsService.class)
 public class ShSecurityConfigProduction extends WebSecurityConfigurerAdapter {
 	@Autowired
-	UserDetailsService userDetailsService;
+	private UserDetailsService userDetailsService;
 	@Autowired
-	ShAuthenticationEntryPoint shAuthenticationEntryPoint;
+	private ShAuthenticationEntryPoint shAuthenticationEntryPoint;
+	@Autowired
+	private ShOTDSAuthenticationProvider shOTDSAuthenticationProvider;
+
+	@Value("${shiohara.auth.otds.enabled}")
+	boolean isOTDS;
+
+	@Override
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		if (isOTDS) {
+			auth.authenticationProvider(shOTDSAuthenticationProvider);
+		} else {
+			super.configure(auth);
+		}
+	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		// Prevent the HTTP response header of "Pragma: no-cache".
 		http.headers().frameOptions().disable().cacheControl().disable();
 		http.httpBasic().authenticationEntryPoint(shAuthenticationEntryPoint).and().authorizeRequests()
 				.antMatchers("/index.html", "/welcome/**", "/", "/store/**", "/thirdparty/**", "/js/**", "/css/**",
