@@ -247,10 +247,32 @@ shioharaApp.config([
 				data : {
 					pageTitle : 'New Site | Viglet Shiohara'
 				}
+			}).state('config', {
+				url: '/config',
+				templateUrl: 'template/config/config-home.html',
+				controller : 'ShConfigCtrl',
+				redirectTo: 'config.search',
+				data : { pageTitle: 'Configuration | Viglet Shiohara' }
+			}).state('config.search', {
+				url: '/search',
+				templateUrl: 'template/config/search/config-search.html',
+				controller: 'ShConfigSearchCtrl',
+				data : { pageTitle: 'Search Configuration | Viglet Shiohara' }
+			}).state('config.exchange-provider', {
+				url: '/provider/exchange',
+				templateUrl: 'template/config/provider/exchange/config-exchange-provider.html',
+				controller: 'ShConfigExchangeProviderCtrl',
+				data : { pageTitle: 'Exchange Providers Configuration | Viglet Shiohara' }
+			}).state('config.auth-provider', {
+				url: '/provider/auth',
+				templateUrl: 'template/config/provider/auth/config-auth-provider.html',
+				controller: 'ShConfigAuthProviderCtrl',
+				data : { pageTitle: 'Auth Providers Configuration | Viglet Shiohara' }
 			}).state('admin', {
 				url: '/admin',
 				templateUrl: 'template/admin/admin-home.html',
 				controller : 'ShAdminCtrl',
+				redirectTo: 'admin.user',
 				data : { pageTitle: 'Administration | Viglet Shiohara' }
 			}).state('admin.user', {
 				url: '/user',
