@@ -47,6 +47,8 @@ public class ShProviderInstance {
 
 	private String description;
 
+	private int position;
+
 	@ManyToOne
 	@JoinColumn(name = "vendor_id")
 	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
@@ -82,6 +84,14 @@ public class ShProviderInstance {
 
 	public void setVendor(ShProviderVendor vendor) {
 		this.vendor = vendor;
+	}
+
+	public int getPosition() {
+		return position;
+	}
+
+	public void setPosition(int position) {
+		this.position = position;
 	}
 
 }

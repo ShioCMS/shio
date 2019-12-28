@@ -64,6 +64,7 @@ import com.viglet.shiohara.utils.ShConfigVarUtils;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("/api/v2/provider")
@@ -146,7 +147,7 @@ public class ShProviderAPI {
 				shConfigVar = new ShConfigVar();
 				shConfigVar.setPath(providerInstancePath);
 				shConfigVar.setName(propertyEntry.getKey());
-				shConfigVar.setValue(propertyEntry.getKey());
+				shConfigVar.setValue(propertyEntry.getValue());
 			}
 			shConfigVarRepository.saveAndFlush(shConfigVar);
 		}
@@ -204,6 +205,35 @@ public class ShProviderAPI {
 			return true;
 		} else
 			return false;
+	}
+
+	@GetMapping("/model")
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
+	public ShProviderInstanceBean shProviderInstanceStructure() {
+		ShProviderInstanceBean shProviderInstanceBean = new ShProviderInstanceBean();
+		return shProviderInstanceBean;
+
+	}
+
+	@ApiOperation(value = "Sort Exchange Provider")
+	@PutMapping("/sort")
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
+	public Map<String, Integer> shProviderInstanceSort(@RequestBody Map<String, Integer> objectOrder) {
+
+		for (Entry<String, Integer> objectOrderItem : objectOrder.entrySet()) {
+			int shObjectOrder = objectOrderItem.getValue();
+			String shExchangeProviderId = objectOrderItem.getKey();
+			Optional<ShProviderInstance> shProviderInstanceOptional = shProviderInstanceRepository
+					.findById(shExchangeProviderId);
+			if (shProviderInstanceOptional.isPresent()) {
+				ShProviderInstance shProviderInstance = shProviderInstanceOptional.get();
+				shProviderInstance.setPosition(shObjectOrder);
+				shProviderInstanceRepository.save(shProviderInstance);
+
+			}
+		}
+		return objectOrder;
+
 	}
 
 	private void initProvider(String providerInstanceId) {

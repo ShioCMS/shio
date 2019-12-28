@@ -266,12 +266,12 @@ shioharaApp.config([
 			}).state('config.exchange-provider-new', {
 				url: '/provider/exchange/new',
 				templateUrl: 'template/config/provider/exchange/config-exchange-provider-item.html',
-				controller: 'ShConfigExchangeProviderNewCtrl',
+				controller: 'ShConfigExchangeProviderCtrl',
 				data : { pageTitle: 'New Exchange Provider| Viglet Shiohara' }
 			}).state('config.exchange-provider', {
 				url: '/provider/exchange/:exchangeProviderId',
 				templateUrl: 'template/config/provider/exchange/config-exchange-provider-item.html',
-				controller: 'ShConfigExchangeProviderEditCtrl',
+				controller: 'ShConfigExchangeProviderCtrl',
 				data : { pageTitle: 'Edit Exchange Provider| Viglet Shiohara' }
 			}).state('config.auth-provider', {
 				url: '/provider/auth',

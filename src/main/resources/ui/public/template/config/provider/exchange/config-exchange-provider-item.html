@@ -41,8 +41,8 @@
 			</p>
 			<p>Select Exchange Provider Vendor</p>
 		</td>
-		<td><select class="form-control" ng-model="exchangeProvider.vendor.id"
-				ng-options="vendor.id as vendor.name for vendor in vendors">
+		<td><select class="form-control" ng-model="exchangeProvider.vendor"
+				ng-options="vendor as vendor.name for vendor in vendors track by vendor.id">
 				<option value="">-- Pick One --</option>
 			</select></td>
 	</tr>
