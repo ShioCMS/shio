@@ -3,13 +3,8 @@ shioharaApp.controller('ShImportFromProviderCtrl', [
 	'shAPIServerService',
 	'$http',
 	'$uibModalInstance',
-	'objectId',
 	'objectType',
-	'shWidgetFileFactory',
-	'Upload',
-	'$timeout',
-	function ($scope, shAPIServerService, $http, $uibModalInstance,
-		objectId, objectType, shWidgetFileFactory, Upload, $timeout) {
+	function ($scope, shAPIServerService, $http, $uibModalInstance, objectType) {
 		var $ctrl = this;
 		$ctrl.loadData = false;
 		$ctrl.objectTypeName = "Object";
@@ -92,7 +87,7 @@ shioharaApp.controller('ShImportFromProviderCtrl', [
 				$scope.currentFolderId = folderId;
 				$ctrl.enableInsertButton = false;
 				$ctrl.shObjectSelected = null;
-				var objectListURL = "/v2/provider/" + $scope.providerId + "/" + folderId + "/list/";
+				var objectListURL = "/v2/provider/exchange/" + $scope.providerId + "/" + folderId + "/list/";
 
 				$scope.$evalAsync($http.get(
 					shAPIServerService.get().concat(objectListURL))
@@ -112,7 +107,7 @@ shioharaApp.controller('ShImportFromProviderCtrl', [
 				$ctrl.shPostSelected = null;
 				$scope.$evalAsync($http.get(
 					shAPIServerService.get().concat(
-						"/v2/provider/"))
+						"/v2/provider/exchange/"))
 					.then(function (response) {
 						$ctrl.providers = response.data;
 						$ctrl.loadData = false;

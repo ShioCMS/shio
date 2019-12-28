@@ -22,7 +22,7 @@ shioharaApp.controller('ShConfigExchangeProviderCtrl', [
 			$scope.isNew = true;
 			$scope
 				.$evalAsync($http
-					.get(shAPIServerService.get().concat("/v2/provider/model"))
+					.get(shAPIServerService.get().concat("/v2/provider/exchange/model"))
 					.then(
 						function (response) {
 							$scope.exchangeProvider = response.data;

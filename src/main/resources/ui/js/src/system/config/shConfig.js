@@ -273,11 +273,21 @@ shioharaApp.config([
 				templateUrl: 'template/config/provider/exchange/config-exchange-provider-item.html',
 				controller: 'ShConfigExchangeProviderCtrl',
 				data : { pageTitle: 'Edit Exchange Provider| Viglet Shiohara' }
-			}).state('config.auth-provider', {
+			}).state('config.auth-providers', {
 				url: '/provider/auth',
-				templateUrl: 'template/config/provider/auth/config-auth-provider.html',
+				templateUrl: 'template/config/provider/auth/config-auth-providers.html',
+				controller: 'ShConfigAuthProvidersCtrl',
+				data : { pageTitle: 'Auth Providers | Viglet Shiohara' }
+			}).state('config.auth-provider-new', {
+				url: '/provider/auth/new',
+				templateUrl: 'template/config/provider/auth/config-auth-provider-item.html',
 				controller: 'ShConfigAuthProviderCtrl',
-				data : { pageTitle: 'Auth Providers Configuration | Viglet Shiohara' }
+				data : { pageTitle: 'New Auth Provider| Viglet Shiohara' }
+			}).state('config.auth-provider', {
+				url: '/provider/auth/:authProviderId',
+				templateUrl: 'template/config/provider/auth/config-auth-provider-item.html',
+				controller: 'ShConfigAuthProviderCtrl',
+				data : { pageTitle: 'Edit Auth Provider| Viglet Shiohara' }
 			}).state('admin', {
 				url: '/admin',
 				templateUrl: 'template/admin/admin-home.html',

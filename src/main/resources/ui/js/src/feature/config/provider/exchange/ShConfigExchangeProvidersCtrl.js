@@ -22,7 +22,7 @@ shioharaApp.controller('ShConfigExchangeProvidersCtrl', [
 					sortObject[exchangeProvider.id] = exchangeProvider.position;
 				});
 				var parameter = JSON.stringify(sortObject);
-				$http.put(shAPIServerService.get().concat("/v2/provider/sort"), parameter).then(function (response) { });
+				$http.put(shAPIServerService.get().concat("/v2/provider/exchange/sort"), parameter).then(function (response) { });
 			}
 		};
 

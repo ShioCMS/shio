@@ -288,7 +288,7 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
             var modalInstance = ShDialogImportFromProvider.dialog(2000, "shFolder");
             modalInstance.result.then(function (providerItem) {
                 console.log(providerItem);
-                $http.post(shAPIServerService.get().concat("/v2/provider/otds/import/" + providerItem.id + "/to/" + folderId)).then(function (response) {
+                $http.post(shAPIServerService.get().concat("/v2/provider/exchange/otds/import/" + providerItem.id + "/to/" + folderId)).then(function (response) {
                     var shPost = response.data;
                     $scope.shPosts.push(shPost);
                     Notification.warning(shPost.title + " Asset was imported.");
