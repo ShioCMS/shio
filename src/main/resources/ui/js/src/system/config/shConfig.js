@@ -258,11 +258,21 @@ shioharaApp.config([
 				templateUrl: 'template/config/search/config-search.html',
 				controller: 'ShConfigSearchCtrl',
 				data : { pageTitle: 'Search Configuration | Viglet Shiohara' }
-			}).state('config.exchange-provider', {
+			}).state('config.exchange-providers', {
 				url: '/provider/exchange',
-				templateUrl: 'template/config/provider/exchange/config-exchange-provider.html',
-				controller: 'ShConfigExchangeProviderCtrl',
-				data : { pageTitle: 'Exchange Providers Configuration | Viglet Shiohara' }
+				templateUrl: 'template/config/provider/exchange/config-exchange-providers.html',
+				controller: 'ShConfigExchangeProvidersCtrl',
+				data : { pageTitle: 'Exchange Providers| Viglet Shiohara' }
+			}).state('config.exchange-provider-new', {
+				url: '/provider/exchange/new',
+				templateUrl: 'template/config/provider/exchange/config-exchange-provider-item.html',
+				controller: 'ShConfigExchangeProviderNewCtrl',
+				data : { pageTitle: 'New Exchange Provider| Viglet Shiohara' }
+			}).state('config.exchange-provider', {
+				url: '/provider/exchange/:exchangeProviderId',
+				templateUrl: 'template/config/provider/exchange/config-exchange-provider-item.html',
+				controller: 'ShConfigExchangeProviderEditCtrl',
+				data : { pageTitle: 'Edit Exchange Provider| Viglet Shiohara' }
 			}).state('config.auth-provider', {
 				url: '/provider/auth',
 				templateUrl: 'template/config/provider/auth/config-auth-provider.html',

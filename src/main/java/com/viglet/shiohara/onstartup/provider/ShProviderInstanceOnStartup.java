@@ -52,7 +52,7 @@ public class ShProviderInstanceOnStartup {
 	private void createOTCSInstance() {
 		ShProviderInstance shProviderInstance = new ShProviderInstance();
 		shProviderInstance.setName("OpenText Content Server");
-		shProviderInstance.setDescription("OpenText Content Server");
+		shProviderInstance.setDescription("Sample of OTCS");
 		shProviderInstance.setVendor(shProviderVendorRepository.findById("OTCS").orElse(null));
 
 		shProviderInstanceRepository.save(shProviderInstance);
@@ -81,7 +81,7 @@ public class ShProviderInstanceOnStartup {
 	private void createOTMMInstance() {
 		ShProviderInstance shProviderInstance = new ShProviderInstance();
 		shProviderInstance.setName("OpenText Media Management");
-		shProviderInstance.setDescription("OpenText Media Management");
+		shProviderInstance.setDescription("Sample of OTMM");
 		shProviderInstance.setVendor(shProviderVendorRepository.findById("OTMM").orElse(null));
 
 		shProviderInstanceRepository.save(shProviderInstance);

@@ -41,16 +41,19 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
+import com.viglet.shiohara.bean.provider.ShProviderInstanceBean;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.provider.ShProviderInstance;
+import com.viglet.shiohara.persistence.model.provider.ShProviderVendor;
+import com.viglet.shiohara.persistence.model.system.ShConfigVar;
 import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.provider.ShProviderInstanceRepository;
+import com.viglet.shiohara.persistence.repository.provider.ShProviderVendorRepository;
+import com.viglet.shiohara.persistence.repository.system.ShConfigVarRepository;
 import com.viglet.shiohara.provider.ShProvider;
 import com.viglet.shiohara.provider.ShProviderFolder;
 import com.viglet.shiohara.provider.ShProviderPost;
-import com.viglet.shiohara.provider.otmm.ShOTMMProvider;
-import com.viglet.shiohara.provider.otmm.bean.folders.ShOTMMFoldersBean;
 import com.viglet.shiohara.utils.ShConfigVarUtils;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
 
@@ -61,6 +64,9 @@ import io.swagger.annotations.Api;
 @Api(tags = "Provider", description = "Provider API")
 public class ShProviderAPI {
 	private static final Log logger = LogFactory.getLog(ShProviderAPI.class);
+
+	private static final String PROVIDER_PATH = "/provider/%s";
+
 	private ShProvider shProvider;
 	@Autowired
 	private ShFolderRepository shFolderRepository;
@@ -70,6 +76,16 @@ public class ShProviderAPI {
 	private ShConfigVarUtils shConfigVarUtils;
 	@Autowired
 	private ShProviderInstanceRepository shProviderInstanceRepository;
+	@Autowired
+	private ShProviderVendorRepository shProviderVendorRepository;
+	@Autowired
+	private ShConfigVarRepository shConfigVarRepository;
+
+	@GetMapping("/vendor")
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
+	public List<ShProviderVendor> shProviderVendorListItem() {
+		return shProviderVendorRepository.findAll();
+	}
 
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
@@ -129,36 +145,35 @@ public class ShProviderAPI {
 		return null;
 	}
 
+	@GetMapping("/{providerInstanceId}")
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
+	public ShProviderInstanceBean shProviderEdit(@PathVariable String providerInstanceId) {
+		ShProviderInstance shProviderInstance = shProviderInstanceRepository.findById(providerInstanceId).orElse(null);
+		ShProviderInstanceBean shProviderInstanceBean = new ShProviderInstanceBean();
+		shProviderInstanceBean.setId(shProviderInstance.getId());
+		shProviderInstanceBean.setName(shProviderInstance.getName());
+		shProviderInstanceBean.setDescription(shProviderInstance.getDescription());
+		shProviderInstanceBean.setVendor(shProviderInstance.getVendor());
+
+		String providerInstancePath = String.format(PROVIDER_PATH, shProviderInstance.getId());
+
+		List<ShConfigVar> shConfigVars = shConfigVarRepository.findByPath(providerInstancePath);
+
+		for (ShConfigVar shConfigVar : shConfigVars) {
+			shProviderInstanceBean.getProperties().put(shConfigVar.getName(), shConfigVar.getValue());
+		}
+
+		return shProviderInstanceBean;
+	}
+
 	@GetMapping("/{providerInstanceId}/{id}/list")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShProviderFolder shObjectListItem(@PathVariable String providerInstanceId, @PathVariable String id) {
+	public ShProviderFolder shProviderListItem(@PathVariable String providerInstanceId, @PathVariable String id) {
 		this.initProvider(providerInstanceId);
 		if (id.equals("_root"))
 			return shProvider.getRootFolder();
 		else
 			return shProvider.getFolder(id);
 
-	}
-	
-	@GetMapping("/test/{id}")
-	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public void shObjectTesttem(@PathVariable String id) {
-	
-		ShOTMMProvider shOTMMProvider = new ShOTMMProvider();
-		Map<String, String> variables = shConfigVarUtils
-				.getVariablesFromPath(String.format("/provider/%s", "c1044181-77bc-4a90-aa50-eeb4b19eb5b4"));
-
-		shOTMMProvider.init(variables);
-		System.out.println("Inicio");
-		ShOTMMFoldersBean shOTMMFoldersBean = shOTMMProvider.getOTMMFolderParents(id);
-		if (shOTMMFoldersBean != null) {
-			System.out.println("Not null");
-		}
-		else {
-			System.out.println("null");
-		}
-		System.out.println("Fim"  );
-		
-		shOTMMProvider.getFolder(id);
 	}
 }

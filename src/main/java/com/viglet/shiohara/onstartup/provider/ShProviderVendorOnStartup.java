@@ -39,7 +39,7 @@ public class ShProviderVendorOnStartup {
 			shProviderVendor.setName(ShSystemProviderVendor.OTCS);
 			shProviderVendor.setDescription(ShSystemProviderVendor.OTCS);
 			shProviderVendor.setClassName("com.viglet.shiohara.provider.otcs.ShOTCSProvider");
-			shProviderVendor.setImplementationCode("template/provider/otcs/configuration.html");
+			shProviderVendor.setImplementationCode("template/config/provider/exchange/otcs/otcs-configuration.html");
 
 			shProviderVendorRepository.save(shProviderVendor);
 
@@ -48,7 +48,7 @@ public class ShProviderVendorOnStartup {
 			shProviderVendor.setName(ShSystemProviderVendor.OTMM);
 			shProviderVendor.setDescription(ShSystemProviderVendor.OTMM);
 			shProviderVendor.setClassName("com.viglet.shiohara.provider.otmm.ShOTMMProvider");
-			shProviderVendor.setImplementationCode("template/provider/otmm/configuration.html");
+			shProviderVendor.setImplementationCode("template/config/provider/exchange/otmm/otmm-configuration.html");
 
 			shProviderVendorRepository.save(shProviderVendor);
 		}
