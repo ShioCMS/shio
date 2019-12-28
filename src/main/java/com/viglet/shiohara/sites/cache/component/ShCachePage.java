@@ -126,7 +126,7 @@ public class ShCachePage {
 		}
 
 		if (mimeType.equals("json"))
-			shCachePageBean.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+			shCachePageBean.setContentType(MediaType.APPLICATION_JSON_VALUE);
 		else if (mimeType.equals("xml"))
 			shCachePageBean.setContentType(MediaType.APPLICATION_XML_VALUE);
 		else

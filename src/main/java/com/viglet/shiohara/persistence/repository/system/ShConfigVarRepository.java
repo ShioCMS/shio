@@ -23,21 +23,31 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 
 public interface ShConfigVarRepository extends JpaRepository<ShConfigVar, String> {
 
 	List<ShConfigVar> findAll();
-	
+
 	boolean existsByPathAndName(String path, String name);
-	
+
 	boolean existsByPath(String path);
 
 	List<ShConfigVar> findByPath(String path);
-	
+
+	ShConfigVar findByPathAndName(String path, String name);
+
 	Optional<ShConfigVar> findById(String id);
 
 	@SuppressWarnings("unchecked")
 	ShConfigVar save(ShConfigVar turConfigVar);
 
 	void delete(ShConfigVar turConfigVar);
+
+	void deleteByPath(String path);
+
+	@Modifying
+	@Query("delete from ShConfigVar cv where cv.id = ?1")
+	void delete(String id);
 }

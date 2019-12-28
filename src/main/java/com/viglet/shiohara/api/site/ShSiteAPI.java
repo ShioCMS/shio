@@ -97,7 +97,7 @@ public class ShSiteAPI {
 
 	@PutMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShSite shSiteUpdate(@PathVariable String id, @RequestBody ShSite shSite) throws Exception {
+	public ShSite shSiteUpdate(@PathVariable String id, @RequestBody ShSite shSite) {
 		Optional<ShSite> shSiteOptional = shSiteRepository.findById(id);
 		if (shSiteOptional.isPresent()) {
 			ShSite shSiteEdit = shSiteOptional.get();

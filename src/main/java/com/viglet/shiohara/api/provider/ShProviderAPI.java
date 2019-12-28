@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -32,9 +34,13 @@ import org.apache.tika.mime.MimeType;
 import org.apache.tika.mime.MimeTypeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -93,6 +99,113 @@ public class ShProviderAPI {
 		return shProviderInstanceRepository.findAll();
 	}
 
+	@GetMapping("/{id}")
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
+	public ShProviderInstanceBean shProviderEdit(@PathVariable String id) {
+		ShProviderInstance shProviderInstance = shProviderInstanceRepository.findById(id).orElse(null);
+		ShProviderInstanceBean shProviderInstanceBean = new ShProviderInstanceBean();
+		if (shProviderInstance != null) {
+			shProviderInstanceBean = new ShProviderInstanceBean();
+			shProviderInstanceBean.setId(shProviderInstance.getId());
+			shProviderInstanceBean.setName(shProviderInstance.getName());
+			shProviderInstanceBean.setDescription(shProviderInstance.getDescription());
+			shProviderInstanceBean.setVendor(shProviderInstance.getVendor());
+
+			String providerInstancePath = String.format(PROVIDER_PATH, shProviderInstance.getId());
+
+			List<ShConfigVar> shConfigVars = shConfigVarRepository.findByPath(providerInstancePath);
+
+			for (ShConfigVar shConfigVar : shConfigVars) {
+				shProviderInstanceBean.getProperties().put(shConfigVar.getName(), shConfigVar.getValue());
+			}
+		}
+
+		return shProviderInstanceBean;
+	}
+
+	@PostMapping
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
+	public ShProviderInstanceBean shProviderInstanceAdd(@RequestBody ShProviderInstanceBean shProviderInstanceBean) {
+		ShProviderInstance shProviderInstance = new ShProviderInstance();
+
+		shProviderInstance.setName(shProviderInstanceBean.getName());
+		shProviderInstance.setDescription(shProviderInstanceBean.getDescription());
+		shProviderInstance.setVendor(shProviderInstanceBean.getVendor());
+
+		shProviderInstanceRepository.save(shProviderInstance);
+
+		for (Entry<String, String> propertyEntry : shProviderInstanceBean.getProperties().entrySet()) {
+			String providerInstancePath = String.format(PROVIDER_PATH, shProviderInstance.getId());
+
+			ShConfigVar shConfigVar = shConfigVarRepository.findByPathAndName(providerInstancePath,
+					propertyEntry.getKey());
+
+			if (shConfigVar != null) {
+				shConfigVar.setValue(propertyEntry.getValue());
+			} else {
+				shConfigVar = new ShConfigVar();
+				shConfigVar.setPath(providerInstancePath);
+				shConfigVar.setName(propertyEntry.getKey());
+				shConfigVar.setValue(propertyEntry.getKey());
+			}
+			shConfigVarRepository.saveAndFlush(shConfigVar);
+		}
+
+		shProviderInstanceBean.setId(shProviderInstance.getId());
+
+		return shProviderInstanceBean;
+	}
+
+	@PutMapping("/{id}")
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
+	public ShProviderInstanceBean shProviderInstanceUpdate(@PathVariable String id,
+			@RequestBody ShProviderInstanceBean shProviderInstanceBean) {
+		Optional<ShProviderInstance> shProviderInstanceOptional = shProviderInstanceRepository.findById(id);
+		if (shProviderInstanceOptional.isPresent()) {
+			ShProviderInstance shProviderInstanceEdit = shProviderInstanceOptional.get();
+			shProviderInstanceEdit.setName(shProviderInstanceBean.getName());
+			shProviderInstanceEdit.setDescription(shProviderInstanceBean.getDescription());
+			shProviderInstanceEdit.setVendor(shProviderInstanceBean.getVendor());
+
+			shProviderInstanceRepository.save(shProviderInstanceEdit);
+
+			for (Entry<String, String> propertyEntry : shProviderInstanceBean.getProperties().entrySet()) {
+				String providerInstancePath = String.format(PROVIDER_PATH, shProviderInstanceEdit.getId());
+
+				ShConfigVar shConfigVar = shConfigVarRepository.findByPathAndName(providerInstancePath,
+						propertyEntry.getKey());
+
+				if (shConfigVar != null) {
+					shConfigVar.setValue(propertyEntry.getValue());
+				} else {
+					shConfigVar = new ShConfigVar();
+					shConfigVar.setPath(providerInstancePath);
+					shConfigVar.setName(propertyEntry.getKey());
+					shConfigVar.setValue(propertyEntry.getKey());
+				}
+				shConfigVarRepository.saveAndFlush(shConfigVar);
+			}
+
+			return shProviderInstanceBean;
+		}
+
+		return null;
+
+	}
+
+	@DeleteMapping("/{id}")
+	@Transactional
+	public boolean shProviderInstanceDelete(@PathVariable String id) {
+		Optional<ShProviderInstance> shProviderInstance = shProviderInstanceRepository.findById(id);
+		if (shProviderInstance.isPresent()) {
+			String providerInstancePath = String.format(PROVIDER_PATH, id);
+			shConfigVarRepository.deleteByPath(providerInstancePath);
+			shProviderInstanceRepository.delete(id);
+			return true;
+		} else
+			return false;
+	}
+
 	private void initProvider(String providerInstanceId) {
 		ShProviderInstance shProviderInstance = shProviderInstanceRepository.findById(providerInstanceId).orElse(null);
 		if (shProviderInstance != null) {
@@ -143,27 +256,6 @@ public class ShProviderAPI {
 			logger.error("shProviderImportItemMimeTypeException", e);
 		}
 		return null;
-	}
-
-	@GetMapping("/{providerInstanceId}")
-	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShProviderInstanceBean shProviderEdit(@PathVariable String providerInstanceId) {
-		ShProviderInstance shProviderInstance = shProviderInstanceRepository.findById(providerInstanceId).orElse(null);
-		ShProviderInstanceBean shProviderInstanceBean = new ShProviderInstanceBean();
-		shProviderInstanceBean.setId(shProviderInstance.getId());
-		shProviderInstanceBean.setName(shProviderInstance.getName());
-		shProviderInstanceBean.setDescription(shProviderInstance.getDescription());
-		shProviderInstanceBean.setVendor(shProviderInstance.getVendor());
-
-		String providerInstancePath = String.format(PROVIDER_PATH, shProviderInstance.getId());
-
-		List<ShConfigVar> shConfigVars = shConfigVarRepository.findByPath(providerInstancePath);
-
-		for (ShConfigVar shConfigVar : shConfigVars) {
-			shProviderInstanceBean.getProperties().put(shConfigVar.getName(), shConfigVar.getValue());
-		}
-
-		return shProviderInstanceBean;
 	}
 
 	@GetMapping("/{providerInstanceId}/{id}/list")
