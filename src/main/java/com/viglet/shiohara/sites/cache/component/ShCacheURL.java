@@ -22,8 +22,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Component;
 
-import com.viglet.shiohara.sites.ShSitesContextURL;
-
 @Component
 public class ShCacheURL {
 	@SuppressWarnings("unused")

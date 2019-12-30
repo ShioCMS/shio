@@ -103,9 +103,6 @@ public class ShPaymentSlip {
 
 			Datas datas = Datas.novasDatas().comDocumento(today).comProcessamento(today).comVencimento(firstPayment);
 
-			Datas datas2nd = Datas.novasDatas().comDocumento(today).comProcessamento(today)
-					.comVencimento(secondPayment);
-
 			Endereco enderecoBeneficiario = Endereco.novoEndereco()
 					.comLogradouro(ptdSettings.getString("address") + ", " + ptdSettings.getString("addressNumber"))
 					.comBairro(ptdSettings.getString("district")).comCep(ptdSettings.getString("zipCode"))

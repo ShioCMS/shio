@@ -109,14 +109,17 @@ public class ShReCaptchaWidget implements ShWidgetImplementation {
 			return success;
 		}
 
+		@SuppressWarnings("unused")
 		public void setSuccess(boolean success) {
 			this.success = success;
 		}
 
+		@SuppressWarnings("unused")
 		public String[] getErrorCodes() {
 			return errorCodes;
 		}
 
+		@SuppressWarnings("unused")
 		public void setErrorCodes(String[] errorCodes) {
 			this.errorCodes = errorCodes;
 		}

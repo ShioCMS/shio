@@ -89,6 +89,7 @@ public class ShSecurityConfigProduction extends WebSecurityConfigurerAdapter {
 		auth.userDetailsService(userDetailsService).passwordEncoder(passwordencoder());
 	}
 
+	@SuppressWarnings("unused")
 	private CsrfTokenRepository csrfTokenRepository() {
 		HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
 		repository.setHeaderName("X-XSRF-TOKEN");
