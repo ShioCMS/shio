@@ -7,25 +7,32 @@
 
 <div class="row row-centered">
 	<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 col-centered">
+	
 		<div class="list-group" style="margin-bottom: 10px">
-			<a ng-class="{'disabled':$state.current.name.indexOf('config.search') == 0}" ui-sref="config.search"
-				class="list-group-item ng-binding" style="color: rgb(51, 51, 51)"><span
-				class="glyphicon glyphicon-search" aria-hidden="true" style="margin-right: 10px;"></span> Search<span
-					class="glyphicon glyphicon-chevron-right" aria-hidden="true"
+			<a ng-class="{'disabled':$state.current.name.indexOf('config.auth-providers') == 0}"
+				ui-sref="config.auth-providers" class="list-group-item ng-binding" style="color: rgb(51, 51, 51)"><span
+				class="glyphicon glyphicon-lock" aria-hidden="true" style="margin-right: 10px;"></span> Auth
+				Providers<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"
 					style="float: right; position: relative; color: gray"></span>
 			</a>
-
-		</div>
-		<div class="list-group" style="margin-bottom: 10px">
 			<a ng-class="{'disabled':$state.current.name.indexOf('config.exchange-providers') == 0}"
 				ui-sref="config.exchange-providers" class="list-group-item ng-binding"
 				style="color: rgb(51, 51, 51)"><span
 				class="glyphicon glyphicon-transfer" aria-hidden="true" style="margin-right: 10px;"></span> Exchange Providers<span class="glyphicon glyphicon-chevron-right"
 					aria-hidden="true" style="float: right; position: relative; color: gray"></span>
-			</a> <a ng-class="{'disabled':$state.current.name.indexOf('config.auth-providers') == 0}"
-				ui-sref="config.auth-providers" class="list-group-item ng-binding" style="color: rgb(51, 51, 51)"><span
-				class="glyphicon glyphicon-lock" aria-hidden="true" style="margin-right: 10px;"></span> Auth
-				Providers<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"
+			</a> 
+			<a ng-class="{'disabled':$state.current.name.indexOf('config.search') == 0}" ui-sref="config.search"
+			class="list-group-item ng-binding" style="color: rgb(51, 51, 51)"><span
+			class="glyphicon glyphicon-search" aria-hidden="true" style="margin-right: 10px;"></span> Search Providers<span
+				class="glyphicon glyphicon-chevron-right" aria-hidden="true"
+				style="float: right; position: relative; color: gray"></span>
+		</a>
+		</div>
+		<div class="list-group" style="margin-bottom: 10px">
+			<a ng-class="{'disabled':$state.current.name.indexOf('config.email') == 0}" ui-sref="config.email"
+				class="list-group-item ng-binding" style="color: rgb(51, 51, 51)"><span
+				class="glyphicon glyphicon-envelope" aria-hidden="true" style="margin-right: 10px;"></span> Email<span
+					class="glyphicon glyphicon-chevron-right" aria-hidden="true"
 					style="float: right; position: relative; color: gray"></span>
 			</a>
 

@@ -251,8 +251,13 @@ shioharaApp.config([
 				url: '/config',
 				templateUrl: 'template/config/config-home.html',
 				controller : 'ShConfigCtrl',
-				redirectTo: 'config.search',
+				redirectTo: 'config.auth-providers',
 				data : { pageTitle: 'Configuration | Viglet Shiohara' }
+			}).state('config.email', {
+				url: '/email',
+				templateUrl: 'template/config/email/config-email.html',
+				controller: 'ShConfigEmailCtrl',
+				data : { pageTitle: 'Email Configuration | Viglet Shiohara' }
 			}).state('config.search', {
 				url: '/search',
 				templateUrl: 'template/config/search/config-search.html',
