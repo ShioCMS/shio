@@ -22,6 +22,8 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -58,7 +60,7 @@ import io.swagger.annotations.Api;
 @RequestMapping("/api/v2/user")
 @Api(tags = "User", description = "User API")
 public class ShUserAPI {
-
+	private static final Log logger = LogFactory.getLog(ShUserAPI.class);
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	@Autowired
@@ -69,7 +71,7 @@ public class ShUserAPI {
 	private ShAuthProviderInstanceRepository shAuthProviderInstanceRepository;
 	@Autowired
 	private ApplicationContext context;
-	
+
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShUser> shUserList() {
@@ -84,24 +86,24 @@ public class ShUserAPI {
 			boolean isAdmin = false;
 			String currentUserName = authentication.getName();
 			String providerId = (String) session.getAttribute("authProvider");
-			
-			ShAuthProviderInstance instance = shAuthProviderInstanceRepository.findById(providerId).orElse(null);
+			ShAuthProviderInstance instance = null;
+			if (providerId != null) {
+				instance = shAuthProviderInstanceRepository.findById(providerId).orElse(null);
+			}
 			ShUser shUser = null;
 			if (instance != null) {
 				ShAuthenticationProvider shAuthenticationProvider;
 				try {
 					shAuthenticationProvider = (ShAuthenticationProvider) context
 							.getBean(Class.forName(instance.getVendor().getClassName()));
-				
-				shAuthenticationProvider.init(instance.getId());
-				
-				shUser = shAuthenticationProvider.getShUser(currentUserName);	
+
+					shAuthenticationProvider.init(instance.getId());
+
+					shUser = shAuthenticationProvider.getShUser(currentUserName);
 				} catch (BeansException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.error("shUserCurrent BeansException", e);
 				} catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.error("shUserCurrent ClassNotFoundException", e);
 				}
 			} else {
 				shUser = shUserRepository.findByUsername(currentUserName);
