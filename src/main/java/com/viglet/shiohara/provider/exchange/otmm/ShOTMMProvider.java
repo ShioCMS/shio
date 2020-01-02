@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2020 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 package com.viglet.shiohara.provider.exchange.otmm;
 
 import java.io.IOException;
@@ -60,6 +59,11 @@ import org.apache.http.Consts;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 
+/**
+ * @author Alexandre Oliveira
+ * 
+ * @since 0.3.6
+ */
 public class ShOTMMProvider implements ShExchangeProvider {
 
 	private static final Log logger = LogFactory.getLog(ShOTMMProvider.class);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2020 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 package com.viglet.shiohara.persistence.model.reference;
 
 import java.io.Serializable;
@@ -32,6 +31,11 @@ import org.hibernate.annotations.GenericGenerator;
 
 import com.viglet.shiohara.persistence.model.object.ShObject;
 
+/**
+ * The persistent class for the ShReference database table.
+ * 
+ * @author Alexandre Oliveira
+ */
 @Entity
 @NamedQuery(name = "ShReference.findAll", query = "SELECT r FROM ShReference r")
 public class ShReference implements Serializable{

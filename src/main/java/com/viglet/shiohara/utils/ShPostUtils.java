@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 the original author or authors. 
+ * Copyright (C) 2016-2020 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 package com.viglet.shiohara.utils;
 
 import java.io.File;
@@ -672,7 +671,7 @@ public class ShPostUtils {
 	/**
 	 * Sync with Post Type
 	 * 
-	 * @param shPost
+	 * @param shPost Post Object
 	 */
 	public void syncWithPostType(ShPost shPost) {
 		if (shPost != null) {
@@ -691,7 +690,7 @@ public class ShPostUtils {
 	/**
 	 * Convert ShPostTypeAttr List in Map
 	 * 
-	 * @param shPost
+	 * @param shPost Post Object
 	 * @return
 	 */
 	private Map<String, ShPostTypeAttr> postTypeAttrMap(ShPost shPost) {
@@ -719,7 +718,7 @@ public class ShPostUtils {
 	/**
 	 * Convert ShPostAttr List in Map
 	 * 
-	 * @param shPost
+	 * @param shPost Post Object
 	 * @return Post Attribute Map
 	 */
 	private Map<String, ShPostAttr> postAttrMap(ShPost shPost) {
@@ -749,9 +748,9 @@ public class ShPostUtils {
 	/**
 	 * Add new PostAttrs that not contain into Post
 	 * 
-	 * @param shPostAttrs
-	 * @param shPostAttrMap
-	 * @param shPostTypeAttrMap
+	 * @param shPostAttrs List of PostAttr Object
+	 * @param shPostAttrMap  PostAttrMap Object
+	 * @param shPostTypeAttrMap PostTypeAttrMap Object
 	 */
 	private void postAttrNotInPostType(Set<ShPostAttr> shPostAttrs, Map<String, ShPostAttr> shPostAttrMap,
 			Map<String, ShPostTypeAttr> shPostTypeAttrMap) {
@@ -799,9 +798,9 @@ public class ShPostUtils {
 	/**
 	 * Add only PostAttr that contains in Post Type
 	 *
-	 * @param shPostAttrs
-	 * @param shPostAttrMap
-	 * @param shPostTypeAttrMap
+	 * @param shPostAttrs List of PostAttr Object
+	 * @param shPostAttrMap PostAttrMap Object
+	 * @param shPostTypeAttrMap PostTypeAttrMap Object
 	 */
 	private void postAttrInPostType(Set<ShPostAttr> shPostAttrs, Map<String, ShPostAttr> shPostAttrMap,
 			Map<String, ShPostTypeAttr> shPostTypeAttrMap) {

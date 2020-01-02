@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 the original author or authors. 
+ * Copyright (C) 2016-2020 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 package com.viglet.shiohara.api.post;
 
 import java.io.File;
@@ -152,6 +151,7 @@ public class ShPostAPI {
 	 * Post Edit API
 	 * 
 	 * @param id Post Id
+	 * @param principal Logged User
 	 * @return ShPost
 	 */
 	@GetMapping("/{id}")

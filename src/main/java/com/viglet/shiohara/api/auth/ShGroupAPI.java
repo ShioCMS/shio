@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2020 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,9 @@ import com.viglet.shiohara.persistence.repository.auth.ShUserRepository;
 
 import io.swagger.annotations.Api;
 
+/**
+ * @author Alexandre Oliveira
+ */
 @RestController
 @RequestMapping("/api/v2/group")
 @Api(tags = "Group", description = "Group API")

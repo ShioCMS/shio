@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2020 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 package com.viglet.shiohara.persistence.model.ecommerce;
 
 import javax.persistence.Column;
@@ -27,6 +26,11 @@ import javax.persistence.NamedQuery;
 
 import org.hibernate.annotations.GenericGenerator;
 
+/**
+ * The persistent class for the ShEcomOrder database table.
+ * 
+ * @author Alexandre Oliveira
+ */
 @Entity
 @NamedQuery(name = "ShEcomOrder.findAll", query = "SELECT eo FROM ShEcomOrder eo")
 public class ShEcomOrder {

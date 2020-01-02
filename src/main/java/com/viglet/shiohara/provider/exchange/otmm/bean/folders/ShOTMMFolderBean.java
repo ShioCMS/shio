@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2020 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 package com.viglet.shiohara.provider.exchange.otmm.bean.folders;
 
 import java.util.Date;
@@ -23,6 +22,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.viglet.shiohara.provider.exchange.otmm.bean.assets.ShOTMMAssetContentInfoBean;
 import com.viglet.shiohara.provider.exchange.otmm.bean.permission.ShOTMMAccessControlDescriptorBean;
 
+/**
+ * @author Alexandre Oliveira
+ * 
+ * @since 0.3.6
+ */
 public class ShOTMMFolderBean {
 
 	@JsonProperty("access_control_descriptor")

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2020 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 package com.viglet.shiohara.exchange.folder;
 
 import java.util.ArrayList;
@@ -39,6 +38,9 @@ import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostRepository;
 
+/**
+ * @author Alexandre Oliveira
+ */
 @Component
 public class ShFolderExport {
 	@Autowired
@@ -72,7 +74,7 @@ public class ShFolderExport {
 			shFolderExchangeChild.setOwner(shFolder.getOwner());
 			shFolderExchangeChild.setFurl(shFolder.getFurl());
 			shFolderExchangeChild.setPosition(shFolder.getPosition());
-			
+
 			if (shFolder.getParentFolder() != null) {
 				shFolderExchangeChild.setParentFolder(shFolder.getParentFolder().getId());
 			}
@@ -106,15 +108,14 @@ public class ShFolderExport {
 		shPostExchange.setOwner(shPost.getOwner());
 		shPostExchange.setFurl(shPost.getFurl());
 		shPostExchange.setPosition(shPost.getPosition());
-		
+
 		if (!shPostTypeExchanges.containsKey(shPost.getShPostType().getName())) {
 			shPostTypeExchanges.put(shPost.getShPostType().getName(),
 					shPostTypeExport.exportPostType(shPost.getShPostType()));
 		}
 		Map<String, Object> fields = new HashMap<String, Object>();
 
-		shPostExport.shPostAttrExchangeIterate(shPost, shPostAttrRepository.findByShPost(shPost), fields,
-				files);
+		shPostExport.shPostAttrExchangeIterate(shPost, shPostAttrRepository.findByShPost(shPost), fields, files);
 
 		shPostExchange.setFields(fields);
 		return shPostExchange;
