@@ -4,53 +4,53 @@ shioharaApp.controller('ShConfigAuthProviderCtrl', [
 	"$stateParams",
 	"$rootScope",
 	"$http",
-	"shExchangeProviderResource",
-	"shExchangeProviderVendorResource",
-	"shExchangeProviderFactory",
+	"shAuthProviderResource",
+	"shAuthProviderVendorResource",
+	"shAuthProviderFactory",
 	"shAPIServerService",
 	"Notification",
-	function ($scope, $state, $stateParams, $rootScope, $http, shExchangeProviderResource, shExchangeProviderVendorResource, shExchangeProviderFactory, shAPIServerService, Notification) {
+	function ($scope, $state, $stateParams, $rootScope, $http, shAuthProviderResource, shAuthProviderVendorResource, shAuthProviderFactory, shAPIServerService, Notification) {
 		$rootScope.$state = $state;
-		$scope.exchangeProviderId = $stateParams.exchangeProviderId;
+		$scope.authProviderId = $stateParams.authProviderId;
 		$scope.isNew = false;
-		$scope.vendors = shExchangeProviderVendorResource.query();
+		$scope.vendors = shAuthProviderVendorResource.query();
 
-		if ($scope.exchangeProviderId !== null && typeof $scope.exchangeProviderId !== 'undefined') {
-			$scope.exchangeProvider = shExchangeProviderResource.get({ id: $scope.exchangeProviderId });
+		if ($scope.authProviderId !== null && typeof $scope.authProviderId !== 'undefined') {
+			$scope.authProvider = shAuthProviderResource.get({ id: $scope.authProviderId });
 		}
 		else {
 			$scope.isNew = true;
 			$scope
 				.$evalAsync($http
-					.get(shAPIServerService.get().concat("/v2/provider/model"))
+					.get(shAPIServerService.get().concat("/v2/provider/auth/model"))
 					.then(
 						function (response) {
-							$scope.exchangeProvider = response.data;
-							$scope.exchangeProvider.name = "Untitled Exchange Provider"
+							$scope.authProvider = response.data;
+							$scope.authProvider.name = "Untitled Auth Provider"
 						}));
 		}
 
-		$scope.exchangeProviderSave = function () {
+		$scope.authProviderSave = function () {
 			if ($scope.isNew) {
-				shExchangeProviderResource.save($scope.exchangeProvider, function (response) {
-					$scope.exchangeProvider = response;
+				shAuthProviderResource.save($scope.authProvider, function (response) {
+					$scope.authProvider = response;
 					$scope.isNew = false;
-					Notification.warning($scope.exchangeProvider.name + '  Exchange Provider was saved.');
+					Notification.warning($scope.authProvider.name + '  Auth Provider was saved.');
 				});
 			}
 			else {
-				$scope.exchangeProvider.$update(function () {
-					Notification.warning('The ' + $scope.exchangeProvider.name + ' Exchange Provider was updated.');
+				$scope.authProvider.$update(function () {
+					Notification.warning('The ' + $scope.authProvider.name + ' Auth Provider was updated.');
 				});
 			}
 		}
-		$scope.exchangeProviderSaveAndClose = function () {
-			$scope.exchangeProviderSave();
-			$state.go('config.exchange-providers', {}, { reload: true });
+		$scope.authProviderSaveAndClose = function () {
+			$scope.authProviderSave();
+			$state.go('config.auth-providers', {}, { reload: true });
 		}
 
-		$scope.removeExchangeProvider = function () {
-			shExchangeProviderFactory.delete($scope.exchangeProvider);
+		$scope.removeAuthProvider = function () {
+			shAuthProviderFactory.delete($scope.authProvider);
 		}
 
 	}]);

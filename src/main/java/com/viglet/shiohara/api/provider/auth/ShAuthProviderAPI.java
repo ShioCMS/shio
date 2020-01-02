@@ -55,7 +55,7 @@ public class ShAuthProviderAPI {
 	@SuppressWarnings("unused")
 	private static final Log logger = LogFactory.getLog(ShAuthProviderAPI.class);
 
-	private static final String PROVIDER_PATH = "/provider/%s";
+	private static final String PROVIDER_PATH = "/provider/auth/%s";
 
 	@Autowired
 	private ShAuthProviderInstanceRepository shAuthProviderInstanceRepository;

@@ -5,33 +5,33 @@ shioharaApp.controller('ShConfigAuthProvidersCtrl', [
 	"$http",
 	"$filter",
 	"shAPIServerService",
-	"shExchangeProviderResource",
-	function ($scope, $state, $rootScope, $http, $filter, shAPIServerService, shExchangeProviderResource) {
+	"shAuthProviderResource",
+	function ($scope, $state, $rootScope, $http, $filter, shAPIServerService, shAuthProviderResource) {
 		$rootScope.$state = $state;
 
-		$scope.exchangeProviders = shExchangeProviderResource.query({}, function () {
-			$scope.exchangeProviders = $filter('orderBy')($scope.exchangeProviders, 'position');
+		$scope.authProviders = shAuthProviderResource.query({}, function () {
+			$scope.authProviders = $filter('orderBy')($scope.authProviders, 'position');
 		});
 
-		$scope.sortableExchangeProviders = {
+		$scope.sortableAuthProviders = {
 			disabled: false,
 			stop: function (e, ui) {
 				var sortObject = {};
 				var i = 1;
-				angular.forEach($scope.exchangeProviders, function (exchangeProvider, key) {
-					sortObject[exchangeProvider.id] = exchangeProvider.position;
+				angular.forEach($scope.authProviders, function (authProvider, key) {
+					sortObject[authProvider.id] = authProvider.position;
 				});
 				var parameter = JSON.stringify(sortObject);
-				$http.put(shAPIServerService.get().concat("/v2/provider/sort"), parameter).then(function (response) { });
+				$http.put(shAPIServerService.get().concat("/v2/provider/auth/sort"), parameter).then(function (response) { });
 			}
 		};
 
 		$scope.changeSearchTextBox = function (shSearchFilter) {
 			if (shSearchFilter.length > 0) {
-				$scope.sortableExchangeProviders.disabled = true;
+				$scope.sortableAuthProviders.disabled = true;
 			}
 			else {
-				$scope.sortableExchangeProviders.disabled = false;
+				$scope.sortableAuthProviders.disabled = false;
 			}
 		}
 

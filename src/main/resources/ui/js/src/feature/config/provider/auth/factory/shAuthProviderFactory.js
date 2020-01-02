@@ -1,24 +1,24 @@
 shioharaApp.factory('shAuthProviderFactory', [
-	'$uibModal', 'shExchangeProviderResource', 'Notification', '$state',
-	function ($uibModal, shExchangeProviderResource, Notification, $state) {
+	'$uibModal', 'shAuthProviderResource', 'Notification', '$state',
+	function ($uibModal, shAuthProviderResource, Notification, $state) {
 		return {
-			delete: function (shExchangeProvider) {
-				var modalInstance = this.modalDelete(shExchangeProvider);
+			delete: function (shAuthProvider) {
+				var modalInstance = this.modalDelete(shAuthProvider);
 				modalInstance.result.then(function (removeInstance) {
-					deletedMessage = 'The ' + shExchangeProvider.name + ' Exchange Provider was deleted.';
+					deletedMessage = 'The ' + shAuthProvider.name + ' Auth Provider was deleted.';
 
-					shExchangeProviderResource
+					shAuthProviderResource
 						.delete({
-							id: shExchangeProvider.id
+							id: shAuthProvider.id
 						}, function () {
 							Notification.error(deletedMessage);
-							$state.go('config.exchange-providers', {}, { reload: true });
+							$state.go('config.auth-providers', {}, { reload: true });
 						});
 				}, function () {
 					// Selected NO
 				});
 			},
-			modalDelete: function (shExchangeProvider) {
+			modalDelete: function (shAuthProvider) {
 				var $ctrl = this;
 				return $uibModal.open({
 					animation: true
@@ -31,7 +31,7 @@ shioharaApp.factory('shAuthProviderFactory', [
 					, appendTo: undefined
 					, resolve: {
 						shObjectName: function () {
-							return shExchangeProvider.name;
+							return shAuthProvider.name;
 						}
 					}
 				});

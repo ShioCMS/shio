@@ -24,6 +24,8 @@ import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.onstartup.ecommerce.ShEcomPaymentTypeDefinitionOnStartup;
 import com.viglet.shiohara.onstartup.post.type.ShPostTypeOnStartup;
+import com.viglet.shiohara.onstartup.provider.auth.ShAuthProviderInstanceOnStartup;
+import com.viglet.shiohara.onstartup.provider.auth.ShAuthProviderVendorOnStartup;
 import com.viglet.shiohara.onstartup.provider.exchange.ShExchangeProviderInstanceOnStartup;
 import com.viglet.shiohara.onstartup.provider.exchange.ShExchangeProviderVendorOnStartup;
 import com.viglet.shiohara.onstartup.site.ShSiteOnStartup;
@@ -54,6 +56,10 @@ public class ShOnStartup implements ApplicationRunner {
 	@Autowired
 	private ShUserOnStartup shUserOnStartup;
 	@Autowired
+	private ShAuthProviderVendorOnStartup shAuthProviderVendorOnStartup;
+	@Autowired
+	private ShAuthProviderInstanceOnStartup shAuthProviderInstanceOnStartup;
+	@Autowired
 	private ShExchangeProviderVendorOnStartup shExchangeProviderVendorOnStartup;
 	@Autowired
 	private ShExchangeProviderInstanceOnStartup shExchangeProviderInstanceOnStartup;
@@ -73,6 +79,8 @@ public class ShOnStartup implements ApplicationRunner {
 			shPostTypeOnStartup.createDefaultRows();
 			shGroupOnStartup.createDefaultRows();
 			shUserOnStartup.createDefaultRows();
+			shAuthProviderVendorOnStartup.createDefaultRows();
+			shAuthProviderInstanceOnStartup.createDefaultRows();
 			shExchangeProviderVendorOnStartup.createDefaultRows();
 			shExchangeProviderInstanceOnStartup.createDefaultRows();
 			shConfigVarOnStartup.createDefaultRows();
