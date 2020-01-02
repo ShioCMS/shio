@@ -57,7 +57,7 @@ public class ShAuthProviderVendorOnStartup {
 			shAuthProviderVendor.setName(ShAuthSystemProviderVendor.OTDS);
 			shAuthProviderVendor.setDescription(ShAuthSystemProviderVendor.OTDS);
 			shAuthProviderVendor.setClassName("com.viglet.shiohara.provider.auth.otds.ShOTDSAuthProvider");
-			shAuthProviderVendor.setImplementationCode("template/config/provider/auth/otds/otds-configuration.html");
+			shAuthProviderVendor.setConfigurationPage("template/config/provider/auth/otds/otds-configuration.html");
 
 			shAuthProviderVendorRepository.save(shAuthProviderVendor);
 		}

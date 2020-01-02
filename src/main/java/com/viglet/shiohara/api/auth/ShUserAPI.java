@@ -19,10 +19,12 @@ package com.viglet.shiohara.api.auth;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -38,12 +40,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
-import com.viglet.shiohara.auth.otds.provider.ShOTDSService;
 import com.viglet.shiohara.bean.ShCurrentUser;
 import com.viglet.shiohara.persistence.model.auth.ShGroup;
 import com.viglet.shiohara.persistence.model.auth.ShUser;
+import com.viglet.shiohara.persistence.model.provider.auth.ShAuthProviderInstance;
 import com.viglet.shiohara.persistence.repository.auth.ShGroupRepository;
 import com.viglet.shiohara.persistence.repository.auth.ShUserRepository;
+import com.viglet.shiohara.persistence.repository.provider.auth.ShAuthProviderInstanceRepository;
+import com.viglet.shiohara.provider.auth.ShAuthenticationProvider;
 
 import io.swagger.annotations.Api;
 
@@ -62,10 +66,9 @@ public class ShUserAPI {
 	@Autowired
 	private ShGroupRepository shGroupRepository;
 	@Autowired
-	private ShOTDSService shOTDSService;
-	
-	@Value("${shiohara.auth.otds.enabled}")
-	boolean isOTDS;
+	private ShAuthProviderInstanceRepository shAuthProviderInstanceRepository;
+	@Autowired
+	private ApplicationContext context;
 	
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
@@ -75,15 +78,31 @@ public class ShUserAPI {
 
 	@GetMapping("/current")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShCurrentUser shUserCurrent() {
+	public ShCurrentUser shUserCurrent(HttpSession session) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (!(authentication instanceof AnonymousAuthenticationToken)) {
 			boolean isAdmin = false;
 			String currentUserName = authentication.getName();
-
+			String providerId = (String) session.getAttribute("authProvider");
+			
+			ShAuthProviderInstance instance = shAuthProviderInstanceRepository.findById(providerId).orElse(null);
 			ShUser shUser = null;
-			if (isOTDS) {
-				shUser = shOTDSService.getCurrentUser();					
+			if (instance != null) {
+				ShAuthenticationProvider shAuthenticationProvider;
+				try {
+					shAuthenticationProvider = (ShAuthenticationProvider) context
+							.getBean(Class.forName(instance.getVendor().getClassName()));
+				
+				shAuthenticationProvider.init(instance.getId());
+				
+				shUser = shAuthenticationProvider.getShUser(currentUserName);	
+				} catch (BeansException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			} else {
 				shUser = shUserRepository.findByUsername(currentUserName);
 

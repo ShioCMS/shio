@@ -34,6 +34,8 @@ public interface ShAuthProviderInstanceRepository extends JpaRepository<ShAuthPr
 
 	List<ShAuthProviderInstance> findAll();
 
+	List<ShAuthProviderInstance> findByEnabled(boolean enabled);
+	
 	Optional<ShAuthProviderInstance> findById(String id);
 
 	@SuppressWarnings("unchecked")

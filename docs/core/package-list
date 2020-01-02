@@ -52,6 +52,7 @@ com.viglet.shiohara.persistence.model.object
 com.viglet.shiohara.persistence.model.post
 com.viglet.shiohara.persistence.model.post.relator
 com.viglet.shiohara.persistence.model.post.type
+com.viglet.shiohara.persistence.model.provider
 com.viglet.shiohara.persistence.model.provider.auth
 com.viglet.shiohara.persistence.model.provider.exchange
 com.viglet.shiohara.persistence.model.reference
@@ -77,6 +78,7 @@ com.viglet.shiohara.persistence.repository.workflow
 com.viglet.shiohara.post.type
 com.viglet.shiohara.property
 com.viglet.shiohara.provider.auth
+com.viglet.shiohara.provider.auth.otds
 com.viglet.shiohara.provider.exchange
 com.viglet.shiohara.provider.exchange.otcs
 com.viglet.shiohara.provider.exchange.otcs.bean.collection

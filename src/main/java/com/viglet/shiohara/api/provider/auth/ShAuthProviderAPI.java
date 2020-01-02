@@ -43,6 +43,7 @@ import com.viglet.shiohara.persistence.model.system.ShConfigVar;
 import com.viglet.shiohara.persistence.repository.provider.auth.ShAuthProviderInstanceRepository;
 import com.viglet.shiohara.persistence.repository.provider.auth.ShAuthProviderVendorRepository;
 import com.viglet.shiohara.persistence.repository.system.ShConfigVarRepository;
+import com.viglet.shiohara.provider.auth.ShAuthProviderService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -65,6 +66,8 @@ public class ShAuthProviderAPI {
 	private ShAuthProviderVendorRepository shAuthProviderVendorRepository;
 	@Autowired
 	private ShConfigVarRepository shConfigVarRepository;
+	@Autowired
+	private ShAuthProviderService shAuthProviderService;
 
 	@GetMapping("/vendor")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
@@ -81,25 +84,7 @@ public class ShAuthProviderAPI {
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShAuthProviderInstanceBean shAuthProviderEdit(@PathVariable String id) {
-		ShAuthProviderInstance shAuthProviderInstance = shAuthProviderInstanceRepository.findById(id).orElse(null);
-		ShAuthProviderInstanceBean shAuthProviderInstanceBean = new ShAuthProviderInstanceBean();
-		if (shAuthProviderInstance != null) {
-			shAuthProviderInstanceBean = new ShAuthProviderInstanceBean();
-			shAuthProviderInstanceBean.setId(shAuthProviderInstance.getId());
-			shAuthProviderInstanceBean.setName(shAuthProviderInstance.getName());
-			shAuthProviderInstanceBean.setDescription(shAuthProviderInstance.getDescription());
-			shAuthProviderInstanceBean.setVendor(shAuthProviderInstance.getVendor());
-
-			String providerInstancePath = String.format(PROVIDER_PATH, shAuthProviderInstance.getId());
-
-			List<ShConfigVar> shConfigVars = shConfigVarRepository.findByPath(providerInstancePath);
-
-			for (ShConfigVar shConfigVar : shConfigVars) {
-				shAuthProviderInstanceBean.getProperties().put(shConfigVar.getName(), shConfigVar.getValue());
-			}
-		}
-
-		return shAuthProviderInstanceBean;
+		return shAuthProviderService.getShAuthProviderInstanceBean(id);
 	}
 
 	@PostMapping
@@ -110,7 +95,7 @@ public class ShAuthProviderAPI {
 		shAuthProviderInstance.setName(shAuthProviderInstanceBean.getName());
 		shAuthProviderInstance.setDescription(shAuthProviderInstanceBean.getDescription());
 		shAuthProviderInstance.setVendor(shAuthProviderInstanceBean.getVendor());
-
+		shAuthProviderInstance.setEnabled(shAuthProviderInstanceBean.getEnabled());
 		shAuthProviderInstanceRepository.save(shAuthProviderInstance);
 
 		for (Entry<String, String> propertyEntry : shAuthProviderInstanceBean.getProperties().entrySet()) {
@@ -145,9 +130,9 @@ public class ShAuthProviderAPI {
 			shAuthProviderInstanceEdit.setName(shAuthProviderInstanceBean.getName());
 			shAuthProviderInstanceEdit.setDescription(shAuthProviderInstanceBean.getDescription());
 			shAuthProviderInstanceEdit.setVendor(shAuthProviderInstanceBean.getVendor());
-
+			shAuthProviderInstanceEdit.setEnabled(shAuthProviderInstanceBean.getEnabled());
 			shAuthProviderInstanceRepository.save(shAuthProviderInstanceEdit);
-
+			
 			for (Entry<String, String> propertyEntry : shAuthProviderInstanceBean.getProperties().entrySet()) {
 				String providerInstancePath = String.format(PROVIDER_PATH, shAuthProviderInstanceEdit.getId());
 
@@ -171,7 +156,6 @@ public class ShAuthProviderAPI {
 		return null;
 
 	}
-
 	@DeleteMapping("/{id}")
 	@Transactional
 	public boolean shAuthProviderInstanceDelete(@PathVariable String id) {

@@ -17,7 +17,7 @@
 package com.viglet.shiohara.spring.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -38,7 +38,9 @@ import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 
-import com.viglet.shiohara.auth.otds.provider.ShOTDSAuthenticationProvider;
+import com.viglet.shiohara.persistence.model.provider.auth.ShAuthProviderInstance;
+import com.viglet.shiohara.persistence.repository.provider.auth.ShAuthProviderInstanceRepository;
+import com.viglet.shiohara.provider.auth.ShAuthenticationProvider;
 
 /**
  * @author Alexandre Oliveira
@@ -53,16 +55,24 @@ public class ShSecurityConfigProduction extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private ShAuthenticationEntryPoint shAuthenticationEntryPoint;
 	@Autowired
-	private ShOTDSAuthenticationProvider shOTDSAuthenticationProvider;
-
-	@Value("${shiohara.auth.otds.enabled}")
-	boolean isOTDS;
+	private ShAuthProviderInstanceRepository shAuthProviderInstanceRepository;
+	@Autowired
+	private ApplicationContext context;
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		if (isOTDS) {
-			auth.authenticationProvider(shOTDSAuthenticationProvider);
-		} else {
+		boolean hasAuthProvider = false;
+		for (ShAuthProviderInstance instance : shAuthProviderInstanceRepository.findByEnabled(true)) {
+			if (!hasAuthProvider) {
+				ShAuthenticationProvider shAuthenticationProvider = (ShAuthenticationProvider) context
+						.getBean(Class.forName(instance.getVendor().getClassName()));
+				shAuthenticationProvider.init(instance.getId());
+				auth.authenticationProvider(shAuthenticationProvider);
+				hasAuthProvider = true;
+			}
+
+		}
+		if (!hasAuthProvider) {
 			super.configure(auth);
 		}
 	}

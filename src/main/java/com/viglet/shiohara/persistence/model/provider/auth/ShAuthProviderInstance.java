@@ -16,16 +16,10 @@
  */
 package com.viglet.shiohara.persistence.model.provider.auth;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.GenericGenerator;
+import com.viglet.shiohara.persistence.model.provider.ShProviderInstance;
 
 /**
  * The persistent class for the ShAuthProviderInstance database table.
@@ -34,64 +28,6 @@ import org.hibernate.annotations.GenericGenerator;
  */
 @Entity
 @NamedQuery(name = "ShAuthProviderInstance.findAll", query = "SELECT pi FROM ShAuthProviderInstance pi")
-public class ShAuthProviderInstance {
-
-	@Id
-	@GenericGenerator(name = "UUID", strategy = "com.viglet.shiohara.jpa.ShUUIDGenerator")
-	@GeneratedValue(generator = "UUID")
-
-	@Column(name = "id", updatable = false, nullable = false)
-	private String id;
-
-	private String name;
-
-	private String description;
-
-	private int position;
-
-	@ManyToOne
-	@JoinColumn(name = "vendor_id")
-	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
-	private ShAuthProviderVendor vendor;
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public ShAuthProviderVendor getVendor() {
-		return vendor;
-	}
-
-	public void setVendor(ShAuthProviderVendor vendor) {
-		this.vendor = vendor;
-	}
-
-	public int getPosition() {
-		return position;
-	}
-
-	public void setPosition(int position) {
-		this.position = position;
-	}
+public class ShAuthProviderInstance extends ShProviderInstance {
 
 }

@@ -14,25 +14,41 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.viglet.shiohara.auth.otds.provider;
+package com.viglet.shiohara.provider.auth.otds;
 
 import java.util.ArrayList;
 
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
+import com.viglet.shiohara.persistence.model.auth.ShUser;
+import com.viglet.shiohara.provider.auth.ShAuthenticationProvider;
+import com.viglet.shiohara.provider.auth.otds.ShOTDSService;
+
 /**
  * @author Alexandre Oliveira
  */
 @Component
-public class ShOTDSAuthenticationProvider implements AuthenticationProvider {
+public class ShOTDSAuthProvider implements ShAuthenticationProvider {
 
 	@Autowired
-	ShOTDSService shOTDSService;
+	private ShOTDSService shOTDSService;
+	@Autowired
+	private ObjectFactory<HttpSession> httpSessionFactory;
+
+	private String providerId = null;
+
+	@Override
+	public void init(String providerId) {
+		this.providerId = providerId;
+		shOTDSService.init(providerId);
+	}
 
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -41,14 +57,23 @@ public class ShOTDSAuthenticationProvider implements AuthenticationProvider {
 		String password = authentication.getCredentials().toString();
 
 		if (shOTDSService.isAuthorizedUser(name, password, true)) {
+			HttpSession session = httpSessionFactory.getObject();
+			session.setAttribute("authProvider", this.providerId);
 			return new UsernamePasswordAuthenticationToken(name, password, new ArrayList<>());
+
 		} else {
 			return null;
 		}
+
 	}
 
 	@Override
 	public boolean supports(Class<?> authentication) {
 		return authentication.equals(UsernamePasswordAuthenticationToken.class);
+	}
+
+	@Override
+	public ShUser getShUser(String username) {
+		return shOTDSService.getShUser(username);
 	}
 }

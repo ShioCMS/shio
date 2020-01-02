@@ -113,7 +113,8 @@ public class ShExchangeProviderAPI {
 			shExchangeProviderInstanceBean.setName(shExchangeProviderInstance.getName());
 			shExchangeProviderInstanceBean.setDescription(shExchangeProviderInstance.getDescription());
 			shExchangeProviderInstanceBean.setVendor(shExchangeProviderInstance.getVendor());
-
+			shExchangeProviderInstanceBean.setEnabled(shExchangeProviderInstance.getEnabled());
+			
 			String providerInstancePath = String.format(PROVIDER_PATH, shExchangeProviderInstance.getId());
 
 			List<ShConfigVar> shConfigVars = shConfigVarRepository.findByPath(providerInstancePath);
@@ -134,7 +135,7 @@ public class ShExchangeProviderAPI {
 		shExchangeProviderInstance.setName(shExchangeProviderInstanceBean.getName());
 		shExchangeProviderInstance.setDescription(shExchangeProviderInstanceBean.getDescription());
 		shExchangeProviderInstance.setVendor(shExchangeProviderInstanceBean.getVendor());
-
+		shExchangeProviderInstance.setEnabled(shExchangeProviderInstanceBean.getEnabled());
 		shExchangeProviderInstanceRepository.save(shExchangeProviderInstance);
 
 		for (Entry<String, String> propertyEntry : shExchangeProviderInstanceBean.getProperties().entrySet()) {
@@ -169,7 +170,7 @@ public class ShExchangeProviderAPI {
 			shExchangeProviderInstanceEdit.setName(shExchangeProviderInstanceBean.getName());
 			shExchangeProviderInstanceEdit.setDescription(shExchangeProviderInstanceBean.getDescription());
 			shExchangeProviderInstanceEdit.setVendor(shExchangeProviderInstanceBean.getVendor());
-
+			shExchangeProviderInstanceEdit.setEnabled(shExchangeProviderInstanceBean.getEnabled());
 			shExchangeProviderInstanceRepository.save(shExchangeProviderInstanceEdit);
 
 			for (Entry<String, String> propertyEntry : shExchangeProviderInstanceBean.getProperties().entrySet()) {

@@ -16,89 +16,21 @@
  */
 package com.viglet.shiohara.persistence.model.provider.exchange;
 
-import java.util.List;
-
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.viglet.shiohara.persistence.model.provider.ShProviderVendor;
 
 /**
  * The persistent class for the ShExchangeProviderVendor database table.
  * 
  * @author Alexandre Oliveira
+ * @since 0.3.6
  */
 @Entity
 @NamedQuery(name = "ShExchangeProviderVendor.findAll", query = "SELECT pv FROM ShExchangeProviderVendor pv")
 @JsonIgnoreProperties({ "instances" })
-public class ShExchangeProviderVendor {
-
-	@Id
-	@Column(name = "id", updatable = false, nullable = false)
-	private String id;
-
-	private String name;
-
-	@Column(name = "class_name")
-	private String className;
-
-	private String description;
-
-	@Column(name = "implementation_code")
-	private String implementationCode;
-
-	@OneToMany(mappedBy = "vendor")
-	private List<ShExchangeProviderInstance> instances;
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getClassName() {
-		return className;
-	}
-
-	public void setClassName(String className) {
-		this.className = className;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public String getImplementationCode() {
-		return implementationCode;
-	}
-
-	public void setImplementationCode(String implementationCode) {
-		this.implementationCode = implementationCode;
-	}
-
-	public List<ShExchangeProviderInstance> getInstances() {
-		return instances;
-	}
-
-	public void setInstances(List<ShExchangeProviderInstance> instances) {
-		this.instances = instances;
-	}
+public class ShExchangeProviderVendor extends ShProviderVendor {
 
 }
