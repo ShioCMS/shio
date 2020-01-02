@@ -19,6 +19,7 @@ package com.viglet.shiohara.onstartup.provider.auth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.viglet.shiohara.provider.auth.ShAuthSystemProviderVendor;
 import com.viglet.shiohara.provider.auth.otds.ShOTDSService;
 import com.viglet.shiohara.persistence.model.provider.auth.ShAuthProviderInstance;
 import com.viglet.shiohara.persistence.model.system.ShConfigVar;
@@ -42,17 +43,28 @@ public class ShAuthProviderInstanceOnStartup {
 	public void createDefaultRows() {
 
 		if (shAuthProviderInstanceRepository.findAll().isEmpty()) {
-
+			this.createEmbeddedInstance();
 			this.createOTDSInstance();
 		}
 	}
 
+	private void createEmbeddedInstance() {
+		ShAuthProviderInstance shAuthProviderInstance = new ShAuthProviderInstance();
+		shAuthProviderInstance.setName("Shiohara Native");
+		shAuthProviderInstance.setDescription("Shiohara Native Authentication and Authorization");
+		shAuthProviderInstance.setVendor(shAuthProviderVendorRepository.findById(ShAuthSystemProviderVendor.NATIVE).orElse(null));
+		shAuthProviderInstance.setEnabled(true);
+	
+		shAuthProviderInstanceRepository.save(shAuthProviderInstance);
+	}
+	
 	private void createOTDSInstance() {
 		ShAuthProviderInstance shAuthProviderInstance = new ShAuthProviderInstance();
 		shAuthProviderInstance.setName("OpenText Directory Services");
 		shAuthProviderInstance.setDescription("Sample of OTDS");
-		shAuthProviderInstance.setVendor(shAuthProviderVendorRepository.findById("OTDS").orElse(null));
-
+		shAuthProviderInstance.setVendor(shAuthProviderVendorRepository.findById(ShAuthSystemProviderVendor.OTDS).orElse(null));
+		shAuthProviderInstance.setEnabled(false);
+		
 		shAuthProviderInstanceRepository.save(shAuthProviderInstance);
 
 		this.createAttribute(shAuthProviderInstance.getId(), ShOTDSService.HOST, "otds-hostname");

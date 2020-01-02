@@ -22,6 +22,6 @@ package com.viglet.shiohara.provider.exchange;
  * @since 0.3.6
  */
 public class ShExchangeSystemProviderVendor {
-	public static final String OTCS = "OpenText Content Server";
-	public static final String OTMM = "OpenText Media Management";
+	public static final String OTCS = "OTCS";
+	public static final String OTMM = "OTMM";
 }

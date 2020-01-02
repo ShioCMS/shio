@@ -24,6 +24,7 @@ import com.viglet.shiohara.persistence.model.system.ShConfigVar;
 import com.viglet.shiohara.persistence.repository.provider.exchange.ShExchangeProviderInstanceRepository;
 import com.viglet.shiohara.persistence.repository.provider.exchange.ShExchangeProviderVendorRepository;
 import com.viglet.shiohara.persistence.repository.system.ShConfigVarRepository;
+import com.viglet.shiohara.provider.exchange.ShExchangeSystemProviderVendor;
 
 /**
  * @author Alexandre Oliveira
@@ -53,10 +54,11 @@ public class ShExchangeProviderInstanceOnStartup {
 
 	private void createOTCSInstance() {
 		ShExchangeProviderInstance shExchangeProviderInstance = new ShExchangeProviderInstance();
-		shExchangeProviderInstance.setName("OpenText Content Server");
+		shExchangeProviderInstance.setName("OpenText Content Services");
 		shExchangeProviderInstance.setDescription("Sample of OTCS");
-		shExchangeProviderInstance.setVendor(shExchangeProviderVendorRepository.findById("OTCS").orElse(null));
-
+		shExchangeProviderInstance.setVendor(shExchangeProviderVendorRepository.findById(ShExchangeSystemProviderVendor.OTCS).orElse(null));
+		shExchangeProviderInstance.setEnabled(false);
+		
 		shExchangeProviderInstanceRepository.save(shExchangeProviderInstance);
 
 		String providerInstance = String.format(PROVIDER_PATH, shExchangeProviderInstance.getId());
@@ -84,8 +86,9 @@ public class ShExchangeProviderInstanceOnStartup {
 		ShExchangeProviderInstance shExchangeProviderInstance = new ShExchangeProviderInstance();
 		shExchangeProviderInstance.setName("OpenText Media Management");
 		shExchangeProviderInstance.setDescription("Sample of OTMM");
-		shExchangeProviderInstance.setVendor(shExchangeProviderVendorRepository.findById("OTMM").orElse(null));
-
+		shExchangeProviderInstance.setVendor(shExchangeProviderVendorRepository.findById(ShExchangeSystemProviderVendor.OTMM).orElse(null));
+		shExchangeProviderInstance.setEnabled(false);
+		
 		shExchangeProviderInstanceRepository.save(shExchangeProviderInstance);
 
 		String providerInstance = String.format(PROVIDER_PATH, shExchangeProviderInstance.getId());

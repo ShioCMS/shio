@@ -51,16 +51,29 @@ public class ShAuthProviderVendorOnStartup {
 	public void createDefaultRows() {
 
 		if (shAuthProviderVendorRepository.findAll().isEmpty()) {
-
-			ShAuthProviderVendor shAuthProviderVendor = new ShAuthProviderVendor();
-			shAuthProviderVendor.setId("OTDS");
-			shAuthProviderVendor.setName(ShAuthSystemProviderVendor.OTDS);
-			shAuthProviderVendor.setDescription(ShAuthSystemProviderVendor.OTDS);
-			shAuthProviderVendor.setClassName("com.viglet.shiohara.provider.auth.otds.ShOTDSAuthProvider");
-			shAuthProviderVendor.setConfigurationPage("template/config/provider/auth/otds/otds-configuration.html");
-
-			shAuthProviderVendorRepository.save(shAuthProviderVendor);
+			embedded();
+			otds();
 		}
 
+	}
+	private void embedded() {
+		ShAuthProviderVendor shAuthProviderVendor = new ShAuthProviderVendor();
+		shAuthProviderVendor.setId(ShAuthSystemProviderVendor.NATIVE);
+		shAuthProviderVendor.setName("Shiohara Native");
+		shAuthProviderVendor.setDescription("Shiohara Native Authentication and Authorization");
+		shAuthProviderVendor.setClassName(null);
+		shAuthProviderVendor.setConfigurationPage(null);
+
+		shAuthProviderVendorRepository.save(shAuthProviderVendor);
+	}
+	private void otds() {
+		ShAuthProviderVendor shAuthProviderVendor = new ShAuthProviderVendor();
+		shAuthProviderVendor.setId(ShAuthSystemProviderVendor.OTDS);
+		shAuthProviderVendor.setName("OpenText Directory Services");
+		shAuthProviderVendor.setDescription("Sample Directory Services");
+		shAuthProviderVendor.setClassName("com.viglet.shiohara.provider.auth.otds.ShOTDSAuthProvider");
+		shAuthProviderVendor.setConfigurationPage("template/config/provider/auth/otds/otds-configuration.html");
+
+		shAuthProviderVendorRepository.save(shAuthProviderVendor);
 	}
 }

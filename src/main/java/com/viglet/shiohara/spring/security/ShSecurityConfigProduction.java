@@ -40,6 +40,7 @@ import org.springframework.security.web.firewall.StrictHttpFirewall;
 
 import com.viglet.shiohara.persistence.model.provider.auth.ShAuthProviderInstance;
 import com.viglet.shiohara.persistence.repository.provider.auth.ShAuthProviderInstanceRepository;
+import com.viglet.shiohara.provider.auth.ShAuthSystemProviderVendor;
 import com.viglet.shiohara.provider.auth.ShAuthenticationProvider;
 
 /**
@@ -64,11 +65,16 @@ public class ShSecurityConfigProduction extends WebSecurityConfigurerAdapter {
 		boolean hasAuthProvider = false;
 		for (ShAuthProviderInstance instance : shAuthProviderInstanceRepository.findByEnabled(true)) {
 			if (!hasAuthProvider) {
-				ShAuthenticationProvider shAuthenticationProvider = (ShAuthenticationProvider) context
-						.getBean(Class.forName(instance.getVendor().getClassName()));
-				shAuthenticationProvider.init(instance.getId());
-				auth.authenticationProvider(shAuthenticationProvider);
 				hasAuthProvider = true;
+				if (instance.getVendor().getId().equals(ShAuthSystemProviderVendor.NATIVE)) {
+					super.configure(auth);
+				} else {
+					ShAuthenticationProvider shAuthenticationProvider = (ShAuthenticationProvider) context
+							.getBean(Class.forName(instance.getVendor().getClassName()));
+					shAuthenticationProvider.init(instance.getId());
+					auth.authenticationProvider(shAuthenticationProvider);
+
+				}
 			}
 
 		}

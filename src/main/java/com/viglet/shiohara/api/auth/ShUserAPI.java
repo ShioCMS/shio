@@ -49,6 +49,7 @@ import com.viglet.shiohara.persistence.model.provider.auth.ShAuthProviderInstanc
 import com.viglet.shiohara.persistence.repository.auth.ShGroupRepository;
 import com.viglet.shiohara.persistence.repository.auth.ShUserRepository;
 import com.viglet.shiohara.persistence.repository.provider.auth.ShAuthProviderInstanceRepository;
+import com.viglet.shiohara.provider.auth.ShAuthSystemProviderVendor;
 import com.viglet.shiohara.provider.auth.ShAuthenticationProvider;
 
 import io.swagger.annotations.Api;
@@ -91,7 +92,7 @@ public class ShUserAPI {
 				instance = shAuthProviderInstanceRepository.findById(providerId).orElse(null);
 			}
 			ShUser shUser = null;
-			if (instance != null) {
+			if (instance != null && !instance.getVendor().getId().equals(ShAuthSystemProviderVendor.NATIVE)) {
 				ShAuthenticationProvider shAuthenticationProvider;
 				try {
 					shAuthenticationProvider = (ShAuthenticationProvider) context

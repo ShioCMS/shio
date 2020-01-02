@@ -40,6 +40,8 @@
                                         </div>
                                         <div>
                                             <div style="display: inline;">
+                                                <span class="label label-success" ng-if="exchangeProvider.enabled">ENABLED</span>
+                                                <span class="label label-info" ng-if="!exchangeProvider.enabled">DISABLED</span>
                                                 <span class="label label-warning">{{exchangeProvider.vendor.id}}</span>
                                             </div>
                                         </div>

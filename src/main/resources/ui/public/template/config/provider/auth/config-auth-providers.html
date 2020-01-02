@@ -40,6 +40,8 @@
                                         </div>
                                         <div>
                                             <div style="display: inline;">
+                                                <span class="label label-success" ng-if="authProvider.enabled">ENABLED</span>
+                                                <span class="label label-info" ng-if="!authProvider.enabled">DISABLED</span>
                                                 <span class="label label-warning">{{authProvider.vendor.id}}</span>
                                             </div>
                                         </div>

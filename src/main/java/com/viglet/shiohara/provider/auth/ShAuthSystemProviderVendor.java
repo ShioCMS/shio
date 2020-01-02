@@ -22,5 +22,6 @@ package com.viglet.shiohara.provider.auth;
  * @since 0.3.6
  */
 public class ShAuthSystemProviderVendor {
-	public static final String OTDS = "OpenText Directory Services";
+	public static final String NATIVE = "NATIVE";
+	public static final String OTDS = "OTDS";
 }

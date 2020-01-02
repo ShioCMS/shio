@@ -37,18 +37,18 @@ public class ShExchangeProviderVendorOnStartup {
 		if (shExchangeProviderVendorRepository.findAll().isEmpty()) {
 
 			ShExchangeProviderVendor shExchangeProviderVendor = new ShExchangeProviderVendor();
-			shExchangeProviderVendor.setId("OTCS");
-			shExchangeProviderVendor.setName(ShExchangeSystemProviderVendor.OTCS);
-			shExchangeProviderVendor.setDescription(ShExchangeSystemProviderVendor.OTCS);
+			shExchangeProviderVendor.setId(ShExchangeSystemProviderVendor.OTCS);
+			shExchangeProviderVendor.setName("OpenText Content Services");
+			shExchangeProviderVendor.setDescription("OpenText Content Services");
 			shExchangeProviderVendor.setClassName("com.viglet.shiohara.provider.exchange.otcs.ShOTCSProvider");
 			shExchangeProviderVendor.setConfigurationPage("template/config/provider/exchange/otcs/otcs-configuration.html");
 
 			shExchangeProviderVendorRepository.save(shExchangeProviderVendor);
 
 			shExchangeProviderVendor = new ShExchangeProviderVendor();
-			shExchangeProviderVendor.setId("OTMM");
-			shExchangeProviderVendor.setName(ShExchangeSystemProviderVendor.OTMM);
-			shExchangeProviderVendor.setDescription(ShExchangeSystemProviderVendor.OTMM);
+			shExchangeProviderVendor.setId(ShExchangeSystemProviderVendor.OTMM);
+			shExchangeProviderVendor.setName("OpenText Media Management");
+			shExchangeProviderVendor.setDescription("OpenText Media Management");
 			shExchangeProviderVendor.setClassName("com.viglet.shiohara.provider.exchange.otmm.ShOTMMProvider");
 			shExchangeProviderVendor.setConfigurationPage("template/config/provider/exchange/otmm/otmm-configuration.html");
 
