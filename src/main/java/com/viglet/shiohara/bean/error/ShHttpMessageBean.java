@@ -1,6 +1,6 @@
 package com.viglet.shiohara.bean.error;
 
-public class ShErrorBean {
+public class ShHttpMessageBean {
 
 	private String title;
 	private String message;

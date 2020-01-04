@@ -33,6 +33,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,7 +43,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
-import com.viglet.shiohara.bean.error.ShErrorBean;
+import com.viglet.shiohara.bean.error.ShHttpMessageBean;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
@@ -71,6 +72,31 @@ public class ShStaticFileAPI {
 	@Autowired
 	private ResourceLoader resourceloader;
 
+	@GetMapping("/pre-upload/{folderId}/{fileName}")
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
+	public ResponseEntity<?> shStaticFilePreUpload(@PathVariable String fileName, @PathVariable String folderId)
+			throws URISyntaxException, IOException {
+
+		ShFolder shFolder = shFolderRepository.findById(folderId).orElse(null);
+		if (!shStaticFileUtils.fileExists(shFolder, fileName)) {
+
+			ShHttpMessageBean shHttpMessageBean = new ShHttpMessageBean();
+			shHttpMessageBean.setTitle("File doesn't exists");
+			shHttpMessageBean.setMessage("File doesn't exists");
+			shHttpMessageBean.setCode(200);
+
+			return new ResponseEntity<>(shHttpMessageBean, HttpStatus.OK);
+		} else {
+
+			ShHttpMessageBean shHttpMessageBean = new ShHttpMessageBean();
+			shHttpMessageBean.setTitle("File Exists");
+			shHttpMessageBean.setMessage("Verify the path of file or change name of file.");
+			shHttpMessageBean.setCode(1001);
+
+			return new ResponseEntity<>(shHttpMessageBean, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
 	@PostMapping("/upload")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ResponseEntity<?> shStaticFileUpload(@RequestParam("file") MultipartFile file,
@@ -84,12 +110,11 @@ public class ShStaticFileAPI {
 					HttpStatus.OK);
 		} else {
 
-			ShErrorBean shErrorBean = new ShErrorBean();
-			shErrorBean.setTitle("File Exists");
-			shErrorBean.setMessage("Verify the path of file or change name of file.");
-			shErrorBean.setCode(1001);
-
-			return new ResponseEntity<>(shErrorBean, HttpStatus.INTERNAL_SERVER_ERROR);
+			ShHttpMessageBean shHttpMessageBean = new ShHttpMessageBean();
+			shHttpMessageBean.setTitle("File Exists");
+			shHttpMessageBean.setMessage("Verify the path of file or change name of file.");
+			shHttpMessageBean.setCode(1001);
+			return new ResponseEntity<>(shHttpMessageBean, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
