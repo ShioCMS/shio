@@ -69,6 +69,10 @@ public interface ShPostRepository extends JpaRepository<ShPost, String>, ShPostR
 	ShPost findByShFolderAndTitle(ShFolder shFolder, String title);
 
 	ShPost findByShFolderAndFurl(ShFolder shFolder, String furl);
+	
+	boolean existsByShFolderAndTitle(ShFolder shFolder, String title);
+	
+	boolean existsByShFolderAndFurl(ShFolder shFolder, String furl);
 
 	@SuppressWarnings("unchecked")
 	ShPost save(ShPost shPost);

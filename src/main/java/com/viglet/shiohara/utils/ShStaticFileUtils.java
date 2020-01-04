@@ -73,6 +73,10 @@ public class ShStaticFileUtils {
 		return directoryPath;
 	}
 
+	public boolean fileExists(ShFolder shFolder, String fileName) {
+		return shPostRepository.existsByShFolderAndTitle(shFolder, fileName);
+	}
+
 	public File filePath(ShFolder shFolder, String fileName) {
 		File file = null;
 		File directoryPath = this.dirPath(shFolder);
@@ -135,7 +139,7 @@ public class ShStaticFileUtils {
 			}
 
 			try {
-				
+
 				String destFile = directoryPath.getAbsolutePath().concat("/" + fileName);
 
 				file.transferTo(new File(destFile));

@@ -52,7 +52,9 @@ shioharaApp.controller('ShStaticFileUploadSelectCtrl', [
 			angular.forEach($scope.files, function (file) {
 				$scope.f = file;
 				$scope.errFile = errFiles && errFiles[0];
+
 				if (file) {
+					file.error = null;
 					file.upload = Upload.upload({
 						url: shAPIServerService.get().concat('/v2/staticfile/upload'),
 						data: {
@@ -68,7 +70,7 @@ shioharaApp.controller('ShStaticFileUploadSelectCtrl', [
 						});
 					}, function (response) {
 						if (response.status > 0)
-							$scope.errorMsg = response.status + ': ' + response.data;
+							file.error = response.data.title + ". " +  response.data.message;
 					}, function (evt) {
 						file.progress = Math.min(100, parseInt(100.0 *
 							evt.loaded / evt.total));

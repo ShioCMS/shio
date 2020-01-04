@@ -30,7 +30,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,6 +42,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shiohara.api.ShJsonView;
+import com.viglet.shiohara.bean.error.ShErrorBean;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
@@ -67,16 +70,27 @@ public class ShStaticFileAPI {
 	private ShObjectRepository shObjectRepository;
 	@Autowired
 	private ResourceLoader resourceloader;
-	
+
 	@PostMapping("/upload")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShPost shStaticFileUpload(@RequestParam("file") MultipartFile file,
+	public ResponseEntity<?> shStaticFileUpload(@RequestParam("file") MultipartFile file,
 			@RequestParam("folderId") String folderId, @RequestParam("createPost") boolean createPost)
 			throws URISyntaxException, IOException {
 
 		ShFolder shFolder = shFolderRepository.findById(folderId).orElse(null);
-		
-		return shStaticFileUtils.createFilePost(file, file.getOriginalFilename(), shFolder, createPost);
+		if (!shStaticFileUtils.fileExists(shFolder, file.getOriginalFilename())) {
+			return new ResponseEntity<>(
+					shStaticFileUtils.createFilePost(file, file.getOriginalFilename(), shFolder, createPost),
+					HttpStatus.OK);
+		} else {
+
+			ShErrorBean shErrorBean = new ShErrorBean();
+			shErrorBean.setTitle("File Exists");
+			shErrorBean.setMessage("Verify the path of file or change name of file.");
+			shErrorBean.setCode(1001);
+
+			return new ResponseEntity<>(shErrorBean, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@RequestMapping("/{id}/thumbnail")
@@ -104,9 +118,8 @@ public class ShStaticFileAPI {
 				}
 			} else {
 				try {
-					Thumbnails.of(resourceloader.getResource("classpath:/ui/public/img/file.png").getInputStream()).scale(1)
-							.outputFormat("png").outputQuality(1)
-							.toOutputStream(response.getOutputStream());
+					Thumbnails.of(resourceloader.getResource("classpath:/ui/public/img/file.png").getInputStream())
+							.scale(1).outputFormat("png").outputQuality(1).toOutputStream(response.getOutputStream());
 				} catch (IOException e) {
 					logger.error("No Image Resize", e);
 				}

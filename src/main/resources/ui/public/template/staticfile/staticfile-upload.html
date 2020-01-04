@@ -45,21 +45,31 @@
                 <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                 Ready to upload. Click to Upload Button
             </div>
-            <div class="progress" ng-show="f.progress >= 0 && f.progress < 100">
-                <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="{{f.progress}}"
-                    aria-valuemin="0" aria-valuemax="100" style="width: {{f.progress}}%">
-                    <span class="sr-only">{{f.progress}} Complete</span>
+            <div ng-show="f.error == null">
+                <div class="progress" ng-show="f.progress >= 0 && f.progress < 100">
+                    <div class="progress-bar progress-bar-striped active" role="progressbar"
+                        aria-valuenow="{{f.progress}}" aria-valuemin="0" aria-valuemax="100"
+                        style="width: {{f.progress}}%">
+                        <span class="sr-only">{{f.progress}} Complete</span>
+                    </div>
                 </div>
-            </div>
-            <div class="alert alert-success" role="alert" ng-show="f.progress >= 100">
+                <div class="alert alert-success" role="alert" ng-show="f.progress >= 100">
                     <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                     Upload Completed
                 </div>
-        </div>       
+            </div>
+            <div ng-show="f.error != null">
+                <div class="alert alert-danger" role="alert">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    {{f.error}}
+                </div>
+            </div>
+        </div>
         {{errorMsg}}
     </div>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-viglet" type="button" ng-click="$ctrl.uploadFiles()" ng-disabled="!hasFiles || startUpload">Upload</button>
+    <button class="btn btn-viglet" type="button" ng-click="$ctrl.uploadFiles()"
+        ng-disabled="!hasFiles || startUpload">Upload</button>
     <button class="btn btn-default" type="button" ng-click="$ctrl.cancel()">{{closeButtonLabel}}</button>
 </div>
