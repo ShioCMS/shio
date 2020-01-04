@@ -29,6 +29,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -120,6 +121,31 @@ public class ShObjectAPI {
 		return shObjectRepository.findAll();
 	}
 
+	@GetMapping("/{id}/editor")
+	public ResponseEntity<?> shObjectEditor(@PathVariable String id, HttpServletResponse response,
+			RedirectAttributes attributes) throws UnsupportedEncodingException {
+		String redirect = null;
+		ShObject shObject = shObjectRepository.findById(id).orElse(null);
+		if (shObject != null) {
+			if (shObject instanceof ShSite) {
+				redirect = String.format("/content#!/list/%s", shObject.getId());
+			} else if (shObject instanceof ShPost) {
+				ShPost shPost = (ShPost) shObject;
+				redirect = String.format("/content#!/post/type/%s/post/%s", shPost.getShPostType().getId(),
+						shPost.getId());
+			} else if (shObject instanceof ShFolder) {
+				redirect = String.format("/content#!/list/%s", shObject.getId());
+			}
+
+			HttpHeaders headers = new HttpHeaders();
+			headers.add("Location", new String(redirect.getBytes("UTF-8"), "ISO-8859-1"));
+
+			return new ResponseEntity<>(null, headers, HttpStatus.FOUND);
+		}
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+	}
+
 	@GetMapping("/{id}/preview")
 	public RedirectView shObjectPreview(@PathVariable String id, HttpServletResponse response,
 			RedirectAttributes attributes) throws UnsupportedEncodingException {
@@ -191,7 +217,7 @@ public class ShObjectAPI {
 				shObject.setPageAllowRegisterUser(shSecurityBean.getPage().isAllowRegisterUser());
 				shObject.setShPageGroups(shSecurityBean.getPage().getShGroups());
 			}
-			
+
 			shObjectRepository.saveAndFlush(shObject);
 		}
 		return shSecurityBean;
