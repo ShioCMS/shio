@@ -18,6 +18,7 @@ package com.viglet.shiohara.utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.Date;
 
 import org.apache.commons.logging.Log;
@@ -57,7 +58,9 @@ public class ShStaticFileUtils {
 	private ShPostTypeAttrRepository shPostTypeAttrRepository;
 	@Autowired
 	private ShPostAttrRepository shPostAttrRepository;
-
+	@Autowired
+	private ShHistoryUtils shHistoryUtils;
+	
 	private String fileSourceBase = File.separator + "store" + File.separator + "file_source";
 
 	public File dirPath(ShFolder shFolder) {
@@ -130,7 +133,7 @@ public class ShStaticFileUtils {
 		return fileSourceBase;
 	}
 
-	public ShPost createFilePost(MultipartFile file, String fileName, ShFolder shFolder, boolean createPost) {
+	public ShPost createFilePost(MultipartFile file, String fileName, ShFolder shFolder, Principal principal, boolean createPost) {
 		File directoryPath = shStaticFileUtils.dirPath(shFolder);
 		ShPost shPost = new ShPost();
 		if (directoryPath != null) {
@@ -167,6 +170,7 @@ public class ShStaticFileUtils {
 
 					shPostAttrRepository.save(shPostAttr);
 
+					shHistoryUtils.commit(shPost, principal, ShHistoryUtils.CREATE);
 				} else {
 					shPost.setTitle(fileName);
 				}

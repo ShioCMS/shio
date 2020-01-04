@@ -30,6 +30,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.io.FileUtils;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -57,6 +60,7 @@ import com.viglet.shiohara.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shiohara.persistence.repository.site.ShSiteRepository;
 import com.viglet.shiohara.url.ShURLFormatter;
 import com.viglet.shiohara.utils.ShFolderUtils;
+import com.viglet.shiohara.utils.ShHistoryUtils;
 
 import io.swagger.annotations.Api;
 
@@ -67,7 +71,8 @@ import io.swagger.annotations.Api;
 @RequestMapping("/api/v2/site")
 @Api(tags = "Site", description = "Site API")
 public class ShSiteAPI {
-
+	static final Logger logger = LogManager.getLogger(ShSiteAPI.class);
+	
 	@Autowired
 	private ShSiteRepository shSiteRepository;
 	@Autowired
@@ -80,7 +85,8 @@ public class ShSiteAPI {
 	private ShSiteExport shSiteExport;
 	@Autowired
 	private ShCloneExchange shCloneExchange;
-
+	@Autowired
+	private ShHistoryUtils shHistoryUtils;
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShSite> shSiteList(final Principal principal) throws Exception {
@@ -99,7 +105,7 @@ public class ShSiteAPI {
 
 	@PutMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShSite shSiteUpdate(@PathVariable String id, @RequestBody ShSite shSite) {
+	public ShSite shSiteUpdate(@PathVariable String id, @RequestBody ShSite shSite, Principal principal) {
 		Optional<ShSite> shSiteOptional = shSiteRepository.findById(id);
 		if (shSiteOptional.isPresent()) {
 			ShSite shSiteEdit = shSiteOptional.get();
@@ -110,6 +116,9 @@ public class ShSiteAPI {
 			shSiteEdit.setFormSuccess(shSite.getFormSuccess());
 			shSiteEdit.setFurl(shURLFormatter.format(shSite.getName()));
 			shSiteRepository.save(shSiteEdit);
+			
+			shHistoryUtils.commit(shSite, principal, ShHistoryUtils.UPDATE);
+			
 			return shSiteEdit;
 		}
 
@@ -119,17 +128,25 @@ public class ShSiteAPI {
 
 	@DeleteMapping("/{id}")
 	@Transactional
-	public boolean shSiteDelete(@PathVariable String id) throws Exception {
+	public boolean shSiteDelete(@PathVariable String id, Principal principal) {
 		ShSite shSite = shSiteRepository.findById(id).orElse(null);
 
 		Set<ShFolder> shFolders = shFolderRepository.findByShSiteAndRootFolder(shSite, (byte) 1);
 
 		for (ShFolder shFolder : shFolders) {
-			shFolderUtils.deleteFolder(shFolder);
+			try {
+				shFolderUtils.deleteFolder(shFolder);
+			} catch (ClientProtocolException e) {
+				logger.error("shSiteDelete ClientProtocolException: ", e);
+			} catch (IOException e) {
+				logger.error("shSiteDelete IOException: ", e);			
+			}
 		}
-
+		
 		shSiteRepository.delete(id);
 
+		shHistoryUtils.commit(shSite, principal, ShHistoryUtils.DELETE);
+		
 		return true;
 	}
 
@@ -162,16 +179,27 @@ public class ShSiteAPI {
 
 	@PostMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShSite shSiteAdd(@RequestBody ShSite shSite, final Principal principal) throws Exception {
+	public ShSite shSiteAdd(@RequestBody ShSite shSite, final Principal principal) {
 
 		shSite.setDate(new Date());
 		shSite.setOwner(principal.getName());
 		shSite.setFurl(shURLFormatter.format(shSite.getName()));
 
-		ShExchange shExchange = this.importTemplateSite(shSite);
-		ShSiteExchange shSiteExchange = shExchange.getSites().get(0);
-		shSite.setId(shSiteExchange.getId());
-
+		ShExchange shExchange;
+		try {
+			shExchange = this.importTemplateSite(shSite);
+			ShSiteExchange shSiteExchange = shExchange.getSites().get(0);
+			shSite.setId(shSiteExchange.getId());
+		} catch (IllegalStateException e) {
+			logger.error("shSiteAdd IllegalStateException: ", e);
+		} catch (IOException e) {
+			logger.error("shSiteAdd IOException: ", e);
+		} catch (ArchiveException e) {
+			logger.error("shSiteAdd ArchiveException: ", e);		
+		}
+		
+		shHistoryUtils.commit(shSite, principal, ShHistoryUtils.CREATE);
+		
 		return shSite;
 	}
 

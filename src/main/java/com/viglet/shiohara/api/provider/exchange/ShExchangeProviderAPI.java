@@ -18,6 +18,7 @@ package com.viglet.shiohara.api.provider.exchange;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -257,7 +258,7 @@ public class ShExchangeProviderAPI {
 	@PostMapping("/{providerInstanceId}/import/{providerItemId}/to/{folderId}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShPost shExchangeProviderImportItem(@PathVariable String folderId, @PathVariable String providerInstanceId,
-			@PathVariable String providerItemId) {
+			@PathVariable String providerItemId, Principal principal) {
 
 		this.initProvider(providerInstanceId);
 
@@ -281,7 +282,7 @@ public class ShExchangeProviderAPI {
 					String fileNameFormatted = String.format("%s%s", fileWithoutExtension, extension);
 					fileName = fileNameFormatted;
 				}
-				return shStaticFileUtils.createFilePost(file, fileName, shFolder, true);
+				return shStaticFileUtils.createFilePost(file, fileName, shFolder, principal, true);
 			}
 		} catch (IOException e) {
 			logger.error("shExchangeProviderImportItemIOException", e);

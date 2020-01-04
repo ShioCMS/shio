@@ -19,6 +19,7 @@ package com.viglet.shiohara.api.staticfile;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,13 +101,13 @@ public class ShStaticFileAPI {
 	@PostMapping("/upload")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ResponseEntity<?> shStaticFileUpload(@RequestParam("file") MultipartFile file,
-			@RequestParam("folderId") String folderId, @RequestParam("createPost") boolean createPost)
+			@RequestParam("folderId") String folderId, @RequestParam("createPost") boolean createPost, Principal principal)
 			throws URISyntaxException, IOException {
 
 		ShFolder shFolder = shFolderRepository.findById(folderId).orElse(null);
 		if (!shStaticFileUtils.fileExists(shFolder, file.getOriginalFilename())) {
 			return new ResponseEntity<>(
-					shStaticFileUtils.createFilePost(file, file.getOriginalFilename(), shFolder, createPost),
+					shStaticFileUtils.createFilePost(file, file.getOriginalFilename(), shFolder, principal, createPost),
 					HttpStatus.OK);
 		} else {
 
