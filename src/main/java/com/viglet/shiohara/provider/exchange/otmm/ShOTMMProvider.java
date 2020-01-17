@@ -111,7 +111,6 @@ public class ShOTMMProvider implements ShExchangeProvider {
 					ShOTMMFoldersBean.class);
 		} catch (UnsupportedOperationException e) {
 			logger.error("getRootFolder UnsupportedOperationException: ", e);
-			e.printStackTrace();
 		} catch (IOException e) {
 			logger.error("getRootFolder IOException: ", e);
 		}
@@ -200,7 +199,6 @@ public class ShOTMMProvider implements ShExchangeProvider {
 
 		} catch (UnsupportedOperationException e) {
 			logger.error("getOTMMFolders UnsupportedOperationException: ", e);
-			e.printStackTrace();
 		} catch (IOException e) {
 			logger.error("getOTMMFolders IOException: ", e);
 		}
@@ -220,7 +218,6 @@ public class ShOTMMProvider implements ShExchangeProvider {
 					ShOTMMFoldersBean.class);
 		} catch (UnsupportedOperationException e) {
 			logger.error("getOTMMFolders UnsupportedOperationException: ", e);
-			e.printStackTrace();
 		} catch (IOException e) {
 			logger.error("getOTMMFolders IOException: ", e);
 		}
@@ -253,7 +250,6 @@ public class ShOTMMProvider implements ShExchangeProvider {
 			shOTMMAssetsBean = objectMapper.readValue(responseHandler.handleResponse(response), ShOTMMAssetsBean.class);
 		} catch (UnsupportedOperationException e) {
 			logger.error("getOTMMAssets UnsupportedOperationException: ", e);
-			e.printStackTrace();
 		} catch (IOException e) {
 			logger.error("getOTMMAssets IOException: ", e);
 		}
@@ -292,7 +288,6 @@ public class ShOTMMProvider implements ShExchangeProvider {
 						ShOTMMFolderDetailBean.class);
 			} catch (UnsupportedOperationException e) {
 				logger.error("getObject UnsupportedOperationException: ", e);
-				e.printStackTrace();
 			} catch (IOException e) {
 				logger.error("getObject IOException: ", e);
 			}
@@ -322,7 +317,6 @@ public class ShOTMMProvider implements ShExchangeProvider {
 
 			} catch (UnsupportedOperationException e) {
 				logger.error("getObject UnsupportedOperationException: ", e);
-				e.printStackTrace();
 			} catch (IOException e) {
 				logger.error("getObject IOException: ", e);
 			}
@@ -368,7 +362,6 @@ public class ShOTMMProvider implements ShExchangeProvider {
 
 		} catch (UnsupportedOperationException e) {
 			logger.error("otmmAuth UnsupportedOperationException: ", e);
-			e.printStackTrace();
 		} catch (IOException e) {
 			logger.error("otmmAuth IOException: ", e);
 		}
@@ -388,7 +381,6 @@ public class ShOTMMProvider implements ShExchangeProvider {
 
 		} catch (UnsupportedOperationException e) {
 			logger.error("getDownload UnsupportedOperationException: ", e);
-			e.printStackTrace();
 		} catch (IOException e) {
 			logger.error("getDownload IOException: ", e);
 		}
