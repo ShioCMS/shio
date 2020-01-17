@@ -104,7 +104,6 @@ public class ShOTCSProvider implements ShExchangeProvider {
 
 		} catch (UnsupportedOperationException e) {
 			logger.error("rootFolder UnsupportedOperationException: ", e);
-			e.printStackTrace();
 		} catch (IOException e) {
 			logger.error("rootFolder IOException: ", e);
 		}
@@ -173,7 +172,6 @@ public class ShOTCSProvider implements ShExchangeProvider {
 
 		} catch (UnsupportedOperationException e) {
 			logger.error("getObject UnsupportedOperationException: ", e);
-			e.printStackTrace();
 		} catch (IOException e) {
 			logger.error("getObject IOException: ", e);
 		}
@@ -205,7 +203,6 @@ public class ShOTCSProvider implements ShExchangeProvider {
 
 		} catch (UnsupportedOperationException e) {
 			logger.error("rootFolder UnsupportedOperationException: ", e);
-			e.printStackTrace();
 		} catch (IOException e) {
 			logger.error("rootFolder IOException: ", e);
 		}
@@ -224,7 +221,6 @@ public class ShOTCSProvider implements ShExchangeProvider {
 			inputStream = response.getEntity().getContent();
 		} catch (UnsupportedOperationException e) {
 			logger.error("rootFolder UnsupportedOperationException: ", e);
-			e.printStackTrace();
 		} catch (IOException e) {
 			logger.error("rootFolder IOException: ", e);
 		}

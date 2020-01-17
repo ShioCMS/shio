@@ -124,7 +124,6 @@ public class ShOTDSService {
 			logger.error("authenticate HttpResponseException.");
 		} catch (UnsupportedOperationException e) {
 			logger.error("authenticate UnsupportedOperationException: ", e);
-			e.printStackTrace();
 		} catch (IOException e) {
 			logger.error("authenticate IOException: ", e);
 		}
@@ -160,7 +159,6 @@ public class ShOTDSService {
 				logger.error("validateTicket HttpResponseException.");
 			} catch (UnsupportedOperationException e) {
 				logger.error("validateTicket UnsupportedOperationException: ", e);
-				e.printStackTrace();
 			} catch (IOException e) {
 				logger.error("validateTicket IOException: ", e);
 			}
@@ -187,7 +185,6 @@ public class ShOTDSService {
 			logger.error("getUser HttpResponseException.");
 		} catch (UnsupportedOperationException e) {
 			logger.error("getUser UnsupportedOperationException: ", e);
-			e.printStackTrace();
 		} catch (IOException e) {
 			logger.error("getUser IOException: ", e);
 		}

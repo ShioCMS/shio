@@ -96,7 +96,8 @@ public class ShWidgetOnStartup {
 			shWidget.setName(ShSystemWidget.HTML_EDITOR);
 			shWidget.setDescription("HTML Editor Widget");
 			shWidget.setClassName("com.viglet.shiohara.widget.ShHTMLWidget");
-			shWidget.setImplementationCode("template/widget/html-editor.html");
+			shWidget.setImplementationCode("template/widget/html-editor/html-editor.html");
+			shWidget.setSettingPath("template/widget/html-editor/setting/html-editor-setting.html");
 			shWidget.setType("TEXT,TEXTAREA");
 
 			shWidgetRepository.save(shWidget);

@@ -87,7 +87,7 @@ public class ShSitesContext {
 			shFormUtils.execute(shSitesContextURL);
 		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("sitesPostForm Exception: ", e);
 		}
 
 		ShSite shSite = shSiteRepository.findById(shSitesContextURL.getInfo().getSiteId()).get();
@@ -131,13 +131,12 @@ public class ShSitesContext {
 			if (username != null) {
 				if (shSitesContextURL.getInfo().isPageAllowGuestUser())
 					response.sendError(HttpServletResponse.SC_NOT_FOUND);
-				else 
+				else
 					response.sendError(HttpServletResponse.SC_FORBIDDEN);
-			}
-			else {
-			String callback = this.getCurrentUrlFromRequest(request);
-			session.setAttribute("shLoginCallBack", callback);
-			response.sendRedirect("/login-page");
+			} else {
+				String callback = this.getCurrentUrlFromRequest(request);
+				session.setAttribute("shLoginCallBack", callback);
+				response.sendRedirect("/login-page");
 			}
 		}
 	}
@@ -154,7 +153,7 @@ public class ShSitesContext {
 		try {
 			response.sendRedirect("/login-page");
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("sitesLogoutPage IOException: ", e);
 		}
 	}
 
@@ -186,7 +185,7 @@ public class ShSitesContext {
 			} else
 				response.sendRedirect("/login-page");
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("sitesLoginPagePost IOException: ", e);
 		}
 	}
 
