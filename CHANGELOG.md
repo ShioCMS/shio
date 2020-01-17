@@ -1,10 +1,28 @@
-## 0.3.5
+## 0.3.6
 
 #### NEW FEATURES
 
-
 #### IMPROVEMENTS
 
+## 0.3.5 (November 18, 2019)
+
+#### NEW FEATURES
+* Protected Pages
+* Users and Groups
+* Workflow and Tasks
+* TinyMCE Integration
+* Upload Multiple Files
+* Published, Unpublished and Draft
+* Checkbox Widget
+* Export Folder as Spreadsheet
+
+#### IMPROVEMENTS
+* Cache Improvements
+* Sample Site with new Post Type Association JSON
+* History: Pagination
+* Sync Nested Attributes PostType into Post
+* Tomcat Special chars and removed System msgs
+* Spring Boot 2.1.9 and Gradle 5.6.2
 
 ## 0.3.4 (March 04, 2019)
 

@@ -49,7 +49,7 @@ public class ShReferenceAPITest {
 	@Test
 	public void shReferenceList() throws Exception {
 		mockMvc.perform(get("/api/v2/reference")).andExpect(status().isOk())
-				.andExpect(content().contentType("application/json;charset=UTF-8"));
+				.andExpect(content().contentType("application/json"));
 
 	}
 

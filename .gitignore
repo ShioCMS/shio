@@ -25,3 +25,4 @@ src/main/resources/js/client-side/build
 /nashorn_code_cache
 .sts4-cache
 /store.*
+/node_modules

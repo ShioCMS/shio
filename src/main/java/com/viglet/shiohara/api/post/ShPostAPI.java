@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 the original author or authors. 
+ * Copyright (C) 2016-2020 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 package com.viglet.shiohara.api.post;
 
 import java.io.File;
@@ -62,11 +61,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viglet.shiohara.api.ShJsonView;
 import com.viglet.shiohara.object.ShObjectPublishStatus;
 import com.viglet.shiohara.persistence.model.auth.ShUser;
-import com.viglet.shiohara.persistence.model.history.ShHistory;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.repository.auth.ShUserRepository;
-import com.viglet.shiohara.persistence.repository.history.ShHistoryRepository;
 import com.viglet.shiohara.persistence.repository.object.ShObjectRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shiohara.persistence.repository.post.ShPostDraftAttrRepository;
@@ -80,6 +77,7 @@ import com.viglet.shiohara.post.type.ShSystemPostType;
 import com.viglet.shiohara.sites.cache.component.ShCacheObject;
 import com.viglet.shiohara.turing.ShTuringIntegration;
 import com.viglet.shiohara.url.ShURLFormatter;
+import com.viglet.shiohara.utils.ShHistoryUtils;
 import com.viglet.shiohara.utils.ShObjectUtils;
 import com.viglet.shiohara.utils.ShPostUtils;
 import com.viglet.shiohara.utils.ShStaticFileUtils;
@@ -117,8 +115,6 @@ public class ShPostAPI {
 	@Autowired
 	private ShReferenceDraftRepository shReferenceDraftRepository;
 	@Autowired
-	private ShHistoryRepository shHistoryRepository;
-	@Autowired
 	private ShPostTypeRepository shPostTypeRepository;
 	@Autowired
 	private ShObjectRepository shObjectRepository;
@@ -134,7 +130,9 @@ public class ShPostAPI {
 	private ShWorkflowTaskRepository shWorkflowTaskRepository;
 	@Autowired
 	private ShObjectUtils shObjectUtils;
-
+	@Autowired 
+	private ShHistoryUtils shHistoryUtils;
+	
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShPost> shPostList() {
@@ -152,6 +150,7 @@ public class ShPostAPI {
 	 * Post Edit API
 	 * 
 	 * @param id Post Id
+	 * @param principal Logged User
 	 * @return ShPost
 	 */
 	@GetMapping("/{id}")
@@ -182,19 +181,9 @@ public class ShPostAPI {
 			shCacheObject.deleteCache(id);
 
 			this.postSave(shPost);
-
-			// History
-			ShHistory shHistory = new ShHistory();
-			shHistory.setDate(new Date());
-			shHistory.setDescription("Updated " + shPost.getTitle() + " Post.");
-			if (principal != null) {
-				shHistory.setOwner(principal.getName());
-			}
-
-			shHistory.setShObject(shPost.getId());
-			shHistory.setShSite(shPostUtils.getSite(shPost).getId());
-			shHistoryRepository.saveAndFlush(shHistory);
-
+			
+			shHistoryUtils.commit(shPost, principal, ShHistoryUtils.UPDATE);
+			
 			return this.shPostEdit(shPost.getId(), principal);
 		}
 		return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
@@ -221,16 +210,7 @@ public class ShPostAPI {
 
 			this.postSave(shPost);
 
-			// History
-			ShHistory shHistory = new ShHistory();
-			shHistory.setDate(new Date());
-			shHistory.setDescription("Created " + shPost.getTitle() + " Post.");
-			if (principal != null) {
-				shHistory.setOwner(principal.getName());
-			}
-			shHistory.setShObject(shPost.getId());
-			shHistory.setShSite(shPostUtils.getSite(shPost).getId());
-			shHistoryRepository.saveAndFlush(shHistory);
+			shHistoryUtils.commit(shPost, principal, ShHistoryUtils.CREATE);
 
 			return this.shPostEdit(shPost.getId(), principal);
 		}
@@ -259,8 +239,7 @@ public class ShPostAPI {
 							try {
 								Files.delete(file.toPath());
 							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
+								logger.error("shPostDelete: ", e);
 							}
 						}
 					}
@@ -274,16 +253,7 @@ public class ShPostAPI {
 
 				shReferenceDraftRepository.deleteInBatch(shReferenceDraftRepository.findByShObjectTo(shPost));
 
-				// History
-				ShHistory shHistory = new ShHistory();
-				shHistory.setDate(new Date());
-				shHistory.setDescription("Deleted " + shPost.getTitle() + " Post.");
-				if (principal != null) {
-					shHistory.setOwner(principal.getName());
-				}
-				shHistory.setShObject(shPost.getId());
-				shHistory.setShSite(shPostUtils.getSite(shPost).getId());
-				shHistoryRepository.saveAndFlush(shHistory);
+				shHistoryUtils.commit(shPost, principal, ShHistoryUtils.DELETE);
 
 				shPostRepository.delete(id);
 
@@ -436,8 +406,6 @@ public class ShPostAPI {
 						shPostRepository.saveAndFlush(shPostEdit);
 					} catch (JsonProcessingException e) {
 						logger.error("postDraftSave JsonProcessingException:", e);
-					} catch (IOException e) {
-						logger.error("postDraftSave IOException:", e);
 					}
 				}
 			} else {

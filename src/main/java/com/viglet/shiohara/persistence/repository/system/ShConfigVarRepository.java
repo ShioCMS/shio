@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2020 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 package com.viglet.shiohara.persistence.repository.system;
 
 import com.viglet.shiohara.persistence.model.system.ShConfigVar;
@@ -23,10 +22,25 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
+/**
+ * @author Alexandre Oliveira
+ */
+@Repository
 public interface ShConfigVarRepository extends JpaRepository<ShConfigVar, String> {
 
 	List<ShConfigVar> findAll();
+
+	boolean existsByPathAndName(String path, String name);
+
+	boolean existsByPath(String path);
+
+	List<ShConfigVar> findByPath(String path);
+
+	ShConfigVar findByPathAndName(String path, String name);
 
 	Optional<ShConfigVar> findById(String id);
 
@@ -34,4 +48,10 @@ public interface ShConfigVarRepository extends JpaRepository<ShConfigVar, String
 	ShConfigVar save(ShConfigVar turConfigVar);
 
 	void delete(ShConfigVar turConfigVar);
+
+	void deleteByPath(String path);
+
+	@Modifying
+	@Query("delete from ShConfigVar cv where cv.id = ?1")
+	void delete(String id);
 }

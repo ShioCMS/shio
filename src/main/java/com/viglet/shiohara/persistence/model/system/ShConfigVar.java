@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2020 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,15 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 package com.viglet.shiohara.persistence.model.system;
 
 import java.io.Serializable;
 import javax.persistence.*;
 
+import org.hibernate.annotations.GenericGenerator;
+
 /**
- * The persistent class for the vigNLPSolutions database table.
+ * The persistent class for the ShConfigVar database table.
  * 
+ * @author Alexandre Oliveira
  */
 @Entity
 @Table(name = "shConfigVar")
@@ -31,12 +33,18 @@ public class ShConfigVar implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(unique = true, nullable = false, length = 10)
+	@GenericGenerator(name = "UUID", strategy = "com.viglet.shiohara.jpa.ShUUIDGenerator")
+	@GeneratedValue(generator = "UUID")
+
+	@Column(name = "id", updatable = false, nullable = false)
 	private String id;
 
 	@Column(nullable = true, length = 255)
 	private String path;
 
+	@Column(nullable = true, length = 255)
+	private String name;
+	
 	@Column(nullable = true, length = 255)
 	private String value;
 
@@ -50,6 +58,14 @@ public class ShConfigVar implements Serializable {
 
 	public String getPath() {
 		return path;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public void setPath(String path) {

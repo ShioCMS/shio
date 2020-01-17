@@ -6,7 +6,7 @@ shioharaApp.config([
 		'NotificationProvider',
 		'$httpProvider',
 		function($stateProvider, $urlRouterProvider,
-				$locationProvider, $translateProvider, NotificationProvider,$httpProvider) {	
+				$locationProvider, $translateProvider, NotificationProvider, $httpProvider) {	
 
 			$httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 			$httpProvider.interceptors.push('shAuthInterceptor');
@@ -247,10 +247,57 @@ shioharaApp.config([
 				data : {
 					pageTitle : 'New Site | Viglet Shiohara'
 				}
+			}).state('config', {
+				url: '/config',
+				templateUrl: 'template/config/config-home.html',
+				controller : 'ShConfigCtrl',
+				redirectTo: 'config.auth-providers',
+				data : { pageTitle: 'Configuration | Viglet Shiohara' }
+			}).state('config.email', {
+				url: '/email',
+				templateUrl: 'template/config/email/config-email.html',
+				controller: 'ShConfigEmailCtrl',
+				data : { pageTitle: 'Email Configuration | Viglet Shiohara' }
+			}).state('config.search', {
+				url: '/search',
+				templateUrl: 'template/config/search/config-search.html',
+				controller: 'ShConfigSearchCtrl',
+				data : { pageTitle: 'Search Configuration | Viglet Shiohara' }
+			}).state('config.exchange-providers', {
+				url: '/provider/exchange',
+				templateUrl: 'template/config/provider/exchange/config-exchange-providers.html',
+				controller: 'ShConfigExchangeProvidersCtrl',
+				data : { pageTitle: 'Exchange Providers| Viglet Shiohara' }
+			}).state('config.exchange-provider-new', {
+				url: '/provider/exchange/new',
+				templateUrl: 'template/config/provider/exchange/config-exchange-provider-item.html',
+				controller: 'ShConfigExchangeProviderCtrl',
+				data : { pageTitle: 'New Exchange Provider| Viglet Shiohara' }
+			}).state('config.exchange-provider', {
+				url: '/provider/exchange/:exchangeProviderId',
+				templateUrl: 'template/config/provider/exchange/config-exchange-provider-item.html',
+				controller: 'ShConfigExchangeProviderCtrl',
+				data : { pageTitle: 'Edit Exchange Provider| Viglet Shiohara' }
+			}).state('config.auth-providers', {
+				url: '/provider/auth',
+				templateUrl: 'template/config/provider/auth/config-auth-providers.html',
+				controller: 'ShConfigAuthProvidersCtrl',
+				data : { pageTitle: 'Auth Providers | Viglet Shiohara' }
+			}).state('config.auth-provider-new', {
+				url: '/provider/auth/new',
+				templateUrl: 'template/config/provider/auth/config-auth-provider-item.html',
+				controller: 'ShConfigAuthProviderCtrl',
+				data : { pageTitle: 'New Auth Provider| Viglet Shiohara' }
+			}).state('config.auth-provider', {
+				url: '/provider/auth/:authProviderId',
+				templateUrl: 'template/config/provider/auth/config-auth-provider-item.html',
+				controller: 'ShConfigAuthProviderCtrl',
+				data : { pageTitle: 'Edit Auth Provider| Viglet Shiohara' }
 			}).state('admin', {
 				url: '/admin',
 				templateUrl: 'template/admin/admin-home.html',
 				controller : 'ShAdminCtrl',
+				redirectTo: 'admin.user',
 				data : { pageTitle: 'Administration | Viglet Shiohara' }
 			}).state('admin.user', {
 				url: '/user',

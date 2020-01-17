@@ -42,6 +42,15 @@ shioharaApp.controller('ShStaticFileUploadSelectCtrl', [
 		$ctrl.listFiles = function (files, errFiles) {
 			$scope.hasFiles = true;
 			$scope.files = files;
+			$scope.files.forEach(function (file) {
+				file.error = null;
+				$http.get(shAPIServerService.get().concat('/v2/staticfile/pre-upload/' + folderId + '/' + file.name))
+					.then(function successCallback(response) {
+						//
+					}, function errorCallback(response) {
+						file.error = response.data.title + ". " + response.data.message;					
+					})
+			});
 		}
 		$ctrl.uploadFiles = function (files, errFiles) {
 
@@ -52,7 +61,8 @@ shioharaApp.controller('ShStaticFileUploadSelectCtrl', [
 			angular.forEach($scope.files, function (file) {
 				$scope.f = file;
 				$scope.errFile = errFiles && errFiles[0];
-				if (file) {
+
+				if (file && file.error == null) {
 					file.upload = Upload.upload({
 						url: shAPIServerService.get().concat('/v2/staticfile/upload'),
 						data: {
@@ -68,7 +78,7 @@ shioharaApp.controller('ShStaticFileUploadSelectCtrl', [
 						});
 					}, function (response) {
 						if (response.status > 0)
-							$scope.errorMsg = response.status + ': ' + response.data;
+							file.error = response.data.title + ". " + response.data.message;
 					}, function (evt) {
 						file.progress = Math.min(100, parseInt(100.0 *
 							evt.loaded / evt.total));

@@ -13,9 +13,9 @@
 		<div class="panel-body">
 			<div infinite-scroll='loadMore()' infinite-scroll-distance='2'>
 				<article ng-repeat="commit in commits" style="margin-top: 30px; padding-bottom: 0px;">
-					<div style="margin-bottom: 5px;color: #FF874B; font-weight: bolder;">
+					<a style="margin-bottom: 5px;color: #FF874B; font-weight: bolder;" ng-href="/api/v2/object/{{commit.shObject}}/editor">
 						{{commit.description}}
-					</div>
+					</a>
 					<ul class="breadcrumb" style="background-color: white; padding: 0px; margin: 0px; font-size: 12px;">
 						<li><span style="font-weight: bolder;">{{commit.owner}}</span> committed on <span
 								am-time-ago="commit.date"></span></li>

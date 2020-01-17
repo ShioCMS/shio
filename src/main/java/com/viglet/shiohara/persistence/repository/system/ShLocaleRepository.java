@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2020 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 package com.viglet.shiohara.persistence.repository.system;
 
 import com.viglet.shiohara.persistence.model.system.ShLocale;
@@ -22,7 +21,12 @@ import com.viglet.shiohara.persistence.model.system.ShLocale;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
+/**
+ * @author Alexandre Oliveira
+ */
+@Repository
 public interface ShLocaleRepository extends JpaRepository<ShLocale, String> {
 
 	static final String EN_US = "en_US";

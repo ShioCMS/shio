@@ -80,9 +80,9 @@ public class ShUserAPITest {
 	@Test
 	public void shUserList() throws Exception {
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/v2/user").principal(mockPrincipal)
-				.accept(MediaType.APPLICATION_JSON).contentType("application/json;charset=UTF-8");
+				.accept(MediaType.APPLICATION_JSON).contentType("application/json");
 		mockMvc.perform(requestBuilder).andExpect(status().isOk())
-				.andExpect(content().contentType("application/json;charset=UTF-8"));
+				.andExpect(content().contentType("application/json"));
 	}
 
 	// @Test
@@ -93,19 +93,19 @@ public class ShUserAPITest {
 		SecurityContextHolder.setContext(securityContext);
 		when(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn(mockPrincipal);
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/v2/user/current").principal(mockPrincipal)
-				.accept(MediaType.APPLICATION_JSON).contentType("application/json;charset=UTF-8");
+				.accept(MediaType.APPLICATION_JSON).contentType("application/json");
 
 		mockMvc.perform(requestBuilder).andExpect(status().isOk())
-				.andExpect(content().contentType("application/json;charset=UTF-8"));
+				.andExpect(content().contentType("application/json"));
 	}
 
 	@Test
 	public void shUserStructure() throws Exception {
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/v2/user/model").principal(mockPrincipal)
-				.accept(MediaType.APPLICATION_JSON).contentType("application/json;charset=UTF-8");
+				.accept(MediaType.APPLICATION_JSON).contentType("application/json");
 
 		mockMvc.perform(requestBuilder).andExpect(status().isOk())
-				.andExpect(content().contentType("application/json;charset=UTF-8"));
+				.andExpect(content().contentType("application/json"));
 	}
 
 	@Test
@@ -123,7 +123,7 @@ public class ShUserAPITest {
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post(String.format("/api/v2/user/%s", newUsername))
 				.principal(mockPrincipal).accept(MediaType.APPLICATION_JSON).content(requestBody)
-				.contentType("application/json;charset=UTF-8");
+				.contentType("application/json");
 
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
@@ -131,7 +131,7 @@ public class ShUserAPITest {
 	@Test
 	public void stage02ShUserGet() throws Exception {
 		mockMvc.perform(get(String.format("/api/v2/user/%s", newUsername))).andExpect(status().isOk())
-				.andExpect(content().contentType("application/json;charset=UTF-8"));
+				.andExpect(content().contentType("application/json"));
 	}
 
 	@Test
@@ -143,7 +143,7 @@ public class ShUserAPITest {
 
 		RequestBuilder userRequestBuilder = MockMvcRequestBuilders.put(String.format("/api/v2/user/%s", newUsername))
 				.principal(mockPrincipal).accept(MediaType.APPLICATION_JSON).content(userRequestBody)
-				.contentType("application/json;charset=UTF-8");
+				.contentType("application/json");
 
 		mockMvc.perform(userRequestBuilder).andExpect(status().isOk());
 	}

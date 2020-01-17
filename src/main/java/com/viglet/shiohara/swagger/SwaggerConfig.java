@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2020 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 package com.viglet.shiohara.swagger;
 
 import java.util.Collections;
@@ -30,12 +29,15 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+/**
+ * @author Alexandre Oliveira
+ */
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {
 	@Bean
 	public Docket api() {
-		ShCustomPathPrivider pathProvider = new ShCustomPathPrivider();
+		ShCustomPathProvider pathProvider = new ShCustomPathProvider();
 
 		return new Docket(DocumentationType.SWAGGER_2).pathProvider(pathProvider).select()
 				.apis(RequestHandlerSelectors.basePackage("com.viglet.shiohara.api")).paths(PathSelectors.any()).build()

@@ -15,8 +15,8 @@ guidelines](CONTRIBUTING.md).**
 ## Download
 
 ```shell
-git clone --recurse-submodules https://github.com/ShioharaCMS/shiohara.git
-cd shiohara
+$ git clone --recurse-submodules https://github.com/ShioharaCMS/shiohara.git
+$ cd shiohara
 ```
 
 ## Deploy 

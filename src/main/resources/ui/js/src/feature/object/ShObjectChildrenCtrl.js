@@ -11,6 +11,7 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
     , "shFolderFactory"
     , "shPostFactory"
     , "ShDialogSelectObject"
+    , "ShDialogImportFromProvider"
     , "ShDialogDeleteFactory"
     , "shPostResource"
     , "shFolderResource"
@@ -22,7 +23,7 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
     , "shSiteFactory"
     , "focus"
     , "shStaticFileUploadFactory"
-    , function ($scope, $state, $stateParams, $rootScope, $translate, $http, $window, shAPIServerService, vigLocale, shFolderFactory, shPostFactory, ShDialogSelectObject, ShDialogDeleteFactory, shPostResource, shFolderResource, $filter, Notification, moment, shUserResource, shPostTypeResource, shSiteFactory, focus, shStaticFileUploadFactory) {
+    , function ($scope, $state, $stateParams, $rootScope, $translate, $http, $window, shAPIServerService, vigLocale, shFolderFactory, shPostFactory, ShDialogSelectObject, ShDialogImportFromProvider, ShDialogDeleteFactory, shPostResource, shFolderResource, $filter, Notification, moment, shUserResource, shPostTypeResource, shSiteFactory, focus, shStaticFileUploadFactory) {
         $scope.loadedObjectList = false;
         $scope.objectId = $stateParams.objectId;
         $scope.vigLanguage = vigLocale.getLocale().substring(0, 2);
@@ -68,7 +69,7 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
                 else {
                     return "Published";
                 }
-            }        
+            }
         }
         $scope.uploadFiles = function (folderId) {
             var modalInstance = shStaticFileUploadFactory.modalUploadFiles(folderId);
@@ -183,7 +184,7 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
                 $scope.loadedObjectList = true;
             }));
         }
-                
+
         $scope.processResponse = function (response) {
             $scope.shFolders = response.data.shFolders;
             $scope.shFolders = $filter('orderBy')($scope.shFolders, 'position');
@@ -282,6 +283,21 @@ shioharaApp.controller('ShObjectChildrenCtrl', [
             objectGlobalIds.push(shObject.id);
             $scope.objectsCopyDialog(objectGlobalIds);
         }
+
+        $scope.importFromProvider = function (folderId) {
+            var modalInstance = ShDialogImportFromProvider.dialog(2000, "shFolder");
+            modalInstance.result.then(function (providerItem) {
+                console.log(providerItem);
+                $http.post(shAPIServerService.get().concat("/v2/provider/exchange/otds/import/" + providerItem.id + "/to/" + folderId)).then(function (response) {
+                    var shPost = response.data;
+                    $scope.shPosts.push(shPost);
+                    Notification.warning(shPost.title + " Asset was imported.");
+                });
+            }, function () {
+                // Selected CANCEL
+            });
+        }
+
         $scope.objectsCopyDialog = function (objectGlobalIds) {
             var modalInstance = ShDialogSelectObject.dialog($scope.objectId, "shFolder");
             modalInstance.result.then(function (shObjectSelected) {

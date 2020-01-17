@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2020 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 package com.viglet.shiohara.ecommerce.payment;
 
 import java.io.IOException;
@@ -49,6 +48,9 @@ import br.com.caelum.stella.boleto.Pagador;
 import br.com.caelum.stella.boleto.bancos.Itau;
 import br.com.caelum.stella.boleto.transformer.GeradorDeBoleto;
 
+/**
+ * @author Alexandre Oliveira
+ */
 @Component
 public class ShPaymentSlip {
 	@Autowired
@@ -102,9 +104,6 @@ public class ShPaymentSlip {
 			secondPayment.add(Calendar.MONTH, 1);
 
 			Datas datas = Datas.novasDatas().comDocumento(today).comProcessamento(today).comVencimento(firstPayment);
-
-			Datas datas2nd = Datas.novasDatas().comDocumento(today).comProcessamento(today)
-					.comVencimento(secondPayment);
 
 			Endereco enderecoBeneficiario = Endereco.novoEndereco()
 					.comLogradouro(ptdSettings.getString("address") + ", " + ptdSettings.getString("addressNumber"))

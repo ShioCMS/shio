@@ -30,6 +30,8 @@
 							class="glyphicon glyphicon-th"></span></a>
 				</div>
 				<a ui-sref="content.object.folder-new({objectId: objectId})" class="btn btn-default">New Folder</a>
+				<button ng-if="shCurrentFolder != null && loadedObjectList" ng-click="importFromProvider(objectId)"
+					class="btn btn-default">Import</button>
 
 			</div>
 			<div class="pull-right hidden-xs">
@@ -112,8 +114,9 @@
 					title="Thumbnails"><span class="glyphicon glyphicon-th-large" aria-hidden="true"></span></a>
 				<a href class="btn" ng-show="thumbs" ng-click="thumbs=false" data-toggle="tooltip" title="List"><span
 						class="glyphicon glyphicon-th-list" aria-hidden="true"></span></a>
-				<a  ng-if="shCurrentFolder != null" ng-href="/api/v2/folder/{{shCurrentFolder.id}}/spreadsheet" class="btn" data-toggle="tooltip"
-					title="Spreadsheet"><i class="fa fa-file-excel-o" aria-hidden="true"></i></a>
+				<a ng-if="shCurrentFolder != null" ng-href="/api/v2/folder/{{shCurrentFolder.id}}/spreadsheet"
+					class="btn" data-toggle="tooltip" title="Spreadsheet"><i class="fa fa-file-excel-o"
+						aria-hidden="true"></i></a>
 			</div>
 		</div>
 		<div>

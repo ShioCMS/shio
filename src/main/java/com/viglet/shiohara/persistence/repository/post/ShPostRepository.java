@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2020 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 package com.viglet.shiohara.persistence.repository.post;
 
 import java.util.Collection;
@@ -25,6 +24,7 @@ import java.util.Set;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import com.viglet.shiohara.bean.ShPostTinyBean;
 import com.viglet.shiohara.persistence.model.folder.ShFolder;
@@ -32,6 +32,10 @@ import com.viglet.shiohara.persistence.model.post.ShPost;
 import com.viglet.shiohara.persistence.model.post.ShPostAttr;
 import com.viglet.shiohara.persistence.model.post.type.ShPostType;
 
+/**
+ * @author Alexandre Oliveira
+ */
+@Repository
 public interface ShPostRepository extends JpaRepository<ShPost, String>, ShPostRepositoryCustom {
 
 	Set<ShPost> findByShPostTypeAndShPostAttrsIn(ShPostType shPostType, Collection<ShPostAttr> postAttrs);
@@ -65,6 +69,10 @@ public interface ShPostRepository extends JpaRepository<ShPost, String>, ShPostR
 	ShPost findByShFolderAndTitle(ShFolder shFolder, String title);
 
 	ShPost findByShFolderAndFurl(ShFolder shFolder, String furl);
+	
+	boolean existsByShFolderAndTitle(ShFolder shFolder, String title);
+	
+	boolean existsByShFolderAndFurl(ShFolder shFolder, String furl);
 
 	@SuppressWarnings("unchecked")
 	ShPost save(ShPost shPost);

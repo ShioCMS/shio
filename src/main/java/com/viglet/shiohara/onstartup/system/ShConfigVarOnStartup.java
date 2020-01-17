@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2020 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 package com.viglet.shiohara.onstartup.system;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,28 +22,32 @@ import org.springframework.stereotype.Component;
 import com.viglet.shiohara.persistence.model.system.ShConfigVar;
 import com.viglet.shiohara.persistence.repository.system.ShConfigVarRepository;
 
+/**
+ * @author Alexandre Oliveira
+ */
 @Component
 public class ShConfigVarOnStartup {
-
+	public static final String FIRST_TIME_PATH = "/system";
+	public static final String FIRST_TIME_NAME = "FIRST_TIME";
+	
 	@Autowired
 	private ShConfigVarRepository shConfigVarRepository;
 
 	public void createDefaultRows() {
 
-		final String FIRST_TIME = "FIRST_TIME";
-
 		ShConfigVar shConfigVar = new ShConfigVar();
 
-		if (!shConfigVarRepository.findById(FIRST_TIME).isPresent()) {
+		if (!shConfigVarRepository.existsByPathAndName(FIRST_TIME_PATH, FIRST_TIME_NAME)) {
 
-			shConfigVar.setId(FIRST_TIME);
-			shConfigVar.setPath("/system");
+			shConfigVar.setPath(FIRST_TIME_PATH);
+			shConfigVar.setName(FIRST_TIME_NAME);
 			shConfigVar.setValue("true");
 			shConfigVarRepository.save(shConfigVar);
 
 			shConfigVar = new ShConfigVar();
-			shConfigVar.setId("EMAIL_HOST");
-			shConfigVar.setPath("/email/host");
+		
+			shConfigVar.setPath("/email");
+			shConfigVar.setName("HOST");
 			shConfigVar.setValue("localhost");
 
 			shConfigVarRepository.save(shConfigVar);

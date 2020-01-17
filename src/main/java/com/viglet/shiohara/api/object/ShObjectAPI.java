@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2020 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 package com.viglet.shiohara.api.object;
 
 import java.io.UnsupportedEncodingException;
@@ -30,6 +29,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -76,6 +76,9 @@ import com.viglet.shiohara.workflow.ShWorkflow;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+/**
+ * @author Alexandre Oliveira
+ */
 @RestController
 @RequestMapping("/api/v2/object")
 @Api(tags = "Object", description = "Object API")
@@ -116,6 +119,31 @@ public class ShObjectAPI {
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShObject> shObjectList() throws Exception {
 		return shObjectRepository.findAll();
+	}
+
+	@GetMapping("/{id}/editor")
+	public ResponseEntity<?> shObjectEditor(@PathVariable String id, HttpServletResponse response,
+			RedirectAttributes attributes) throws UnsupportedEncodingException {
+		String redirect = null;
+		ShObject shObject = shObjectRepository.findById(id).orElse(null);
+		if (shObject != null) {
+			if (shObject instanceof ShSite) {
+				redirect = String.format("/content#!/list/%s", shObject.getId());
+			} else if (shObject instanceof ShPost) {
+				ShPost shPost = (ShPost) shObject;
+				redirect = String.format("/content#!/post/type/%s/post/%s", shPost.getShPostType().getId(),
+						shPost.getId());
+			} else if (shObject instanceof ShFolder) {
+				redirect = String.format("/content#!/list/%s", shObject.getId());
+			}
+
+			HttpHeaders headers = new HttpHeaders();
+			headers.add("Location", new String(redirect.getBytes("UTF-8"), "ISO-8859-1"));
+
+			return new ResponseEntity<>(null, headers, HttpStatus.FOUND);
+		}
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
 	}
 
 	@GetMapping("/{id}/preview")
@@ -189,7 +217,7 @@ public class ShObjectAPI {
 				shObject.setPageAllowRegisterUser(shSecurityBean.getPage().isAllowRegisterUser());
 				shObject.setShPageGroups(shSecurityBean.getPage().getShGroups());
 			}
-			
+
 			shObjectRepository.saveAndFlush(shObject);
 		}
 		return shSecurityBean;

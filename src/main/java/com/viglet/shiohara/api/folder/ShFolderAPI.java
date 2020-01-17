@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2020 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 package com.viglet.shiohara.api.folder;
 
 import java.io.IOException;
@@ -54,11 +53,15 @@ import com.viglet.shiohara.spreedsheet.ShSpreadsheet;
 import com.viglet.shiohara.turing.ShTuringIntegration;
 import com.viglet.shiohara.url.ShURLFormatter;
 import com.viglet.shiohara.utils.ShFolderUtils;
+import com.viglet.shiohara.utils.ShHistoryUtils;
 import com.viglet.shiohara.utils.ShObjectUtils;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+/**
+ * @author Alexandre Oliveira
+ */
 @RestController
 @RequestMapping("/api/v2/folder")
 @Api(tags = "Folder", description = "Folder API")
@@ -78,7 +81,9 @@ public class ShFolderAPI {
 	private ShTuringIntegration shTuringIntegration;
 	@Autowired
 	private ShSpreadsheet shSpreadsheet;
-
+	@Autowired
+	private ShHistoryUtils shHistoryUtils;
+	
 	@ApiOperation(value = "Folder list")
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
@@ -115,6 +120,8 @@ public class ShFolderAPI {
 
 				shTuringIntegration.indexObject(shFolderEdit);
 
+				shHistoryUtils.commit(shFolder, principal, ShHistoryUtils.UPDATE);
+				
 				return new ResponseEntity<>(shFolderEdit, HttpStatus.OK);
 			}
 		}
@@ -132,11 +139,14 @@ public class ShFolderAPI {
 				public void accept(ShFolder shFolder) {
 					try {
 						shFolderUtils.deleteFolder(shFolder);
+						shHistoryUtils.commit(shFolder, principal, ShHistoryUtils.DELETE);
 					} catch (IOException e) {
 						logger.error("FolderDeleteException", e);
 					}
 				}
 			});
+			
+			
 			return new ResponseEntity<>(true, HttpStatus.OK);
 		}
 		return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
@@ -163,10 +173,12 @@ public class ShFolderAPI {
 				shFolder.setFurl(shURLFormatter.format(shFolder.getName()));
 				shFolder.setShGroups(new HashSet<String>(shObject.getShGroups()));
 				shFolder.setShUsers(new HashSet<String>(shObject.getShUsers()));
-				shFolderRepository.save(shFolder);
+				shFolderRepository.saveAndFlush(shFolder);
 
 				shTuringIntegration.indexObject(shFolder);
 
+				shHistoryUtils.commit(shFolder, principal, ShHistoryUtils.CREATE);
+				
 				return new ResponseEntity<>(shFolder, HttpStatus.OK);
 			}
 		}
@@ -209,6 +221,8 @@ public class ShFolderAPI {
 
 			shFolderRepository.save(shNewFolder);
 
+			shHistoryUtils.commit(shNewFolder, principal, ShHistoryUtils.CREATE);
+			
 			return new ResponseEntity<>(shFolder, HttpStatus.OK);
 		}
 

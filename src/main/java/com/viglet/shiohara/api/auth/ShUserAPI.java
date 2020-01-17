@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2020 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,15 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 package com.viglet.shiohara.api.auth;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -41,22 +45,33 @@ import com.viglet.shiohara.api.ShJsonView;
 import com.viglet.shiohara.bean.ShCurrentUser;
 import com.viglet.shiohara.persistence.model.auth.ShGroup;
 import com.viglet.shiohara.persistence.model.auth.ShUser;
+import com.viglet.shiohara.persistence.model.provider.auth.ShAuthProviderInstance;
 import com.viglet.shiohara.persistence.repository.auth.ShGroupRepository;
 import com.viglet.shiohara.persistence.repository.auth.ShUserRepository;
+import com.viglet.shiohara.persistence.repository.provider.auth.ShAuthProviderInstanceRepository;
+import com.viglet.shiohara.provider.auth.ShAuthSystemProviderVendor;
+import com.viglet.shiohara.provider.auth.ShAuthenticationProvider;
 
 import io.swagger.annotations.Api;
 
+/**
+ * @author Alexandre Oliveira
+ */
 @RestController
 @RequestMapping("/api/v2/user")
 @Api(tags = "User", description = "User API")
 public class ShUserAPI {
-
+	private static final Log logger = LogFactory.getLog(ShUserAPI.class);
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	@Autowired
 	private ShUserRepository shUserRepository;
 	@Autowired
 	private ShGroupRepository shGroupRepository;
+	@Autowired
+	private ShAuthProviderInstanceRepository shAuthProviderInstanceRepository;
+	@Autowired
+	private ApplicationContext context;
 
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
@@ -66,17 +81,40 @@ public class ShUserAPI {
 
 	@GetMapping("/current")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShCurrentUser shUserCurrent() {
+	public ShCurrentUser shUserCurrent(HttpSession session) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (!(authentication instanceof AnonymousAuthenticationToken)) {
 			boolean isAdmin = false;
 			String currentUserName = authentication.getName();
-			ShUser shUser = shUserRepository.findByUsername(currentUserName);
-			shUser.setPassword(null);
-			if (shUser.getShGroups() != null) {
-				for (ShGroup shGroup : shUser.getShGroups()) {
-					if (shGroup.getName().equals("Administrator"))
-						isAdmin = true;
+			String providerId = (String) session.getAttribute("authProvider");
+			ShAuthProviderInstance instance = null;
+			if (providerId != null) {
+				instance = shAuthProviderInstanceRepository.findById(providerId).orElse(null);
+			}
+			ShUser shUser = null;
+			if (instance != null && !instance.getVendor().getId().equals(ShAuthSystemProviderVendor.NATIVE)) {
+				ShAuthenticationProvider shAuthenticationProvider;
+				try {
+					shAuthenticationProvider = (ShAuthenticationProvider) context
+							.getBean(Class.forName(instance.getVendor().getClassName()));
+
+					shAuthenticationProvider.init(instance.getId());
+
+					shUser = shAuthenticationProvider.getShUser(currentUserName);
+				} catch (BeansException e) {
+					logger.error("shUserCurrent BeansException", e);
+				} catch (ClassNotFoundException e) {
+					logger.error("shUserCurrent ClassNotFoundException", e);
+				}
+			} else {
+				shUser = shUserRepository.findByUsername(currentUserName);
+
+				shUser.setPassword(null);
+				if (shUser.getShGroups() != null) {
+					for (ShGroup shGroup : shUser.getShGroups()) {
+						if (shGroup.getName().equals("Administrator"))
+							isAdmin = true;
+					}
 				}
 			}
 			ShCurrentUser shCurrentUser = new ShCurrentUser();

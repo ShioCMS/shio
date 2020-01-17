@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2020 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 package com.viglet.shiohara.utils;
 
 import java.io.BufferedInputStream;
@@ -43,6 +42,9 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+/**
+ * @author Alexandre Oliveira
+ */
 @Component
 public class ShUtils {
 	private static final Log logger = LogFactory.getLog(ShUtils.class);
@@ -78,9 +80,7 @@ public class ShUtils {
 	 * Add all files from the source directory to the destination zip file
 	 *
 	 * @param source      the directory with files to add
-	 * @param destination the zip file that should contain the files
-	 * @throws IOException      if the io fails
-	 * @throws ArchiveException if creating or adding to the archive fails
+	 * @param destination the zip file that should contain the files	
 	 */
 	public void addFilesToZip(File source, File destination) {
 		OutputStream archiveStream = null;

@@ -110,7 +110,7 @@ public class ShSiteAPITest {
 		String requestBody = ShUtils.asJsonString(shSite);
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/v2/site").principal(mockPrincipal)
-				.accept(MediaType.APPLICATION_JSON).content(requestBody).contentType("application/json;charset=UTF-8")
+				.accept(MediaType.APPLICATION_JSON).content(requestBody).contentType("application/json")
 				.header("X-Requested-With", "XMLHttpRequest");
 
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
@@ -128,7 +128,7 @@ public class ShSiteAPITest {
 		String requestBody = ShUtils.asJsonString(shSite);
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/api/v2/site/" + newSiteId).principal(mockPrincipal)
-				.accept(MediaType.APPLICATION_JSON).content(requestBody).contentType("application/json;charset=UTF-8")
+				.accept(MediaType.APPLICATION_JSON).content(requestBody).contentType("application/json")
 				.header("X-Requested-With", "XMLHttpRequest");
 
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());

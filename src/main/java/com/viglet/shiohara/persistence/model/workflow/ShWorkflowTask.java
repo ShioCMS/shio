@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2020 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 package com.viglet.shiohara.persistence.model.workflow;
 
 import java.io.Serializable;
@@ -33,8 +32,9 @@ import org.hibernate.annotations.GenericGenerator;
 import com.viglet.shiohara.persistence.model.object.ShObject;
 
 /**
- * The persistent class for the ShWidget database table.
+ * The persistent class for the ShWorkflowTask database table.
  * 
+ * @author Alexandre Oliveira
  */
 @Entity
 @NamedQuery(name = "ShWorkflowTask.findAll", query = "SELECT wt FROM ShWorkflowTask wt")

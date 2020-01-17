@@ -49,7 +49,7 @@ public class ShHistoryAPITest {
 	@Test
 	public void shHistoryList() throws Exception {
 		mockMvc.perform(get("/api/v2/history")).andExpect(status().isOk())
-				.andExpect(content().contentType("application/json;charset=UTF-8"));
+				.andExpect(content().contentType("application/json"));
 
 	}
 

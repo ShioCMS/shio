@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2016-2020 the original author or authors. 
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.viglet.shiohara.workflow;
 
 import java.security.Principal;
@@ -23,6 +39,9 @@ import com.viglet.shiohara.persistence.repository.auth.ShGroupRepository;
 import com.viglet.shiohara.persistence.repository.auth.ShUserRepository;
 import com.viglet.shiohara.persistence.repository.workflow.ShWorkflowTaskRepository;
 
+/**
+ * @author Alexandre Oliveira
+ */
 @Component
 public class ShWorkflow {
 	private static final Log logger = LogFactory.getLog(ShWorkflow.class);
@@ -35,7 +54,6 @@ public class ShWorkflow {
 	private ShUserRepository shUserRepository;
 	@Autowired
 	private ShGroupRepository shGroupRepository;
-
 
 	public void requestWorkFlow(ShObject shObject, Principal principal) {
 		if (shObject != null && shObject instanceof ShPost) {
@@ -56,6 +74,7 @@ public class ShWorkflow {
 		}
 
 	}
+
 	public String sendWorkflowEmail(ShWorkflowTask shWorkflowTask) {
 		try {
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2020 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 package com.viglet.shiohara.onstartup;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +23,10 @@ import org.springframework.stereotype.Component;
 
 import com.viglet.shiohara.onstartup.ecommerce.ShEcomPaymentTypeDefinitionOnStartup;
 import com.viglet.shiohara.onstartup.post.type.ShPostTypeOnStartup;
+import com.viglet.shiohara.onstartup.provider.auth.ShAuthProviderInstanceOnStartup;
+import com.viglet.shiohara.onstartup.provider.auth.ShAuthProviderVendorOnStartup;
+import com.viglet.shiohara.onstartup.provider.exchange.ShExchangeProviderInstanceOnStartup;
+import com.viglet.shiohara.onstartup.provider.exchange.ShExchangeProviderVendorOnStartup;
 import com.viglet.shiohara.onstartup.site.ShSiteOnStartup;
 import com.viglet.shiohara.onstartup.system.ShConfigVarOnStartup;
 import com.viglet.shiohara.onstartup.system.ShLocaleOnStartup;
@@ -32,6 +35,9 @@ import com.viglet.shiohara.onstartup.user.ShUserOnStartup;
 import com.viglet.shiohara.onstartup.widget.ShWidgetOnStartup;
 import com.viglet.shiohara.persistence.repository.system.ShConfigVarRepository;
 
+/**
+ * @author Alexandre Oliveira
+ */
 @Component
 public class ShOnStartup implements ApplicationRunner {
 
@@ -40,7 +46,7 @@ public class ShOnStartup implements ApplicationRunner {
 	@Autowired
 	private ShLocaleOnStartup shLocaleOnStartup;
 	@Autowired
-	private ShWidgetOnStartup shWidgetOnStartup;	
+	private ShWidgetOnStartup shWidgetOnStartup;
 	@Autowired
 	private ShPostTypeOnStartup shPostTypeOnStartup;
 	@Autowired
@@ -52,25 +58,37 @@ public class ShOnStartup implements ApplicationRunner {
 	@Autowired
 	private ShUserOnStartup shUserOnStartup;
 	@Autowired
+	private ShAuthProviderVendorOnStartup shAuthProviderVendorOnStartup;
+	@Autowired
+	private ShAuthProviderInstanceOnStartup shAuthProviderInstanceOnStartup;
+	@Autowired
+	private ShExchangeProviderVendorOnStartup shExchangeProviderVendorOnStartup;
+	@Autowired
+	private ShExchangeProviderInstanceOnStartup shExchangeProviderInstanceOnStartup;
+	@Autowired
 	private ShEcomPaymentTypeDefinitionOnStartup shEcomPaymentTypeDefinitionOnStartup;
-	
+
 	@Override
 	public void run(ApplicationArguments arg0) throws Exception {
-		final String FIRST_TIME = "FIRST_TIME";
-	
-		if (!shConfigVarRepository.findById(FIRST_TIME).isPresent()) {
-			
+
+		if (!shConfigVarRepository.existsByPathAndName(ShConfigVarOnStartup.FIRST_TIME_PATH,
+				ShConfigVarOnStartup.FIRST_TIME_NAME)) {
+
 			System.out.println("First Time Configuration ...");
 
-			shLocaleOnStartup.createDefaultRows();			
+			shLocaleOnStartup.createDefaultRows();
 			shWidgetOnStartup.createDefaultRows();
 			shPostTypeOnStartup.createDefaultRows();
 			shGroupOnStartup.createDefaultRows();
-			shUserOnStartup.createDefaultRows();			
+			shUserOnStartup.createDefaultRows();
+			shAuthProviderVendorOnStartup.createDefaultRows();
+			shAuthProviderInstanceOnStartup.createDefaultRows();
+			shExchangeProviderVendorOnStartup.createDefaultRows();
+			shExchangeProviderInstanceOnStartup.createDefaultRows();
 			shConfigVarOnStartup.createDefaultRows();
 			shSiteOnStartup.createDefaultRows();
 			shEcomPaymentTypeDefinitionOnStartup.createDefaultRows();
-			
+
 			System.out.println("Configuration finished.");
 		}
 

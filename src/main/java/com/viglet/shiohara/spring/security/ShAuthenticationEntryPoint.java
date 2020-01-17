@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2020 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,33 +14,40 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 package com.viglet.shiohara.spring.security;
 
 import java.io.IOException;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
+/**
+ * @author Alexandre Oliveira
+ */
 @Component
 public class ShAuthenticationEntryPoint extends BasicAuthenticationEntryPoint {
+	private static final Log logger = LogFactory.getLog(ShAuthenticationEntryPoint.class);
 
 	@Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
-      throws IOException, ServletException {
-       response.sendError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase());
-    }
+	public void commence(HttpServletRequest request, HttpServletResponse response,
+			AuthenticationException authException) throws IOException {
+		response.sendError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase());
+	}
 
 	@Override
-	 public void afterPropertiesSet() throws Exception {
-        setRealmName("Shiohara");
-        super.afterPropertiesSet();
-    }
-	
+	public void afterPropertiesSet() {
+		this.setRealmName("Shiohara");
+		try {
+			super.afterPropertiesSet();
+		} catch (Exception e) {
+			logger.error("afterPropertiesSet: ", e);
+		}
+	}
 }
