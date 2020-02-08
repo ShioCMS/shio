@@ -1,4 +1,5 @@
 [![demo](https://img.shields.io/badge/demo-try%20online-FF874B.svg)](https://demo.shiohara.org) [![downloads](https://img.shields.io/github/downloads/ShioharaCMS/shiohara/total.svg)](https://github.com/ShioharaCMS/shiohara/releases/download/v0.3.5/viglet-shiohara.jar) [![Build Status](https://travis-ci.com/ShioharaCMS/shiohara.svg?branch=master)](https://travis-ci.com/ShioharaCMS/shiohara) [![codecov](https://codecov.io/gh/ShioharaCMS/shiohara/branch/master/graph/badge.svg)](https://codecov.io/gh/ShioharaCMS/shiohara) [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=openviglet_shiohara&metric=alert_status)](https://sonarcloud.io/dashboard/index/openviglet_shiohara)
+[![Twitter](https://img.shields.io/twitter/follow/shioharacms.svg?style=social&label=Follow)](https://twitter.com/intent/follow?screen_name=shioharacms)
 
 ![shiohara_banner.png](https://shioharacms.github.io/shiohara/img/shiohara_banner.png) 
 ------
