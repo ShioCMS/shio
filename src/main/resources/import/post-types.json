@@ -602,7 +602,7 @@
       },
       "IS_VISIBLE_PAGE" : {
         "id" : "72b8e0d7-03f6-4a94-8f00-a7d2164b3522",
-        "label" : "Is Visable Page?",
+        "label" : "Is Visible Page?",
         "description" : null,
         "ordinal" : 4,
         "widget" : "Combo Box",
