@@ -6,7 +6,7 @@
 
 **Viglet Shiohara CMS** - Model Content and Create Site using Javascript with Native Cache and Search.
 
-Shiohara (pronounced [strong/ʃiː/ weak/ʃɪ/ o həˈrəˈ]) 
+Shiohara (pronounced [strong/ʃiː/ weak/ʃɪ/ o həˈrəˈ]) [Audio](https://en-audio.howtopronounce.com/shiohara-in-us1-voice-7169643z7169643-s100401.mp3)
 
 **If you'd like to contribute to Viglet Shiohara, be sure to review the [contribution
 guidelines](CONTRIBUTING.md).**
