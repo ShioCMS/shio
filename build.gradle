@@ -5,12 +5,7 @@ buildscript {
 		  swaggerVersion = '2.9.2'
 		 }
 		repositories {
-		mavenCentral()
-		maven { url "https://repo.spring.io/snapshot" }
-		maven { url "https://repo.spring.io/milestone" }
-		maven { url "http://repo.spring.io/plugins-release/" }
-		maven { url "https://repository-cdn.liferay.com/nexus/content/groups/public" }
-		jcenter()
+			mavenCentral()	
 		}
     dependencies { classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     			   classpath files("lib/gradle-js-plugin-2.14.2-SNAPSHOT.jar")     			   
@@ -126,6 +121,9 @@ dependencies {
   	// Jackson
     compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.9.8'
    
+   	// Oracle	
+	compile group: 'com.oracle.ojdbc', name: 'ojdbc8', version: '19.3.0.0'
+	
     // H2
      compile group: 'com.h2database', name: 'h2', version:'1.4.199'
 
