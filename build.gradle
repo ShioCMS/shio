@@ -1,7 +1,7 @@
 buildscript {
-    ext { springBootVersion = '2.2.2.RELEASE'
+    ext { springBootVersion = '2.2.4.RELEASE'
 	      hibernateVersion = '5.11.0.Final'
-		  httpClientVersion = '4.5.6'
+		  httpClientVersion = '4.5.11'
 		  swaggerVersion = '2.9.2'
 		 }
 		repositories {
@@ -19,6 +19,7 @@ buildscript {
 
 plugins {
   id "com.eriwen.gradle.js" version "2.14.1"
+  id "com.gorylenko.gradle-git-properties" version "2.2.1"
 }
 
 apply plugin: 'java'
@@ -32,8 +33,16 @@ jar {
     version =  '0.3.6'
 }
 
+gitProperties {
+    extProperty = 'gitProps' // git properties will be put in a map at project.ext.gitProps
+}
+
 bootJar {
-    launchScript()
+    manifest {
+    	attributes(    
+        'Implementation-Version': "${-> project.jar.version + '-' + project.ext.gitProps['git.commit.id.abbrev']}"
+    	)
+  	} 
 }
 
 repositories {
@@ -112,7 +121,7 @@ dependencies {
 	
     
   	// Spring
-  	compile group: 'org.springframework', name: 'spring-test', version: '5.2.2.RELEASE'
+  	compile group: 'org.springframework', name: 'spring-test', version: '5.2.3.RELEASE'
   	    
   	// Jackson
     compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.9.8'
