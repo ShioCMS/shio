@@ -19,6 +19,7 @@ buildscript {
 
 plugins {
   id "com.eriwen.gradle.js" version "2.14.1"
+  id "com.gorylenko.gradle-git-properties" version "2.2.1"
 }
 
 apply plugin: 'java'
@@ -32,8 +33,16 @@ jar {
     version =  '0.3.6'
 }
 
+gitProperties {
+    extProperty = 'gitProps' // git properties will be put in a map at project.ext.gitProps
+}
+
 bootJar {
-    launchScript()
+    manifest {
+    	attributes(    
+        'Implementation-Version': "${-> project.jar.version + '-' + project.ext.gitProps['git.commit.id.abbrev']}"
+    	)
+  	} 
 }
 
 repositories {
