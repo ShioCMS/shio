@@ -6,8 +6,7 @@ jdk:
 addons:
   sonarcloud:
     organization: "alegauss-github"
-    token:
-      secure: ${SONAR_TOKEN}
+    token: ${SONAR_TOKEN}
 script:
   - ./gradlew check
   -  sonar-scanner
