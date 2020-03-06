@@ -6,7 +6,7 @@
 
 **Viglet Shio CMS** - Model Content and Create Site using Javascript with Native Cache and Search.
 
-Shiohara (pronounced [strong/ʃiː/ weak/ʃɪ/ o])
+Shio (pronounced [strong/ʃiː/ weak/ʃɪ/ o])
 
 **If you'd like to contribute to Viglet Shio, be sure to review the [contribution
 guidelines](CONTRIBUTING.md).**
