@@ -17,18 +17,30 @@
 
 package com.viglet.shiohara.provider.storage;
 
-import com.google.common.base.Joiner;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
+import com.viglet.shiohara.exchange.ShPostExchange;
+import com.viglet.shiohara.exchange.post.ShPostExport;
+import com.viglet.shiohara.persistence.model.post.ShPost;
+import com.viglet.shiohara.property.ShGitProperties;
+import com.viglet.shiohara.utils.ShPostUtils;
+import com.viglet.shiohara.utils.ShStaticFileUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.PushCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.InvalidRemoteException;
+import org.eclipse.jgit.api.errors.JGitInternalException;
 import org.eclipse.jgit.api.errors.NoHeadException;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.dircache.DirCache;
@@ -37,27 +49,83 @@ import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.transport.PushResult;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.eclipse.jgit.treewalk.filter.PathFilter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * @author Alexandre Oliveira
  * @since 0.3.6
  */
+@Component
 public class ShGitProvider {
 	static final Logger logger = LogManager.getLogger(ShGitProvider.class.getName());
-	
-	String rootShObjectFolder = "/root";
+
+	String rootShObjectFolder = "shiohara-backup";
+	private String fileSourceBase = File.separator + "store" + File.separator + "file_source";
+	private String gitSourceBase = File.separator + "store" + File.separator + "git";
 
 	private Git git;
+	private CloneCommand cloneCommand;
+
+	@Autowired
+	private ShPostUtils shPostUtils;
+
+	@Autowired
+	private ShStaticFileUtils shStaticFileUtils;
+
+	@Autowired
+	private ShPostExport shPostExport;
+
+	@Autowired
+	private ShGitProperties shGitProperties;
 
 	public ShGitProvider() {
 		super();
 	}
 
-	public void init() throws IOException {
+	public void cloneRepository() {
 
+		File userDir = new File(System.getProperty("user.dir"));
+		File gitDirectory = new File(userDir.getAbsolutePath().concat(gitSourceBase));
+		if (!gitDirectory.exists()) {
+			gitDirectory.mkdirs();
+
+			cloneCommand = Git.cloneRepository();
+			cloneCommand.setURI(shGitProperties.getUrl());
+			cloneCommand
+					.setCredentialsProvider(new UsernamePasswordCredentialsProvider(shGitProperties.getToken(), ""));
+			cloneCommand.setDirectory(gitDirectory);
+			try {
+				cloneCommand.call();
+			} catch (GitAPIException e) {
+				logger.error(e);
+			}
+		}
+	}
+
+	public void pushToRepo() throws IOException, JGitInternalException, InvalidRemoteException, GitAPIException {
+		PushCommand pc = git.push();
+		pc.setCredentialsProvider(new UsernamePasswordCredentialsProvider(shGitProperties.getToken(), ""))
+				.setForce(true).setPushAll();
+		try {
+			Iterator<PushResult> it = pc.call().iterator();
+
+			if (logger.isDebugEnabled() && it.hasNext())
+				logger.debug(it.next().getMessages());
+		} catch (InvalidRemoteException e) {
+			logger.error(e);
+		}
+	}
+
+	public void init() throws IOException {
+		File userDir = new File(System.getProperty("user.dir"));
+		File gitDirectory = new File(userDir.getAbsolutePath().concat(gitSourceBase));
 		logger.info("Opening a git repo at '{}'", this.rootShObjectFolder);
-		Repository localRepo = new FileRepository(Joiner.on(File.separator).join(this.rootShObjectFolder, ".git"));
+		Repository localRepo = new FileRepository(
+				new File(gitDirectory.getAbsolutePath().concat(File.separator + ".git")));
 		if (!localRepo.getDirectory().exists()) {
 			logger.info("Git repo {} does not exist, creating a new one", localRepo.getDirectory());
 			localRepo.create();
@@ -65,14 +133,16 @@ public class ShGitProvider {
 		git = new Git(localRepo);
 	}
 
-	public void move(String shObjectId, String shObjectPath, String newShObjectPath)
-			throws IOException {
+	public void move(String shObjectId, String shObjectPath, String newShObjectPath) throws IOException {
 		String shObjectFileName = "<<DEFINE>";
 		String newShObjectFileName = "<<DEFINE>";
 		git.rm().addFilepattern(shObjectFileName);
 		git.add().addFilepattern(newShObjectFileName);
 		try {
-			git.commit().setMessage("Move shObject " + shObjectId + " from " + shObjectFileName + " to " + newShObjectFileName).call();
+			git.commit()
+					.setMessage(
+							"Move shObject " + shObjectId + " from " + shObjectFileName + " to " + newShObjectFileName)
+					.call();
 		} catch (GitAPIException e) {
 			throw new IOException(e);
 		}
@@ -89,9 +159,53 @@ public class ShGitProvider {
 	}
 
 	@SuppressWarnings("unused")
-	public String checkpoint(String shObjectId, String shObjectPath, String commitMessage)
-			throws IOException {
-		String shObjectFileName = "<<DEFINE>>";
+	public void newItem(String shObjectId) {
+		ShPost shPost = shPostUtils.getShPostFromObjectId(shObjectId);
+		File source = shStaticFileUtils.filePath(shPost);
+		File userDir = new File(System.getProperty("user.dir"));
+		File fileSourceDirectory = new File(userDir.getAbsolutePath().concat(fileSourceBase));
+		File gitSource = new File(git.getRepository().getDirectory().getParent());
+		String objectGitDirectory = shObjectId.substring(0, 2) + File.separator + shObjectId.substring(2, 4)
+				+ File.separator + shObjectId.substring(4, 6);
+
+		File dest = new File(gitSource.getAbsolutePath().concat(File.separator + objectGitDirectory));
+		if (!dest.exists()) {
+			dest.mkdirs();
+		}
+		String staticFileRelative = objectGitDirectory.concat(File.separator + shObjectId);
+		String jsonFileRelative = objectGitDirectory.concat(File.separator + shObjectId + ".json");
+
+		File staticFile = new File(gitSource.getAbsolutePath().concat(File.separator + staticFileRelative));
+		File jsonFile = new File(gitSource.getAbsolutePath().concat(File.separator + jsonFileRelative));
+
+		try {
+			FileUtils.copyFile(source, staticFile);
+		} catch (IOException e) {
+			logger.error(e);
+		}
+
+		ShPostExchange shPostExchange = shPostExport.exportShPostDraft(shPost);
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+
+			mapper.writerWithDefaultPrettyPrinter().writeValue(jsonFile, shPostExchange);
+		} catch (IOException mapperException) {
+			logger.error("exportObject, MapperObject", mapperException);
+		}
+		try {
+			git.add().addFilepattern(staticFileRelative).call();
+			git.add().addFilepattern(jsonFileRelative).call();
+			RevCommit commit = git.commit().setMessage("Added the Object " + source.getName() + " (" + shObjectId + ")")
+					.call();
+			logger.info("Add new item '{}'", source.getAbsolutePath());
+		} catch (GitAPIException e) {
+			logger.error("Failed to add+commit {} to Git", source.getAbsolutePath(), e);
+		}
+	}
+
+	@SuppressWarnings("unused")
+	public String checkpoint(String shObjectId, String shObjectPath, String commitMessage) throws IOException {
+		String shObjectFileName = "store/file_source/Viglet/_static_files/css/viglet.css";
 		try {
 			List<DiffEntry> gitDiff = git.diff().call();
 			boolean modified = gitDiff.parallelStream()
@@ -110,14 +224,13 @@ public class ShGitProvider {
 		return null;
 	}
 
-	public synchronized String get(String shObjectId, String shObjectPath, String revId)
-			throws IOException {
+	public synchronized String get(String shObjectId, String shObjectPath, String revId) throws IOException {
 		RevCommit stash = null;
 		String shObjectFileName = "<<DEFINE>>";
 		try {
 			List<DiffEntry> gitDiff = git.diff().setPathFilter(PathFilter.create(shObjectFileName)).call();
 			boolean modified = !gitDiff.isEmpty();
-			if (modified) {			
+			if (modified) {
 				stash = git.stashCreate().call();
 				Collection<RevCommit> stashes = git.stashList().call();
 				logger.debug("Created stash : {}, stash size : {}", stash, stashes.size());
@@ -138,8 +251,7 @@ public class ShGitProvider {
 		return null;
 	}
 
-	public List<String> revisionHistory(String shObjectId, String shObjectPath)
-			throws IOException {
+	public List<String> revisionHistory(String shObjectId, String shObjectPath) throws IOException {
 		List<String> history = Lists.newArrayList();
 		String shObjectFileName = "<<DEFINE>>";
 		logger.debug("Listing history for {}:", shObjectFileName);
@@ -157,11 +269,10 @@ public class ShGitProvider {
 		return history;
 	}
 
-	public String setShObjectRevision(String shObjectId, String shObjectPath, String revId)
-			throws IOException {
+	public String setShObjectRevision(String shObjectId, String shObjectPath, String revId) throws IOException {
 		String revisionShObject = get(shObjectId, shObjectPath, revId);
 		if (revisionShObject != null) {
-			//Save
+			// Save
 		}
 		return revisionShObject;
 	}

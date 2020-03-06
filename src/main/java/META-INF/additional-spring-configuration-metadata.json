@@ -1,104 +1,112 @@
-{
-	"properties": [
-		{
-			"name": "info.app.version",
-			"type": "java.lang.String",
-			"description": "A description for 'info.app.version'"
-		},
-		{
-			"name": "shiohara.mgmt.enabled",
-			"type": "java.lang.Boolean",
-			"description": "Define if is Mgmt'"
-		},
-		{
-			"name": "shiohara.auth.otds.enabled",
-			"type": "java.lang.Boolean",
-			"description": "Use OTDS as Provider'"
-		},
-		{
-			"name": "shiohara.auth.otds.group.dn",
-			"type": "java.lang.String",
-			"description": "A description for 'shiohara.auth.otds.group.dn'"
-		},
-		{
-			"name": "shiohara.auth.otds.group.scope",
-			"type": "java.lang.String",
-			"description": "A description for 'shiohara.auth.otds.group.scope'"
-		},
-		{
-			"name": "shiohara.auth.otds.group.filter",
-			"type": "java.lang.String",
-			"description": "A description for 'shiohara.auth.otds.group.filter'"
-		},
-		{
-			"name": "shiohara.auth.otds.user.dn",
-			"type": "java.lang.String",
-			"description": "A description for 'shiohara.auth.otds.user.dn'"
-		},
-		{
-			"name": "shiohara.auth.otds.user.dn",
-			"type": "java.lang.String",
-			"description": "A description for 'shiohara.auth.otds.user.dn'"
-		},
-		{
-			"name": "shiohara.auth.otds.user.scope",
-			"type": "java.lang.String",
-			"description": "A description for 'shiohara.auth.otds.user.scope'"
-		},
-		{
-			"name": "shiohara.auth.otds.username-atribute",
-			"type": "java.lang.String",
-			"description": "A description for 'shiohara.auth.otds.username-atribute'"
-		},
-		{
-			"name": "shiohara.auth.otds.domain",
-			"type": "java.lang.String",
-			"description": "A description for 'shiohara.auth.otds.domain'"
-		},
-		{
-			"name": "shiohara.auth.otds.partition-name",
-			"type": "java.lang.String",
-			"description": "A description for 'shiohara.auth.otds.partition-name'"
-		},
-		{
-			"name": "shiohara.auth.otds.secret-key",
-			"type": "java.lang.String",
-			"description": "A description for 'shiohara.auth.otds.secret-key'"
-		},
-		{
-			"name": "shiohara.auth.otds.secret-key",
-			"type": "java.lang.String",
-			"description": "A description for 'shiohara.auth.otds.secret-key'"
-		},
-		{
-			"name": "shiohara.auth.otds.resource-id",
-			"type": "java.lang.String",
-			"description": "A description for 'shiohara.auth.otds.resource-id'"
-		},
-		{
-			"name": "shiohara.auth.otds.resource-id",
-			"type": "java.lang.String",
-			"description": "A description for 'shiohara.auth.otds.resource-id'"
-		},
-		{
-			"name": "shiohara.auth.otds.port",
-			"type": "java.lang.Integer",
-			"description": "A description for 'shiohara.auth.otds.port'"
-		},
-		{
-			"name": "shiohara.auth.otds.host",
-			"type": "java.lang.String",
-			"description": "A description for 'shiohara.auth.otds.host'"
-		},
-		{
-			"name": "shiohara.auth.otds.user.filter",
-			"type": "java.lang.String",
-			"description": "A description for 'shiohara.auth.otds.user.filter'"
-		},
-		{
-			"name": "shiohara.auth.otds.membership-filter-attribute",
-			"type": "java.lang.String",
-			"description": "A description for 'shiohara.auth.otds.membership-filter-attribute'"
-		}
-	]
-}
+{"properties": [
+  {
+    "name": "info.app.version",
+    "type": "java.lang.String",
+    "description": "A description for 'info.app.version'"
+  },
+  {
+    "name": "shiohara.mgmt.enabled",
+    "type": "java.lang.Boolean",
+    "description": "Define if is Mgmt'"
+  },
+  {
+    "name": "shiohara.auth.otds.enabled",
+    "type": "java.lang.Boolean",
+    "description": "Use OTDS as Provider'"
+  },
+  {
+    "name": "shiohara.auth.otds.group.dn",
+    "type": "java.lang.String",
+    "description": "A description for 'shiohara.auth.otds.group.dn'"
+  },
+  {
+    "name": "shiohara.auth.otds.group.scope",
+    "type": "java.lang.String",
+    "description": "A description for 'shiohara.auth.otds.group.scope'"
+  },
+  {
+    "name": "shiohara.auth.otds.group.filter",
+    "type": "java.lang.String",
+    "description": "A description for 'shiohara.auth.otds.group.filter'"
+  },
+  {
+    "name": "shiohara.auth.otds.user.dn",
+    "type": "java.lang.String",
+    "description": "A description for 'shiohara.auth.otds.user.dn'"
+  },
+  {
+    "name": "shiohara.auth.otds.user.dn",
+    "type": "java.lang.String",
+    "description": "A description for 'shiohara.auth.otds.user.dn'"
+  },
+  {
+    "name": "shiohara.auth.otds.user.scope",
+    "type": "java.lang.String",
+    "description": "A description for 'shiohara.auth.otds.user.scope'"
+  },
+  {
+    "name": "shiohara.auth.otds.username-atribute",
+    "type": "java.lang.String",
+    "description": "A description for 'shiohara.auth.otds.username-atribute'"
+  },
+  {
+    "name": "shiohara.auth.otds.domain",
+    "type": "java.lang.String",
+    "description": "A description for 'shiohara.auth.otds.domain'"
+  },
+  {
+    "name": "shiohara.auth.otds.partition-name",
+    "type": "java.lang.String",
+    "description": "A description for 'shiohara.auth.otds.partition-name'"
+  },
+  {
+    "name": "shiohara.auth.otds.secret-key",
+    "type": "java.lang.String",
+    "description": "A description for 'shiohara.auth.otds.secret-key'"
+  },
+  {
+    "name": "shiohara.auth.otds.secret-key",
+    "type": "java.lang.String",
+    "description": "A description for 'shiohara.auth.otds.secret-key'"
+  },
+  {
+    "name": "shiohara.auth.otds.resource-id",
+    "type": "java.lang.String",
+    "description": "A description for 'shiohara.auth.otds.resource-id'"
+  },
+  {
+    "name": "shiohara.auth.otds.resource-id",
+    "type": "java.lang.String",
+    "description": "A description for 'shiohara.auth.otds.resource-id'"
+  },
+  {
+    "name": "shiohara.auth.otds.port",
+    "type": "java.lang.Integer",
+    "description": "A description for 'shiohara.auth.otds.port'"
+  },
+  {
+    "name": "shiohara.auth.otds.host",
+    "type": "java.lang.String",
+    "description": "A description for 'shiohara.auth.otds.host'"
+  },
+  {
+    "name": "shiohara.auth.otds.user.filter",
+    "type": "java.lang.String",
+    "description": "A description for 'shiohara.auth.otds.user.filter'"
+  },
+  {
+    "name": "shiohara.auth.otds.membership-filter-attribute",
+    "type": "java.lang.String",
+    "description": "A description for 'shiohara.auth.otds.membership-filter-attribute'"
+  },
+  {
+    "name": "shiohara.git.url",
+    "type": "java.lang.String",
+    "description": "A description for 'shiohara.git.url'"
+  },
+  {
+    "name": "shiohara.git.token",
+    "type": "java.lang.String",
+    "description": "A description for 'shiohara.git.token'"
+  }
+]}

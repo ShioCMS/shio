@@ -115,6 +115,15 @@ public class ShPostUtils {
 	@Autowired
 	private ShGroupRepository shGroupRepository;
 
+	public ShPost getShPostFromObjectId(String objectId) {
+
+		Optional<ShPost> shPostOpt = shPostRepository.findById(objectId);
+		if (shPostOpt.isPresent())
+			return shPostOpt.get();
+		else
+			return null;
+	}
+
 	public ShPost copy(ShPost shPost, ShFolder shFolderDest) {
 
 		List<ShPostTinyBean> shPostTinyBeans = shPostRepository.findByShFolderTiny(shFolderDest.getId());
@@ -748,8 +757,8 @@ public class ShPostUtils {
 	/**
 	 * Add new PostAttrs that not contain into Post
 	 * 
-	 * @param shPostAttrs List of PostAttr Object
-	 * @param shPostAttrMap  PostAttrMap Object
+	 * @param shPostAttrs       List of PostAttr Object
+	 * @param shPostAttrMap     PostAttrMap Object
 	 * @param shPostTypeAttrMap PostTypeAttrMap Object
 	 */
 	private void postAttrNotInPostType(Set<ShPostAttr> shPostAttrs, Map<String, ShPostAttr> shPostAttrMap,
@@ -798,8 +807,8 @@ public class ShPostUtils {
 	/**
 	 * Add only PostAttr that contains in Post Type
 	 *
-	 * @param shPostAttrs List of PostAttr Object
-	 * @param shPostAttrMap PostAttrMap Object
+	 * @param shPostAttrs       List of PostAttr Object
+	 * @param shPostAttrMap     PostAttrMap Object
 	 * @param shPostTypeAttrMap PostTypeAttrMap Object
 	 */
 	private void postAttrInPostType(Set<ShPostAttr> shPostAttrs, Map<String, ShPostAttr> shPostAttrMap,
