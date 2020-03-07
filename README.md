@@ -35,7 +35,7 @@ $ ./gradlew bootrun
 
 ### 2. Or Generate JAR File
 
-Use Gradle to generate Shiohara CMS executable JAR file.
+Use Gradle to generate Shio CMS executable JAR file.
 
 ```shell
 $ ./gradlew build
@@ -49,7 +49,7 @@ To run Shio CMS executable JAR file, just execute the following line:
 $ java -jar build/libs/viglet-shio.jar
 ```
 
-## Viglet Shiohara
+## Viglet Shio CMS
 * Administration Console: [http://localhost:2710](http://localhost:2710).
 
 > login/password: admin/admin
