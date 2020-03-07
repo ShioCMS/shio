@@ -1,4 +1,4 @@
-shioharaApp.controller('ShGroupCtrl', [
+shioApp.controller('ShGroupCtrl', [
 	"$scope",
 	"$state",
 	"$rootScope",

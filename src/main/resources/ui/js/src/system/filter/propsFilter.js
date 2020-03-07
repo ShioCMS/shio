@@ -3,7 +3,7 @@
  * filter: {name: $select.search, age: $select.search}" performs an AND between
  * 'name: $select.search' and 'age: $select.search'. We want to perform an OR.
  */
-shioharaApp.filter('propsFilter', function() {
+shioApp.filter('propsFilter', function() {
 	return function(items, props) {
 		var out = [];
 

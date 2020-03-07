@@ -1,4 +1,4 @@
-shioharaApp.factory('shFolderFactory', [
+shioApp.factory('shFolderFactory', [
 	'$uibModal', 'shFolderResource', 'Notification', '$filter',
 	function ($uibModal, shFolderResource, Notification, $filter) {
 		return {

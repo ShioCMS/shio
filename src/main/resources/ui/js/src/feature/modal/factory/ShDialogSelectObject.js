@@ -1,4 +1,4 @@
-shioharaApp.factory('ShDialogSelectObject', [ '$uibModal', 'shPostResource',
+shioApp.factory('ShDialogSelectObject', [ '$uibModal', 'shPostResource',
 		'Notification', '$filter', "$state",
 		function($uibModal, shPostResource, Notification, $filter, $state) {
 			return {

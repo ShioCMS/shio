@@ -1,4 +1,4 @@
-shioharaApp.controller('ShRoleCtrl', [
+shioApp.controller('ShRoleCtrl', [
 	"$scope",
 	"$state",
 	"$rootScope",

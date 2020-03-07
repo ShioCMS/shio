@@ -1,4 +1,4 @@
-shioharaApp.controller('ShSiteEditCtrl', [
+shioApp.controller('ShSiteEditCtrl', [
 		"$scope",
 		"$state",
 		"$stateParams",

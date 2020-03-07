@@ -1,4 +1,4 @@
-shioharaApp.controller('ShWidgetRelatorCtrl', [
+shioApp.controller('ShWidgetRelatorCtrl', [
 		'$scope',
 		'Upload',
 		'$timeout',

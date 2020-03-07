@@ -1,4 +1,4 @@
-shioharaApp.factory('shAuthProviderFactory', [
+shioApp.factory('shAuthProviderFactory', [
 	'$uibModal', 'shAuthProviderResource', 'Notification', '$state',
 	function ($uibModal, shAuthProviderResource, Notification, $state) {
 		return {

@@ -1,4 +1,4 @@
-FROM openjdk:8-jdk as shioharabuild
+FROM openjdk:8-jdk as shiobuild
 WORKDIR /app
 COPY . .
 RUN ./gradlew build
@@ -13,7 +13,7 @@ RUN adduser -D -g '' java
 
 RUN sh -c 'mkdir -p /app/store'
 
-COPY --from=shioharabuild  /app/build/libs/viglet-shiohara.jar /app/app.jar
+COPY --from=shiobuild  /app/build/libs/viglet-shio.jar /app/app.jar
 RUN sh -c 'touch /app/app.jar'
 RUN sh -c 'chown -R java /app'
 

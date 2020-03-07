@@ -1,4 +1,4 @@
-shioharaApp.service('shAPIDevServerService', [
+shioApp.service('shAPIDevServerService', [
 		'$http',
 		'$location',
 		'$cookies',

@@ -1,4 +1,4 @@
-shioharaApp.controller('ShSiteImportCtrl', [
+shioApp.controller('ShSiteImportCtrl', [
 		'$scope',
 		'$state',
 		'Upload',

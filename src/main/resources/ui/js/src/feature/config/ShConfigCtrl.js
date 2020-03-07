@@ -1,4 +1,4 @@
-shioharaApp.controller('ShConfigCtrl', [
+shioApp.controller('ShConfigCtrl', [
 	"$rootScope", "$scope", "vigLocale", "$translate", "$http", "shAPIServerService", "$window",
 	function ($rootScope, $scope, vigLocale, $translate, $http, shAPIServerService, $window) {
 		$scope.vigLanguage = vigLocale.getLocale().substring(0, 2);

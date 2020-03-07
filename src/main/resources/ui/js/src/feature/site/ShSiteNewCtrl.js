@@ -1,4 +1,4 @@
-shioharaApp.controller('ShSiteNewCtrl', [
+shioApp.controller('ShSiteNewCtrl', [
 	"$scope",
 	"$http",
 	"shAPIServerService",

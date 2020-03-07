@@ -1,4 +1,4 @@
-shioharaApp.controller('ShGroupNewCtrl', [
+shioApp.controller('ShGroupNewCtrl', [
 	"$scope",
 	"$http",
 	"$state",

@@ -1,3 +1,3 @@
-# Viglet Shiohara CMS JS Documentation
+# Viglet Shio CMS JS Documentation
 
-## [shObject](viglet.shiohara.shObject.html)
+## [shObject](viglet.shio.shObject.html)

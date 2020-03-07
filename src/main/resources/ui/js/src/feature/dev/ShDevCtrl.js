@@ -1,4 +1,4 @@
-shioharaApp.controller('ShDevCtrl', [ "$scope", "shAPIDevServerService",
+shioApp.controller('ShDevCtrl', [ "$scope", "shAPIDevServerService",
 		function($scope, shAPIDevServerService) {
 			shAPIDevServerService.set();
 		} ]);

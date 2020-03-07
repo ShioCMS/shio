@@ -1,4 +1,4 @@
-shioharaApp.service('shAuthInterceptor', ['$q', function($q) {
+shioApp.service('shAuthInterceptor', ['$q', function($q) {
     var service = this;
 
     service.responseError = function(response) {

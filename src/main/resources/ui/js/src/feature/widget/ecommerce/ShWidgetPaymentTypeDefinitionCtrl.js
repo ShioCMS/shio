@@ -1,4 +1,4 @@
-shioharaApp.controller('ShWidgetPaymentTypeDefinitionCtrl', [
+shioApp.controller('ShWidgetPaymentTypeDefinitionCtrl', [
 		'$scope',
 		'$timeout',
 		'$uibModal',

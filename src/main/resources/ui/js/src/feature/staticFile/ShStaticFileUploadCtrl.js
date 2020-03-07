@@ -1,4 +1,4 @@
-shioharaApp.controller('ShStaticFileUploadCtrl', [
+shioApp.controller('ShStaticFileUploadCtrl', [
 		"$uibModalInstance",
 		"$http",
 		"shObject",

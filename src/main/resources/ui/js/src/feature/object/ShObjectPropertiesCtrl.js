@@ -1,4 +1,4 @@
-shioharaApp.controller('ShObjectPropertiesCtrl', [
+shioApp.controller('ShObjectPropertiesCtrl', [
 	"$uibModalInstance",
 	"shObject",
 	"shObjectFactory",

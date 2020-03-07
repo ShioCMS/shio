@@ -1,12 +1,12 @@
-var shioharaWelcome = angular.module('shioharaWelcome',
+var shioWelcome = angular.module('shioWelcome',
 		[ 'pascalprecht.translate','ngCookies' ]);
 
-shioharaWelcome
+shioWelcome
 		.config(function($httpProvider) {
 			$httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 		});
 
-shioharaWelcome.service('shAPIServerService', [
+shioWelcome.service('shAPIServerService', [
 	'$http',
 	'$location',
 	'$cookies',
@@ -58,7 +58,7 @@ shioharaWelcome.service('shAPIServerService', [
 	} ]);
 
 
-shioharaWelcome.controller('ShWelcomeCtrl', [
+shioWelcome.controller('ShWelcomeCtrl', [
 		"$scope",
 		"$http",
 		"$window",

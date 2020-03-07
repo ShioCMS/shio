@@ -1,13 +1,13 @@
 var viglet = this.viglet || {};
-viglet.shiohara = viglet.shiohara || {};
+viglet.shio = viglet.shio || {};
 
 /**
  * @desc the shObject class. See usage.
  * 
  * @class
- * @extends viglet.shiohara
+ * @extends viglet.shio
  */
-viglet.shiohara.shObject = function() {
+viglet.shio.shObject = function() {
 	/**
 	 * @desc Returns Form from PostType
 	 * @public
@@ -168,7 +168,7 @@ viglet.shiohara.shObject = function() {
 
 };
 
-viglet.shiohara.shobject = new viglet.shiohara.shObject();
-var shObject = viglet.shiohara.shobject;
+viglet.shio.shobject = new viglet.shio.shObject();
+var shObject = viglet.shio.shobject;
 var forEach = Array.prototype.forEach;
 

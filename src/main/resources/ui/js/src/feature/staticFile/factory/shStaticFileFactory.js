@@ -1,4 +1,4 @@
-shioharaApp.factory('shStaticFileFactory', [
+shioApp.factory('shStaticFileFactory', [
     '$q', 'Upload', 'shAPIServerService', '$timeout',
     function ($q, Upload, shAPIServerService) {
         return {

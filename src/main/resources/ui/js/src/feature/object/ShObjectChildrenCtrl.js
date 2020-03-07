@@ -1,4 +1,4 @@
-shioharaApp.controller('ShObjectChildrenCtrl', [
+shioApp.controller('ShObjectChildrenCtrl', [
     "$scope"
     , "$state"
     , "$stateParams"

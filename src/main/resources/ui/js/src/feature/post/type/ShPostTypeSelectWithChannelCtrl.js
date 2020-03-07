@@ -1,4 +1,4 @@
-shioharaApp.controller('ShPostTypeSelectWithFolderCtrl', [
+shioApp.controller('ShPostTypeSelectWithFolderCtrl', [
 		"$scope",
 		"$http",
 		"$window",

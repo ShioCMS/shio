@@ -1,4 +1,4 @@
-shioharaApp.controller('ShECommercePaymentNewCtrl', [
+shioApp.controller('ShECommercePaymentNewCtrl', [
 		"$scope",
 		"$http",
 		"$rootScope",

@@ -1,4 +1,4 @@
-shioharaApp.controller('ShWidgetRelatorSettingCtrl', [
+shioApp.controller('ShWidgetRelatorSettingCtrl', [
 		'$scope',
 		'$filter',
 		function($scope, $filter) {

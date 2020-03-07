@@ -1,4 +1,4 @@
-shioharaApp.factory('ShDialogImportFromProvider', ['$uibModal',
+shioApp.factory('ShDialogImportFromProvider', ['$uibModal',
 	function ($uibModal) {
 		return {
 

@@ -1,4 +1,4 @@
-shioharaApp.controller('ShModalDeleteUserCtrl', [
+shioApp.controller('ShModalDeleteUserCtrl', [
 	"$uibModalInstance",
 	"title",
 	function ($uibModalInstance, title) {

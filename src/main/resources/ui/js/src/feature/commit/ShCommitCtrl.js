@@ -1,4 +1,4 @@
-shioharaApp.controller('ShCommitCtrl', [
+shioApp.controller('ShCommitCtrl', [
 	"$scope",
 	"$http",
 	"$rootScope",

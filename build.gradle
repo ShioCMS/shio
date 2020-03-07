@@ -24,7 +24,7 @@ apply plugin: 'io.spring.dependency-management'
 apply plugin: 'jacoco'
 
 jar {
-    archiveBaseName = 'viglet-shiohara'
+    archiveBaseName = 'viglet-shio'
     archiveVersion =  '0.3.6'
 }
 
@@ -69,12 +69,12 @@ task combineFeatureJs(dependsOn: ':combineSystemJs', type: com.eriwen.gradle.js.
 
 task combineAllJs(dependsOn: ':combineFeatureJs', type: com.eriwen.gradle.js.tasks.CombineJsTask) {
     source = ["${projectDir}/src/main/resources/ui/js/src/main/__shFactory.js", "${projectDir}/src/main/resources/ui/js/build/shSystem.js", "${projectDir}/src/main/resources/ui/js/build/shFeature.js"]
-    dest = "${projectDir}/src/main/resources/ui/js/build/shiohara.js"
+    dest = "${projectDir}/src/main/resources/ui/js/build/shio.js"
 }
 
 task minifyAllJs(dependsOn: ':combineAllJs', type: com.eriwen.gradle.js.tasks.MinifyJsTask) {
- 	source = "${projectDir}/src/main/resources/ui/js/build/shiohara.js"
-    dest = file("${projectDir}/src/main/resources/ui/public/js/dist/shiohara.min.js")
+ 	source = "${projectDir}/src/main/resources/ui/js/build/shio.js"
+    dest = file("${projectDir}/src/main/resources/ui/public/js/dist/shio.min.js")
     closure {
         warningLevel = 'QUIET'
     }
@@ -95,118 +95,118 @@ javadoc {
 dependencies {
     
     // Spring Boot
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: "${springBootVersion}"
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version:"${springBootVersion}"
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: "${springBootVersion}"
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version:"${springBootVersion}"
     
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: "${springBootVersion}"
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-parent', version:"${springBootVersion}"
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version:"${springBootVersion}"
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-activemq', version:"${springBootVersion}"   
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf', version:"${springBootVersion}"
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version:"${springBootVersion}"
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-cache', version:"${springBootVersion}"
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version:"${springBootVersion}"
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: "${springBootVersion}"
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-parent', version:"${springBootVersion}"
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version:"${springBootVersion}"
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-activemq', version:"${springBootVersion}"   
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf', version:"${springBootVersion}"
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version:"${springBootVersion}"
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-cache', version:"${springBootVersion}"
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version:"${springBootVersion}"
     
-	implementation group: 'org.apache.axis', name: 'axis', version: '1.4'
-	implementation group: 'org.apache.axis', name: 'axis-jaxrpc', version: '1.4'
-	implementation group: 'commons-discovery', name: 'commons-discovery', version: '0.4'
+	compile group: 'org.apache.axis', name: 'axis', version: '1.4'
+	compile group: 'org.apache.axis', name: 'axis-jaxrpc', version: '1.4'
+	compile group: 'commons-discovery', name: 'commons-discovery', version: '0.4'
 	
     
   	// Spring
-  	implementation group: 'org.springframework', name: 'spring-test', version: '5.2.3.RELEASE'
+  	compile group: 'org.springframework', name: 'spring-test', version: '5.2.3.RELEASE'
   	    
   	// Jackson
-    implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.9.8'
+    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.9.8'
    
    	// Oracle	
-	implementation group: 'com.oracle.ojdbc', name: 'ojdbc8', version: '19.3.0.0'
+	compile group: 'com.oracle.ojdbc', name: 'ojdbc8', version: '19.3.0.0'
 	
     // H2
-    implementation group: 'com.h2database', name: 'h2', version:'1.4.199'
+    compile group: 'com.h2database', name: 'h2', version:'1.4.199'
 
 	// MariaDB
-    implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.4.1'
+    compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.4.1'
 
     // JSON
-    implementation group: 'org.json', name: 'json', version:'20180813'
+    compile group: 'org.json', name: 'json', version:'20180813'
     
     // Apache Commons
-    implementation group: 'org.apache.commons', name: 'commons-compress', version: '1.18'   
-    implementation group: 'commons-io', name: 'commons-io', version:'2.6'
-    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
+    compile group: 'org.apache.commons', name: 'commons-compress', version: '1.18'   
+    compile group: 'commons-io', name: 'commons-io', version:'2.6'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
     
     // Apache POI
-    implementation group: 'org.apache.poi', name: 'poi', version: '4.1.0'
-    implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '4.1.0'
+    compile group: 'org.apache.poi', name: 'poi', version: '4.1.0'
+    compile group: 'org.apache.poi', name: 'poi-ooxml', version: '4.1.0'
     
     // HTTP Client
-    implementation(group: 'org.apache.httpcomponents', name: 'httpclient', version:"${httpClientVersion}") {
+    compile(group: 'org.apache.httpcomponents', name: 'httpclient', version:"${httpClientVersion}") {
 		exclude(module: 'commons-logging')
     }
-    implementation group: 'org.apache.httpcomponents', name: 'httpmime', version:"${httpClientVersion}"
+    compile group: 'org.apache.httpcomponents', name: 'httpmime', version:"${httpClientVersion}"
     
     // JSoup
-	implementation group: 'org.jsoup', name: 'jsoup', version: '1.11.3'
+	compile group: 'org.jsoup', name: 'jsoup', version: '1.11.3'
 	
 	// Hibernate
-	implementation group: 'org.hibernate', name: 'hibernate-search-engine', version: "${hibernateVersion}"
-	implementation group: 'org.hibernate', name: 'hibernate-search-orm', version: "${hibernateVersion}"
+	compile group: 'org.hibernate', name: 'hibernate-search-engine', version: "${hibernateVersion}"
+	compile group: 'org.hibernate', name: 'hibernate-search-orm', version: "${hibernateVersion}"
 	
 	//Hazelcast
-	implementation group: 'com.hazelcast', name: 'hazelcast'
-	implementation group: 'com.hazelcast', name: 'hazelcast-spring'
+	compile group: 'com.hazelcast', name: 'hazelcast'
+	compile group: 'com.hazelcast', name: 'hazelcast-spring'
 	
 	// Swagger 2
-	implementation group: 'io.springfox', name: 'springfox-swagger2', version: "${swaggerVersion}"
-	implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: "${swaggerVersion}"
+	compile group: 'io.springfox', name: 'springfox-swagger2', version: "${swaggerVersion}"
+	compile group: 'io.springfox', name: 'springfox-swagger-ui', version: "${swaggerVersion}"
 	
 	// Gson - is used by reCAPTCHA
-	implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.5'
+	compile group: 'com.google.code.gson', name: 'gson', version: '2.8.5'
 	
 	/// Payment Slip
-	implementation group: 'br.com.caelum.stella', name: 'caelum-stella-boleto', version: '2.1.2'
-	implementation group: 'com.lowagie', name: 'itext', version: '2.1.7'
+	compile group: 'br.com.caelum.stella', name: 'caelum-stella-boleto', version: '2.1.2'
+	compile group: 'com.lowagie', name: 'itext', version: '2.1.7'
 
 	// Thumbnailator
-    implementation group: 'net.coobird', name: 'thumbnailator', version: '0.4.8'
+    compile group: 'net.coobird', name: 'thumbnailator', version: '0.4.8'
 	
 	// Tika
-    implementation group: 'org.apache.tika', name: 'tika-core', version:'1.5'
-    implementation group: 'org.apache.tika', name: 'tika-parsers', version:'1.5'
+    compile group: 'org.apache.tika', name: 'tika-core', version:'1.5'
+    compile group: 'org.apache.tika', name: 'tika-parsers', version:'1.5'
     
 	// Javadoc - Need this package
-	implementation 'javax.interceptor:javax.interceptor-api:1.2.2'
+	compile 'javax.interceptor:javax.interceptor-api:1.2.2'
 	
-	implementation group: 'ldapsdk', name: 'ldapsdk', version: '4.1'
+	compile group: 'ldapsdk', name: 'ldapsdk', version: '4.1'
 	
 	// Git 
-	implementation group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.6.1.202002131546-r'
+	compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.6.1.202002131546-r'
 	
 	// WebJars
-	implementation 'org.webjars.bower:jquery:1.12.4'
-	implementation 'org.webjars.bower:jquery.ui:1.11.3'
-	implementation 'org.webjars:bootstrap:3.3.7-1' // Content
-	implementation 'org.webjars.bower:bootstrap:4.1.1' // Preview
-	implementation 'org.webjars.bower:moment:2.20.1'
-	implementation 'org.webjars.bower:angular:1.6.9'
-	implementation 'org.webjars.bower:ace-builds:1.3.1'
-	implementation 'org.webjars.bower:tinymce:4.5.8'
-	implementation 'org.webjars.bower:angular-ui-router:1.0.14'
-	implementation 'org.webjars.bower:angular-translate:2.17.0'
-	implementation 'org.webjars.bower:angular-resource:1.6.9'
-	implementation 'org.webjars.bower:angular-animate:1.6.9'
-	implementation 'org.webjars.bower:angular-sanitize:1.6.9'
-	implementation 'org.webjars.bower:angular-bootstrap:2.5.0'
-	implementation 'org.webjars.bower:angular-cookies:1.6.9'
-	implementation 'org.webjars.bower:angular-moment:1.2.0'
-	implementation 'org.webjars.bower:angular-ui-ace:0.2.3'
-	implementation 'org.webjars.bower:font-awesome:4.7.0'
-	implementation 'org.webjars.bower:ng-file-upload:12.2.13'
-	implementation 'org.webjars.bower:angular-ui-notification:0.3.6'
-	implementation 'org.webjars.bower:angular-ui-tinymce:0.0.19'
-	implementation 'org.webjars.bower:angular-ui-sortable:0.14.3'
-	implementation 'org.webjars.bower:angular-ui-select:0.19.8'
-	implementation 'org.webjars.bower:ngInfiniteScroll:1.3.4'
+	compile 'org.webjars.bower:jquery:1.12.4'
+	compile 'org.webjars.bower:jquery.ui:1.11.3'
+	compile 'org.webjars:bootstrap:3.3.7-1' // Content
+	compile 'org.webjars.bower:bootstrap:4.1.1' // Preview
+	compile 'org.webjars.bower:moment:2.20.1'
+	compile 'org.webjars.bower:angular:1.6.9'
+	compile 'org.webjars.bower:ace-builds:1.3.1'
+	compile 'org.webjars.bower:tinymce:4.5.8'
+	compile 'org.webjars.bower:angular-ui-router:1.0.14'
+	compile 'org.webjars.bower:angular-translate:2.17.0'
+	compile 'org.webjars.bower:angular-resource:1.6.9'
+	compile 'org.webjars.bower:angular-animate:1.6.9'
+	compile 'org.webjars.bower:angular-sanitize:1.6.9'
+	compile 'org.webjars.bower:angular-bootstrap:2.5.0'
+	compile 'org.webjars.bower:angular-cookies:1.6.9'
+	compile 'org.webjars.bower:angular-moment:1.2.0'
+	compile 'org.webjars.bower:angular-ui-ace:0.2.3'
+	compile 'org.webjars.bower:font-awesome:4.7.0'
+	compile 'org.webjars.bower:ng-file-upload:12.2.13'
+	compile 'org.webjars.bower:angular-ui-notification:0.3.6'
+	compile 'org.webjars.bower:angular-ui-tinymce:0.0.19'
+	compile 'org.webjars.bower:angular-ui-sortable:0.14.3'
+	compile 'org.webjars.bower:angular-ui-select:0.19.8'
+	compile 'org.webjars.bower:ngInfiniteScroll:1.3.4'
 	
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
 }

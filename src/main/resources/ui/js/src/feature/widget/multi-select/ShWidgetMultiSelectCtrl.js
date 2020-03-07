@@ -1,4 +1,4 @@
-shioharaApp.controller('ShWidgetMultiSelectCtrl', [
+shioApp.controller('ShWidgetMultiSelectCtrl', [
 		'$scope',
 		'$http',
 		'$timeout',

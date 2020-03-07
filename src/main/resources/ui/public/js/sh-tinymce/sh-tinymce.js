@@ -25,7 +25,7 @@ tinymce.PluginManager.add('shTinyMCE', function (editor, url) {
 
     // Add a button that opens a window
     editor.addButton('shAddImage', {
-        tooltip: 'Insert Shiohara image',
+        tooltip: 'Insert Shio image',
         icon: true,
         image: '/img/widget/tinymce/image-icon.png',
         onclick: function () {
@@ -40,7 +40,7 @@ tinymce.PluginManager.add('shTinyMCE', function (editor, url) {
         }
     });
     editor.addButton('shAddContent', {
-        tooltip: 'Insert Shiohara content',
+        tooltip: 'Insert Shio content',
         icon: true,
         image: '/img/widget/tinymce/content-icon.png',
         onclick: function () {

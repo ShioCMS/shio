@@ -2,9 +2,9 @@
 FROM mariadb
 
 ## These variables are using into deployment.yaml and/or ConfigMap and Secrets of Kubernetes
-# ENV MYSQL_DATABASE shiohara
+# ENV MYSQL_DATABASE shio
 # ENV MYSQL_ROOT_PASSWORD DEFINE
-# ENV MYSQL_USER shiohara
+# ENV MYSQL_USER shio
 # ENV MYSQL_PASSWORD DEFINE
 
-COPY /conf/shiohara.cnf /etc/mysql/conf.d/shiohara.cnf
+COPY /conf/shio.cnf /etc/mysql/conf.d/shio.cnf

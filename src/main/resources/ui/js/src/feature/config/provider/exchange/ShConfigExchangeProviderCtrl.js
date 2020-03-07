@@ -1,4 +1,4 @@
-shioharaApp.controller('ShConfigExchangeProviderCtrl', [
+shioApp.controller('ShConfigExchangeProviderCtrl', [
 	"$scope",
 	"$state",
 	"$stateParams",

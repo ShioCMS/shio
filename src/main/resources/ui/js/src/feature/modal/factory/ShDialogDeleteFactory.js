@@ -1,4 +1,4 @@
-shioharaApp.factory('ShDialogDeleteFactory', [ '$uibModal', 'shPostResource',
+shioApp.factory('ShDialogDeleteFactory', [ '$uibModal', 'shPostResource',
 		'Notification', '$filter', "$state",
 		function($uibModal, shPostResource, Notification, $filter, $state) {
 			return {				

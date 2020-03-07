@@ -1,4 +1,4 @@
-shioharaApp.factory('shPostResource', [ '$resource', 'shAPIServerService', function($resource, shAPIServerService) {
+shioApp.factory('shPostResource', [ '$resource', 'shAPIServerService', function($resource, shAPIServerService) {
 	return $resource(shAPIServerService.get().concat('/v2/post/:id'), {
 		id : '@id'
 	}, {

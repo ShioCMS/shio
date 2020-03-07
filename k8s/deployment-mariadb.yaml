@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: shiohara-mariadb-claim0
+  name: shio-mariadb-claim0
 spec:
   accessModes:
   - ReadWriteOnce
@@ -13,7 +13,7 @@ status: {}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: shiohara-mariadb
+  name: shio-mariadb
 spec:
   replicas: 1
   strategy:
@@ -22,43 +22,43 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        io.kompose.service: shiohara-mariadb
+        io.kompose.service: shio-mariadb
     spec:
       containers:
       - env:
         - name: MYSQL_DATABASE
-          value: shiohara
+          value: shio
         - name: MYSQL_PASSWORD
-          value: shiohara
+          value: shio
         - name: MYSQL_ROOT_PASSWORD
-          value: shiohara
+          value: shio
         - name: MYSQL_USER
-          value: shiohara
-        image: viglet/shiohara-mariadb
-        name: shiohara-mariadb
+          value: shio
+        image: viglet/shio-mariadb
+        name: shio-mariadb
         ports:
         - containerPort: 3306
         resources: {}
         volumeMounts:
         - mountPath: /var/lib/mysql
-          name: shiohara-mariadb-claim0
+          name: shio-mariadb-claim0
       restartPolicy: Always
       volumes:
-      - name: shiohara-mariadb-claim0
+      - name: shio-mariadb-claim0
         persistentVolumeClaim:
-          claimName: shiohara-mariadb-claim0
+          claimName: shio-mariadb-claim0
 status: {}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: shiohara-mariadb
+  name: shio-mariadb
 spec:
   ports:
   - name: "3306"
     port: 3306
     targetPort: 3306
   selector:
-    io.kompose.service: shiohara-mariadb
+    io.kompose.service: shio-mariadb
 status:
   loadBalancer: {}

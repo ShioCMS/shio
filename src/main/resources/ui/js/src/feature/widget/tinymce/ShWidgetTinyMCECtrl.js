@@ -1,4 +1,4 @@
-shioharaApp.controller('ShWidgetTinyMCECtrl', [
+shioApp.controller('ShWidgetTinyMCECtrl', [
 	'$scope',
 	'shWidgetFileFactory',
 	'shAPIServerService',
