@@ -5,7 +5,7 @@ jdk:
   - oraclejdk8
 addons:
   sonarcloud:
-    organization: "alegauss-github"
+    organization: "shiocms"
     token: ${SONAR_TOKEN}
 script:
   - ./gradlew check
