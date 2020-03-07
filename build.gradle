@@ -25,7 +25,7 @@ apply plugin: 'jacoco'
 
 jar {
     archiveBaseName = 'viglet-shio'
-    archiveVersion =  '0.3.6'
+    archiveVersion =  '0.3.7'
 }
 
 gitProperties {
