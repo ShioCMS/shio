@@ -27,17 +27,31 @@ public class ShURLFormatter {
 
 	public String format(String URL) {
 
+		// 1. Covert to Lowercase
 		String formattedURL = URL.toLowerCase();		
-		formattedURL = formattedURL.replaceAll("&.+?;", " "); // kill entities
+		
+		// 2. Convert HTML Symbol Entities to space, for examples: &euro; or &#174; 
+		formattedURL = formattedURL.replaceAll("&.+?;", " ");
+		
+		// 3. Remove accents
 		formattedURL = StringUtils.stripAccents(formattedURL);
+		
+		// 4. Convert dot to hyphen
 		formattedURL = formattedURL.replaceAll("\\.", "-");
+		
+		// 5. Remove all characters that are not a-z or 0-9 or space or _ or hyphen
 		formattedURL = formattedURL.replaceAll("[^a-z0-9 _-]", "");
+		
+		// 6. Convert one or more spaces to hyphen
 		formattedURL = formattedURL.replaceAll("\\s+", "-");
+		
+		// 7. If exist space or hyphen into start or and of string, will be removed
 		formattedURL = StringUtils.strip(formattedURL, " -");
 	
-		if (formattedURL.endsWith("-json")) {
+		// 8. In 4. Convert dot to -, so I need rollback Folders that have .json in its name.
+		if (formattedURL.endsWith("-json"))
 			formattedURL = formattedURL.replaceAll("-json$", ".json");
-		}
+	
 		return formattedURL;
 	}
 }

@@ -16,16 +16,10 @@
  */
 package com.viglet.shio.api;
 
-import java.io.IOException;
-
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.JGitInternalException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.viglet.shio.provider.storage.ShGitProvider;
 
 import io.swagger.annotations.Api;
 
@@ -41,9 +35,6 @@ public class ShAPI {
 	@Autowired
 	private ShAPIBean shAPIBean;
 
-	@Autowired
-	private ShGitProvider shGitProvider;
-
 	@GetMapping
 	public ShAPIBean shApiInfo() {
 
@@ -51,23 +42,4 @@ public class ShAPI {
 
 		return shAPIBean;
 	}
-
-	@GetMapping("test")
-	public ShAPIBean testApi() {
-
-		shAPIBean.setProduct("Test Api");
-
-		shGitProvider.cloneRepository();
-		try {
-			shGitProvider.init();
-
-			shGitProvider.newItem("174a27fc-337d-49fb-91b5-129baada3d72");
-			shGitProvider.pushToRepo();
-		} catch (JGitInternalException | IOException | GitAPIException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return shAPIBean;
-	}
-
 }

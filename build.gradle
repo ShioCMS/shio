@@ -1,6 +1,6 @@
 buildscript {
-    ext { springBootVersion = '2.2.4.RELEASE'
-	      hibernateVersion = '5.11.0.Final'
+    ext { springBootVersion = '2.2.5.RELEASE'
+	      hibernateVersion = '5.11.5.Final'
 		  httpClientVersion = '4.5.11'
 		  swaggerVersion = '2.9.2'
 		 }
@@ -113,10 +113,10 @@ dependencies {
 	
     
   	// Spring
-  	compile group: 'org.springframework', name: 'spring-test', version: '5.2.3.RELEASE'
+  	compile group: 'org.springframework', name: 'spring-test', version: '5.2.4.RELEASE'
   	    
   	// Jackson
-    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.9.8'
+    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.10.3'
    
    	// Oracle	
 	compile group: 'com.oracle.ojdbc', name: 'ojdbc8', version: '19.3.0.0'
