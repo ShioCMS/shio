@@ -1,4 +1,4 @@
-shioharaApp.factory('shPostFactory', [
+shioApp.factory('shPostFactory', [
 	'$uibModal', 'shPostResource', 'Notification', '$filter', "$state"
 , function ($uibModal, shPostResource, Notification, $filter, $state) {
         return {

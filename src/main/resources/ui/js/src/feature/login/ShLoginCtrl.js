@@ -1,2 +1,2 @@
-shioharaApp.controller('ShLoginCtrl', [ "$scope", function($scope) {
+shioApp.controller('ShLoginCtrl', [ "$scope", function($scope) {
 } ]);

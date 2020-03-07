@@ -1,4 +1,4 @@
-shioharaApp.factory('vigLocale', [
+shioApp.factory('vigLocale', [
 		'$window',
 		function($window) {
 			return {

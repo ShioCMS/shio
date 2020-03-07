@@ -1,4 +1,4 @@
-shioharaApp.factory('shGroupResource', [ '$resource', 'shAPIServerService', function($resource, shAPIServerService) {
+shioApp.factory('shGroupResource', [ '$resource', 'shAPIServerService', function($resource, shAPIServerService) {
 	return $resource(shAPIServerService.get().concat('/v2/group/:id'), {
 		id : '@id'
 	}, {

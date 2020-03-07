@@ -1,1 +1,1 @@
-web: java -jar build/libs/viglet-shiohara.jar
+web: java -jar build/libs/viglet-shio.jar

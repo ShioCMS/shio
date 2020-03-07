@@ -1,4 +1,4 @@
-shioharaApp.factory('shSiteFactory', [
+shioApp.factory('shSiteFactory', [
 	'$uibModal', 'shSiteResource', 'shAPIServerService', 'Notification', '$state',
 	function ($uibModal, shSiteResource, shAPIServerService, Notification, $state) {
 		return {

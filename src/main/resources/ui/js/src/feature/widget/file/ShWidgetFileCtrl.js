@@ -1,4 +1,4 @@
-shioharaApp.controller('ShWidgetFileCtrl', [
+shioApp.controller('ShWidgetFileCtrl', [
 		'$scope',		
 		'shWidgetFileFactory',
 		'shAPIServerService',

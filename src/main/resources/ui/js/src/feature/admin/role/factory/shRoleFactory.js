@@ -1,4 +1,4 @@
-shioharaApp.factory('shRoleFactory', [
+shioApp.factory('shRoleFactory', [
 	'$uibModal','shRoleResource', 'Notification','$state',
 		function($uibModal,shRoleResource, Notification, $state) {
 			return {

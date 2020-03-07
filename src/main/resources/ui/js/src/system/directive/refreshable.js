@@ -1,4 +1,4 @@
-shioharaApp.directive('refreshable', [function () {
+shioApp.directive('refreshable', [function () {
     return {
         restrict: 'A',
         scope: {

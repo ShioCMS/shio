@@ -1,4 +1,4 @@
-shioharaApp.controller('ShWidgetCheckBoxCtrl', [
+shioApp.controller('ShWidgetCheckBoxCtrl', [
 	'$scope',
 	function ($scope) {
 		$scope.widgetSettingsObject = null;

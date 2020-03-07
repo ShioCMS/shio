@@ -1,4 +1,4 @@
-shioharaApp.controller('ShComponentExplorerCtrl', [
+shioApp.controller('ShComponentExplorerCtrl', [
 	'$scope',
 	'shAPIServerService',
 	'$http',

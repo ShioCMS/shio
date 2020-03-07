@@ -1,4 +1,4 @@
-shioharaApp.controller('ShPostTypeSelectCtrl', [
+shioApp.controller('ShPostTypeSelectCtrl', [
 		"$scope",
 		"$http",
 		"$window",

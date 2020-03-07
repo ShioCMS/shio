@@ -1,4 +1,4 @@
-shioharaApp.controller('ShECommerceSettingCtrl', [
+shioApp.controller('ShECommerceSettingCtrl', [
 		"$scope",
 		"$http",
 		"$rootScope",

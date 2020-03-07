@@ -1,4 +1,4 @@
-shioharaApp.config([
+shioApp.config([
 		'$stateProvider',
 		'$urlRouterProvider',
 		'$locationProvider',
@@ -59,7 +59,7 @@ shioharaApp.config([
 				templateUrl : 'template/content.html',
 				controller : 'ShContentHomeCtrl',
 				data : {
-					pageTitle : 'Content | Viglet Shiohara'
+					pageTitle : 'Content | Viglet Shio'
 				}
 			}).state('content.object', {
 				url : '/:objectId'
@@ -68,112 +68,112 @@ shioharaApp.config([
 				templateUrl : 'template/object/object-children.html',
 				controller :'ShObjectChildrenCtrl',				
 				data : {
-					pageTitle : 'Content | Viglet Shiohara'
+					pageTitle : 'Content | Viglet Shio'
 				}
 			}).state('content.ecommerce', {
 				url : '/ecommerce',
 				templateUrl : 'template/ecommerce/ecommerce.html',
 				controller :'ShECommerceCtrl',				
 				data : {
-					pageTitle : 'E-Commerce | Viglet Shiohara'
+					pageTitle : 'E-Commerce | Viglet Shio'
 				}
 			}).state('content.ecommerce.payment', {
 				url : '/payment',
 				templateUrl : 'template/ecommerce/payment/ecommerce-payment.html',
 				controller :'ShECommercePaymentCtrl',				
 				data : {
-					pageTitle : 'E-Commerce Payment Types | Viglet Shiohara'
+					pageTitle : 'E-Commerce Payment Types | Viglet Shio'
 				}
 			}).state('content.ecommerce.payment-new', {
 				url : '/payment/new',
 				templateUrl : 'template/ecommerce/payment/ecommerce-payment-new.html',
 				controller :'ShECommercePaymentNewCtrl',				
 				data : {
-					pageTitle : 'E-Commerce Payment Types | Viglet Shiohara'
+					pageTitle : 'E-Commerce Payment Types | Viglet Shio'
 				}
 			}).state('content.ecommerce.setting', {
 				url : '/setting',
 				templateUrl : 'template/ecommerce/ecommerce-setting.html',
 				controller :'ShECommerceSettingCtrl',				
 				data : {
-					pageTitle : 'E-Commerce Settings | Viglet Shiohara'
+					pageTitle : 'E-Commerce Settings | Viglet Shio'
 				}
 			}).state('content.commit', {
 				url : '/commit/:objectId',
 				templateUrl : 'template/commit/commit.html',
 				controller :'ShCommitCtrl',				
 				data : {
-					pageTitle : 'Commits | Viglet Shiohara'
+					pageTitle : 'Commits | Viglet Shio'
 				}
 			}).state('content.search', {
 				url : '/search',
 				templateUrl : '/template/search/search.html',
 				controller : 'ShSearchCtrl',
 				data : {
-					pageTitle : 'Search | Viglet Shiohara'
+					pageTitle : 'Search | Viglet Shio'
 				}
 			}).state('content.search-type', {
 				url : '/search/type/:type',
 				templateUrl : 'template/search/search.html',
 				controller : 'ShSearchTypeCtrl',
 				data : {
-					pageTitle : 'Search | Viglet Shiohara'
+					pageTitle : 'Search | Viglet Shio'
 				}
 			}).state('content.search-query', {
 				url : '/search/:query',
 				templateUrl : 'template/search/search.html',
 				controller : 'ShSearchCtrl',
 				data : {
-					pageTitle : 'Search | Viglet Shiohara'
+					pageTitle : 'Search | Viglet Shio'
 				}
 			}).state('content.post-type-editor', {
 				url : '/post/type/editor',
 				templateUrl : 'template/post/type/editor.html',
 				controller : 'ShPostTypeEditorCtrl',
 				data : {
-					pageTitle : 'Post Type Editor | Viglet Shiohara'
+					pageTitle : 'Post Type Editor | Viglet Shio'
 				}
 			}).state('content.post-type-item-by-name', {
 				url : '/post/type-name/:postTypeName',
 				templateUrl : 'template/post/type/item.html',
 				controller : 'ShPostTypeItemCtrl',
 				data : {
-					pageTitle : 'Post Type Editor | Viglet Shiohara'
+					pageTitle : 'Post Type Editor | Viglet Shio'
 				}
 			}).state('content.post-type-item', {
 				url : '/post/type/:postTypeId',
 				templateUrl : 'template/post/type/item.html',
 				controller : 'ShPostTypeItemCtrl',
 				data : {
-					pageTitle : 'Post Type Editor | Viglet Shiohara'
+					pageTitle : 'Post Type Editor | Viglet Shio'
 				}
 			}).state('content.post-type-item.attribute', {
 				url : '/attrib/:postTypeAttrId',
 				templateUrl : 'template/post/type/attribute.html',
 				controller : 'ShPostTypeAttrCtrl',
 				data : {
-					pageTitle : 'Post Type Editor | Viglet Shiohara'
+					pageTitle : 'Post Type Editor | Viglet Shio'
 				}
 			}).state('content.post-type-item.post-item-new', {
 				url : '/folder/:folderId',
 				templateUrl : 'template/post/item.html',
 				controller : 'ShPostNewCtrl',
 				data : {
-					pageTitle : 'New Post | Viglet Shiohara'
+					pageTitle : 'New Post | Viglet Shio'
 				}			
 			}).state('content.post-type-item-by-name.post-item-new', {
 				url : '/folder/:folderId',
 				templateUrl : 'template/post/item.html',
 				controller : 'ShPostNewCtrl',
 				data : {
-					pageTitle : 'New Post | Viglet Shiohara'
+					pageTitle : 'New Post | Viglet Shio'
 				}			
 			}).state('content.post-type-item.post-item', {
 				url : '/post/:postId',
 				templateUrl : 'template/post/item.html',
 				controller : 'ShPostEditCtrl',
 				data : {
-					pageTitle : 'Edit Post | Viglet Shiohara'
+					pageTitle : 'Edit Post | Viglet Shio'
 				}
 			}).state('post-item-form', {
 				url : '/post/type/:postTypeId/post/form',
@@ -187,7 +187,7 @@ shioharaApp.config([
 				templateUrl : '/template/folder/folder-edit.html',
 				controller : 'ShFolderEditCtrl',
 				data : {
-					pageTitle : 'Edit Folder | Viglet Shiohara'
+					pageTitle : 'Edit Folder | Viglet Shio'
 				}
 			}).state('content.site', {
 				url : '/site/:siteId'
@@ -196,154 +196,154 @@ shioharaApp.config([
 				templateUrl : 'template/site/site-edit.html',
 				controller : 'ShSiteEditCtrl',
 				data : {
-					pageTitle : 'Edit Site | Viglet Shiohara'
+					pageTitle : 'Edit Site | Viglet Shio'
 				}
 			}).state('content.site-import', {
 				url : '/site/import',
 				templateUrl : 'template/site/site-import.html',
 				controller : 'ShSiteImportCtrl',
 				data : {
-					pageTitle : 'Import Site | Viglet Shiohara'
+					pageTitle : 'Import Site | Viglet Shio'
 				}
 			}).state('content.object.folder-new', {
 				url : '/folder',
 				templateUrl : 'template/folder/folder-new.html',
 				controller : 'ShFolderNewCtrl',
 				data : {
-					pageTitle : 'New Folder | Viglet Shiohara'
+					pageTitle : 'New Folder | Viglet Shio'
 				}
 			}).state('content.folder.post-type-select', {
 				url : '/post/type',
 				templateUrl : 'template/post/type/select-with-folder.html',
 				controller : 'ShPostTypeSelectWithFolderCtrl',
 				data : {
-					pageTitle : 'Post Type Selection | Viglet Shiohara'
+					pageTitle : 'Post Type Selection | Viglet Shio'
 				}
 			}).state('content.post-type-select', {
 				url : '/post/type',
 				templateUrl : 'template/post/type/select.html',
 				controller : 'ShPostTypeSelectCtrl',
 				data : {
-					pageTitle : 'Post Type Selection | Viglet Shiohara'
+					pageTitle : 'Post Type Selection | Viglet Shio'
 				}
 			}).state('content.post-type-system', {
 				url : '/post/type/system',
 				templateUrl : 'template/post/type/select-system.html',
 				controller : 'ShPostTypeSelectCtrl',
 				data : {
-					pageTitle : 'Post Type Selection | Viglet Shiohara'
+					pageTitle : 'Post Type Selection | Viglet Shio'
 				}
 			}).state('content.site.post-type-select', {
 				url : '/post/type',
 				templateUrl : 'template/post/type/select.html',
 				controller : 'ShPostTypeSelectCtrl',
 				data : {
-					pageTitle : 'Post Type Selection | Viglet Shiohara'
+					pageTitle : 'Post Type Selection | Viglet Shio'
 				}
 			}).state('content.site-new', {
 				url : '/site/new',
 				templateUrl : 'template/site/site-new.html',
 				controller : 'ShSiteNewCtrl',
 				data : {
-					pageTitle : 'New Site | Viglet Shiohara'
+					pageTitle : 'New Site | Viglet Shio'
 				}
 			}).state('config', {
 				url: '/config',
 				templateUrl: 'template/config/config-home.html',
 				controller : 'ShConfigCtrl',
 				redirectTo: 'config.auth-providers',
-				data : { pageTitle: 'Configuration | Viglet Shiohara' }
+				data : { pageTitle: 'Configuration | Viglet Shio' }
 			}).state('config.email', {
 				url: '/email',
 				templateUrl: 'template/config/email/config-email.html',
 				controller: 'ShConfigEmailCtrl',
-				data : { pageTitle: 'Email Configuration | Viglet Shiohara' }
+				data : { pageTitle: 'Email Configuration | Viglet Shio' }
 			}).state('config.search', {
 				url: '/search',
 				templateUrl: 'template/config/search/config-search.html',
 				controller: 'ShConfigSearchCtrl',
-				data : { pageTitle: 'Search Configuration | Viglet Shiohara' }
+				data : { pageTitle: 'Search Configuration | Viglet Shio' }
 			}).state('config.exchange-providers', {
 				url: '/provider/exchange',
 				templateUrl: 'template/config/provider/exchange/config-exchange-providers.html',
 				controller: 'ShConfigExchangeProvidersCtrl',
-				data : { pageTitle: 'Exchange Providers| Viglet Shiohara' }
+				data : { pageTitle: 'Exchange Providers| Viglet Shio' }
 			}).state('config.exchange-provider-new', {
 				url: '/provider/exchange/new',
 				templateUrl: 'template/config/provider/exchange/config-exchange-provider-item.html',
 				controller: 'ShConfigExchangeProviderCtrl',
-				data : { pageTitle: 'New Exchange Provider| Viglet Shiohara' }
+				data : { pageTitle: 'New Exchange Provider| Viglet Shio' }
 			}).state('config.exchange-provider', {
 				url: '/provider/exchange/:exchangeProviderId',
 				templateUrl: 'template/config/provider/exchange/config-exchange-provider-item.html',
 				controller: 'ShConfigExchangeProviderCtrl',
-				data : { pageTitle: 'Edit Exchange Provider| Viglet Shiohara' }
+				data : { pageTitle: 'Edit Exchange Provider| Viglet Shio' }
 			}).state('config.auth-providers', {
 				url: '/provider/auth',
 				templateUrl: 'template/config/provider/auth/config-auth-providers.html',
 				controller: 'ShConfigAuthProvidersCtrl',
-				data : { pageTitle: 'Auth Providers | Viglet Shiohara' }
+				data : { pageTitle: 'Auth Providers | Viglet Shio' }
 			}).state('config.auth-provider-new', {
 				url: '/provider/auth/new',
 				templateUrl: 'template/config/provider/auth/config-auth-provider-item.html',
 				controller: 'ShConfigAuthProviderCtrl',
-				data : { pageTitle: 'New Auth Provider| Viglet Shiohara' }
+				data : { pageTitle: 'New Auth Provider| Viglet Shio' }
 			}).state('config.auth-provider', {
 				url: '/provider/auth/:authProviderId',
 				templateUrl: 'template/config/provider/auth/config-auth-provider-item.html',
 				controller: 'ShConfigAuthProviderCtrl',
-				data : { pageTitle: 'Edit Auth Provider| Viglet Shiohara' }
+				data : { pageTitle: 'Edit Auth Provider| Viglet Shio' }
 			}).state('admin', {
 				url: '/admin',
 				templateUrl: 'template/admin/admin-home.html',
 				controller : 'ShAdminCtrl',
 				redirectTo: 'admin.user',
-				data : { pageTitle: 'Administration | Viglet Shiohara' }
+				data : { pageTitle: 'Administration | Viglet Shio' }
 			}).state('admin.user', {
 				url: '/user',
 				templateUrl: 'template/admin/user/user.html',
 				controller: 'ShUserCtrl',
-				data : { pageTitle: 'Users | Viglet Shiohara' }
+				data : { pageTitle: 'Users | Viglet Shio' }
 			}).state('admin.user-new', {
 				url: '/user/new',
 				templateUrl: 'template/admin/user/user-item.html',
 				controller: 'ShUserNewCtrl',
-				data : { pageTitle: 'New User | Viglet Shiohara' }
+				data : { pageTitle: 'New User | Viglet Shio' }
 			}).state('admin.user-edit', {
 				url: '/user/:userId',
 				templateUrl: 'template/admin/user/user-item.html',
 				controller: 'ShUserEditCtrl',
-				data : { pageTitle: 'Edit User | Viglet Shiohara' }
+				data : { pageTitle: 'Edit User | Viglet Shio' }
 			}).state('admin.role', {
 				url: '/role',
 				templateUrl: 'template/admin/role/role.html',
 				controller: 'ShRoleCtrl',
-				data : { pageTitle: 'Roles | Viglet Shiohara' }
+				data : { pageTitle: 'Roles | Viglet Shio' }
 			}).state('admin.role-new', {
 				url: '/role/new',
 				templateUrl: 'template/admin/role/role-item.html',
 				controller: 'ShRoleNewCtrl',
-				data : { pageTitle: 'New Role | Viglet Shiohara' }
+				data : { pageTitle: 'New Role | Viglet Shio' }
 			}).state('admin.role-edit', {
 				url: '/role/:roleId',
 				templateUrl: 'template/admin/role/role-item.html',
 				controller: 'ShRoleEditCtrl',
-				data : { pageTitle: 'Edit Role | Viglet Shiohara' }
+				data : { pageTitle: 'Edit Role | Viglet Shio' }
 			}).state('admin.group', {
 				url: '/group',
 				templateUrl: 'template/admin/group/group.html',
 				controller: 'ShGroupCtrl',
-				data : { pageTitle: 'Groups | Viglet Shiohara' }
+				data : { pageTitle: 'Groups | Viglet Shio' }
 			}).state('admin.group-new', {
 				url: '/group/new',
 				templateUrl: 'template/admin/group/group-item.html',
 				controller: 'ShGroupNewCtrl',
-				data : { pageTitle: 'New Group | Viglet Shiohara' }
+				data : { pageTitle: 'New Group | Viglet Shio' }
 			}).state('admin.group-edit', {
 				url: '/group/:groupId',
 				templateUrl: 'template/admin/group/group-item.html',
 				controller: 'ShGroupEditCtrl',
-				data : { pageTitle: 'Edit Group | Viglet Shiohara' }
+				data : { pageTitle: 'Edit Group | Viglet Shio' }
 			})
 
 		} ]);
@@ -371,7 +371,7 @@ shPreviewApp.config([
 			templateUrl : '../template/preview/preview.html',
 			controller :'ShPreviewCtrl',				
 			data : {
-				pageTitle : 'Preview | Viglet Shiohara'
+				pageTitle : 'Preview | Viglet Shio'
 			}
 		})
 	} ]);

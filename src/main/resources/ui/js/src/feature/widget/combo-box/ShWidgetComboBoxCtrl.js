@@ -1,4 +1,4 @@
-shioharaApp.controller('ShWidgetComboBoxCtrl', [
+shioApp.controller('ShWidgetComboBoxCtrl', [
 		'$scope',
 		'Upload',
 		'$timeout',

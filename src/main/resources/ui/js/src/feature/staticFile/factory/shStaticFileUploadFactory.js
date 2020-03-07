@@ -1,4 +1,4 @@
-shioharaApp.factory('shStaticFileUploadFactory', [ '$uibModal', 'shPostResource',
+shioApp.factory('shStaticFileUploadFactory', [ '$uibModal', 'shPostResource',
 		'Notification', '$filter', "$state",
 		function($uibModal, shPostResource, Notification, $filter, $state) {
 			return {

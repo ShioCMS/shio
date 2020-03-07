@@ -1,4 +1,4 @@
-shioharaApp.controller('ShUserCtrl', [
+shioApp.controller('ShUserCtrl', [
 	"$scope",
 	"$state",
 	"$rootScope",

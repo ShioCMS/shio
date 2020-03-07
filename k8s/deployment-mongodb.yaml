@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: shiohara-mongodb-claim0
+  name: shio-mongodb-claim0
 spec:
   accessModes:
   - ReadWriteOnce
@@ -13,7 +13,7 @@ status: {}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: shiohara-mongodb-claim1
+  name: shio-mongodb-claim1
 spec:
   accessModes:
   - ReadWriteOnce
@@ -25,7 +25,7 @@ status: {}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: shiohara-mongodb
+  name: shio-mongodb
 spec:
   replicas: 1
   strategy:
@@ -34,42 +34,42 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        io.kompose.service: shiohara-mongodb
+        io.kompose.service: shio-mongodb
     spec:
       containers:
       - env:
         - name: MONGODB_APPLICATION_DATABASE
-          value: shiohara
+          value: shio
         image: mongo
-        name: shiohara-mongodb
+        name: shio-mongodb
         ports:
         - containerPort: 27017
         resources: {}
         volumeMounts:
         - mountPath: /data/db
-          name: shiohara-mongodb-claim0
+          name: shio-mongodb-claim0
         - mountPath: /data/configdb
-          name: shiohara-mongodb-claim1
+          name: shio-mongodb-claim1
       restartPolicy: Always
       volumes:
-      - name: shiohara-mongodb-claim0
+      - name: shio-mongodb-claim0
         persistentVolumeClaim:
-          claimName: shiohara-mongodb-claim0
-      - name: shiohara-mongodb-claim1
+          claimName: shio-mongodb-claim0
+      - name: shio-mongodb-claim1
         persistentVolumeClaim:
-          claimName: shiohara-mongodb-claim1
+          claimName: shio-mongodb-claim1
 status: {}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: shiohara-mongodb
+  name: shio-mongodb
 spec:
   ports:
   - name: "27017"
     port: 27017
     targetPort: 27017
   selector:
-    io.kompose.service: shiohara-mongodb
+    io.kompose.service: shio-mongodb
 status:
   loadBalancer: {}

@@ -1,4 +1,4 @@
-shioharaApp.controller('ShImportFromProviderCtrl', [
+shioApp.controller('ShImportFromProviderCtrl', [
 	'$scope',
 	'shAPIServerService',
 	'$http',

@@ -1,4 +1,4 @@
-shioharaApp.controller('ShStaticFileUploadSelectCtrl', [
+shioApp.controller('ShStaticFileUploadSelectCtrl', [
 	'$scope',
 	'shAPIServerService',
 	'$http',

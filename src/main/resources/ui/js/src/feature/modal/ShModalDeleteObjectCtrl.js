@@ -1,4 +1,4 @@
-shioharaApp.controller('ShModalDeleteObjectCtrl', [
+shioApp.controller('ShModalDeleteObjectCtrl', [
 		"$uibModalInstance",
 		"$http",
 		"shObject",

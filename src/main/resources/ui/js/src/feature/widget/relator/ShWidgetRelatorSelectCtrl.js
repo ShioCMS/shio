@@ -1,4 +1,4 @@
-shioharaApp.controller('ShWidgetRelatorSelectCtrl', [
+shioApp.controller('ShWidgetRelatorSelectCtrl', [
 	'$scope',
 	'shAPIServerService',
 	'$http',

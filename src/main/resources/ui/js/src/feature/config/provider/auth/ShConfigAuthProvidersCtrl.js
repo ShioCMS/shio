@@ -1,4 +1,4 @@
-shioharaApp.controller('ShConfigAuthProvidersCtrl', [
+shioApp.controller('ShConfigAuthProvidersCtrl', [
 	"$scope",
 	"$state",
 	"$rootScope",

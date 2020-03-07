@@ -1,4 +1,4 @@
-shioharaApp.controller('ShPostNewCtrl', [
+shioApp.controller('ShPostNewCtrl', [
     "$scope", "$http", "$window", "$stateParams", "$rootScope", "shAPIServerService", "shPostResource", "Notification", "$q", "shStaticFileFactory", "$filter",
     function ($scope, $http, $window, $stateParams, $rootScope, shAPIServerService, shPostResource, Notification, $q, shStaticFileFactory, $filter) {
         $scope.tinymceOptions = {

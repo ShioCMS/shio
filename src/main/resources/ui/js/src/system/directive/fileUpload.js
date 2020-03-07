@@ -1,4 +1,4 @@
-shioharaApp.directive("fileread", [ function() {
+shioApp.directive("fileread", [ function() {
 	return {
 		scope : {
 			fileread : "="

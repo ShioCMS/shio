@@ -1,4 +1,4 @@
-shioharaApp.controller('ShUserEditCtrl', [
+shioApp.controller('ShUserEditCtrl', [
 	"$scope",
 	"$http",
 	"$window",

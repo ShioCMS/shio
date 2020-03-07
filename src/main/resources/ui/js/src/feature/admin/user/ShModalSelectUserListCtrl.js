@@ -1,4 +1,4 @@
-shioharaApp.controller('ShModalSelectUserListCtrl', [
+shioApp.controller('ShModalSelectUserListCtrl', [
 	"$uibModalInstance",
 	"groupId",
 	"shUserResource",

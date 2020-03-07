@@ -1,7 +1,7 @@
 version: '3'
 services:
-  shiohara-nginx:
-    container_name: shiohara-nginx
+  shio-nginx:
+    container_name: shio-nginx
     image: nginx:1.13
     restart: always
     ports:
@@ -9,8 +9,8 @@ services:
     - 443:443
     volumes:
     - ./containers/nginx/conf.d:/etc/nginx/conf.d
-  shiohara-mariadb:
-    container_name: shiohara-mariadb
+  shio-mariadb:
+    container_name: shio-mariadb
     build: ./containers/mariadb
     restart: always    
     ports:
@@ -18,12 +18,12 @@ services:
     volumes:
     - ./volumes/mariadb/lib:/var/lib/mysql 
     environment:
-      MYSQL_DATABASE: shiohara
-      MYSQL_ROOT_PASSWORD: shiohara
-      MYSQL_USER: shiohara
-      MYSQL_PASSWORD: shiohara    
-  shiohara-mongodb:
-    container_name: shiohara-mongodb
+      MYSQL_DATABASE: shio
+      MYSQL_ROOT_PASSWORD: shio
+      MYSQL_USER: shio
+      MYSQL_PASSWORD: shio    
+  shio-mongodb:
+    container_name: shio-mongodb
     image: mongo
     restart: always
     ports:
@@ -32,23 +32,23 @@ services:
     - ./volumes/mongodb/db:/data/db
     - ./volumes/mongodb/configdb:/data/configdb 
     environment:
-      MONGODB_APPLICATION_DATABASE: shiohara
-  shiohara:
-    container_name: shiohara
+      MONGODB_APPLICATION_DATABASE: shio
+  shio:
+    container_name: shio
     build: .
     restart: always    
     ports:
      - 2710:2710
     volumes:
-    - ./volumes/shiohara/store:/app/store   
+    - ./volumes/shio/store:/app/store   
     depends_on:
-      - shiohara-nginx
-      - shiohara-mariadb
-      - shiohara-mongodb    
+      - shio-nginx
+      - shio-mariadb
+      - shio-mongodb    
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mariadb://shiohara-mariadb:3306/shiohara
-      SPRING_DATASOURCE_USERNAME: shiohara
-      SPRING_DATASOURCE_PASSWORD: shiohara
+      SPRING_DATASOURCE_URL: jdbc:mariadb://shio-mariadb:3306/shio
+      SPRING_DATASOURCE_USERNAME: shio
+      SPRING_DATASOURCE_PASSWORD: shio
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.mariadb.jdbc.Driver
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL5InnoDBDialect
-      SPRING_DATA_MONGODB_URI: mongodb://shiohara-mongodb:27017/shiohara
+      SPRING_DATA_MONGODB_URI: mongodb://shio-mongodb:27017/shio

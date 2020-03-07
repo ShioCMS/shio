@@ -1,4 +1,4 @@
-shioharaApp
+shioApp
 		.controller(
 				'ShWidgetDateCtrl',
 				[

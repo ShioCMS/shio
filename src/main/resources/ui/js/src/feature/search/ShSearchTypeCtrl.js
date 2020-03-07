@@ -1,4 +1,4 @@
-shioharaApp.controller('ShSearchTypeCtrl', [
+shioApp.controller('ShSearchTypeCtrl', [
 		"$scope",
 		"$http",
 		"$state",

@@ -1,4 +1,4 @@
-shioharaApp.controller('ShModalDeleteGenericObjectCtrl', [
+shioApp.controller('ShModalDeleteGenericObjectCtrl', [
 	"$uibModalInstance",
 	"shObjectName",
 	function ($uibModalInstance, shObjectName) {

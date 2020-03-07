@@ -1,4 +1,4 @@
-shioharaApp.controller('ShConfigSearchCtrl', [
+shioApp.controller('ShConfigSearchCtrl', [
 	"$scope",
 	"$state",
 	"$rootScope",
