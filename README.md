@@ -1,10 +1,13 @@
-[![demo](https://img.shields.io/badge/demo-try%20online-FF874B.svg)](http://shio.viglet.net) [![downloads](https://img.shields.io/github/downloads/ShioCMS/shio/total.svg)](https://github.com/ShioCMS/shio/releases/download/v0.3.5/viglet-shiohara.jar) [![Build Status](https://travis-ci.com/ShioCMS/shio.svg?branch=master)](https://travis-ci.com/ShioCMS/shio) [![codecov](https://codecov.io/gh/ShioCMS/shio/branch/master/graph/badge.svg)](https://codecov.io/gh/ShioCMS/shio) [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=ShioCMS_shio&metric=alert_status)](https://sonarcloud.io/dashboard/index/ShioCMS_shio)
+[![demo](https://img.shields.io/badge/demo-try%20online-FF874B.svg)](https://shio.viglet.net) [![downloads](https://img.shields.io/github/downloads/ShioCMS/shio/total.svg)](https://github.com/ShioCMS/shio/releases/download/v0.3.5/viglet-shiohara.jar) [![Build Status](https://travis-ci.com/ShioCMS/shio.svg?branch=master)](https://travis-ci.com/ShioCMS/shio) [![codecov](https://codecov.io/gh/ShioCMS/shio/branch/master/graph/badge.svg)](https://codecov.io/gh/ShioCMS/shio) [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=openviglet_shiohara&metric=alert_status)](https://sonarcloud.io/dashboard/index/openviglet_shiohara)
+[![Twitter](https://img.shields.io/twitter/follow/shiocms.svg?style=social&label=Follow)](https://twitter.com/intent/follow?screen_name=shiocms)
 
 ![shio_banner.png](https://shiocms.github.io/shio/img/shio_banner.png) 
 ------
 
 **Viglet Shio CMS** - Model Content and Create Site using Javascript with Native Cache and Search.
- 
+
+Shio (pronounced [strong/ʃiː/ weak/ʃɪ/ o])
+
 **If you'd like to contribute to Viglet Shio, be sure to review the [contribution
 guidelines](CONTRIBUTING.md).**
 
@@ -32,7 +35,7 @@ $ ./gradlew bootrun
 
 ### 2. Or Generate JAR File
 
-Use Gradle to generate Shio CMS executable JAR file.
+Use Gradle to generate Shiohara CMS executable JAR file.
 
 ```shell
 $ ./gradlew build
@@ -46,7 +49,7 @@ To run Shio CMS executable JAR file, just execute the following line:
 $ java -jar build/libs/viglet-shio.jar
 ```
 
-## Viglet Shio CMS
+## Viglet Shiohara
 * Administration Console: [http://localhost:2710](http://localhost:2710).
 
 > login/password: admin/admin
