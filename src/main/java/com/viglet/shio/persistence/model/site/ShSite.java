@@ -57,7 +57,7 @@ public class ShSite extends ShObject {
 	@OneToMany(mappedBy = "shSite")
 	@Cascade({ CascadeType.ALL })
 	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
-	private Set<ShFolder> shFolders = new HashSet<ShFolder>();
+	private Set<ShFolder> shFolders = new HashSet<>();
 
 	private String formSuccess;
 	

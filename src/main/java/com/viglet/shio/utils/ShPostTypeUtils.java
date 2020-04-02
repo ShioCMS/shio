@@ -39,7 +39,7 @@ public class ShPostTypeUtils {
 
 		Set<ShPostTypeAttr> shPostTypeAttrList = shPostType.getShPostTypeAttrs();
 
-		Map<String, ShPostTypeAttr> shPostTypeMap = new HashMap<String, ShPostTypeAttr>();
+		Map<String, ShPostTypeAttr> shPostTypeMap = new HashMap<>();
 		for (ShPostTypeAttr shPostTypeAttr : shPostTypeAttrList)
 			shPostTypeMap.put(shPostTypeAttr.getName(), shPostTypeAttr);
 

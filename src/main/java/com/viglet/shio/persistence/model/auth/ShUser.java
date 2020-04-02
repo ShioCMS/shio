@@ -172,8 +172,7 @@ public class ShUser implements Serializable {
 	@JsonProperty("gravatar")
 	private String getGravatar() {
 		if (this.email != null) {
-			String imageUrl = "https://www.gravatar.com/avatar/" + MD5Util.md5Hex(this.email);
-			return imageUrl;
+			return "https://www.gravatar.com/avatar/" + MD5Util.md5Hex(this.email);
 		} else {
 			return null;
 		}
