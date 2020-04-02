@@ -26,3 +26,7 @@ src/main/resources/js/client-side/build
 .sts4-cache
 /store.*
 /node_modules
+
+# Shio Stock
+/shio-stock/
+/src/main/resources/ui/public/stock/

@@ -80,6 +80,56 @@ task minifyAllJs(dependsOn: ':combineAllJs', type: com.eriwen.gradle.js.tasks.Mi
     }
 }
 
+def stockGitDir = "$projectDir/shio-stock"
+def stockDir = "$projectDir/src/main/resources/ui/public/stock/"
+
+task deleteGitStock(type: Delete) {
+    delete "$stockGitDir"
+}
+
+task cloneStock(type:Exec) {
+	dependsOn "deleteGitStock"	
+	workingDir "$projectDir"
+	inputs.dir "$projectDir"
+
+	group = BasePlugin.BUILD_GROUP
+	commandLine "git", "clone", "https://github.com/ShioCMS/shio-stock.git" 
+}
+
+task deleteStockDir(type: Delete) {
+	dependsOn "installStock"
+    delete "$stockDir"
+}
+
+task buildStock(type:Exec) {
+	dependsOn "deleteStockDir"
+	workingDir "$stockGitDir"
+	inputs.dir "$stockGitDir"
+	
+	group = BasePlugin.BUILD_GROUP
+	
+	project.file('/src/main/resources/ui/public/stock/').mkdirs()
+	
+	if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
+
+		commandLine "ng.cmd", "build", "--outputPath", "$stockDir", "--base-href", "/stock/"
+	} else {
+		commandLine "ng", "build", "--outputPath", "$stockDir", "--base-href", "/stock/"
+	}
+}
+ 
+task installStock(type:Exec) {
+	dependsOn "cloneStock"
+	workingDir "$stockGitDir"
+	inputs.dir "$stockGitDir"
+	group = BasePlugin.BUILD_GROUP
+	
+	if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
+		commandLine "npm.cmd", "install"
+	} else {
+		commandLine "npm", "install"
+	}
+}
 task stage(dependsOn: ['build', 'clean'])
 
 compileJava.dependsOn(minifyAllJs)
