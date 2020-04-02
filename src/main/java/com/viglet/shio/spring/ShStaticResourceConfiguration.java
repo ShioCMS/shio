@@ -68,6 +68,7 @@ public class ShStaticResourceConfiguration implements WebMvcConfigurer {
 		registry.addViewController("/welcome").setViewName("forward:/welcome/index.html");
 		registry.addViewController("/preview").setViewName("forward:/preview/index.html");
 		registry.addViewController("/stock").setViewName("forward:/stock/index.html");
+		registry.addViewController("/lms").setViewName("forward:/lms/index.html");
 	}
 	
 	@Override

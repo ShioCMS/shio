@@ -1,5 +1,5 @@
 buildscript {
-    ext { springBootVersion = '2.2.5.RELEASE'
+    ext { springBootVersion = '2.2.6.RELEASE'
 	      hibernateVersion = '5.11.5.Final'
 		  httpClientVersion = '4.5.11'
 		  swaggerVersion = '2.9.2'
@@ -80,7 +80,59 @@ task minifyAllJs(dependsOn: ':combineAllJs', type: com.eriwen.gradle.js.tasks.Mi
         warningLevel = 'QUIET'
     }
 }
+// Shio LMS
+def lmsGitDir = "$projectDir/shio-lms"
+def lmsDir = "$projectDir/src/main/resources/ui/public/lms/"
 
+task deleteGitLMS(type: Delete) {
+    delete "$lmsGitDir"
+}
+
+task cloneLMS(type:Exec) {
+	dependsOn "deleteGitLMS"	
+	workingDir "$projectDir"
+	inputs.dir "$projectDir"
+
+	group = BasePlugin.BUILD_GROUP
+	commandLine "git", "clone", "https://github.com/ShioCMS/shio-lms.git" 
+}
+ 
+task installLMS(type:Exec) {
+	dependsOn "cloneLMS"
+	workingDir "$lmsGitDir"
+	inputs.dir "$lmsGitDir"
+	group = BasePlugin.BUILD_GROUP
+	
+	if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
+		commandLine "npm.cmd", "install"
+	} else {
+		commandLine "npm", "install"
+	}
+}
+
+task deleteLMSDir(type: Delete) {
+	dependsOn "installLMS"
+    delete "$lmsDir"
+}
+
+task buildLMS(type:Exec) {
+	dependsOn "deleteLMSDir"
+	workingDir "$lmsGitDir"
+	inputs.dir "$lmsGitDir"
+	
+	group = BasePlugin.BUILD_GROUP
+	
+	project.file('/src/main/resources/ui/public/lms/').mkdirs()
+	
+	if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
+
+		commandLine "ng.cmd", "build", "--outputPath", "$lmsDir", "--base-href", "/lms/"
+	} else {
+		commandLine "ng", "build", "--outputPath", "$lmsDir", "--base-href", "/lms/"
+	}
+}
+
+// Shio Stock
 def stockGitDir = "$projectDir/shio-stock"
 def stockDir = "$projectDir/src/main/resources/ui/public/stock/"
 
@@ -164,7 +216,7 @@ dependencies {
 	
     
   	// Spring
-  	compile group: 'org.springframework', name: 'spring-test', version: '5.2.4.RELEASE'
+  	compile group: 'org.springframework', name: 'spring-test', version: '5.2.5.RELEASE'
   	    
   	// Jackson
     compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.10.3'
