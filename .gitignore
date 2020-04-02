@@ -28,9 +28,11 @@ src/main/resources/js/client-side/build
 /node_modules
 
 # Shio LMS
-/shio-lms/
+/shio-lms.zip
+/shio-lms-master/
 /src/main/resources/ui/public/lms/
 
 # Shio Stock
-/shio-stock/
+/shio-stock.zip
+/shio-stock-master/
 /src/main/resources/ui/public/stock/

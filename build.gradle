@@ -15,6 +15,7 @@ buildscript {
 plugins {
   id "com.eriwen.gradle.js" version "2.14.1"
   id "com.gorylenko.gradle-git-properties" version "2.2.1"
+  id 'de.undercouch.download' version '4.0.4'
 }
 
 apply plugin: 'java'
@@ -81,26 +82,28 @@ task minifyAllJs(dependsOn: ':combineAllJs', type: com.eriwen.gradle.js.tasks.Mi
     }
 }
 // Shio LMS
-def lmsGitDir = "$projectDir/shio-lms"
+def lmsZipDir = "$projectDir/shio-lms-master"
+def lmsZipFile = "$projectDir/shio-lms.zip"
 def lmsDir = "$projectDir/src/main/resources/ui/public/lms/"
 
 task deleteGitLMS(type: Delete) {
-    delete "$lmsGitDir"
+    delete "$lmsZipDir", "$lmsZipFile"
 }
 
-task cloneLMS(type:Exec) {
-	dependsOn "deleteGitLMS"	
-	workingDir "$projectDir"
-	inputs.dir "$projectDir"
-
-	group = BasePlugin.BUILD_GROUP
-	commandLine "git", "clone", "https://github.com/ShioCMS/shio-lms.git" 
+task downloadLMSZipFile(dependsOn: deleteGitLMS, type: Download) {
+    src 'https://github.com/ShioCMS/shio-lms/archive/master.zip'
+    dest lmsZipFile
 }
- 
+
+task downloadAndUnzipLMSZipFile(dependsOn: downloadLMSZipFile, type: Copy) {
+    from zipTree(downloadLMSZipFile.dest)
+    into projectDir
+}
+
 task installLMS(type:Exec) {
-	dependsOn "cloneLMS"
-	workingDir "$lmsGitDir"
-	inputs.dir "$lmsGitDir"
+	dependsOn "downloadAndUnzipLMSZipFile"
+	workingDir "$lmsZipDir"
+	inputs.dir "$lmsZipDir"
 	group = BasePlugin.BUILD_GROUP
 	
 	if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
@@ -114,18 +117,21 @@ task deleteLMSDir(type: Delete) {
 	dependsOn "installLMS"
     delete "$lmsDir"
 }
+task createLMSDir {
+	dependsOn "deleteLMSDir"
+	doLast {
+		mkdir "$lmsDir"
+	}
+}
 
 task buildLMS(type:Exec) {
-	dependsOn "deleteLMSDir"
-	workingDir "$lmsGitDir"
-	inputs.dir "$lmsGitDir"
+	dependsOn "createLMSDir"
+	workingDir "$lmsZipDir"
+	inputs.dir "$lmsZipDir"
 	
 	group = BasePlugin.BUILD_GROUP
 	
-	project.file('/src/main/resources/ui/public/lms/').mkdirs()
-	
 	if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
-
 		commandLine "ng.cmd", "build", "--outputPath", "$lmsDir", "--base-href", "/lms/"
 	} else {
 		commandLine "ng", "build", "--outputPath", "$lmsDir", "--base-href", "/lms/"
@@ -133,48 +139,28 @@ task buildLMS(type:Exec) {
 }
 
 // Shio Stock
-def stockGitDir = "$projectDir/shio-stock"
+def stockZipDir = "$projectDir/shio-stock-master"
+def stockZipFile = "$projectDir/shio-stock.zip"
 def stockDir = "$projectDir/src/main/resources/ui/public/stock/"
 
 task deleteGitStock(type: Delete) {
-    delete "$stockGitDir"
+    delete "$stockZipDir", "$stockZipFile"
 }
 
-task cloneStock(type:Exec) {
-	dependsOn "deleteGitStock"	
-	workingDir "$projectDir"
-	inputs.dir "$projectDir"
-
-	group = BasePlugin.BUILD_GROUP
-	commandLine "git", "clone", "https://github.com/ShioCMS/shio-stock.git" 
+task downloadStockZipFile(dependsOn: deleteGitStock, type: Download) {
+    src 'https://github.com/ShioCMS/shio-stock/archive/master.zip'
+    dest stockZipFile
 }
 
-task deleteStockDir(type: Delete) {
-	dependsOn "installStock"
-    delete "$stockDir"
+task downloadAndUnzipStockZipFile(dependsOn: downloadStockZipFile, type: Copy) {
+    from zipTree(downloadStockZipFile.dest)
+    into projectDir
 }
 
-task buildStock(type:Exec) {
-	dependsOn "deleteStockDir"
-	workingDir "$stockGitDir"
-	inputs.dir "$stockGitDir"
-	
-	group = BasePlugin.BUILD_GROUP
-	
-	project.file('/src/main/resources/ui/public/stock/').mkdirs()
-	
-	if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
-
-		commandLine "ng.cmd", "build", "--outputPath", "$stockDir", "--base-href", "/stock/"
-	} else {
-		commandLine "ng", "build", "--outputPath", "$stockDir", "--base-href", "/stock/"
-	}
-}
- 
 task installStock(type:Exec) {
-	dependsOn "cloneStock"
-	workingDir "$stockGitDir"
-	inputs.dir "$stockGitDir"
+	dependsOn "downloadAndUnzipStockZipFile"
+	workingDir "$stockZipDir"
+	inputs.dir "$stockZipDir"
 	group = BasePlugin.BUILD_GROUP
 	
 	if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
@@ -183,9 +169,39 @@ task installStock(type:Exec) {
 		commandLine "npm", "install"
 	}
 }
+
+task deleteStockDir(type: Delete) {
+	dependsOn "installStock"
+    delete "$stockDir"
+}
+
+task createStockDir {
+	dependsOn "deleteStockDir"
+	doLast {
+		mkdir "$stockDir"
+	}
+}
+
+task buildStock(type:Exec) {
+	dependsOn "createStockDir"
+	workingDir "$stockZipDir"
+	inputs.dir "$stockZipDir"
+	
+	group = BasePlugin.BUILD_GROUP
+	
+	if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
+		commandLine "ng.cmd", "build", "--outputPath", "$stockDir", "--base-href", "/stock/"
+	} else {
+		commandLine "ng", "build", "--outputPath", "$stockDir", "--base-href", "/stock/"
+	}
+}
+
+
 task stage(dependsOn: ['build', 'clean'])
 
-compileJava.dependsOn(minifyAllJs)
+compileJava.dependsOn(['minifyAllJs'])
+
+build.dependsOn(['buildLMS', 'buildStock'])
 
 build.mustRunAfter clean
 
