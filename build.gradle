@@ -33,6 +33,7 @@ gitProperties {
 }
 
 bootJar {
+	launchScript() // executable jar
     manifest {
     	attributes(    
         'Implementation-Version': "${-> project.jar.version + '-' + project.ext.gitProps['git.commit.id.abbrev']}"
