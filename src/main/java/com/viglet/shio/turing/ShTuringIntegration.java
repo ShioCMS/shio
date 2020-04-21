@@ -62,16 +62,16 @@ import com.viglet.shio.utils.ShObjectUtils;
 import com.viglet.shio.utils.ShPostTypeUtils;
 import com.viglet.shio.utils.ShUtils;
 import com.viglet.shio.widget.ShSystemWidget;
-import com.viglet.turing.api.sn.job.TurSNJobAction;
-import com.viglet.turing.api.sn.job.TurSNJobItem;
-import com.viglet.turing.api.sn.job.TurSNJobItems;
+import com.viglet.turing.client.sn.job.TurSNJobAction;
+import com.viglet.turing.client.sn.job.TurSNJobItem;
+import com.viglet.turing.client.sn.job.TurSNJobItems;
 
 /**
  * @author Alexandre Oliveira
  */
 @Component
 public class ShTuringIntegration {
-	static final Logger logger = LogManager.getLogger(ShTuringIntegration.class.getName());
+	static final Logger logger = LogManager.getLogger(ShTuringIntegration.class);
 	private String encoding = "UTF-8";
 	private String turingServer = "http://localhost:2700";
 	private ShSite shSite = null;

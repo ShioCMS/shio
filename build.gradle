@@ -5,7 +5,8 @@ buildscript {
 		  swaggerVersion = '2.9.2'
 		 }
 		repositories {
-			mavenCentral()	
+			mavenCentral()
+			maven { url 'https://jitpack.io' }
 		}
     dependencies { classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     			   classpath files("lib/gradle-js-plugin-2.14.2-SNAPSHOT.jar")     			   
@@ -44,6 +45,7 @@ bootJar {
 
 repositories {
 	mavenCentral()
+	maven { url 'https://jitpack.io' }
 }
 
 sourceCompatibility = 1.8
@@ -214,9 +216,7 @@ javadoc {
 dependencies {
     
     // Spring Boot
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: "${springBootVersion}"
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version:"${springBootVersion}"
-    
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: "${springBootVersion}"    
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: "${springBootVersion}"
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-parent', version:"${springBootVersion}"
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version:"${springBootVersion}"
@@ -226,6 +226,9 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-cache', version:"${springBootVersion}"
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version:"${springBootVersion}"
     
+	// Viglet Turing
+	implementation 'com.github.openturing:turing-java-sdk:0.3.3-SNAPSHOT'
+
 	compile group: 'org.apache.axis', name: 'axis', version: '1.4'
 	compile group: 'org.apache.axis', name: 'axis-jaxrpc', version: '1.4'
 	compile group: 'commons-discovery', name: 'commons-discovery', version: '0.4'
