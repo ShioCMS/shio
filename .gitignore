@@ -6,7 +6,7 @@
 # Package Files #
 *.war
 *.ear
-
+/.classpath
 /.vscode
 /.settings
 /.project

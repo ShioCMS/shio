@@ -30,6 +30,17 @@ jar {
     archiveVersion =  '0.3.7'
 }
 
+eclipse {
+    classpath {
+        file {
+            whenMerged {
+                def src = entries.find { it.path == 'src/main/resources' }
+                src.excludes = ['**']
+            }
+        }
+    }
+}
+
 gitProperties {
     extProperty = 'gitProps' // git properties will be put in a map at project.ext.gitProps
 }
