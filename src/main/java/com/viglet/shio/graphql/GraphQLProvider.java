@@ -1,154 +1,173 @@
+/*
+ * Copyright (C) 2016-2020 the original author or authors. 
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.viglet.shio.graphql;
 
 import com.google.common.base.CaseFormat;
-import com.google.common.collect.ImmutableMap;
+import com.viglet.shio.persistence.model.object.ShObject;
+import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
 import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
+import com.viglet.shio.persistence.repository.object.ShObjectRepository;
+import com.viglet.shio.persistence.repository.post.ShPostRepository;
 import com.viglet.shio.persistence.repository.post.type.ShPostTypeRepository;
+import com.viglet.shio.utils.ShPostUtils;
 
 import graphql.GraphQL;
 import graphql.schema.DataFetcher;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLObjectType.Builder;
 import graphql.schema.GraphQLSchema;
-import graphql.schema.idl.RuntimeWiring;
-import graphql.schema.idl.SchemaGenerator;
-import graphql.schema.idl.SchemaParser;
-import graphql.schema.idl.TypeDefinitionRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import static graphql.Scalars.GraphQLString;
-import static graphql.Scalars.GraphQLID;
-import static graphql.Scalars.GraphQLInt;
 import static graphql.schema.GraphQLArgument.newArgument;
 import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
 import static graphql.schema.GraphQLNonNull.nonNull;
 import static graphql.schema.GraphQLObjectType.newObject;
+import static graphql.schema.GraphQLList.list;
+import static graphql.schema.GraphQLCodeRegistry.newCodeRegistry;
+import static graphql.schema.FieldCoordinates.coordinates;
 import static graphql.schema.GraphqlTypeComparatorRegistry.BY_NAME_REGISTRY;
-import static graphql.schema.idl.TypeRuntimeWiring.newTypeWiring;
 
+
+/**
+ * GraphQL Provider.
+ *
+ * @author Alexandre Oliveira
+ * @since 0.3.7
+ */
 @Component
 public class GraphQLProvider {
-	@Autowired
-	private GraphQLDataFetchers graphQLDataFetchers;
 
 	@Autowired
 	private ShPostTypeRepository shPostTypeRepository;
+	
+	@Autowired
+	private ShObjectRepository shObjectRepository;
+	
+	@Autowired
+	private ShPostRepository shPostRepository;
+	
+	@Autowired
+	private ShPostUtils shPostUtils;
 
+	private final static String QUERY_TYPE = "QueryType";
+	
+	private final static String ID = "id";
+	
 	private GraphQL graphQL;
 
 	private GraphQLSchema loadSchema() {
-		List<Map<String, String>> users = Arrays.asList(
-				ImmutableMap.of("id", "sid-1", "name", "Siddharatha dhumale 1", "age", "1", "addressId", "address-1"),
-				ImmutableMap.of("id", "sid-1", "name", "Siddharatha dhumale 2", "age", "2", "addressId", "address-2"),
-				ImmutableMap.of("id", "sid-3", "name", "Siddharatha dhumale 3", "age", "3", "addressId", "address-3"));
-
-		List<Map<String, String>> address = Arrays.asList(
-				ImmutableMap.of("id", "address-1", "houseName", "Siddharatha Dhumale House Name 1", "country",
-						"Australia"),
-				ImmutableMap.of("id", "address-2", "houseName", "Siddharatha Dhumale House Name 2", "country", "UK"),
-				ImmutableMap.of("id", "address-3", "houseName", "Siddharatha Dhumale House Name 3", "country",
-						"India"));
-
-		GraphQLObjectType userType = newObject().name("User")
-				.description("A humanoid creature in the Star Wars universe.")
-				.field(newFieldDefinition().name("id").description("The id of the human.").type(nonNull(GraphQLID)))
-				.field(newFieldDefinition().name("name").description("The name of the human.").type(GraphQLString))
-				.field(newFieldDefinition().name("age")
-						.description("The friends of the human, or an empty list if they have none.").type(GraphQLInt))
-				.field(newFieldDefinition().name("address").description("Which movies they appear in.")
-						.type(GraphQLString))
-				.comparatorRegistry(BY_NAME_REGISTRY).build();
-
-		GraphQLObjectType addressType = newObject().name("Address")
-				.description("A humanoid creature in the Star Wars universe.")
-				.field(newFieldDefinition().name("id").description("The id of the human.").type(nonNull(GraphQLID)))
-				.field(newFieldDefinition().name("houseName").description("The name of the human.").type(GraphQLString))
-				.field(newFieldDefinition().name("country")
-						.description("The friends of the human, or an empty list if they have none.")
-						.type(GraphQLString))
-				.comparatorRegistry(BY_NAME_REGISTRY).build();
-
-		Builder queryTypeBuilder = newObject().name("QueryType")
-				.field(newFieldDefinition().name("userById").type(userType)
-						.argument(newArgument().name("id").description("id of the human").type(nonNull(GraphQLString)))
-						.dataFetcher(getUserByIdDataFetcher(users)));
-
+		Builder queryTypeBuilder = newObject().name(QUERY_TYPE);
+		graphql.schema.GraphQLCodeRegistry.Builder codeRegistryBuilder = newCodeRegistry();
 		for (ShPostType shPostType : shPostTypeRepository.findAll()) {
-			
-			String postTypeName = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL,
-					shPostType.getName().toLowerCase().replaceAll("-", "_"));
+
+			String postTypeName = getPostTypeName(shPostType);
+
 			Builder builder = newObject().name(postTypeName).description(shPostType.getDescription());
 
-			for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs()) {
-				String postTypeAttrName = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL,
-						shPostTypeAttr.getName().toLowerCase().replaceAll("-", "_"));
-				builder.field(newFieldDefinition().name(postTypeAttrName).description(shPostTypeAttr.getDescription())
-						.type(GraphQLString));
-			}
-
 			GraphQLObjectType graphQLObjectType = builder.comparatorRegistry(BY_NAME_REGISTRY).build();
-			queryTypeBuilder.field(newFieldDefinition().name(postTypeName + "ById").type(graphQLObjectType)
-					.argument(newArgument().name("id").description("id").type(nonNull(GraphQLString)))
-					.dataFetcher(getPostTypeByIdDataFetcher(users)));
+
+			this.postTypeFields(shPostType, builder);
+
+			this.allPosts(queryTypeBuilder, codeRegistryBuilder, shPostType, graphQLObjectType);
+
+			this.postById(queryTypeBuilder, codeRegistryBuilder, shPostType, graphQLObjectType);
+
 		}
 
 		GraphQLObjectType queryType = queryTypeBuilder.comparatorRegistry(BY_NAME_REGISTRY).build();
 
-		return GraphQLSchema.newSchema().query(queryType).build();
+		return GraphQLSchema.newSchema().query(queryType).codeRegistry(codeRegistryBuilder.build()).build();
 
 	}
 
-	DataFetcher getUserByIdDataFetcher(List<Map<String, String>> users) {
+	private String getPostTypeName(ShPostType shPostType) {
+		String postTypeName = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL,
+				shPostType.getName().toLowerCase().replaceAll("-", "_"));
+		return postTypeName;
+	}
+
+	private void postById(Builder queryTypeBuilder, graphql.schema.GraphQLCodeRegistry.Builder codeRegistryBuilder,
+			ShPostType shPostType, GraphQLObjectType graphQLObjectType) {
+
+		String fieldName = String.format("%sById", getPostTypeName(shPostType));
+
+		queryTypeBuilder.field(newFieldDefinition().name(fieldName).type(graphQLObjectType)
+				.argument(newArgument().name(ID).description(ID).type(nonNull(GraphQLString))));
+
+		codeRegistryBuilder.dataFetcher(coordinates(QUERY_TYPE, fieldName), getPostTypeByIdDataFetcher(shPostType));
+	}
+
+	private void allPosts(Builder queryTypeBuilder, graphql.schema.GraphQLCodeRegistry.Builder codeRegistryBuilder,
+			ShPostType shPostType, GraphQLObjectType graphQLObjectType) {
+
+		String fieldName = String.format("%sAll", getPostTypeName(shPostType));
+
+		queryTypeBuilder.field(newFieldDefinition().name(fieldName).type(list(graphQLObjectType)));
+
+		codeRegistryBuilder.dataFetcher(coordinates(QUERY_TYPE, fieldName), getPostTypeAllDataFetcher(shPostType));
+	}
+
+	private void postTypeFields(ShPostType shPostType, Builder builder) {
+		builder.field(newFieldDefinition().name(ID).description("Id of Object").type(GraphQLString));
+
+		for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs()) {
+			String postTypeAttrName = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL,
+					shPostTypeAttr.getName().toLowerCase().replaceAll("-", "_"));
+			builder.field(newFieldDefinition().name(postTypeAttrName).description(shPostTypeAttr.getDescription())
+					.type(GraphQLString));
+		}
+	}
+
+	private DataFetcher<List<Map<String, String>>> getPostTypeAllDataFetcher(ShPostType shPostType) {
 		return dataFetchingEnvironment -> {
-			String userId = dataFetchingEnvironment.getArgument("id");
-			return users.stream().filter(user -> user.get("id").equals(userId)).findFirst().orElse(null);
+			List<ShPost> shPosts = shPostRepository.findByShPostType(shPostType);
+			List<Map<String, String>> posts = new ArrayList<>();
+			for (ShPost shPost : shPosts) {
+				Map<String, String> postAttrs = shPostUtils.postAttrGraphQL(shPost);
+				posts.add(postAttrs);
+			}
+			return posts;
 		};
 	}
 
-	DataFetcher getPostTypeByIdDataFetcher(List<Map<String, String>> users) {
+	private DataFetcher<Map<String, String>> getPostTypeByIdDataFetcher(ShPostType shPostType) {
 		return dataFetchingEnvironment -> {
-			String userId = dataFetchingEnvironment.getArgument("id");
-			return users.stream().filter(user -> user.get("id").equals(userId)).findFirst().orElse(null);
-		};
-	}
+			String objectId = dataFetchingEnvironment.getArgument(ID);
+			ShObject shObject = shObjectRepository.findById(objectId).orElse(null);
+			Map<String, String> postAttrs = shPostUtils.postAttrGraphQL((ShPost) shObject);
 
-	DataFetcher getUserDataFetcher(List<Map<String, String>> address) {
-		return dataFetchingEnvironment -> {
-			Map<String, String> user = dataFetchingEnvironment.getSource();
-			String addressId = user.get("addressId");
-			return address.stream().filter(author -> author.get("id").equals(addressId)).findFirst().orElse(null);
+			return postAttrs;
 		};
 	}
 
 	@PostConstruct
 	public void init() throws IOException {
-		// URL url = Resources.getResource("schema.graphqls");
-		// String sdl = Resources.toString(url, Charsets.UTF_8);
-		// GraphQLSchema graphQLSchema = buildSchema(sdl);
 		GraphQLSchema graphQLSchema = this.loadSchema();
 		this.graphQL = GraphQL.newGraphQL(graphQLSchema).build();
-	}
-
-	private GraphQLSchema buildSchema(String sdl) {
-		TypeDefinitionRegistry typeRegistry = new SchemaParser().parse(sdl);
-		RuntimeWiring runtimeWiring = buildWiring();
-		SchemaGenerator schemaGenerator = new SchemaGenerator();
-		return schemaGenerator.makeExecutableSchema(typeRegistry, runtimeWiring);
-	}
-
-	private RuntimeWiring buildWiring() {
-		return RuntimeWiring.newRuntimeWiring()
-				.type(newTypeWiring("Query").dataFetcher("userById", graphQLDataFetchers.getUserByIdDataFetcher()))
-				.type(newTypeWiring("User").dataFetcher("address", graphQLDataFetchers.getUserDataFetcher())).build();
 	}
 
 	@Bean

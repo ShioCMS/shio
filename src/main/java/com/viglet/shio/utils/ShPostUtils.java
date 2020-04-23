@@ -41,6 +41,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.google.common.base.CaseFormat;
 import com.viglet.shio.api.ShJsonView;
 import com.viglet.shio.bean.ShPostTinyBean;
 import com.viglet.shio.object.ShObjectType;
@@ -732,7 +733,7 @@ public class ShPostUtils {
 	 */
 	private Map<String, ShPostAttr> postAttrMap(ShPost shPost) {
 
-		Map<String, ShPostAttr> shPostAttrMap = new HashMap<String, ShPostAttr>();
+		Map<String, ShPostAttr> shPostAttrMap = new HashMap<>();
 		if (shPost != null) {
 			for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
 				shPostAttrMap.put(shPostAttr.getShPostTypeAttr().getId(), shPostAttr);
@@ -744,7 +745,7 @@ public class ShPostUtils {
 
 	private Map<String, ShPostAttr> postAttrMap(ShRelatorItem shRelatorItem) {
 
-		Map<String, ShPostAttr> shPostAttrMap = new HashMap<String, ShPostAttr>();
+		Map<String, ShPostAttr> shPostAttrMap = new HashMap<>();
 		if (shRelatorItem.getShChildrenPostAttrs() != null) {
 			for (ShPostAttr shPostAttr : shRelatorItem.getShChildrenPostAttrs()) {
 				shPostAttrMap.put(shPostAttr.getShPostTypeAttr().getId(), shPostAttr);
@@ -754,6 +755,21 @@ public class ShPostUtils {
 		return shPostAttrMap;
 	}
 
+	public Map<String, String> postAttrGraphQL(ShPost shPost) {
+
+		Map<String, String> shPostAttrMap = new HashMap<>();
+		if (shPost != null) {
+			shPostAttrMap.put("id", shPost.getId());
+			for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
+				String postTypeAttrName = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL,
+						shPostAttr.getShPostTypeAttr().getName().toLowerCase().replaceAll("-", "_"));
+				shPostAttrMap.put(postTypeAttrName, shPostAttr.getStrValue());
+			}
+
+		}
+		return shPostAttrMap;
+	}
+	
 	/**
 	 * Add new PostAttrs that not contain into Post
 	 * 
