@@ -51,7 +51,6 @@ import static graphql.schema.GraphQLCodeRegistry.newCodeRegistry;
 import static graphql.schema.FieldCoordinates.coordinates;
 import static graphql.schema.GraphqlTypeComparatorRegistry.BY_NAME_REGISTRY;
 
-
 /**
  * GraphQL Provider.
  *
@@ -63,20 +62,20 @@ public class GraphQLProvider {
 
 	@Autowired
 	private ShPostTypeRepository shPostTypeRepository;
-	
+
 	@Autowired
 	private ShObjectRepository shObjectRepository;
-	
+
 	@Autowired
 	private ShPostRepository shPostRepository;
-	
+
 	@Autowired
 	private ShPostUtils shPostUtils;
 
 	private final static String QUERY_TYPE = "QueryType";
-	
+
 	private final static String ID = "id";
-	
+
 	private GraphQL graphQL;
 
 	private GraphQLSchema loadSchema() {
@@ -88,9 +87,7 @@ public class GraphQLProvider {
 
 			Builder builder = newObject().name(postTypeName).description(shPostType.getDescription());
 
-			GraphQLObjectType graphQLObjectType = builder.comparatorRegistry(BY_NAME_REGISTRY).build();
-
-			this.postTypeFields(shPostType, builder);
+			GraphQLObjectType graphQLObjectType = this.postTypeFields(shPostType, builder);
 
 			this.allPosts(queryTypeBuilder, codeRegistryBuilder, shPostType, graphQLObjectType);
 
@@ -131,7 +128,7 @@ public class GraphQLProvider {
 		codeRegistryBuilder.dataFetcher(coordinates(QUERY_TYPE, fieldName), getPostTypeAllDataFetcher(shPostType));
 	}
 
-	private void postTypeFields(ShPostType shPostType, Builder builder) {
+	private GraphQLObjectType postTypeFields(ShPostType shPostType, Builder builder) {
 		builder.field(newFieldDefinition().name(ID).description("Id of Object").type(GraphQLString));
 
 		for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs()) {
@@ -140,6 +137,8 @@ public class GraphQLProvider {
 			builder.field(newFieldDefinition().name(postTypeAttrName).description(shPostTypeAttr.getDescription())
 					.type(GraphQLString));
 		}
+
+		return builder.comparatorRegistry(BY_NAME_REGISTRY).build();
 	}
 
 	private DataFetcher<List<Map<String, String>>> getPostTypeAllDataFetcher(ShPostType shPostType) {
