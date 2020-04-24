@@ -27,7 +27,10 @@ import com.viglet.shio.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shio.utils.ShPostUtils;
 
 import graphql.GraphQL;
+import graphql.scalars.ExtendedScalars;
 import graphql.schema.DataFetcher;
+import graphql.schema.GraphQLEnumType;
+import graphql.schema.GraphQLInputObjectType;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLObjectType.Builder;
 import graphql.schema.GraphQLSchema;
@@ -42,10 +45,14 @@ import java.util.List;
 import java.util.Map;
 
 import static graphql.Scalars.GraphQLString;
+import static graphql.Scalars.GraphQLID;
+import static graphql.schema.GraphQLEnumType.newEnum;
 import static graphql.schema.GraphQLArgument.newArgument;
 import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
 import static graphql.schema.GraphQLNonNull.nonNull;
 import static graphql.schema.GraphQLObjectType.newObject;
+import static graphql.schema.GraphQLInputObjectField.newInputObjectField;
+import static graphql.schema.GraphQLInputObjectType.newInputObject;
 import static graphql.schema.GraphQLList.list;
 import static graphql.schema.GraphQLCodeRegistry.newCodeRegistry;
 import static graphql.schema.FieldCoordinates.coordinates;
@@ -72,11 +79,59 @@ public class GraphQLProvider {
 	@Autowired
 	private ShPostUtils shPostUtils;
 
-	private final static String QUERY_TYPE = "QueryType";
+	private final static String QUERY_TYPE = "Query";
 
 	private final static String ID = "id";
 
 	private GraphQL graphQL;
+
+	public static GraphQLEnumType stageEnum = newEnum().name("Stage").description("Stage system enumeration")
+			.value("PUBLISHED", 10, "System Published Stage.").value("DRAFT", 20, "System Draft Stage")
+			.comparatorRegistry(BY_NAME_REGISTRY).build();
+	
+	public static GraphQLEnumType localeEnum = newEnum().name("Locale").description("Locale system enumeration")
+			.value("en", "EN", "System Locale.").comparatorRegistry(BY_NAME_REGISTRY).build();
+	
+	public static GraphQLInputObjectType postTypeWhereInput =  newInputObject()
+			.name("PostTypeWhereInput")
+			.description("Locale system enumeration")
+			.field(newInputObjectField().name("_search").description("Contains search across all appropriate fields.")
+					.type(GraphQLString))
+			.field(newInputObjectField().name("AND").description("Logical AND on all given filters.")
+					.type(GraphQLString))
+			.field(newInputObjectField().name("OR").description("Logical OR on all given filters.")
+					.type(GraphQLString))
+			.field(newInputObjectField().name("NOT").description("Logical NOT on all given filters combined by AND.")
+					.type(GraphQLString))
+			.field(newInputObjectField().name("id").description("All values that are equal to given value.")
+					.type(GraphQLID))
+			.field(newInputObjectField().name("id_not").description("All values that are not equal to given value.")
+					.type(GraphQLID))
+			.field(newInputObjectField().name("id_in").description("All values that are contained in given list.")
+					.type(list(nonNull(GraphQLID))))
+			.field(newInputObjectField().name("id_not_in").description("All values that are not contained in given list.")
+					.type(list(nonNull(GraphQLID))))
+			.field(newInputObjectField().name("id_contains").description("All values containing the given string.")
+					.type(GraphQLID))
+			.field(newInputObjectField().name("id_not_contains").description("All values not containing the given string.")
+					.type(GraphQLID))
+			.field(newInputObjectField().name("id_starts_with").description("All values starting with the given string.")
+					.type(GraphQLID))
+			.field(newInputObjectField().name("id_not_starts_with").description("All values not starting with the given string.")
+					.type(GraphQLID))
+			.field(newInputObjectField().name("id_ends_with").description("All values ending with the given string.")
+					.type(GraphQLID))
+			.field(newInputObjectField().name("id_not_ends_with").description("All values not ending with the given string")
+					.type(GraphQLID))
+			.field(newInputObjectField().name("createdAt").description("All values that are equal to given value.")
+					.type(ExtendedScalars.DateTime))
+			.field(newInputObjectField().name("createdAt_in").description("All values that are contained in given list.")
+					.type(list(nonNull(ExtendedScalars.DateTime))))
+			.field(newInputObjectField().name("createdAt_not_in").description("All values that are not contained in given list.")
+					.type(list(nonNull(ExtendedScalars.DateTime))))
+			.field(newInputObjectField().name("createdAt_lt").description("All values less than the given value.")
+					.type(ExtendedScalars.DateTime))
+			.comparatorRegistry(BY_NAME_REGISTRY).build();
 
 	private GraphQLSchema loadSchema() {
 		Builder queryTypeBuilder = newObject().name(QUERY_TYPE);
@@ -123,7 +178,17 @@ public class GraphQLProvider {
 
 		String fieldName = String.format("%sAll", getPostTypeName(shPostType));
 
-		queryTypeBuilder.field(newFieldDefinition().name(fieldName).type(list(graphQLObjectType)));
+		queryTypeBuilder
+				.field(newFieldDefinition().name(fieldName).type(list(graphQLObjectType))
+				.argument(newArgument().name("stage")
+						.description("A required enumeration indicating the current content Stage (defaults to DRAFT)")
+						.type(nonNull(stageEnum)).defaultValue(20))
+				.argument(newArgument().name("locales")
+						.description("A required array of one or more locales, defaults to the project's default.")
+						.type(nonNull(list(localeEnum))).defaultValue("EN"))
+				.argument(newArgument().name("where")
+						.description("An optional object type to filter the content based on a nested set of criteria.")
+						.type(postTypeWhereInput)));
 
 		codeRegistryBuilder.dataFetcher(coordinates(QUERY_TYPE, fieldName), getPostTypeAllDataFetcher(shPostType));
 	}
