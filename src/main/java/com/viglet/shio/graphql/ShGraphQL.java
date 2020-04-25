@@ -82,6 +82,24 @@ public class ShGraphQL {
 	private final static String QUERY_TYPE = "Query";
 
 	private final static String ID = "id";
+	private final static String SEARCH = "_search";
+	private final static String AND = "AND";
+	private final static String OR = "OR";
+	private final static String NOT = "NOT";
+	private final static String ID_NOT = "id_not";
+	private final static String ID_IN = "id_in";
+	private final static String ID_NOT_IN = "id_not_in";
+	private final static String ID_CONTAINS = "id_contains";
+	private final static String ID_NOT_CONTAINS = "id_not_contains";
+	private final static String ID_STARTS_WITH = "id_starts_with";
+	private final static String ID_NOT_STARTS_WITH = "id_not_starts_with";
+	private final static String ID_ENDS_WITH = "id_ends_with";
+	private final static String ID_NOT_ENDS_WITH = "id_not_ends_with";
+	private final static String CREATED_AT = "createdAt";
+	private final static String CREATED_AT_IN = "createdAt_in";
+	private final static String CREATED_AT_NOT_IN = "createdAt_not_in";
+	private final static String CREATED_AT_LT = "createdAt_lt";
+	
 	private final static String STAGE_ARG = "stage";
 	private final static String LOCALES_ARG = "locales";
 	private final static String WHERE_ARG = "where";
@@ -97,42 +115,42 @@ public class ShGraphQL {
 
 	public static GraphQLInputObjectType postTypeWhereInput = newInputObject().name("PostTypeWhereInput")
 			.description("Locale system enumeration")
-			.field(newInputObjectField().name("_search").description("Contains search across all appropriate fields.")
+			.field(newInputObjectField().name(SEARCH).description("Contains search across all appropriate fields.")
 					.type(GraphQLString))
-			.field(newInputObjectField().name("AND").description("Logical AND on all given filters.")
+			.field(newInputObjectField().name(AND).description("Logical AND on all given filters.")
 					.type(GraphQLString))
-			.field(newInputObjectField().name("OR").description("Logical OR on all given filters.").type(GraphQLString))
-			.field(newInputObjectField().name("NOT").description("Logical NOT on all given filters combined by AND.")
+			.field(newInputObjectField().name(OR).description("Logical OR on all given filters.").type(GraphQLString))
+			.field(newInputObjectField().name(NOT).description("Logical NOT on all given filters combined by AND.")
 					.type(GraphQLString))
-			.field(newInputObjectField().name("id").description("All values that are equal to given value.")
+			.field(newInputObjectField().name(ID).description("All values that are equal to given value.")
 					.type(GraphQLID))
-			.field(newInputObjectField().name("id_not").description("All values that are not equal to given value.")
+			.field(newInputObjectField().name(ID_NOT).description("All values that are not equal to given value.")
 					.type(GraphQLID))
-			.field(newInputObjectField().name("id_in").description("All values that are contained in given list.")
+			.field(newInputObjectField().name(ID_IN).description("All values that are contained in given list.")
 					.type(list(nonNull(GraphQLID))))
-			.field(newInputObjectField().name("id_not_in")
+			.field(newInputObjectField().name(ID_NOT_IN)
 					.description("All values that are not contained in given list.").type(list(nonNull(GraphQLID))))
-			.field(newInputObjectField().name("id_contains").description("All values containing the given string.")
+			.field(newInputObjectField().name(ID_CONTAINS).description("All values containing the given string.")
 					.type(GraphQLID))
-			.field(newInputObjectField().name("id_not_contains")
+			.field(newInputObjectField().name(ID_NOT_CONTAINS)
 					.description("All values not containing the given string.").type(GraphQLID))
-			.field(newInputObjectField().name("id_starts_with")
+			.field(newInputObjectField().name(ID_STARTS_WITH)
 					.description("All values starting with the given string.").type(GraphQLID))
-			.field(newInputObjectField().name("id_not_starts_with")
+			.field(newInputObjectField().name(ID_NOT_STARTS_WITH)
 					.description("All values not starting with the given string.").type(GraphQLID))
-			.field(newInputObjectField().name("id_ends_with").description("All values ending with the given string.")
+			.field(newInputObjectField().name(ID_ENDS_WITH).description("All values ending with the given string.")
 					.type(GraphQLID))
-			.field(newInputObjectField().name("id_not_ends_with")
+			.field(newInputObjectField().name(ID_NOT_ENDS_WITH)
 					.description("All values not ending with the given string").type(GraphQLID))
-			.field(newInputObjectField().name("createdAt").description("All values that are equal to given value.")
+			.field(newInputObjectField().name(CREATED_AT).description("All values that are equal to given value.")
 					.type(ExtendedScalars.DateTime))
-			.field(newInputObjectField().name("createdAt_in")
+			.field(newInputObjectField().name(CREATED_AT_IN)
 					.description("All values that are contained in given list.")
 					.type(list(nonNull(ExtendedScalars.DateTime))))
-			.field(newInputObjectField().name("createdAt_not_in")
+			.field(newInputObjectField().name(CREATED_AT_NOT_IN)
 					.description("All values that are not contained in given list.")
 					.type(list(nonNull(ExtendedScalars.DateTime))))
-			.field(newInputObjectField().name("createdAt_lt").description("All values less than the given value.")
+			.field(newInputObjectField().name(CREATED_AT_LT).description("All values less than the given value.")
 					.type(ExtendedScalars.DateTime))
 			.comparatorRegistry(BY_NAME_REGISTRY).build();
 
@@ -183,7 +201,7 @@ public class ShGraphQL {
 	}
 
 	private GraphQLObjectType postTypeFields(ShPostType shPostType, Builder builder) {
-		builder.field(newFieldDefinition().name(ID).description("Id of Object").type(GraphQLString));
+		builder.field(newFieldDefinition().name(ID).description("Object Id").type(GraphQLID));
 
 		for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs()) {
 			String postTypeAttrName = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL,
