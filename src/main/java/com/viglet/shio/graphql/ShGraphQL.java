@@ -65,7 +65,7 @@ import static graphql.schema.GraphqlTypeComparatorRegistry.BY_NAME_REGISTRY;
  * @since 0.3.7
  */
 @Component
-public class GraphQLProvider {
+public class ShGraphQL {
 
 	@Autowired
 	private ShPostTypeRepository shPostTypeRepository;
@@ -176,7 +176,7 @@ public class GraphQLProvider {
 	private void allPosts(Builder queryTypeBuilder, graphql.schema.GraphQLCodeRegistry.Builder codeRegistryBuilder,
 			ShPostType shPostType, GraphQLObjectType graphQLObjectType) {
 
-		String fieldName = String.format("%sAll", getPostTypeName(shPostType));
+		String fieldName = String.format("%s", getPostTypeName(shPostType));
 
 		queryTypeBuilder
 				.field(newFieldDefinition().name(fieldName).type(list(graphQLObjectType))
