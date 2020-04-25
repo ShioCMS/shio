@@ -82,25 +82,26 @@ public class ShGraphQL {
 	private final static String QUERY_TYPE = "Query";
 
 	private final static String ID = "id";
+	private final static String STAGE_ARG = "stage";
+	private final static String LOCALES_ARG = "locales";
+	private final static String WHERE_ARG = "where";
 
 	private GraphQL graphQL;
 
 	public static GraphQLEnumType stageEnum = newEnum().name("Stage").description("Stage system enumeration")
 			.value("PUBLISHED", 10, "System Published Stage.").value("DRAFT", 20, "System Draft Stage")
 			.comparatorRegistry(BY_NAME_REGISTRY).build();
-	
+
 	public static GraphQLEnumType localeEnum = newEnum().name("Locale").description("Locale system enumeration")
 			.value("en", "EN", "System Locale.").comparatorRegistry(BY_NAME_REGISTRY).build();
-	
-	public static GraphQLInputObjectType postTypeWhereInput =  newInputObject()
-			.name("PostTypeWhereInput")
+
+	public static GraphQLInputObjectType postTypeWhereInput = newInputObject().name("PostTypeWhereInput")
 			.description("Locale system enumeration")
 			.field(newInputObjectField().name("_search").description("Contains search across all appropriate fields.")
 					.type(GraphQLString))
 			.field(newInputObjectField().name("AND").description("Logical AND on all given filters.")
 					.type(GraphQLString))
-			.field(newInputObjectField().name("OR").description("Logical OR on all given filters.")
-					.type(GraphQLString))
+			.field(newInputObjectField().name("OR").description("Logical OR on all given filters.").type(GraphQLString))
 			.field(newInputObjectField().name("NOT").description("Logical NOT on all given filters combined by AND.")
 					.type(GraphQLString))
 			.field(newInputObjectField().name("id").description("All values that are equal to given value.")
@@ -109,25 +110,27 @@ public class ShGraphQL {
 					.type(GraphQLID))
 			.field(newInputObjectField().name("id_in").description("All values that are contained in given list.")
 					.type(list(nonNull(GraphQLID))))
-			.field(newInputObjectField().name("id_not_in").description("All values that are not contained in given list.")
-					.type(list(nonNull(GraphQLID))))
+			.field(newInputObjectField().name("id_not_in")
+					.description("All values that are not contained in given list.").type(list(nonNull(GraphQLID))))
 			.field(newInputObjectField().name("id_contains").description("All values containing the given string.")
 					.type(GraphQLID))
-			.field(newInputObjectField().name("id_not_contains").description("All values not containing the given string.")
-					.type(GraphQLID))
-			.field(newInputObjectField().name("id_starts_with").description("All values starting with the given string.")
-					.type(GraphQLID))
-			.field(newInputObjectField().name("id_not_starts_with").description("All values not starting with the given string.")
-					.type(GraphQLID))
+			.field(newInputObjectField().name("id_not_contains")
+					.description("All values not containing the given string.").type(GraphQLID))
+			.field(newInputObjectField().name("id_starts_with")
+					.description("All values starting with the given string.").type(GraphQLID))
+			.field(newInputObjectField().name("id_not_starts_with")
+					.description("All values not starting with the given string.").type(GraphQLID))
 			.field(newInputObjectField().name("id_ends_with").description("All values ending with the given string.")
 					.type(GraphQLID))
-			.field(newInputObjectField().name("id_not_ends_with").description("All values not ending with the given string")
-					.type(GraphQLID))
+			.field(newInputObjectField().name("id_not_ends_with")
+					.description("All values not ending with the given string").type(GraphQLID))
 			.field(newInputObjectField().name("createdAt").description("All values that are equal to given value.")
 					.type(ExtendedScalars.DateTime))
-			.field(newInputObjectField().name("createdAt_in").description("All values that are contained in given list.")
+			.field(newInputObjectField().name("createdAt_in")
+					.description("All values that are contained in given list.")
 					.type(list(nonNull(ExtendedScalars.DateTime))))
-			.field(newInputObjectField().name("createdAt_not_in").description("All values that are not contained in given list.")
+			.field(newInputObjectField().name("createdAt_not_in")
+					.description("All values that are not contained in given list.")
 					.type(list(nonNull(ExtendedScalars.DateTime))))
 			.field(newInputObjectField().name("createdAt_lt").description("All values less than the given value.")
 					.type(ExtendedScalars.DateTime))
@@ -146,8 +149,6 @@ public class ShGraphQL {
 
 			this.allPosts(queryTypeBuilder, codeRegistryBuilder, shPostType, graphQLObjectType);
 
-			this.postById(queryTypeBuilder, codeRegistryBuilder, shPostType, graphQLObjectType);
-
 		}
 
 		GraphQLObjectType queryType = queryTypeBuilder.comparatorRegistry(BY_NAME_REGISTRY).build();
@@ -162,31 +163,19 @@ public class ShGraphQL {
 		return postTypeName;
 	}
 
-	private void postById(Builder queryTypeBuilder, graphql.schema.GraphQLCodeRegistry.Builder codeRegistryBuilder,
-			ShPostType shPostType, GraphQLObjectType graphQLObjectType) {
-
-		String fieldName = String.format("%sById", getPostTypeName(shPostType));
-
-		queryTypeBuilder.field(newFieldDefinition().name(fieldName).type(graphQLObjectType)
-				.argument(newArgument().name(ID).description(ID).type(nonNull(GraphQLString))));
-
-		codeRegistryBuilder.dataFetcher(coordinates(QUERY_TYPE, fieldName), getPostTypeByIdDataFetcher(shPostType));
-	}
-
 	private void allPosts(Builder queryTypeBuilder, graphql.schema.GraphQLCodeRegistry.Builder codeRegistryBuilder,
 			ShPostType shPostType, GraphQLObjectType graphQLObjectType) {
 
 		String fieldName = String.format("%s", getPostTypeName(shPostType));
 
-		queryTypeBuilder
-				.field(newFieldDefinition().name(fieldName).type(list(graphQLObjectType))
-				.argument(newArgument().name("stage")
+		queryTypeBuilder.field(newFieldDefinition().name(fieldName).type(list(graphQLObjectType))
+				.argument(newArgument().name(STAGE_ARG)
 						.description("A required enumeration indicating the current content Stage (defaults to DRAFT)")
 						.type(nonNull(stageEnum)).defaultValue(20))
-				.argument(newArgument().name("locales")
+				.argument(newArgument().name(LOCALES_ARG)
 						.description("A required array of one or more locales, defaults to the project's default.")
 						.type(nonNull(list(localeEnum))).defaultValue("EN"))
-				.argument(newArgument().name("where")
+				.argument(newArgument().name(WHERE_ARG)
 						.description("An optional object type to filter the content based on a nested set of criteria.")
 						.type(postTypeWhereInput)));
 
@@ -208,23 +197,22 @@ public class ShGraphQL {
 
 	private DataFetcher<List<Map<String, String>>> getPostTypeAllDataFetcher(ShPostType shPostType) {
 		return dataFetchingEnvironment -> {
-			List<ShPost> shPosts = shPostRepository.findByShPostType(shPostType);
 			List<Map<String, String>> posts = new ArrayList<>();
-			for (ShPost shPost : shPosts) {
-				Map<String, String> postAttrs = shPostUtils.postAttrGraphQL(shPost);
+
+			Map<String, Object> whereMap = dataFetchingEnvironment.getArgument(WHERE_ARG);
+			if (whereMap != null && whereMap.containsKey(ID) && whereMap.get(ID) != null) {
+				String objectId = whereMap.get(ID).toString();
+				ShObject shObject = shObjectRepository.findById(objectId).orElse(null);
+				Map<String, String> postAttrs = shPostUtils.postAttrGraphQL((ShPost) shObject);
 				posts.add(postAttrs);
+			} else {
+				List<ShPost> shPosts = shPostRepository.findByShPostType(shPostType);
+				for (ShPost shPost : shPosts) {
+					Map<String, String> postAttrs = shPostUtils.postAttrGraphQL(shPost);
+					posts.add(postAttrs);
+				}
 			}
 			return posts;
-		};
-	}
-
-	private DataFetcher<Map<String, String>> getPostTypeByIdDataFetcher(ShPostType shPostType) {
-		return dataFetchingEnvironment -> {
-			String objectId = dataFetchingEnvironment.getArgument(ID);
-			ShObject shObject = shObjectRepository.findById(objectId).orElse(null);
-			Map<String, String> postAttrs = shPostUtils.postAttrGraphQL((ShPost) shObject);
-
-			return postAttrs;
 		};
 	}
 
