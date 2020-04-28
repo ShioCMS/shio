@@ -35,6 +35,8 @@ import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLObjectType.Builder;
 import graphql.schema.GraphQLScalarType;
 import graphql.schema.GraphQLSchema;
+import graphql.schema.GraphQLTypeReference;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -173,8 +175,7 @@ public class ShGraphQL {
 			GraphQLObjectType graphQLObjectType = this.postTypeFields(shPostType, builder, postTypeWhereInputBuilder);
 
 			GraphQLInputObjectType postTypeWhereInput = postTypeWhereInputBuilder.comparatorRegistry(BY_NAME_REGISTRY)
-					.build();
-
+					.build();	
 			this.allPosts(queryTypeBuilder, codeRegistryBuilder, shPostType, graphQLObjectType, postTypeWhereInput);
 
 		}
@@ -212,17 +213,20 @@ public class ShGraphQL {
 
 	private GraphQLObjectType postTypeFields(ShPostType shPostType, Builder builder,
 			graphql.schema.GraphQLInputObjectType.Builder postTypeWhereInputBuilder) {
+		
+		String whereInputName = String.format("%sWhereInput", getPostTypeName(shPostType));
+		
 		builder.field(newFieldDefinition().name(ID).description("Object Id").type(GraphQLID));
 
 		postTypeWhereInputBuilder
 				.field(newInputObjectField().name(SEARCH).description("Contains search across all appropriate fields.")
 						.type(GraphQLString))
 				.field(newInputObjectField().name(AND).description("Logical AND on all given filters.")
-						.type(GraphQLString))
+						.type(GraphQLTypeReference.typeRef(whereInputName)))
 				.field(newInputObjectField().name(OR).description("Logical OR on all given filters.")
-						.type(GraphQLString))
+						.type(GraphQLTypeReference.typeRef(whereInputName)))
 				.field(newInputObjectField().name(NOT).description("Logical NOT on all given filters combined by AND.")
-						.type(GraphQLString))
+						.type(GraphQLTypeReference.typeRef(whereInputName)))
 				.field(newInputObjectField().name(ID).description("All values that are equal to given value.")
 						.type(GraphQLID));
 		this.createInputObjectField(CREATED_AT, "DateTime", postTypeWhereInputBuilder);
