@@ -118,9 +118,21 @@ public class ShGraphQL {
 	private final static String ENDS_WITH = "ends_with";
 	private final static String NOT_ENDS_WITH = "not_ends_with";
 
+	private final static String LT = "lt";
+	private final static String LTE = "lte";
+	private final static String GT = "gt";
+	private final static String GTE = "gte";
+
 	private final static String STAGE_ARG = "stage";
 	private final static String LOCALES_ARG = "locales";
 	private final static String WHERE_ARG = "where";
+
+	private final static String WHERE_INPUT = "WhereInput";
+	private final static String CONDITION_SEPARATOR = "_";
+
+	private final static String FIELD_TYPE_GRAPHQL_ID = "GraphQLID";
+	private final static String FIELD_TYPE_GRAPHQL_STRING = "GraphQLString";
+	private final static String FIELD_TYPE_GRAPHQL_DATE_TIME = "DateTime";
 
 	private GraphQL graphQL;
 
@@ -136,53 +148,49 @@ public class ShGraphQL {
 
 		GraphQLScalarType scalarType = null;
 
-		if (type.equals("DateTime")) {
+		if (type.equals(FIELD_TYPE_GRAPHQL_DATE_TIME)) {
 			scalarType = ExtendedScalars.DateTime;
-			builder.field(newInputObjectField().name(name).description("All values that are equal to given value.")
-					.type(scalarType))
-					.field(newInputObjectField().name(String.format("%s_not", name))
-							.description("All values that are not equal to given value.").type(scalarType))
-					.field(newInputObjectField().name(String.format("%s_in", name))
-							.description("All values that are not contained in given list.")
-							.type(list(nonNull(scalarType))))
-					.field(newInputObjectField().name(String.format("%s_lt", name))
-							.description("All values less than the given value.").type(scalarType))
-					.field(newInputObjectField().name(String.format("%s_lte", name))
-							.description("All values less than or equal the given value.").type(scalarType))
-					.field(newInputObjectField().name(String.format("%s_gt", name))
-							.description("All values greater than the given value.").type(scalarType))
-					.field(newInputObjectField().name(String.format("%s_gte", name))
-							.description("All values greater than the given value.").type(scalarType));
-		} else if (type.equals("GraphQLString") || type.equals("GraphQLID")) {
-			if (type.equals("GraphQLString"))
+			this.createInputObjectField(builder, name, null, scalarType, "All values that are equal to given value.");
+			this.createInputObjectField(builder, name, NOT, scalarType,
+					"All values that are not equal to given value.");
+			this.createInputObjectField(builder, name, IN, scalarType,
+					"All values that are not contained in given list.");
+			this.createInputObjectField(builder, name, LT, scalarType, "All values less than the given value.");
+			this.createInputObjectField(builder, name, LTE, scalarType,
+					"All values less than or equal the given value.");
+			this.createInputObjectField(builder, name, GT, scalarType, "All values greater than the given value.");
+			this.createInputObjectField(builder, name, GTE, scalarType, "All values greater than the given value.");
+		} else if (type.equals(FIELD_TYPE_GRAPHQL_STRING) || type.equals(FIELD_TYPE_GRAPHQL_ID)) {
+			if (type.equals(FIELD_TYPE_GRAPHQL_STRING))
 				scalarType = GraphQLString;
-			else if (type.equals("GraphQLID"))
+			else if (type.equals(FIELD_TYPE_GRAPHQL_ID))
 				scalarType = GraphQLID;
 
-			builder.field(newInputObjectField().name(name).description("All values that are equal to given value.")
-					.type(scalarType))
-					.field(newInputObjectField().name(String.format("%s_not", name))
-							.description("All values that are not equal to given value.").type(scalarType))
-					.field(newInputObjectField().name(String.format("%s_%s", name, IN))
-							.description("All values that are contained in given list.")
-							.type(list(nonNull(scalarType))))
-					.field(newInputObjectField().name(String.format("%s_%s", name, NOT_IN))
-							.description("All values that are not contained in given list.")
-							.type(list(nonNull(scalarType))))
-					.field(newInputObjectField().name(String.format("%s_%s", name, CONTAINS))
-							.description("All values containing the given string.").type(scalarType))
-					.field(newInputObjectField().name(String.format("%s_%s", name, NOT_CONTAINS))
-							.description("All values not containing the given string.").type(scalarType))
-					.field(newInputObjectField().name(String.format("%s_%s", name, STARTS_WITH))
-							.description("All values starting with the given string.").type(scalarType))
-					.field(newInputObjectField().name(String.format("%s_%s", name, NOT_STARTS_WITH))
-							.description("All values not starting with the given string.").type(scalarType))
-					.field(newInputObjectField().name(String.format("%s_%s", name, ENDS_WITH))
-							.description("All values ending with the given string.").type(scalarType))
-					.field(newInputObjectField().name(String.format("%s_%s", name, NOT_ENDS_WITH))
-							.description("All values not ending with the given string").type(scalarType));
+			this.createInputObjectField(builder, name, null, scalarType, "All values that are equal to given value.");
+			this.createInputObjectField(builder, name, NOT, scalarType,
+					"All values that are not equal to given value.");
+			this.createInputObjectField(builder, name, IN, scalarType, "All values that are contained in given list.");
+			this.createInputObjectField(builder, name, NOT_IN, scalarType,
+					"All values that are not contained in given list.");
+			this.createInputObjectField(builder, name, CONTAINS, scalarType, "All values containing the given string.");
+			this.createInputObjectField(builder, name, NOT_CONTAINS, scalarType,
+					"All values not containing the given string.");
+			this.createInputObjectField(builder, name, STARTS_WITH, scalarType,
+					"All values starting with the given string.");
+			this.createInputObjectField(builder, name, NOT_STARTS_WITH, scalarType,
+					"All values not starting with the given string.");
+			this.createInputObjectField(builder, name, ENDS_WITH, scalarType,
+					"All values ending with the given string.");
+			this.createInputObjectField(builder, name, NOT_ENDS_WITH, scalarType,
+					"All values not ending with the given string");
 		}
+	}
 
+	private void createInputObjectField(graphql.schema.GraphQLInputObjectType.Builder builder, String name,
+			String condition, GraphQLScalarType scalarType, String description) {
+		builder.field(newInputObjectField()
+				.name(condition == null ? name : String.format("%s%s%s", name, CONDITION_SEPARATOR, condition))
+				.description(description).type(scalarType));
 	}
 
 	private GraphQLSchema loadSchema() {
@@ -190,12 +198,12 @@ public class ShGraphQL {
 		graphql.schema.GraphQLCodeRegistry.Builder codeRegistryBuilder = newCodeRegistry();
 		for (ShPostType shPostType : shPostTypeRepository.findAll()) {
 
-			String postTypeName = getPostTypeName(shPostType);
+			String postTypeName = this.getPostTypeName(shPostType);
 
 			Builder builder = newObject().name(postTypeName).description(shPostType.getDescription());
 
 			graphql.schema.GraphQLInputObjectType.Builder postTypeWhereInputBuilder = newInputObject()
-					.name(String.format("%sWhereInput", postTypeName)).description("Identifies documents");
+					.name(postTypeName.concat(WHERE_INPUT)).description("Identifies documents");
 
 			GraphQLObjectType graphQLObjectType = this.postTypeFields(shPostType, builder, postTypeWhereInputBuilder);
 
@@ -220,9 +228,9 @@ public class ShGraphQL {
 	private void allPosts(Builder queryTypeBuilder, graphql.schema.GraphQLCodeRegistry.Builder codeRegistryBuilder,
 			ShPostType shPostType, GraphQLObjectType graphQLObjectType, GraphQLInputObjectType postTypeWhereInput) {
 
-		String fieldName = String.format("%s", getPostTypeName(shPostType));
+		String postTypeName = this.getPostTypeName(shPostType);
 
-		queryTypeBuilder.field(newFieldDefinition().name(fieldName).type(list(graphQLObjectType))
+		queryTypeBuilder.field(newFieldDefinition().name(postTypeName).type(list(graphQLObjectType))
 				.argument(newArgument().name(STAGE_ARG)
 						.description("A required enumeration indicating the current content Stage (defaults to DRAFT)")
 						.type(nonNull(stageEnum)).defaultValue(20))
@@ -233,13 +241,13 @@ public class ShGraphQL {
 						.description("An optional object type to filter the content based on a nested set of criteria.")
 						.type(postTypeWhereInput)));
 
-		codeRegistryBuilder.dataFetcher(coordinates(QUERY_TYPE, fieldName), getPostTypeAllDataFetcher(shPostType));
+		codeRegistryBuilder.dataFetcher(coordinates(QUERY_TYPE, postTypeName), getPostTypeAllDataFetcher(shPostType));
 	}
 
 	private GraphQLObjectType postTypeFields(ShPostType shPostType, Builder builder,
 			graphql.schema.GraphQLInputObjectType.Builder postTypeWhereInputBuilder) {
 
-		String whereInputName = String.format("%sWhereInput", getPostTypeName(shPostType));
+		String whereInputName = getPostTypeName(shPostType).concat(WHERE_INPUT);
 
 		builder.field(newFieldDefinition().name(ID).description("Object Id").type(GraphQLID));
 		builder.field(newFieldDefinition().name(TITLE).description("Object Text").type(GraphQLString));
@@ -260,16 +268,16 @@ public class ShGraphQL {
 						.type(GraphQLTypeReference.typeRef(whereInputName)))
 				.field(newInputObjectField().name(ID).description("All values that are equal to given value.")
 						.type(GraphQLID));
-		this.createInputObjectField(ID, "GraphQLID", postTypeWhereInputBuilder);
-		this.createInputObjectField(TITLE, "GraphQLString", postTypeWhereInputBuilder);
-		this.createInputObjectField(DESCRIPTION, "GraphQLString", postTypeWhereInputBuilder);
-		this.createInputObjectField(FURL, "GraphQLString", postTypeWhereInputBuilder);
-		this.createInputObjectField(MODIFIER, "GraphQLString", postTypeWhereInputBuilder);
-		this.createInputObjectField(PUBLISHER, "GraphQLString", postTypeWhereInputBuilder);
-		this.createInputObjectField(FOLDER, "GraphQLString", postTypeWhereInputBuilder);
-		this.createInputObjectField(CREATED_AT, "DateTime", postTypeWhereInputBuilder);
-		this.createInputObjectField(UPDATED_AT, "DateTime", postTypeWhereInputBuilder);
-		this.createInputObjectField(PUBLISHED_AT, "DateTime", postTypeWhereInputBuilder);
+		this.createInputObjectField(ID, FIELD_TYPE_GRAPHQL_ID, postTypeWhereInputBuilder);
+		this.createInputObjectField(TITLE, FIELD_TYPE_GRAPHQL_STRING, postTypeWhereInputBuilder);
+		this.createInputObjectField(DESCRIPTION, FIELD_TYPE_GRAPHQL_STRING, postTypeWhereInputBuilder);
+		this.createInputObjectField(FURL, FIELD_TYPE_GRAPHQL_STRING, postTypeWhereInputBuilder);
+		this.createInputObjectField(MODIFIER, FIELD_TYPE_GRAPHQL_STRING, postTypeWhereInputBuilder);
+		this.createInputObjectField(PUBLISHER, FIELD_TYPE_GRAPHQL_STRING, postTypeWhereInputBuilder);
+		this.createInputObjectField(FOLDER, FIELD_TYPE_GRAPHQL_STRING, postTypeWhereInputBuilder);
+		this.createInputObjectField(CREATED_AT, FIELD_TYPE_GRAPHQL_DATE_TIME, postTypeWhereInputBuilder);
+		this.createInputObjectField(UPDATED_AT, FIELD_TYPE_GRAPHQL_DATE_TIME, postTypeWhereInputBuilder);
+		this.createInputObjectField(PUBLISHED_AT, FIELD_TYPE_GRAPHQL_DATE_TIME, postTypeWhereInputBuilder);
 
 		for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs()) {
 			String postTypeAttrName = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL,
@@ -277,10 +285,9 @@ public class ShGraphQL {
 			builder.field(newFieldDefinition().name(postTypeAttrName).description(shPostTypeAttr.getDescription())
 					.type(GraphQLString));
 
-			this.createInputObjectField(postTypeAttrName, "GraphQLString", postTypeWhereInputBuilder);
+			this.createInputObjectField(postTypeAttrName, FIELD_TYPE_GRAPHQL_STRING, postTypeWhereInputBuilder);
 
 		}
-
 		return builder.comparatorRegistry(BY_NAME_REGISTRY).build();
 	}
 
@@ -345,15 +352,13 @@ public class ShGraphQL {
 							posts.add(postAttrs);
 						}
 					} else {
-						if (arg.contains("_")) {
-							String field = arg.split("_")[0];
-							String action = arg.replaceFirst(String.format("%s_", field), "");
-							this.fieldWhereCondition(shPostType, posts, whereArgItem, field, action);
-
-						} else { // It is a field
-							String field = arg;
-							this.fieldWhereCondition(shPostType, posts, whereArgItem, field, EQUAL);
+						String field = arg;
+						String action = EQUAL;
+						if (arg.contains(CONDITION_SEPARATOR)) {
+							field = arg.split(CONDITION_SEPARATOR)[0];
+							action = arg.replaceFirst(field.concat(CONDITION_SEPARATOR), "");
 						}
+						this.fieldWhereCondition(shPostType, posts, whereArgItem, field, action);
 					}
 				}
 			} else {
