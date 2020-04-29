@@ -116,6 +116,14 @@ public class ShPostUtils {
 	@Autowired
 	private ShGroupRepository shGroupRepository;
 
+	private final static String ID = "id";
+	private final static String TITLE = "title";
+	private final static String DESCRIPTION = "description";	
+	private final static String FURL = "furl";
+	private final static String MODIFIER = "modifier";
+	private final static String PUBLISHER = "publisher";
+	private final static String FOLDER = "folder";
+	
 	public ShPost getShPostFromObjectId(String objectId) {
 
 		Optional<ShPost> shPostOpt = shPostRepository.findById(objectId);
@@ -759,7 +767,13 @@ public class ShPostUtils {
 
 		Map<String, String> shPostAttrMap = new HashMap<>();
 		if (shPost != null) {
-			shPostAttrMap.put("id", shPost.getId());
+			shPostAttrMap.put(ID, shPost.getId());
+			shPostAttrMap.put(TITLE, shPost.getTitle());
+			shPostAttrMap.put(DESCRIPTION, shPost.getSummary());
+			shPostAttrMap.put(FURL, shPost.getFurl());
+			shPostAttrMap.put(MODIFIER, shPost.getModifier());
+			shPostAttrMap.put(PUBLISHER, shPost.getPublisher());
+			shPostAttrMap.put(FOLDER, shPost.getShFolder().getName());
 			for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
 				String postTypeAttrName = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL,
 						shPostAttr.getShPostTypeAttr().getName().toLowerCase().replaceAll("-", "_"));

@@ -65,6 +65,16 @@ public interface ShPostRepository extends JpaRepository<ShPost, String>, ShPostR
 	Optional<ShPost> findById(String id);
 
 	List<ShPost> findByTitle(String title);
+	
+	List<ShPost> findBySummary(String summary);
+	
+	List<ShPost> findByFurl(String furl);
+	
+	List<ShPost> findByModifier(String modifier);
+	
+	List<ShPost> findByPublisher(String publisher);
+	
+	List<ShPost> findByShFolder_Name(String folderName);
 
 	ShPost findByShFolderAndTitle(ShFolder shFolder, String title);
 

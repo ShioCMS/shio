@@ -19,11 +19,14 @@ package com.viglet.shio.graphql;
 import com.google.common.base.CaseFormat;
 import com.viglet.shio.persistence.model.object.ShObject;
 import com.viglet.shio.persistence.model.post.ShPost;
+import com.viglet.shio.persistence.model.post.ShPostAttr;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
 import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shio.persistence.repository.object.ShObjectRepository;
 import com.viglet.shio.persistence.repository.post.ShPostRepository;
+import com.viglet.shio.persistence.repository.post.type.ShPostTypeAttrRepository;
 import com.viglet.shio.persistence.repository.post.type.ShPostTypeRepository;
+import com.viglet.shio.persistence.service.post.ShPostAttrService;
 import com.viglet.shio.utils.ShPostUtils;
 
 import graphql.GraphQL;
@@ -46,6 +49,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import static graphql.Scalars.GraphQLString;
 import static graphql.Scalars.GraphQLID;
@@ -80,7 +84,12 @@ public class ShGraphQL {
 	private ShPostRepository shPostRepository;
 
 	@Autowired
+	private ShPostTypeAttrRepository shPostTypeAttrRepository;
+	@Autowired
 	private ShPostUtils shPostUtils;
+
+	@Autowired
+	private ShPostAttrService shPostAttrService;
 
 	private final static String QUERY_TYPE = "Query";
 
@@ -89,6 +98,13 @@ public class ShGraphQL {
 	private final static String OR = "OR";
 	private final static String NOT = "NOT";
 	private final static String ID = "id";
+	private final static String TITLE = "title";
+	private final static String DESCRIPTION = "description";
+	private final static String FURL = "furl";
+	private final static String MODIFIER = "modifier";
+	private final static String PUBLISHER = "publisher";
+	private final static String FOLDER = "folder";
+
 	private final static String CREATED_AT = "createdAt";
 	private final static String UPDATED_AT = "updatedAt";
 	private final static String PUBLISHED_AT = "publishedAt";
@@ -175,7 +191,7 @@ public class ShGraphQL {
 			GraphQLObjectType graphQLObjectType = this.postTypeFields(shPostType, builder, postTypeWhereInputBuilder);
 
 			GraphQLInputObjectType postTypeWhereInput = postTypeWhereInputBuilder.comparatorRegistry(BY_NAME_REGISTRY)
-					.build();	
+					.build();
 			this.allPosts(queryTypeBuilder, codeRegistryBuilder, shPostType, graphQLObjectType, postTypeWhereInput);
 
 		}
@@ -213,10 +229,16 @@ public class ShGraphQL {
 
 	private GraphQLObjectType postTypeFields(ShPostType shPostType, Builder builder,
 			graphql.schema.GraphQLInputObjectType.Builder postTypeWhereInputBuilder) {
-		
+
 		String whereInputName = String.format("%sWhereInput", getPostTypeName(shPostType));
-		
+
 		builder.field(newFieldDefinition().name(ID).description("Object Id").type(GraphQLID));
+		builder.field(newFieldDefinition().name(TITLE).description("Object Text").type(GraphQLString));
+		builder.field(newFieldDefinition().name(DESCRIPTION).description("Object Description").type(GraphQLString));
+		builder.field(newFieldDefinition().name(FURL).description("Object Description").type(GraphQLString));
+		builder.field(newFieldDefinition().name(MODIFIER).description("Object Description").type(GraphQLString));
+		builder.field(newFieldDefinition().name(PUBLISHER).description("Object Description").type(GraphQLString));
+		builder.field(newFieldDefinition().name(FOLDER).description("Object Description").type(GraphQLString));
 
 		postTypeWhereInputBuilder
 				.field(newInputObjectField().name(SEARCH).description("Contains search across all appropriate fields.")
@@ -229,6 +251,13 @@ public class ShGraphQL {
 						.type(GraphQLTypeReference.typeRef(whereInputName)))
 				.field(newInputObjectField().name(ID).description("All values that are equal to given value.")
 						.type(GraphQLID));
+		this.createInputObjectField(ID, "GraphQLID", postTypeWhereInputBuilder);
+		this.createInputObjectField(TITLE, "GraphQLString", postTypeWhereInputBuilder);
+		this.createInputObjectField(DESCRIPTION, "GraphQLString", postTypeWhereInputBuilder);
+		this.createInputObjectField(FURL, "GraphQLString", postTypeWhereInputBuilder);
+		this.createInputObjectField(MODIFIER, "GraphQLString", postTypeWhereInputBuilder);
+		this.createInputObjectField(PUBLISHER, "GraphQLString", postTypeWhereInputBuilder);
+		this.createInputObjectField(FOLDER, "GraphQLString", postTypeWhereInputBuilder);
 		this.createInputObjectField(CREATED_AT, "DateTime", postTypeWhereInputBuilder);
 		this.createInputObjectField(UPDATED_AT, "DateTime", postTypeWhereInputBuilder);
 		this.createInputObjectField(PUBLISHED_AT, "DateTime", postTypeWhereInputBuilder);
@@ -251,11 +280,78 @@ public class ShGraphQL {
 			List<Map<String, String>> posts = new ArrayList<>();
 
 			Map<String, Object> whereMap = dataFetchingEnvironment.getArgument(WHERE_ARG);
-			if (whereMap != null && whereMap.containsKey(ID) && whereMap.get(ID) != null) {
-				String objectId = whereMap.get(ID).toString();
-				ShObject shObject = shObjectRepository.findById(objectId).orElse(null);
-				Map<String, String> postAttrs = shPostUtils.postAttrGraphQL((ShPost) shObject);
-				posts.add(postAttrs);
+
+			if (whereMap != null) {
+				for (Entry<String, Object> whereArgItem : whereMap.entrySet()) {
+					String arg = whereArgItem.getKey();
+					if (arg.equals(SEARCH)) {
+
+					} else if (arg.equals(SEARCH)) {
+
+					} else if (arg.equals(AND)) {
+
+					} else if (arg.equals(OR)) {
+
+					} else if (arg.equals(NOT)) {
+
+					} else if (arg.equals(ID)) {
+						String objectId = whereMap.get(ID).toString();
+						ShObject shObject = shObjectRepository.findById(objectId).orElse(null);
+						Map<String, String> postAttrs = shPostUtils.postAttrGraphQL((ShPost) shObject);
+						posts.add(postAttrs);
+					} else if (arg.equals(TITLE)) {
+						List<ShPost> shPosts = shPostRepository.findByTitle(whereMap.get(TITLE).toString());
+						for (ShPost shPost : shPosts) {
+							Map<String, String> postAttrs = shPostUtils.postAttrGraphQL(shPost);
+							posts.add(postAttrs);
+						}
+					} else if (arg.equals(DESCRIPTION)) {
+						List<ShPost> shPosts = shPostRepository.findBySummary(whereMap.get(DESCRIPTION).toString());
+						for (ShPost shPost : shPosts) {
+							Map<String, String> postAttrs = shPostUtils.postAttrGraphQL(shPost);
+							posts.add(postAttrs);
+						}
+					} else if (arg.equals(FURL)) {
+						List<ShPost> shPosts = shPostRepository.findByFurl(whereMap.get(FURL).toString());
+						for (ShPost shPost : shPosts) {
+							Map<String, String> postAttrs = shPostUtils.postAttrGraphQL(shPost);
+							posts.add(postAttrs);
+						}
+					} else if (arg.equals(MODIFIER)) {
+						List<ShPost> shPosts = shPostRepository.findByModifier(whereMap.get(MODIFIER).toString());
+						for (ShPost shPost : shPosts) {
+							Map<String, String> postAttrs = shPostUtils.postAttrGraphQL(shPost);
+							posts.add(postAttrs);
+						}
+					} else if (arg.equals(PUBLISHER)) {
+						List<ShPost> shPosts = shPostRepository.findByPublisher(whereMap.get(PUBLISHER).toString());
+						for (ShPost shPost : shPosts) {
+							Map<String, String> postAttrs = shPostUtils.postAttrGraphQL(shPost);
+							posts.add(postAttrs);
+						}
+					} else if (arg.equals(FOLDER)) {
+						List<ShPost> shPosts = shPostRepository.findByShFolder_Name(whereMap.get(FOLDER).toString());
+						for (ShPost shPost : shPosts) {
+							Map<String, String> postAttrs = shPostUtils.postAttrGraphQL(shPost);
+							posts.add(postAttrs);
+						}
+					} else {
+						if (arg.contains("_")) {
+							String field = arg.split("_")[0];
+							String action = arg.replaceFirst(field, "");
+						} else { // It is a field
+							ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType,
+									arg.toUpperCase());
+							List<ShPostAttr> shPostAttrs = shPostAttrService
+									.findByShPostTypeAttrAndValue(shPostTypeAttr, whereArgItem.getValue().toString());
+							for (ShPostAttr shPostAttr : shPostAttrs) {
+								Map<String, String> postAttrsDefault = shPostUtils
+										.postAttrGraphQL(shPostAttr.getShPost());
+								posts.add(postAttrsDefault);
+							}
+						}
+					}
+				}
 			} else {
 				List<ShPost> shPosts = shPostRepository.findByShPostType(shPostType);
 				for (ShPost shPost : shPosts) {

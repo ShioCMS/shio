@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -35,25 +35,25 @@ import com.viglet.shio.persistence.model.post.relator.ShRelatorItem;
  * @author Alexandre Oliveira
  */
 @Repository
-public interface ShPostAttrRepository extends JpaRepository<ShPostAttr, String> {
-	
+public interface ShPostAttrRepository extends JpaRepository<ShPostAttr, String>, JpaSpecificationExecutor<ShPostAttr> {
+
 	Set<ShPostAttr> findByArrayValueIn(Collection<String> values);
-	
+
 	List<ShPostAttr> findAll();
 
 	@Query("select p from ShPostAttr p JOIN FETCH p.shPostTypeAttr where p.shPost = ?1")
 	Set<ShPostAttr> findByShPostAll(ShPost shPost);
-	
+
 	Set<ShPostAttr> findByShPost(ShPost shPost);
-	
+
 	@Query("select p from ShPostAttr p JOIN FETCH p.shPostTypeAttr where p.shParentRelatorItem = ?1")
 	Set<ShPostAttr> findByShParentRelatorItemJoin(ShRelatorItem shRelatorItem);
-	
+
 	Set<ShPostAttr> findByShParentRelatorItem(ShRelatorItem shRelatorItem);
-	
+
 	@Query("select p from ShPostAttr p JOIN FETCH p.shPostTypeAttr where p.id = ?1")
 	Optional<ShPostAttr> findByIdAll(String id);
-	
+
 	Optional<ShPostAttr> findById(String id);
 
 	@SuppressWarnings("unchecked")
@@ -63,5 +63,4 @@ public interface ShPostAttrRepository extends JpaRepository<ShPostAttr, String> 
 	@Query("delete from ShPostAttr pa where pa.id = ?1")
 	void delete(String shPostAttrId);
 
-	List<ShPostAttr> findAll(Specification<String> specification);
 }
