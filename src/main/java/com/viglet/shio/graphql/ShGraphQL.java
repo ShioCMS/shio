@@ -104,10 +104,19 @@ public class ShGraphQL {
 	private final static String MODIFIER = "modifier";
 	private final static String PUBLISHER = "publisher";
 	private final static String FOLDER = "folder";
-
 	private final static String CREATED_AT = "createdAt";
 	private final static String UPDATED_AT = "updatedAt";
 	private final static String PUBLISHED_AT = "publishedAt";
+
+	private final static String EQUAL = "equal";
+	private final static String IN = "in";
+	private final static String NOT_IN = "not_in";
+	private final static String CONTAINS = "contains";
+	private final static String NOT_CONTAINS = "not_contains";
+	private final static String STARTS_WITH = "starts_with";
+	private final static String NOT_STARTS_WITH = "not_starts_with";
+	private final static String ENDS_WITH = "ends_with";
+	private final static String NOT_ENDS_WITH = "not_ends_with";
 
 	private final static String STAGE_ARG = "stage";
 	private final static String LOCALES_ARG = "locales";
@@ -154,23 +163,23 @@ public class ShGraphQL {
 					.type(scalarType))
 					.field(newInputObjectField().name(String.format("%s_not", name))
 							.description("All values that are not equal to given value.").type(scalarType))
-					.field(newInputObjectField().name(String.format("%s_in", name))
+					.field(newInputObjectField().name(String.format("%s_%s", name, IN))
 							.description("All values that are contained in given list.")
 							.type(list(nonNull(scalarType))))
-					.field(newInputObjectField().name(String.format("%s_not_in", name))
+					.field(newInputObjectField().name(String.format("%s_%s", name, NOT_IN))
 							.description("All values that are not contained in given list.")
 							.type(list(nonNull(scalarType))))
-					.field(newInputObjectField().name(String.format("%s_contains", name))
+					.field(newInputObjectField().name(String.format("%s_%s", name, CONTAINS))
 							.description("All values containing the given string.").type(scalarType))
-					.field(newInputObjectField().name(String.format("%s_not_contains", name))
+					.field(newInputObjectField().name(String.format("%s_%s", name, NOT_CONTAINS))
 							.description("All values not containing the given string.").type(scalarType))
-					.field(newInputObjectField().name(String.format("%s_starts_with", name))
+					.field(newInputObjectField().name(String.format("%s_%s", name, STARTS_WITH))
 							.description("All values starting with the given string.").type(scalarType))
-					.field(newInputObjectField().name(String.format("%s_not_starts_with", name))
+					.field(newInputObjectField().name(String.format("%s_%s", name, NOT_STARTS_WITH))
 							.description("All values not starting with the given string.").type(scalarType))
-					.field(newInputObjectField().name(String.format("%s_ends_with", name))
+					.field(newInputObjectField().name(String.format("%s_%s", name, ENDS_WITH))
 							.description("All values ending with the given string.").type(scalarType))
-					.field(newInputObjectField().name(String.format("%s_not_ends_with", name))
+					.field(newInputObjectField().name(String.format("%s_%s", name, NOT_ENDS_WITH))
 							.description("All values not ending with the given string").type(scalarType));
 		}
 
@@ -235,10 +244,10 @@ public class ShGraphQL {
 		builder.field(newFieldDefinition().name(ID).description("Object Id").type(GraphQLID));
 		builder.field(newFieldDefinition().name(TITLE).description("Object Text").type(GraphQLString));
 		builder.field(newFieldDefinition().name(DESCRIPTION).description("Object Description").type(GraphQLString));
-		builder.field(newFieldDefinition().name(FURL).description("Object Description").type(GraphQLString));
-		builder.field(newFieldDefinition().name(MODIFIER).description("Object Description").type(GraphQLString));
-		builder.field(newFieldDefinition().name(PUBLISHER).description("Object Description").type(GraphQLString));
-		builder.field(newFieldDefinition().name(FOLDER).description("Object Description").type(GraphQLString));
+		builder.field(newFieldDefinition().name(FURL).description("Friendly URL").type(GraphQLString));
+		builder.field(newFieldDefinition().name(MODIFIER).description("Modifier").type(GraphQLString));
+		builder.field(newFieldDefinition().name(PUBLISHER).description("Publisher").type(GraphQLString));
+		builder.field(newFieldDefinition().name(FOLDER).description("Folder Name").type(GraphQLString));
 
 		postTypeWhereInputBuilder
 				.field(newInputObjectField().name(SEARCH).description("Contains search across all appropriate fields.")
@@ -338,17 +347,12 @@ public class ShGraphQL {
 					} else {
 						if (arg.contains("_")) {
 							String field = arg.split("_")[0];
-							String action = arg.replaceFirst(field, "");
+							String action = arg.replaceFirst(String.format("%s_", field), "");
+							this.fieldWhereCondition(shPostType, posts, whereArgItem, field, action);
+
 						} else { // It is a field
-							ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType,
-									arg.toUpperCase());
-							List<ShPostAttr> shPostAttrs = shPostAttrService
-									.findByShPostTypeAttrAndValue(shPostTypeAttr, whereArgItem.getValue().toString());
-							for (ShPostAttr shPostAttr : shPostAttrs) {
-								Map<String, String> postAttrsDefault = shPostUtils
-										.postAttrGraphQL(shPostAttr.getShPost());
-								posts.add(postAttrsDefault);
-							}
+							String field = arg;
+							this.fieldWhereCondition(shPostType, posts, whereArgItem, field, EQUAL);
 						}
 					}
 				}
@@ -361,6 +365,18 @@ public class ShGraphQL {
 			}
 			return posts;
 		};
+	}
+
+	private void fieldWhereCondition(ShPostType shPostType, List<Map<String, String>> posts,
+			Entry<String, Object> whereArgItem, String field, String action) {
+		ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType,
+				field.toUpperCase());
+		List<ShPostAttr> shPostAttrs = shPostAttrService.findByShPostTypeAttrAndValueAndCondition(shPostTypeAttr,
+				whereArgItem.getValue().toString(), action);
+		for (ShPostAttr shPostAttr : shPostAttrs) {
+			Map<String, String> postAttrsDefault = shPostUtils.postAttrGraphQL(shPostAttr.getShPost());
+			posts.add(postAttrsDefault);
+		}
 	}
 
 	@PostConstruct

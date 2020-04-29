@@ -26,5 +26,5 @@ import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
  * @since 0.3.7
  */
 public interface ShPostAttrService {
-	public List<ShPostAttr> findByShPostTypeAttrAndValue(ShPostTypeAttr shPostTypeAttr, String value);
+	public List<ShPostAttr> findByShPostTypeAttrAndValueAndCondition(ShPostTypeAttr shPostTypeAttr, String value, String condition);
 }
