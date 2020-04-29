@@ -47,39 +47,43 @@ public class ShSiteOnStartup {
 
 		if (shSiteRepository.findAll().isEmpty()) {
 
-			URL sampleSiteRepository = null;
 			try {
-				sampleSiteRepository = new URL("https://github.com/openshio/sample-site/archive/master.zip");
+				this.importSite(new URL("https://github.com/ShioCMS/sample-site/archive/master.zip"),
+						"sample-site-import");
+				this.importSite(new URL("https://github.com/ShioCMS/stock-site-import/archive/master.zip"),
+						"stock-site-import");
 			} catch (MalformedURLException e) {
-				logger.error("sampleSiteRepository MalformedURLException", e);
+				logger.error("siteRepository MalformedURLException", e);
 
 			}
 
-			File userDir = new File(System.getProperty("user.dir"));
-			if (userDir.exists() && userDir.isDirectory()) {
-				File tmpDir = new File(
-						userDir.getAbsolutePath().concat(File.separator + "store" + File.separator + "tmp"));
-				if (!tmpDir.exists()) {
-					tmpDir.mkdirs();
-				}
+		}
+	}
 
-				File sampleSiteFile = new File(
-						tmpDir.getAbsolutePath().concat(File.separator + "sample-site-" + UUID.randomUUID() + ".zip"));
-
-				try {
-					FileUtils.copyURLToFile(sampleSiteRepository, sampleSiteFile);
-					shImportExchange.importFromFile(sampleSiteFile, "admin");
-				} catch (IllegalStateException e) {
-					System.out.println(COULD_NOT_CREATE_SAMPLE_SITE);
-					logger.error("createDefaultRows IllegalStateException", e);
-
-				} catch (IOException e) {
-					System.out.println(COULD_NOT_CREATE_SAMPLE_SITE);
-					logger.error("importFromFile IOException", e);
-				}
-
-				FileUtils.deleteQuietly(sampleSiteFile);
+	private void importSite(URL siteRepository, String slug) {
+		File userDir = new File(System.getProperty("user.dir"));
+		if (userDir.exists() && userDir.isDirectory()) {
+			File tmpDir = new File(userDir.getAbsolutePath().concat(File.separator + "store" + File.separator + "tmp"));
+			if (!tmpDir.exists()) {
+				tmpDir.mkdirs();
 			}
+
+			File siteFile = new File(
+					tmpDir.getAbsolutePath().concat(File.separator + slug + UUID.randomUUID() + ".zip"));
+
+			try {
+				FileUtils.copyURLToFile(siteRepository, siteFile);
+				shImportExchange.importFromFile(siteFile, "admin");
+			} catch (IllegalStateException e) {
+				System.out.println(COULD_NOT_CREATE_SAMPLE_SITE);
+				logger.error("createDefaultRows IllegalStateException", e);
+
+			} catch (IOException e) {
+				System.out.println(COULD_NOT_CREATE_SAMPLE_SITE);
+				logger.error("importFromFile IOException", e);
+			}
+
+			FileUtils.deleteQuietly(siteFile);
 		}
 	}
 }

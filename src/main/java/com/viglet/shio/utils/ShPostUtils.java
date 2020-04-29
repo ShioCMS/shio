@@ -41,6 +41,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.google.common.base.CaseFormat;
 import com.viglet.shio.api.ShJsonView;
 import com.viglet.shio.bean.ShPostTinyBean;
 import com.viglet.shio.object.ShObjectType;
@@ -115,6 +116,14 @@ public class ShPostUtils {
 	@Autowired
 	private ShGroupRepository shGroupRepository;
 
+	private final static String ID = "id";
+	private final static String TITLE = "title";
+	private final static String DESCRIPTION = "description";	
+	private final static String FURL = "furl";
+	private final static String MODIFIER = "modifier";
+	private final static String PUBLISHER = "publisher";
+	private final static String FOLDER = "folder";
+	
 	public ShPost getShPostFromObjectId(String objectId) {
 
 		Optional<ShPost> shPostOpt = shPostRepository.findById(objectId);
@@ -732,7 +741,7 @@ public class ShPostUtils {
 	 */
 	private Map<String, ShPostAttr> postAttrMap(ShPost shPost) {
 
-		Map<String, ShPostAttr> shPostAttrMap = new HashMap<String, ShPostAttr>();
+		Map<String, ShPostAttr> shPostAttrMap = new HashMap<>();
 		if (shPost != null) {
 			for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
 				shPostAttrMap.put(shPostAttr.getShPostTypeAttr().getId(), shPostAttr);
@@ -744,7 +753,7 @@ public class ShPostUtils {
 
 	private Map<String, ShPostAttr> postAttrMap(ShRelatorItem shRelatorItem) {
 
-		Map<String, ShPostAttr> shPostAttrMap = new HashMap<String, ShPostAttr>();
+		Map<String, ShPostAttr> shPostAttrMap = new HashMap<>();
 		if (shRelatorItem.getShChildrenPostAttrs() != null) {
 			for (ShPostAttr shPostAttr : shRelatorItem.getShChildrenPostAttrs()) {
 				shPostAttrMap.put(shPostAttr.getShPostTypeAttr().getId(), shPostAttr);
@@ -754,6 +763,27 @@ public class ShPostUtils {
 		return shPostAttrMap;
 	}
 
+	public Map<String, String> postAttrGraphQL(ShPost shPost) {
+
+		Map<String, String> shPostAttrMap = new HashMap<>();
+		if (shPost != null) {
+			shPostAttrMap.put(ID, shPost.getId());
+			shPostAttrMap.put(TITLE, shPost.getTitle());
+			shPostAttrMap.put(DESCRIPTION, shPost.getSummary());
+			shPostAttrMap.put(FURL, shPost.getFurl());
+			shPostAttrMap.put(MODIFIER, shPost.getModifier());
+			shPostAttrMap.put(PUBLISHER, shPost.getPublisher());
+			shPostAttrMap.put(FOLDER, shPost.getShFolder().getName());
+			for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
+				String postTypeAttrName = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL,
+						shPostAttr.getShPostTypeAttr().getName().toLowerCase().replaceAll("-", "_"));
+				shPostAttrMap.put(postTypeAttrName, shPostAttr.getStrValue());
+			}
+
+		}
+		return shPostAttrMap;
+	}
+	
 	/**
 	 * Add new PostAttrs that not contain into Post
 	 * 

@@ -48,10 +48,10 @@ import com.viglet.shio.provider.auth.otds.bean.ShOTDSValuesBean;
 import com.viglet.shio.bean.provider.auth.ShAuthProviderInstanceBean;
 import com.viglet.shio.persistence.model.auth.ShUser;
 import com.viglet.shio.provider.auth.ShAuthProviderService;
-import com.viglet.shio.provider.auth.otds.ShOTDSProviderInstanceBean;
 
 /**
  * @author Alexandre Oliveira
+ * @since 0.3.6
  */
 @Component
 public class ShOTDSService {

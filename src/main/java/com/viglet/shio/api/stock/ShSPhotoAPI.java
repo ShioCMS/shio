@@ -66,7 +66,7 @@ public class ShSPhotoAPI {
 	@GetMapping
 	public List<ShSPhotoBean> getPhotos() throws ClientProtocolException, IOException {
 
-		ShFolder shFolder = shFolderRepository.findById("8f6aa05a-4f4f-4f5a-adc5-b8b33955d6f5").get();
+		ShFolder shFolder = shFolderRepository.findById("39cef32e-e754-4f1a-991c-c45a1ecebe7c").get();
 
 		List<ShPostTinyBean> shPosts = shPostRepository.findByShFolderTiny(shFolder.getId());
 

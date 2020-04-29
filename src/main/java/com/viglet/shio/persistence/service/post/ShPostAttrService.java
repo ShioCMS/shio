@@ -14,37 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.viglet.turing.api.sn.job;
+package com.viglet.shio.persistence.service.post;
 
-import java.io.Serializable;
-import java.util.Map;
+import java.util.List;
+
+import com.viglet.shio.persistence.model.post.ShPostAttr;
+import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
 
 /**
  * @author Alexandre Oliveira
+ * @since 0.3.7
  */
-public class TurSNJobItem implements Serializable{
-
-	private static final long serialVersionUID = 1L;
-	
-	private TurSNJobAction turSNJobAction;
-	
-	private Map<String, Object> attributes;
-
-	public Map<String, Object> getAttributes() {
-		return attributes;
-	}
-
-	public void setAttributes(Map<String, Object> attributes) {
-		this.attributes = attributes;
-	}
-
-	public TurSNJobAction getTurSNJobAction() {
-		return turSNJobAction;
-	}
-
-	public void setTurSNJobAction(TurSNJobAction turSNJobAction) {
-		this.turSNJobAction = turSNJobAction;
-	}
-
-
+public interface ShPostAttrService {
+	public List<ShPostAttr> findByShPostTypeAttrAndValueAndCondition(ShPostTypeAttr shPostTypeAttr, String value, String condition);
 }

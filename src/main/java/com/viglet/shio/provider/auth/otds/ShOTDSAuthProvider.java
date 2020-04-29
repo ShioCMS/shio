@@ -29,10 +29,10 @@ import org.springframework.stereotype.Component;
 
 import com.viglet.shio.persistence.model.auth.ShUser;
 import com.viglet.shio.provider.auth.ShAuthenticationProvider;
-import com.viglet.shio.provider.auth.otds.ShOTDSService;
 
 /**
  * @author Alexandre Oliveira
+ * @since 0.3.6
  */
 @Component
 public class ShOTDSAuthProvider implements ShAuthenticationProvider {
