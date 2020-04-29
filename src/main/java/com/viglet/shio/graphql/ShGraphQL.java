@@ -34,6 +34,7 @@ import graphql.scalars.ExtendedScalars;
 import graphql.schema.DataFetcher;
 import graphql.schema.GraphQLEnumType;
 import graphql.schema.GraphQLInputObjectType;
+import graphql.schema.GraphQLInputType;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLObjectType.Builder;
 import graphql.schema.GraphQLScalarType;
@@ -108,20 +109,21 @@ public class ShGraphQL {
 	private final static String UPDATED_AT = "updatedAt";
 	private final static String PUBLISHED_AT = "publishedAt";
 
-	private final static String EQUAL = "equal";
-	private final static String IN = "in";
-	private final static String NOT_IN = "not_in";
-	private final static String CONTAINS = "contains";
-	private final static String NOT_CONTAINS = "not_contains";
-	private final static String STARTS_WITH = "starts_with";
-	private final static String NOT_STARTS_WITH = "not_starts_with";
-	private final static String ENDS_WITH = "ends_with";
-	private final static String NOT_ENDS_WITH = "not_ends_with";
+	private final static String CONDITION_EQUAL = "equal";
+	private final static String CONDITION_NOT = "not";
+	private final static String CONDITION_IN = "in";
+	private final static String CONDITION_NOT_IN = "not_in";
+	private final static String CONDITION_CONTAINS = "contains";
+	private final static String CONDITION_NOT_CONTAINS = "not_contains";
+	private final static String CONDITION_STARTS_WITH = "starts_with";
+	private final static String CONDITION_NOT_STARTS_WITH = "not_starts_with";
+	private final static String CONDITION_ENDS_WITH = "ends_with";
+	private final static String CONDITION_NOT_ENDS_WITH = "not_ends_with";
 
-	private final static String LT = "lt";
-	private final static String LTE = "lte";
-	private final static String GT = "gt";
-	private final static String GTE = "gte";
+	private final static String CONDITION_LT = "lt";
+	private final static String CONDITION_LTE = "lte";
+	private final static String CONDITION_GT = "gt";
+	private final static String CONDITION_GTE = "gte";
 
 	private final static String STAGE_ARG = "stage";
 	private final static String LOCALES_ARG = "locales";
@@ -143,50 +145,60 @@ public class ShGraphQL {
 	public static GraphQLEnumType localeEnum = newEnum().name("Locale").description("Locale system enumeration")
 			.value("en", "EN", "System Locale.").comparatorRegistry(BY_NAME_REGISTRY).build();
 
-	private void createInputObjectField(String name, String type,
-			graphql.schema.GraphQLInputObjectType.Builder builder) {
+	private void createInputObjectField(graphql.schema.GraphQLInputObjectType.Builder builder, String name,
+			GraphQLInputType type, String description) {
+		builder.field(newInputObjectField().name(name).description(description).type(type));
+	}
+
+	private void createInputObjectField(graphql.schema.GraphQLInputObjectType.Builder builder, String name, String type,
+			String description) {
 
 		GraphQLScalarType scalarType = null;
 
 		if (type.equals(FIELD_TYPE_GRAPHQL_DATE_TIME)) {
 			scalarType = ExtendedScalars.DateTime;
-			this.createInputObjectField(builder, name, null, scalarType, "All values that are equal to given value.");
-			this.createInputObjectField(builder, name, NOT, scalarType,
+			this.createInputObjectFieldCondition(builder, name, null, scalarType, description);
+			this.createInputObjectFieldCondition(builder, name, CONDITION_NOT, scalarType,
 					"All values that are not equal to given value.");
-			this.createInputObjectField(builder, name, IN, scalarType,
+			this.createInputObjectFieldCondition(builder, name, CONDITION_IN, scalarType,
 					"All values that are not contained in given list.");
-			this.createInputObjectField(builder, name, LT, scalarType, "All values less than the given value.");
-			this.createInputObjectField(builder, name, LTE, scalarType,
+			this.createInputObjectFieldCondition(builder, name, CONDITION_LT, scalarType,
+					"All values less than the given value.");
+			this.createInputObjectFieldCondition(builder, name, CONDITION_LTE, scalarType,
 					"All values less than or equal the given value.");
-			this.createInputObjectField(builder, name, GT, scalarType, "All values greater than the given value.");
-			this.createInputObjectField(builder, name, GTE, scalarType, "All values greater than the given value.");
+			this.createInputObjectFieldCondition(builder, name, CONDITION_GT, scalarType,
+					"All values greater than the given value.");
+			this.createInputObjectFieldCondition(builder, name, CONDITION_GTE, scalarType,
+					"All values greater than the given value.");
 		} else if (type.equals(FIELD_TYPE_GRAPHQL_STRING) || type.equals(FIELD_TYPE_GRAPHQL_ID)) {
 			if (type.equals(FIELD_TYPE_GRAPHQL_STRING))
 				scalarType = GraphQLString;
 			else if (type.equals(FIELD_TYPE_GRAPHQL_ID))
 				scalarType = GraphQLID;
 
-			this.createInputObjectField(builder, name, null, scalarType, "All values that are equal to given value.");
-			this.createInputObjectField(builder, name, NOT, scalarType,
+			this.createInputObjectFieldCondition(builder, name, null, scalarType, description);
+			this.createInputObjectFieldCondition(builder, name, CONDITION_NOT, scalarType,
 					"All values that are not equal to given value.");
-			this.createInputObjectField(builder, name, IN, scalarType, "All values that are contained in given list.");
-			this.createInputObjectField(builder, name, NOT_IN, scalarType,
+			this.createInputObjectFieldCondition(builder, name, CONDITION_IN, scalarType,
+					"All values that are contained in given list.");
+			this.createInputObjectFieldCondition(builder, name, CONDITION_NOT_IN, scalarType,
 					"All values that are not contained in given list.");
-			this.createInputObjectField(builder, name, CONTAINS, scalarType, "All values containing the given string.");
-			this.createInputObjectField(builder, name, NOT_CONTAINS, scalarType,
+			this.createInputObjectFieldCondition(builder, name, CONDITION_CONTAINS, scalarType,
+					"All values containing the given string.");
+			this.createInputObjectFieldCondition(builder, name, CONDITION_NOT_CONTAINS, scalarType,
 					"All values not containing the given string.");
-			this.createInputObjectField(builder, name, STARTS_WITH, scalarType,
+			this.createInputObjectFieldCondition(builder, name, CONDITION_STARTS_WITH, scalarType,
 					"All values starting with the given string.");
-			this.createInputObjectField(builder, name, NOT_STARTS_WITH, scalarType,
+			this.createInputObjectFieldCondition(builder, name, CONDITION_NOT_STARTS_WITH, scalarType,
 					"All values not starting with the given string.");
-			this.createInputObjectField(builder, name, ENDS_WITH, scalarType,
+			this.createInputObjectFieldCondition(builder, name, CONDITION_ENDS_WITH, scalarType,
 					"All values ending with the given string.");
-			this.createInputObjectField(builder, name, NOT_ENDS_WITH, scalarType,
+			this.createInputObjectFieldCondition(builder, name, CONDITION_NOT_ENDS_WITH, scalarType,
 					"All values not ending with the given string");
 		}
 	}
 
-	private void createInputObjectField(graphql.schema.GraphQLInputObjectType.Builder builder, String name,
+	private void createInputObjectFieldCondition(graphql.schema.GraphQLInputObjectType.Builder builder, String name,
 			String condition, GraphQLScalarType scalarType, String description) {
 		builder.field(newInputObjectField()
 				.name(condition == null ? name : String.format("%s%s%s", name, CONDITION_SEPARATOR, condition))
@@ -220,9 +232,7 @@ public class ShGraphQL {
 	}
 
 	private String getPostTypeName(ShPostType shPostType) {
-		String postTypeName = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL,
-				shPostType.getName().toLowerCase().replaceAll("-", "_"));
-		return postTypeName;
+		return this.normalizedName(shPostType.getName());
 	}
 
 	private void allPosts(Builder queryTypeBuilder, graphql.schema.GraphQLCodeRegistry.Builder codeRegistryBuilder,
@@ -247,8 +257,6 @@ public class ShGraphQL {
 	private GraphQLObjectType postTypeFields(ShPostType shPostType, Builder builder,
 			graphql.schema.GraphQLInputObjectType.Builder postTypeWhereInputBuilder) {
 
-		String whereInputName = getPostTypeName(shPostType).concat(WHERE_INPUT);
-
 		builder.field(newFieldDefinition().name(ID).description("Object Id").type(GraphQLID));
 		builder.field(newFieldDefinition().name(TITLE).description("Object Text").type(GraphQLString));
 		builder.field(newFieldDefinition().name(DESCRIPTION).description("Object Description").type(GraphQLString));
@@ -257,38 +265,59 @@ public class ShGraphQL {
 		builder.field(newFieldDefinition().name(PUBLISHER).description("Publisher").type(GraphQLString));
 		builder.field(newFieldDefinition().name(FOLDER).description("Folder Name").type(GraphQLString));
 
-		postTypeWhereInputBuilder
-				.field(newInputObjectField().name(SEARCH).description("Contains search across all appropriate fields.")
-						.type(GraphQLString))
-				.field(newInputObjectField().name(AND).description("Logical AND on all given filters.")
-						.type(GraphQLTypeReference.typeRef(whereInputName)))
-				.field(newInputObjectField().name(OR).description("Logical OR on all given filters.")
-						.type(GraphQLTypeReference.typeRef(whereInputName)))
-				.field(newInputObjectField().name(NOT).description("Logical NOT on all given filters combined by AND.")
-						.type(GraphQLTypeReference.typeRef(whereInputName)))
-				.field(newInputObjectField().name(ID).description("All values that are equal to given value.")
-						.type(GraphQLID));
-		this.createInputObjectField(ID, FIELD_TYPE_GRAPHQL_ID, postTypeWhereInputBuilder);
-		this.createInputObjectField(TITLE, FIELD_TYPE_GRAPHQL_STRING, postTypeWhereInputBuilder);
-		this.createInputObjectField(DESCRIPTION, FIELD_TYPE_GRAPHQL_STRING, postTypeWhereInputBuilder);
-		this.createInputObjectField(FURL, FIELD_TYPE_GRAPHQL_STRING, postTypeWhereInputBuilder);
-		this.createInputObjectField(MODIFIER, FIELD_TYPE_GRAPHQL_STRING, postTypeWhereInputBuilder);
-		this.createInputObjectField(PUBLISHER, FIELD_TYPE_GRAPHQL_STRING, postTypeWhereInputBuilder);
-		this.createInputObjectField(FOLDER, FIELD_TYPE_GRAPHQL_STRING, postTypeWhereInputBuilder);
-		this.createInputObjectField(CREATED_AT, FIELD_TYPE_GRAPHQL_DATE_TIME, postTypeWhereInputBuilder);
-		this.createInputObjectField(UPDATED_AT, FIELD_TYPE_GRAPHQL_DATE_TIME, postTypeWhereInputBuilder);
-		this.createInputObjectField(PUBLISHED_AT, FIELD_TYPE_GRAPHQL_DATE_TIME, postTypeWhereInputBuilder);
-
 		for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs()) {
-			String postTypeAttrName = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL,
-					shPostTypeAttr.getName().toLowerCase().replaceAll("-", "_"));
+			String postTypeAttrName = this.normalizedName(shPostTypeAttr.getName());
 			builder.field(newFieldDefinition().name(postTypeAttrName).description(shPostTypeAttr.getDescription())
 					.type(GraphQLString));
+		}
 
-			this.createInputObjectField(postTypeAttrName, FIELD_TYPE_GRAPHQL_STRING, postTypeWhereInputBuilder);
+		this.whereFields(shPostType, postTypeWhereInputBuilder);
+
+		return builder.comparatorRegistry(BY_NAME_REGISTRY).build();
+	}
+
+	private void whereFields(ShPostType shPostType,
+			graphql.schema.GraphQLInputObjectType.Builder postTypeWhereInputBuilder) {
+
+		String whereInputName = getPostTypeName(shPostType).concat(WHERE_INPUT);
+
+		GraphQLTypeReference whereInputRef = GraphQLTypeReference.typeRef(whereInputName);
+
+		this.createInputObjectField(postTypeWhereInputBuilder, SEARCH, GraphQLString,
+				"Contains search across all appropriate fields.");
+		this.createInputObjectField(postTypeWhereInputBuilder, AND, whereInputRef, "Logical AND on all given filters.");
+		this.createInputObjectField(postTypeWhereInputBuilder, OR, whereInputRef, "Logical OR on all given filters.");
+		this.createInputObjectField(postTypeWhereInputBuilder, NOT, whereInputRef,
+				"Logical NOT on all given filters combined by AND.");
+
+		this.createInputObjectField(postTypeWhereInputBuilder, ID, FIELD_TYPE_GRAPHQL_ID, "Object Id");
+		this.createInputObjectField(postTypeWhereInputBuilder, TITLE, FIELD_TYPE_GRAPHQL_STRING, "Object Title");
+		this.createInputObjectField(postTypeWhereInputBuilder, DESCRIPTION, FIELD_TYPE_GRAPHQL_STRING, "Description");
+		this.createInputObjectField(postTypeWhereInputBuilder, FURL, FIELD_TYPE_GRAPHQL_STRING, "Friendly URL");
+		this.createInputObjectField(postTypeWhereInputBuilder, MODIFIER, FIELD_TYPE_GRAPHQL_STRING, "Modifier");
+		this.createInputObjectField(postTypeWhereInputBuilder, PUBLISHER, FIELD_TYPE_GRAPHQL_STRING, "Publisher");
+		this.createInputObjectField(postTypeWhereInputBuilder, FOLDER, FIELD_TYPE_GRAPHQL_STRING, "Folder Name");
+		this.createInputObjectField(postTypeWhereInputBuilder, CREATED_AT, FIELD_TYPE_GRAPHQL_DATE_TIME,
+				"Created Date");
+		this.createInputObjectField(postTypeWhereInputBuilder, UPDATED_AT, FIELD_TYPE_GRAPHQL_DATE_TIME,
+				"Updated Date");
+		this.createInputObjectField(postTypeWhereInputBuilder, PUBLISHED_AT, FIELD_TYPE_GRAPHQL_DATE_TIME,
+				"Published Date");
+
+		for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs()) {
+
+			String postTypeAttrName = this.normalizedName(shPostTypeAttr.getName());
+
+			this.createInputObjectField(postTypeWhereInputBuilder, postTypeAttrName, FIELD_TYPE_GRAPHQL_STRING,
+					shPostTypeAttr.getDescription());
 
 		}
-		return builder.comparatorRegistry(BY_NAME_REGISTRY).build();
+	}
+
+	private String normalizedName(String object) {
+		String objectName = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL,
+				object.toLowerCase().replaceAll("-", "_"));
+		return objectName;
 	}
 
 	private DataFetcher<List<Map<String, String>>> getPostTypeAllDataFetcher(ShPostType shPostType) {
@@ -353,7 +382,7 @@ public class ShGraphQL {
 						}
 					} else {
 						String field = arg;
-						String action = EQUAL;
+						String action = CONDITION_EQUAL;
 						if (arg.contains(CONDITION_SEPARATOR)) {
 							field = arg.split(CONDITION_SEPARATOR)[0];
 							action = arg.replaceFirst(field.concat(CONDITION_SEPARATOR), "");
