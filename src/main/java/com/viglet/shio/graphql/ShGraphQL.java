@@ -145,12 +145,12 @@ public class ShGraphQL {
 	public static GraphQLEnumType localeEnum = newEnum().name("Locale").description("Locale system enumeration")
 			.value("en", "EN", "System Locale.").comparatorRegistry(BY_NAME_REGISTRY).build();
 
-	private void createInputObjectField(graphql.schema.GraphQLInputObjectType.Builder builder, String name,
-			GraphQLInputType type, String description) {
+	private void createInputObjectField(GraphQLInputObjectType.Builder builder, String name, GraphQLInputType type,
+			String description) {
 		builder.field(newInputObjectField().name(name).description(description).type(type));
 	}
 
-	private void createInputObjectField(graphql.schema.GraphQLInputObjectType.Builder builder, String name, String type,
+	private void createInputObjectField(GraphQLInputObjectType.Builder builder, String name, String type,
 			String description) {
 
 		GraphQLScalarType scalarType = null;
@@ -198,8 +198,8 @@ public class ShGraphQL {
 		}
 	}
 
-	private void createInputObjectFieldCondition(graphql.schema.GraphQLInputObjectType.Builder builder, String name,
-			String condition, GraphQLScalarType scalarType, String description) {
+	private void createInputObjectFieldCondition(GraphQLInputObjectType.Builder builder, String name, String condition,
+			GraphQLScalarType scalarType, String description) {
 		builder.field(newInputObjectField()
 				.name(condition == null ? name : String.format("%s%s%s", name, CONDITION_SEPARATOR, condition))
 				.description(description).type(scalarType));
@@ -214,7 +214,7 @@ public class ShGraphQL {
 
 			Builder builder = newObject().name(postTypeName).description(shPostType.getDescription());
 
-			graphql.schema.GraphQLInputObjectType.Builder postTypeWhereInputBuilder = newInputObject()
+			GraphQLInputObjectType.Builder postTypeWhereInputBuilder = newInputObject()
 					.name(postTypeName.concat(WHERE_INPUT)).description("Identifies documents");
 
 			GraphQLObjectType graphQLObjectType = this.postTypeFields(shPostType, builder, postTypeWhereInputBuilder);
@@ -255,11 +255,11 @@ public class ShGraphQL {
 	}
 
 	private GraphQLObjectType postTypeFields(ShPostType shPostType, Builder builder,
-			graphql.schema.GraphQLInputObjectType.Builder postTypeWhereInputBuilder) {
+			GraphQLInputObjectType.Builder postTypeWhereInputBuilder) {
 
-		builder.field(newFieldDefinition().name(ID).description("Object Id").type(GraphQLID));
-		builder.field(newFieldDefinition().name(TITLE).description("Object Text").type(GraphQLString));
-		builder.field(newFieldDefinition().name(DESCRIPTION).description("Object Description").type(GraphQLString));
+		builder.field(newFieldDefinition().name(ID).description("Identifier").type(GraphQLID));
+		builder.field(newFieldDefinition().name(TITLE).description("Title").type(GraphQLString));
+		builder.field(newFieldDefinition().name(DESCRIPTION).description("Description").type(GraphQLString));
 		builder.field(newFieldDefinition().name(FURL).description("Friendly URL").type(GraphQLString));
 		builder.field(newFieldDefinition().name(MODIFIER).description("Modifier").type(GraphQLString));
 		builder.field(newFieldDefinition().name(PUBLISHER).description("Publisher").type(GraphQLString));
@@ -276,8 +276,7 @@ public class ShGraphQL {
 		return builder.comparatorRegistry(BY_NAME_REGISTRY).build();
 	}
 
-	private void whereFields(ShPostType shPostType,
-			graphql.schema.GraphQLInputObjectType.Builder postTypeWhereInputBuilder) {
+	private void whereFields(ShPostType shPostType, GraphQLInputObjectType.Builder postTypeWhereInputBuilder) {
 
 		String whereInputName = getPostTypeName(shPostType).concat(WHERE_INPUT);
 
@@ -290,8 +289,8 @@ public class ShGraphQL {
 		this.createInputObjectField(postTypeWhereInputBuilder, NOT, whereInputRef,
 				"Logical NOT on all given filters combined by AND.");
 
-		this.createInputObjectField(postTypeWhereInputBuilder, ID, FIELD_TYPE_GRAPHQL_ID, "Object Id");
-		this.createInputObjectField(postTypeWhereInputBuilder, TITLE, FIELD_TYPE_GRAPHQL_STRING, "Object Title");
+		this.createInputObjectField(postTypeWhereInputBuilder, ID, FIELD_TYPE_GRAPHQL_ID, "Identifier");
+		this.createInputObjectField(postTypeWhereInputBuilder, TITLE, FIELD_TYPE_GRAPHQL_STRING, "Title");
 		this.createInputObjectField(postTypeWhereInputBuilder, DESCRIPTION, FIELD_TYPE_GRAPHQL_STRING, "Description");
 		this.createInputObjectField(postTypeWhereInputBuilder, FURL, FIELD_TYPE_GRAPHQL_STRING, "Friendly URL");
 		this.createInputObjectField(postTypeWhereInputBuilder, MODIFIER, FIELD_TYPE_GRAPHQL_STRING, "Modifier");
