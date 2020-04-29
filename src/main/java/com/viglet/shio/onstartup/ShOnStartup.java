@@ -21,7 +21,6 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
-import com.viglet.shio.onstartup.ecommerce.ShEcomPaymentTypeDefinitionOnStartup;
 import com.viglet.shio.onstartup.post.type.ShPostTypeOnStartup;
 import com.viglet.shio.onstartup.provider.auth.ShAuthProviderInstanceOnStartup;
 import com.viglet.shio.onstartup.provider.auth.ShAuthProviderVendorOnStartup;
@@ -65,8 +64,6 @@ public class ShOnStartup implements ApplicationRunner {
 	private ShExchangeProviderVendorOnStartup shExchangeProviderVendorOnStartup;
 	@Autowired
 	private ShExchangeProviderInstanceOnStartup shExchangeProviderInstanceOnStartup;
-	@Autowired
-	private ShEcomPaymentTypeDefinitionOnStartup shEcomPaymentTypeDefinitionOnStartup;
 
 	@Override
 	public void run(ApplicationArguments arg0) throws Exception {
@@ -87,7 +84,6 @@ public class ShOnStartup implements ApplicationRunner {
 			shExchangeProviderInstanceOnStartup.createDefaultRows();
 			shConfigVarOnStartup.createDefaultRows();
 			shSiteOnStartup.createDefaultRows();
-			shEcomPaymentTypeDefinitionOnStartup.createDefaultRows();
 
 			System.out.println("Configuration finished.");
 		}

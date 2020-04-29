@@ -450,49 +450,6 @@
     "owner" : "admin",
     "system" : true
   }, {
-    "id" : "9ac7cd59-6e93-4277-b210-fe66f6ba9fb0",
-    "date" : "2018-08-22T15:56Z",
-    "name" : "PT_PAYMENT_TYPE",
-    "label" : "Payment Type",
-    "description" : "Payment Type",
-    "fields" : {
-      "PAYMENT_TYPE_DEFINITION" : {
-        "id" : "85d1fb50-08d0-4972-9ed2-a5f9f7848c9f",
-        "label" : "Payment Type Definition",
-        "description" : null,
-        "ordinal" : 3,
-        "widget" : "Payment Definition",
-        "widgetSettings" : null,
-        "summary" : false,
-        "title" : false,
-        "required" : true
-      },
-      "DESCRIPTION" : {
-        "id" : "56c013a0-0b9c-496f-8a3e-cfac8036c416",
-        "label" : "Description",
-        "description" : null,
-        "ordinal" : 2,
-        "widget" : "Text Area",
-        "widgetSettings" : "null",
-        "summary" : true,
-        "title" : false,
-        "required" : false
-      },
-      "NAME" : {
-        "id" : "7ef36270-4995-4b87-95a7-7a30efb8adfe",
-        "label" : "Name",
-        "description" : null,
-        "ordinal" : 1,
-        "widget" : "Text",
-        "widgetSettings" : "null",
-        "summary" : false,
-        "title" : true,
-        "required" : true
-      }
-    },
-    "owner" : null,
-    "system" : false
-  }, {
     "id" : "10edbb4c-b2fa-481b-be8c-404e44050167",
     "date" : "2019-07-11T00:31Z",
     "name" : "PT-FOLDER-INDEX",

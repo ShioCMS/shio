@@ -4,7 +4,7 @@
 ![shio_banner.png](https://shiocms.github.io/shio/img/shio_banner.png) 
 ------
 
-**Viglet Shio CMS** - Model Content and Create Site using Javascript with Native Cache and Search.
+**Viglet Shio CMS** - Model Content, use GraphQL and Create Site using Javascript with Native Cache and Search.
 
 Shio (pronounced [strong/ʃiː/ weak/ʃɪ/ o])
 
