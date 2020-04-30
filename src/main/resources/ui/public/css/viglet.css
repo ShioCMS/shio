@@ -132,7 +132,7 @@ body {
     font-weight: normal;
     line-height: 22px;
     color: #444;
-    position: relative;
+    /* position: relative; */
 }
 
 html {

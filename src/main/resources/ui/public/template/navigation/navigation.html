@@ -14,20 +14,14 @@
 			</div>
 
 
-			<div class="col-lg-5 col-md-5 col-sm-3 col-xs-7" style="padding-top: 7px"
+			<div class="col-lg-7 col-md-7 col-sm-5 col-xs-7" style="padding-top: 7px"
 				ng-include="'/template/search/search-box.html'"></div>
-			<div class="col-lg-4 col-md-4 hidden-sm hidden-xs" style="padding-top: 7px">
+			<div class="col-lg-3 col-md-3 col-sm-4 hidden-xs" style="padding-top: 7px">
 				<nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
-					<ul class="nav navbar-nav navbar-left">
-						<li><a ui-sref="content.post-type-select"
-								style="padding-top: 8px; padding-bottom: 14px; padding-right: 18px; padding-left: 18px;">Modeling</a>
-						</li>
-						<li ng-if="principal.admin"><a ui-sref="admin"
-								style="padding-top: 8px; padding-bottom: 14px; padding-right: 18px; padding-left: 18px;">Administration</a>
-						</li>
-						<li class="dropdown"><a href class="dropdown-toggle" data-toggle="dropdown" role="button"
+					<ul class="nav navbar-nav navbar-right">						
+						<li class="dropdown" style="margin-right: 55px;"><a href class="dropdown-toggle" data-toggle="dropdown" role="button"
 								aria-haspopup="true" aria-expanded="false"
-								style="padding-top: 8px; padding-bottom: 14px; padding-right: 18px; padding-left: 18px;">{{principal.firstName}} {{principal.lastName}}
+								style="padding-top: 8px; padding-bottom: 14px; padding-left: 18px;">{{principal.firstName}} {{principal.lastName}}
 								<span class="caret"></span>
 							</a>
 							<ul class="dropdown-menu">
