@@ -48,6 +48,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -129,6 +130,7 @@ public class ShGraphQL {
 	private final static String LOCALES_ARG = "locales";
 	private final static String WHERE_ARG = "where";
 
+	private final static String WHERE_UNIQUE_INPUT = "WhereUniqueInput";
 	private final static String WHERE_INPUT = "WhereInput";
 	private final static String CONDITION_SEPARATOR = "_";
 
@@ -209,20 +211,7 @@ public class ShGraphQL {
 		Builder queryTypeBuilder = newObject().name(QUERY_TYPE);
 		graphql.schema.GraphQLCodeRegistry.Builder codeRegistryBuilder = newCodeRegistry();
 		for (ShPostType shPostType : shPostTypeRepository.findAll()) {
-
-			String postTypeName = this.getPostTypeName(shPostType);
-
-			Builder builder = newObject().name(postTypeName).description(shPostType.getDescription());
-
-			GraphQLInputObjectType.Builder postTypeWhereInputBuilder = newInputObject()
-					.name(postTypeName.concat(WHERE_INPUT)).description("Identifies documents");
-
-			GraphQLObjectType graphQLObjectType = this.postTypeFields(shPostType, builder, postTypeWhereInputBuilder);
-
-			GraphQLInputObjectType postTypeWhereInput = postTypeWhereInputBuilder.comparatorRegistry(BY_NAME_REGISTRY)
-					.build();
-			this.allPosts(queryTypeBuilder, codeRegistryBuilder, shPostType, graphQLObjectType, postTypeWhereInput);
-
+			this.createObjectTypes(queryTypeBuilder, codeRegistryBuilder, shPostType);
 		}
 
 		GraphQLObjectType queryType = queryTypeBuilder.comparatorRegistry(BY_NAME_REGISTRY).build();
@@ -235,12 +224,35 @@ public class ShGraphQL {
 		return this.normalizedName(shPostType.getName());
 	}
 
-	private void allPosts(Builder queryTypeBuilder, graphql.schema.GraphQLCodeRegistry.Builder codeRegistryBuilder,
-			ShPostType shPostType, GraphQLObjectType graphQLObjectType, GraphQLInputObjectType postTypeWhereInput) {
+	private String getPostTypeNamePlural(ShPostType shPostType) {
+		return this.normalizedName(shPostType.getNamePlural());
+	}
 
-		String postTypeName = this.getPostTypeName(shPostType);
+	private void createObjectTypes(Builder queryTypeBuilder,
+			graphql.schema.GraphQLCodeRegistry.Builder codeRegistryBuilder, ShPostType shPostType) {
 
-		queryTypeBuilder.field(newFieldDefinition().name(postTypeName).type(list(graphQLObjectType))
+		GraphQLObjectType graphQLObjectType = this.createObjectType(shPostType);
+		
+		this.createObjectTypeUnique(queryTypeBuilder, codeRegistryBuilder, shPostType, graphQLObjectType);
+
+		this.createObjectTypePlural(queryTypeBuilder, codeRegistryBuilder, shPostType, graphQLObjectType);
+
+	}
+
+	private void createObjectTypePlural(Builder queryTypeBuilder,
+			graphql.schema.GraphQLCodeRegistry.Builder codeRegistryBuilder, ShPostType shPostType, GraphQLObjectType graphQLObjectType) {
+		String postTypeNamePlural = this.getPostTypeNamePlural(shPostType);
+
+		GraphQLInputObjectType.Builder postTypeWhereInputBuilder = newInputObject()
+				.name(shPostType.getName().concat(WHERE_INPUT)).description("Identifies documents");
+		
+		this.whereFieldsPlural(shPostType, postTypeWhereInputBuilder);		
+
+		GraphQLInputObjectType postTypeWhereInput = postTypeWhereInputBuilder.comparatorRegistry(BY_NAME_REGISTRY)
+				.build();
+
+		queryTypeBuilder.field(newFieldDefinition().name(postTypeNamePlural)
+				.type(nonNull(list(nonNull(graphQLObjectType))))
 				.argument(newArgument().name(STAGE_ARG)
 						.description("A required enumeration indicating the current content Stage (defaults to DRAFT)")
 						.type(nonNull(stageEnum)).defaultValue(20))
@@ -251,12 +263,47 @@ public class ShGraphQL {
 						.description("An optional object type to filter the content based on a nested set of criteria.")
 						.type(postTypeWhereInput)));
 
-		codeRegistryBuilder.dataFetcher(coordinates(QUERY_TYPE, postTypeName), getPostTypeAllDataFetcher(shPostType));
+		codeRegistryBuilder.dataFetcher(coordinates(QUERY_TYPE, postTypeNamePlural),
+				this.getPostTypeAllDataFetcherPlural(shPostType));
 	}
 
-	private GraphQLObjectType postTypeFields(ShPostType shPostType, Builder builder,
-			GraphQLInputObjectType.Builder postTypeWhereInputBuilder) {
+	private GraphQLObjectType createObjectType(ShPostType shPostType) {
+		Builder builderPlural = newObject().name(shPostType.getName()).description(shPostType.getDescription());
+		
+		this.createObjectTypeFields(shPostType, builderPlural);
+		
+		return builderPlural.comparatorRegistry(BY_NAME_REGISTRY).build();
+	}
 
+	private void createObjectTypeUnique(Builder queryTypeBuilder,
+			graphql.schema.GraphQLCodeRegistry.Builder codeRegistryBuilder, ShPostType shPostType,  GraphQLObjectType graphQLObjectType) {
+		String postTypeName = this.getPostTypeName(shPostType);
+
+		GraphQLInputObjectType.Builder postTypeWhereUniqueInputBuilder = newInputObject()
+				.name(shPostType.getName().concat(WHERE_UNIQUE_INPUT))
+				.description(String.format("References %s record uniquely", shPostType.getName()));
+
+		this.whereFieldsUnique(postTypeWhereUniqueInputBuilder);
+
+		GraphQLInputObjectType postTypeWhereUniqueInput = postTypeWhereUniqueInputBuilder
+				.comparatorRegistry(BY_NAME_REGISTRY).build();
+
+		queryTypeBuilder.field(newFieldDefinition().name(postTypeName).type(graphQLObjectType)
+				.argument(newArgument().name(STAGE_ARG)
+						.description("A required enumeration indicating the current content Stage (defaults to DRAFT)")
+						.type(nonNull(stageEnum)).defaultValue(20))
+				.argument(newArgument().name(LOCALES_ARG)
+						.description("A required array of one or more locales, defaults to the project's default.")
+						.type(nonNull(list(localeEnum))).defaultValue("EN"))
+				.argument(newArgument().name(WHERE_ARG)
+						.description("An optional object type to filter the content based on a nested set of criteria.")
+						.type(nonNull(postTypeWhereUniqueInput))));
+
+		codeRegistryBuilder.dataFetcher(coordinates(QUERY_TYPE, postTypeName),
+				this.getPostTypeAllDataFetcherUnique(shPostType));
+	}
+
+	private void createObjectTypeFields(ShPostType shPostType, Builder builder) {
 		builder.field(newFieldDefinition().name(ID).description("Identifier").type(GraphQLID));
 		builder.field(newFieldDefinition().name(TITLE).description("Title").type(GraphQLString));
 		builder.field(newFieldDefinition().name(DESCRIPTION).description("Description").type(GraphQLString));
@@ -270,15 +317,11 @@ public class ShGraphQL {
 			builder.field(newFieldDefinition().name(postTypeAttrName).description(shPostTypeAttr.getDescription())
 					.type(GraphQLString));
 		}
-
-		this.whereFields(shPostType, postTypeWhereInputBuilder);
-
-		return builder.comparatorRegistry(BY_NAME_REGISTRY).build();
 	}
 
-	private void whereFields(ShPostType shPostType, GraphQLInputObjectType.Builder postTypeWhereInputBuilder) {
+	private void whereFieldsPlural(ShPostType shPostType, GraphQLInputObjectType.Builder postTypeWhereInputBuilder) {
 
-		String whereInputName = getPostTypeName(shPostType).concat(WHERE_INPUT);
+		String whereInputName = shPostType.getName().concat(WHERE_INPUT);
 
 		GraphQLTypeReference whereInputRef = GraphQLTypeReference.typeRef(whereInputName);
 
@@ -313,13 +356,37 @@ public class ShGraphQL {
 		}
 	}
 
+	private void whereFieldsUnique(GraphQLInputObjectType.Builder postTypeWhereInputBuilder) {
+		this.createInputObjectFieldCondition(postTypeWhereInputBuilder, ID, null, GraphQLID, "Identifier");
+	}
+
 	private String normalizedName(String object) {
 		String objectName = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL,
 				object.toLowerCase().replaceAll("-", "_"));
 		return objectName;
 	}
 
-	private DataFetcher<List<Map<String, String>>> getPostTypeAllDataFetcher(ShPostType shPostType) {
+	private DataFetcher<Map<String, String>> getPostTypeAllDataFetcherUnique(ShPostType shPostType) {
+		return dataFetchingEnvironment -> {
+			Map<String, String> post = new HashMap<>();
+
+			Map<String, Object> whereMap = dataFetchingEnvironment.getArgument(WHERE_ARG);
+
+			if (whereMap != null) {
+				for (Entry<String, Object> whereArgItem : whereMap.entrySet()) {
+					String arg = whereArgItem.getKey();
+					if (arg.equals(ID)) {
+						String objectId = whereMap.get(ID).toString();
+						ShObject shObject = shObjectRepository.findById(objectId).orElse(null);
+						post = shPostUtils.postAttrGraphQL((ShPost) shObject);
+					}
+				}
+			}
+			return post;
+		};
+	}
+
+	private DataFetcher<List<Map<String, String>>> getPostTypeAllDataFetcherPlural(ShPostType shPostType) {
 		return dataFetchingEnvironment -> {
 			List<Map<String, String>> posts = new ArrayList<>();
 
