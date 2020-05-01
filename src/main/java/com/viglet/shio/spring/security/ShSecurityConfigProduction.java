@@ -89,7 +89,8 @@ public class ShSecurityConfigProduction extends WebSecurityConfigurerAdapter {
 		http.httpBasic().authenticationEntryPoint(shAuthenticationEntryPoint).and().authorizeRequests()
 				.antMatchers("/index.html", "/welcome/**", "/", "/store/**", "/thirdparty/**", "/js/**", "/css/**",
 						"/template/**", "/img/**", "/sites/**", "/__tur/**", "/swagger-resources/**", "/h2/**",
-						"/image/**", "/login-page/**", "/logout-page/**", "/graphql")
+						"/image/**", "/login-page/**", "/logout-page/**", "/graphql","/manifest.json",
+						"/*.png", "/*.ico")
 				.permitAll().anyRequest().authenticated().and()
 				.addFilterAfter(new ShCsrfHeaderFilter(), CsrfFilter.class).csrf()
 				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and().logout();
