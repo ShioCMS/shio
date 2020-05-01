@@ -34,7 +34,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,6 +51,7 @@ import com.viglet.shio.sites.cache.component.ShCachePageBean;
 import com.viglet.shio.sites.utils.ShSitesObjectUtils;
 import com.viglet.shio.utils.ShFormUtils;
 import com.viglet.shio.utils.ShStaticFileUtils;
+import com.viglet.shio.utils.ShUserUtils;
 
 /**
  * @author Alexandre Oliveira
@@ -77,6 +77,8 @@ public class ShSitesContext {
 	private ShSiteRepository shSiteRepository;
 	@Autowired
 	private ShUserRepository shUserRepository;
+	@Autowired
+	private ShUserUtils shUserUtils;
 
 	@PostMapping("/sites/**")
 	private ModelAndView sitesPostForm(HttpServletRequest request, HttpServletResponse response) {
@@ -162,10 +164,9 @@ public class ShSitesContext {
 		try {
 			String username = request.getParameter("username");
 			String password = request.getParameter("password");
-			BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-			ShUser shUser = shUserRepository.findByUsername(username);
 
-			if (shUser != null && passwordEncoder.matches(password, shUser.getPassword())) {
+			if (shUserUtils.isValidUserAndPassword(username, password)) {
+				ShUser shUser = shUserRepository.findByUsername(username);
 				String callback = (String) session.getAttribute("shLoginCallBack");
 
 				List<String> groupList = new ArrayList<>();

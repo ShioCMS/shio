@@ -23,6 +23,7 @@ import graphql.spring.web.servlet.GraphQLInvocationData;
 import graphql.spring.web.servlet.JsonSerializer;
 import graphql.spring.web.servlet.components.GraphQLRequestBody;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -36,7 +37,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.viglet.shio.utils.ShUserUtils;
+
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -44,114 +49,89 @@ import java.util.concurrent.CompletableFuture;
 @RestController
 public class ShGraphQLEndpoint {
 
-    @Autowired
-    GraphQLInvocation graphQLInvocation;
+	@Autowired
+	GraphQLInvocation graphQLInvocation;
 
-    @Autowired
-    ExecutionResultHandler executionResultHandler;
+	@Autowired
+	ExecutionResultHandler executionResultHandler;
 
-    @Autowired
-    JsonSerializer jsonSerializer;
+	@Autowired
+	JsonSerializer jsonSerializer;
 
-    @RequestMapping(value = "graphql",
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public Object graphqlPOST(
-            @RequestHeader(value = HttpHeaders.CONTENT_TYPE, required = false) String contentType,
-            @RequestParam(value = "query", required = false) String query,
-            @RequestParam(value = "operationName", required = false) String operationName,
-            @RequestParam(value = "variables", required = false) String variablesJson,
-            @RequestBody(required = false) String body,
-            WebRequest webRequest) throws IOException {
+	@Autowired
+	private ShUserUtils shUserUtils;
 
-        if (body == null) {
-            body = "";
-        }
+	@RequestMapping(value = "graphql", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Object graphqlPOST(@RequestHeader(value = HttpHeaders.CONTENT_TYPE, required = false) String contentType,
+			@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
+			@RequestParam(value = "query", required = false) String query,
+			@RequestParam(value = "operationName", required = false) String operationName,
+			@RequestParam(value = "variables", required = false) String variablesJson,
+			@RequestBody(required = false) String body, WebRequest webRequest) throws IOException {
 
-        // https://graphql.org/learn/serving-over-http/#post-request
-        //
-        // A standard GraphQL POST request should use the application/json content type,
-        // and include a JSON-encoded body of the following form:
-        //
-        // {
-        //   "query": "...",
-        //   "operationName": "...",
-        //   "variables": { "myVariable": "someValue", ... }
-        // }
+		if (this.isAuthenticated(authorization)) {
+			if (body == null) {
+				body = "";
+			}
+			
+			if (MediaType.APPLICATION_JSON_VALUE.equals(contentType)) {
+				GraphQLRequestBody request = jsonSerializer.deserialize(body, GraphQLRequestBody.class);
+				if (request.getQuery() == null) {
+					request.setQuery("");
+				}
+				return executeRequest(request.getQuery(), request.getOperationName(), request.getVariables(),
+						webRequest);
+			}
 
-        if (MediaType.APPLICATION_JSON_VALUE.equals(contentType)) {
-            GraphQLRequestBody request = jsonSerializer.deserialize(body, GraphQLRequestBody.class);
-            if (request.getQuery() == null) {
-                request.setQuery("");
-            }
-            return executeRequest(request.getQuery(), request.getOperationName(), request.getVariables(), webRequest);
-        }
+			if (query != null) {
+				return executeRequest(query, operationName, convertVariablesJson(variablesJson), webRequest);
+			}
 
-        // In addition to the above, we recommend supporting two additional cases:
-        //
-        // * If the "query" query string parameter is present (as in the GET example above),
-        //   it should be parsed and handled in the same way as the HTTP GET case.
+			if ("application/graphql".equals(contentType)) {
+				return executeRequest(body, null, null, webRequest);
+			}
+		}
+		throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Could not process GraphQL request");
+	}
 
-        if (query != null) {
-            return executeRequest(query, operationName, convertVariablesJson(variablesJson), webRequest);
-        }
+	private boolean isAuthenticated(String authorization) {
+		boolean authenticated = true;
+		if (!StringUtils.isEmpty(authorization) && authorization.toLowerCase().startsWith("basic")) {
+			String base64Credentials = authorization.substring("Basic".length()).trim();
+			byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
+			String credentials = new String(credDecoded, StandardCharsets.UTF_8);
+			final String[] values = credentials.split(":", 2);
+			String username = values[0];
+			String password = values[1];
+			authenticated = shUserUtils.isValidUserAndPassword(username, password);
+		}
+		return authenticated;
+	}
 
-        // * If the "application/graphql" Content-Type header is present,
-        //   treat the HTTP POST body contents as the GraphQL query string.
+	@RequestMapping(value = "graphql", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Object graphqlGET(@RequestParam("query") String query,
+			@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
+			@RequestParam(value = "operationName", required = false) String operationName,
+			@RequestParam(value = "variables", required = false) String variablesJson, WebRequest webRequest) {
 
-        if ("application/graphql".equals(contentType)) {
-            return executeRequest(body, null, null, webRequest);
-        }
+		if (this.isAuthenticated(authorization)) {
+			return executeRequest(query, operationName, convertVariablesJson(variablesJson), webRequest);
+		}
+		throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Could not process GraphQL request");
+	}
 
-        throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Could not process GraphQL request");
-    }
+	private Map<String, Object> convertVariablesJson(String jsonMap) {
+		if (jsonMap == null) {
+			return Collections.emptyMap();
+		}
+		return jsonSerializer.deserialize(jsonMap, Map.class);
+	}
 
-    @RequestMapping(value = "graphql",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public Object graphqlGET(
-            @RequestParam("query") String query,
-            @RequestParam(value = "operationName", required = false) String operationName,
-            @RequestParam(value = "variables", required = false) String variablesJson,
-            WebRequest webRequest) {
-
-        // https://graphql.org/learn/serving-over-http/#get-request
-        //
-        // When receiving an HTTP GET request, the GraphQL query should be specified in the "query" query string.
-        // For example, if we wanted to execute the following GraphQL query:
-        //
-        // {
-        //   me {
-        //     name
-        //   }
-        // }
-        //
-        // This request could be sent via an HTTP GET like so:
-        //
-        // http://myapi/graphql?query={me{name}}
-        //
-        // Query variables can be sent as a JSON-encoded string in an additional query parameter called "variables".
-        // If the query contains several named operations,
-        // an "operationName" query parameter can be used to control which one should be executed.
-
-        return executeRequest(query, operationName, convertVariablesJson(variablesJson), webRequest);
-    }
-
-    private Map<String, Object> convertVariablesJson(String jsonMap) {
-        if (jsonMap == null) {
-            return Collections.emptyMap();
-        }
-        return jsonSerializer.deserialize(jsonMap, Map.class);
-    }
-
-    private Object executeRequest(
-            String query,
-            String operationName,
-            Map<String, Object> variables,
-            WebRequest webRequest) {
-        GraphQLInvocationData invocationData = new GraphQLInvocationData(query, operationName, variables);
-        CompletableFuture<ExecutionResult> executionResult = graphQLInvocation.invoke(invocationData, webRequest);
-        return executionResultHandler.handleExecutionResult(executionResult);
-    }
+	private Object executeRequest(String query, String operationName, Map<String, Object> variables,
+			WebRequest webRequest) {
+		GraphQLInvocationData invocationData = new GraphQLInvocationData(query, operationName, variables);
+		CompletableFuture<ExecutionResult> executionResult = graphQLInvocation.invoke(invocationData, webRequest);
+		return executionResultHandler.handleExecutionResult(executionResult);
+	}
 
 }
