@@ -16,68 +16,58 @@
 								<h3>Select your site</h3>
 							</div>
 							<div class="pull-right" style="margin: -40px 0 0;">
-								<a ui-sref="content.post-type-select" class="btn btn-viglet">Or
-									model a Post Type</a>
-
+								<a ui-sref="content.site-import" class="btn btn-viglet"><span
+										class="glyphicon glyphicon-import" aria-hidden="true"
+										style="margin-right: 10px;"></span>
+									Import</a>
+								<a ui-sref="content.site-new" class="btn btn-success"><i class="fa fa-sitemap"
+										aria-hidden="true" style="margin-right: 10px;"></i>
+									New</a>
 							</div>
 						</fieldset>
 					</section>
 				</div>
-				<div class="row" ng-controller="ShSiteListCtrl">
-					<div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
-						<div class="thumbnail">
-							<a ui-sref="content.site-new">
-								<div style="background-color: #3399ff; text-align: center; height: 200px">
-									<img src="img/add.png" alt="nlp" style="padding: 15px">
-									<h3 style="color: white; position: absolute; left: 30px; top: 170px; z-index: 10">
-										Add
-										Site</h3>
-								</div>
-							</a>
-							<div class="caption">
-								<p>Create a New Site</p>
-								<p>
-									<a ui-sref="content.site-new" class="btn btn-primary btn-lg btn-block"
-										role="button">Create</a>
-								</p>
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
-						<div class="thumbnail">
-							<a ui-sref="content.site-import">
-								<div style="background-color: #ffcc00; text-align: right; height: 200px">
-									<img src="img/import.png" alt="nlp" style="padding: 15px">
-									<h3 style="color: white; position: absolute; left: 30px; top: 170px; z-index: 10">
-										Import</h3>
-								</div>
-							</a>
-							<div class="caption">
-								<p>Import from Zip file</p>
-								<p>
-									<a ui-sref="content.site-import" class="btn btn-warning btn-lg btn-block"
-										role="button">Import</a>
-								</p>
-							</div>
-						</div>
-					</div>
+				<!------>
 
-					<div class="col-lg-3 col-md-3 col-sm-4 col-xs-12"
-						ng-repeat="shSiteItem in shSites | filter:query | orderBy:orderProp">
-						<div class="thumbnail">
-							<a ui-sref="content.children({objectId: shSiteItem.id})" ui-sref-opts="{reload:true}">
-								<div style="background-color: #FF6347; text-align: right; height: 200px">
-									<img src="img/site.png" alt="site" style="padding: 15px">
-									<h3 style="color: white; position: absolute; left: 30px; top: 170px; z-index: 10">
-										{{shSiteItem.name}}</h3>
+				<div class="row" ng-controller="ShSiteListCtrl">
+					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+						<div style="margin-bottom: 10px; height: 40px">
+							<div class="pull-left" style="width: 100%;">
+								<input class="form-control" id="search-folder-input" type="text"
+									ng-model="shSearchFilter" placeholder="Find a site..." style="width: 100%;"
+									ng-change="changeSearchTextBox(shSearchFilter)">
+							</div>
+						</div>
+						<div>
+							<div class="list-group" ng-hide="thumbs">
+								<!--  Sites  -->
+								<div ui-sortable="sortableAuthProviders" ng-model="shSites">
+									<div ng-repeat="shSiteItem in shSites | filter:shSearchFilter"
+										class="list-group-item">
+										<div class="row">
+											<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="display: flex;">
+												<div>
+													<div>
+														<i class="fa fa-sitemap fa-3x" aria-hidden="true"
+															style="margin-right: 10px;color: tomato;padding-top: 10px;"></i>
+													</div>
+												</div>
+												<div>
+													<a type="button" class="btn btn-link"
+														ui-sref="content.children({objectId: shSiteItem.id})"
+														ui-sref-opts="{reload:true}">{{shSiteItem.name}}</a>
+													<div style="font-size: 12px;margin-left: 14px;">
+														<div style="display: table-row">
+															<div class="ng-binding">
+																{{shSiteItem.description}}
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>										
+										</div>
+									</div>
 								</div>
-							</a>
-							<div class="caption">
-								<p>{{shSiteItem.description}}</p>
-								<p>
-									<a ui-sref="content.children({objectId: shSiteItem.id})"
-										class="btn btn-viglet btn-lg btn-block" role="button">Edit</a>
-								</p>
 							</div>
 						</div>
 					</div>
@@ -110,7 +100,7 @@
 										- {{shWorkflowTask.shObject.title}}</a></div>
 								<div>
 									<span am-time-ago="shWorkflowTask.date" style="color: gray"></span><span
-									ng-if="shWorkflowTask.requester != null"> - </span> {{shWorkflowTask.requester}}
+										ng-if="shWorkflowTask.requester != null"> - </span> {{shWorkflowTask.requester}}
 								</div>
 							</div>
 
