@@ -66,7 +66,7 @@
 						ng-repeat="shSiteItem in shSites | filter:query | orderBy:orderProp">
 						<div class="thumbnail">
 							<a ui-sref="content.children({objectId: shSiteItem.id})" ui-sref-opts="{reload:true}">
-								<div style="background-color: #FF874B; text-align: right; height: 200px">
+								<div style="background-color: #FF6347; text-align: right; height: 200px">
 									<img src="img/site.png" alt="site" style="padding: 15px">
 									<h3 style="color: white; position: absolute; left: 30px; top: 170px; z-index: 10">
 										{{shSiteItem.name}}</h3>
@@ -115,7 +115,7 @@
 							</div>
 
 							<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-								<span class="label label-warning">Task</span>
+								<span class="label label-shio">Task</span>
 							</div>
 						</div>
 					</div>

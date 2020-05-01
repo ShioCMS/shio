@@ -13,7 +13,7 @@
 		<div class="panel-body">
 			<div infinite-scroll='loadMore()' infinite-scroll-distance='2'>
 				<article ng-repeat="commit in commits" style="margin-top: 30px; padding-bottom: 0px;">
-					<a style="margin-bottom: 5px;color: #FF874B; font-weight: bolder;" ng-href="/api/v2/object/{{commit.shObject}}/editor">
+					<a style="margin-bottom: 5px;color: #FF6347; font-weight: bolder;" ng-href="/api/v2/object/{{commit.shObject}}/editor">
 						{{commit.description}}
 					</a>
 					<ul class="breadcrumb" style="background-color: white; padding: 0px; margin: 0px; font-size: 12px;">
