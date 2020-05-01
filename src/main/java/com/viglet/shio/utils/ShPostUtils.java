@@ -116,13 +116,13 @@ public class ShPostUtils {
 	@Autowired
 	private ShGroupRepository shGroupRepository;
 
-	private final static String ID = "id";
-	private final static String TITLE = "title";
-	private final static String DESCRIPTION = "description";	
-	private final static String FURL = "furl";
-	private final static String MODIFIER = "modifier";
-	private final static String PUBLISHER = "publisher";
-	private final static String FOLDER = "folder";
+	private final static String GRAPHQL_ID = "id";
+	private final static String GRAPHQL_TITLE = "_title";
+	private final static String GRAPHQL_DESCRIPTION = "_description";	
+	private final static String GRAPHQL_FURL = "_furl";
+	private final static String GRAPHQL_MODIFIER = "_modifier";
+	private final static String GRAPHQL_PUBLISHER = "_publisher";
+	private final static String GRAPHQL_FOLDER = "_folder";
 	
 	public ShPost getShPostFromObjectId(String objectId) {
 
@@ -767,13 +767,13 @@ public class ShPostUtils {
 
 		Map<String, String> shPostAttrMap = new HashMap<>();
 		if (shPost != null) {
-			shPostAttrMap.put(ID, shPost.getId());
-			shPostAttrMap.put(TITLE, shPost.getTitle());
-			shPostAttrMap.put(DESCRIPTION, shPost.getSummary());
-			shPostAttrMap.put(FURL, shPost.getFurl());
-			shPostAttrMap.put(MODIFIER, shPost.getModifier());
-			shPostAttrMap.put(PUBLISHER, shPost.getPublisher());
-			shPostAttrMap.put(FOLDER, shPost.getShFolder().getName());
+			shPostAttrMap.put(GRAPHQL_ID, shPost.getId());
+			shPostAttrMap.put(GRAPHQL_TITLE, shPost.getTitle());
+			shPostAttrMap.put(GRAPHQL_DESCRIPTION, shPost.getSummary());
+			shPostAttrMap.put(GRAPHQL_FURL, shPost.getFurl());
+			shPostAttrMap.put(GRAPHQL_MODIFIER, shPost.getModifier());
+			shPostAttrMap.put(GRAPHQL_PUBLISHER, shPost.getPublisher());
+			shPostAttrMap.put(GRAPHQL_FOLDER, shPost.getShFolder().getName());
 			for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
 				String postTypeAttrName = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL,
 						shPostAttr.getShPostTypeAttr().getName().toLowerCase().replaceAll("-", "_"));

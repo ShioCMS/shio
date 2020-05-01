@@ -100,15 +100,15 @@ public class ShGraphQL {
 	private final static String OR = "OR";
 	private final static String NOT = "NOT";
 	private final static String ID = "id";
-	private final static String TITLE = "title";
-	private final static String DESCRIPTION = "description";
-	private final static String FURL = "furl";
-	private final static String MODIFIER = "modifier";
-	private final static String PUBLISHER = "publisher";
-	private final static String FOLDER = "folder";
-	private final static String CREATED_AT = "createdAt";
-	private final static String UPDATED_AT = "updatedAt";
-	private final static String PUBLISHED_AT = "publishedAt";
+	private final static String TITLE = "_title";
+	private final static String DESCRIPTION = "_description";
+	private final static String FURL = "_furl";
+	private final static String MODIFIER = "_modifier";
+	private final static String PUBLISHER = "_publisher";
+	private final static String FOLDER = "_folder";
+	private final static String CREATED_AT = "_createdAt";
+	private final static String UPDATED_AT = "_updatedAt";
+	private final static String PUBLISHED_AT = "_publishedAt";
 
 	private final static String CONDITION_EQUAL = "equal";
 	private final static String CONDITION_NOT = "not";
@@ -221,11 +221,11 @@ public class ShGraphQL {
 	}
 
 	private String getPostTypeName(ShPostType shPostType) {
-		return this.normalizedName(shPostType.getName());
+		return this.normalizedPostType(shPostType.getName());
 	}
 
 	private String getPostTypeNamePlural(ShPostType shPostType) {
-		return this.normalizedName(shPostType.getNamePlural());
+		return this.normalizedPostType(shPostType.getNamePlural());
 	}
 
 	private void createObjectTypes(Builder queryTypeBuilder,
@@ -313,7 +313,7 @@ public class ShGraphQL {
 		builder.field(newFieldDefinition().name(FOLDER).description("Folder Name").type(GraphQLString));
 
 		for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs()) {
-			String postTypeAttrName = this.normalizedName(shPostTypeAttr.getName());
+			String postTypeAttrName = this.normalizedField(shPostTypeAttr.getName());
 			builder.field(newFieldDefinition().name(postTypeAttrName).description(shPostTypeAttr.getDescription())
 					.type(GraphQLString));
 		}
@@ -348,7 +348,7 @@ public class ShGraphQL {
 
 		for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs()) {
 
-			String postTypeAttrName = this.normalizedName(shPostTypeAttr.getName());
+			String postTypeAttrName = this.normalizedField(shPostTypeAttr.getName());
 
 			this.createInputObjectField(postTypeWhereInputBuilder, postTypeAttrName, FIELD_TYPE_GRAPHQL_STRING,
 					shPostTypeAttr.getDescription());
@@ -360,10 +360,17 @@ public class ShGraphQL {
 		this.createInputObjectFieldCondition(postTypeWhereInputBuilder, ID, null, GraphQLID, "Identifier");
 	}
 
-	private String normalizedName(String object) {
+	private String normalizedField(String object) {	
 		String objectName = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL,
 				object.toLowerCase().replaceAll("-", "_"));
 		return objectName;
+
+	}
+	private String normalizedPostType(String object) {	
+		char c[] = object.replaceAll("-", "_").toCharArray();
+		c[0] = Character.toLowerCase(c[0]);
+		return new String(c);
+
 	}
 
 	private DataFetcher<Map<String, String>> getPostTypeAllDataFetcherUnique(ShPostType shPostType) {
