@@ -20,18 +20,18 @@ package com.viglet.shio.post.type;
  * @author Alexandre Oliveira
  */
 public class ShSystemPostType {
-	public static final String TEXT = "PT-TEXT";
-	public static final String PHOTO = "PT-PHOTO";
-	public static final String VIDEO = "PT-VIDEO";
-	public static final String QUOTE = "PT-QUOTE";
-	public static final String LINK = "PT-LINK";
-	public static final String FILE = "PT-FILE";
-	public static final String TEXT_AREA = "PT-TEXT-AREA";
-	public static final String ARTICLE = "PT-ARTICLE";
-	public static final String REGION = "PT-REGION";
-	public static final String THEME = "PT-THEME";
-	public static final String PAGE_LAYOUT = "PT-PAGE-LAYOUT";
-	public static final String FOLDER_INDEX = "PT-FOLDER-INDEX";
-	public static final String ALIAS = "PT-ALIAS";
+	public static final String TEXT = "Text";
+	public static final String PHOTO = "Photo";
+	public static final String VIDEO = "Video";
+	public static final String QUOTE = "Quote";
+	public static final String LINK = "Link";
+	public static final String FILE = "File";
+	public static final String TEXT_AREA = "TextArea";
+	public static final String ARTICLE = "Article";
+	public static final String REGION = "Region";
+	public static final String THEME = "Theme";
+	public static final String PAGE_LAYOUT = "PageLayout";
+	public static final String FOLDER_INDEX = "FolderIndex";
+	public static final String ALIAS = "Alias";
 
 }

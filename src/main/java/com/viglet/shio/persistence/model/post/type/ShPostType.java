@@ -56,6 +56,8 @@ public class ShPostType extends ShObject {
 
 	@Field
 	private String name;
+	
+	private String namePlural;
 
 	private String title;
 
@@ -99,6 +101,14 @@ public class ShPostType extends ShObject {
 
 	public void setName(ShSystemPostType shSystemPostType) {
 		this.name = shSystemPostType.toString();
+	}
+	
+	public String getNamePlural() {
+		return namePlural;
+	}
+
+	public void setNamePlural(String namePlural) {
+		this.namePlural = namePlural;
 	}
 
 	public String getTitle() {

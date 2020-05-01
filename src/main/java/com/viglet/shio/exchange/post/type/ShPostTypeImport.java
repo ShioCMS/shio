@@ -53,6 +53,7 @@ public class ShPostTypeImport {
 				shPostType.setDate(shPostTypeExchange.getDate());
 				shPostType.setDescription(shPostTypeExchange.getDescription());
 				shPostType.setName(shPostTypeExchange.getName());
+				shPostType.setNamePlural(shPostTypeExchange.getNamePlural());
 				shPostType.setOwner(shPostTypeExchange.getOwner());
 				shPostType.setSystem(shPostTypeExchange.isSystem() ? (byte) 1 : (byte) 0);
 

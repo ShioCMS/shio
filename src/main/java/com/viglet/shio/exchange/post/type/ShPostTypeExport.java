@@ -132,6 +132,7 @@ public class ShPostTypeExport {
 		ShPostTypeExchange shPostTypeExchange = new ShPostTypeExchange();
 		shPostTypeExchange.setId(shPostType.getId());
 		shPostTypeExchange.setName(shPostType.getName());
+		shPostTypeExchange.setNamePlural(shPostType.getNamePlural());
 		shPostTypeExchange.setLabel(shPostType.getTitle());
 		shPostTypeExchange.setDate(shPostType.getDate());
 		shPostTypeExchange.setDescription(shPostType.getDescription());
