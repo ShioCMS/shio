@@ -9148,7 +9148,7 @@ a, button {
   color: #202020 !important; }
 
 .text-brand {
-  color: #FF874B !important; }
+  color: #FF6347 !important; }
 
 .text-sky {
   color: #00A4FF !important; }
@@ -9203,7 +9203,7 @@ a, button {
   background-color: #202020 !important; }
 
 .bg-brand {
-  background-color: #FF874B !important; }
+  background-color: #FF6347 !important; }
 
 .bg-sky {
   background-color: #00A4FF !important; }
@@ -9951,7 +9951,7 @@ label {
 
 /* NAVBAR PREVIEW */
 .navbar-preview {
-  border-bottom: 3px solid #FF874B;
+  border-bottom: 3px solid #FF6347;
   border-top: 1px solid #E5E9EF;
   min-height: 60px;
   background: #ffffff;
@@ -9980,14 +9980,14 @@ label {
     height: 0;
     border-style: solid;
     border-width: 0px 5px 8px 5px;
-    border-color: transparent transparent #FF874B transparent;
+    border-color: transparent transparent #FF6347 transparent;
     position: absolute;
     left: 50%;
     -webkit-transform: translateX(-50%);
     transform: translateX(-50%);
     bottom: -3px; }
   .nav-preview .nav-link.active {
-    color: #FF874B; }
+    color: #FF6347; }
     .nav-preview .nav-link.active:before {
       content: ''; }
 
@@ -10228,7 +10228,7 @@ button, input, optgroup, select, textarea {
   .badge.badge-pill {
     padding: .4em .7em; }
   .badge.badge-brand {
-    background: #FF874B; }
+    background: #FF6347; }
 
 /* BUTTONS */
 .btn, .woocommerce a.button,
@@ -10266,7 +10266,7 @@ button, input, optgroup, select, textarea {
   .woocommerce-page #respond input.btn-brand#submit,
   .woocommerce #content input.btn-brand.button,
   .woocommerce-page #content input.btn-brand.button {
-    background: #FF874B;
+    background: #FF6347;
     color: #ffffff; }
     .btn.btn-brand:hover, .woocommerce a.btn-brand.button:hover,
     .woocommerce-page a.btn-brand.button:hover,
@@ -10287,7 +10287,7 @@ button, input, optgroup, select, textarea {
     .woocommerce-page #respond input.btn-brand#submit:focus,
     .woocommerce #content input.btn-brand.button:focus,
     .woocommerce-page #content input.btn-brand.button:focus {
-      background: #FF691F;
+      background: orangered;
       color: #ffffff; }
   .btn.btn-inverted, .woocommerce a.btn-inverted.button,
   .woocommerce-page a.btn-inverted.button,
@@ -10300,7 +10300,7 @@ button, input, optgroup, select, textarea {
   .woocommerce #content input.btn-inverted.button,
   .woocommerce-page #content input.btn-inverted.button {
     background: #ffffff;
-    color: #FF874B; }
+    color: #FF6347; }
   .btn.btn-outline-brand, .woocommerce a.btn-outline-brand.button,
   .woocommerce-page a.btn-outline-brand.button,
   .woocommerce button.btn-outline-brand.button,
@@ -10312,8 +10312,8 @@ button, input, optgroup, select, textarea {
   .woocommerce #content input.btn-outline-brand.button,
   .woocommerce-page #content input.btn-outline-brand.button {
     background: transparent;
-    color: #FF874B;
-    border-color: #FF874B; }
+    color: #FF6347;
+    border-color: #FF6347; }
     .btn.btn-outline-brand:hover, .woocommerce a.btn-outline-brand.button:hover,
     .woocommerce-page a.btn-outline-brand.button:hover,
     .woocommerce button.btn-outline-brand.button:hover,
@@ -10333,8 +10333,8 @@ button, input, optgroup, select, textarea {
     .woocommerce-page #respond input.btn-outline-brand#submit:focus,
     .woocommerce #content input.btn-outline-brand.button:focus,
     .woocommerce-page #content input.btn-outline-brand.button:focus {
-      border-color: #FF691F;
-      background: #FF691F;
+      border-color: orangered;
+      background: orangered;
       color: #ffffff; }
   .btn.btn-lg, .btn-group-lg > .btn, .woocommerce .btn-group-lg > a.button,
   .woocommerce-page .btn-group-lg > a.button,
@@ -10956,7 +10956,7 @@ button, input, optgroup, select, textarea {
   .nav-item > .active.sub-nav-link {
     color: #202020; }
     .nav-item > .active.sub-nav-link:before {
-      background: #FF874B;
+      background: #FF6347;
       height: 3px; }
 
 .sub-nav-link {
@@ -10964,7 +10964,7 @@ button, input, optgroup, select, textarea {
   .sub-nav-link.active {
     color: #202020; }
     .sub-nav-link.active:before {
-      background: #FF874B; }
+      background: #FF6347; }
 
 /* THEME CARD */
 .theme-cards-holder:not(:last-child) {
@@ -11118,13 +11118,13 @@ button, input, optgroup, select, textarea {
   color: #2AD8A2; }
 
 .page-item.active .page-link, .page-item.active .page-numbers {
-  background-color: #FF874B;
-  border-color: #FF874B; }
+  background-color: #FF6347;
+  border-color: #FF6347; }
 
 .page-link, .page-numbers {
-  color: #FF874B; }
+  color: #FF6347; }
   .page-link:hover, .page-numbers:hover, .page-link:focus, .page-numbers:focus {
-    color: #FF691F;
+    color: orangered;
     text-decoration: none; }
 
 /* HERO */
@@ -11438,7 +11438,7 @@ body.preview-active .theme-preview {
   z-index: 101; }
   .theme-preview__loading i.loading-icon {
     font-size: 40px;
-    color: #FF874B;
+    color: #FF6347;
     display: inline-block;
     -webkit-animation: spin 2s infinite linear;
     animation: spin 2s infinite linear; }
@@ -11535,7 +11535,7 @@ hr {
   background: #2AD8A2; }
 
 .alert-brand {
-  background: #FF874B; }
+  background: #FF6347; }
 
 .alert-warning {
   background: #E5CC36; }
@@ -12009,7 +12009,7 @@ p.woocommerce-FormRow {
   width: 100%;
   left: 0;
   bottom: 1px;
-  background: #FF874B;
+  background: #FF6347;
   height: 3px; }
 
 .u-columns.woocommerce-Addresses {
@@ -12155,7 +12155,7 @@ ul.row {
   bottom: 0;
   left: 0;
   background: none;
-  background: #FF874B;
+  background: #FF6347;
   color: #ffffff;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
@@ -12166,7 +12166,7 @@ ul.row {
 
 .dokan-pro-gravatar-drag.dokan-btn:hover, .dokan-pro-gravatar-drag.dokan-btn:focus {
   color: #ffffff;
-  background: #FF691F; }
+  background: orangered; }
 
 .dokan-settings-content .dokan-settings-area .dokan-gravatar .gravatar-wrap .dokan-gravatar-img, .dokan-settings-content .dokan-settings-area .dokan-gravatar .dokan-remove-gravatar-image {
   width: 100%;
@@ -12192,12 +12192,12 @@ ul.row {
 .dokan-banner-drag.dokan-btn {
   font-size: 12px;
   padding: 7.5px 18px;
-  background: #FF874B;
+  background: #FF6347;
   color: #ffffff;
   border: none; }
 
 .dokan-banner-drag.dokan-btn:hover, .dokan-banner-drag.dokan-btn:focus {
-  background: #FF691F;
+  background: orangered;
   color: #ffffff; }
 
 .form-sublink {
@@ -12480,7 +12480,7 @@ ul.row {
 
 #vendor_order_items .dokan-btn {
   height: 40px;
-  background: #FF874B;
+  background: #FF6347;
   color: #ffffff;
   border: none;
   font-size: 14px;
