@@ -344,6 +344,11 @@ shioApp.config([
 				templateUrl: 'template/admin/group/group-item.html',
 				controller: 'ShGroupEditCtrl',
 				data : { pageTitle: 'Edit Group | Viglet Shio' }
+			}).state('playground', {
+				url: '/playground',
+				templateUrl: 'template/playground/playground.html',
+				controller : 'ShPlaygroundCtrl',
+				data : { pageTitle: 'API Playground | Viglet Shio' }
 			})
 
 		} ]);
