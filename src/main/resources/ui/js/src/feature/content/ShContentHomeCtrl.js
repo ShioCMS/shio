@@ -11,4 +11,5 @@ shioApp.controller('ShContentHomeCtrl', ["$http", "$scope",
 				function (response) {
 					$scope.shWorkflowTasks = response.data;
 				}));
+
 	}]);
