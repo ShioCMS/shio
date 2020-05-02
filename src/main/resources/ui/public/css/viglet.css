@@ -1,46 +1,46 @@
 .numberCircle {
-	padding: 5px;
-	display: inline-block;
-	line-height: 0px;
-	border-radius: 50%;
-	border: 1px solid;
-	font-size: 12px;
-	border-color: #FF874Bdd;
+    padding: 5px;
+    display: inline-block;
+    line-height: 0px;
+    border-radius: 50%;
+    border: 1px solid;
+    font-size: 12px;
+    border-color: #ff6347dd;
 }
 
 .numberCircle span {
-	display: inline-block;
-	padding-top: 50%;
-	padding-bottom: 50%;
-	margin-left: 2px;
-	margin-right: 2px;
-	color: #FF874Bdd;
-	font-family: Arial, sans-serif;
+    display: inline-block;
+    padding-top: 50%;
+    padding-bottom: 50%;
+    margin-left: 2px;
+    margin-right: 2px;
+    color: #ff6347dd;
+    font-family: Arial, sans-serif;
 }
 
 .numberCircleFolder {
-	padding: 5px;
-	display: inline-block;
-	line-height: 0px;
-	border-radius: 50%;
-	border: 0px solid;
-	/* border-bottom-color: #ddd; */
-	font-size: 12px;
-	background-color: #FF874Bdd;
+    padding: 5px;
+    display: inline-block;
+    line-height: 0px;
+    border-radius: 50%;
+    border: 0px solid;
+    /* border-bottom-color: #ddd; */
+    font-size: 12px;
+    background-color: #ff6347dd;
 }
 
 .numberCircleFolder span {
-	display: inline-block;
-	padding-top: 50%;
-	padding-bottom: 50%;
-	margin-left: 2px;
-	margin-right: 2px;
-	color: white;
-	font-family: Arial, sans-serif;
+    display: inline-block;
+    padding-top: 50%;
+    padding-bottom: 50%;
+    margin-left: 2px;
+    margin-right: 2px;
+    color: white;
+    font-family: Arial, sans-serif;
 }
 
 .fa-viglet {
-    color: #FF874B;
+    color: #ff6347;
 }
 
 .fa-viglet:focus .fa-viglet:hover {
@@ -48,14 +48,15 @@
 }
 
 .btn-viglet {
-    background-color: #FF874B;
+    background-color: #ff6347;
     color: white !important;
 }
 
 .btn-viglet:hover {
-    background-color: #FF691F;
+    background-color: orangered;
     color: white !important;
 }
+
 .video-container {
     position: relative;
     padding-bottom: 56.25%;
@@ -132,7 +133,7 @@ body {
     font-weight: normal;
     line-height: 22px;
     color: #444;
-    position: relative;
+    /* position: relative; */
 }
 
 html {
@@ -178,7 +179,7 @@ h6 {
 .navbar-default .navbar-left>li:hover {
     color: #333;
     background-color: transparent;
-    border-bottom-color: #FF691F;
+    border-bottom-color: orangered;
     border-bottom-width: 2px;
     border-bottom-style: solid;
 }
@@ -193,7 +194,7 @@ navbar-default .navbar-left>li:focus,
 }
 
 .navbar-default .navbar-left>li.active {
-    border-bottom-color: #FF874B;
+    border-bottom-color: #ff6347;
     border-bottom-width: 2px;
     border-bottom-style: solid;
 }
@@ -205,7 +206,6 @@ navbar-default .navbar-left>li:focus,
         min-height: 140px;
         width: auto;
         height: auto;
-        //  height: 100%; 
         z-index: -100;
         background-size: cover;
         background-position: center top;
@@ -215,6 +215,7 @@ navbar-default .navbar-left>li:focus,
         overflow: hidden;
         background: url('../img/banner/aiforeveryone.jpg') 50% 50% / cover no-repeat;
     }
+
     .banner-text {
         margin-top: 10px;
         margin-bottom: 0px;
@@ -222,6 +223,7 @@ navbar-default .navbar-left>li:focus,
         font-size: 16px;
         line-height: 150%
     }
+
     .turing-text {
         text-align: left;
         font-size: 20px;
@@ -236,7 +238,6 @@ navbar-default .navbar-left>li:focus,
         min-height: 180px;
         width: auto;
         height: auto;
-        //  height: 100%; 
         z-index: -100;
         background-size: cover;
         background-position: center top;
@@ -246,6 +247,7 @@ navbar-default .navbar-left>li:focus,
         overflow: hidden;
         background: url('../img/banner/aiforeveryone.jpg') 50% 50% / cover no-repeat;
     }
+
     .banner-text {
         margin-top: 10px;
         margin-bottom: 0px;
@@ -253,6 +255,7 @@ navbar-default .navbar-left>li:focus,
         font-size: 20px;
         line-height: 150%
     }
+
     .turing-text {
         text-align: left;
         font-size: 14px;
@@ -261,6 +264,7 @@ navbar-default .navbar-left>li:focus,
 }
 
 @media only screen and (min-width: 1200px) {
+
     /* Styles */
     .cover-welcome {
         margin-top: 60px;
@@ -268,7 +272,6 @@ navbar-default .navbar-left>li:focus,
         min-height: 450px;
         width: auto;
         height: auto;
-        //  height: 100%; 
         z-index: -100;
         background-size: cover;
         background-position: center top;
@@ -278,6 +281,7 @@ navbar-default .navbar-left>li:focus,
         overflow: hidden;
         background: url('../img/banner/aiforeveryone.jpg') 50% 50% / cover no-repeat;
     }
+
     .banner-text {
         margin-top: 10px;
         margin-bottom: 20px;
@@ -285,9 +289,148 @@ navbar-default .navbar-left>li:focus,
         font-size: 25px;
         line-height: 150%
     }
+
     .turing-text {
         text-align: left;
         font-size: 16px;
         line-height: 150%
     }
+}
+/* Sidebar - Begin */
+.fa-2x-sidebar {
+    font-size: 2em;
+}
+
+.fa-sidebar {
+    position: relative;
+    display: table-cell;
+    width: 60px;
+    height: 36px;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 20px;
+}
+
+
+.sidebar-menu:hover,
+nav.sidebar-menu.expanded {
+    width: 250px;
+    overflow: visible;
+}
+
+.sidebar-menu {
+    background: #fbfbfb;
+    border-right: 1px solid #e5e5e5;
+    position: fixed;
+    top: 54px;
+    bottom: 0;
+    height: 100%;
+    left: 0;
+    width: 60px;
+    overflow: hidden;
+    -webkit-transition: width .05s linear;
+    transition: width .05s linear;
+    transform: translateZ(0) scale(1, 1);
+    -webkit-transform: translateZ(0) scale(1, 1);
+    z-index: 1000;
+    padding-top: 10px;
+}
+
+.sidebar-menu>ul {
+    margin: 7px 0;
+}
+
+.sidebar-menu li {
+    position: relative;
+    display: block;
+    width: 250px;
+}
+
+.sidebar-menu li>a {
+    position: relative;
+    display: table;
+    border-collapse: collapse;
+    border-spacing: 0;
+    color: #999;
+    font-family: arial;
+    font-size: 14px;
+    text-decoration: none;
+    transform: translateZ(0) scale(1, 1);
+    -webkit-transform: translateZ(0) scale(1, 1);
+    -webkit-transition: all .1s linear;
+    transition: all .1s linear;
+
+}
+
+.sidebar-menu .nav-icon {
+    position: relative;
+    display: table-cell;
+    width: 60px;
+    height: 36px;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 18px;
+}
+
+.sidebar-menu .nav-text {
+    position: relative;
+    display: table-cell;
+    vertical-align: middle;
+    width: 190px;
+    font-family: 'Titillium Web', sans-serif;
+}
+
+.sidebar-menu>ul.sidebar-bottom {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    margin-bottom: 70px;
+}
+
+nav.sidebar-menu {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+nav.sidebar-menu ul,
+nav.sidebar-menu li {
+    outline: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.sidebar-menu li:hover>a,
+nav.sidebar-menu li.active>a,
+.dropdown-menu>li>a:hover,
+.dropdown-menu>li>a:focus,
+.dropdown-menu>.active>a,
+.dropdown-menu>.active>a:hover,
+.dropdown-menu>.active>a:focus,
+.no-touch .dashboard-page nav.dashboard-menu ul li:hover a,
+.dashboard-page nav.dashboard-menu ul li.active a {
+    color: #fff;
+    background-color: #ff6347;
+}
+
+.sidebar-area {
+    padding-left: 70px;
+}
+/* Sidebar - End */
+
+.nav-pills>li.active>a,
+.nav-pills>li.active>a:focus,
+.nav-pills>li.active>a:hover {
+    color: #fff;
+    background-color: #ff6347;
+}
+
+.ace_editor {
+    height: 200px;
+}
+
+.label-shio {
+    background-color: #ff6347dd;
 }

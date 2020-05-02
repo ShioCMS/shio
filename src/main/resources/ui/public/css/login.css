@@ -1,4 +1,5 @@
 @import url(https://fonts.googleapis.com/css?family=Vibur);
+
 * {
   box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -7,7 +8,7 @@
 }
 
 body {
-  background:floralwhite;
+  background: rgba(255, 99, 71, 0.575);
 }
 
 h1 {
@@ -32,6 +33,11 @@ h1 {
   -ms-transform: translateY(-50%);
   -webkit-transform: translateY(-50%);
   transform: translateY(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-radius: 20px;
+  box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.2), 0 10px 50px 0 rgba(0, 0, 0, 0.19);
+  color: tomato;
 }
 
 .form-group {
@@ -50,9 +56,11 @@ h1 {
   -webkit-border-radius: 4px;
   border-radius: 4px;
 }
-.form-control:focus, .form-control:focus + .fa {
-  border-color: #fb6210;
-  color: #fb6210;
+
+.form-control:focus,
+.form-control:focus+.fa {
+  border-color: tomato;
+  color: tomato;
 }
 
 .form-group .fa {
@@ -68,13 +76,14 @@ h1 {
   animation: wrong-log 0.3s;
 }
 
-.log-status.wrong-entry .form-control, .wrong-entry .form-control + .fa {
+.log-status.wrong-entry .form-control,
+.wrong-entry .form-control+.fa {
   border-color: #ed1c24;
   color: #ed1c24;
 }
 
 .log-btn {
-  background: #fb6210;
+  background: tomato;
   display: inline-block;
   width: 100%;
   font-size: 16px;
@@ -94,6 +103,7 @@ h1 {
   font-size: 12px;
   margin-bottom: 15px;
 }
+
 .link:hover {
   text-decoration: underline;
   color: #8C918F;
@@ -107,35 +117,55 @@ h1 {
 }
 
 @-moz-keyframes wrong-log {
-  0%, 100% {
+
+  0%,
+  100% {
     left: 0px;
   }
-  20% , 60% {
+
+  20%,
+  60% {
     left: 15px;
   }
-  40% , 80% {
+
+  40%,
+  80% {
     left: -15px;
   }
 }
+
 @-webkit-keyframes wrong-log {
-  0%, 100% {
+
+  0%,
+  100% {
     left: 0px;
   }
-  20% , 60% {
+
+  20%,
+  60% {
     left: 15px;
   }
-  40% , 80% {
+
+  40%,
+  80% {
     left: -15px;
   }
 }
+
 @keyframes wrong-log {
-  0%, 100% {
+
+  0%,
+  100% {
     left: 0px;
   }
-  20% , 60% {
+
+  20%,
+  60% {
     left: 15px;
   }
-  40% , 80% {
+
+  40%,
+  80% {
     left: -15px;
   }
 }

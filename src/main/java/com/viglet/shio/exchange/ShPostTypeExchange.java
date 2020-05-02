@@ -33,6 +33,8 @@ public class ShPostTypeExchange {
 	private Date date;
 
 	private String name;
+	
+	private String namePlural;
 
 	private String label;
 
@@ -98,6 +100,15 @@ public class ShPostTypeExchange {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	
+	public String getNamePlural() {
+		return namePlural;
+	}
+
+	public void setNamePlural(String namePlural) {
+		this.namePlural = namePlural;
 	}
 
 	public String getLabel() {

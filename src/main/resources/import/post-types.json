@@ -2,7 +2,8 @@
   "postTypes" : [ {
     "id" : "bbaf6bde-337d-4789-86ca-ba2e2ceb1e87",
     "date" : "2018-06-14T13:53Z",
-    "name" : "PT-TEXT",
+    "name" : "Text",
+    "namePlural" : "Texts",
     "label" : "Text",
     "description" : "Text Post Type",
     "fields" : {
@@ -23,7 +24,8 @@
   }, {
     "id" : "1bf7dcd3-8a6e-4e9e-b8a2-2a27fe550758",
     "date" : "2018-06-14T13:53Z",
-    "name" : "PT-PHOTO",
+    "name" : "Photo",
+    "namePlural" : "Photos",
     "label" : "Photo",
     "description" : "Photo Post Type",
     "fields" : {
@@ -44,7 +46,8 @@
   }, {
     "id" : "59df2ffe-eaff-49b8-acf8-ed347c81ebe2",
     "date" : "2018-06-14T13:53Z",
-    "name" : "PT-VIDEO",
+    "name" : "Video",
+    "namePlural" : "Videos",
     "label" : "Video",
     "description" : "Video Post Type",
     "fields" : {
@@ -65,7 +68,8 @@
   }, {
     "id" : "86539e60-e763-4f03-851e-c1b79c11fc4f",
     "date" : "2018-06-14T13:53Z",
-    "name" : "PT-QUOTE",
+    "name" : "Quote",
+    "namePlural" : "Quotes",
     "label" : "Quote",
     "description" : "Quote Post Type",
     "fields" : {
@@ -86,7 +90,8 @@
   }, {
     "id" : "ad0fe339-f925-4dab-a379-bee572a5a097",
     "date" : "2018-06-14T13:53Z",
-    "name" : "PT-LINK",
+    "name" : "Links",
+    "namePlural" : "Links",
     "label" : "Link",
     "description" : "Link Post Type",
     "fields" : {
@@ -107,7 +112,8 @@
   }, {
     "id" : "61a2d491-0933-418c-b1cb-aae042d5e089",
     "date" : "2018-06-14T13:53Z",
-    "name" : "PT-FILE",
+    "name" : "File",
+    "namePlural" : "Files",
     "label" : "File",
     "description" : "File Post Type",
     "fields" : {
@@ -128,7 +134,8 @@
   }, {
     "id" : "537f147e-64ea-4205-a3c7-987b8cb3f196",
     "date" : "2018-06-14T13:53Z",
-    "name" : "PT-TEXT-AREA",
+    "name" : "TextArea",
+    "namePlural" : "TextAreas",
     "label" : "Text Area",
     "description" : "Text Area Post Type",
     "fields" : {
@@ -149,7 +156,8 @@
   }, {
     "id" : "cd710f35-e838-41e2-943c-1c93f0543ebe",
     "date" : "2019-07-11T01:25Z",
-    "name" : "PT-ARTICLE",
+    "name" : "Article",
+    "namePlural" : "Articles",
     "label" : "Article",
     "description" : "Article Post Type",
     "fields" : {
@@ -214,7 +222,8 @@
   }, {
     "id" : "301a6645-a3b2-4644-b7c6-ec6554aef8d1",
     "date" : "2019-07-11T01:27Z",
-    "name" : "PT-REGION",
+    "name" : "Region",
+    "namePlural" : "Regions",
     "label" : "Region",
     "description" : "Region Post Type",
     "fields" : {
@@ -290,7 +299,8 @@
   }, {
     "id" : "2ec0d911-e64f-41e5-a5d8-e0dba41a5b3b",
     "date" : "2018-06-14T13:53Z",
-    "name" : "PT-THEME",
+    "name" : "Theme",
+    "namePlural" : "Themes",
     "label" : "Theme",
     "description" : "Theme Post Type",
     "fields" : {
@@ -344,7 +354,8 @@
   }, {
     "id" : "3d349925-3509-463d-ab72-b0006d0b463e",
     "date" : "2018-06-14T13:53Z",
-    "name" : "PT-PAGE-LAYOUT",
+    "name" : "PageLayout",
+    "namePlural" : "PageLayouts",
     "label" : "Page Layout",
     "description" : "Page Layout Post Type",
     "fields" : {
@@ -409,7 +420,8 @@
   }, {
     "id" : "e2c7b542-ff13-4150-bac8-ef95251753e8",
     "date" : "2018-06-14T13:53Z",
-    "name" : "PT-ALIAS",
+    "name" : "Alias",
+    "namePlural" : "Aliases",
     "label" : "Alias",
     "description" : "Alias Post Type",
     "fields" : {
@@ -452,7 +464,8 @@
   }, {
     "id" : "10edbb4c-b2fa-481b-be8c-404e44050167",
     "date" : "2019-07-11T00:31Z",
-    "name" : "PT-FOLDER-INDEX",
+    "name" : "FolderIndex",
+    "namePlural" : "FolderIndexes",
     "label" : "Folder Index",
     "description" : "Folder Index Post Type",
     "fields" : {
