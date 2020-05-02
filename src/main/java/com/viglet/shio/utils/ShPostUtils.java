@@ -41,7 +41,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.google.common.base.CaseFormat;
 import com.viglet.shio.api.ShJsonView;
 import com.viglet.shio.bean.ShPostTinyBean;
 import com.viglet.shio.object.ShObjectType;
@@ -115,14 +114,6 @@ public class ShPostUtils {
 	private ShUserRepository shUserRepository;
 	@Autowired
 	private ShGroupRepository shGroupRepository;
-
-	private final static String GRAPHQL_ID = "id";
-	private final static String GRAPHQL_TITLE = "_title";
-	private final static String GRAPHQL_DESCRIPTION = "_description";	
-	private final static String GRAPHQL_FURL = "_furl";
-	private final static String GRAPHQL_MODIFIER = "_modifier";
-	private final static String GRAPHQL_PUBLISHER = "_publisher";
-	private final static String GRAPHQL_FOLDER = "_folder";
 	
 	public ShPost getShPostFromObjectId(String objectId) {
 
@@ -757,27 +748,6 @@ public class ShPostUtils {
 		if (shRelatorItem.getShChildrenPostAttrs() != null) {
 			for (ShPostAttr shPostAttr : shRelatorItem.getShChildrenPostAttrs()) {
 				shPostAttrMap.put(shPostAttr.getShPostTypeAttr().getId(), shPostAttr);
-			}
-
-		}
-		return shPostAttrMap;
-	}
-
-	public Map<String, String> postAttrGraphQL(ShPost shPost) {
-
-		Map<String, String> shPostAttrMap = new HashMap<>();
-		if (shPost != null) {
-			shPostAttrMap.put(GRAPHQL_ID, shPost.getId());
-			shPostAttrMap.put(GRAPHQL_TITLE, shPost.getTitle());
-			shPostAttrMap.put(GRAPHQL_DESCRIPTION, shPost.getSummary());
-			shPostAttrMap.put(GRAPHQL_FURL, shPost.getFurl());
-			shPostAttrMap.put(GRAPHQL_MODIFIER, shPost.getModifier());
-			shPostAttrMap.put(GRAPHQL_PUBLISHER, shPost.getPublisher());
-			shPostAttrMap.put(GRAPHQL_FOLDER, shPost.getShFolder().getName());
-			for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
-				String postTypeAttrName = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL,
-						shPostAttr.getShPostTypeAttr().getName().toLowerCase().replaceAll("-", "_"));
-				shPostAttrMap.put(postTypeAttrName, shPostAttr.getStrValue());
 			}
 
 		}

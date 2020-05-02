@@ -46,6 +46,7 @@ public final class ShGraphQLConstants {
 	public final static String MODIFIER = "_modifier";
 	public final static String PUBLISHER = "_publisher";
 	public final static String FOLDER = "_folder";
+	public final static String SITE = "_site";
 	public final static String CREATED_AT = "_createdAt";
 	public final static String UPDATED_AT = "_updatedAt";
 	public final static String PUBLISHED_AT = "_publishedAt";

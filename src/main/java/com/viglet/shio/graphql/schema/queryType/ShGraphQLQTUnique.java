@@ -40,7 +40,6 @@ import com.viglet.shio.persistence.model.object.ShObject;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
 import com.viglet.shio.persistence.repository.object.ShObjectRepository;
-import com.viglet.shio.utils.ShPostUtils;
 
 import graphql.schema.DataFetcher;
 import graphql.schema.GraphQLInputObjectType;
@@ -60,8 +59,6 @@ public class ShGraphQLQTUnique {
 	private ShObjectRepository shObjectRepository;
 	@Autowired
 	private ShGraphQLUtils shGraphQLUtils;
-	@Autowired
-	private ShPostUtils shPostUtils;
 	@Autowired
 	private ShGraphQLInputObjectField shGraphQLInputObjectField;
 
@@ -115,7 +112,7 @@ public class ShGraphQLQTUnique {
 					if (arg.equals(ShGraphQLConstants.ID)) {
 						String objectId = whereMap.get(ShGraphQLConstants.ID).toString();
 						ShObject shObject = shObjectRepository.findById(objectId).orElse(null);
-						post = shPostUtils.postAttrGraphQL((ShPost) shObject);
+						post = shGraphQLUtils.postAttrGraphQL((ShPost) shObject);
 					}
 				}
 			}
