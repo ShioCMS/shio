@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.viglet.shio.graphql;
+package com.viglet.shio.graphql.schema;
 
 import static graphql.schema.GraphQLEnumType.newEnum;
 import static graphql.schema.GraphqlTypeComparatorRegistry.BY_NAME_REGISTRY;

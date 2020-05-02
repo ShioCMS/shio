@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.viglet.shio.graphql;
+package com.viglet.shio.graphql.schema.queryType;
 
 import static graphql.Scalars.GraphQLString;
 import static graphql.schema.FieldCoordinates.coordinates;
@@ -33,6 +33,9 @@ import java.util.Map.Entry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.viglet.shio.graphql.schema.ShGraphQLConstants;
+import com.viglet.shio.graphql.schema.ShGraphQLInputObjectField;
+import com.viglet.shio.graphql.schema.ShGraphQLUtils;
 import com.viglet.shio.persistence.model.object.ShObject;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
@@ -64,6 +67,8 @@ public class ShGraphQLQTPlural {
 	private ShPostUtils shPostUtils;
 	@Autowired
 	private ShGraphQLUtils shGraphQLUtils;
+	@Autowired
+	private ShGraphQLInputObjectField shGraphQLInputObjectField;
 
 	private String getPostTypeNamePlural(ShPostType shPostType) {
 		return shGraphQLUtils.normalizedPostType(shPostType.getNamePlural());
@@ -104,41 +109,41 @@ public class ShGraphQLQTPlural {
 
 		GraphQLTypeReference whereInputRef = GraphQLTypeReference.typeRef(whereInputName);
 
-		shGraphQLUtils.createInputObjectField(postTypeWhereInputBuilder, ShGraphQLConstants.SEARCH, GraphQLString,
-				"Contains search across all appropriate fields.");
-		shGraphQLUtils.createInputObjectField(postTypeWhereInputBuilder, ShGraphQLConstants.AND, whereInputRef,
-				"Logical AND on all given filters.");
-		shGraphQLUtils.createInputObjectField(postTypeWhereInputBuilder, ShGraphQLConstants.OR, whereInputRef,
-				"Logical OR on all given filters.");
-		shGraphQLUtils.createInputObjectField(postTypeWhereInputBuilder, ShGraphQLConstants.NOT, whereInputRef,
-				"Logical NOT on all given filters combined by AND.");
+		shGraphQLInputObjectField.createInputObjectField(postTypeWhereInputBuilder, ShGraphQLConstants.SEARCH,
+				GraphQLString, "Contains search across all appropriate fields.");
+		shGraphQLInputObjectField.createInputObjectField(postTypeWhereInputBuilder, ShGraphQLConstants.AND,
+				whereInputRef, "Logical AND on all given filters.");
+		shGraphQLInputObjectField.createInputObjectField(postTypeWhereInputBuilder, ShGraphQLConstants.OR,
+				whereInputRef, "Logical OR on all given filters.");
+		shGraphQLInputObjectField.createInputObjectField(postTypeWhereInputBuilder, ShGraphQLConstants.NOT,
+				whereInputRef, "Logical NOT on all given filters combined by AND.");
 
-		shGraphQLUtils.createInputObjectField(postTypeWhereInputBuilder, ShGraphQLConstants.ID,
+		shGraphQLInputObjectField.createInputObjectField(postTypeWhereInputBuilder, ShGraphQLConstants.ID,
 				ShGraphQLConstants.FIELD_TYPE_GRAPHQL_ID, "Identifier");
-		shGraphQLUtils.createInputObjectField(postTypeWhereInputBuilder, ShGraphQLConstants.TITLE,
+		shGraphQLInputObjectField.createInputObjectField(postTypeWhereInputBuilder, ShGraphQLConstants.TITLE,
 				ShGraphQLConstants.FIELD_TYPE_GRAPHQL_STRING, "Title");
-		shGraphQLUtils.createInputObjectField(postTypeWhereInputBuilder, ShGraphQLConstants.DESCRIPTION,
+		shGraphQLInputObjectField.createInputObjectField(postTypeWhereInputBuilder, ShGraphQLConstants.DESCRIPTION,
 				ShGraphQLConstants.FIELD_TYPE_GRAPHQL_STRING, "Description");
-		shGraphQLUtils.createInputObjectField(postTypeWhereInputBuilder, ShGraphQLConstants.FURL,
+		shGraphQLInputObjectField.createInputObjectField(postTypeWhereInputBuilder, ShGraphQLConstants.FURL,
 				ShGraphQLConstants.FIELD_TYPE_GRAPHQL_STRING, "Friendly URL");
-		shGraphQLUtils.createInputObjectField(postTypeWhereInputBuilder, ShGraphQLConstants.MODIFIER,
+		shGraphQLInputObjectField.createInputObjectField(postTypeWhereInputBuilder, ShGraphQLConstants.MODIFIER,
 				ShGraphQLConstants.FIELD_TYPE_GRAPHQL_STRING, "Modifier");
-		shGraphQLUtils.createInputObjectField(postTypeWhereInputBuilder, ShGraphQLConstants.PUBLISHER,
+		shGraphQLInputObjectField.createInputObjectField(postTypeWhereInputBuilder, ShGraphQLConstants.PUBLISHER,
 				ShGraphQLConstants.FIELD_TYPE_GRAPHQL_STRING, "Publisher");
-		shGraphQLUtils.createInputObjectField(postTypeWhereInputBuilder, ShGraphQLConstants.FOLDER,
+		shGraphQLInputObjectField.createInputObjectField(postTypeWhereInputBuilder, ShGraphQLConstants.FOLDER,
 				ShGraphQLConstants.FIELD_TYPE_GRAPHQL_STRING, "Folder Name");
-		shGraphQLUtils.createInputObjectField(postTypeWhereInputBuilder, ShGraphQLConstants.CREATED_AT,
+		shGraphQLInputObjectField.createInputObjectField(postTypeWhereInputBuilder, ShGraphQLConstants.CREATED_AT,
 				ShGraphQLConstants.FIELD_TYPE_GRAPHQL_DATE_TIME, "Created Date");
-		shGraphQLUtils.createInputObjectField(postTypeWhereInputBuilder, ShGraphQLConstants.UPDATED_AT,
+		shGraphQLInputObjectField.createInputObjectField(postTypeWhereInputBuilder, ShGraphQLConstants.UPDATED_AT,
 				ShGraphQLConstants.FIELD_TYPE_GRAPHQL_DATE_TIME, "Updated Date");
-		shGraphQLUtils.createInputObjectField(postTypeWhereInputBuilder, ShGraphQLConstants.PUBLISHED_AT,
+		shGraphQLInputObjectField.createInputObjectField(postTypeWhereInputBuilder, ShGraphQLConstants.PUBLISHED_AT,
 				ShGraphQLConstants.FIELD_TYPE_GRAPHQL_DATE_TIME, "Published Date");
 
 		for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs()) {
 
 			String postTypeAttrName = shGraphQLUtils.normalizedField(shPostTypeAttr.getName());
 
-			shGraphQLUtils.createInputObjectField(postTypeWhereInputBuilder, postTypeAttrName,
+			shGraphQLInputObjectField.createInputObjectField(postTypeWhereInputBuilder, postTypeAttrName,
 					ShGraphQLConstants.FIELD_TYPE_GRAPHQL_STRING, shPostTypeAttr.getDescription());
 
 		}
@@ -217,7 +222,7 @@ public class ShGraphQLQTPlural {
 							field = arg.split(ShGraphQLConstants.CONDITION_SEPARATOR)[0];
 							action = arg.replaceFirst(field.concat(ShGraphQLConstants.CONDITION_SEPARATOR), "");
 						}
-						shGraphQLUtils.fieldWhereCondition(shPostType, posts, whereArgItem, field, action);
+						shGraphQLInputObjectField.fieldWhereCondition(shPostType, posts, whereArgItem, field, action);
 					}
 				}
 			} else {

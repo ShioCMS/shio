@@ -14,14 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.viglet.shio.graphql;
+package com.viglet.shio.graphql.schema;
 
 import static graphql.Scalars.GraphQLID;
 import static graphql.Scalars.GraphQLString;
-import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
 import static graphql.schema.GraphQLInputObjectField.newInputObjectField;
-import static graphql.schema.GraphQLObjectType.newObject;
-import static graphql.schema.GraphqlTypeComparatorRegistry.BY_NAME_REGISTRY;
 
 import java.util.List;
 import java.util.Map;
@@ -30,7 +27,6 @@ import java.util.Map.Entry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.google.common.base.CaseFormat;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
 import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
@@ -41,19 +37,16 @@ import com.viglet.shio.utils.ShPostUtils;
 import graphql.scalars.ExtendedScalars;
 import graphql.schema.GraphQLInputObjectType;
 import graphql.schema.GraphQLInputType;
-import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLScalarType;
-import graphql.schema.GraphQLObjectType.Builder;
 
 /**
- * GraphQL Utils.
+ * GraphQL Input Object Field.
  *
  * @author Alexandre Oliveira
  * @since 0.3.7
  */
 @Component
-public class ShGraphQLUtils {
-
+public class ShGraphQLInputObjectField {
 	@Autowired
 	private ShPostTypeAttrRepository shPostTypeAttrRepository;
 	@Autowired
@@ -61,20 +54,7 @@ public class ShGraphQLUtils {
 	@Autowired
 	private ShPostAttrService shPostAttrService;
 
-	public String normalizedField(String object) {
-		String objectName = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL,
-				object.toLowerCase().replaceAll("-", "_"));
-		return objectName;
-
-	}
-
-	public String normalizedPostType(String object) {
-		char c[] = object.replaceAll("-", "_").toCharArray();
-		c[0] = Character.toLowerCase(c[0]);
-		return new String(c);
-
-	}
-
+	
 	public void createInputObjectField(GraphQLInputObjectType.Builder builder, String name, GraphQLInputType type,
 			String description) {
 		builder.field(newInputObjectField().name(name).description(description).type(type));
@@ -146,35 +126,6 @@ public class ShGraphQLUtils {
 		for (ShPostAttr shPostAttr : shPostAttrs) {
 			Map<String, String> postAttrsDefault = shPostUtils.postAttrGraphQL(shPostAttr.getShPost());
 			posts.add(postAttrsDefault);
-		}
-	}
-
-	public GraphQLObjectType createObjectType(ShPostType shPostType) {
-		Builder builderPlural = newObject().name(shPostType.getName()).description(shPostType.getDescription());
-
-		this.createObjectTypeFields(shPostType, builderPlural);
-
-		return builderPlural.comparatorRegistry(BY_NAME_REGISTRY).build();
-	}
-
-	private void createObjectTypeFields(ShPostType shPostType, Builder builder) {
-		builder.field(newFieldDefinition().name(ShGraphQLConstants.ID).description("Identifier").type(GraphQLID));
-		builder.field(newFieldDefinition().name(ShGraphQLConstants.TITLE).description("Title").type(GraphQLString));
-		builder.field(newFieldDefinition().name(ShGraphQLConstants.DESCRIPTION).description("Description")
-				.type(GraphQLString));
-		builder.field(
-				newFieldDefinition().name(ShGraphQLConstants.FURL).description("Friendly URL").type(GraphQLString));
-		builder.field(
-				newFieldDefinition().name(ShGraphQLConstants.MODIFIER).description("Modifier").type(GraphQLString));
-		builder.field(
-				newFieldDefinition().name(ShGraphQLConstants.PUBLISHER).description("Publisher").type(GraphQLString));
-		builder.field(
-				newFieldDefinition().name(ShGraphQLConstants.FOLDER).description("Folder Name").type(GraphQLString));
-
-		for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs()) {
-			String postTypeAttrName = this.normalizedField(shPostTypeAttr.getName());
-			builder.field(newFieldDefinition().name(postTypeAttrName).description(shPostTypeAttr.getDescription())
-					.type(GraphQLString));
 		}
 	}
 }

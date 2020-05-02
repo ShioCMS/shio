@@ -14,8 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.viglet.shio.graphql;
+package com.viglet.shio.graphql.schema;
 
+import com.viglet.shio.graphql.schema.queryType.ShGraphQLQTPlural;
+import com.viglet.shio.graphql.schema.queryType.ShGraphQLQTUnique;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
 import com.viglet.shio.persistence.repository.post.type.ShPostTypeRepository;
 
@@ -36,13 +38,13 @@ import static graphql.schema.GraphQLCodeRegistry.newCodeRegistry;
 import static graphql.schema.GraphqlTypeComparatorRegistry.BY_NAME_REGISTRY;
 
 /**
- * GraphQL Provider.
+ * GraphQL Schema.
  *
  * @author Alexandre Oliveira
  * @since 0.3.7
  */
 @Component
-public class ShGraphQL {
+public class ShGraphQLSchema {
 
 	@Autowired
 	private ShPostTypeRepository shPostTypeRepository;
@@ -51,7 +53,7 @@ public class ShGraphQL {
 	@Autowired
 	private ShGraphQLQTPlural shGraphQLQTPlural;
 	@Autowired
-	private ShGraphQLUtils shGraphQLUtils;
+	private ShGraphQLObjectType shGraphQLObjectType;
 
 	private GraphQL graphQL;
 
@@ -71,7 +73,7 @@ public class ShGraphQL {
 	private void createObjectTypes(Builder queryTypeBuilder,
 			graphql.schema.GraphQLCodeRegistry.Builder codeRegistryBuilder, ShPostType shPostType) {
 
-		GraphQLObjectType graphQLObjectType = shGraphQLUtils.createObjectType(shPostType);
+		GraphQLObjectType graphQLObjectType = shGraphQLObjectType.createObjectType(shPostType);
 
 		shGraphQLQTUnique.createQueryTypeUnique(queryTypeBuilder, codeRegistryBuilder, shPostType, graphQLObjectType);
 

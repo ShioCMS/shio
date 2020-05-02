@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.viglet.shio.graphql;
+package com.viglet.shio.graphql.schema.queryType;
 
 import static graphql.Scalars.GraphQLID;
 import static graphql.schema.FieldCoordinates.coordinates;
@@ -33,6 +33,9 @@ import java.util.Map.Entry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.viglet.shio.graphql.schema.ShGraphQLConstants;
+import com.viglet.shio.graphql.schema.ShGraphQLInputObjectField;
+import com.viglet.shio.graphql.schema.ShGraphQLUtils;
 import com.viglet.shio.persistence.model.object.ShObject;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
@@ -59,6 +62,8 @@ public class ShGraphQLQTUnique {
 	private ShGraphQLUtils shGraphQLUtils;
 	@Autowired
 	private ShPostUtils shPostUtils;
+	@Autowired
+	private ShGraphQLInputObjectField shGraphQLInputObjectField;
 
 	private String getPostTypeNameUnique(ShPostType shPostType) {
 		return shGraphQLUtils.normalizedPostType(shPostType.getName());
@@ -94,8 +99,8 @@ public class ShGraphQLQTUnique {
 	}
 
 	private void whereFieldsUnique(GraphQLInputObjectType.Builder postTypeWhereInputBuilder) {
-		shGraphQLUtils.createInputObjectFieldCondition(postTypeWhereInputBuilder, ShGraphQLConstants.ID, null,
-				GraphQLID, "Identifier");
+		shGraphQLInputObjectField.createInputObjectFieldCondition(postTypeWhereInputBuilder, ShGraphQLConstants.ID,
+				null, GraphQLID, "Identifier");
 	}
 
 	private DataFetcher<Map<String, String>> getPostTypeAllDataFetcherUnique(ShPostType shPostType) {
