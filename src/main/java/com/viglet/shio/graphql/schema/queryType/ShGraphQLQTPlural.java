@@ -42,7 +42,6 @@ import com.viglet.shio.persistence.model.post.type.ShPostType;
 import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shio.persistence.repository.object.ShObjectRepository;
 import com.viglet.shio.persistence.repository.post.ShPostRepository;
-import com.viglet.shio.utils.ShPostUtils;
 
 import graphql.schema.DataFetcher;
 import graphql.schema.GraphQLInputObjectType;
@@ -63,8 +62,6 @@ public class ShGraphQLQTPlural {
 	private ShObjectRepository shObjectRepository;
 	@Autowired
 	private ShPostRepository shPostRepository;
-	@Autowired
-	private ShPostUtils shPostUtils;
 	@Autowired
 	private ShGraphQLUtils shGraphQLUtils;
 	@Autowired
@@ -132,6 +129,8 @@ public class ShGraphQLQTPlural {
 				ShGraphQLConstants.FIELD_TYPE_GRAPHQL_STRING, "Publisher");
 		shGraphQLInputObjectField.createInputObjectField(postTypeWhereInputBuilder, ShGraphQLConstants.FOLDER,
 				ShGraphQLConstants.FIELD_TYPE_GRAPHQL_STRING, "Folder Name");
+		shGraphQLInputObjectField.createInputObjectField(postTypeWhereInputBuilder, ShGraphQLConstants.SITE,
+				ShGraphQLConstants.FIELD_TYPE_GRAPHQL_STRING, "Site Name");
 		shGraphQLInputObjectField.createInputObjectField(postTypeWhereInputBuilder, ShGraphQLConstants.CREATED_AT,
 				ShGraphQLConstants.FIELD_TYPE_GRAPHQL_DATE_TIME, "Created Date");
 		shGraphQLInputObjectField.createInputObjectField(postTypeWhereInputBuilder, ShGraphQLConstants.UPDATED_AT,
@@ -171,48 +170,52 @@ public class ShGraphQLQTPlural {
 					} else if (arg.equals(ShGraphQLConstants.ID)) {
 						String objectId = whereMap.get(ShGraphQLConstants.ID).toString();
 						ShObject shObject = shObjectRepository.findById(objectId).orElse(null);
-						Map<String, String> postAttrs = shPostUtils.postAttrGraphQL((ShPost) shObject);
+						Map<String, String> postAttrs = shGraphQLUtils.postAttrGraphQL((ShPost) shObject);
 						posts.add(postAttrs);
 					} else if (arg.equals(ShGraphQLConstants.TITLE)) {
 						List<ShPost> shPosts = shPostRepository
 								.findByTitle(whereMap.get(ShGraphQLConstants.TITLE).toString());
 						for (ShPost shPost : shPosts) {
-							Map<String, String> postAttrs = shPostUtils.postAttrGraphQL(shPost);
+							Map<String, String> postAttrs = shGraphQLUtils.postAttrGraphQL(shPost);
 							posts.add(postAttrs);
 						}
 					} else if (arg.equals(ShGraphQLConstants.DESCRIPTION)) {
 						List<ShPost> shPosts = shPostRepository
 								.findBySummary(whereMap.get(ShGraphQLConstants.DESCRIPTION).toString());
 						for (ShPost shPost : shPosts) {
-							Map<String, String> postAttrs = shPostUtils.postAttrGraphQL(shPost);
+							Map<String, String> postAttrs = shGraphQLUtils.postAttrGraphQL(shPost);
 							posts.add(postAttrs);
 						}
 					} else if (arg.equals(ShGraphQLConstants.FURL)) {
 						List<ShPost> shPosts = shPostRepository
 								.findByFurl(whereMap.get(ShGraphQLConstants.FURL).toString());
 						for (ShPost shPost : shPosts) {
-							Map<String, String> postAttrs = shPostUtils.postAttrGraphQL(shPost);
+							Map<String, String> postAttrs = shGraphQLUtils.postAttrGraphQL(shPost);
 							posts.add(postAttrs);
 						}
+					} else if (arg.equals(ShGraphQLConstants.FOLDER)) {
+						
+					} else if (arg.equals(ShGraphQLConstants.SITE)) {
+						
 					} else if (arg.equals(ShGraphQLConstants.MODIFIER)) {
 						List<ShPost> shPosts = shPostRepository
 								.findByModifier(whereMap.get(ShGraphQLConstants.MODIFIER).toString());
 						for (ShPost shPost : shPosts) {
-							Map<String, String> postAttrs = shPostUtils.postAttrGraphQL(shPost);
+							Map<String, String> postAttrs = shGraphQLUtils.postAttrGraphQL(shPost);
 							posts.add(postAttrs);
 						}
 					} else if (arg.equals(ShGraphQLConstants.PUBLISHER)) {
 						List<ShPost> shPosts = shPostRepository
 								.findByPublisher(whereMap.get(ShGraphQLConstants.PUBLISHER).toString());
 						for (ShPost shPost : shPosts) {
-							Map<String, String> postAttrs = shPostUtils.postAttrGraphQL(shPost);
+							Map<String, String> postAttrs = shGraphQLUtils.postAttrGraphQL(shPost);
 							posts.add(postAttrs);
 						}
 					} else if (arg.equals(ShGraphQLConstants.FOLDER)) {
 						List<ShPost> shPosts = shPostRepository
 								.findByShFolder_Name(whereMap.get(ShGraphQLConstants.FOLDER).toString());
 						for (ShPost shPost : shPosts) {
-							Map<String, String> postAttrs = shPostUtils.postAttrGraphQL(shPost);
+							Map<String, String> postAttrs = shGraphQLUtils.postAttrGraphQL(shPost);
 							posts.add(postAttrs);
 						}
 					} else {
@@ -228,7 +231,7 @@ public class ShGraphQLQTPlural {
 			} else {
 				List<ShPost> shPosts = shPostRepository.findByShPostType(shPostType);
 				for (ShPost shPost : shPosts) {
-					Map<String, String> postAttrs = shPostUtils.postAttrGraphQL(shPost);
+					Map<String, String> postAttrs = shGraphQLUtils.postAttrGraphQL(shPost);
 					posts.add(postAttrs);
 				}
 			}

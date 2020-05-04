@@ -53,8 +53,8 @@ public class ShGraphQLObjectType {
 
 	private void createObjectTypeFields(ShPostType shPostType, Builder builder) {
 		builder.field(newFieldDefinition().name(ShGraphQLConstants.ID).description("Identifier").type(GraphQLID));
-		builder.field(newFieldDefinition().name(ShGraphQLConstants.TITLE).description("Title").type(GraphQLString));
-		builder.field(newFieldDefinition().name(ShGraphQLConstants.DESCRIPTION).description("Description")
+		builder.field(newFieldDefinition().name(ShGraphQLConstants.TITLE).description("System Title").type(GraphQLString));
+		builder.field(newFieldDefinition().name(ShGraphQLConstants.DESCRIPTION).description("System Description")
 				.type(GraphQLString));
 		builder.field(
 				newFieldDefinition().name(ShGraphQLConstants.FURL).description("Friendly URL").type(GraphQLString));
@@ -64,7 +64,9 @@ public class ShGraphQLObjectType {
 				newFieldDefinition().name(ShGraphQLConstants.PUBLISHER).description("Publisher").type(GraphQLString));
 		builder.field(
 				newFieldDefinition().name(ShGraphQLConstants.FOLDER).description("Folder Name").type(GraphQLString));
-
+		builder.field(
+				newFieldDefinition().name(ShGraphQLConstants.SITE).description("Site Name").type(GraphQLString));
+		
 		for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs()) {
 			String postTypeAttrName = shGraphQLUtils.normalizedField(shPostTypeAttr.getName());
 			builder.field(newFieldDefinition().name(postTypeAttrName).description(shPostTypeAttr.getDescription())

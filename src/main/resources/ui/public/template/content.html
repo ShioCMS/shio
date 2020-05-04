@@ -37,17 +37,18 @@
 							</div>
 						</div>
 						<div>
-							<div class="list-group" ng-hide="thumbs">
+							<div class="list-group">
 								<!--  Sites  -->
-								<div ui-sortable="sortableAuthProviders" ng-model="shSites">
+								<div ui-sortable="sortableSites" ng-model="shSites">
 									<div ng-repeat="shSiteItem in shSites | filter:shSearchFilter"
-										class="list-group-item">
+										ng-mouseenter="updateAction(shSiteItem.id,true)"
+										ng-mouseleave="updateAction(shSiteItem.id,false)" class="list-group-item">
 										<div class="row">
-											<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="display: flex;">
+											<div class="col-lg-11 col-md-10 col-sm-10 col-xs-8" style="display: flex;">
 												<div>
 													<div>
-														<i class="fa fa-sitemap fa-3x" aria-hidden="true"
-															style="margin-right: 10px;color: tomato;padding-top: 10px;"></i>
+														<i class="fa fa-sitemap fa-4x" aria-hidden="true"
+															style="margin-right: 10px;color: tomato;padding-top: 16px;"></i>
 													</div>
 												</div>
 												<div>
@@ -60,9 +61,31 @@
 																{{shSiteItem.description}}
 															</div>
 														</div>
+														<div>
+															<div style="display: inline;">
+																<span class="label label-shio">Site</span>
+															</div>
+														</div>
 													</div>
 												</div>
-											</div>										
+											</div>
+											<div class="col-lg-1 col-md-2 col-sm-2 col-xs-4"
+												ng-show="actions[shSiteItem.id]">
+												<div class="row">
+													<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+														<a type="button" class="btn btn-link btn-xs"
+															ui-sref="content.site.edit({siteId: shSiteItem.id})"> <i
+																class="fa fa-pencil-square-o" aria-hidden="true"> </i>
+															Edit
+														</a>
+														<button type="button" class="btn btn-link btn-xs"
+															style="display: block;"
+															ng-click="objectPreview(shSiteItem)">
+															<i class="fa fa-eye" aria-hidden="true"></i> View Site
+														</button>
+													</div>
+												</div>
+											</div>
 										</div>
 									</div>
 								</div>

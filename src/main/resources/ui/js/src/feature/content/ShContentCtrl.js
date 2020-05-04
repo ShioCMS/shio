@@ -13,7 +13,6 @@ shioApp.controller('ShContentCtrl', [
 			$scope.vigLanguage = vigLocale.getLocale().substring(0, 2);
 			$translate.use($scope.vigLanguage);
 
-			//$rootScope.principal = null;
 			var authenticate = function(credentials) {
 
 				var headers = credentials ? {
@@ -52,5 +51,5 @@ shioApp.controller('ShContentCtrl', [
 				}, function(data) {
 					$rootScope.authenticated = false;
 				});
-			}
+			}		
 		} ]);

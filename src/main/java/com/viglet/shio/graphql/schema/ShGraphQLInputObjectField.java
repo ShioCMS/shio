@@ -32,7 +32,6 @@ import com.viglet.shio.persistence.model.post.type.ShPostType;
 import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shio.persistence.repository.post.type.ShPostTypeAttrRepository;
 import com.viglet.shio.persistence.service.post.ShPostAttrService;
-import com.viglet.shio.utils.ShPostUtils;
 
 import graphql.scalars.ExtendedScalars;
 import graphql.schema.GraphQLInputObjectType;
@@ -50,7 +49,7 @@ public class ShGraphQLInputObjectField {
 	@Autowired
 	private ShPostTypeAttrRepository shPostTypeAttrRepository;
 	@Autowired
-	private ShPostUtils shPostUtils;
+	private ShGraphQLUtils shGraphQLUtils;
 	@Autowired
 	private ShPostAttrService shPostAttrService;
 
@@ -124,7 +123,7 @@ public class ShGraphQLInputObjectField {
 		List<ShPostAttr> shPostAttrs = shPostAttrService.findByShPostTypeAttrAndValueAndCondition(shPostTypeAttr,
 				whereArgItem.getValue().toString(), action);
 		for (ShPostAttr shPostAttr : shPostAttrs) {
-			Map<String, String> postAttrsDefault = shPostUtils.postAttrGraphQL(shPostAttr.getShPost());
+			Map<String, String> postAttrsDefault = shGraphQLUtils.postAttrGraphQL(shPostAttr.getShPost());
 			posts.add(postAttrsDefault);
 		}
 	}
