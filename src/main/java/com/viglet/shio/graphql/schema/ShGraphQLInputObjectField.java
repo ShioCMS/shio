@@ -117,11 +117,11 @@ public class ShGraphQLInputObjectField {
 	}
 
 	public void fieldWhereCondition(ShPostType shPostType, List<Map<String, String>> posts,
-			Entry<String, Object> whereArgItem, String field, String action) {
+			Entry<String, Object> whereArgItem, String field, String action, List<String> siteIds) {
 		ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType,
 				field.toUpperCase());
-		List<ShPostAttr> shPostAttrs = shPostAttrService.findByShPostTypeAttrAndValueAndCondition(shPostTypeAttr,
-				whereArgItem.getValue().toString(), action);
+		List<ShPostAttr> shPostAttrs = shPostAttrService.findByShPostTypeAttrAndValueAndConditionAndSites(shPostTypeAttr,
+				whereArgItem.getValue().toString(), action, siteIds);
 		for (ShPostAttr shPostAttr : shPostAttrs) {
 			Map<String, String> postAttrsDefault = shGraphQLUtils.postAttrGraphQL(shPostAttr.getShPost());
 			posts.add(postAttrsDefault);

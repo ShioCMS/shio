@@ -16,8 +16,7 @@
  */
 package com.viglet.shio.graphql.schema;
 
-import com.viglet.shio.graphql.schema.queryType.ShGraphQLQTPlural;
-import com.viglet.shio.graphql.schema.queryType.ShGraphQLQTUnique;
+import com.viglet.shio.graphql.schema.queryType.ShGraphQLQTCommons;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
 import com.viglet.shio.persistence.repository.post.type.ShPostTypeRepository;
 
@@ -49,35 +48,22 @@ public class ShGraphQLSchema {
 	@Autowired
 	private ShPostTypeRepository shPostTypeRepository;
 	@Autowired
-	private ShGraphQLQTUnique shGraphQLQTUnique;
-	@Autowired
-	private ShGraphQLQTPlural shGraphQLQTPlural;
-	@Autowired
 	private ShGraphQLObjectType shGraphQLObjectType;
+	@Autowired
+	private ShGraphQLQTCommons shGraphQLQTCommons;
 
 	private GraphQL graphQL;
 
 	private GraphQLSchema loadSchema() {
 		Builder queryTypeBuilder = newObject().name(ShGraphQLConstants.QUERY_TYPE);
 		graphql.schema.GraphQLCodeRegistry.Builder codeRegistryBuilder = newCodeRegistry();
-		for (ShPostType shPostType : shPostTypeRepository.findAll()) {
-			this.createObjectTypes(queryTypeBuilder, codeRegistryBuilder, shPostType);
-		}
+		for (ShPostType shPostType : shPostTypeRepository.findAll())
+			shGraphQLObjectType.createObjectTypes(queryTypeBuilder, codeRegistryBuilder, shPostType);
 
 		GraphQLObjectType queryType = queryTypeBuilder.comparatorRegistry(BY_NAME_REGISTRY).build();
 
-		return GraphQLSchema.newSchema().query(queryType).codeRegistry(codeRegistryBuilder.build()).build();
-
-	}
-
-	private void createObjectTypes(Builder queryTypeBuilder,
-			graphql.schema.GraphQLCodeRegistry.Builder codeRegistryBuilder, ShPostType shPostType) {
-
-		GraphQLObjectType graphQLObjectType = shGraphQLObjectType.createObjectType(shPostType);
-
-		shGraphQLQTUnique.createQueryTypeUnique(queryTypeBuilder, codeRegistryBuilder, shPostType, graphQLObjectType);
-
-		shGraphQLQTPlural.createQueryTypePlural(queryTypeBuilder, codeRegistryBuilder, shPostType, graphQLObjectType);
+		return GraphQLSchema.newSchema().additionalType(shGraphQLQTCommons.createSiteEnum()).query(queryType)
+				.codeRegistry(codeRegistryBuilder.build()).build();
 
 	}
 

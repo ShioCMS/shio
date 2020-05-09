@@ -68,7 +68,11 @@ public final class ShGraphQLConstants {
 	public final static String CONDITION_GTE = "gte";
 
 	public final static String STAGE_ARG = "stage";
+	public final static String STAGE_ARG_TITLE = "Stage";
 	public final static String LOCALES_ARG = "locales";
+	public final static String LOCALES_ARG_TITLE = "Locale";
+	public final static String SITES_ARG = "sites";
+	public final static String SITES_ARG_TITLE = "Site";
 	public final static String WHERE_ARG = "where";
 
 	public final static String WHERE_UNIQUE_INPUT = "WhereUniqueInput";
@@ -79,11 +83,13 @@ public final class ShGraphQLConstants {
 	public final static String FIELD_TYPE_GRAPHQL_STRING = "GraphQLString";
 	public final static String FIELD_TYPE_GRAPHQL_DATE_TIME = "DateTime";
 	
-	public final static GraphQLEnumType stageEnum = newEnum().name("Stage").description("Stage system enumeration")
+	public final static GraphQLEnumType stageEnum = newEnum().name(STAGE_ARG_TITLE).description("Stage system enumeration")
 			.value("PUBLISHED", 10, "System Published Stage.").value("DRAFT", 20, "System Draft Stage")
 			.comparatorRegistry(BY_NAME_REGISTRY).build();
 
-	public final static GraphQLEnumType localeEnum = newEnum().name("Locale").description("Locale system enumeration")
+	public final static GraphQLEnumType localeEnum = newEnum().name(LOCALES_ARG_TITLE).description("Locale system enumeration")
 			.value("en", "EN", "System Locale.").comparatorRegistry(BY_NAME_REGISTRY).build();
+	
+	public static GraphQLEnumType siteEnum;
 
 }

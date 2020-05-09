@@ -19,12 +19,7 @@ package com.viglet.shio.graphql.schema.queryType;
 
 import static graphql.Scalars.GraphQLID;
 import static graphql.schema.FieldCoordinates.coordinates;
-import static graphql.schema.GraphQLArgument.newArgument;
-import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
 import static graphql.schema.GraphQLInputObjectType.newInputObject;
-import static graphql.schema.GraphQLList.list;
-import static graphql.schema.GraphQLNonNull.nonNull;
-import static graphql.schema.GraphqlTypeComparatorRegistry.BY_NAME_REGISTRY;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -58,6 +53,8 @@ public class ShGraphQLQTUnique {
 	@Autowired
 	private ShObjectRepository shObjectRepository;
 	@Autowired
+	private ShGraphQLQTCommons shGraphQLQTCommons;
+	@Autowired
 	private ShGraphQLUtils shGraphQLUtils;
 	@Autowired
 	private ShGraphQLInputObjectField shGraphQLInputObjectField;
@@ -77,19 +74,8 @@ public class ShGraphQLQTUnique {
 
 		this.whereFieldsUnique(postTypeWhereUniqueInputBuilder);
 
-		GraphQLInputObjectType postTypeWhereUniqueInput = postTypeWhereUniqueInputBuilder
-				.comparatorRegistry(BY_NAME_REGISTRY).build();
-
-		queryTypeBuilder.field(newFieldDefinition().name(postTypeName).type(graphQLObjectType)
-				.argument(newArgument().name(ShGraphQLConstants.STAGE_ARG)
-						.description("A required enumeration indicating the current content Stage (defaults to DRAFT)")
-						.type(nonNull(ShGraphQLConstants.stageEnum)).defaultValue(20))
-				.argument(newArgument().name(ShGraphQLConstants.LOCALES_ARG)
-						.description("A required array of one or more locales, defaults to the project's default.")
-						.type(nonNull(list(ShGraphQLConstants.localeEnum))).defaultValue("EN"))
-				.argument(newArgument().name(ShGraphQLConstants.WHERE_ARG)
-						.description("An optional object type to filter the content based on a nested set of criteria.")
-						.type(nonNull(postTypeWhereUniqueInput))));
+		shGraphQLQTCommons.createArguments(queryTypeBuilder, graphQLObjectType, postTypeName,
+				postTypeWhereUniqueInputBuilder);
 
 		codeRegistryBuilder.dataFetcher(coordinates(ShGraphQLConstants.QUERY_TYPE, postTypeName),
 				this.getPostTypeAllDataFetcherUnique(shPostType));

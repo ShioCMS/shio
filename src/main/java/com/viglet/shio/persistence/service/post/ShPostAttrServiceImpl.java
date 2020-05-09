@@ -21,14 +21,17 @@ import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
 import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shio.persistence.repository.post.ShPostAttrRepository;
@@ -43,7 +46,7 @@ public class ShPostAttrServiceImpl implements ShPostAttrService {
 
 	@Autowired
 	private ShPostAttrRepository shPostAttrRepository;
-
+	
 	private final static String EQUAL = "equal";
 	private final static String IN = "in";
 	private final static String NOT_IN = "not_in";
@@ -54,8 +57,8 @@ public class ShPostAttrServiceImpl implements ShPostAttrService {
 	private final static String ENDS_WITH = "ends_with";
 	private final static String NOT_ENDS_WITH = "not_ends_with";
 
-	public List<ShPostAttr> findByShPostTypeAttrAndValueAndCondition(ShPostTypeAttr shPostTypeAttr, String value,
-			String condition) {
+	public List<ShPostAttr> findByShPostTypeAttrAndValueAndConditionAndSites(ShPostTypeAttr shPostTypeAttr, String value,
+			String condition, List<String> siteIds) {
 		return shPostAttrRepository.findAll(new Specification<ShPostAttr>() {
 
 			private static final long serialVersionUID = 1L;
@@ -64,6 +67,18 @@ public class ShPostAttrServiceImpl implements ShPostAttrService {
 			public Predicate toPredicate(Root<ShPostAttr> root, CriteriaQuery<?> query,
 					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicates = new ArrayList<>();
+				
+				if (siteIds != null) {
+					CriteriaQuery<Object> criteriaQuery = criteriaBuilder.createQuery();
+					Root<ShPostAttr> from = criteriaQuery.from(ShPostAttr.class);
+					Path<Object> path = from.get("ShPost"); // field to map with sub-query
+									
+					Subquery<ShPost> subquery = criteriaQuery.subquery(ShPost.class);
+					Root<ShPost> fromProject = subquery.from(ShPost.class);
+					subquery.where(criteriaBuilder.and(criteriaBuilder.equal(fromProject.get("shPostType"),shPostTypeAttr.getShPostType())));
+										
+					predicates.add(criteriaBuilder.in(path).value(subquery));					
+				}
 				if (shPostTypeAttr != null) {
 					predicates.add(
 							criteriaBuilder.and(criteriaBuilder.equal(root.get("shPostTypeAttr"), shPostTypeAttr)));

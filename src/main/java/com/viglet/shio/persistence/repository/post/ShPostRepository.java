@@ -55,10 +55,13 @@ public interface ShPostRepository extends JpaRepository<ShPost, String>, ShPostR
 	List<ShPost> findByShFolderAndShPostType(ShFolder shFolder, ShPostType shPostType);
 	
 	List<ShPost> findByShPostType(ShPostType shPostType);
-
+	
+	List<ShPost> findByShSite_IdIn(Collection<String> shSiteId);
+	
+	List<ShPost> findByShSite_IdInAndShPostType(Collection<String> shSiteId, ShPostType shPostType);
+	
 	List<ShPost> findByShFolderAndShPostTypeOrderByPositionAsc(ShFolder shFolder, ShPostType shPostType);
 
-	
 	@Query("select p from ShPost p JOIN FETCH p.shPostType JOIN FETCH p.shFolder JOIN FETCH p.shPostAttrs where p.id = ?1")
 	Optional<ShPost> findByIdFull(String id);
 	

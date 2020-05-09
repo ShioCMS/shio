@@ -30,6 +30,7 @@ import com.viglet.shio.object.ShObjectType;
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.object.ShObject;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
+import com.viglet.shio.persistence.model.site.ShSite;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -73,13 +74,19 @@ public class ShPost extends ShObject {
 	@JoinColumn(name = "folder_id")
 	private ShFolder shFolder;
 
+	// bi-directional many-to-one association to ShSite
+	@IndexedEmbedded
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "site_id")
+	private ShSite shSite;
+
 	// bi-directional many-to-one association to ShPostAttr
 	@IndexedEmbedded
 	@OneToMany(mappedBy = "shPost", orphanRemoval = true, fetch = FetchType.LAZY)
-	@Cascade({CascadeType.ALL})
+	@Cascade({ CascadeType.ALL })
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Set<ShPostAttr> shPostAttrs = new HashSet<ShPostAttr>();
-	
+
 	public ShPost() {
 		this.setObjectType(ShObjectType.POST);
 	}
@@ -140,6 +147,15 @@ public class ShPost extends ShObject {
 	public void setShFolder(ShFolder shFolder) {
 		this.shFolder = shFolder;
 	}
+	
+
+	public ShSite getShSite() {
+		return shSite;
+	}
+
+	public void setShSite(ShSite shSite) {
+		this.shSite = shSite;
+	}
 
 	@Override
 	public String getObjectType() {
@@ -147,7 +163,7 @@ public class ShPost extends ShObject {
 	}
 
 	@Override
-	public void setObjectType(String objectType) {		
+	public void setObjectType(String objectType) {
 		super.setObjectType(ShObjectType.POST);
-	}	
+	}
 }

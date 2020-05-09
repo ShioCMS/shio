@@ -39,6 +39,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.viglet.shio.exchange.ShPostExchange;
 import com.viglet.shio.exchange.ShRelatorItemExchange;
 import com.viglet.shio.exchange.ShRelatorItemExchanges;
+import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
 import com.viglet.shio.persistence.model.post.relator.ShRelatorItem;
@@ -54,6 +55,7 @@ import com.viglet.shio.post.type.ShSystemPostType;
 import com.viglet.shio.post.type.ShSystemPostTypeAttr;
 import com.viglet.shio.turing.ShTuringIntegration;
 import com.viglet.shio.url.ShURLFormatter;
+import com.viglet.shio.utils.ShFolderUtils;
 import com.viglet.shio.utils.ShPostUtils;
 import com.viglet.shio.utils.ShStaticFileUtils;
 import com.viglet.shio.widget.ShSystemWidget;
@@ -81,14 +83,15 @@ public class ShPostImport {
 	@Autowired
 	private ShPostUtils shPostUtils;
 	@Autowired
+	private ShFolderUtils shFolderUtils;
+	@Autowired
 	private ShURLFormatter shURLFormatter;
 	@Autowired
 	private ShTuringIntegration shTuringIntegration;
 
 	private boolean turingEnabled = true;
 
-	public ShPost getShPost(ShPostExchange shPostExchange)
-			throws ClientProtocolException, IOException {
+	public ShPost getShPost(ShPostExchange shPostExchange) throws ClientProtocolException, IOException {
 		ShPost shPost = new ShPost();
 		shPost.setId(shPostExchange.getId());
 		shPost.setDate(shPostExchange.getDate());
@@ -114,16 +117,15 @@ public class ShPostImport {
 		} else {
 			shPost.setFurl(shURLFormatter.format(shPost.getTitle()));
 		}
-		
+
 		this.getShPostAttrs(shPostExchange, shPost, shPostExchange.getFields(), null);
-		
+
 		return shPost;
 	}
 
 	@SuppressWarnings({ "unchecked" })
 	private void getShPostAttrs(ShPostExchange shPostExchange, ShPost shPost, Map<String, Object> shPostFields,
-			ShRelatorItem shParentRelatorItem)
-			throws ClientProtocolException, IOException {
+			ShRelatorItem shParentRelatorItem) throws ClientProtocolException, IOException {
 		for (Entry<String, Object> shPostField : shPostFields.entrySet()) {
 			ShPostType shPostType = shPostTypeRepository.findByName(shPostExchange.getPostType());
 
@@ -211,12 +213,12 @@ public class ShPostImport {
 				}
 
 				shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-				shPostAttr.setType(1);				
-				//shPostUtils.referencedObject(shPostAttr, shPost);				
+				shPostAttr.setType(1);
+				// shPostUtils.referencedObject(shPostAttr, shPost);
 			}
 		}
 	}
-	
+
 	public ShPost createShPost(ShPostExchange shPostExchange, File extractFolder, String username,
 			Map<String, Object> shObjects) throws ClientProtocolException, IOException {
 		ShPost shPost = null;
@@ -229,9 +231,10 @@ public class ShPostImport {
 			if (shPostExchange.getPosition() > 0) {
 				shPost.setPosition(shPostExchange.getPosition());
 			}
-			shPost.setShFolder(shFolderRepository.findById(shPostExchange.getFolder()).orElse(null));
+			ShFolder shFolder = shFolderRepository.findById(shPostExchange.getFolder()).orElse(null);
+			shPost.setShFolder(shFolder);
 			shPost.setShPostType(shPostTypeRepository.findByName(shPostExchange.getPostType()));
-
+			shPost.setShSite(shFolderUtils.getSite(shFolder));
 			if (shPostExchange.getOwner() != null) {
 				shPost.setOwner(shPostExchange.getOwner());
 			} else {
