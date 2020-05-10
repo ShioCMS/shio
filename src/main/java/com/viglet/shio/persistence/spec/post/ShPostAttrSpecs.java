@@ -53,14 +53,19 @@ public class ShPostAttrSpecs {
 		return (shPostAttr, query, cb) -> cb.equal(shPostAttr.get("shPostTypeAttr"), shPostTypeAttr);
 	}
 
-	public static Specification<ShPostAttr> hasSite(ShSite shSite) {
+	public static Specification<ShPostAttr> hasSites(List<ShSite> shSites) {
 		return (shPostAttr, query, cb) -> {	
 			final Path<ShPost> shPost = shPostAttr.<ShPost> get("shPost");
+			
 			query.distinct(true);
 			Subquery<ShPost> postSubQuery = query.subquery(ShPost.class);
 			Root<ShPost> post = postSubQuery.from(ShPost.class);
+			
+			final Path<ShSite> shSitePath = post.<ShSite> get("shSite");
+			
 			postSubQuery.select(post);
-			postSubQuery.where(cb.equal(post.get("shSite"), shSite));
+			postSubQuery.where(shSitePath.in(shSites));
+			
 			return shPost.in(postSubQuery);
 		};
 	}

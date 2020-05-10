@@ -16,6 +16,8 @@
  */
 package com.viglet.shio.persistence.service.post;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +32,7 @@ import com.viglet.shio.persistence.repository.site.ShSiteRepository;
 
 import static com.viglet.shio.persistence.spec.post.ShPostAttrSpecs.conditionParams;
 import static com.viglet.shio.persistence.spec.post.ShPostAttrSpecs.hasShPostTypeAttr;
-import static com.viglet.shio.persistence.spec.post.ShPostAttrSpecs.hasSite;
+import static com.viglet.shio.persistence.spec.post.ShPostAttrSpecs.hasSites;
 import static org.springframework.data.jpa.domain.Specification.where;
 
 /**
@@ -53,8 +55,10 @@ public class ShPostAttrServiceImpl implements ShPostAttrService {
 				.and(hasShPostTypeAttr(shPostTypeAttr));
 		specFinal = specs;
 		if (siteIds != null && !siteIds.isEmpty()) {
-			ShSite shSite = shSiteRepository.findById(siteIds.get(0)).orElse(null);
-			specFinal = specs.and(hasSite(shSite));
+			Collection<String> siteCollection = new ArrayList<String>(siteIds);
+
+			List<ShSite> shSites = shSiteRepository.findByIdIn(siteCollection);
+			specFinal = specs.and(hasSites(shSites));
 		}
 		
 		return shPostAttrRepository.findAll(specFinal);
