@@ -19,13 +19,18 @@ package com.viglet.shio.persistence.service.post;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.viglet.shio.persistence.model.post.ShPostAttr;
 import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
+import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.persistence.repository.post.ShPostAttrRepository;
+import com.viglet.shio.persistence.repository.site.ShSiteRepository;
 
 import static com.viglet.shio.persistence.spec.post.ShPostAttrSpecs.conditionParams;
+import static com.viglet.shio.persistence.spec.post.ShPostAttrSpecs.hasShPostTypeAttr;
+import static com.viglet.shio.persistence.spec.post.ShPostAttrSpecs.hasSite;
 import static org.springframework.data.jpa.domain.Specification.where;
 
 /**
@@ -37,10 +42,22 @@ public class ShPostAttrServiceImpl implements ShPostAttrService {
 
 	@Autowired
 	private ShPostAttrRepository shPostAttrRepository;
+	@Autowired
+	private ShSiteRepository shSiteRepository;
 
 	public List<ShPostAttr> findByShPostTypeAttrAndValueAndConditionAndSites(ShPostTypeAttr shPostTypeAttr,
 			String value, String condition, List<String> siteIds) {
-		return shPostAttrRepository.findAll(where(conditionParams(siteIds, shPostTypeAttr, value, condition)));
+
+		Specification<ShPostAttr> specFinal = null;
+		Specification<ShPostAttr> specs = where(conditionParams(condition, value))
+				.and(hasShPostTypeAttr(shPostTypeAttr));
+		specFinal = specs;
+		if (siteIds != null && !siteIds.isEmpty()) {
+			ShSite shSite = shSiteRepository.findById(siteIds.get(0)).orElse(null);
+			specFinal = specs.and(hasSite(shSite));
+		}
+		
+		return shPostAttrRepository.findAll(specFinal);
 	}
 
 }
