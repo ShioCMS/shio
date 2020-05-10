@@ -16,103 +16,31 @@
  */
 package com.viglet.shio.persistence.service.post;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Subquery;
-
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
 import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shio.persistence.repository.post.ShPostAttrRepository;
+
+import static com.viglet.shio.persistence.spec.post.ShPostAttrSpecs.conditionParams;
+import static org.springframework.data.jpa.domain.Specification.where;
 
 /**
  * @author Alexandre Oliveira
  * @since 0.3.7
  */
-
 @Service
 public class ShPostAttrServiceImpl implements ShPostAttrService {
 
 	@Autowired
 	private ShPostAttrRepository shPostAttrRepository;
-	
-	private final static String EQUAL = "equal";
-	private final static String IN = "in";
-	private final static String NOT_IN = "not_in";
-	private final static String CONTAINS = "contains";
-	private final static String NOT_CONTAINS = "not_contains";
-	private final static String STARTS_WITH = "starts_with";
-	private final static String NOT_STARTS_WITH = "not_starts_with";
-	private final static String ENDS_WITH = "ends_with";
-	private final static String NOT_ENDS_WITH = "not_ends_with";
 
-	public List<ShPostAttr> findByShPostTypeAttrAndValueAndConditionAndSites(ShPostTypeAttr shPostTypeAttr, String value,
-			String condition, List<String> siteIds) {
-		return shPostAttrRepository.findAll(new Specification<ShPostAttr>() {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public Predicate toPredicate(Root<ShPostAttr> root, CriteriaQuery<?> query,
-					CriteriaBuilder criteriaBuilder) {
-				List<Predicate> predicates = new ArrayList<>();
-				
-				if (siteIds != null) {
-					CriteriaQuery<Object> criteriaQuery = criteriaBuilder.createQuery();
-					Root<ShPostAttr> from = criteriaQuery.from(ShPostAttr.class);
-					Path<Object> path = from.get("ShPost"); // field to map with sub-query
-									
-					Subquery<ShPost> subquery = criteriaQuery.subquery(ShPost.class);
-					Root<ShPost> fromProject = subquery.from(ShPost.class);
-					subquery.where(criteriaBuilder.and(criteriaBuilder.equal(fromProject.get("shPostType"),shPostTypeAttr.getShPostType())));
-										
-					predicates.add(criteriaBuilder.in(path).value(subquery));					
-				}
-				if (shPostTypeAttr != null) {
-					predicates.add(
-							criteriaBuilder.and(criteriaBuilder.equal(root.get("shPostTypeAttr"), shPostTypeAttr)));
-
-					if (StringUtils.isEmpty(condition) || condition.equals(EQUAL)) {
-						predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("strValue"), value)));
-					} else if (condition.equals(IN)) {
-						
-					} else if (condition.equals(NOT_IN)) {
-						
-					} else if (condition.equals(CONTAINS)) {
-						predicates.add(criteriaBuilder
-								.and(criteriaBuilder.like(root.get("strValue"), String.format("%%%s%%", value))));
-					} else if (condition.equals(NOT_CONTAINS)) {
-						predicates.add(criteriaBuilder
-								.and(criteriaBuilder.notLike(root.get("strValue"), String.format("%%%s%%", value))));
-					} else if (condition.equals(STARTS_WITH)) {
-						predicates.add(criteriaBuilder
-								.and(criteriaBuilder.like(root.get("strValue"), String.format("%s%%", value))));
-					} else if (condition.equals(NOT_STARTS_WITH)) {
-						predicates.add(criteriaBuilder
-								.and(criteriaBuilder.notLike(root.get("strValue"), String.format("%s%%", value))));
-					} else if (condition.equals(ENDS_WITH)) {
-						predicates.add(criteriaBuilder
-								.and(criteriaBuilder.like(root.get("strValue"), String.format("%%%s", value))));
-					} else if (condition.equals(NOT_ENDS_WITH)) {
-						predicates.add(criteriaBuilder
-								.and(criteriaBuilder.notLike(root.get("strValue"), String.format("%%%s", value))));
-					}
-				}
-
-				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
-			}
-		});
+	public List<ShPostAttr> findByShPostTypeAttrAndValueAndConditionAndSites(ShPostTypeAttr shPostTypeAttr,
+			String value, String condition, List<String> siteIds) {
+		return shPostAttrRepository.findAll(where(conditionParams(siteIds, shPostTypeAttr, value, condition)));
 	}
 
 }
