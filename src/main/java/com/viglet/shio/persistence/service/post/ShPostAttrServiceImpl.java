@@ -26,7 +26,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.google.common.collect.Sets;
-import com.viglet.shio.graphql.schema.ShGraphQLConstants;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
@@ -41,7 +40,7 @@ import static com.viglet.shio.persistence.spec.post.ShPostAttrSpecs.conditionPar
 import static com.viglet.shio.persistence.spec.post.ShPostAttrSpecs.hasShPostTypeAttr;
 import static com.viglet.shio.persistence.spec.post.ShPostSpecs.hasSites;
 import static com.viglet.shio.persistence.spec.post.ShPostSpecs.hasShPostType;
-import static com.viglet.shio.persistence.spec.post.ShPostSpecs.hasFurl;
+import static com.viglet.shio.persistence.spec.post.ShPostSpecs.hasSystemAttr;
 import static com.viglet.shio.persistence.spec.post.ShPostSpecs.hasPosts;
 import static org.springframework.data.jpa.domain.Specification.where;
 
@@ -76,9 +75,14 @@ public class ShPostAttrServiceImpl implements ShPostAttrService {
 			List<ShPost> shPosts = shPostRepository.findByShPostAttrsIn(shPostAttrs);
 
 			shPostSpecs = shPostSpecs.and(hasPosts(shPosts));
-		} else if (attrName.equals(ShGraphQLConstants.FURL)) {
-			shPostSpecs = shPostSpecs.and(hasFurl(attrValue, condition));
+		} else {
+			String attrNameMod = attrName.replaceFirst("_", ""); 
+			if (attrNameMod.equals("description")) {
+				attrNameMod = "summary";
+			}
+			shPostSpecs = shPostSpecs.and(hasSystemAttr(attrNameMod, attrValue, condition));
 		}
+		
 		
 		if (siteIds != null && !siteIds.isEmpty()) {
 			Collection<String> siteCollection = new ArrayList<String>(siteIds);

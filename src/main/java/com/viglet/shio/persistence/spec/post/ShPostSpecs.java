@@ -16,7 +16,6 @@
  */
 package com.viglet.shio.persistence.spec.post;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -25,7 +24,6 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 
 import com.viglet.shio.persistence.model.post.ShPost;
@@ -37,15 +35,6 @@ import com.viglet.shio.persistence.model.site.ShSite;
  * @since 0.3.7
  */
 public class ShPostSpecs {
-	private final static String EQUAL = "equal";
-	private final static String IN = "in";
-	private final static String NOT_IN = "not_in";
-	private final static String CONTAINS = "contains";
-	private final static String NOT_CONTAINS = "not_contains";
-	private final static String STARTS_WITH = "starts_with";
-	private final static String NOT_STARTS_WITH = "not_starts_with";
-	private final static String ENDS_WITH = "ends_with";
-	private final static String NOT_ENDS_WITH = "not_ends_with";
 
 	public static Specification<ShPost> hasShPostType(ShPostType shPostType) {
 		return (shPost, query, cb) -> cb.equal(shPost.get("shPostType"), shPostType);
@@ -60,40 +49,15 @@ public class ShPostSpecs {
 		};
 	}
 
-	public static Specification<ShPost> hasFurl(String attrValue, String condition) {
+	public static Specification<ShPost> hasSystemAttr(String attrName, String attrValue, String condition) {
 		return new Specification<ShPost>() {
 
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public Predicate toPredicate(Root<ShPost> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-				List<Predicate> predicates = new ArrayList<>();
-
-				if (StringUtils.isEmpty(condition) || condition.equals(EQUAL)) {
-					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("furl"), attrValue)));
-				} else if (condition.equals(IN)) {
-
-				} else if (condition.equals(NOT_IN)) {
-
-				} else if (condition.equals(CONTAINS)) {
-					predicates.add(criteriaBuilder
-							.and(criteriaBuilder.like(root.get("furl"), String.format("%%%s%%", attrValue))));
-				} else if (condition.equals(NOT_CONTAINS)) {
-					predicates.add(criteriaBuilder
-							.and(criteriaBuilder.notLike(root.get("furl"), String.format("%%%s%%", attrValue))));
-				} else if (condition.equals(STARTS_WITH)) {
-					predicates.add(criteriaBuilder
-							.and(criteriaBuilder.like(root.get("furl"), String.format("%s%%", attrValue))));
-				} else if (condition.equals(NOT_STARTS_WITH)) {
-					predicates.add(criteriaBuilder
-							.and(criteriaBuilder.notLike(root.get("furl"), String.format("%s%%", attrValue))));
-				} else if (condition.equals(ENDS_WITH)) {
-					predicates.add(criteriaBuilder
-							.and(criteriaBuilder.like(root.get("furl"), String.format("%%%s", attrValue))));
-				} else if (condition.equals(NOT_ENDS_WITH)) {
-					predicates.add(criteriaBuilder
-							.and(criteriaBuilder.notLike(root.get("furl"), String.format("%%%s", attrValue))));
-				}
+				List<Predicate> predicates = ShPostSpecsCommons.predicateAttrCondition(attrValue, condition, root,
+						criteriaBuilder, attrName);
 				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 			}
 
@@ -106,4 +70,5 @@ public class ShPostSpecs {
 			return shPost.in(shPosts);
 		};
 	}
+
 }
