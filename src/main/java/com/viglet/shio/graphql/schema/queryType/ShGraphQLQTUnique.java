@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2016-2020 the original author or authors. 
  * 
@@ -98,7 +97,7 @@ public class ShGraphQLQTUnique {
 					if (arg.equals(ShGraphQLConstants.ID)) {
 						String objectId = whereMap.get(ShGraphQLConstants.ID).toString();
 						ShObject shObject = shObjectRepository.findById(objectId).orElse(null);
-						post = shGraphQLUtils.postAttrGraphQL((ShPost) shObject);
+						post = shGraphQLUtils.graphQLAttrsByPost((ShPost) shObject);
 					}
 				}
 			}

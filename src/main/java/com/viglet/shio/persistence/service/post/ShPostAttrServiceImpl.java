@@ -19,20 +19,28 @@ package com.viglet.shio.persistence.service.post;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.google.common.collect.Sets;
+import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
+import com.viglet.shio.persistence.model.post.type.ShPostType;
 import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.persistence.repository.post.ShPostAttrRepository;
+import com.viglet.shio.persistence.repository.post.ShPostRepository;
+import com.viglet.shio.persistence.repository.post.type.ShPostTypeAttrRepository;
 import com.viglet.shio.persistence.repository.site.ShSiteRepository;
 
 import static com.viglet.shio.persistence.spec.post.ShPostAttrSpecs.conditionParams;
 import static com.viglet.shio.persistence.spec.post.ShPostAttrSpecs.hasShPostTypeAttr;
-import static com.viglet.shio.persistence.spec.post.ShPostAttrSpecs.hasSites;
+import static com.viglet.shio.persistence.spec.post.ShPostSpecs.hasSites;
+import static com.viglet.shio.persistence.spec.post.ShPostSpecs.hasShPostType;
+import static com.viglet.shio.persistence.spec.post.ShPostSpecs.hasPosts;
 import static org.springframework.data.jpa.domain.Specification.where;
 
 /**
@@ -43,25 +51,36 @@ import static org.springframework.data.jpa.domain.Specification.where;
 public class ShPostAttrServiceImpl implements ShPostAttrService {
 
 	@Autowired
+	private ShPostRepository shPostRepository;
+	@Autowired
 	private ShPostAttrRepository shPostAttrRepository;
+	@Autowired
+	private ShPostTypeAttrRepository shPostTypeAttrRepository;
 	@Autowired
 	private ShSiteRepository shSiteRepository;
 
-	public List<ShPostAttr> findByShPostTypeAttrAndValueAndConditionAndSites(ShPostTypeAttr shPostTypeAttr,
-			String value, String condition, List<String> siteIds) {
+	public List<ShPost> findByShPostTypeAndAttrNameAndAttrValueAndConditionAndSites(ShPostType shPostType,
+			String attrName, String attrValue, String condition, List<String> siteIds) {
+		ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType,
+				attrName.toUpperCase());
 
-		Specification<ShPostAttr> specFinal = null;
-		Specification<ShPostAttr> specs = where(conditionParams(condition, value))
-				.and(hasShPostTypeAttr(shPostTypeAttr));
-		specFinal = specs;
+		Set<ShPostAttr> shPostAttrs = Sets.newHashSet(shPostAttrRepository.findAll(
+				where(conditionParams(attrName, attrValue, condition)).and(hasShPostTypeAttr(shPostTypeAttr))));
+		
+		List<ShPost> shPosts = shPostRepository.findByShPostAttrsIn(shPostAttrs);
+
+		Specification<ShPost> shPostSpecFinal = null;
+		Specification<ShPost> shPostSpecs = where(hasShPostType(shPostType)).and(hasPosts(shPosts));
+		shPostSpecFinal = shPostSpecs;
+
 		if (siteIds != null && !siteIds.isEmpty()) {
 			Collection<String> siteCollection = new ArrayList<String>(siteIds);
 
 			List<ShSite> shSites = shSiteRepository.findByIdIn(siteCollection);
-			specFinal = specs.and(hasSites(shSites));
+			shPostSpecFinal = shPostSpecs.and(hasSites(shSites));
 		}
-		
-		return shPostAttrRepository.findAll(specFinal);
+
+		return shPostRepository.findAll(shPostSpecFinal);
 	}
 
 }

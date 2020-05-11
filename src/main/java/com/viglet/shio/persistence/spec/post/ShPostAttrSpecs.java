@@ -29,6 +29,7 @@ import javax.persistence.criteria.Subquery;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 
+import com.viglet.shio.graphql.schema.ShGraphQLConstants;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
 import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
@@ -54,23 +55,23 @@ public class ShPostAttrSpecs {
 	}
 
 	public static Specification<ShPostAttr> hasSites(List<ShSite> shSites) {
-		return (shPostAttr, query, cb) -> {	
-			final Path<ShPost> shPost = shPostAttr.<ShPost> get("shPost");
-			
+		return (shPostAttr, query, cb) -> {
+			final Path<ShPost> shPost = shPostAttr.<ShPost>get("shPost");
+
 			query.distinct(true);
 			Subquery<ShPost> postSubQuery = query.subquery(ShPost.class);
 			Root<ShPost> post = postSubQuery.from(ShPost.class);
-			
-			final Path<ShSite> shSitePath = post.<ShSite> get("shSite");
-			
+
+			final Path<ShSite> shSitePath = post.<ShSite>get("shSite");
+
 			postSubQuery.select(post);
 			postSubQuery.where(shSitePath.in(shSites));
-			
+
 			return shPost.in(postSubQuery);
 		};
 	}
 
-	public static Specification<ShPostAttr> conditionParams(String condition, String value) {
+	public static Specification<ShPostAttr> conditionParams(String attrName, String attrValue, String condition) {
 		return new Specification<ShPostAttr>() {
 
 			private static final long serialVersionUID = 1L;
@@ -79,33 +80,36 @@ public class ShPostAttrSpecs {
 			public Predicate toPredicate(Root<ShPostAttr> root, CriteriaQuery<?> query,
 					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicates = new ArrayList<>();
+				if (attrName.startsWith("_")) {
+					if (attrName.equals(ShGraphQLConstants.FURL)) {
+					}
+				} else {
+					if (StringUtils.isEmpty(condition) || condition.equals(EQUAL)) {
+						predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("strValue"), attrValue)));
+					} else if (condition.equals(IN)) {
 
-				if (StringUtils.isEmpty(condition) || condition.equals(EQUAL)) {
-					predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("strValue"), value)));
-				} else if (condition.equals(IN)) {
+					} else if (condition.equals(NOT_IN)) {
 
-				} else if (condition.equals(NOT_IN)) {
-
-				} else if (condition.equals(CONTAINS)) {
-					predicates.add(criteriaBuilder
-							.and(criteriaBuilder.like(root.get("strValue"), String.format("%%%s%%", value))));
-				} else if (condition.equals(NOT_CONTAINS)) {
-					predicates.add(criteriaBuilder
-							.and(criteriaBuilder.notLike(root.get("strValue"), String.format("%%%s%%", value))));
-				} else if (condition.equals(STARTS_WITH)) {
-					predicates.add(criteriaBuilder
-							.and(criteriaBuilder.like(root.get("strValue"), String.format("%s%%", value))));
-				} else if (condition.equals(NOT_STARTS_WITH)) {
-					predicates.add(criteriaBuilder
-							.and(criteriaBuilder.notLike(root.get("strValue"), String.format("%s%%", value))));
-				} else if (condition.equals(ENDS_WITH)) {
-					predicates.add(criteriaBuilder
-							.and(criteriaBuilder.like(root.get("strValue"), String.format("%%%s", value))));
-				} else if (condition.equals(NOT_ENDS_WITH)) {
-					predicates.add(criteriaBuilder
-							.and(criteriaBuilder.notLike(root.get("strValue"), String.format("%%%s", value))));
+					} else if (condition.equals(CONTAINS)) {
+						predicates.add(criteriaBuilder
+								.and(criteriaBuilder.like(root.get("strValue"), String.format("%%%s%%", attrValue))));
+					} else if (condition.equals(NOT_CONTAINS)) {
+						predicates.add(criteriaBuilder.and(
+								criteriaBuilder.notLike(root.get("strValue"), String.format("%%%s%%", attrValue))));
+					} else if (condition.equals(STARTS_WITH)) {
+						predicates.add(criteriaBuilder
+								.and(criteriaBuilder.like(root.get("strValue"), String.format("%s%%", attrValue))));
+					} else if (condition.equals(NOT_STARTS_WITH)) {
+						predicates.add(criteriaBuilder
+								.and(criteriaBuilder.notLike(root.get("strValue"), String.format("%s%%", attrValue))));
+					} else if (condition.equals(ENDS_WITH)) {
+						predicates.add(criteriaBuilder
+								.and(criteriaBuilder.like(root.get("strValue"), String.format("%%%s", attrValue))));
+					} else if (condition.equals(NOT_ENDS_WITH)) {
+						predicates.add(criteriaBuilder
+								.and(criteriaBuilder.notLike(root.get("strValue"), String.format("%%%s", attrValue))));
+					}
 				}
-
 				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 			}
 		};

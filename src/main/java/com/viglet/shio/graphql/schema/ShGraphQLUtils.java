@@ -51,7 +51,7 @@ public class ShGraphQLUtils {
 		return new String(c);
 	}
 
-	public Map<String, String> postAttrGraphQL(ShPost shPost) {
+	public Map<String, String> graphQLAttrsByPost(ShPost shPost) {
 
 		Map<String, String> shPostAttrMap = new HashMap<>();
 		if (shPost != null) {

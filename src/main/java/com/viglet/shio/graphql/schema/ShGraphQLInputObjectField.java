@@ -27,10 +27,8 @@ import java.util.Map.Entry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.viglet.shio.persistence.model.post.ShPostAttr;
+import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
-import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
-import com.viglet.shio.persistence.repository.post.type.ShPostTypeAttrRepository;
 import com.viglet.shio.persistence.service.post.ShPostAttrService;
 
 import graphql.scalars.ExtendedScalars;
@@ -47,13 +45,10 @@ import graphql.schema.GraphQLScalarType;
 @Component
 public class ShGraphQLInputObjectField {
 	@Autowired
-	private ShPostTypeAttrRepository shPostTypeAttrRepository;
-	@Autowired
 	private ShGraphQLUtils shGraphQLUtils;
 	@Autowired
 	private ShPostAttrService shPostAttrService;
 
-	
 	public void createInputObjectField(GraphQLInputObjectType.Builder builder, String name, GraphQLInputType type,
 			String description) {
 		builder.field(newInputObjectField().name(name).description(description).type(type));
@@ -117,14 +112,11 @@ public class ShGraphQLInputObjectField {
 	}
 
 	public void fieldWhereCondition(ShPostType shPostType, List<Map<String, String>> posts,
-			Entry<String, Object> whereArgItem, String field, String action, List<String> siteIds) {
-		ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType,
-				field.toUpperCase());
-		List<ShPostAttr> shPostAttrs = shPostAttrService.findByShPostTypeAttrAndValueAndConditionAndSites(shPostTypeAttr,
-				whereArgItem.getValue().toString(), action, siteIds);
-		for (ShPostAttr shPostAttr : shPostAttrs) {
-			Map<String, String> postAttrsDefault = shGraphQLUtils.postAttrGraphQL(shPostAttr.getShPost());
-			posts.add(postAttrsDefault);
-		}
+			Entry<String, Object> whereArgItem, String attrName, String action, List<String> siteIds) {
+		String attrValue = whereArgItem.getValue().toString();
+		List<ShPost> shPosts = shPostAttrService.findByShPostTypeAndAttrNameAndAttrValueAndConditionAndSites(
+				shPostType, attrName, attrValue, action, siteIds);
+		for (ShPost shPost : shPosts)
+			posts.add(shGraphQLUtils.graphQLAttrsByPost(shPost));
 	}
 }

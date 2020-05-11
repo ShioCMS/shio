@@ -14,18 +14,41 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.viglet.shio.persistence.service.post;
+package com.viglet.shio.persistence.spec.post;
 
 import java.util.List;
 
+import javax.persistence.criteria.Path;
+
+import org.springframework.data.jpa.domain.Specification;
+
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
+import com.viglet.shio.persistence.model.site.ShSite;
 
 /**
  * @author Alexandre Oliveira
  * @since 0.3.7
  */
-public interface ShPostAttrService {
-	public List<ShPost> findByShPostTypeAndAttrNameAndAttrValueAndConditionAndSites(ShPostType shPostType,
-			String attrName, String attrValue, String condition, List<String> siteIds);
+public class ShPostSpecs {
+	
+	public static Specification<ShPost> hasShPostType(ShPostType shPostType) {
+		return (shPost, query, cb) -> cb.equal(shPost.get("shPostType"), shPostType);
+	}
+
+	public static Specification<ShPost> hasSites(List<ShSite> shSites) {
+		return (shPost, query, cb) -> {
+			query.distinct(true);
+			final Path<ShSite> shSitePath = shPost.<ShSite>get("shSite");
+
+			return shSitePath.in(shSites);
+		};
+	}
+
+	public static Specification<ShPost> hasPosts(List<ShPost> shPosts) {
+		return (shPost, query, cb) -> {
+			query.distinct(true);
+			return shPost.in(shPosts);
+		};
+	}
 }
