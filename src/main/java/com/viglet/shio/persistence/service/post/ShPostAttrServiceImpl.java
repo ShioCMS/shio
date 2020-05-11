@@ -26,6 +26,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.google.common.collect.Sets;
+import com.viglet.shio.graphql.schema.ShGraphQLConstants;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
@@ -40,6 +41,7 @@ import static com.viglet.shio.persistence.spec.post.ShPostAttrSpecs.conditionPar
 import static com.viglet.shio.persistence.spec.post.ShPostAttrSpecs.hasShPostTypeAttr;
 import static com.viglet.shio.persistence.spec.post.ShPostSpecs.hasSites;
 import static com.viglet.shio.persistence.spec.post.ShPostSpecs.hasShPostType;
+import static com.viglet.shio.persistence.spec.post.ShPostSpecs.hasFurl;
 import static com.viglet.shio.persistence.spec.post.ShPostSpecs.hasPosts;
 import static org.springframework.data.jpa.domain.Specification.where;
 
@@ -61,26 +63,31 @@ public class ShPostAttrServiceImpl implements ShPostAttrService {
 
 	public List<ShPost> findByShPostTypeAndAttrNameAndAttrValueAndConditionAndSites(ShPostType shPostType,
 			String attrName, String attrValue, String condition, List<String> siteIds) {
-		ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType,
-				attrName.toUpperCase());
 
-		Set<ShPostAttr> shPostAttrs = Sets.newHashSet(shPostAttrRepository.findAll(
-				where(conditionParams(attrName, attrValue, condition)).and(hasShPostTypeAttr(shPostTypeAttr))));
+		Specification<ShPost> shPostSpecs = where(hasShPostType(shPostType));
+
+		if (!attrName.startsWith("_")) {
+
+			ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType,
+					attrName.toUpperCase());
+			Set<ShPostAttr> shPostAttrs = Sets.newHashSet(shPostAttrRepository.findAll(
+					where(conditionParams(attrName, attrValue, condition)).and(hasShPostTypeAttr(shPostTypeAttr))));
+
+			List<ShPost> shPosts = shPostRepository.findByShPostAttrsIn(shPostAttrs);
+
+			shPostSpecs = shPostSpecs.and(hasPosts(shPosts));
+		} else if (attrName.equals(ShGraphQLConstants.FURL)) {
+			shPostSpecs = shPostSpecs.and(hasFurl(attrValue, condition));
+		}
 		
-		List<ShPost> shPosts = shPostRepository.findByShPostAttrsIn(shPostAttrs);
-
-		Specification<ShPost> shPostSpecFinal = null;
-		Specification<ShPost> shPostSpecs = where(hasShPostType(shPostType)).and(hasPosts(shPosts));
-		shPostSpecFinal = shPostSpecs;
-
 		if (siteIds != null && !siteIds.isEmpty()) {
 			Collection<String> siteCollection = new ArrayList<String>(siteIds);
 
 			List<ShSite> shSites = shSiteRepository.findByIdIn(siteCollection);
-			shPostSpecFinal = shPostSpecs.and(hasSites(shSites));
+			shPostSpecs = shPostSpecs.and(hasSites(shSites));
 		}
 
-		return shPostRepository.findAll(shPostSpecFinal);
+		return shPostRepository.findAll(shPostSpecs);
 	}
 
 }

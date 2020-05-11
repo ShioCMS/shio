@@ -31,11 +31,9 @@ import org.springframework.stereotype.Component;
 import com.viglet.shio.graphql.schema.ShGraphQLConstants;
 import com.viglet.shio.graphql.schema.ShGraphQLInputObjectField;
 import com.viglet.shio.graphql.schema.ShGraphQLUtils;
-import com.viglet.shio.persistence.model.object.ShObject;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
 import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
-import com.viglet.shio.persistence.repository.object.ShObjectRepository;
 import com.viglet.shio.persistence.repository.post.ShPostRepository;
 
 import graphql.schema.DataFetcher;
@@ -53,8 +51,6 @@ import graphql.schema.GraphQLObjectType.Builder;
 @Component
 public class ShGraphQLQTPlural {
 
-	@Autowired
-	private ShObjectRepository shObjectRepository;
 	@Autowired
 	private ShPostRepository shPostRepository;
 	@Autowired
@@ -142,6 +138,7 @@ public class ShGraphQLQTPlural {
 
 			if (whereMap != null) {
 				for (Entry<String, Object> whereArgItem : whereMap.entrySet()) {
+
 					String arg = whereArgItem.getKey();
 					if (arg.equals(ShGraphQLConstants.SEARCH)) {
 
@@ -153,48 +150,15 @@ public class ShGraphQLQTPlural {
 
 					} else if (arg.equals(ShGraphQLConstants.NOT)) {
 
-					} else if (arg.equals(ShGraphQLConstants.ID)) {
-						String objectId = whereMap.get(ShGraphQLConstants.ID).toString();
-						ShObject shObject = shObjectRepository.findById(objectId).orElse(null);
-						posts.add(shGraphQLUtils.graphQLAttrsByPost((ShPost) shObject));
-					} else if (arg.equals(ShGraphQLConstants.TITLE)) {
-						List<ShPost> shPosts = shPostRepository
-								.findByTitle(whereMap.get(ShGraphQLConstants.TITLE).toString());
-						for (ShPost shPost : shPosts)
-							posts.add(shGraphQLUtils.graphQLAttrsByPost(shPost));
-					} else if (arg.equals(ShGraphQLConstants.DESCRIPTION)) {
-						List<ShPost> shPosts = shPostRepository
-								.findBySummary(whereMap.get(ShGraphQLConstants.DESCRIPTION).toString());
-						for (ShPost shPost : shPosts)
-							posts.add(shGraphQLUtils.graphQLAttrsByPost(shPost));
-					} else if (arg.equals(ShGraphQLConstants.FURL)) {
-						List<ShPost> shPosts = shPostRepository
-								.findByFurl(whereMap.get(ShGraphQLConstants.FURL).toString());
-						for (ShPost shPost : shPosts)
-							posts.add(shGraphQLUtils.graphQLAttrsByPost(shPost));
-					} else if (arg.equals(ShGraphQLConstants.FOLDER)) {
-
-					} else if (arg.equals(ShGraphQLConstants.SITE)) {
-
-					} else if (arg.equals(ShGraphQLConstants.MODIFIER)) {
-						List<ShPost> shPosts = shPostRepository
-								.findByModifier(whereMap.get(ShGraphQLConstants.MODIFIER).toString());
-						for (ShPost shPost : shPosts)
-							posts.add(shGraphQLUtils.graphQLAttrsByPost(shPost));
-					} else if (arg.equals(ShGraphQLConstants.PUBLISHER)) {
-						List<ShPost> shPosts = shPostRepository
-								.findByPublisher(whereMap.get(ShGraphQLConstants.PUBLISHER).toString());
-						for (ShPost shPost : shPosts)
-							posts.add(shGraphQLUtils.graphQLAttrsByPost(shPost));
-					} else if (arg.equals(ShGraphQLConstants.FOLDER)) {
-						List<ShPost> shPosts = shPostRepository
-								.findByShFolder_Name(whereMap.get(ShGraphQLConstants.FOLDER).toString());
-						for (ShPost shPost : shPosts)
-							posts.add(shGraphQLUtils.graphQLAttrsByPost(shPost));
 					} else {
 						String field = arg;
 						String action = ShGraphQLConstants.CONDITION_EQUAL;
-						if (arg.contains(ShGraphQLConstants.CONDITION_SEPARATOR)) {
+						if (arg.startsWith("_")
+								&& arg.replaceFirst("_", "").contains(ShGraphQLConstants.CONDITION_SEPARATOR)) {
+							field = String.format("_%s", arg.split(ShGraphQLConstants.CONDITION_SEPARATOR)[1]);
+							action = arg.replaceFirst(field.concat(ShGraphQLConstants.CONDITION_SEPARATOR), "");
+
+						} else if (!arg.startsWith("_") && arg.contains(ShGraphQLConstants.CONDITION_SEPARATOR)) {
 							field = arg.split(ShGraphQLConstants.CONDITION_SEPARATOR)[0];
 							action = arg.replaceFirst(field.concat(ShGraphQLConstants.CONDITION_SEPARATOR), "");
 						}
