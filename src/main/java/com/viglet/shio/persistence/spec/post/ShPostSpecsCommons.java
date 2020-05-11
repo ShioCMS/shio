@@ -40,8 +40,8 @@ public class ShPostSpecsCommons {
 	private final static String ENDS_WITH = "ends_with";
 	private final static String NOT_ENDS_WITH = "not_ends_with";
 
-	public static List<Predicate> predicateAttrCondition(String attrValue, String condition, Root<?> root,
-			CriteriaBuilder criteriaBuilder, String attrName) {
+	public static List<Predicate> predicateAttrCondition(String attrName, String attrValue, String condition, Root<?> root,
+			CriteriaBuilder criteriaBuilder ) {
 		List<Predicate> predicates = new ArrayList<>();
 
 		if (StringUtils.isEmpty(condition) || condition.equals(EQUAL)) {

@@ -29,7 +29,7 @@ import org.springframework.stereotype.Component;
 
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
-import com.viglet.shio.persistence.service.post.ShPostAttrService;
+import com.viglet.shio.persistence.service.post.ShPostService;
 
 import graphql.scalars.ExtendedScalars;
 import graphql.schema.GraphQLInputObjectType;
@@ -47,7 +47,7 @@ public class ShGraphQLInputObjectField {
 	@Autowired
 	private ShGraphQLUtils shGraphQLUtils;
 	@Autowired
-	private ShPostAttrService shPostAttrService;
+	private ShPostService shPostService;
 
 	public void createInputObjectField(GraphQLInputObjectType.Builder builder, String name, GraphQLInputType type,
 			String description) {
@@ -114,7 +114,7 @@ public class ShGraphQLInputObjectField {
 	public void fieldWhereCondition(ShPostType shPostType, List<Map<String, String>> posts,
 			Entry<String, Object> whereArgItem, String attrName, String action, List<String> siteIds) {
 		String attrValue = whereArgItem.getValue().toString();
-		List<ShPost> shPosts = shPostAttrService.findByShPostTypeAndAttrNameAndAttrValueAndConditionAndSites(
+		List<ShPost> shPosts = shPostService.findByShPostTypeAndAttrNameAndAttrValueAndConditionAndSites(
 				shPostType, attrName, attrValue, action, siteIds);
 		for (ShPost shPost : shPosts)
 			posts.add(shGraphQLUtils.graphQLAttrsByPost(shPost));

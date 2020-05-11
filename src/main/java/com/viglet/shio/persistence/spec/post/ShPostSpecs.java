@@ -16,7 +16,9 @@
  */
 package com.viglet.shio.persistence.spec.post;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -26,6 +28,7 @@ import javax.persistence.criteria.Root;
 
 import org.springframework.data.jpa.domain.Specification;
 
+import com.viglet.shio.graphql.schema.ShGraphQLConstants;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
 import com.viglet.shio.persistence.model.site.ShSite;
@@ -56,8 +59,22 @@ public class ShPostSpecs {
 
 			@Override
 			public Predicate toPredicate(Root<ShPost> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-				List<Predicate> predicates = ShPostSpecsCommons.predicateAttrCondition(attrValue, condition, root,
-						criteriaBuilder, attrName);
+
+				Map<String, String> systemAttrsMap = new HashMap<>();
+
+				systemAttrsMap.put(ShGraphQLConstants.TITLE, "title");
+				systemAttrsMap.put(ShGraphQLConstants.DESCRIPTION, "summary");
+				systemAttrsMap.put(ShGraphQLConstants.FURL, "furl");
+				systemAttrsMap.put(ShGraphQLConstants.MODIFIER, "modifier");
+				systemAttrsMap.put(ShGraphQLConstants.PUBLISHER, "publisher");
+				systemAttrsMap.put(ShGraphQLConstants.FOLDER, "shFolder");
+				systemAttrsMap.put(ShGraphQLConstants.CREATED_AT, "createdAt");
+				systemAttrsMap.put(ShGraphQLConstants.UPDATED_AT, "updatedAt");
+				systemAttrsMap.put(ShGraphQLConstants.PUBLISHED_AT, "publishedAt");
+				
+				List<Predicate> predicates = ShPostSpecsCommons.predicateAttrCondition(systemAttrsMap.get(attrName),
+						attrValue, condition, root, criteriaBuilder);
+
 				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 			}
 

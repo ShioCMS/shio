@@ -49,7 +49,7 @@ import static org.springframework.data.jpa.domain.Specification.where;
  * @since 0.3.7
  */
 @Service
-public class ShPostAttrServiceImpl implements ShPostAttrService {
+public class ShPostServiceImpl implements ShPostService {
 
 	@Autowired
 	private ShPostRepository shPostRepository;
@@ -76,11 +76,8 @@ public class ShPostAttrServiceImpl implements ShPostAttrService {
 
 			shPostSpecs = shPostSpecs.and(hasPosts(shPosts));
 		} else {
-			String attrNameMod = attrName.replaceFirst("_", ""); 
-			if (attrNameMod.equals("description")) {
-				attrNameMod = "summary";
-			}
-			shPostSpecs = shPostSpecs.and(hasSystemAttr(attrNameMod, attrValue, condition));
+	
+			shPostSpecs = shPostSpecs.and(hasSystemAttr(attrName, attrValue, condition));
 		}
 		
 		

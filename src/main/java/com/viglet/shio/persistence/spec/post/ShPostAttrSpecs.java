@@ -67,10 +67,10 @@ public class ShPostAttrSpecs {
 			@Override
 			public Predicate toPredicate(Root<ShPostAttr> root, CriteriaQuery<?> query,
 					CriteriaBuilder criteriaBuilder) {
-				
+
 				String attrName = "strValue";
-				List<Predicate> predicates = ShPostSpecsCommons.predicateAttrCondition(attrValue, condition, root,
-						criteriaBuilder, attrName);				
+				List<Predicate> predicates = ShPostSpecsCommons.predicateAttrCondition(attrName, attrValue, condition,
+						root, criteriaBuilder);
 				return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
 			}
 		};
