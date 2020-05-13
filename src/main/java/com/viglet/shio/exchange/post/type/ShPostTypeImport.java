@@ -17,6 +17,7 @@
 package com.viglet.shio.exchange.post.type;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -44,13 +45,13 @@ public class ShPostTypeImport {
 	@Autowired
 	ShPostTypeRepository shPostTypeRepository;
 
-	public void importPostType(ShExchange shExchange) throws IOException {
+	public void importPostType(ShExchange shExchange, boolean isCloned) throws IOException {
 		for (ShPostTypeExchange shPostTypeExchange : shExchange.getPostTypes()) {
 			if (shPostTypeRepository.findByName(shPostTypeExchange.getName()) == null) {
 				ShPostType shPostType = new ShPostType();
 				shPostType.setId(shPostTypeExchange.getId());
 				shPostType.setTitle(shPostTypeExchange.getLabel());
-				shPostType.setDate(shPostTypeExchange.getDate());
+				shPostType.setDate(isCloned ? new Date() : shPostTypeExchange.getDate());
 				shPostType.setDescription(shPostTypeExchange.getDescription());
 				shPostType.setName(shPostTypeExchange.getName());
 				shPostType.setNamePlural(shPostTypeExchange.getNamePlural());

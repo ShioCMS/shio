@@ -38,4 +38,15 @@ shioApp.controller('ShSiteListCtrl', [
 			}
 		}
 
+		$scope.isRecent = function (date) {
+            var momentDate = moment(date);
+            var now = new moment();
+            var duration = moment.duration(momentDate.diff(now))
+            if (duration.as('minutes') >= -5) {
+                return true;
+            }
+
+            return false;
+        }
+
 	}]);

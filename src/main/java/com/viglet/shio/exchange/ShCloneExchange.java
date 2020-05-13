@@ -76,7 +76,7 @@ public class ShCloneExchange {
 					ShExchange.class);
 
 			if (shExchange.getPostTypes() != null && shExchange.getPostTypes().size() > 0) {
-				shPostTypeImport.importPostType(shExchange);
+				shPostTypeImport.importPostType(shExchange, true);
 			}
 			if (shExchange.getSites() != null && shExchange.getSites().size() > 0) {
 				shExchangeModified = shSiteImport.cloneSite(shExchange, username, extractFolder, shObjects, shChildObjects, shSite);
