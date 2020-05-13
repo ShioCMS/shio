@@ -96,7 +96,7 @@
 	<div class="col-lg-3 col-md-3 col-sm-4 col-xs-4" style="padding: 5px;"
 		ng-repeat="shPost in shPosts | filter:$ctrl.shSearchFilter | orderBy:$ctrl.orderByPostSelected">
 		<!-- NON ALIAS -->
-		<a ng-if="shPost.shPostType.name !== 'PT-ALIAS' && shPost.shPostType.name !== 'PT-FILE'" class="list-group-item"
+		<a ng-if="shPost.shPostType.name !== 'Alias' && shPost.shPostType.name !== 'File'" class="list-group-item"
 			style="padding: 5px;" ng-click="selectedObject(shPost)">
 			<div style="margin-bottom: 10px;">
 				<div style="width: 100%;padding-top: 50%;position: relative;">
@@ -116,7 +116,7 @@
 			</div>
 		</a>
 		<!-- ALIAS -->
-		<a ng-if="shPost.shPostType.name === 'PT-ALIAS'" ng-click="selectedObject(shPost)" class="list-group-item"
+		<a ng-if="shPost.shPostType.name === 'Alias'" ng-click="selectedObject(shPost)" class="list-group-item"
 			style="padding: 5px;">
 			<div style="margin-bottom: 10px;">
 				<div style="width: 100%;padding-top: 50%;position: relative;">
@@ -135,7 +135,7 @@
 				</div>
 			</div>
 		</a>
-		<a ng-if="shPost.shPostType.name === 'PT-FILE'" ng-click="selectedObject(shPost)" class="list-group-item"
+		<a ng-if="shPost.shPostType.name === 'File'" ng-click="selectedObject(shPost)" class="list-group-item"
 			style="padding: 5px;"
 			ng-style="($ctrl.shPostSelected.id === shPost.id) && {'background-color':'lightsteelblue'}">
 			<div style="margin-bottom: 10px;">

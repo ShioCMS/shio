@@ -6,7 +6,7 @@ shioApp.factory('shStaticFileFactory', [
                 var deferredFile = $q.defer();
                 if (shPostAttr.shPostTypeAttr.shWidget != null && shPostAttr.shPostTypeAttr.shWidget.name == "File" && shPostAttr.file != null) {
                     var createPost = true;
-                    if (postType.name == "PT-FILE") {
+                    if (postType.name == "File") {
                         createPost = false;
                     }
                     file = shPostAttr.file;

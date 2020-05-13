@@ -22,12 +22,15 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.UUID;
 
+import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.viglet.shio.exchange.ShCloneExchange;
+import com.viglet.shio.exchange.ShExchange;
 import com.viglet.shio.exchange.ShImportExchange;
 import com.viglet.shio.persistence.repository.site.ShSiteRepository;
 
@@ -41,6 +44,9 @@ public class ShSiteOnStartup {
 	private ShSiteRepository shSiteRepository;
 	@Autowired
 	private ShImportExchange shImportExchange;
+	@Autowired
+	private ShCloneExchange shCloneExchange;
+	
 	private static final String COULD_NOT_CREATE_SAMPLE_SITE = "Could not create sample site";
 
 	public void createDefaultRows() {
@@ -73,7 +79,7 @@ public class ShSiteOnStartup {
 
 			try {
 				FileUtils.copyURLToFile(siteRepository, siteFile);
-				shImportExchange.importFromFile(siteFile, "admin");
+				shCloneExchange.cloneFromFile(siteFile, "admin", null);
 			} catch (IllegalStateException e) {
 				System.out.println(COULD_NOT_CREATE_SAMPLE_SITE);
 				logger.error("createDefaultRows IllegalStateException", e);
@@ -81,6 +87,9 @@ public class ShSiteOnStartup {
 			} catch (IOException e) {
 				System.out.println(COULD_NOT_CREATE_SAMPLE_SITE);
 				logger.error("importFromFile IOException", e);
+			} catch (ArchiveException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 
 			FileUtils.deleteQuietly(siteFile);

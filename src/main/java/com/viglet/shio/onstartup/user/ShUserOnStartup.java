@@ -60,7 +60,7 @@ public class ShUserOnStartup {
 			ShUser shUser = new ShUser();
 
 			shUser.setEmail("admin@localhost.local");
-			shUser.setFirstName("Admin");
+			shUser.setFirstName("Shio");
 			shUser.setLastLogin(new Date());
 			shUser.setLastName("Administrator");
 			shUser.setLastPostType(String.valueOf(shPostType.getId()));

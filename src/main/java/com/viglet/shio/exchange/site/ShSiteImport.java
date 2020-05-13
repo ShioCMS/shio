@@ -87,16 +87,19 @@ public class ShSiteImport {
 		shExchange = this.prepareClone(shExchange, extractFolder);
 
 		for (ShSiteExchange shSiteExchange : shExchange.getSites()) {
-			if (shSite.getId() != null && shSite.getId().trim().length() > 0) {
-				shSiteExchange.setId(shSite.getId());
-			}
 			shSiteExchange.setDate(new Date());
-			shSiteExchange.setOwner(shSite.getOwner());
-			shSiteExchange.setFurl(shSite.getFurl());
-			shSiteExchange.setName(shSite.getName());
-			shSiteExchange.setDescription(shSite.getDescription());
-			shSiteExchange.setUrl(shSite.getUrl());
 
+			if (shSite != null) {
+				if (shSite.getId() != null && shSite.getId().trim().length() > 0) {
+					shSiteExchange.setId(shSite.getId());
+				}
+				shSiteExchange.setOwner(shSite.getOwner());
+				shSiteExchange.setFurl(shSite.getFurl());
+				shSiteExchange.setName(shSite.getName());
+				shSiteExchange.setDescription(shSite.getDescription());
+				shSiteExchange.setUrl(shSite.getUrl());
+			}
+			
 			this.prepareImport(shExchange, shSiteExchange, shObjects, shChildObjects);
 
 			this.createShSite(shSiteExchange, username);
@@ -321,7 +324,7 @@ public class ShSiteImport {
 						shPostField.setValue(shNewIds.get(shPostField.getValue()));
 					}
 
-				}			
+				}
 				fieldsWithNewIds.put(shPostField.getKey(), shPostField.getValue());
 			}
 		}

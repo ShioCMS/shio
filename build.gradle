@@ -278,7 +278,8 @@ dependencies {
 	compile 'org.webjars.bower:angular-ui-sortable:0.14.3'
 	compile 'org.webjars.bower:angular-ui-select:0.19.8'
 	compile 'org.webjars.bower:ngInfiniteScroll:1.3.4'
-	
+	compile 'org.webjars:angular-avatar:1.3.0'
+
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
 }
 
