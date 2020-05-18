@@ -16,13 +16,13 @@
  * available at http://lokeshdhakar.com/projects/color-thief/
  */
 
-package com.viglet.shio.colorthief;
+package com.viglet.shio.image.colorthief;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.util.Arrays;
 
-import com.viglet.shio.colorthief.MMCQ.CMap;
+import com.viglet.shio.image.colorthief.MMCQ.CMap;
 
 /**
  * @author Sven Woltmann, Fonpit AG

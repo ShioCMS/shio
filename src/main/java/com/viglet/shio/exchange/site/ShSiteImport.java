@@ -19,6 +19,7 @@ package com.viglet.shio.exchange.site;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -74,10 +75,10 @@ public class ShSiteImport {
 			this.createShSite(shSiteExchange, username);
 			// Create only Folders
 			shFolderImport.shFolderImportNested(shSiteExchange.getId(), extractFolder, username, true, shObjects,
-					shChildObjects);
+					shChildObjects, false);
 			// Create all objects
 			shFolderImport.shFolderImportNested(shSiteExchange.getId(), extractFolder, username, false, shObjects,
-					shChildObjects);
+					shChildObjects, false);
 		}
 	}
 
@@ -86,25 +87,28 @@ public class ShSiteImport {
 		shExchange = this.prepareClone(shExchange, extractFolder);
 
 		for (ShSiteExchange shSiteExchange : shExchange.getSites()) {
-			if (shSite.getId() != null && shSite.getId().trim().length() > 0) {
-				shSiteExchange.setId(shSite.getId());
-			}
-			shSiteExchange.setDate(shSite.getDate());
-			shSiteExchange.setOwner(shSite.getOwner());
-			shSiteExchange.setFurl(shSite.getFurl());
-			shSiteExchange.setName(shSite.getName());
-			shSiteExchange.setDescription(shSite.getDescription());
-			shSiteExchange.setUrl(shSite.getUrl());
+			shSiteExchange.setDate(new Date());
 
+			if (shSite != null) {
+				if (shSite.getId() != null && shSite.getId().trim().length() > 0) {
+					shSiteExchange.setId(shSite.getId());
+				}
+				shSiteExchange.setOwner(shSite.getOwner());
+				shSiteExchange.setFurl(shSite.getFurl());
+				shSiteExchange.setName(shSite.getName());
+				shSiteExchange.setDescription(shSite.getDescription());
+				shSiteExchange.setUrl(shSite.getUrl());
+			}
+			
 			this.prepareImport(shExchange, shSiteExchange, shObjects, shChildObjects);
 
 			this.createShSite(shSiteExchange, username);
 			// Create only Folders
 			shFolderImport.shFolderImportNested(shSiteExchange.getId(), extractFolder, username, true, shObjects,
-					shChildObjects);
+					shChildObjects, true);
 			// Create all objects
 			shFolderImport.shFolderImportNested(shSiteExchange.getId(), extractFolder, username, false, shObjects,
-					shChildObjects);
+					shChildObjects, true);
 		}
 
 		return shExchange;
@@ -320,7 +324,7 @@ public class ShSiteImport {
 						shPostField.setValue(shNewIds.get(shPostField.getValue()));
 					}
 
-				}			
+				}
 				fieldsWithNewIds.put(shPostField.getKey(), shPostField.getValue());
 			}
 		}

@@ -305,6 +305,8 @@ public class ShPostAPI {
 		shPost.setDate(new Date());
 		shPost.setTitle(title.toString());
 		shPost.setSummary(summary.toString());
+		shPost.setShSite(shPostUtils.getSite(shPost));
+	
 		if (shPost.getPublicationDate() == null) {
 			shPost.setFurl(shURLFormatter.format(title.toString()));
 		}

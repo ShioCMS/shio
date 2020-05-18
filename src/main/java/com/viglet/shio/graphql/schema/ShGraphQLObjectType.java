@@ -25,6 +25,8 @@ import static graphql.schema.GraphqlTypeComparatorRegistry.BY_NAME_REGISTRY;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.viglet.shio.graphql.schema.queryType.ShGraphQLQTPlural;
+import com.viglet.shio.graphql.schema.queryType.ShGraphQLQTUnique;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
 import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
 
@@ -42,13 +44,17 @@ public class ShGraphQLObjectType {
 
 	@Autowired
 	private ShGraphQLUtils shGraphQLUtils;
+	@Autowired
+	private ShGraphQLQTUnique shGraphQLQTUnique;
+	@Autowired
+	private ShGraphQLQTPlural shGraphQLQTPlural;
 	
-	public GraphQLObjectType createObjectType(ShPostType shPostType) {
-		Builder builderPlural = newObject().name(shPostType.getName()).description(shPostType.getDescription());
+	private GraphQLObjectType createObjectType(ShPostType shPostType) {
+		Builder builder = newObject().name(shPostType.getName()).description(shPostType.getDescription());
 
-		this.createObjectTypeFields(shPostType, builderPlural);
+		this.createObjectTypeFields(shPostType, builder);
 
-		return builderPlural.comparatorRegistry(BY_NAME_REGISTRY).build();
+		return builder.comparatorRegistry(BY_NAME_REGISTRY).build();
 	}
 
 	private void createObjectTypeFields(ShPostType shPostType, Builder builder) {
@@ -73,4 +79,16 @@ public class ShGraphQLObjectType {
 					.type(GraphQLString));
 		}
 	}
+	
+	public void createObjectTypes(Builder queryTypeBuilder,
+			graphql.schema.GraphQLCodeRegistry.Builder codeRegistryBuilder, ShPostType shPostType) {
+
+		GraphQLObjectType graphQLObjectType = this.createObjectType(shPostType);
+		
+		shGraphQLQTUnique.createQueryTypeUnique(queryTypeBuilder, codeRegistryBuilder, shPostType, graphQLObjectType);
+
+		shGraphQLQTPlural.createQueryTypePlural(queryTypeBuilder, codeRegistryBuilder, shPostType, graphQLObjectType);
+
+	}
+
 }

@@ -1,5 +1,7 @@
 shioApp.controller('ShPlaygroundCtrl', [
-    "$scope",
-    function ($scope) {
+    "$scope", "vigLocale", "$translate",
+    function ($scope, vigLocale, $translate) {
+        $scope.vigLanguage = vigLocale.getLocale().substring(0, 2);
+        $translate.use($scope.vigLanguage);
     }
 ]);

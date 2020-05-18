@@ -20,12 +20,14 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.viglet.shio.object.ShObjectType;
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.object.ShObjectDraft;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
+import com.viglet.shio.persistence.model.site.ShSite;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -64,12 +66,18 @@ public class ShPostDraft extends ShObjectDraft {
 	@JoinColumn(name = "folder_id")
 	private ShFolder shFolder;
 
+	// bi-directional many-to-one association to ShSite
+	@IndexedEmbedded
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "site_id")
+	private ShSite shSite;
+
 	// bi-directional many-to-one association to ShPostAttr
 	@OneToMany(mappedBy = "shPost", orphanRemoval = true, fetch = FetchType.LAZY)
-	@Cascade({CascadeType.ALL})
+	@Cascade({ CascadeType.ALL })
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Set<ShPostDraftAttr> shPostAttrs = new HashSet<ShPostDraftAttr>();
-	
+
 	public ShPostDraft() {
 		this.setObjectType(ShObjectType.POST);
 	}
@@ -137,7 +145,7 @@ public class ShPostDraft extends ShObjectDraft {
 	}
 
 	@Override
-	public void setObjectType(String objectType) {		
+	public void setObjectType(String objectType) {
 		super.setObjectType(ShObjectType.POST);
-	}	
+	}
 }

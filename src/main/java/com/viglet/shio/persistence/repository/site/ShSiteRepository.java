@@ -16,6 +16,7 @@
  */
 package com.viglet.shio.persistence.repository.site;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +38,8 @@ public interface ShSiteRepository extends JpaRepository<ShSite, String> {
 	Optional<ShSite> findById(String id);
 
 	List<ShSite> findByOwner(String owner);
+	
+	List<ShSite> findByIdIn(Collection<String> ids);
 	
 	List<ShSite> findByOwnerOrOwnerIsNull(String owner);
 	

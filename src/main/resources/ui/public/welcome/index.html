@@ -1,53 +1,58 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="shioWelcome">
+
 <head>
-<meta charset="UTF-8">
-<title>Sign in | Viglet Vecchio</title>
-<meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+	<meta charset="UTF-8">
+	<title>Sign in | Viglet Shio CMS</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	</meta>
 
-<link href="/thirdparty/font-awesome/4.7.0/css/font-awesome.min.css"
-	rel="stylesheet"></link>
+	<link href="/thirdparty/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+	</link>
 
-<link rel="stylesheet" href="../css/login.css">
-<link href="/favicon.ico" rel="shortcut icon" type="image/x-icon" />
-<link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
-<link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
-<link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
-<link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
-<link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
-<link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
-<link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
-<link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
-<link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/manifest.json">
-<meta name="msapplication-TileColor" content="#ffffff">
-<meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
-<meta name="theme-color" content="#ffffff">
+	<link rel="stylesheet" href="../css/login.css">
+	<link href="/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+	<link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
+	<link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
+	<link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
+	<link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
+	<link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
+	<link rel="icon" type="image/png" sizes="192x192" href="/android-icon-192x192.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/manifest.json">
+	<meta name="msapplication-TileColor" content="#ffffff">
+	<meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+	<meta name="theme-color" content="#ffffff">
 </head>
 
 <body ng-controller="ShWelcomeCtrl">
-	<div class="login-form" ng-if="showLogin">
-		<div style="text-align: center; margin-bottom: 30px">
-			<img src="img/shio-logo.png" />			
-		</div>
-		<form role="form" ng-submit="login()">
-			<div class="form-group ">
-				<input type="text" class="form-control" placeholder="Username"
-					id="username" name="username" ng-model="credentials.username">
-				<i class="fa fa-user"></i>
+	<div style="position: absolute;bottom: 10px;right: 10px;background: tomato;opacity: 60%;padding:5px"><a
+			style="color: white;text-decoration: none"
+			href="https://unsplash.com/s/photos/green-chameleon%2C-bristol%2C-uk" target="_blank" ">Green Chameleon, Bristol, UK</a></div>
+	<div class=" login-form" ng-if="showLogin">
+			<div style="text-align: center; margin-bottom: 30px">
+				<img src="img/shio-logo.png" />
 			</div>
-			<div class="form-group log-status">
-				<input type="password" class="form-control" placeholder="Password"
-					id="password" name="password" ng-model="credentials.password">
-				<i class="fa fa-lock"></i>
-			</div>
-			<span class="alert">Invalid Credentials</span>
-			<button type="submit" class="log-btn">Log in</button>
-		</form>
+			<form role="form" ng-submit="login()">
+				<div class="form-group ">
+					<input type="text" class="form-control" placeholder="Username" id="username" name="username"
+						ng-model="credentials.username">
+					<i class="fa fa-user"></i>
+				</div>
+				<div class="form-group log-status">
+					<input type="password" class="form-control" placeholder="Password" id="password" name="password"
+						ng-model="credentials.password">
+					<i class="fa fa-lock"></i>
+				</div>
+				<span class="alert">Invalid Credentials</span>
+				<button type="submit" class="log-btn">Log in</button>
+			</form>
 
 	</div>
 	<script src="/thirdparty/jquery/1.12.4/dist/jquery.min.js"></script>
@@ -56,21 +61,17 @@
 
 	<script src="/thirdparty/moment/2.20.1/min/moment-with-locales.min.js"></script>
 	<script src="/thirdparty/angular/1.6.9/angular.min.js"></script>
-	<script
-		src="/thirdparty/angular-ui-router/1.0.14/release/angular-ui-router.min.js"></script>
-	<script
-		src="/thirdparty/angular-translate/2.17.0/angular-translate.min.js"></script>
-	<script
-		src="/thirdparty/angular-resource/1.6.9/angular-resource.min.js"></script>
+	<script src="/thirdparty/angular-ui-router/1.0.14/release/angular-ui-router.min.js"></script>
+	<script src="/thirdparty/angular-translate/2.17.0/angular-translate.min.js"></script>
+	<script src="/thirdparty/angular-resource/1.6.9/angular-resource.min.js"></script>
 	<script src="/thirdparty/angular-animate/1.6.9/angular-animate.min.js"></script>
 	<script src="/thirdparty/angular-cookies/1.6.9/angular-cookies.min.js"></script>
-	<script
-		src="/thirdparty/angular-sanitize/1.6.9/angular-sanitize.min.js"></script>
+	<script src="/thirdparty/angular-sanitize/1.6.9/angular-sanitize.min.js"></script>
 	<script src="/thirdparty/angular-moment/1.2.0/angular-moment.min.js"></script>
 	<!-- shim is needed to support non-HTML5 FormData browsers (IE8-9)-->
-	<script
-		src="/thirdparty/angular-ui-notification/0.3.6/dist/angular-ui-notification.min.js"></script>
+	<script src="/thirdparty/angular-ui-notification/0.3.6/dist/angular-ui-notification.min.js"></script>
 
 	<script src="/js/welcome.js"></script>
 </body>
+
 </html>

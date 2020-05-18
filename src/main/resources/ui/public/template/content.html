@@ -54,10 +54,15 @@
 												<div>
 													<a type="button" class="btn btn-link"
 														ui-sref="content.children({objectId: shSiteItem.id})"
-														ui-sref-opts="{reload:true}">{{shSiteItem.name}}</a>
+														ui-sref-opts="{reload:true}">{{shSiteItem.name}}</a> <span
+														ng-if="isRecent(shSiteItem.date)" class="label label-default"
+														style="display: inline-block; margin-top: 12px">Recent</span>
 													<div style="font-size: 12px;margin-left: 14px;">
 														<div style="display: table-row">
 															<div class="ng-binding">
+																<span am-time-ago="shSiteItem.date"
+																	style="color: gray"></span><span
+																	ng-if="shSiteItem.description != null"> - </span>
 																{{shSiteItem.description}}
 															</div>
 														</div>
@@ -82,6 +87,10 @@
 															style="display: block;"
 															ng-click="objectPreview(shSiteItem)">
 															<i class="fa fa-eye" aria-hidden="true"></i> View Site
+														</button>
+														<button type="button" class="btn btn-link btn-xs"
+															style="display: block;" ng-click="siteExport(shSiteItem)">
+															<i class="fa fa-download" aria-hidden="true"></i> Download
 														</button>
 													</div>
 												</div>

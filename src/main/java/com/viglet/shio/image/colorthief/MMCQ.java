@@ -16,7 +16,7 @@
  * available at http://lokeshdhakar.com/projects/color-thief/
  */
 
-package com.viglet.shio.colorthief;
+package com.viglet.shio.image.colorthief;
 
 import java.util.ArrayList;
 import java.util.Arrays;

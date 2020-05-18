@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -37,7 +38,7 @@ import com.viglet.shio.persistence.model.post.type.ShPostType;
  * @author Alexandre Oliveira
  */
 @Repository
-public interface ShPostDraftRepository extends JpaRepository<ShPostDraft, String> {
+public interface ShPostDraftRepository extends JpaRepository<ShPostDraft, String>, JpaSpecificationExecutor<ShPostDraft> {
 
 	Set<ShPostDraft> findByShPostTypeAndShPostAttrsIn(ShPostType shPostType, Collection<ShPostAttr> postAttrs);
 	

@@ -1,7 +1,6 @@
 buildscript {
-    ext { springBootVersion = '2.2.6.RELEASE'
+    ext { springBootVersion = '2.2.7.RELEASE'
 	      hibernateVersion = '5.11.5.Final'
-		  httpClientVersion = '4.5.11'
 		  swaggerVersion = '2.9.2'
 		 }
 		repositories {
@@ -94,62 +93,6 @@ task minifyAllJs(dependsOn: ':combineAllJs', type: com.eriwen.gradle.js.tasks.Mi
         warningLevel = 'QUIET'
     }
 }
-// Shio LMS
-def lmsZipDir = "$projectDir/shio-lms-master"
-def lmsZipFile = "$projectDir/shio-lms.zip"
-def lmsDir = "$projectDir/src/main/resources/ui/public/lms/"
-
-task deleteGitLMS(type: Delete) {
-    delete "$lmsZipDir", "$lmsZipFile"
-}
-
-task downloadLMSZipFile(dependsOn: deleteGitLMS, type: Download) {
-    src 'https://github.com/ShioCMS/shio-lms/archive/master.zip'
-    dest lmsZipFile
-}
-
-task downloadAndUnzipLMSZipFile(dependsOn: downloadLMSZipFile, type: Copy) {
-    from zipTree(downloadLMSZipFile.dest)
-    into projectDir
-}
-
-task installLMS(type:Exec) {
-	dependsOn "downloadAndUnzipLMSZipFile"
-	workingDir "$lmsZipDir"
-	inputs.dir "$lmsZipDir"
-	group = BasePlugin.BUILD_GROUP
-	
-	if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
-		commandLine "npm.cmd", "install"
-	} else {
-		commandLine "npm", "install"
-	}
-}
-
-task deleteLMSDir(type: Delete) {
-	dependsOn "installLMS"
-    delete "$lmsDir"
-}
-task createLMSDir {
-	dependsOn "deleteLMSDir"
-	doLast {
-		mkdir "$lmsDir"
-	}
-}
-
-task buildLMS(type:Exec) {
-	dependsOn "createLMSDir"
-	workingDir "$lmsZipDir"
-	inputs.dir "$lmsZipDir"
-	
-	group = BasePlugin.BUILD_GROUP
-	
-	if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
-		commandLine "ng.cmd", "build", "--outputPath", "$lmsDir", "--base-href", "/lms/"
-	} else {
-		commandLine "ng", "build", "--outputPath", "$lmsDir", "--base-href", "/lms/"
-	}
-}
 
 // Shio Stock
 def stockZipDir = "$projectDir/shio-stock-master"
@@ -214,7 +157,7 @@ task stage(dependsOn: ['build', 'clean'])
 
 compileJava.dependsOn(['minifyAllJs'])
 
-build.dependsOn(['buildLMS', 'buildStock'])
+build.dependsOn(['buildStock'])
 
 build.mustRunAfter clean
 
@@ -236,16 +179,13 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version:"${springBootVersion}"
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-cache', version:"${springBootVersion}"
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version:"${springBootVersion}"
-    
+	compile group: 'org.springframework.boot', name: 'spring-boot-starter-json', version:"${springBootVersion}"
+
 	// Viglet Turing
 	implementation 'com.github.openturing:turing-java-sdk:0.3.3-SNAPSHOT'
 
-	compile group: 'org.apache.axis', name: 'axis', version: '1.4'
-	compile group: 'org.apache.axis', name: 'axis-jaxrpc', version: '1.4'
-	compile group: 'commons-discovery', name: 'commons-discovery', version: '0.4'
-	
   	// Spring
-  	compile group: 'org.springframework', name: 'spring-test', version: '5.2.5.RELEASE'
+  	compile group: 'org.springframework', name: 'spring-test', version: '5.2.6.RELEASE'
   	    
   	// Jackson
     compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.10.3'
@@ -259,9 +199,6 @@ dependencies {
 	// MariaDB
     compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.4.1'
 
-    // JSON
-    compile group: 'org.json', name: 'json', version:'20180813'
-    
     // Apache Commons
     compile group: 'org.apache.commons', name: 'commons-compress', version: '1.18'   
     compile group: 'commons-io', name: 'commons-io', version:'2.6'
@@ -272,12 +209,6 @@ dependencies {
     // Apache POI
     compile group: 'org.apache.poi', name: 'poi', version: '4.1.0'
     compile group: 'org.apache.poi', name: 'poi-ooxml', version: '4.1.0'
-    
-    // HTTP Client
-    compile(group: 'org.apache.httpcomponents', name: 'httpclient', version:"${httpClientVersion}") {
-		exclude(module: 'commons-logging')
-    }
-    compile group: 'org.apache.httpcomponents', name: 'httpmime', version:"${httpClientVersion}"
     
     // JSoup
 	compile group: 'org.jsoup', name: 'jsoup', version: '1.11.3'
@@ -307,6 +238,7 @@ dependencies {
 	// Javadoc - Need this package
 	compile 'javax.interceptor:javax.interceptor-api:1.2.2'
 	
+	// LDAP
 	compile group: 'ldapsdk', name: 'ldapsdk', version: '4.1'
 	
 	// Git 
@@ -314,7 +246,6 @@ dependencies {
 		
 	// GraphQL
 	implementation 'com.graphql-java:graphql-java:2019-09-07T08-08-53-173312e'
-	//implementation 'com.graphql-java:graphql-java-spring-boot-starter-webmvc:1.0'
 	implementation 'com.graphql-java:graphql-java-spring-webmvc:2019-06-24T11-47-27-31ab4f9'	
 	implementation 'com.graphql-java:graphql-java-extended-scalars:1.0'
 	implementation 'io.projectreactor:reactor-core:3.3.5.RELEASE'
@@ -347,7 +278,8 @@ dependencies {
 	compile 'org.webjars.bower:angular-ui-sortable:0.14.3'
 	compile 'org.webjars.bower:angular-ui-select:0.19.8'
 	compile 'org.webjars.bower:ngInfiniteScroll:1.3.4'
-	
+	compile 'org.webjars:angular-avatar:1.3.0'
+
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
 }
 

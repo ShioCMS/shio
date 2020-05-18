@@ -9,6 +9,10 @@
 
 body {
   background: rgba(255, 99, 71, 0.575);
+  background-image: url(https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&q=70);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 h1 {

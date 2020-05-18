@@ -30,7 +30,7 @@ shioApp
 													shAPIServerService
 															.get()
 															.concat(
-																	"/v2/post/post-type/PT-PAGE-LAYOUT"))
+																	"/v2/post/post-type/PageLayout"))
 											.then(
 													function(response) {
 														$scope.pageLayouts = response.data;

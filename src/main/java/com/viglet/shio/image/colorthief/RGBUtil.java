@@ -16,7 +16,7 @@
  * available at http://lokeshdhakar.com/projects/color-thief/
  */
 
-package com.viglet.shio.colorthief;
+package com.viglet.shio.image.colorthief;
 
 /**
  * @author Sven Woltmann, Fonpit AG

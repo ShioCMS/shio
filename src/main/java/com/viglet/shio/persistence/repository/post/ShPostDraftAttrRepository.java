@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -35,7 +35,7 @@ import com.viglet.shio.persistence.model.post.relator.ShRelatorItemDraft;
  * @author Alexandre Oliveira
  */
 @Repository
-public interface ShPostDraftAttrRepository extends JpaRepository<ShPostDraftAttr, String> {
+public interface ShPostDraftAttrRepository extends JpaRepository<ShPostDraftAttr, String>, JpaSpecificationExecutor<ShPostDraftAttr> {
 
 	Set<ShPostDraftAttr> findByArrayValueIn(Collection<String> values);
 
@@ -62,6 +62,4 @@ public interface ShPostDraftAttrRepository extends JpaRepository<ShPostDraftAttr
 	@Modifying
 	@Query("delete from ShPostDraftAttr pa where pa.id = ?1")
 	void delete(String shPostAttrId);
-
-	List<ShPostDraftAttr> findAll(Specification<String> specification);
 }

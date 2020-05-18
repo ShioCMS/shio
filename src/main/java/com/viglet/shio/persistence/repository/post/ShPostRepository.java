@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -36,7 +37,7 @@ import com.viglet.shio.persistence.model.post.type.ShPostType;
  * @author Alexandre Oliveira
  */
 @Repository
-public interface ShPostRepository extends JpaRepository<ShPost, String>, ShPostRepositoryCustom {
+public interface ShPostRepository extends JpaRepository<ShPost, String>, ShPostRepositoryCustom, JpaSpecificationExecutor<ShPost> {
 
 	Set<ShPost> findByShPostTypeAndShPostAttrsIn(ShPostType shPostType, Collection<ShPostAttr> postAttrs);
 	
@@ -55,10 +56,13 @@ public interface ShPostRepository extends JpaRepository<ShPost, String>, ShPostR
 	List<ShPost> findByShFolderAndShPostType(ShFolder shFolder, ShPostType shPostType);
 	
 	List<ShPost> findByShPostType(ShPostType shPostType);
-
+	
+	List<ShPost> findByShSite_IdIn(Collection<String> shSiteId);
+	
+	List<ShPost> findByShSite_IdInAndShPostType(Collection<String> shSiteId, ShPostType shPostType);
+	
 	List<ShPost> findByShFolderAndShPostTypeOrderByPositionAsc(ShFolder shFolder, ShPostType shPostType);
 
-	
 	@Query("select p from ShPost p JOIN FETCH p.shPostType JOIN FETCH p.shFolder JOIN FETCH p.shPostAttrs where p.id = ?1")
 	Optional<ShPost> findByIdFull(String id);
 	
@@ -75,6 +79,7 @@ public interface ShPostRepository extends JpaRepository<ShPost, String>, ShPostR
 	List<ShPost> findByPublisher(String publisher);
 	
 	List<ShPost> findByShFolder_Name(String folderName);
+	List<ShPost> findByShPostAttrsIn(Collection<ShPostAttr> shPostAttr);
 	
 	ShPost findByShFolderAndTitle(ShFolder shFolder, String title);
 

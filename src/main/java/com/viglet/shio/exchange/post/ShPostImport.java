@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -39,6 +40,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.viglet.shio.exchange.ShPostExchange;
 import com.viglet.shio.exchange.ShRelatorItemExchange;
 import com.viglet.shio.exchange.ShRelatorItemExchanges;
+import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
 import com.viglet.shio.persistence.model.post.relator.ShRelatorItem;
@@ -54,6 +56,7 @@ import com.viglet.shio.post.type.ShSystemPostType;
 import com.viglet.shio.post.type.ShSystemPostTypeAttr;
 import com.viglet.shio.turing.ShTuringIntegration;
 import com.viglet.shio.url.ShURLFormatter;
+import com.viglet.shio.utils.ShFolderUtils;
 import com.viglet.shio.utils.ShPostUtils;
 import com.viglet.shio.utils.ShStaticFileUtils;
 import com.viglet.shio.widget.ShSystemWidget;
@@ -81,14 +84,15 @@ public class ShPostImport {
 	@Autowired
 	private ShPostUtils shPostUtils;
 	@Autowired
+	private ShFolderUtils shFolderUtils;
+	@Autowired
 	private ShURLFormatter shURLFormatter;
 	@Autowired
 	private ShTuringIntegration shTuringIntegration;
 
 	private boolean turingEnabled = true;
 
-	public ShPost getShPost(ShPostExchange shPostExchange)
-			throws ClientProtocolException, IOException {
+	public ShPost getShPost(ShPostExchange shPostExchange) throws ClientProtocolException, IOException {
 		ShPost shPost = new ShPost();
 		shPost.setId(shPostExchange.getId());
 		shPost.setDate(shPostExchange.getDate());
@@ -114,16 +118,15 @@ public class ShPostImport {
 		} else {
 			shPost.setFurl(shURLFormatter.format(shPost.getTitle()));
 		}
-		
+
 		this.getShPostAttrs(shPostExchange, shPost, shPostExchange.getFields(), null);
-		
+
 		return shPost;
 	}
 
 	@SuppressWarnings({ "unchecked" })
 	private void getShPostAttrs(ShPostExchange shPostExchange, ShPost shPost, Map<String, Object> shPostFields,
-			ShRelatorItem shParentRelatorItem)
-			throws ClientProtocolException, IOException {
+			ShRelatorItem shParentRelatorItem) throws ClientProtocolException, IOException {
 		for (Entry<String, Object> shPostField : shPostFields.entrySet()) {
 			ShPostType shPostType = shPostTypeRepository.findByName(shPostExchange.getPostType());
 
@@ -211,27 +214,28 @@ public class ShPostImport {
 				}
 
 				shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-				shPostAttr.setType(1);				
-				//shPostUtils.referencedObject(shPostAttr, shPost);				
+				shPostAttr.setType(1);
+				// shPostUtils.referencedObject(shPostAttr, shPost);
 			}
 		}
 	}
-	
+
 	public ShPost createShPost(ShPostExchange shPostExchange, File extractFolder, String username,
-			Map<String, Object> shObjects) throws ClientProtocolException, IOException {
+			Map<String, Object> shObjects, boolean isCloned) throws ClientProtocolException, IOException {
 		ShPost shPost = null;
 		if (shPostRepository.findById(shPostExchange.getId()).isPresent()) {
 			shPost = shPostRepository.findById(shPostExchange.getId()).orElse(null);
 		} else {
 			shPost = new ShPost();
 			shPost.setId(shPostExchange.getId());
-			shPost.setDate(shPostExchange.getDate());
+			shPost.setDate(isCloned? new Date(): shPostExchange.getDate());
 			if (shPostExchange.getPosition() > 0) {
 				shPost.setPosition(shPostExchange.getPosition());
 			}
-			shPost.setShFolder(shFolderRepository.findById(shPostExchange.getFolder()).orElse(null));
+			ShFolder shFolder = shFolderRepository.findById(shPostExchange.getFolder()).orElse(null);
+			shPost.setShFolder(shFolder);
 			shPost.setShPostType(shPostTypeRepository.findByName(shPostExchange.getPostType()));
-
+			shPost.setShSite(shFolderUtils.getSite(shFolder));
 			if (shPostExchange.getOwner() != null) {
 				shPost.setOwner(shPostExchange.getOwner());
 			} else {
@@ -270,7 +274,7 @@ public class ShPostImport {
 			shPostRepository.saveAndFlush(shPost);
 
 			this.createShPostAttrs(shPostExchange, shPost, shPostExchange.getFields(), null, extractFolder, username,
-					shObjects);
+					shObjects, isCloned);
 
 			for (ShPostAttr shPostAttr : shPostAttrRepository.findByShPost(shPost)) {
 				shPostUtils.updateRelatorInfo(shPostAttr, shPost);
@@ -285,7 +289,7 @@ public class ShPostImport {
 
 	@SuppressWarnings({ "unchecked" })
 	private void createShPostAttrs(ShPostExchange shPostExchange, ShPost shPost, Map<String, Object> shPostFields,
-			ShRelatorItem shParentRelatorItem, File extractFolder, String username, Map<String, Object> shObjects)
+			ShRelatorItem shParentRelatorItem, File extractFolder, String username, Map<String, Object> shObjects, boolean isCloned)
 			throws ClientProtocolException, IOException {
 		for (Entry<String, Object> shPostField : shPostFields.entrySet()) {
 			ShPostType shPostType = shPostTypeRepository.findByName(shPostExchange.getPostType());
@@ -308,7 +312,7 @@ public class ShPostImport {
 						if (shObjects.get(shReferencedPostUUID) instanceof ShPostExchange) {
 							ShPostExchange shReferencedPostExchange = (ShPostExchange) shObjects
 									.get(shReferencedPostUUID);
-							this.createShPost(shReferencedPostExchange, extractFolder, username, shObjects);
+							this.createShPost(shReferencedPostExchange, extractFolder, username, shObjects, isCloned);
 						}
 					}
 				} catch (IllegalArgumentException iae) {
@@ -347,7 +351,7 @@ public class ShPostImport {
 
 					shRelatorItemRepository.save(shRelatorItem);
 					this.createShPostAttrs(shPostExchange, shPost, (Map<String, Object>) shSubPost.getFields(),
-							shRelatorItem, extractFolder, username, shObjects);
+							shRelatorItem, extractFolder, username, shObjects, isCloned);
 
 				}
 			} else {

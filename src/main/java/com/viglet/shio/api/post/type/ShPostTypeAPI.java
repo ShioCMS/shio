@@ -16,6 +16,7 @@
  */
 package com.viglet.shio.api.post.type;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -48,6 +49,7 @@ import com.viglet.shio.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shio.persistence.repository.post.ShPostRepository;
 import com.viglet.shio.persistence.repository.post.type.ShPostTypeAttrRepository;
 import com.viglet.shio.persistence.repository.post.type.ShPostTypeRepository;
+import com.viglet.shio.utils.ShPostTypeUtils;
 
 import io.swagger.annotations.Api;
 
@@ -68,7 +70,9 @@ public class ShPostTypeAPI {
 	private ShPostRepository shPostRepository;
 	@Autowired
 	private ShPostTypeExport shPostTypeExport;
-
+	@Autowired
+	private ShPostTypeUtils shPostTypeUtils;
+	
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewPostType.class })
 	public List<ShPostType> shPostTypeList() throws Exception {
@@ -220,6 +224,19 @@ public class ShPostTypeAPI {
 
 		shPostTypeRepository.saveAndFlush(shPostType);
 
+	}
+
+	@PutMapping("/clone")
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
+	public List<ShPostType> shObjectClone(@RequestBody List<String> ids) {
+		List<ShPostType> shPostTypes = new ArrayList<>();
+		for (String id : ids) {
+			ShPostType shPostType = shPostTypeRepository.findById(id).orElse(null);
+
+			shPostTypes.add(shPostTypeUtils.clone(shPostType));
+
+		}
+		return shPostTypes;
 	}
 
 	private void postTypeAttrSave(ShPostTypeAttr shPostTypeAttr, ShPostType shPostType) {

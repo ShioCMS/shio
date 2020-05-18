@@ -18,6 +18,7 @@ package com.viglet.shio.exchange.folder;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -50,18 +51,18 @@ public class ShFolderImport {
 	private ShPostImport shPostImport;
 
 	public void shFolderImportNested(String shObject, File extractFolder, String username, boolean importOnlyFolders,
-			Map<String, Object> shObjects, Map<String, List<String>> shChildObjects) throws IOException {
+			Map<String, Object> shObjects, Map<String, List<String>> shChildObjects, boolean isCloned) throws IOException {
 		if (shChildObjects.containsKey(shObject)) {
 			for (String objectId : shChildObjects.get(shObject)) {
 				if (shObjects.get(objectId) instanceof ShFolderExchange) {
 					ShFolderExchange shFolderExchange = (ShFolderExchange) shObjects.get(objectId);
 					this.createShFolder(shFolderExchange, extractFolder, username, shObject, importOnlyFolders,
-							shObjects, shChildObjects);
+							shObjects, shChildObjects, isCloned);
 				}
 
 				if (!importOnlyFolders && shObjects.get(objectId) instanceof ShPostExchange) {
 					ShPostExchange shPostExchange = (ShPostExchange) shObjects.get(objectId);
-					shPostImport.createShPost(shPostExchange, extractFolder, username, shObjects);
+					shPostImport.createShPost(shPostExchange, extractFolder, username, shObjects, isCloned);
 				}
 			}
 
@@ -70,7 +71,7 @@ public class ShFolderImport {
 
 	public ShFolder createShFolder(ShFolderExchange shFolderExchange, File extractFolder, String username,
 			String shObject, boolean importOnlyFolders, Map<String, Object> shObjects,
-			Map<String, List<String>> shChildObjects) throws IOException {
+			Map<String, List<String>> shChildObjects, boolean isCloned) throws IOException {
 		ShFolder shFolderChild = null;
 		Optional<ShFolder> shFolderOptional = shFolderRepository.findById(shFolderExchange.getId());
 		if (shFolderOptional.isPresent()) {
@@ -78,7 +79,7 @@ public class ShFolderImport {
 		} else {
 			shFolderChild = new ShFolder();
 			shFolderChild.setId(shFolderExchange.getId());
-			shFolderChild.setDate(shFolderExchange.getDate());
+			shFolderChild.setDate(isCloned? new Date(): shFolderExchange.getDate());
 			shFolderChild.setName(shFolderExchange.getName());
 			if (shFolderExchange.getPosition() > 0) {
 				shFolderChild.setPosition(shFolderExchange.getPosition());
@@ -111,7 +112,7 @@ public class ShFolderImport {
 		}
 
 		this.shFolderImportNested(shFolderChild.getId(), extractFolder, username, importOnlyFolders, shObjects,
-				shChildObjects);
+				shChildObjects, isCloned);
 
 		return shFolderChild;
 	}

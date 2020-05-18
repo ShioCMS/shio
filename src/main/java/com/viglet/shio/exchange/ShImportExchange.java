@@ -79,7 +79,7 @@ public class ShImportExchange {
 					ShExchange.class);
 
 			if (shExchange.getPostTypes() != null && shExchange.getPostTypes().size() > 0) {
-				shPostTypeImport.importPostType(shExchange);
+				shPostTypeImport.importPostType(shExchange, false);
 			}
 			if (shExchange.getSites() != null && shExchange.getSites().size() > 0) {
 				shSiteImport.importSite(shExchange, username, extractFolder, shObjects, shChildObjects);
@@ -88,7 +88,7 @@ public class ShImportExchange {
 				//Folders depend site.
 				if (shExchange.getFolders() == null && shExchange.getPosts() != null) {
 					for (ShPostExchange shPostExchange : shExchange.getPosts()) {
-						shPostImport.createShPost(shPostExchange, extractFolder, username, shObjects);
+						shPostImport.createShPost(shPostExchange, extractFolder, username, shObjects, false);
 					}
 				}
 			}

@@ -23,7 +23,7 @@
 			<div style="display: table;">
 				<i class="fa fa-file-o fa-4x" aria-hidden="true" style="float: left; margin: 10px"></i><span
 					style="display: inline-block; margin-top: 20px"><a
-						ui-sref="content.post-type-item-by-name.post-item-new({folderId: shCurrentFolder.id, postTypeName: 'PT-FILE'})">Upload
+						ui-sref="content.post-type-item-by-name.post-item-new({folderId: shCurrentFolder.id, postTypeName: 'File'})">Upload
 						file</a></span>
 			</div>
 			<div style="display: table;">
@@ -130,12 +130,12 @@
 					</div>
 					<div style="display: inline">
 						<!-- NON ALIAS -->
-						<a ng-if="shPost.shPostType.name !== 'PT-ALIAS'" type="button" class="btn btn-link"
+						<a ng-if="shPost.shPostType.name !== 'Alias'" type="button" class="btn btn-link"
 							ui-sref="content.post-type-item.post-item({postTypeId: shPost.shPostType.id, postId: shPost.id})"><i
 								class="fa fa-newspaper-o" aria-hidden="true" style="margin-right: 5px"></i>
 							{{shPost.title}} </a>
 						<!-- ALIAS -->
-						<a ng-if="shPost.shPostType.name === 'PT-ALIAS'" type="button" class="btn btn-link"
+						<a ng-if="shPost.shPostType.name === 'Alias'" type="button" class="btn btn-link"
 							ui-sref="content.post-type-item.post-item({postTypeId: shPost.shPostType.id, postId: shPost.id})"><i
 								class="fa fa-share-square-o" aria-hidden="true" style="margin-right: 5px"></i>
 							{{shPost.title}}</a> <span ng-if="isRecent(shPost.date)" class="label label-default"

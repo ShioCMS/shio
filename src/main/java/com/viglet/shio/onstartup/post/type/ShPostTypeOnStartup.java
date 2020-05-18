@@ -51,7 +51,7 @@ public class ShPostTypeOnStartup {
 			ObjectMapper mapper = new ObjectMapper();
 
 			ShExchange shExchange = mapper.readValue(isr, ShExchange.class);
-			shPostTypeImport.importPostType(shExchange);
+			shPostTypeImport.importPostType(shExchange, false);
 
 		}
 

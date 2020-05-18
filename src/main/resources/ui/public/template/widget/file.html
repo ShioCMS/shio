@@ -27,7 +27,7 @@
 	<div ng-if="shPostAttr.strValue != null">
 
 		<div class="panel panel-default" style="margin-top: 10px;"
-			ng-if="shPostType.name != 'PT-FILE' && !uploadNewFile">
+			ng-if="shPostType.name != 'File' && !uploadNewFile">
 			<div class="panel-body">
 				<ul class="breadcrumb"
 					style="background-color: white; padding: 0px; margin: 0px; font-size: 12px;">
@@ -60,7 +60,7 @@
 			</div>
 		</div>
 
-		<div class="row" ng-if="shPostType.name == 'PT-FILE'">
+		<div class="row" ng-if="shPostType.name == 'File'">
 			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 				<i class="fa fa-newspaper-o" aria-hidden="true"
 					style="margin-right: 5px"></i> {{shPostAttr.strValue}}
@@ -83,7 +83,7 @@
 				browser</div>
 		</div>
 		<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6"
-			ng-if="shPostType.name != 'PT-FILE'"
+			ng-if="shPostType.name != 'File'"
 			style="height: 40px; margin-top: 25px;">
 			<button class="btn btn-viglet"
 				ng-click="selectFile(shPost, shPostAttr)">Or Select a File</button>

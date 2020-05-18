@@ -18,13 +18,14 @@ package com.viglet.shio.persistence.service.post;
 
 import java.util.List;
 
-import com.viglet.shio.persistence.model.post.ShPostAttr;
-import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
+import com.viglet.shio.persistence.model.post.ShPost;
+import com.viglet.shio.persistence.model.post.type.ShPostType;
 
 /**
  * @author Alexandre Oliveira
  * @since 0.3.7
  */
-public interface ShPostAttrService {
-	public List<ShPostAttr> findByShPostTypeAttrAndValueAndCondition(ShPostTypeAttr shPostTypeAttr, String value, String condition);
+public interface ShPostService {
+	public List<ShPost> findByShPostTypeAndAttrNameAndAttrValueAndConditionAndSites(ShPostType shPostType,
+			String attrName, String attrValue, String condition, List<String> siteIds);
 }
