@@ -41,8 +41,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.viglet.shio.persistence.model.folder.ShFolder;
+import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.persistence.repository.folder.ShFolderRepository;
+import com.viglet.shio.persistence.repository.post.ShPostRepository;
 import com.viglet.shio.persistence.repository.site.ShSiteRepository;
 import com.viglet.shio.utils.ShUtils;
 
@@ -55,16 +57,12 @@ public class ShObjectAPITest {
 	@Autowired
 	private ShSiteRepository shSiteRepository;
 	@Autowired
+	private ShPostRepository shPostRepository;
+	@Autowired
 	private ShFolderRepository shFolderRepository;
 	
 	private MockMvc mockMvc;
-
-	private String siteObjectId = "c5bdee96-6feb-4894-9daf-3aab6cdd5087";
-
-	private String folderObjectId = "fdbff43b-cc7e-40f1-80a1-062bb08ae5d0";
-
-	private String postObjectId = "7887cd98-a593-4e3c-a7d9-eabf41103d03";
-
+	
 	private Principal mockPrincipal;
 
 	@Before
@@ -79,7 +77,7 @@ public class ShObjectAPITest {
 	@Test
 	public void shObjectMoveToFolder() throws Exception {
 
-		ShSite shSite = shSiteRepository.findById(siteObjectId).get();
+		ShSite shSite = shSiteRepository.findByName("Viglet");
 
 		String newFolderId = UUID.randomUUID().toString();
 		ShFolder shFolder = new ShFolder();
@@ -101,8 +99,8 @@ public class ShObjectAPITest {
 		objectIds.add(newFolderId);
 		
 		String objectIdsRequestBody = ShUtils.asJsonString(objectIds);
-		
-		RequestBuilder moveRequestBuilder = MockMvcRequestBuilders.put("/api/v2/object/moveto/" + folderObjectId)
+		ShFolder shFolderHome = shFolderRepository.findByShSiteAndName(shSite, "Home");
+		RequestBuilder moveRequestBuilder = MockMvcRequestBuilders.put("/api/v2/object/moveto/" + shFolderHome.getId())
 				.principal(mockPrincipal).accept(MediaType.APPLICATION_JSON).content(objectIdsRequestBody)
 				.contentType("application/json");
 
@@ -111,8 +109,9 @@ public class ShObjectAPITest {
 
 	@Test
 	public void shObjectMoveToSite() throws Exception {
-
-		ShFolder shParentFolder = shFolderRepository.findById(folderObjectId).get();
+		ShSite shSite = shSiteRepository.findByName("Viglet");
+		ShFolder shFolderHome = shFolderRepository.findByShSiteAndName(shSite, "Home");
+		ShFolder shParentFolder = shFolderRepository.findById(shFolderHome.getId()).get();
 
 		String newFolderId = UUID.randomUUID().toString();
 		ShFolder shFolder = new ShFolder();
@@ -135,7 +134,7 @@ public class ShObjectAPITest {
 		
 		String objectIdsRequestBody = ShUtils.asJsonString(objectIds);
 		
-		RequestBuilder moveRequestBuilder = MockMvcRequestBuilders.put("/api/v2/object/moveto/" + siteObjectId)
+		RequestBuilder moveRequestBuilder = MockMvcRequestBuilders.put("/api/v2/object/moveto/" + shSite.getId())
 				.principal(mockPrincipal).accept(MediaType.APPLICATION_JSON).content(objectIdsRequestBody)
 				.contentType("application/json");
 
@@ -146,8 +145,9 @@ public class ShObjectAPITest {
 	
 		@Test
 		public void shObjectCopyToFolder() throws Exception {
-
-			ShSite shSite = shSiteRepository.findById(siteObjectId).get();
+			ShSite shSite = shSiteRepository.findByName("Viglet");
+			ShFolder shFolderHome = shFolderRepository.findByShSiteAndName(shSite, "Home");
+			
 
 			String newFolderId = UUID.randomUUID().toString();
 			ShFolder shFolder = new ShFolder();
@@ -170,7 +170,7 @@ public class ShObjectAPITest {
 			
 			String objectIdsRequestBody = ShUtils.asJsonString(objectIds);
 			
-			RequestBuilder moveRequestBuilder = MockMvcRequestBuilders.put("/api/v2/object/copyto/" + folderObjectId)
+			RequestBuilder moveRequestBuilder = MockMvcRequestBuilders.put("/api/v2/object/copyto/" + shFolderHome.getId())
 					.principal(mockPrincipal).accept(MediaType.APPLICATION_JSON).content(objectIdsRequestBody)
 					.contentType("application/json");
 
@@ -179,8 +179,9 @@ public class ShObjectAPITest {
 
 		@Test
 		public void shObjectCopyToSite() throws Exception {
-
-			ShFolder shParentFolder = shFolderRepository.findById(folderObjectId).get();
+			ShSite shSite = shSiteRepository.findByName("Viglet");
+			ShFolder shFolderHome = shFolderRepository.findByShSiteAndName(shSite, "Home");
+			ShFolder shParentFolder = shFolderRepository.findById(shFolderHome.getId()).get();
 
 			String newFolderId = UUID.randomUUID().toString();
 			ShFolder shFolder = new ShFolder();
@@ -203,7 +204,7 @@ public class ShObjectAPITest {
 			
 			String objectIdsRequestBody = ShUtils.asJsonString(objectIds);
 			
-			RequestBuilder moveRequestBuilder = MockMvcRequestBuilders.put("/api/v2/object/copyto/" + siteObjectId)
+			RequestBuilder moveRequestBuilder = MockMvcRequestBuilders.put("/api/v2/object/copyto/" + shSite.getId())
 					.principal(mockPrincipal).accept(MediaType.APPLICATION_JSON).content(objectIdsRequestBody)
 					.contentType("application/json");
 
@@ -214,19 +215,25 @@ public class ShObjectAPITest {
 
 	@Test
 	public void shObjectPreviewSite() throws Exception {
-		mockMvc.perform(get("/api/v2/object/" + siteObjectId + "/preview")).andExpect(status().is3xxRedirection());
+		ShSite shSite = shSiteRepository.findByName("Viglet");
+		mockMvc.perform(get("/api/v2/object/" + shSite.getId() + "/preview")).andExpect(status().is3xxRedirection());
 
 	}
 
 	@Test
 	public void shObjectPreviewFolder() throws Exception {
-		mockMvc.perform(get("/api/v2/object/" + folderObjectId + "/preview")).andExpect(status().is3xxRedirection());
+		ShSite shSite = shSiteRepository.findByName("Viglet");
+		ShFolder shFolderHome = shFolderRepository.findByShSiteAndName(shSite, "Home");
+		mockMvc.perform(get("/api/v2/object/" + shFolderHome.getId() + "/preview")).andExpect(status().is3xxRedirection());
 
 	}
 
 	@Test
 	public void shObjectPreviewPost() throws Exception {
-		mockMvc.perform(get("/api/v2/object/" + postObjectId + "/preview")).andExpect(status().is3xxRedirection());
+		ShSite shSite = shSiteRepository.findByName("Viglet");
+		ShFolder shFolderHome = shFolderRepository.findByShSiteAndName(shSite, "Home");
+		ShPost shPost = shPostRepository.findByShFolderAndFurl(shFolderHome, "index");
+		mockMvc.perform(get("/api/v2/object/" + shPost.getId() + "/preview")).andExpect(status().is3xxRedirection());
 
 	}
 
@@ -234,14 +241,17 @@ public class ShObjectAPITest {
 
 	@Test
 	public void shObjectListItemSite() throws Exception {
-		mockMvc.perform(get("/api/v2/object/" + siteObjectId + "/list")).andExpect(status().isOk())
+		ShSite shSite = shSiteRepository.findByName("Viglet");
+		mockMvc.perform(get("/api/v2/object/" + shSite.getId() + "/list")).andExpect(status().isOk())
 				.andExpect(content().contentType("application/json"));
 
 	}
 
 	@Test
 	public void shObjectListItemFolder() throws Exception {
-		mockMvc.perform(get("/api/v2/object/" + folderObjectId + "/list")).andExpect(status().isOk())
+		ShSite shSite = shSiteRepository.findByName("Viglet");
+		ShFolder shFolderHome = shFolderRepository.findByShSiteAndName(shSite, "Home");
+		mockMvc.perform(get("/api/v2/object/" + shFolderHome.getId() + "/list")).andExpect(status().isOk())
 				.andExpect(content().contentType("application/json"));
 
 	}
@@ -250,14 +260,17 @@ public class ShObjectAPITest {
 
 	@Test
 	public void shFolderListByPostTypeSite() throws Exception {
-		mockMvc.perform(get("/api/v2/object/" + siteObjectId + "/list/PT-TEXT")).andExpect(status().isOk())
+		ShSite shSite = shSiteRepository.findByName("Viglet");
+		mockMvc.perform(get("/api/v2/object/" + shSite.getId() + "/list/Text")).andExpect(status().isOk())
 				.andExpect(content().contentType("application/json"));
 
 	}
 
 	@Test
 	public void shFolderListByPostTypeFolder() throws Exception {
-		mockMvc.perform(get("/api/v2/object/" + folderObjectId + "/list/PT-TEXT")).andExpect(status().isOk())
+		ShSite shSite = shSiteRepository.findByName("Viglet");
+		ShFolder shFolderHome = shFolderRepository.findByShSiteAndName(shSite, "Home");
+		mockMvc.perform(get("/api/v2/object/" + shFolderHome.getId() + "/list/Text")).andExpect(status().isOk())
 				.andExpect(content().contentType("application/json"));
 
 	}
@@ -266,21 +279,27 @@ public class ShObjectAPITest {
 
 	@Test
 	public void shObjectPathSite() throws Exception {
-		mockMvc.perform(get("/api/v2/object/" + siteObjectId + "/path")).andExpect(status().isOk())
+		ShSite shSite = shSiteRepository.findByName("Viglet");
+		mockMvc.perform(get("/api/v2/object/" + shSite.getId() + "/path")).andExpect(status().isOk())
 				.andExpect(content().contentType("application/json"));
 
 	}
 
 	@Test
 	public void shObjectPathFolder() throws Exception {
-		mockMvc.perform(get("/api/v2/object/" + folderObjectId + "/path")).andExpect(status().isOk())
+		ShSite shSite = shSiteRepository.findByName("Viglet");
+		ShFolder shFolderHome = shFolderRepository.findByShSiteAndName(shSite, "Home");
+		mockMvc.perform(get("/api/v2/object/" + shFolderHome.getId() + "/path")).andExpect(status().isOk())
 				.andExpect(content().contentType("application/json"));
 
 	}
 
 	@Test
 	public void shObjectPathPost() throws Exception {
-		mockMvc.perform(get("/api/v2/object/" + postObjectId + "/path")).andExpect(status().isOk())
+		ShSite shSite = shSiteRepository.findByName("Viglet");
+		ShFolder shFolderHome = shFolderRepository.findByShSiteAndName(shSite, "Home");
+		ShPost shPost = shPostRepository.findByShFolderAndFurl(shFolderHome, "index");
+		mockMvc.perform(get("/api/v2/object/" + shPost.getId() + "/path")).andExpect(status().isOk())
 				.andExpect(content().contentType("application/json"));
 
 	}
