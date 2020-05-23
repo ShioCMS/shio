@@ -40,7 +40,7 @@ import graphql.schema.GraphQLObjectType.Builder;
  * @since 0.3.7
  */
 @Component
-public class ShGraphQLObjectType {
+public class ShGraphQLOTPostType {
 
 	@Autowired
 	private ShGraphQLUtils shGraphQLUtils;

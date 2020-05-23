@@ -61,6 +61,7 @@ public class ShGraphQLInputObjectField {
 
 		if (type.equals(ShGraphQLConstants.FIELD_TYPE_GRAPHQL_DATE_TIME)) {
 			scalarType = ExtendedScalars.DateTime;
+			
 			this.createInputObjectFieldCondition(builder, name, null, scalarType, description);
 			this.createInputObjectFieldCondition(builder, name, ShGraphQLConstants.CONDITION_NOT, scalarType,
 					"All values that are not equal to given value.");

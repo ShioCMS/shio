@@ -48,7 +48,9 @@ public class ShGraphQLSchema {
 	@Autowired
 	private ShPostTypeRepository shPostTypeRepository;
 	@Autowired
-	private ShGraphQLObjectType shGraphQLObjectType;
+	private ShGraphQLOTPostType shGraphQLOTPostType;
+	@Autowired
+	private ShGraphQLOTSites shGraphQLOTSites;
 	@Autowired
 	private ShGraphQLQTCommons shGraphQLQTCommons;
 
@@ -58,8 +60,10 @@ public class ShGraphQLSchema {
 		Builder queryTypeBuilder = newObject().name(ShGraphQLConstants.QUERY_TYPE);
 		graphql.schema.GraphQLCodeRegistry.Builder codeRegistryBuilder = newCodeRegistry();
 		for (ShPostType shPostType : shPostTypeRepository.findAll())
-			shGraphQLObjectType.createObjectTypes(queryTypeBuilder, codeRegistryBuilder, shPostType);
+			shGraphQLOTPostType.createObjectTypes(queryTypeBuilder, codeRegistryBuilder, shPostType);
 
+		shGraphQLOTSites.createObjectTypes(queryTypeBuilder, codeRegistryBuilder);
+		
 		GraphQLObjectType queryType = queryTypeBuilder.comparatorRegistry(BY_NAME_REGISTRY).build();
 
 		return GraphQLSchema.newSchema().additionalType(shGraphQLQTCommons.createSiteEnum()).query(queryType)

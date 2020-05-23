@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.viglet.shio.graphql.schema.queryType;
+package com.viglet.shio.graphql.schema.queryType.sites;
 
 import static graphql.Scalars.GraphQLID;
 import static graphql.schema.FieldCoordinates.coordinates;
@@ -30,9 +30,9 @@ import org.springframework.stereotype.Component;
 import com.viglet.shio.graphql.schema.ShGraphQLConstants;
 import com.viglet.shio.graphql.schema.ShGraphQLInputObjectField;
 import com.viglet.shio.graphql.schema.ShGraphQLUtils;
+import com.viglet.shio.graphql.schema.queryType.ShGraphQLQTCommons;
 import com.viglet.shio.persistence.model.object.ShObject;
 import com.viglet.shio.persistence.model.post.ShPost;
-import com.viglet.shio.persistence.model.post.type.ShPostType;
 import com.viglet.shio.persistence.repository.object.ShObjectRepository;
 
 import graphql.schema.DataFetcher;
@@ -47,7 +47,7 @@ import graphql.schema.GraphQLObjectType.Builder;
  * @since 0.3.7
  */
 @Component
-public class ShGraphQLQTUnique {
+public class ShGraphQLQTShContent {
 
 	@Autowired
 	private ShObjectRepository shObjectRepository;
@@ -57,27 +57,26 @@ public class ShGraphQLQTUnique {
 	private ShGraphQLUtils shGraphQLUtils;
 	@Autowired
 	private ShGraphQLInputObjectField shGraphQLInputObjectField;
-
-	private String getPostTypeNameUnique(ShPostType shPostType) {
-		return shGraphQLUtils.normalizedPostType(shPostType.getName());
-	}
-
+	
+	private static final String CONTENT_NAME="shContent";
+	private static final String CONTENT_NAME_UPPER="ShContent";
+	
 	public void createQueryTypeUnique(Builder queryTypeBuilder,
-			graphql.schema.GraphQLCodeRegistry.Builder codeRegistryBuilder, ShPostType shPostType,
+			graphql.schema.GraphQLCodeRegistry.Builder codeRegistryBuilder,
 			GraphQLObjectType graphQLObjectType) {
-		String postTypeName = this.getPostTypeNameUnique(shPostType);
+		
 
 		GraphQLInputObjectType.Builder postTypeWhereUniqueInputBuilder = newInputObject()
-				.name(shPostType.getName().concat(ShGraphQLConstants.WHERE_UNIQUE_INPUT))
-				.description(String.format("References %s record uniquely", shPostType.getName()));
+				.name(CONTENT_NAME_UPPER.concat(ShGraphQLConstants.WHERE_UNIQUE_INPUT))
+				.description(String.format("References %s record uniquely", CONTENT_NAME_UPPER));
 
 		this.whereFieldsUnique(postTypeWhereUniqueInputBuilder);
 
-		shGraphQLQTCommons.createArguments(queryTypeBuilder, graphQLObjectType, postTypeName,
+		shGraphQLQTCommons.createArguments(queryTypeBuilder, graphQLObjectType, CONTENT_NAME,
 				postTypeWhereUniqueInputBuilder, false);
 
-		codeRegistryBuilder.dataFetcher(coordinates(ShGraphQLConstants.QUERY_TYPE, postTypeName),
-				this.getPostTypeAllDataFetcherUnique(shPostType));
+		codeRegistryBuilder.dataFetcher(coordinates(ShGraphQLConstants.QUERY_TYPE, CONTENT_NAME),
+				this.getPostTypeAllDataFetcherUnique());
 	}
 
 	private void whereFieldsUnique(GraphQLInputObjectType.Builder postTypeWhereInputBuilder) {
@@ -85,7 +84,7 @@ public class ShGraphQLQTUnique {
 				null, GraphQLID, "Identifier");
 	}
 
-	private DataFetcher<Map<String, String>> getPostTypeAllDataFetcherUnique(ShPostType shPostType) {
+	private DataFetcher<Map<String, String>> getPostTypeAllDataFetcherUnique() {
 		return dataFetchingEnvironment -> {
 			Map<String, String> post = new HashMap<>();
 

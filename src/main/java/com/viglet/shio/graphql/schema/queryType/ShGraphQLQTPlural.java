@@ -75,7 +75,7 @@ public class ShGraphQLQTPlural {
 		this.whereFieldsPlural(shPostType, postTypeWhereInputBuilder);
 
 		shGraphQLQTCommons.createArguments(queryTypeBuilder, graphQLObjectType, postTypeNamePlural,
-				postTypeWhereInputBuilder);
+				postTypeWhereInputBuilder, true);
 
 		codeRegistryBuilder.dataFetcher(coordinates(ShGraphQLConstants.QUERY_TYPE, postTypeNamePlural),
 				this.getPostTypeAllDataFetcherPlural(shPostType));

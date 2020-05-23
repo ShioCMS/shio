@@ -32,6 +32,7 @@ import com.viglet.shio.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shio.persistence.repository.post.ShPostRepository;
 import com.viglet.shio.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shio.post.type.ShSystemPostType;
+import com.viglet.shio.sites.ShContent;
 import com.viglet.shio.url.ShURLScheme;
 import com.viglet.shio.utils.ShFolderUtils;
 
@@ -73,8 +74,8 @@ public class ShSitesFolderUtils {
 		return this.toMap(shFolder);
 	}
 
-	public Map<String, Object> toSystemMap(ShFolder shFolder) {
-		Map<String, Object> shFolderItemAttrs = new HashMap<>();
+	public ShContent toSystemMap(ShFolder shFolder) {
+		ShContent shFolderItemAttrs = new ShContent();
 
 		shFolderItemAttrs.put("system", this.toMap(shFolder));
 

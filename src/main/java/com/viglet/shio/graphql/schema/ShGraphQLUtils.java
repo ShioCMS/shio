@@ -45,8 +45,8 @@ public class ShGraphQLUtils {
 		return objectName;
 	}
 
-	public String normalizedPostType(String object) {
-		char c[] = object.replaceAll("-", "_").toCharArray();
+	public String normalizedPostType(String postTypeName) {
+		char c[] = postTypeName.replaceAll("-", "_").toCharArray();
 		c[0] = Character.toLowerCase(c[0]);
 		return new String(c);
 	}
