@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.viglet.shio.graphql.schema;
+package com.viglet.shio.graphql.schema.objectType;
 
 import static graphql.Scalars.GraphQLID;
 import static graphql.Scalars.GraphQLString;
@@ -25,6 +25,7 @@ import static graphql.schema.GraphqlTypeComparatorRegistry.BY_NAME_REGISTRY;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.viglet.shio.graphql.ShGraphQLConstants;
 import com.viglet.shio.graphql.schema.queryType.sites.ShGraphQLQTSiteURL;
 
 import graphql.schema.GraphQLObjectType;
@@ -60,9 +61,12 @@ public class ShGraphQLOTSites {
 		builder.field(
 				newFieldDefinition().name("locale").description("Locale").type(GraphQLString));
 		builder.field(
-				newFieldDefinition().name("site").description("Site Id").type(ExtendedScalars.Json));
+				newFieldDefinition().name("site").description("Site Id").type(GraphQLString));
 		builder.field(
-				newFieldDefinition().name("context").description("Context").type(GraphQLString));		
+				newFieldDefinition().name("context").description("Context").type(GraphQLString));	
+		builder.field(
+				newFieldDefinition().name("content").description("Content").type(ExtendedScalars.Object));	
+		
 
 	}
 

@@ -16,6 +16,9 @@
  */
 package com.viglet.shio.graphql.schema;
 
+import com.viglet.shio.graphql.ShGraphQLConstants;
+import com.viglet.shio.graphql.schema.objectType.ShGraphQLOTPostType;
+import com.viglet.shio.graphql.schema.objectType.ShGraphQLOTSites;
 import com.viglet.shio.graphql.schema.queryType.ShGraphQLQTCommons;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
 import com.viglet.shio.persistence.repository.post.type.ShPostTypeRepository;

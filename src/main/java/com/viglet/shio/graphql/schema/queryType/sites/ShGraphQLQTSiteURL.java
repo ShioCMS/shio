@@ -30,8 +30,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
-import com.viglet.shio.graphql.schema.ShGraphQLConstants;
-import com.viglet.shio.graphql.schema.ShGraphQLUtils;
+import com.viglet.shio.graphql.ShGraphQLConstants;
+import com.viglet.shio.graphql.ShGraphQLUtils;
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.object.ShObject;
 import com.viglet.shio.persistence.model.post.ShPost;
@@ -77,15 +77,12 @@ public class ShGraphQLQTSiteURL {
 
 	}
 
-	private DataFetcher<Map<String, String>> getDataFetcher() {
+	private DataFetcher<Map<String, Object>> getDataFetcher() {
 		return dataFetchingEnvironment -> {
-			Map<String, String> post = new HashMap<>();
+			Map<String, Object> post = new HashMap<>();
 			Gson gson = new Gson();
 			String url = dataFetchingEnvironment.getArgument("url");
-			//System.out.println(url);
 			ShContent shContent = shSitesContent.fromURL(url);
-			//System.out.println(gson.toJson(shContent));
-
 			JSONObject site = new JSONObject(gson.toJson(shContent.get("site")));
 			JSONObject system = new JSONObject(gson.toJson(shContent.get("system")));
 			String objectId = system.getString("id");
@@ -94,7 +91,7 @@ public class ShGraphQLQTSiteURL {
 			String type = null;
 
 			if (shObject instanceof ShPost) {
-				ShPost shPost = (ShPost) shObject;				
+				ShPost shPost = (ShPost) shObject;
 				type = shGraphQLUtils.normalizedPostType(shPost.getShPostType().getName());
 			} else if (shObject instanceof ShFolder) {
 				type = "folder";
@@ -108,8 +105,7 @@ public class ShGraphQLQTSiteURL {
 			post.put("type", type);
 			post.put("format", "Format1");
 			post.put("site", site.getJSONObject("system").getString("id"));
-
-
+			post.put("content", shContent);
 			return post;
 		};
 	}

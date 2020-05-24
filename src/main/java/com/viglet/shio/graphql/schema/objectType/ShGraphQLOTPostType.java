@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.viglet.shio.graphql.schema;
+package com.viglet.shio.graphql.schema.objectType;
 
 import static graphql.Scalars.GraphQLID;
 import static graphql.Scalars.GraphQLString;
@@ -25,6 +25,8 @@ import static graphql.schema.GraphqlTypeComparatorRegistry.BY_NAME_REGISTRY;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.viglet.shio.graphql.ShGraphQLConstants;
+import com.viglet.shio.graphql.ShGraphQLUtils;
 import com.viglet.shio.graphql.schema.queryType.ShGraphQLQTPlural;
 import com.viglet.shio.graphql.schema.queryType.ShGraphQLQTUnique;
 import com.viglet.shio.persistence.model.post.type.ShPostType;

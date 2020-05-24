@@ -27,9 +27,9 @@ import java.util.Map.Entry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.viglet.shio.graphql.schema.ShGraphQLConstants;
+import com.viglet.shio.graphql.ShGraphQLConstants;
+import com.viglet.shio.graphql.ShGraphQLUtils;
 import com.viglet.shio.graphql.schema.ShGraphQLInputObjectField;
-import com.viglet.shio.graphql.schema.ShGraphQLUtils;
 import com.viglet.shio.graphql.schema.queryType.ShGraphQLQTCommons;
 import com.viglet.shio.persistence.model.object.ShObject;
 import com.viglet.shio.persistence.model.post.ShPost;
