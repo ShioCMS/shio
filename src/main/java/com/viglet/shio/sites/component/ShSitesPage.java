@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +51,7 @@ import com.viglet.shio.utils.ShSiteUtils;
  */
 @Component
 public class ShSitesPage {
+	private static final Log logger = LogFactory.getLog(ShSitesPage.class);
 	@Autowired
 	private ShPostRepository shPostRepository;
 	@Autowired
@@ -160,8 +163,7 @@ public class ShSitesPage {
 
 					}
 				} catch (JSONException | IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.error("shPostPage Error: ", e);
 				}
 
 			}
