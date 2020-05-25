@@ -16,7 +16,6 @@
  */
 package com.viglet.shio.sites;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,8 +28,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Comment;
 import org.jsoup.nodes.Document;
@@ -40,10 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Stopwatch;
-import com.viglet.shio.bean.ShSitePostTypeLayout;
-import com.viglet.shio.bean.ShSitePostTypeLayouts;
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.object.ShObject;
 import com.viglet.shio.persistence.model.post.ShPost;
@@ -57,6 +51,7 @@ import com.viglet.shio.sites.cache.component.ShCacheJavascript;
 import com.viglet.shio.sites.cache.component.ShCachePageLayout;
 import com.viglet.shio.sites.cache.component.ShCacheRegion;
 import com.viglet.shio.sites.component.ShSitesPageLayout;
+import com.viglet.shio.sites.component.ShSitesPageLayoutUtils;
 import com.viglet.shio.sites.nashorn.ShNashornEngineProcess;
 import com.viglet.shio.sites.utils.ShSitesFolderUtils;
 import com.viglet.shio.sites.utils.ShSitesPostUtils;
@@ -68,7 +63,7 @@ import com.viglet.shio.utils.ShPostUtils;
  */
 @Component
 public class ShSitesContextComponent {
-	static final Logger logger = LogManager.getLogger(ShSitesContextComponent.class.getName());
+	static final Logger logger = LogManager.getLogger(ShSitesContextComponent.class);
 	@Autowired
 	private ShPostRepository shPostRepository;
 	@Autowired
@@ -88,7 +83,9 @@ public class ShSitesContextComponent {
 	@Autowired
 	private ShCacheJavascript shCacheJavascript;
 	@Autowired
-	ShNashornEngineProcess shNashornEngineProcess;
+	private ShNashornEngineProcess shNashornEngineProcess;
+	@Autowired
+	private ShSitesPageLayoutUtils shSitesPageLayoutUtils;
 	@Resource
 	private ApplicationContext context;
 
@@ -219,71 +216,8 @@ public class ShSitesContextComponent {
 	}
 
 	public Map<String, ShPostAttr> shFolderPageLayoutMapFactory(ShObject shObjectItem, ShSite shSite, String format) {
-		String shPostFolderPageLayoutId = null;
-		ShPost shFolderPageLayout = null;
 
-		if (shObjectItem instanceof ShPost) {
-			ShPost shSelectedPost = shSitesPostUtils.getPostByStage((ShPost) shObjectItem);
-			if (shSelectedPost != null) {
-				Map<String, ShPostAttr> shFolderIndexMap = shSitesPostUtils.postToMap((ShPost) shSelectedPost);
-				shPostFolderPageLayoutId = shFolderIndexMap.get(ShSystemPostTypeAttr.PAGE_LAYOUT).getStrValue();
-				if (!format.toLowerCase().equals("default")) {
-					ShPostAttr shPostAttrFormats = shFolderIndexMap.get("FORMATS");
-					List<Map<String, ShPostAttr>> shPostAttrFormatList = shSitesPostUtils
-							.relationToMap(shPostAttrFormats);
-					if (shPostAttrFormatList != null) {
-						for (Map<String, ShPostAttr> shPostAttrFormat : shPostAttrFormatList) {
-							if (shPostAttrFormat.get("NAME").getStrValue().equals(format)) {
-								shPostFolderPageLayoutId = shPostAttrFormat.get("PAGE_LAYOUT").getStrValue();
-							}
-						}
-					}
-				}
-
-				if (shPostFolderPageLayoutId != null) {
-					shFolderPageLayout = shPostRepository.findById(shPostFolderPageLayoutId).orElse(null);
-				}
-			}
-		} else if (shObjectItem instanceof ShFolder) {
-			// If Folder doesn't have PageLayout, it will try use default Folder Page Layout
-			if (shSite.getPostTypeLayout() != null) {
-				JSONObject postTypeLayout = new JSONObject(shSite.getPostTypeLayout());
-
-				if (postTypeLayout.has("FOLDER")) {
-					ObjectMapper mapper = new ObjectMapper();
-
-					ShSitePostTypeLayouts shSitePostTypeLayouts;
-					try {
-						shSitePostTypeLayouts = mapper.readValue(postTypeLayout.get("FOLDER").toString(),
-								ShSitePostTypeLayouts.class);
-
-						String pageLayoutName = null;
-						if (format == null)
-							format = "default";
-
-						for (ShSitePostTypeLayout shSitePostTypeLayout : shSitePostTypeLayouts) {
-							if (shSitePostTypeLayout.getFormat().equals(format)) {
-								pageLayoutName = shSitePostTypeLayout.getLayout();
-							}
-						}
-						List<ShPost> shPostPageLayouts = shPostRepository.findByTitle(pageLayoutName);
-
-						if (shPostPageLayouts != null) {
-							for (ShPost shPostPageLayout : shPostPageLayouts) {
-								if (shPostUtils.getSite(shPostPageLayout).getId().equals(shSite.getId())) {
-									shFolderPageLayout = shPostPageLayout;
-								}
-							}
-						}
-					} catch (JSONException | IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
-		}
-
-		return shSitesPostUtils.postToMap(shFolderPageLayout);
+		return shSitesPostUtils.postToMap(shSitesPageLayoutUtils.pageLayoutFromShObject(shObjectItem, shSite, format));
 	}
 
 	public String shPageLayoutFactory(ShSitesPageLayout shSitesPageLayout, HttpServletRequest request, ShSite shSite,

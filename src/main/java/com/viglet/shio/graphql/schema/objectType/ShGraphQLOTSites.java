@@ -66,6 +66,8 @@ public class ShGraphQLOTSites {
 				newFieldDefinition().name("context").description("Context").type(GraphQLString));	
 		builder.field(
 				newFieldDefinition().name("content").description("Content").type(ExtendedScalars.Object));	
+		builder.field(
+				newFieldDefinition().name("pageLayout").description("Page Layout Name").type(GraphQLString));	
 		
 
 	}

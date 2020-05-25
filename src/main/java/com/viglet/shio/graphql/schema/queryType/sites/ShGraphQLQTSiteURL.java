@@ -37,8 +37,10 @@ import com.viglet.shio.persistence.model.object.ShObject;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.persistence.repository.object.ShObjectRepository;
+import com.viglet.shio.persistence.repository.site.ShSiteRepository;
 import com.viglet.shio.sites.ShContent;
 import com.viglet.shio.sites.component.ShSitesContent;
+import com.viglet.shio.sites.component.ShSitesPageLayoutUtils;
 
 import graphql.schema.DataFetcher;
 import graphql.schema.GraphQLObjectType;
@@ -59,6 +61,11 @@ public class ShGraphQLQTSiteURL {
 	private ShObjectRepository shObjectRepository;
 	@Autowired
 	private ShGraphQLUtils shGraphQLUtils;
+	@Autowired
+	private ShSitesPageLayoutUtils shSitesPageLayoutUtils;
+	@Autowired
+	private ShSiteRepository shSiteRepository;
+
 	private static final String CONTENT_NAME = "objectFromURL";
 
 	public void createQueryType(Builder queryTypeBuilder,
@@ -84,9 +91,11 @@ public class ShGraphQLQTSiteURL {
 			String url = dataFetchingEnvironment.getArgument("url");
 			ShContent shContent = shSitesContent.fromURL(url);
 			JSONObject site = new JSONObject(gson.toJson(shContent.get("site")));
+			String siteId = site.getJSONObject("system").getString("id");
 			JSONObject system = new JSONObject(gson.toJson(shContent.get("system")));
 			String objectId = system.getString("id");
 			ShObject shObject = shObjectRepository.findById(objectId).get();
+			ShSite shSite = shSiteRepository.findById(siteId).get();
 
 			String type = null;
 
@@ -95,17 +104,26 @@ public class ShGraphQLQTSiteURL {
 				type = shGraphQLUtils.normalizedPostType(shPost.getShPostType().getName());
 			} else if (shObject instanceof ShFolder) {
 				type = "folder";
+
 			} else if (shObject instanceof ShSite) {
 				type = "site";
 			}
-
+			ShPost pageLayout = shSitesPageLayoutUtils.pageLayoutFromShObject(shObject, shSite, "default");
+			if (pageLayout != null) {
+				post.put("pageLayout", pageLayout.getTitle().toLowerCase());
+			} else {
+				System.out.println("Valor nulo");
+				System.out.println(shSite.getName());
+				System.out.println(shObject.getId());
+			}
 			post.put("id", system.getString("id"));
 			post.put("locale", "Locale1");
 			post.put("context", "Context1");
 			post.put("type", type);
 			post.put("format", "Format1");
-			post.put("site", site.getJSONObject("system").getString("id"));
+			post.put("site", siteId);
 			post.put("content", shContent);
+
 			return post;
 		};
 	}
