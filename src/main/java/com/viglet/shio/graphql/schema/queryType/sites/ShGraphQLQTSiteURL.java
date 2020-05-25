@@ -37,7 +37,6 @@ import com.viglet.shio.persistence.model.object.ShObject;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.persistence.repository.object.ShObjectRepository;
-import com.viglet.shio.persistence.repository.site.ShSiteRepository;
 import com.viglet.shio.sites.ShContent;
 import com.viglet.shio.sites.component.ShSitesContent;
 import com.viglet.shio.sites.component.ShSitesPageLayoutUtils;
@@ -63,8 +62,6 @@ public class ShGraphQLQTSiteURL {
 	private ShGraphQLUtils shGraphQLUtils;
 	@Autowired
 	private ShSitesPageLayoutUtils shSitesPageLayoutUtils;
-	@Autowired
-	private ShSiteRepository shSiteRepository;
 
 	private static final String CONTENT_NAME = "objectFromURL";
 
@@ -95,27 +92,24 @@ public class ShGraphQLQTSiteURL {
 			JSONObject system = new JSONObject(gson.toJson(shContent.get("system")));
 			String objectId = system.getString("id");
 			ShObject shObject = shObjectRepository.findById(objectId).get();
-			ShSite shSite = shSiteRepository.findById(siteId).get();
-
+			
 			String type = null;
 
 			if (shObject instanceof ShPost) {
-				ShPost shPost = (ShPost) shObject;
+				ShPost shPost = (ShPost) shObject;	
 				type = shGraphQLUtils.normalizedPostType(shPost.getShPostType().getName());
+				
 			} else if (shObject instanceof ShFolder) {
 				type = "folder";
-
 			} else if (shObject instanceof ShSite) {
 				type = "site";
 			}
-			ShPost pageLayout = shSitesPageLayoutUtils.pageLayoutFromShObject(shObject, shSite, "default");
-			if (pageLayout != null) {
+			
+			ShPost pageLayout = shSitesPageLayoutUtils.fromURL(url);
+			
+			if (pageLayout != null)
 				post.put("pageLayout", pageLayout.getTitle().toLowerCase());
-			} else {
-				System.out.println("Valor nulo");
-				System.out.println(shSite.getName());
-				System.out.println(shObject.getId());
-			}
+		
 			post.put("id", system.getString("id"));
 			post.put("locale", "Locale1");
 			post.put("context", "Context1");

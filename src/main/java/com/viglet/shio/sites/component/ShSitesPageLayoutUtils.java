@@ -27,6 +27,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viglet.shio.bean.ShSitePostTypeLayout;
 import com.viglet.shio.bean.ShSitePostTypeLayouts;
@@ -35,8 +36,13 @@ import com.viglet.shio.persistence.model.object.ShObject;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
 import com.viglet.shio.persistence.model.site.ShSite;
+import com.viglet.shio.persistence.repository.object.ShObjectRepository;
 import com.viglet.shio.persistence.repository.post.ShPostRepository;
+import com.viglet.shio.persistence.repository.site.ShSiteRepository;
+import com.viglet.shio.post.type.ShSystemPostType;
 import com.viglet.shio.post.type.ShSystemPostTypeAttr;
+import com.viglet.shio.sites.ShSitesContextURL;
+import com.viglet.shio.sites.ShSitesContextURLProcess;
 import com.viglet.shio.sites.utils.ShSitesPostUtils;
 import com.viglet.shio.utils.ShPostUtils;
 
@@ -55,11 +61,80 @@ public class ShSitesPageLayoutUtils {
 	private ShPostRepository shPostRepository;
 	@Autowired
 	private ShPostUtils shPostUtils;
+	@Autowired
+	private ShSitesContextURLProcess shSitesContextURLProcess;
+	@Autowired
+	private ShObjectRepository shObjectRepository;
+	@Autowired
+	private ShSiteRepository shSiteRepository;
 
-	public ShPost pageLayoutFromShObject(ShObject shObjectItem, ShSite shSite, String format) {
+	public ShPost fromURL(String url) {
+		ShSitesContextURL shSitesContextURL = new ShSitesContextURL();
+
+		shSitesContextURLProcess.detectContextURL(url, shSitesContextURL);
+
+		ShObject shObject = shObjectRepository.findById(shSitesContextURL.getInfo().getObjectId()).orElse(null);
+
+		ShSite shSite = shSiteRepository.findById(shSitesContextURL.getInfo().getSiteId()).orElse(null);
+
+		String format = shSitesContextURL.getInfo().getShFormat();
+
+		if (shObject instanceof ShFolder) {
+			ShFolder shFolder = (ShFolder) shObject;
+			return this.pageLayoutFromFolderAndFolderIndex(shFolder, shSite, format);
+		} else if (shObject instanceof ShPost) {
+			ShPost shPost = (ShPost) shObject;
+			if (shPost != null) {
+				if (shPost.getShPostType().getName().equals(ShSystemPostType.FOLDER_INDEX)) {
+					return this.pageLayoutFromFolderAndFolderIndex(shPost, shSite, format);
+
+				} else {
+					return this.pageLayoutFromPost(shPost, shSite, format);
+				}
+			}
+		}
+		return null;
+	}
+
+	public ShPost pageLayoutFromPost(ShPost shPostItem, ShSite shSite, String format) {
+		JSONObject postTypeLayout = new JSONObject();
+
+		if (shSite.getPostTypeLayout() != null)
+			postTypeLayout = new JSONObject(shSite.getPostTypeLayout());
+
+		ShSitePostTypeLayouts shSitePostTypeLayouts = null;
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			shSitePostTypeLayouts = mapper.readValue(
+					postTypeLayout.get(shPostItem.getShPostType().getName()).toString(), ShSitePostTypeLayouts.class);
+		} catch (JsonProcessingException | JSONException e) {
+			logger.error("pageLayoutFromPost Error", e);
+		}
+
+		String pageLayoutName = null;
+
+		if (format == null)
+			format = "default";
+
+		for (ShSitePostTypeLayout shSitePostTypeLayout : shSitePostTypeLayouts) {
+			if (shSitePostTypeLayout.getFormat().equals(format)) {
+				pageLayoutName = shSitePostTypeLayout.getLayout();
+			}
+		}
+		List<ShPost> shPostPageLayouts = shPostRepository.findByTitle(pageLayoutName);
+
+		ShPost shPostPageLayout = null;
+		if (shPostPageLayouts != null)
+			for (ShPost shPostPageLayoutItem : shPostPageLayouts)
+				if (shPostUtils.getSite(shPostPageLayoutItem).getId().equals(shSite.getId()))
+					shPostPageLayout = shPostPageLayoutItem;
+
+		return shPostPageLayout;
+	}
+
+	public ShPost pageLayoutFromFolderAndFolderIndex(ShObject shObjectItem, ShSite shSite, String format) {
 		String shPostFolderPageLayoutId = null;
 		ShPost shFolderPageLayout = null;
-
 		if (shObjectItem instanceof ShPost) {
 			ShPost shSelectedPost = shSitesPostUtils.getPostByStage((ShPost) shObjectItem);
 			if (shSelectedPost != null) {
@@ -69,13 +144,11 @@ public class ShSitesPageLayoutUtils {
 					ShPostAttr shPostAttrFormats = shFolderIndexMap.get("FORMATS");
 					List<Map<String, ShPostAttr>> shPostAttrFormatList = shSitesPostUtils
 							.relationToMap(shPostAttrFormats);
-					if (shPostAttrFormatList != null) {
-						for (Map<String, ShPostAttr> shPostAttrFormat : shPostAttrFormatList) {
-							if (shPostAttrFormat.get("NAME").getStrValue().equals(format)) {
+					if (shPostAttrFormatList != null)
+						for (Map<String, ShPostAttr> shPostAttrFormat : shPostAttrFormatList)
+							if (shPostAttrFormat.get("NAME").getStrValue().equals(format))
 								shPostFolderPageLayoutId = shPostAttrFormat.get("PAGE_LAYOUT").getStrValue();
-							}
-						}
-					}
+
 				}
 
 				if (shPostFolderPageLayoutId != null) {
@@ -114,12 +187,11 @@ public class ShSitesPageLayoutUtils {
 							}
 						}
 					} catch (JSONException | IOException e) {
-						logger.error("pageLayoutFromShObject Error", e);
+						logger.error("pageLayoutFromFolderAndFolderIndex Error", e);
 					}
 				}
 			}
 		}
-
 		return shFolderPageLayout;
 	}
 }

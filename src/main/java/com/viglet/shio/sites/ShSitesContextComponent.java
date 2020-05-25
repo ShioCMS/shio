@@ -217,7 +217,7 @@ public class ShSitesContextComponent {
 
 	public Map<String, ShPostAttr> shFolderPageLayoutMapFactory(ShObject shObjectItem, ShSite shSite, String format) {
 
-		return shSitesPostUtils.postToMap(shSitesPageLayoutUtils.pageLayoutFromShObject(shObjectItem, shSite, format));
+		return shSitesPostUtils.postToMap(shSitesPageLayoutUtils.pageLayoutFromFolderAndFolderIndex(shObjectItem, shSite, format));
 	}
 
 	public String shPageLayoutFactory(ShSitesPageLayout shSitesPageLayout, HttpServletRequest request, ShSite shSite,
