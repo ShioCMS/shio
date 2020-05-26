@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.viglet.shio.graphql.schema.objectType;
+package com.viglet.shio.graphql.schema.objectType.sites;
 
 import static graphql.Scalars.GraphQLID;
 import static graphql.Scalars.GraphQLString;
@@ -26,22 +26,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shio.graphql.ShGraphQLConstants;
-import com.viglet.shio.graphql.schema.queryType.sites.ShGraphQLQTSiteURL;
+import com.viglet.shio.graphql.schema.queryType.sites.ShGraphQLQTObjectFromURL;
 
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLObjectType.Builder;
 import graphql.scalars.ExtendedScalars;
 /**
- * GraphQL Object Type.
+ * GraphQL Object From URL Object Type.
  *
  * @author Alexandre Oliveira
  * @since 0.3.7
  */
 @Component
-public class ShGraphQLOTSites {
+public class ShGraphQLOTObjectFromURL {
 
 	@Autowired
-	private ShGraphQLQTSiteURL shGraphQLQTSiteURL;
+	private ShGraphQLQTObjectFromURL shGraphQLQTObjectFromURL;
 
 	
 	private GraphQLObjectType createWebSiteByURL() {
@@ -72,12 +72,12 @@ public class ShGraphQLOTSites {
 
 	}
 
-	public void createObjectTypes(Builder queryTypeBuilder,
+	public void createObjectType(Builder queryTypeBuilder,
 			graphql.schema.GraphQLCodeRegistry.Builder codeRegistryBuilder) {
 		
 		GraphQLObjectType graphQLObjectType = this.createWebSiteByURL();
 
-		shGraphQLQTSiteURL.createQueryType(queryTypeBuilder, codeRegistryBuilder, graphQLObjectType);
+		shGraphQLQTObjectFromURL.createQueryType(queryTypeBuilder, codeRegistryBuilder, graphQLObjectType);
 	}
 
 }

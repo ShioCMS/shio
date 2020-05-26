@@ -46,13 +46,13 @@ import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLObjectType.Builder;
 
 /**
- * GraphQL Query Type Unique.
+ * GraphQL Object From URL Query Type.
  *
  * @author Alexandre Oliveira
  * @since 0.3.7
  */
 @Component
-public class ShGraphQLQTSiteURL {
+public class ShGraphQLQTObjectFromURL {
 
 	@Autowired
 	private ShSitesContent shSitesContent;

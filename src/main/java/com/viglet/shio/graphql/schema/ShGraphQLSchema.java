@@ -18,7 +18,8 @@ package com.viglet.shio.graphql.schema;
 
 import com.viglet.shio.graphql.ShGraphQLConstants;
 import com.viglet.shio.graphql.schema.objectType.ShGraphQLOTPostType;
-import com.viglet.shio.graphql.schema.objectType.ShGraphQLOTSites;
+import com.viglet.shio.graphql.schema.objectType.sites.ShGraphQLOTNavigation;
+import com.viglet.shio.graphql.schema.objectType.sites.ShGraphQLOTObjectFromURL;
 import com.viglet.shio.graphql.schema.queryType.ShGraphQLQTCommons;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
 import com.viglet.shio.persistence.repository.post.type.ShPostTypeRepository;
@@ -53,7 +54,9 @@ public class ShGraphQLSchema {
 	@Autowired
 	private ShGraphQLOTPostType shGraphQLOTPostType;
 	@Autowired
-	private ShGraphQLOTSites shGraphQLOTSites;
+	private ShGraphQLOTObjectFromURL shGraphQLOTObjectFromURL;
+	@Autowired
+	private ShGraphQLOTNavigation shGraphQLOTNavigation;
 	@Autowired
 	private ShGraphQLQTCommons shGraphQLQTCommons;
 
@@ -65,8 +68,10 @@ public class ShGraphQLSchema {
 		for (ShPostType shPostType : shPostTypeRepository.findAll())
 			shGraphQLOTPostType.createObjectTypes(queryTypeBuilder, codeRegistryBuilder, shPostType);
 
-		shGraphQLOTSites.createObjectTypes(queryTypeBuilder, codeRegistryBuilder);
-		
+		shGraphQLOTObjectFromURL.createObjectType(queryTypeBuilder, codeRegistryBuilder);
+
+		shGraphQLOTNavigation.createObjectType(queryTypeBuilder, codeRegistryBuilder);
+
 		GraphQLObjectType queryType = queryTypeBuilder.comparatorRegistry(BY_NAME_REGISTRY).build();
 
 		return GraphQLSchema.newSchema().additionalType(shGraphQLQTCommons.createSiteEnum()).query(queryType)
