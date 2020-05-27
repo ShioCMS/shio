@@ -63,7 +63,7 @@ public class ShGraphQLQTObjectFromURL {
 	@Autowired
 	private ShSitesPageLayoutUtils shSitesPageLayoutUtils;
 
-	private static final String CONTENT_NAME = "objectFromURL";
+	private static final String CONTENT_NAME = "shObjectFromURL";
 
 	public void createQueryType(Builder queryTypeBuilder,
 			graphql.schema.GraphQLCodeRegistry.Builder codeRegistryBuilder, GraphQLObjectType graphQLObjectType) {

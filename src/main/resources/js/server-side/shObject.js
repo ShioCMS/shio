@@ -62,7 +62,7 @@ viglet.shio.shObject = function() {
 
 
 	/**
-	 * @desc Returns Query Component
+	 * @desc Returns Query Component By Post Type
 	 * @param postTypeName
 	 *            Post Type Name.         
 	 * @public
@@ -72,7 +72,7 @@ viglet.shio.shObject = function() {
 	}
 	
 	/**
-	 * @desc Returns Query Component
+	 * @desc Returns Query Component By Posts that have some values
 	 * @param postTypeName
 	 *            Post Type Name.
 	 * @param postAttrName
