@@ -99,7 +99,7 @@ public class ShSiteImport {
 				shSiteExchange.setDescription(shSite.getDescription());
 				shSiteExchange.setUrl(shSite.getUrl());
 			}
-			
+
 			this.prepareImport(shExchange, shSiteExchange, shObjects, shChildObjects);
 
 			this.createShSite(shSiteExchange, username);
@@ -188,16 +188,18 @@ public class ShSiteImport {
 
 	private void preparePostImport(ShExchange shExchange, Map<String, Object> shObjects,
 			Map<String, List<String>> shChildObjects) {
-		for (ShPostExchange shPostExchange : shExchange.getPosts()) {
+		if (shExchange.getPosts() != null) {
+			for (ShPostExchange shPostExchange : shExchange.getPosts()) {
 
-			shObjects.put(shPostExchange.getId(), shPostExchange);
-			if (shPostExchange.getFolder() != null) {
-				if (shChildObjects.containsKey(shPostExchange.getFolder())) {
-					shChildObjects.get(shPostExchange.getFolder()).add(shPostExchange.getId());
-				} else {
-					List<String> childObjectList = new ArrayList<String>();
-					childObjectList.add(shPostExchange.getId());
-					shChildObjects.put(shPostExchange.getFolder(), childObjectList);
+				shObjects.put(shPostExchange.getId(), shPostExchange);
+				if (shPostExchange.getFolder() != null) {
+					if (shChildObjects.containsKey(shPostExchange.getFolder())) {
+						shChildObjects.get(shPostExchange.getFolder()).add(shPostExchange.getId());
+					} else {
+						List<String> childObjectList = new ArrayList<String>();
+						childObjectList.add(shPostExchange.getId());
+						shChildObjects.put(shPostExchange.getFolder(), childObjectList);
+					}
 				}
 			}
 		}
