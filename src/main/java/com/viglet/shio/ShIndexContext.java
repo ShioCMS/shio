@@ -41,4 +41,19 @@ public class ShIndexContext {
 		}
 
 	}
+
+	@RequestMapping("/content")
+	public String content() {
+		return "content/content-index";
+	}
+
+	@RequestMapping("/welcome")
+	public String welcome() {
+		return "welcome/welcome-index";
+	}
+
+	@RequestMapping("/preview")
+	public String preview() {
+		return "preview/preview-index";
+	}
 }

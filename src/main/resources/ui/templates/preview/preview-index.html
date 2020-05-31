@@ -8,22 +8,22 @@
 		content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no'>
 	<title>View Page | Viglet Shio CMS</title>
 	<!-- The filemtime is to append a timestamp for the last time the stylesheet was updated to automate cache busting from CloudFlare -->
-	<link rel='stylesheet' href='/css/preview/style.css?ver=1530216775' />
-	<link href="/favicon.ico" rel="shortcut icon" type="image/x-icon" />
-	<link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
-	<link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
-	<link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
-	<link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
-	<link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
-	<link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
-	<link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
-	<link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
-	<link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
-	<link rel="icon" type="image/png" sizes="192x192" href="/android-icon-192x192.png">
-	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-	<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
-	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-	<link rel="manifest" href="/manifest.json">
+	<link rel='stylesheet' th:href="@{/css/preview/style.css}" />
+	<link th:href="@{/favicon.ico}" rel="shortcut icon" type="image/x-icon" />
+	<link rel="apple-touch-icon" sizes="57x57" th:href="@{/apple-icon-57x57.png}">
+	<link rel="apple-touch-icon" sizes="60x60" th:href="@{/apple-icon-60x60.png}">
+	<link rel="apple-touch-icon" sizes="72x72" th:href="@{/apple-icon-72x72.png}">
+	<link rel="apple-touch-icon" sizes="76x76" th:href="@{/apple-icon-76x76.png}">
+	<link rel="apple-touch-icon" sizes="114x114" th:href="@{/apple-icon-114x114.png}">
+	<link rel="apple-touch-icon" sizes="120x120" th:href="@{/apple-icon-120x120.png}">
+	<link rel="apple-touch-icon" sizes="144x144" th:href="@{/apple-icon-144x144.png}">
+	<link rel="apple-touch-icon" sizes="152x152" th:href="@{/apple-icon-152x152.png}">
+	<link rel="apple-touch-icon" sizes="180x180" th:href="@{/apple-icon-180x180.png}">
+	<link rel="icon" type="image/png" sizes="192x192" th:href="@{/android-icon-192x192.png}">
+	<link rel="icon" type="image/png" sizes="32x32" th:href="@{/favicon-32x32.png}">
+	<link rel="icon" type="image/png" sizes="96x96" th:href="@{/favicon-96x96.png}">
+	<link rel="icon" type="image/png" sizes="16x16" th:href="@{/favicon-16x16.png}">
+	<link rel="manifest" th:href="@{/manifest.json}">
 	<meta name="msapplication-TileColor" content="#ffffff">
 	<meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
 	<meta name="theme-color" content="#ffffff">
@@ -55,7 +55,7 @@
 	<script src="../thirdparty/angular-ui-ace/0.2.3/ui-ace.min.js"></script>
 	<script src="../thirdparty/bootstrap/4.1.1/assets/js/vendor/popper.min.js"></script>
 	<script src="../thirdparty/bootstrap/4.1.1/dist/js/bootstrap.min.js"></script>
-	<script src="../js/dist/shio.min.js"></script>
+	<script th:src="@{/js/dist/shio.min.js}"></script>
 </head>
 
 <body ui-view>

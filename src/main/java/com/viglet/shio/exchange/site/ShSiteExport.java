@@ -181,7 +181,6 @@ public class ShSiteExport {
 					mapper.writerWithDefaultPrettyPrinter().writeValue(
 							new File(exportDir.getAbsolutePath().concat(File.separator + "export.json")), shExchange);
 				} catch (IOException mapperException) {
-					// TODO Auto-generated catch block
 					logger.error("exportObject, MapperObject", mapperException);
 				}
 

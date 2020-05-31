@@ -28,7 +28,7 @@ import javax.persistence.criteria.Root;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import com.viglet.shio.graphql.schema.ShGraphQLConstants;
+import com.viglet.shio.graphql.ShGraphQLConstants;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
 import com.viglet.shio.persistence.model.site.ShSite;

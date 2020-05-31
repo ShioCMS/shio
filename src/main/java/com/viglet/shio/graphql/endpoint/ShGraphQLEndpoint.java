@@ -120,6 +120,7 @@ public class ShGraphQLEndpoint {
 		throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Could not process GraphQL request");
 	}
 
+	@SuppressWarnings("unchecked")
 	private Map<String, Object> convertVariablesJson(String jsonMap) {
 		if (jsonMap == null) {
 			return Collections.emptyMap();

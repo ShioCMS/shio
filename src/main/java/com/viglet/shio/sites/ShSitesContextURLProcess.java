@@ -77,9 +77,9 @@ public class ShSitesContextURLProcess {
 			if (request.getParameter("sh-format") != null) {
 				String[] contexts = context.split("/");
 				contexts[3] = request.getParameter("sh-format");
-				context = StringUtils.join(contexts, "/");			
+				context = StringUtils.join(contexts, "/");
 			}
-			
+
 			shSitesContextURL.getInfo().setContextURLOriginal(context);
 			shSitesContextURL.getInfo().setContextURL(shSitesContextURL.getInfo().getContextURLOriginal());
 		}
@@ -96,8 +96,14 @@ public class ShSitesContextURLProcess {
 	}
 
 	public void detectContextURL(ShSitesContextURL shSitesContextURL) {
+
+		this.detectContextURL(shSitesContextURL.getInfo().getContextURL(), shSitesContextURL);
+	}
+
+	public void detectContextURL(String url, ShSitesContextURL shSitesContextURL) {
+		shSitesContextURL.getInfo().setContextURL(url);
 		String shSiteName = null;
-		String[] contexts = shSitesContextURL.getInfo().getContextURL().split("/");
+		String[] contexts = url.split("/");
 		for (int i = 1; i < contexts.length; i++) {
 			switch (i) {
 			case 1:

@@ -26,7 +26,7 @@ import static graphql.schema.GraphqlTypeComparatorRegistry.BY_NAME_REGISTRY;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.viglet.shio.graphql.schema.ShGraphQLConstants;
+import com.viglet.shio.graphql.ShGraphQLConstants;
 import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.persistence.repository.site.ShSiteRepository;
 
@@ -47,15 +47,16 @@ public class ShGraphQLQTCommons {
 	@Autowired
 	private ShSiteRepository shSiteRepository;
 	public void createArguments(Builder queryTypeBuilder, GraphQLObjectType graphQLObjectType,
-			String postTypeName, GraphQLInputObjectType.Builder postTypeWhereInputBuilder) {
+			String postTypeName, GraphQLInputObjectType.Builder postTypeWhereInputBuilder, boolean isPlural) {
 		
 		GraphQLTypeReference siteArgRef = GraphQLTypeReference.typeRef(ShGraphQLConstants.SITES_ARG_TITLE);
 		
 		GraphQLInputObjectType postTypeWhereInput = postTypeWhereInputBuilder.comparatorRegistry(BY_NAME_REGISTRY)
 				.build();
 		
+		
 		queryTypeBuilder.field(newFieldDefinition().name(postTypeName)
-				.type(nonNull(list(nonNull(graphQLObjectType))))
+				.type(nonNull(isPlural?list(nonNull(graphQLObjectType)):graphQLObjectType))
 				.argument(newArgument().name(ShGraphQLConstants.STAGE_ARG)
 						.description("A required enumeration indicating the current content Stage (defaults to DRAFT)")
 						.type(nonNull(ShGraphQLConstants.stageEnum)).defaultValue(20))

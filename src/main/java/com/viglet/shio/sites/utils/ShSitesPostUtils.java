@@ -43,6 +43,7 @@ import com.viglet.shio.persistence.repository.post.ShPostDraftRepository;
 import com.viglet.shio.persistence.repository.post.ShPostRepository;
 import com.viglet.shio.post.type.ShSystemPostType;
 import com.viglet.shio.property.ShMgmtProperties;
+import com.viglet.shio.sites.ShContent;
 import com.viglet.shio.utils.ShFolderUtils;
 import com.viglet.shio.utils.ShPostUtils;
 import com.viglet.shio.utils.ShStaticFileUtils;
@@ -184,8 +185,8 @@ public class ShSitesPostUtils {
 		return shPostItemAttrs;
 	}
 
-	public Map<String, Object> toSystemMap(ShPost shPost) {
-		Map<String, Object> shPostItemAttrs = new HashMap<>();
+	public ShContent toSystemMap(ShPost shPost) {
+		ShContent shPostItemAttrs = new ShContent();
 
 		Map<String, Object> shPostObject = new HashMap<>();
 		shPostObject.put("id", shPost.getId());
