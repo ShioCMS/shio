@@ -113,6 +113,7 @@ task downloadAndUnzipStockZipFile(dependsOn: downloadStockZipFile, type: Copy) {
     into projectDir
 }
 
+
 task installStock(type:Exec) {
 	dependsOn "downloadAndUnzipStockZipFile"
 	workingDir "$stockZipDir"
@@ -152,6 +153,9 @@ task buildStock(type:Exec) {
 	}
 }
 
+task graphQLDocs(type:Exec) {
+commandLine "graphdoc","--force", "-e",  "http://localhost:2710/graphql", "-o", "./docs/graphql"
+}
 
 task stage(dependsOn: ['build', 'clean'])
 
