@@ -61,7 +61,9 @@ public class ShGraphQLOTObjectFromURL {
 		builder.field(
 				newFieldDefinition().name("locale").description("Locale").type(GraphQLString));
 		builder.field(
-				newFieldDefinition().name("site").description("Site Id").type(GraphQLString));
+				newFieldDefinition().name("siteId").description("Site Id").type(GraphQLString));
+		builder.field(
+				newFieldDefinition().name("siteName").description("Site Name").type(GraphQLString));
 		builder.field(
 				newFieldDefinition().name("context").description("Context").type(GraphQLString));	
 		builder.field(

@@ -89,6 +89,7 @@ public class ShGraphQLQTObjectFromURL {
 			ShContent shContent = shSitesContent.fromURL(url);
 			JSONObject site = new JSONObject(gson.toJson(shContent.get("site")));
 			String siteId = site.getJSONObject("system").getString("id");
+			String siteName = site.getJSONObject("system").getString("title");
 			JSONObject system = new JSONObject(gson.toJson(shContent.get("system")));
 			String objectId = system.getString("id");
 			ShObject shObject = shObjectRepository.findById(objectId).get();
@@ -108,14 +109,15 @@ public class ShGraphQLQTObjectFromURL {
 			ShPost pageLayout = shSitesPageLayoutUtils.fromURL(url);
 			
 			if (pageLayout != null)
-				post.put("pageLayout", pageLayout.getTitle().toLowerCase());
+				post.put("pageLayout", pageLayout.getTitle());
 		
 			post.put("id", system.getString("id"));
 			post.put("locale", "Locale1");
 			post.put("context", "Context1");
 			post.put("type", type);
 			post.put("format", "Format1");
-			post.put("site", siteId);
+			post.put("siteId", siteId);
+			post.put("siteName", siteName);
 			post.put("content", shContent);
 
 			return post;
