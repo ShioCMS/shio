@@ -42,6 +42,7 @@ import com.viglet.shio.persistence.model.object.ShObject;
 public class ShSite extends ShObject {
 	private static final long serialVersionUID = 1L;
 
+	@Column(unique=true)
 	private String name;
 
 	private String description;

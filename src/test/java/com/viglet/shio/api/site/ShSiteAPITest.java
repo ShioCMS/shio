@@ -22,6 +22,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.security.Principal;
+import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -104,7 +105,7 @@ public class ShSiteAPITest {
 		ShSite shSite = new ShSite();
 		shSite.setId(newSiteId);
 		shSite.setDescription("Test Site");
-		shSite.setName("Test");
+		shSite.setName(UUID.randomUUID().toString());
 		shSite.setUrl("http://example.com");
 
 		String requestBody = ShUtils.asJsonString(shSite);
