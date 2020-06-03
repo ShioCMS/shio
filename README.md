@@ -1,3 +1,4 @@
+[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/ShioCMS/shio) 
 [![demo](https://img.shields.io/badge/demo-try%20online-FF874B.svg)](https://viglet.com/shio/demo) [![downloads](https://img.shields.io/github/downloads/ShioCMS/shio/total.svg)](https://github.com/ShioCMS/shio/releases/download/v0.3.6/viglet-shio.jar) [![Build Status](https://travis-ci.com/ShioCMS/shio.svg?branch=master)](https://travis-ci.com/ShioCMS/shio) [![codecov](https://codecov.io/gh/ShioCMS/shio/branch/master/graph/badge.svg)](https://codecov.io/gh/ShioCMS/shio) [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=ShioCMS_shio&metric=alert_status)](https://sonarcloud.io/dashboard/index/ShioCMS_shio)
 [![Twitter](https://img.shields.io/twitter/follow/shiocms.svg?style=social&label=Follow)](https://twitter.com/intent/follow?screen_name=shiocms)
 
