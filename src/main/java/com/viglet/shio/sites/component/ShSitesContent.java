@@ -166,9 +166,11 @@ public class ShSitesContent {
 
 				}
 			}
-			String shPostThemeId = shPostPageLayoutMap.get(ShSystemPostTypeAttr.THEME).getStrValue();
-			Map<String, Object> shThemeAttrs = shSitesContextComponent.shThemeFactory(shPostThemeId);
-			shPostItemAttrs.put("theme", shThemeAttrs);
+			if (shPostPageLayoutMap != null) {
+				String shPostThemeId = shPostPageLayoutMap.get(ShSystemPostTypeAttr.THEME).getStrValue();
+				Map<String, Object> shThemeAttrs = shSitesContextComponent.shThemeFactory(shPostThemeId);
+				shPostItemAttrs.put("theme", shThemeAttrs);
+			}
 		}
 
 		shPostItemAttrs.put("site", shSiteItemAttrs);
