@@ -34,23 +34,24 @@
 <body ng-controller="ShWelcomeCtrl">
 	<div style="position: absolute;bottom: 10px;right: 10px;background: tomato;opacity: 60%;padding:5px">
 		<a style="color: white;text-decoration: none"
-			href="https://unsplash.com/s/photos/green-chameleon%2C-bristol%2C-uk" target="_blank">Green Chameleon,
+			href="https://unsplash.com/s/photos/green-chameleon%2C-bristol%2C-uk" target="_blank"
+			rel="noopener noreferrer">Green Chameleon,
 			Bristol, UK</a>
 	</div>
 	<div class="login-form" ng-if="showLogin">
 		<div style="text-align: center; margin-bottom: 30px">
-			<img th:src="@{/img/shio-logo.png}" />
+			<img th:src="@{/img/shio-logo.png}" alt="Shio CMS Logo" />
 		</div>
 		<form role="form" ng-submit="login()">
 			<div class="form-group ">
 				<input type="text" class="form-control" placeholder="Username" id="username" name="username"
 					ng-model="credentials.username">
-				<i class="fa fa-user"></i>
+				<em class="fa fa-user"></em>
 			</div>
 			<div class="form-group log-status">
 				<input type="password" class="form-control" placeholder="Password" id="password" name="password"
 					ng-model="credentials.password">
-				<i class="fa fa-lock"></i>
+				<em class="fa fa-lock"></em>
 			</div>
 			<span class="alert">Invalid Credentials</span>
 			<button type="submit" class="log-btn">Log in</button>

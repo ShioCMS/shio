@@ -23,6 +23,8 @@ import graphql.spring.web.servlet.ExecutionInputCustomizer;
 import graphql.spring.web.servlet.GraphQLInvocation;
 import graphql.spring.web.servlet.GraphQLInvocationData;
 import org.dataloader.DataLoaderRegistry;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.WebRequest;
@@ -34,7 +36,7 @@ import java.util.concurrent.CompletableFuture;
 
 @Component
 public class ShDefaultGraphQLInvocation implements GraphQLInvocation {
-
+	static final Logger logger = LogManager.getLogger(ShDefaultGraphQLInvocation.class);
 	@Autowired
 	GraphQL graphQL;
 
@@ -63,9 +65,9 @@ public class ShDefaultGraphQLInvocation implements GraphQLInvocation {
 			shGraphQLSchema.init();
 			return customizedExecutionInput.thenCompose(shGraphQLSchema.graphQL()::executeAsync);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("invoke", e);
 		}
-	
+
 		return customizedExecutionInput.thenCompose(graphQL::executeAsync);
 
 	}

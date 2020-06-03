@@ -43,7 +43,7 @@ import com.viglet.shio.persistence.model.site.ShSite;
  */
 @Component
 public class ShCloneExchange {
-	static final Logger logger = LogManager.getLogger(ShCloneExchange.class.getName());
+	static final Logger logger = LogManager.getLogger(ShCloneExchange.class);
 	@Autowired
 	private ShSiteImport shSiteImport;
 	@Autowired
