@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.viglet.shio.sites;
+package com.viglet.shio.website;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,16 +47,16 @@ import com.viglet.shio.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shio.persistence.repository.post.ShPostRepository;
 import com.viglet.shio.post.type.ShSystemPostType;
 import com.viglet.shio.post.type.ShSystemPostTypeAttr;
-import com.viglet.shio.sites.cache.component.ShCacheJavascript;
-import com.viglet.shio.sites.cache.component.ShCachePageLayout;
-import com.viglet.shio.sites.cache.component.ShCacheRegion;
-import com.viglet.shio.sites.component.ShSitesPageLayout;
-import com.viglet.shio.sites.component.ShSitesPageLayoutUtils;
-import com.viglet.shio.sites.nashorn.ShNashornEngineProcess;
-import com.viglet.shio.sites.utils.ShSitesFolderUtils;
-import com.viglet.shio.sites.utils.ShSitesPostUtils;
 import com.viglet.shio.utils.ShFolderUtils;
 import com.viglet.shio.utils.ShPostUtils;
+import com.viglet.shio.website.cache.component.ShCacheJavascript;
+import com.viglet.shio.website.cache.component.ShCachePageLayout;
+import com.viglet.shio.website.cache.component.ShCacheRegion;
+import com.viglet.shio.website.component.ShSitesPageLayout;
+import com.viglet.shio.website.component.ShSitesPageLayoutUtils;
+import com.viglet.shio.website.nashorn.ShNashornEngineProcess;
+import com.viglet.shio.website.utils.ShSitesFolderUtils;
+import com.viglet.shio.website.utils.ShSitesPostUtils;
 
 /**
  * @author Alexandre Oliveira

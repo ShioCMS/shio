@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.viglet.shio.sites.nashorn;
+package com.viglet.shio.website.nashorn;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -35,7 +35,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.viglet.shio.sites.cache.component.ShCacheJavascript;
+import com.viglet.shio.website.cache.component.ShCacheJavascript;
 
 /**
  * @author Alexandre Oliveira

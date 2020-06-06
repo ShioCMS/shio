@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.viglet.shio.sites.utils;
+package com.viglet.shio.website.utils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,9 +32,9 @@ import com.viglet.shio.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shio.persistence.repository.post.ShPostRepository;
 import com.viglet.shio.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shio.post.type.ShSystemPostType;
-import com.viglet.shio.sites.ShContent;
 import com.viglet.shio.url.ShURLScheme;
 import com.viglet.shio.utils.ShFolderUtils;
+import com.viglet.shio.website.ShContent;
 
 /**
  * @author Alexandre Oliveira

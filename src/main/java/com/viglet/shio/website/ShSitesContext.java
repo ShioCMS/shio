@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.viglet.shio.sites;
+package com.viglet.shio.website;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,12 +46,12 @@ import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.persistence.repository.auth.ShUserRepository;
 import com.viglet.shio.persistence.repository.post.ShPostRepository;
 import com.viglet.shio.persistence.repository.site.ShSiteRepository;
-import com.viglet.shio.sites.cache.component.ShCachePage;
-import com.viglet.shio.sites.cache.component.ShCachePageBean;
-import com.viglet.shio.sites.utils.ShSitesObjectUtils;
 import com.viglet.shio.utils.ShFormUtils;
 import com.viglet.shio.utils.ShStaticFileUtils;
 import com.viglet.shio.utils.ShUserUtils;
+import com.viglet.shio.website.cache.component.ShCachePage;
+import com.viglet.shio.website.cache.component.ShCachePageBean;
+import com.viglet.shio.website.utils.ShSitesObjectUtils;
 
 /**
  * @author Alexandre Oliveira

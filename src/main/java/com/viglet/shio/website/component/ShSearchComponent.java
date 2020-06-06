@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.viglet.shio.sites.component;
+package com.viglet.shio.website.component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ import org.springframework.stereotype.Component;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
 import com.viglet.shio.persistence.repository.post.ShPostRepository;
-import com.viglet.shio.sites.utils.ShSitesPostUtils;
+import com.viglet.shio.website.utils.ShSitesPostUtils;
 
 /**
  * @author Alexandre Oliveira

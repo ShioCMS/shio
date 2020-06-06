@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.viglet.shio.sites.utils;
+package com.viglet.shio.website.utils;
 
 import java.util.List;
 import java.util.Map;

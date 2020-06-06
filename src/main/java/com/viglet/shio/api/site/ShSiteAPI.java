@@ -58,10 +58,10 @@ import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shio.persistence.repository.site.ShSiteRepository;
-import com.viglet.shio.sites.nodejs.ShSitesNodeJS;
 import com.viglet.shio.url.ShURLFormatter;
 import com.viglet.shio.utils.ShFolderUtils;
 import com.viglet.shio.utils.ShHistoryUtils;
+import com.viglet.shio.website.nodejs.ShSitesNodeJS;
 
 import io.swagger.annotations.Api;
 

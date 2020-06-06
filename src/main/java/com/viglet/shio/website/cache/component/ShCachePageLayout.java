@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.viglet.shio.sites.cache.component;
+package com.viglet.shio.website.cache.component;
 
 import java.io.IOException;
 
@@ -28,9 +28,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shio.persistence.model.site.ShSite;
-import com.viglet.shio.sites.ShSitesContextComponent;
-import com.viglet.shio.sites.component.ShSitesPageLayout;
-import com.viglet.shio.sites.nashorn.ShNashornEngineProcess;
+import com.viglet.shio.website.ShSitesContextComponent;
+import com.viglet.shio.website.component.ShSitesPageLayout;
+import com.viglet.shio.website.nashorn.ShNashornEngineProcess;
 
 /**
  * @author Alexandre Oliveira

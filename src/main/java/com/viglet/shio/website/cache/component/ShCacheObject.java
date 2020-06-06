@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.viglet.shio.sites.cache.component;
+package com.viglet.shio.website.cache.component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +32,9 @@ import com.viglet.shio.persistence.model.object.ShObject;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.repository.object.ShObjectRepository;
 import com.viglet.shio.persistence.repository.post.ShPostRepository;
-import com.viglet.shio.sites.ShSitesContextURL;
-import com.viglet.shio.sites.utils.ShSitesObjectUtils;
 import com.viglet.shio.utils.ShFolderUtils;
+import com.viglet.shio.website.ShSitesContextURL;
+import com.viglet.shio.website.utils.ShSitesObjectUtils;
 
 /**
  * @author Alexandre Oliveira

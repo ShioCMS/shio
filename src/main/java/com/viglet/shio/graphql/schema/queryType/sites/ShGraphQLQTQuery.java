@@ -41,7 +41,7 @@ import com.google.common.collect.Sets;
 import com.viglet.shio.api.ShJsonView;
 import com.viglet.shio.graphql.ShGraphQLConstants;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
-import com.viglet.shio.sites.component.ShQueryComponent;
+import com.viglet.shio.website.component.ShQueryComponent;
 
 import graphql.schema.DataFetcher;
 import graphql.schema.GraphQLObjectType;

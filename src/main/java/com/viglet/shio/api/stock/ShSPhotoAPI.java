@@ -38,10 +38,10 @@ import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shio.persistence.repository.post.ShPostRepository;
-import com.viglet.shio.sites.utils.ShSitesPostUtils;
 import com.viglet.shio.stock.beans.ShSPhotoBean;
 import com.viglet.shio.stock.beans.ShSPhotoPreviewBean;
 import com.viglet.shio.utils.ShStaticFileUtils;
+import com.viglet.shio.website.utils.ShSitesPostUtils;
 
 import io.swagger.annotations.Api;
 

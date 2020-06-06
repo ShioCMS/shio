@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.viglet.shio.sites.nashorn;
+package com.viglet.shio.website.nashorn;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -32,14 +32,14 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.viglet.shio.sites.component.ShGetRelationComponent;
-import com.viglet.shio.sites.component.ShNavigationComponent;
-import com.viglet.shio.sites.component.ShQueryComponent;
-import com.viglet.shio.sites.component.ShSearchComponent;
 import com.viglet.shio.sites.component.form.ShFormComponent;
-import com.viglet.shio.sites.utils.ShSitesFolderUtils;
-import com.viglet.shio.sites.utils.ShSitesObjectUtils;
-import com.viglet.shio.sites.utils.ShSitesPostUtils;
+import com.viglet.shio.website.component.ShGetRelationComponent;
+import com.viglet.shio.website.component.ShNavigationComponent;
+import com.viglet.shio.website.component.ShQueryComponent;
+import com.viglet.shio.website.component.ShSearchComponent;
+import com.viglet.shio.website.utils.ShSitesFolderUtils;
+import com.viglet.shio.website.utils.ShSitesObjectUtils;
+import com.viglet.shio.website.utils.ShSitesPostUtils;
 
 /**
  * @author Alexandre Oliveira

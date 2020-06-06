@@ -1,4 +1,4 @@
-package com.viglet.shio.sites;
+package com.viglet.shio.website;
 
 import java.util.HashMap;
 
