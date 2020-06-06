@@ -61,6 +61,7 @@ import com.viglet.shio.persistence.repository.site.ShSiteRepository;
 import com.viglet.shio.url.ShURLFormatter;
 import com.viglet.shio.utils.ShFolderUtils;
 import com.viglet.shio.utils.ShHistoryUtils;
+import com.viglet.shio.website.nodejs.ShSitesNodeJS;
 
 import io.swagger.annotations.Api;
 
@@ -83,6 +84,8 @@ public class ShSiteAPI {
 	private ShURLFormatter shURLFormatter;
 	@Autowired
 	private ShSiteExport shSiteExport;
+	@Autowired
+	private ShSitesNodeJS shSitesNodeJS;
 	@Autowired
 	private ShCloneExchange shCloneExchange;
 	@Autowired
@@ -221,6 +224,15 @@ public class ShSiteAPI {
 	public StreamingResponseBody shSiteExport(@PathVariable String id, HttpServletResponse response) {
 
 		return shSiteExport.exportObject(id, response);
+
+	}
+	
+	@ResponseBody
+	@GetMapping(value = "/{id}/nodejs", produces = "application/zip")
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
+	public StreamingResponseBody shSiteNodeJS(@PathVariable String id, HttpServletResponse response) {
+
+		return shSitesNodeJS.exportApplication(id, response);
 
 	}
 

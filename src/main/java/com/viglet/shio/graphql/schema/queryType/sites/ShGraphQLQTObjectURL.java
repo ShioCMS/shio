@@ -30,7 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shio.graphql.ShGraphQLConstants;
-import com.viglet.shio.sites.utils.ShSitesObjectUtils;
+import com.viglet.shio.website.utils.ShSitesObjectUtils;
 
 import graphql.schema.DataFetcher;
 import graphql.schema.GraphQLObjectType;

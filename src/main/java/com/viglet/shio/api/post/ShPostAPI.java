@@ -74,13 +74,13 @@ import com.viglet.shio.persistence.repository.reference.ShReferenceDraftReposito
 import com.viglet.shio.persistence.repository.reference.ShReferenceRepository;
 import com.viglet.shio.persistence.repository.workflow.ShWorkflowTaskRepository;
 import com.viglet.shio.post.type.ShSystemPostType;
-import com.viglet.shio.sites.cache.component.ShCacheObject;
 import com.viglet.shio.turing.ShTuringIntegration;
 import com.viglet.shio.url.ShURLFormatter;
 import com.viglet.shio.utils.ShHistoryUtils;
 import com.viglet.shio.utils.ShObjectUtils;
 import com.viglet.shio.utils.ShPostUtils;
 import com.viglet.shio.utils.ShStaticFileUtils;
+import com.viglet.shio.website.cache.component.ShCacheObject;
 import com.viglet.shio.widget.ShSystemWidget;
 
 import io.swagger.annotations.Api;

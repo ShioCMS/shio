@@ -43,8 +43,8 @@ import com.viglet.shio.persistence.repository.object.ShObjectRepository;
 import com.viglet.shio.persistence.repository.post.ShPostRepository;
 import com.viglet.shio.persistence.repository.post.type.ShPostTypeAttrRepository;
 import com.viglet.shio.persistence.repository.post.type.ShPostTypeRepository;
-import com.viglet.shio.sites.ShSitesContextURL;
 import com.viglet.shio.sites.component.form.ShFormConfiguration;
+import com.viglet.shio.website.ShSitesContextURL;
 import com.viglet.shio.widget.ShSystemWidget;
 import com.viglet.shio.widget.ShWidgetImplementation;
 

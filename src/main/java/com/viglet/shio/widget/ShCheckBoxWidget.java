@@ -31,7 +31,7 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import com.viglet.shio.persistence.model.object.ShObject;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
-import com.viglet.shio.sites.ShSitesContextURL;
+import com.viglet.shio.website.ShSitesContextURL;
 
 /**
  * @author Alexandre Oliveira

@@ -30,7 +30,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shio.exchange.ShCloneExchange;
-import com.viglet.shio.exchange.ShExchange;
 import com.viglet.shio.exchange.ShImportExchange;
 import com.viglet.shio.persistence.repository.site.ShSiteRepository;
 
@@ -42,8 +41,6 @@ public class ShSiteOnStartup {
 	private static final Log logger = LogFactory.getLog(ShSiteOnStartup.class);
 	@Autowired
 	private ShSiteRepository shSiteRepository;
-	@Autowired
-	private ShImportExchange shImportExchange;
 	@Autowired
 	private ShCloneExchange shCloneExchange;
 	

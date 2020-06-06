@@ -31,8 +31,8 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shio.api.ShJsonView;
 import com.viglet.shio.persistence.model.object.ShObject;
 import com.viglet.shio.persistence.repository.object.ShObjectRepository;
-import com.viglet.shio.sites.ShSitesContextURL;
-import com.viglet.shio.sites.ShSitesContextURLProcess;
+import com.viglet.shio.website.ShSitesContextURL;
+import com.viglet.shio.website.ShSitesContextURLProcess;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

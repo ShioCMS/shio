@@ -15,5 +15,7 @@ shioApp.controller('ShContentHomeCtrl', ["$http", "$scope",
 		$scope.siteExport = function (shSite) {
 			shSiteFactory.export(shSite);
 		}
-
+		$scope.siteNodeJS = function (shSite) {
+			shSiteFactory.nodeJS(shSite);
+		}
 	}]);

@@ -33,7 +33,7 @@ import org.springframework.stereotype.Component;
 
 import com.viglet.shio.graphql.ShGraphQLConstants;
 import com.viglet.shio.persistence.model.folder.ShFolder;
-import com.viglet.shio.sites.component.ShNavigationComponent;
+import com.viglet.shio.website.component.ShNavigationComponent;
 
 import graphql.schema.DataFetcher;
 import graphql.schema.GraphQLObjectType;

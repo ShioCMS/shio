@@ -3,11 +3,16 @@ shioApp.factory('shSiteFactory', [
 	function ($uibModal, shSiteResource, shAPIServerService, Notification, $state) {
 		return {
 			export: function (shSite) {
-
 				window.open(shAPIServerService
 					.get()
 					.concat(
 						"/v2/site/" + shSite.id + "/export"), '_self', '');
+			},
+			nodeJS: function (shSite) {
+				window.open(shAPIServerService
+					.get()
+					.concat(
+						"/v2/site/" + shSite.id + "/nodejs"), '_self', '');
 			},
 			delete: function (shSite) {
 				var modalInstance = this.modalDelete(shSite);
