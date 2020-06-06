@@ -124,7 +124,7 @@ public class ShSiteExport {
 					postTypeLayout = new JSONObject(shSiteExchange.getPostTypeLayout());
 					Set<String> postTypes = postTypeLayout.keySet();
 
-					Set<String> shExchangePostTypeMap = new HashSet<String>();
+					Set<String> shExchangePostTypeMap = new HashSet<>();
 					if (shExchangePostTypes != null) {
 						for (ShPostTypeExchange i : shExchangePostTypes) {
 							shExchangePostTypeMap.add(i.getName());
