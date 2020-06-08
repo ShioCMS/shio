@@ -30,7 +30,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shio.exchange.ShCloneExchange;
-import com.viglet.shio.exchange.ShImportExchange;
 import com.viglet.shio.persistence.repository.site.ShSiteRepository;
 
 /**

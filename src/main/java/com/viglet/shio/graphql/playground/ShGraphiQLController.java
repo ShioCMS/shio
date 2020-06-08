@@ -98,7 +98,7 @@ public abstract class ShGraphiQLController {
 
 		Map<String, String> replacements = getReplacements(constructGraphQlEndpoint(contextPath, params),
 				contextPath + graphiQLProperties.getEndpoint().getSubscriptions(),
-				contextPath + graphiQLProperties.getSTATIC().getBasePath());
+				contextPath + graphiQLProperties.getStatic().getBasePath());
 
 		String populatedTemplate = StringSubstitutor.replace(template, replacements);
 		return populatedTemplate.getBytes(Charset.defaultCharset());

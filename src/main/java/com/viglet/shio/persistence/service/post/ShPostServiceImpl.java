@@ -82,7 +82,7 @@ public class ShPostServiceImpl implements ShPostService {
 		
 		
 		if (siteIds != null && !siteIds.isEmpty()) {
-			Collection<String> siteCollection = new ArrayList<String>(siteIds);
+			Collection<String> siteCollection = new ArrayList<>(siteIds);
 
 			List<ShSite> shSites = shSiteRepository.findByIdIn(siteCollection);
 			shPostSpecs = shPostSpecs.and(hasSites(shSites));

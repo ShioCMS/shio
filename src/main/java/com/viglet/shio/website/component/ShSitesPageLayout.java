@@ -25,7 +25,7 @@ public class ShSitesPageLayout {
 	private String id;
 	private Map<String, Object> shContent;
 	private String javascriptCode;
-	private String HTML;
+	private String html;
 	private String pageCacheKey;
 	private Integer cacheTTL;
 	
@@ -43,10 +43,10 @@ public class ShSitesPageLayout {
 		this.javascriptCode = javascriptCode;
 	}
 	public String getHTML() {
-		return HTML;
+		return html;
 	}
-	public void setHTML(String hTML) {
-		HTML = hTML;
+	public void setHTML(String html) {
+		this.html = html;
 	}
 	public String getPageCacheKey() {
 		return pageCacheKey;
