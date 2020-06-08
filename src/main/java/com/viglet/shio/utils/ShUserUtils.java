@@ -16,7 +16,6 @@ public class ShUserUtils {
 	public boolean isValidUserAndPassword(String username, String password) {
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		ShUser shUser = shUserRepository.findByUsername(username);
-
-		return (shUser != null && passwordEncoder.matches(password, shUser.getPassword())) ? true : false;
+		return (shUser != null && passwordEncoder.matches(password, shUser.getPassword()));
 	}
 }

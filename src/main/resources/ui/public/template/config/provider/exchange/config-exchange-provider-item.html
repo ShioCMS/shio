@@ -22,32 +22,32 @@
 	</div>
 </div>
 
-<table class="table" style="margin: 0px;border-color: #ddd; border-style: solid; border-width: 1px;" aria-describedby="Provider Details">
-	<th></th>
+<table class="table" style="margin: 0px;border-color: #ddd; border-style: solid; border-width: 1px;"
+	aria-describedby="Provider Details">
 	<tr>
-		<td style="background: #F9F9F9; width: 40%;">
+		<th style="background: #F9F9F9; width: 40%;" scope="row">
 			<p>
 				<strong>Name</strong>
 			</p>
 			<p>This is the name that will appear on the Edit page</p>
-		</td>
+		</th>
 		<td><input type="text" class="form-control" ng-model="exchangeProvider.name" /></td>
 	</tr>
 	<tr>
-		<td style="background: #F9F9F9; width: 40%;">
+		<th style="background: #F9F9F9; width: 40%;" scope="row">
 			<p>
 				<strong>Description</strong>
 			</p>
-		</td>
+		</th>
 		<td><input type="text" class="form-control" ng-model="exchangeProvider.description" /></td>
 	</tr>
 	<tr>
-		<td style="background: #F9F9F9; width: 40%;">
+		<th style="background: #F9F9F9; width: 40%;" scope="row">
 			<p>
 				<strong>Vendor</strong>
 			</p>
 			<p>Select Exchange Provider Vendor</p>
-		</td>
+		</th>
 		<td><select class="form-control" ng-model="exchangeProvider.vendor"
 				ng-options="vendor as vendor.name for vendor in vendors track by vendor.id">
 				<option value="">-- Pick One --</option>
