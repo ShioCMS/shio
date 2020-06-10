@@ -70,13 +70,17 @@ public class ShSiteImport {
 
 	public void importSite(ShExchange shExchange, String username, File extractFolder, Map<String, Object> shObjects,
 			Map<String, List<String>> shChildObjects) throws IOException {
+		logger.info("2 of 4 - Importing Sites");
 		for (ShSiteExchange shSiteExchange : shExchange.getSites()) {
+			logger.info(String.format(".... %s Site (%s)", shSiteExchange.getName(), shSiteExchange.getId()));
 			this.prepareImport(shExchange, shSiteExchange, shObjects, shChildObjects);
 			this.createShSite(shSiteExchange, username);
 			// Create only Folders
+			logger.info("3 of 4 - Importing Folders");
 			shFolderImport.shFolderImportNested(shSiteExchange.getId(), extractFolder, username, true, shObjects,
 					shChildObjects, false);
 			// Create all objects
+			logger.info("4 of 4 - Importing Posts");
 			shFolderImport.shFolderImportNested(shSiteExchange.getId(), extractFolder, username, false, shObjects,
 					shChildObjects, false);
 		}
@@ -85,14 +89,14 @@ public class ShSiteImport {
 	public ShExchange cloneSite(ShExchange shExchange, String username, File extractFolder,
 			Map<String, Object> shObjects, Map<String, List<String>> shChildObjects, ShSite shSite) throws IOException {
 		shExchange = this.prepareClone(shExchange, extractFolder);
-
+		logger.info("2 of 4 - Cloning Sites");
 		for (ShSiteExchange shSiteExchange : shExchange.getSites()) {
 			shSiteExchange.setDate(new Date());
-
+			logger.info(String.format(".... %s Site (%s)", shSiteExchange.getName(), shSiteExchange.getId()));
 			if (shSite != null) {
-				if (shSite.getId() != null && shSite.getId().trim().length() > 0) {
+
+				if (shSite.getId() != null && shSite.getId().trim().length() > 0)
 					shSiteExchange.setId(shSite.getId());
-				}
 				shSiteExchange.setOwner(shSite.getOwner());
 				shSiteExchange.setFurl(shSite.getFurl());
 				shSiteExchange.setName(shSite.getName());
@@ -104,9 +108,11 @@ public class ShSiteImport {
 
 			this.createShSite(shSiteExchange, username);
 			// Create only Folders
+			logger.info("3 of 4 - Cloning Folders");
 			shFolderImport.shFolderImportNested(shSiteExchange.getId(), extractFolder, username, true, shObjects,
 					shChildObjects, true);
 			// Create all objects
+			logger.info("4 of 4 - Cloning Posts");
 			shFolderImport.shFolderImportNested(shSiteExchange.getId(), extractFolder, username, false, shObjects,
 					shChildObjects, true);
 		}
