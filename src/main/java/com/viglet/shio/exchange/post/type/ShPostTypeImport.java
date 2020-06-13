@@ -22,6 +22,8 @@ import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -39,15 +41,17 @@ import com.viglet.shio.persistence.repository.widget.ShWidgetRepository;
  */
 @Component
 public class ShPostTypeImport {
-
+	private static final Logger logger = LogManager.getLogger(ShPostTypeImport.class);
 	@Autowired
 	ShWidgetRepository shWidgetRepository;
 	@Autowired
 	ShPostTypeRepository shPostTypeRepository;
 
 	public void importPostType(ShExchange shExchange, boolean isCloned) throws IOException {
+		logger.info("1 of 4 - Importing Post Types");
 		for (ShPostTypeExchange shPostTypeExchange : shExchange.getPostTypes()) {
 			if (shPostTypeRepository.findByName(shPostTypeExchange.getName()) == null) {
+				logger.info(String.format(".. %s Post Type (%s)", shPostTypeExchange.getName(), shPostTypeExchange.getId()));
 				ShPostType shPostType = new ShPostType();
 				shPostType.setId(shPostTypeExchange.getId());
 				shPostType.setTitle(shPostTypeExchange.getLabel());
@@ -58,7 +62,7 @@ public class ShPostTypeImport {
 				shPostType.setOwner(shPostTypeExchange.getOwner());
 				shPostType.setSystem(shPostTypeExchange.isSystem() ? (byte) 1 : (byte) 0);
 
-				Set<ShPostTypeAttr> shPostTypeAttrs = new HashSet<ShPostTypeAttr>();
+				Set<ShPostTypeAttr> shPostTypeAttrs = new HashSet<>();
 				if (shPostTypeExchange.getFields() != null && shPostTypeExchange.getFields().size() > 0) {
 					for (Entry<String, ShPostTypeFieldExchange> postTypeField : shPostTypeExchange.getFields()
 							.entrySet()) {

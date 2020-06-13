@@ -48,7 +48,6 @@ public class ShCustomUserDetails extends ShUser implements UserDetails {
 
 	@Override
 	public boolean isAccountNonExpired() {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
@@ -65,11 +64,6 @@ public class ShCustomUserDetails extends ShUser implements UserDetails {
 	@Override
 	public boolean isEnabled() {
 		return true;
-	}
-
-	@Override
-	public String getUsername() {
-		return super.getUsername();
 	}
 
 }

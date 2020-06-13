@@ -66,7 +66,7 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/api/v2/folder")
 @Api(tags = "Folder", description = "Folder API")
 public class ShFolderAPI {
-	static final Logger logger = LogManager.getLogger(ShFolderAPI.class.getName());
+	private static final Logger logger = LogManager.getLogger(ShFolderAPI.class);
 	@Autowired
 	private ShFolderRepository shFolderRepository;
 	@Autowired

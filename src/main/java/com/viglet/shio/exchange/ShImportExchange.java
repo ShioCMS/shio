@@ -44,7 +44,7 @@ import com.viglet.shio.utils.ShUtils;
  */
 @Component
 public class ShImportExchange {
-	static final Logger logger = LogManager.getLogger(ShImportExchange.class.getName());
+	static final Logger logger = LogManager.getLogger(ShImportExchange.class);
 	@Autowired
 	private ShUtils shUtils;
 	@Autowired
@@ -59,6 +59,7 @@ public class ShImportExchange {
 
 	public ShExchange importFromMultipartFile(MultipartFile multipartFile, String username)
 			throws IllegalStateException, IOException {
+		logger.info("Unzip Package");
 		File extractFolder = this.extractZipFile(multipartFile);
 		File parentExtractFolder = null;
 
@@ -78,10 +79,10 @@ public class ShImportExchange {
 					new FileInputStream(extractFolder.getAbsolutePath().concat(File.separator + "export.json")),
 					ShExchange.class);
 
-			if (shExchange.getPostTypes() != null && shExchange.getPostTypes().size() > 0) {
+			if (shExchange.getPostTypes() != null && shExchange.getPostTypes().size() > 0) {				
 				shPostTypeImport.importPostType(shExchange, false);
 			}
-			if (shExchange.getSites() != null && shExchange.getSites().size() > 0) {
+			if (shExchange.getSites() != null && shExchange.getSites().size() > 0) {			
 				shSiteImport.importSite(shExchange, username, extractFolder, shObjects, shChildObjects);
 			}
 			else {

@@ -61,8 +61,8 @@ shioApp.controller('ShPostTypeSelectCtrl', [
 			var parameter = JSON.stringify(postTypeIds);
 			$http.put(shAPIServerService.get().concat("/v2/post/type/clone/"), parameter).then(function (response) {
 				var shPostTypes = response.data;
-				for (i = 0; i < shPostTypes.length; i++) {
-					shPostTypeNew = shPostTypes[i];
+				for (var i = 0; i < shPostTypes.length; i++) {
+					var shPostTypeNew = shPostTypes[i];
 					$scope.shStateObjects[shPostTypeNew.id] = false;
 					$scope.shObjects[shPostTypeNew.id] = shPostTypeNew;
 					$scope.actions[shPostTypeNew.id] = false;

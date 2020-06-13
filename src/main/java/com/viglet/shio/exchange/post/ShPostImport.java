@@ -284,6 +284,7 @@ public class ShPostImport {
 				shTuringIntegration.indexObject(shPost);
 			}
 		}
+		logger.info(String.format("........ %s Post (%s)", shPost.getTitle(), shPost.getId()));
 		return shPost;
 	}
 

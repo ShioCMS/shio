@@ -1,4 +1,4 @@
-<div style="background-color: #FFF0E8;; height: 55px; width: 100%; padding: 10px; margin-bottom: 10px" class="affix-top"
+<div style="background-color: #FFF0E8; height: 55px; width: 100%; padding: 10px; margin-bottom: 10px" class="affix-top"
 	data-spy="affix" data-offset-top="147">
 	<div class="form-actions">
 		<div class="pull-right">
@@ -22,31 +22,33 @@
 	</div>
 </div>
 
-<table class="table" style="margin: 0px;border-color: #ddd; border-style: solid; border-width: 1px;">
+<table class="table" style="margin: 0px;border-color: #ddd; border-style: solid; border-width: 1px;"
+	aria-describedby="Provider Details">
+
 	<tr>
-		<td style="background: #F9F9F9; width: 30%;">
+		<th style="background: #F9F9F9; width: 30%;" scope="row">
 			<p>
-				<b>Name</b>
+				<strong>Name</strong>
 			</p>
 			<p>This is the name that will appear on the Edit page</p>
-		</td>
+		</th>
 		<td><input type="text" class="form-control" ng-model="authProvider.name" /></td>
 	</tr>
 	<tr>
-		<td style="background: #F9F9F9; width: 30%;">
+		<th style="background: #F9F9F9; width: 30%;" scope="row">
 			<p>
-				<b>Description</b>
+				<strong>Description</strong>
 			</p>
-		</td>
+		</th>
 		<td><input type="text" class="form-control" ng-model="authProvider.description" /></td>
 	</tr>
 	<tr>
-		<td style="background: #F9F9F9; width: 30%;">
+		<th style="background: #F9F9F9; width: 30%;" scope="row">
 			<p>
-				<b>Vendor</b>
+				<strong>Vendor</strong>
 			</p>
 			<p>Select Auth Provider Vendor</p>
-		</td>
+		</th>
 		<td><select class="form-control" ng-model="authProvider.vendor"
 				ng-options="vendor as vendor.name for vendor in vendors track by vendor.id">
 				<option value="">-- Pick One --</option>

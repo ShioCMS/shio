@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -41,6 +43,7 @@ import com.viglet.shio.url.ShURLFormatter;
  */
 @Component
 public class ShFolderImport {
+	private static final Log logger = LogFactory.getLog(ShFolderImport.class);
 	@Autowired
 	private ShSiteRepository shSiteRepository;
 	@Autowired
@@ -54,14 +57,14 @@ public class ShFolderImport {
 			Map<String, Object> shObjects, Map<String, List<String>> shChildObjects, boolean isCloned) throws IOException {
 		if (shChildObjects.containsKey(shObject)) {
 			for (String objectId : shChildObjects.get(shObject)) {
-				if (shObjects.get(objectId) instanceof ShFolderExchange) {
-					ShFolderExchange shFolderExchange = (ShFolderExchange) shObjects.get(objectId);
+				if (shObjects.get(objectId) instanceof ShFolderExchange) {					
+					ShFolderExchange shFolderExchange = (ShFolderExchange) shObjects.get(objectId);					
 					this.createShFolder(shFolderExchange, extractFolder, username, shObject, importOnlyFolders,
 							shObjects, shChildObjects, isCloned);
 				}
 
 				if (!importOnlyFolders && shObjects.get(objectId) instanceof ShPostExchange) {
-					ShPostExchange shPostExchange = (ShPostExchange) shObjects.get(objectId);
+					ShPostExchange shPostExchange = (ShPostExchange) shObjects.get(objectId);					
 					shPostImport.createShPost(shPostExchange, extractFolder, username, shObjects, isCloned);
 				}
 			}
@@ -108,6 +111,7 @@ public class ShFolderImport {
 					}
 				}
 			}
+			logger.info(String.format("...... %s Folder (%s)", shFolderChild.getName(), shFolderChild.getId()));
 			shFolderRepository.save(shFolderChild);
 		}
 

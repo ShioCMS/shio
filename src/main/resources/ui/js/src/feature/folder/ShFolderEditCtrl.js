@@ -31,7 +31,7 @@ shioApp
 				$scope.shFolder = shFolderResource.get({
 					id: $scope.folderId
 				});
-				rootFolder = false;
+				var rootFolder = false;
 				if ($scope.shFolder.rootFolder == 1) {
 					rootFolder = true;
 				}
