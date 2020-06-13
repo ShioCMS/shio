@@ -14,14 +14,15 @@ viglet.shio.shObject = function() {
 	 */
 	this.formComponent = function(shPostTypeName, shObjectId) {
 		return shFormComponent.byPostType(shPostTypeName, shObjectId, request);
-	},	
+	}	
+	
 	/**
 	 * @desc Returns Search Result
 	 * @public
 	 */
 	this.searchComponent = function() {
 		return Java.from(shSearchComponent.search(request.getParameter('q')));
-	},
+	}
 
 	/**
 	 * @desc Returns Folder Navigation Component
@@ -33,7 +34,7 @@ viglet.shio.shObject = function() {
 	 */
 	this.navigation = function(siteName, home) {
 		return Java.from(shNavigationComponent.navigation(siteName, home));
-	},
+	}
 
 	/**
 	 * @desc Returns Folder Navigation Component from Parent Folder
@@ -46,7 +47,8 @@ viglet.shio.shObject = function() {
 	this.navigationFolder = function(folderId, home) {
 		return Java
 				.from(shNavigationComponent.navigationFolder(folderId, home));
-	},
+	}
+
 	/**
 	 * @desc Returns Query Component
 	 * @param folderId
@@ -59,7 +61,6 @@ viglet.shio.shObject = function() {
 		return Java.from(shQueryComponent.findByFolderName(folderId,
 				postTypeName));
 	}
-
 
 	/**
 	 * @desc Returns Query Component By Post Type
@@ -82,7 +83,7 @@ viglet.shio.shObject = function() {
 	 * @public
 	 */
 	this.queryByPostTypeIn = function(postTypeName, postAttrName, arrayValue) {
-		return Java.from(shQueryComponent.findByPostTypeNameIn(postTypeName, postAttrName, arrayValue));
+		return Java.from(shQueryComponent.findByPostTypeNameIn(postTypeName, arrayValue));
 	}
 	
 	/**

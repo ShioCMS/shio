@@ -29,10 +29,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ShLocaleRepository extends JpaRepository<ShLocale, String> {
 
-	static final String EN_US = "en_US";
-	static final String EN_GB = "en_GB";
-	static final String PT_BR = "pt_BR";
-	
 	List<ShLocale> findAll();
 
 	ShLocale findByInitials(String initials);

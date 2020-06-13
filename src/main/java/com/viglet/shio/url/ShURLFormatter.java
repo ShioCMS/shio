@@ -30,7 +30,7 @@ public class ShURLFormatter {
 		// 1. Covert to Lowercase
 		String formattedURL = url.toLowerCase();		
 		
-		// 2. Convert HTML Symbol Entities to space, for examples: "Ampersand" euro; or Ampersand Hash Tag 174; 
+		// 2. Convert HTML Symbol Entities to space, for examples: "Ampersand" euro  or Ampersand Hash Tag 174 
 		formattedURL = formattedURL.replaceAll("&.+?;", " ");
 		
 		// 3. Remove accents

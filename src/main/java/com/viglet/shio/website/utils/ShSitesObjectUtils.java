@@ -35,6 +35,10 @@ import com.viglet.shio.utils.ShFolderUtils;
  */
 @Component
 public class ShSitesObjectUtils {
+
+	private static final String IS_VISIBLE_PAGE = "IS_VISIBLE_PAGE";
+	private static final String NO = "no";
+	private static final String HOME = "Home";
 	@Autowired
 	private ShFolderUtils shFolderUtils;
 	@Autowired
@@ -43,7 +47,7 @@ public class ShSitesObjectUtils {
 	private ShObjectRepository shObjectRepository;
 	@Autowired
 	private ShSitesPostUtils shSitesPostUtils;
-	
+
 	public boolean isVisiblePage(ShObject shObject) {
 		ShFolder shFolder = null;
 		if (shObject instanceof ShFolder) {
@@ -51,8 +55,9 @@ public class ShSitesObjectUtils {
 			ShPost shFolderIndexPost = shSitesFolderUtils.getFolderIndex(shFolder);
 			if (shFolderIndexPost != null) {
 				Map<String, ShPostAttr> shFolderIndexPostMap = shSitesPostUtils.postToMap(shFolderIndexPost);
-				if (shFolderIndexPostMap.get("IS_VISIBLE_PAGE") != null && shFolderIndexPostMap.get("IS_VISIBLE_PAGE").getStrValue() != null
-						&& shFolderIndexPostMap.get("IS_VISIBLE_PAGE").getStrValue().equals("no")) {
+				if (shFolderIndexPostMap.get(IS_VISIBLE_PAGE) != null
+						&& shFolderIndexPostMap.get(IS_VISIBLE_PAGE).getStrValue() != null
+						&& shFolderIndexPostMap.get(IS_VISIBLE_PAGE).getStrValue().equals(NO)) {
 					return false;
 				}
 			} else {
@@ -64,14 +69,9 @@ public class ShSitesObjectUtils {
 		}
 		if (shFolder != null) {
 			List<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shFolder);
-			if (breadcrumb.get(0).getName().equals("Home")) {
-				return true;
-			} else {
-				return false;
-			}
-		} else {
+			return breadcrumb.get(0).getName().equals(HOME);
+		} else
 			return false;
-		}
 
 	}
 

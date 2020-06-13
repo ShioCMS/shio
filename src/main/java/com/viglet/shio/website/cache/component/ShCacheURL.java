@@ -26,11 +26,11 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ShCacheURL {
-	@SuppressWarnings("unused")
 	private static final Log logger = LogFactory.getLog(ShCacheURL.class);
 
 	@CacheEvict(value = "url", key = "{#contextURL, #contextURLOriginal}")
 	public void deleteCache(String contextURL, String contextURLOriginal) {
-		System.out.println(String.format("deleteURL Cache: %s %s",contextURL,contextURLOriginal));
+		if (logger.isDebugEnabled())
+			logger.debug(String.format("deleteURL Cache: %s %s", contextURL, contextURLOriginal));
 	}
 }

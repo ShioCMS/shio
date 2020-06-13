@@ -62,20 +62,24 @@ public class ShPostTypeImport {
 				shPostType.setOwner(shPostTypeExchange.getOwner());
 				shPostType.setSystem(shPostTypeExchange.isSystem() ? (byte) 1 : (byte) 0);
 
-				Set<ShPostTypeAttr> shPostTypeAttrs = new HashSet<>();
-				if (shPostTypeExchange.getFields() != null && shPostTypeExchange.getFields().size() > 0) {
-					for (Entry<String, ShPostTypeFieldExchange> postTypeField : shPostTypeExchange.getFields()
-							.entrySet()) {
-						ShPostTypeAttr shPostTypeAttr = this.importPostTypeField(postTypeField);
-						shPostTypeAttr.setShPostType(shPostType);
-						shPostTypeAttrs.add(shPostTypeAttr);
-					}
-				}
-				shPostType.setShPostTypeAttrs(shPostTypeAttrs);
+				this.importPostTypeAttr(shPostTypeExchange, shPostType);
 
 				shPostTypeRepository.save(shPostType);
 			}
 		}
+	}
+
+	private void importPostTypeAttr(ShPostTypeExchange shPostTypeExchange, ShPostType shPostType) {
+		Set<ShPostTypeAttr> shPostTypeAttrs = new HashSet<>();
+		if (shPostTypeExchange.getFields() != null && shPostTypeExchange.getFields().size() > 0) {
+			for (Entry<String, ShPostTypeFieldExchange> postTypeField : shPostTypeExchange.getFields()
+					.entrySet()) {
+				ShPostTypeAttr shPostTypeAttr = this.importPostTypeField(postTypeField);
+				shPostTypeAttr.setShPostType(shPostType);
+				shPostTypeAttrs.add(shPostTypeAttr);
+			}
+		}
+		shPostType.setShPostTypeAttrs(shPostTypeAttrs);
 	}
 
 	public ShPostTypeAttr importPostTypeField(Entry<String, ShPostTypeFieldExchange> postTypeField) {
@@ -93,7 +97,7 @@ public class ShPostTypeImport {
 		shPostTypeAttr.setRequired(shPostTypeFieldExchange.isRequired() ? (byte) 1 : (byte) 0);
 		shPostTypeAttr.setShWidget(shWidget);
 		shPostTypeAttr.setWidgetSettings(shPostTypeFieldExchange.getWidgetSettings());
-		Set<ShPostTypeAttr> shPostTypeAttrs = new HashSet<ShPostTypeAttr>();
+		Set<ShPostTypeAttr> shPostTypeAttrs = new HashSet<>();
 		if (shPostTypeFieldExchange.getFields() != null && shPostTypeFieldExchange.getFields().size() > 0) {
 			for (Entry<String, ShPostTypeFieldExchange> postTypeFieldChild : shPostTypeFieldExchange.getFields()
 					.entrySet()) {

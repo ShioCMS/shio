@@ -72,15 +72,15 @@ public class ShPostTypeAttr implements Serializable {
 	@OneToMany(mappedBy = "shParentPostTypeAttr", orphanRemoval = true, fetch = FetchType.LAZY)
 	@Cascade({ CascadeType.ALL })
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	private Set<ShPostTypeAttr> shPostTypeAttrs = new HashSet<ShPostTypeAttr>();
+	private Set<ShPostTypeAttr> shPostTypeAttrs = new HashSet<>();
 
 	@OneToMany(mappedBy = "shPostTypeAttr", fetch = FetchType.LAZY)
 	@Cascade({ CascadeType.ALL })
-	private Set<ShPostAttr> shPostAttrs = new HashSet<ShPostAttr>();
+	private Set<ShPostAttr> shPostAttrs = new HashSet<>();
 
 	@OneToMany(mappedBy = "shPostTypeAttr", fetch = FetchType.LAZY)
 	@Cascade({ CascadeType.ALL })
-	private Set<ShPostDraftAttr> shPostDraftAttrs = new HashSet<ShPostDraftAttr>();
+	private Set<ShPostDraftAttr> shPostDraftAttrs = new HashSet<>();
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "postType_id")
@@ -113,6 +113,7 @@ public class ShPostTypeAttr implements Serializable {
 	}
 
 	public ShPostTypeAttr() {
+		super();
 	}
 
 	public String getId() {

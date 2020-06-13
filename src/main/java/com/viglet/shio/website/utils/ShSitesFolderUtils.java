@@ -62,16 +62,16 @@ public class ShSitesFolderUtils {
 		ShPostType shPostType = shPostTypeRepository.findByName(ShSystemPostType.FOLDER_INDEX);
 		List<ShPost> shFolderIndexPosts = shPostRepository.findByShFolderAndShPostTypeOrderByPositionAsc(shFolder,
 				shPostType);
-		if (shFolderIndexPosts.size() > 0) {
-			ShPost shFolderIndexPost = shSitesPostUtils.getPostByStage(shFolderIndexPosts.get(0));
-			return shFolderIndexPost;
-		}
+		if (!shFolderIndexPosts.isEmpty())
+			return shSitesPostUtils.getPostByStage(shFolderIndexPosts.get(0));
 		return null;
 	}
 
 	public Map<String, Object> toMap(String shFolderId) {
-		ShFolder shFolder = shFolderRepository.findById(shFolderId).get();
-		return this.toMap(shFolder);
+		Optional<ShFolder> shFolder = shFolderRepository.findById(shFolderId);
+		if (shFolder.isPresent())
+			return this.toMap(shFolder.get());
+		return null;
 	}
 
 	public ShContent toSystemMap(ShFolder shFolder) {

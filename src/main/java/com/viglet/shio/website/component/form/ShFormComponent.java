@@ -62,9 +62,9 @@ public class ShFormComponent {
 		ShPostType shPostType = shPostTypeRepository.findByName(shPostTypeName);
 		CsrfToken csrf = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
 
-		List<String> fields = new ArrayList<String>();
+		List<String> fields = new ArrayList<>();
 
-		List<ShPostTypeAttr> postTypeAttrByOrdinal = new ArrayList<ShPostTypeAttr>(shPostType.getShPostTypeAttrs());
+		List<ShPostTypeAttr> postTypeAttrByOrdinal = new ArrayList<>(shPostType.getShPostTypeAttrs());
 
 		Collections.sort(postTypeAttrByOrdinal, new Comparator<ShPostTypeAttr>() {
 

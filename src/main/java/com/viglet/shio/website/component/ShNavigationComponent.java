@@ -41,11 +41,11 @@ public class ShNavigationComponent {
 	private ShFolderRepository shFolderRepository;
 	@Autowired
 	private ShSitesObjectUtils shSitesObjectUtils;
-	
+
 	public List<ShFolder> navigation(String siteName, boolean home) {
 		ShSite shSite = shSiteRepository.findByName(siteName);
 		ShFolder homeFolder = shFolderRepository.findByShSiteAndName(shSite, "Home");
-				List<ShFolder> shFolders = new ArrayList<ShFolder>();
+		List<ShFolder> shFolders = new ArrayList<>();
 		if (home) {
 			if (shSitesObjectUtils.isVisiblePage(homeFolder)) {
 				shFolders.add(homeFolder);
@@ -65,11 +65,9 @@ public class ShNavigationComponent {
 		if (shFolderOptional.isPresent()) {
 			ShFolder shParentFolder = shFolderOptional.get();
 			List<ShFolder> shFolders = shFolderRepository.findByParentFolderOrderByPositionAsc(shParentFolder);
-			if (home) {
-				if (shSitesObjectUtils.isVisiblePage(shParentFolder)) {
-					shFolders.add(shParentFolder);
-				}
-			}
+			if (home && shSitesObjectUtils.isVisiblePage(shParentFolder))
+				shFolders.add(shParentFolder);
+
 			return shFolders;
 		}
 		return Collections.emptyList();

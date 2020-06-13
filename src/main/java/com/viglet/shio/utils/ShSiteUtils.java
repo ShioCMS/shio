@@ -39,7 +39,7 @@ public class ShSiteUtils {
 		shSiteItemSystemAttrs.put("id", shSite.getId());
 		shSiteItemSystemAttrs.put("title", shSite.getName());
 		shSiteItemSystemAttrs.put("summary", shSite.getDescription());
-		shSiteItemSystemAttrs.put("link", shURLScheme.get(shSite).toString());
+		shSiteItemSystemAttrs.put("link", shURLScheme.get(shSite));
 
 		Map<String, Object> shSiteItemAttrs = new HashMap<>();
 
@@ -52,7 +52,7 @@ public class ShSiteUtils {
 		shSiteItemSystemAttrs.put("id", shSite.getId());
 		shSiteItemSystemAttrs.put("title", shSite.getName());
 		shSiteItemSystemAttrs.put("summary", shSite.getDescription());
-		shSiteItemSystemAttrs.put("link", shURLScheme.get(shSite).toString());
+		shSiteItemSystemAttrs.put("link", shURLScheme.get(shSite));
 
 		JSONObject shSiteItemAttrs = new JSONObject();
 
@@ -61,7 +61,7 @@ public class ShSiteUtils {
 	}
 
 	public String generatePostLink(ShSite shSite) {
-		String link = shURLScheme.get(shSite).toString();
+		String link = shURLScheme.get(shSite);
 		return link;
 	}
 

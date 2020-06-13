@@ -48,42 +48,42 @@ public class ShHistoryUtils {
 	public static final String UPDATE = "UPDATE";
 
 	public void commit(ShObject shObject, Principal principal, String action) {
+		if (shObject != null) {
+			String message = null;
 
-		String message = null;
+			if (action.equals(ShHistoryUtils.CREATE)) {
+				message = "Created %s %s.";
+			} else if (action.equals(ShHistoryUtils.DELETE)) {
+				message = "Deleted %s %s.";
+			} else if (action.equals(ShHistoryUtils.UPDATE)) {
+				message = "Updated %s %s.";
+			}
 
-		if (action.equals(ShHistoryUtils.CREATE)) {
-			message = "Created %s %s.";
-		} else if (action.equals(ShHistoryUtils.DELETE)) {
-			message = "Deleted %s %s.";
-		} else if (action.equals(ShHistoryUtils.UPDATE)) {
-			message = "Updated %s %s.";
-		}
+			ShHistory shHistory = new ShHistory();
+			shHistory.setDate(new Date());
+			String description = null;
+			ShSite shSite = null;
 
-		ShHistory shHistory = new ShHistory();
-		shHistory.setDate(new Date());
-		String description = null;
-		ShSite shSite = null;
-
-		if (shObject instanceof ShPost) {
-			ShPost shPost = (ShPost) shObject;
-			description = String.format(message, shPost.getTitle(), "Post");
-			shSite = shPostUtils.getSite(shPost);
-		} else if (shObject instanceof ShFolder) {
-			ShFolder shFolder = (ShFolder) shObject;
-			if (shFolder != null) {
+			if (shObject instanceof ShPost) {
+				ShPost shPost = (ShPost) shObject;
+				description = String.format(message, shPost.getTitle(), "Post");
+				shSite = shPostUtils.getSite(shPost);
+			} else if (shObject instanceof ShFolder) {
+				ShFolder shFolder = (ShFolder) shObject;
 				description = String.format(message, shFolder.getName(), "Folder");
 				shSite = shFolderUtils.getSite(shFolder);
+			} else if (shObject instanceof ShSite) {
+				shSite = (ShSite) shObject;
+				description = String.format(message, shSite.getName(), "Site");
 			}
-		} else if (shObject instanceof ShSite) {
-			shSite = (ShSite) shObject;
-			description = String.format(message, shSite.getName(), "Site");
+			shHistory.setDescription(description);
+			if (principal != null) {
+				shHistory.setOwner(principal.getName());
+			}
+			shHistory.setShObject(shObject.getId());
+			if (shSite != null)
+				shHistory.setShSite(shSite.getId());
+			shHistoryRepository.saveAndFlush(shHistory);
 		}
-		shHistory.setDescription(description);
-		if (principal != null) {
-			shHistory.setOwner(principal.getName());
-		}
-		shHistory.setShObject(shObject.getId());
-		shHistory.setShSite(shSite.getId());
-		shHistoryRepository.saveAndFlush(shHistory);
 	}
 }
