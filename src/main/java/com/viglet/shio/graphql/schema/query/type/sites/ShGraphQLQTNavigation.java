@@ -50,11 +50,12 @@ public class ShGraphQLQTNavigation {
 
 	@Autowired
 	private ShNavigationComponent shNavigationComponent;
-	public final static String SITE_NAME = "siteName";
-	public final static String FOLDER_ID = "folderId";
-	public final static String IS_HOME = "isHome";
 	private static final String QUERY_TYPE_NAME = "shNavigation";
-
+	
+	public static final String SITE_NAME = "siteName";
+	public static final String FOLDER_ID = "folderId";
+	public static final String IS_HOME = "isHome";
+	
 	public void createQueryType(Builder queryTypeBuilder,
 			graphql.schema.GraphQLCodeRegistry.Builder codeRegistryBuilder, GraphQLObjectType graphQLObjectType) {
 

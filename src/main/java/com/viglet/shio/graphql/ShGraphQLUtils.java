@@ -40,13 +40,11 @@ public class ShGraphQLUtils {
 	private ShObjectUtils shObjectUtils;
 
 	public String normalizedField(String object) {
-		String objectName = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL,
-				object.toLowerCase().replaceAll("-", "_"));
-		return objectName;
+		return CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, object.toLowerCase().replace("-", "_"));
 	}
 
 	public String normalizedPostType(String postTypeName) {
-		char c[] = postTypeName.replaceAll("-", "_").toCharArray();
+		char[] c = postTypeName.replace("-", "_").toCharArray();
 		c[0] = Character.toLowerCase(c[0]);
 		return new String(c);
 	}
@@ -65,7 +63,7 @@ public class ShGraphQLUtils {
 			shPostAttrMap.put(ShGraphQLConstants.SITE, shObjectUtils.getSite(shPost).getName());
 			for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
 				String postTypeAttrName = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL,
-						shPostAttr.getShPostTypeAttr().getName().toLowerCase().replaceAll("-", "_"));
+						shPostAttr.getShPostTypeAttr().getName().toLowerCase().replace("-", "_"));
 				shPostAttrMap.put(postTypeAttrName, shPostAttr.getStrValue());
 			}
 		}

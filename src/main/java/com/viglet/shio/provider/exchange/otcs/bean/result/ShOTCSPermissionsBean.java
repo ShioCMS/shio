@@ -18,6 +18,8 @@ package com.viglet.shio.provider.exchange.otcs.bean.result;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * @author Alexandre Oliveira
  * 
@@ -27,7 +29,8 @@ public class ShOTCSPermissionsBean {
 
 	private List<String> permissions;
 
-	private int right_id;
+	@JsonProperty("right_id")
+	private int rightId;
 	
 	private String type;
 	
@@ -39,12 +42,12 @@ public class ShOTCSPermissionsBean {
 		this.permissions = permissions;
 	}
 
-	public int getRight_id() {
-		return right_id;
+	public int getRightId() {
+		return rightId;
 	}
 
-	public void setRight_id(int right_id) {
-		this.right_id = right_id;
+	public void setRightId(int rightId) {
+		this.rightId = rightId;
 	}
 
 	public String getType() {

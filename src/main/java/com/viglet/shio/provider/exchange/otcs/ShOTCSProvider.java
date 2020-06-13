@@ -119,7 +119,7 @@ public class ShOTCSProvider implements ShExchangeProvider {
 
 		for (ShOTCSResultsBean results : shOTCSFolderBean.getResults()) {
 
-			if (results.getData().getProperties().getType_name().equals("Folder")) {
+			if (results.getData().getProperties().getTypeName().equals("Folder")) {
 
 				String resultId = Integer.toString(results.getData().getProperties().getId());
 
@@ -141,7 +141,7 @@ public class ShOTCSProvider implements ShExchangeProvider {
 
 				Date postDate = results.getData().getProperties().getCreate_date();
 
-				String postType = results.getData().getProperties().getType_name();
+				String postType = results.getData().getProperties().getTypeName();
 
 				ShExchangeProviderPost shExchangeProviderPostChild = new ShExchangeProviderPost();
 
@@ -180,7 +180,7 @@ public class ShOTCSProvider implements ShExchangeProvider {
 		shExchangeProviderPost.setId(id);
 		shExchangeProviderPost.setTitle(shOTCSObjetBean.getResults().getData().getProperties().getName());
 		shExchangeProviderPost
-				.setParentId(Integer.toString(shOTCSObjetBean.getResults().getData().getProperties().getParent_id()));
+				.setParentId(Integer.toString(shOTCSObjetBean.getResults().getData().getProperties().getParentId()));
 		return shExchangeProviderPost;
 	}
 

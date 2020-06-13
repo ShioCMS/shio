@@ -16,6 +16,7 @@
  */
 package com.viglet.shio.provider.exchange.otcs.bean.collection;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.viglet.shio.provider.exchange.otcs.bean.link.ShOTCSLinksBean;
 
 /**
@@ -31,13 +32,17 @@ public class ShOTCSPagingBean {
 	
 	private int page;
 	
-	private int page_total;
+	@JsonProperty("page_total")
+	private int pageTotal;
 	
-	private int range_max;
+	@JsonProperty("range_max")
+	private int rangeMax;
 	
-	private int range_min;
+	@JsonProperty("range_min")
+	private int rangeMin;
 	
-	private int total_count;
+	@JsonProperty("total_count")
+	private int totalCount;
 
 	public int getLimit() {
 		return limit;
@@ -63,37 +68,36 @@ public class ShOTCSPagingBean {
 		this.page = page;
 	}
 
-	public int getPage_total() {
-		return page_total;
+	public int getPageTotal() {
+		return pageTotal;
 	}
 
-	public void setPage_total(int page_total) {
-		this.page_total = page_total;
+	public void setPageTotal(int pageTotal) {
+		this.pageTotal = pageTotal;
 	}
 
-	public int getRange_max() {
-		return range_max;
+	public int getRangeMax() {
+		return rangeMax;
 	}
 
-	public void setRange_max(int range_max) {
-		this.range_max = range_max;
+	public void setRangeMax(int rangeMax) {
+		this.rangeMax = rangeMax;
 	}
 
-	public int getRange_min() {
-		return range_min;
+	public int getRangeMin() {
+		return rangeMin;
 	}
 
-	public void setRange_min(int range_min) {
-		this.range_min = range_min;
+	public void setRangeMin(int rangeMin) {
+		this.rangeMin = rangeMin;
 	}
 
-	public int getTotal_count() {
-		return total_count;
+	public int getTotalCount() {
+		return totalCount;
 	}
 
-	public void setTotal_count(int total_count) {
-		this.total_count = total_count;
-	}
-	
+	public void setTotalCount(int totalCount) {
+		this.totalCount = totalCount;
+	}	
 	
 }

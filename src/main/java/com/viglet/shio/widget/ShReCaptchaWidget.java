@@ -77,22 +77,16 @@ public class ShReCaptchaWidget implements ShWidgetImplementation {
 			URL url = new URL(urlFormatada);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("GET");
-			String line, outputString = "";
+			String line = "";
+			StringBuilder outputString = new StringBuilder();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			while ((line = reader.readLine()) != null) {
-				outputString += line;
-			}
-			// Convert response into Object
-			CaptchaResponse capRes = new Gson().fromJson(outputString, CaptchaResponse.class);
+			while ((line = reader.readLine()) != null)
+				outputString.append(line);
 
-			// Verify whether the input from Human or Robot
-			if (capRes.isSuccess()) {
-				// Input by Human
-				return true;
-			} else {
-				// Input by Robot
-				return false;
-			}
+			// Convert response into Object
+			CaptchaResponse capRes = new Gson().fromJson(outputString.toString(), CaptchaResponse.class);
+
+			return capRes.isSuccess();
 
 		} catch (Exception e) {
 			logger.error("validateFormException", e);

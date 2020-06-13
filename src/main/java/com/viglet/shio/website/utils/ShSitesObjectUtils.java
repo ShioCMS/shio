@@ -70,8 +70,9 @@ public class ShSitesObjectUtils {
 		if (shFolder != null) {
 			List<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shFolder);
 			return breadcrumb.get(0).getName().equals(HOME);
-		} else
+		} else {
 			return false;
+		}
 
 	}
 

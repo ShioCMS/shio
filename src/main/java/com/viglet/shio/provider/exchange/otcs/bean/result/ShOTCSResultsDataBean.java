@@ -19,6 +19,8 @@ package com.viglet.shio.provider.exchange.otcs.bean.result;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * @author Alexandre Oliveira
  * 
@@ -28,7 +30,8 @@ public class ShOTCSResultsDataBean {
 
 	private List<Map<String, Object>> categories;
 
-	private List<Map<String, Boolean>> categories_inheritance;
+	@JsonProperty("categories_inheritance")
+	private List<Map<String, Boolean>> categoriesInheritance;
 
 	private List<ShOTCSResultsDataColumnsBean> columns;
 
@@ -55,12 +58,12 @@ public class ShOTCSResultsDataBean {
 		this.categories = categories;
 	}
 
-	public List<Map<String, Boolean>> getCategories_inheritance() {
-		return categories_inheritance;
+	public List<Map<String, Boolean>> getCategoriesInheritance() {
+		return categoriesInheritance;
 	}
 
-	public void setCategories_inheritance(List<Map<String, Boolean>> categories_inheritance) {
-		this.categories_inheritance = categories_inheritance;
+	public void setCategoriesInheritance(List<Map<String, Boolean>> categoriesInheritance) {
+		this.categoriesInheritance = categoriesInheritance;
 	}
 
 	public List<ShOTCSResultsDataColumnsBean> getColumns() {

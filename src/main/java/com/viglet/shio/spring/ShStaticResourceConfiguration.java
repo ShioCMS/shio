@@ -35,6 +35,7 @@ import com.viglet.shio.utils.ShStaticFileUtils;
 @AutoConfigureAfter(DispatcherServletAutoConfiguration.class)
 public class ShStaticResourceConfiguration implements WebMvcConfigurer {
 
+	private static final String THIRDPARTY_FOLDER = "/thirdparty/**";
 	@Autowired
 	private ShStaticFileUtils shStaticFileUtils;
 
@@ -45,18 +46,16 @@ public class ShStaticResourceConfiguration implements WebMvcConfigurer {
 		registry.addResourceHandler("/store/**").addResourceLocations(resourceLocation).setCachePeriod(3600 * 24);
 		registry.addResourceHandler("/file_source/**").addResourceLocations(resourceLocation + "/")
 				.setCachePeriod(3600 * 24);
-		// registry.addResourceHandler("/**") .addResourceLocations(resourceLocation
-		// +"/","classpath:/public/").setCachePeriod(3600 * 24);
 
-		if (!registry.hasMappingForPattern("/thirdparty/**")) {
-			registry.addResourceHandler("/thirdparty/**").addResourceLocations("classpath:/META-INF/resources/webjars/")
+		if (!registry.hasMappingForPattern(THIRDPARTY_FOLDER)) {
+			registry.addResourceHandler(THIRDPARTY_FOLDER).addResourceLocations("classpath:/META-INF/resources/webjars/")
 					.setCachePeriod(3600 * 24);
 		}
 	}
 
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
-		registry.addMapping("/thirdparty/**").allowedOrigins("*").allowedMethods("PUT", "DELETE", "GET", "POST")
+		registry.addMapping(THIRDPARTY_FOLDER).allowedOrigins("*").allowedMethods("PUT", "DELETE", "GET", "POST")
 				.allowCredentials(false).maxAge(3600);
 		registry.addMapping("/api/**").allowedOrigins("*").allowedMethods("PUT", "DELETE", "GET", "POST")
 				.allowCredentials(false).maxAge(3600);

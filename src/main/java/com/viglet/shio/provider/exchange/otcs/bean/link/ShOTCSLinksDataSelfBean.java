@@ -16,6 +16,8 @@
  */
 package com.viglet.shio.provider.exchange.otcs.bean.link;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * @author Alexandre Oliveira
  * 
@@ -25,7 +27,8 @@ public class ShOTCSLinksDataSelfBean {
 
 	private String body;
 	
-	private String content_type;
+	@JsonProperty("content_type")
+	private String contentType;
 	
 	private String href;
 	
@@ -41,12 +44,12 @@ public class ShOTCSLinksDataSelfBean {
 		this.body = body;
 	}
 
-	public String getContent_type() {
-		return content_type;
+	public String getContentType() {
+		return contentType;
 	}
 
-	public void setContent_type(String content_type) {
-		this.content_type = content_type;
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
 	}
 
 	public String getHref() {

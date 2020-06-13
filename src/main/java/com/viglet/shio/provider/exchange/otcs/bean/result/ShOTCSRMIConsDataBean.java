@@ -16,6 +16,8 @@
  */
 package com.viglet.shio.provider.exchange.otcs.bean.result;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * @author Alexandre Oliveira
  * 
@@ -23,26 +25,32 @@ package com.viglet.shio.provider.exchange.otcs.bean.result;
  */
 public class ShOTCSRMIConsDataBean {
 
-	private int class_id;
-	
-	private int official;
-	
-	private boolean show_classify;
-	
-	private boolean show_hold;
-	
-	private boolean show_hold_tab;
-	
-	private boolean show_official;
-	
-	private boolean show_xref_tab;
+	@JsonProperty("class_id")
+	private int classId;
 
-	public int getClass_id() {
-		return class_id;
+	private int official;
+
+	@JsonProperty("show_classify")
+	private boolean showClassify;
+
+	@JsonProperty("show_hold")
+	private boolean showHold;
+
+	@JsonProperty("show_hold_tab")
+	private boolean showHoldTab;
+
+	@JsonProperty("show_official")
+	private boolean showOfficial;
+
+	@JsonProperty("show_xref_tab")
+	private boolean showXrefTab;
+
+	public int getClassId() {
+		return classId;
 	}
 
-	public void setClass_id(int class_id) {
-		this.class_id = class_id;
+	public void setClassId(int classId) {
+		this.classId = classId;
 	}
 
 	public int getOfficial() {
@@ -53,45 +61,44 @@ public class ShOTCSRMIConsDataBean {
 		this.official = official;
 	}
 
-	public boolean isShow_classify() {
-		return show_classify;
+	public boolean isShowClassify() {
+		return showClassify;
 	}
 
-	public void setShow_classify(boolean show_classify) {
-		this.show_classify = show_classify;
+	public void setShowClassify(boolean showClassify) {
+		this.showClassify = showClassify;
 	}
 
-	public boolean isShow_hold() {
-		return show_hold;
+	public boolean isShowHold() {
+		return showHold;
 	}
 
-	public void setShow_hold(boolean show_hold) {
-		this.show_hold = show_hold;
+	public void setShowHold(boolean showHold) {
+		this.showHold = showHold;
 	}
 
-	public boolean isShow_hold_tab() {
-		return show_hold_tab;
+	public boolean isShowHoldTab() {
+		return showHoldTab;
 	}
 
-	public void setShow_hold_tab(boolean show_hold_tab) {
-		this.show_hold_tab = show_hold_tab;
+	public void setShowHoldTab(boolean showHoldTab) {
+		this.showHoldTab = showHoldTab;
 	}
 
-	public boolean isShow_official() {
-		return show_official;
+	public boolean isShowOfficial() {
+		return showOfficial;
 	}
 
-	public void setShow_official(boolean show_official) {
-		this.show_official = show_official;
+	public void setShowOfficial(boolean showOfficial) {
+		this.showOfficial = showOfficial;
 	}
 
-	public boolean isShow_xref_tab() {
-		return show_xref_tab;
+	public boolean isShowXrefTab() {
+		return showXrefTab;
 	}
 
-	public void setShow_xref_tab(boolean show_xref_tab) {
-		this.show_xref_tab = show_xref_tab;
+	public void setShowXrefTab(boolean showXrefTab) {
+		this.showXrefTab = showXrefTab;
 	}
-	
-	
+
 }

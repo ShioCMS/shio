@@ -24,6 +24,7 @@ import static graphql.schema.GraphQLNonNull.nonNull;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +65,7 @@ public class ShGraphQLQTObjectFromURL {
 	private ShSitesPageLayoutUtils shSitesPageLayoutUtils;
 
 	private static final String CONTENT_NAME = "shObjectFromURL";
+	private static final String SYSTEM_ATTR = "system";
 
 	public void createQueryType(Builder queryTypeBuilder,
 			graphql.schema.GraphQLCodeRegistry.Builder codeRegistryBuilder, GraphQLObjectType graphQLObjectType) {
@@ -83,44 +85,46 @@ public class ShGraphQLQTObjectFromURL {
 
 	private DataFetcher<Map<String, Object>> getDataFetcher() {
 		return dataFetchingEnvironment -> {
-			Map<String, Object> post = new HashMap<>();
 			Gson gson = new Gson();
 			String url = dataFetchingEnvironment.getArgument("url");
 			ShContent shContent = shSitesContent.fromURL(url);
-			JSONObject site = new JSONObject(gson.toJson(shContent.get("site")));
-			String siteId = site.getJSONObject("system").getString("id");
-			String siteName = site.getJSONObject("system").getString("title");
-			JSONObject system = new JSONObject(gson.toJson(shContent.get("system")));
+			JSONObject system = new JSONObject(gson.toJson(shContent.get(SYSTEM_ATTR)));
 			String objectId = system.getString("id");
-			ShObject shObject = shObjectRepository.findById(objectId).get();
-			
-			String type = null;
+			Optional<ShObject> shObject = shObjectRepository.findById(objectId);
+			if (shObject.isPresent()) {
+				Map<String, Object> post = new HashMap<>();
+				JSONObject site = new JSONObject(gson.toJson(shContent.get("site")));
+				String siteId = site.getJSONObject(SYSTEM_ATTR).getString("id");
+				String siteName = site.getJSONObject(SYSTEM_ATTR).getString("title");
+				String type = null;
 
-			if (shObject instanceof ShPost) {
-				ShPost shPost = (ShPost) shObject;	
-				type = shGraphQLUtils.normalizedPostType(shPost.getShPostType().getName());
-				
-			} else if (shObject instanceof ShFolder) {
-				type = "folder";
-			} else if (shObject instanceof ShSite) {
-				type = "site";
+				if (shObject.get() instanceof ShPost) {
+					ShPost shPost = (ShPost) shObject.get();
+					type = shGraphQLUtils.normalizedPostType(shPost.getShPostType().getName());
+
+				} else if (shObject.get() instanceof ShFolder) {
+					type = "folder";
+				} else if (shObject.get() instanceof ShSite) {
+					type = "site";
+				}
+
+				ShPost pageLayout = shSitesPageLayoutUtils.fromURL(url);
+
+				if (pageLayout != null)
+					post.put("pageLayout", pageLayout.getTitle());
+
+				post.put("id", system.getString("id"));
+				post.put("locale", "Locale1");
+				post.put("context", "Context1");
+				post.put("type", type);
+				post.put("format", "Format1");
+				post.put("siteId", siteId);
+				post.put("siteName", siteName);
+				post.put("content", shContent);
+
+				return post;
 			}
-			
-			ShPost pageLayout = shSitesPageLayoutUtils.fromURL(url);
-			
-			if (pageLayout != null)
-				post.put("pageLayout", pageLayout.getTitle());
-		
-			post.put("id", system.getString("id"));
-			post.put("locale", "Locale1");
-			post.put("context", "Context1");
-			post.put("type", type);
-			post.put("format", "Format1");
-			post.put("siteId", siteId);
-			post.put("siteName", siteName);
-			post.put("content", shContent);
-
-			return post;
+			return null;
 		};
 	}
 }

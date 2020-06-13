@@ -16,6 +16,8 @@
  */
 package com.viglet.shio.provider.exchange.otcs.bean.result;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * @author Alexandre Oliveira
  * 
@@ -23,22 +25,25 @@ package com.viglet.shio.provider.exchange.otcs.bean.result;
  */
 public class ShOTCSResultsDataColumnsBean {
 
-	private int data_type;
+	@JsonProperty("data_type")
+	private int dataType;
 
 	private String key;
 
 	private String name;
 
-	private String sort_key;
+	@JsonProperty("sort_key")
+	private String sortKey;
 
-	private boolean include_time;
+	@JsonProperty("include_time")
+	private boolean includeTime;
 
-	public int getData_type() {
-		return data_type;
+	public int getDataType() {
+		return dataType;
 	}
 
-	public void setData_type(int data_type) {
-		this.data_type = data_type;
+	public void setDataType(int dataType) {
+		this.dataType = dataType;
 	}
 
 	public String getKey() {
@@ -57,20 +62,20 @@ public class ShOTCSResultsDataColumnsBean {
 		this.name = name;
 	}
 
-	public String getSort_key() {
-		return sort_key;
+	public String getSortKey() {
+		return sortKey;
 	}
 
-	public void setSort_key(String sort_key) {
-		this.sort_key = sort_key;
+	public void setSortKey(String sortKey) {
+		this.sortKey = sortKey;
 	}
 
-	public boolean isInclude_time() {
-		return include_time;
+	public boolean isIncludeTime() {
+		return includeTime;
 	}
 
-	public void setInclude_time(boolean include_time) {
-		this.include_time = include_time;
+	public void setIncludeTime(boolean includeTime) {
+		this.includeTime = includeTime;
 	}
 
 }
