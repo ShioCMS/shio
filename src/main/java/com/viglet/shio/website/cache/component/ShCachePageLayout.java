@@ -24,7 +24,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shio.persistence.model.site.ShSite;
@@ -44,7 +43,7 @@ public class ShCachePageLayout {
 	private ShNashornEngineProcess shNashornEngineProcess;
 
 	public String cache(ShSitesPageLayout shSitesPageLayout, HttpServletRequest request, ShSite shSite,
-			ApplicationContext context, String mimeType) {
+			String mimeType) {
 		if (shSitesPageLayout.getId() != null) {
 			logger.debug(String.format("ShCachePageLayout.cache Key: %s %s", shSitesPageLayout.getId(),
 					shSitesPageLayout.getPageCacheKey()));

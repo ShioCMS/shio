@@ -24,11 +24,11 @@ shioApp.controller('ShWidgetContentSelectSelectCtrl', [
 			$scope.breadcrumb = null;
 
 			// BEGIN Functions
-			$scope.folderList = function(shFolder) {
+			$scope.folderList = function(shFolderItem) {
 				$ctrl.shObjectSelected = null;
 				$scope.$evalAsync($http.get(
 						shAPIServerService.get().concat(
-								"/v2/object/" + shFolder.id + "/list"))
+								"/v2/object/" + shFolderItem.id + "/list"))
 						.then(function(response) {
 							$scope.shFolders = response.data.shFolders;
 							$scope.shPosts = response.data.shPosts;

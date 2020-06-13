@@ -64,9 +64,6 @@ public class ShWidget implements Serializable {
 	@OneToMany(mappedBy = "shWidget")
 	private List<ShPostTypeAttr> shPostTypeAttrs;
 
-	public ShWidget() {
-	}
-
 	public String getId() {
 		return this.id;
 	}

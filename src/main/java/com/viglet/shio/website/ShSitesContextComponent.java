@@ -223,7 +223,7 @@ public class ShSitesContextComponent {
 	public String shPageLayoutFactory(ShSitesPageLayout shSitesPageLayout, HttpServletRequest request, ShSite shSite,
 			String mimeType) throws Exception {
 
-		return shCachePageLayout.cache(shSitesPageLayout, request, shSite, context, mimeType);
+		return shCachePageLayout.cache(shSitesPageLayout, request, shSite, mimeType);
 	}
 
 	public Document shRegionFactory(ShSitesPageLayout shSitesPageLayout, String regionResult, ShSite shSite,

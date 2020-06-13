@@ -56,10 +56,10 @@ public class ShFolderExport {
 
 	public ShExchange shFolderExchangeIterate(Set<ShFolder> shFolders) {
 		ShExchange shExchange = new ShExchange();
-		List<ShFolderExchange> shFolderExchanges = new ArrayList<ShFolderExchange>();
-		List<ShPostExchange> shPostExchanges = new ArrayList<ShPostExchange>();
-		List<ShFileExchange> files = new ArrayList<ShFileExchange>();
-		Map<String, ShPostTypeExchange> shPostTypeExchanges = new HashMap<String, ShPostTypeExchange>();
+		List<ShFolderExchange> shFolderExchanges = new ArrayList<>();
+		List<ShPostExchange> shPostExchanges = new ArrayList<>();
+		List<ShFileExchange> files = new ArrayList<>();
+		Map<String, ShPostTypeExchange> shPostTypeExchanges = new HashMap<>();
 		for (ShFolder shFolder : shFolders) {
 
 			for (ShPost shPost : shPostRepository.findByShFolder(shFolder)) {
@@ -94,7 +94,7 @@ public class ShFolderExport {
 		shExchange.setFolders(shFolderExchanges);
 		shExchange.setPosts(shPostExchanges);
 		shExchange.setFiles(files);
-		shExchange.setPostTypes(new ArrayList<ShPostTypeExchange>(shPostTypeExchanges.values()));
+		shExchange.setPostTypes(new ArrayList<>(shPostTypeExchanges.values()));
 		return shExchange;
 	}
 
@@ -113,7 +113,7 @@ public class ShFolderExport {
 			shPostTypeExchanges.put(shPost.getShPostType().getName(),
 					shPostTypeExport.exportPostType(shPost.getShPostType()));
 		}
-		Map<String, Object> fields = new HashMap<String, Object>();
+		Map<String, Object> fields = new HashMap<>();
 
 		shPostExport.shPostAttrExchangeIterate(shPost, shPostAttrRepository.findByShPost(shPost), fields, files);
 

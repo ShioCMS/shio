@@ -20,7 +20,11 @@ package com.viglet.shio.turing;
  * @author Alexandre Oliveira
  */
 public class ShTuringSearchSettings {
-	
+
+	private ShTuringSearchSettings() {
+		throw new IllegalStateException("Turing Constants class");
+	}
+
 	public static final String SEARCH = "search";
 	public static final String IS_ADDITIONAL_FIELD = "isAdditionalField";
 	public static final String IS_SAME_POSTTYPE_FIELD = "isSamePostTypeField";

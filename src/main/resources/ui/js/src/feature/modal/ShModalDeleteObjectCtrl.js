@@ -9,7 +9,7 @@ shioApp.controller('ShModalDeleteObjectCtrl', [
 			var $ctrl = this;
 			$ctrl.removeInstance = false;
 			$ctrl.shObject = shObject;
-			var shObjectType = $ctrl.shObject.objectType
+			var shObjectType = $ctrl.shObject.objectType;
 
 			if (angular.equals(shObjectType, 'POST')
 					|| angular.equals(shObjectType, 'POST_TYPE')) {

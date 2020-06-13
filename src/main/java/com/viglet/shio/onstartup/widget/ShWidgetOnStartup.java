@@ -140,27 +140,7 @@ public class ShWidgetOnStartup {
 			shWidget.setSettingPath("template/widget/recaptcha/setting/recaptcha-setting.html");
 			shWidget.setType("TEXT,TEXTAREA");
 
-			shWidgetRepository.save(shWidget);
-			
-			shWidget = new ShWidget();
-			shWidget.setName(ShSystemWidget.PAYMENT_DEFINITION);
-			shWidget.setDescription("Payment Type Definition Widget");
-			shWidget.setClassName("com.viglet.shio.widget.ecommerce.ShPaymentTypeDefinitionWidget");
-			shWidget.setImplementationCode("template/widget/payment/type/definition/payment-type-definition.html");
-			shWidget.setSettingPath("template/widget/payment/type/definition/setting/payment-type-definition-setting.html");
-			shWidget.setType("JSON");
-
-			shWidgetRepository.save(shWidget);
-			
-			shWidget = new ShWidget();
-			shWidget.setName(ShSystemWidget.PAYMENT);
-			shWidget.setDescription("Payment Widget");
-			shWidget.setClassName("com.viglet.shio.widget.ecommerce.ShPaymentWidget");
-			shWidget.setImplementationCode("template/widget/payment/payment.html");
-			shWidget.setSettingPath("template/widget/payment/setting/payment-setting.html");
-			shWidget.setType("TEXT,TEXTAREA");
-
-			shWidgetRepository.save(shWidget);
+			shWidgetRepository.save(shWidget);			
 			
 			shWidget = new ShWidget();
 			shWidget.setName(ShSystemWidget.FORM_CONFIGURATION);

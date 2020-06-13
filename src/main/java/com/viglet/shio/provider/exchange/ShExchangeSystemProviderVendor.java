@@ -22,6 +22,11 @@ package com.viglet.shio.provider.exchange;
  * @since 0.3.6
  */
 public class ShExchangeSystemProviderVendor {
+	
+	private ShExchangeSystemProviderVendor() {
+		throw new IllegalStateException("System Provider Vendor Constants class");
+	}
+	
 	public static final String OTCS = "OTCS";
 	public static final String OTMM = "OTMM";
 }

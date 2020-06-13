@@ -24,6 +24,11 @@ package com.viglet.shio.image.colorthief;
  */
 public class RGBUtil {
 
+
+	private RGBUtil() {
+		throw new IllegalStateException("RGB Util class");
+	}
+	
     /**
      * Packs the RGB array into one int for storing into db or sending via network.
      *

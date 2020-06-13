@@ -69,12 +69,12 @@ shioApp.controller('ShWidgetFileSelectCtrl', [
 				$ctrl.shSearchFilter = "";
 			}
 
-			$scope.folderList = function(shFolder) {
-				$scope.currentFolder = shFolder;
+			$scope.folderList = function(shFolderItem) {
+				$scope.currentFolder = shFolderItem;
 				$ctrl.shPostSelected = null;
 				$scope.$evalAsync($http.get(
 						shAPIServerService.get().concat(
-								"/v2/object/" + shFolder.id + "/list/File"))
+								"/v2/object/" + shFolderItem.id + "/list/File"))
 						.then(function(response) {
 							$scope.shFolders = response.data.shFolders;
 							$scope.shPosts = response.data.shPosts;

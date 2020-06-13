@@ -39,6 +39,10 @@ import com.viglet.shio.persistence.model.site.ShSite;
  */
 public class ShPostSpecs {
 
+	private ShPostSpecs() {
+		throw new IllegalStateException("ShPostSpecs class");
+	}
+	
 	public static Specification<ShPost> hasShPostType(ShPostType shPostType) {
 		return (shPost, query, cb) -> cb.equal(shPost.get("shPostType"), shPostType);
 	}

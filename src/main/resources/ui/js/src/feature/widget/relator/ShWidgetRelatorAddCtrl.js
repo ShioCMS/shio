@@ -44,21 +44,21 @@ shioApp.controller('ShWidgetRelatorAddCtrl', [
 		$ctrl.ok = function () {
 			$scope.titles = [];
 			$scope.summaries = [];
-			angular.forEach(orderByFilter($scope.shPostAttrs, 'shPostTypeAttr.ordinal', false), function (shPostAttr, key) {
-				if (shPostAttr.shPostTypeAttr.isTitle == 1) {
-					if (shPostAttr.dateValue !== null) {
-						$scope.titles.push($ctrl.formatDate(shPostAttr.dateValue));
+			angular.forEach(orderByFilter($scope.shPostAttrs, 'shPostTypeAttr.ordinal', false), function (shPostAttrItem, key) {
+				if (shPostAttrItem.shPostTypeAttr.isTitle == 1) {
+					if (shPostAttrItem.dateValue !== null) {
+						$scope.titles.push($ctrl.formatDate(shPostAttrItem.dateValue));
 					}
 					else {
-						$scope.titles.push(shPostAttr.referenceObject != null ? shPostAttr.referenceObject.title : shPostAttr.strValue);
+						$scope.titles.push(shPostAttrItem.referenceObject != null ? shPostAttrItem.referenceObject.title : shPostAttrItem.strValue);
 					}
 				}
-				if (shPostAttr.shPostTypeAttr.isSummary == 1) {
-					if (shPostAttr.dateValue !== null) {
-						$scope.summaries.push($ctrl.formatDate(shPostAttr.dateValue));
+				if (shPostAttrItem.shPostTypeAttr.isSummary == 1) {
+					if (shPostAttrItem.dateValue !== null) {
+						$scope.summaries.push($ctrl.formatDate(shPostAttrItem.dateValue));
 					}
 					else {
-						$scope.summaries.push(shPostAttr.referenceObject != null ? shPostAttr.referenceObject.summary : shPostAttr.strValue);
+						$scope.summaries.push(shPostAttrItem.referenceObject != null ? shPostAttrItem.referenceObject.summary : shPostAttrItem.strValue);
 					}
 				}
 

@@ -17,7 +17,6 @@ shioApp.controller('ShConfigAuthProvidersCtrl', [
 			disabled: false,
 			stop: function (e, ui) {
 				var sortObject = {};
-				var i = 1;
 				angular.forEach($scope.authProviders, function (authProvider, key) {
 					sortObject[authProvider.id] = authProvider.position;
 				});

@@ -24,4 +24,6 @@ package com.viglet.shio.webhook;
  */
 public class ShWebhook {
 
+	public String webhook;
+	
 }

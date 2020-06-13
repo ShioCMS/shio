@@ -21,6 +21,11 @@ package com.viglet.shio.provider.auth;
  * @since 0.3.6
  */
 public class ShAuthSystemProviderVendor {
+	
+	private ShAuthSystemProviderVendor() {
+		throw new IllegalStateException("System Provider Vendor Constants class");
+	}
+	
 	public static final String NATIVE = "NATIVE";
 	public static final String OTDS = "OTDS";
 }

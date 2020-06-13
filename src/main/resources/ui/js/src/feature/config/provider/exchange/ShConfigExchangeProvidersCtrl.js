@@ -17,7 +17,6 @@ shioApp.controller('ShConfigExchangeProvidersCtrl', [
 			disabled: false,
 			stop: function (e, ui) {
 				var sortObject = {};
-				var i = 1;
 				angular.forEach($scope.exchangeProviders, function (exchangeProvider, key) {
 					sortObject[exchangeProvider.id] = exchangeProvider.position;
 				});

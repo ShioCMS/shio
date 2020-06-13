@@ -20,6 +20,11 @@ package com.viglet.shio.post.type;
  * @author Alexandre Oliveira
  */
 public class ShSystemPostType {
+	
+	private ShSystemPostType() {
+		throw new IllegalStateException("System Post Type Constants class");
+	}
+	
 	public static final String TEXT = "Text";
 	public static final String PHOTO = "Photo";
 	public static final String VIDEO = "Video";

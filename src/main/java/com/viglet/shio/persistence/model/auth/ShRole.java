@@ -52,9 +52,6 @@ public class ShRole implements Serializable {
 	@ManyToMany
 	private Set<ShGroup> shGroups = new HashSet<>();
 
-	public ShRole() {
-	}
-
 	public String getId() {
 		return id;
 	}

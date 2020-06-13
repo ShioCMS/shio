@@ -33,7 +33,7 @@ import com.viglet.shio.graphql.playground.properties.Subscriptions;
 public class ShGraphiQLProperties {
 
 	private Endpoint endpoint = new Endpoint();
-	private Static _static = new Static();
+	private Static staticFile = new Static();
 	private CodeMirror codeMirror = new CodeMirror();
 	private Props props = new Props();
 	private String pageTitle = "Shio CMS Playground";
@@ -46,7 +46,7 @@ public class ShGraphiQLProperties {
 	}
 
 	public Static getStatic() {
-		return _static;
+		return staticFile;
 	}
 
 	public CodeMirror getCodeMirror() {

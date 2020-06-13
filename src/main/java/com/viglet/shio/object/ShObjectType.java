@@ -20,6 +20,10 @@ package com.viglet.shio.object;
  * @author Alexandre Oliveira
  */
 public class ShObjectType {
+	
+	private ShObjectType() {
+		throw new IllegalStateException("Object Type Constants class");
+	}
 	public static final String FOLDER = "FOLDER";
 	public static final String POST = "POST";
 	public static final String POST_TYPE = "POST_TYPE";

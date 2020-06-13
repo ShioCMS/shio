@@ -70,15 +70,15 @@ public class ShUser implements Serializable {
 	@ManyToMany
 	private Set<ShGroup> shGroups = new HashSet<>();
 	
-	public ShUser() {
-
-	}
-
 	public ShUser(ShUser shUser) {
 		this.username = shUser.username;
 		this.email = shUser.email;
 		this.password = shUser.password;
 		this.enabled = shUser.enabled;
+	}
+
+	public ShUser() {
+		super();
 	}
 
 	public String getConfirmEmail() {

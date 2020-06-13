@@ -20,6 +20,11 @@ package com.viglet.shio.object;
  * @author Alexandre Oliveira
  */
 public class ShObjectPublishStatus {
+
+	private ShObjectPublishStatus() {
+		throw new IllegalStateException("Object Publish Status Constants class");
+	}
+
 	public static final String PUBLISH = "PUBLISH";
 	public static final String UNPUBLISH = "UNPUBLISH";
 	public static final String DRAFT = "DRAFT";

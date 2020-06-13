@@ -96,7 +96,11 @@ public class ShURLScheme {
 				case 4:
 					shLocale = contexts[i];
 					break;
+				default:
+					break;
 				}
+
+				
 			}
 
 			url = "/" + shContext + "/" + shSiteName + "/" + shFormat + "/" + shLocale;

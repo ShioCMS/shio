@@ -25,12 +25,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class ShURLFormatter {
 
-	public String format(String URL) {
+	public String format(String url) {
 
 		// 1. Covert to Lowercase
-		String formattedURL = URL.toLowerCase();		
+		String formattedURL = url.toLowerCase();		
 		
-		// 2. Convert HTML Symbol Entities to space, for examples: &euro; or &#174; 
+		// 2. Convert HTML Symbol Entities to space, for examples: "Ampersand" euro; or Ampersand Hash Tag 174; 
 		formattedURL = formattedURL.replaceAll("&.+?;", " ");
 		
 		// 3. Remove accents

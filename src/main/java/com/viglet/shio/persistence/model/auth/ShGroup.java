@@ -51,9 +51,6 @@ public class ShGroup implements Serializable {
 	@ManyToMany(mappedBy = "shGroups")
 	private Set<ShUser> shUsers = new HashSet<>();
 
-	public ShGroup() {
-	}
-
 	public String getId() {
 		return this.id;
 	}

@@ -35,6 +35,7 @@ import java.util.Map;
 public class ShServletGraphiQLController extends ShGraphiQLController{
 
     @PostConstruct
+    @Override
     public void onceConstructed() throws IOException {
         super.onceConstructed();
     }

@@ -20,6 +20,11 @@ package com.viglet.shio.post.type;
  * @author Alexandre Oliveira
  */
 public class ShSystemPostTypeAttr {
+
+	private ShSystemPostTypeAttr() {
+		throw new IllegalStateException("System Post Type Attr Constants class");
+	}
+
 	public static final String ID = "id";
 	public static final String TITLE = "TITLE";
 	public static final String DESCRIPTION = "DESCRIPTION";

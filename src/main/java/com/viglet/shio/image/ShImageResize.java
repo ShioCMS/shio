@@ -62,7 +62,7 @@ public class ShImageResize {
 			String filePath = String.format("/%s", path.toString());
 			response.setContentType(MediaType.IMAGE_PNG_VALUE);
 			if (type.equals("scale")) {
-				double valueDouble = Double.valueOf(value);
+				double valueDouble = Double.parseDouble(value);
 				double percent = valueDouble / 100;
 				Thumbnails.of(shStaticFileUtils.filePath(filePath)).scale(percent).outputFormat("png").outputQuality(1)
 						.toOutputStream(response.getOutputStream());

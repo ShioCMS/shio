@@ -49,7 +49,7 @@ public class ShImportAPI {
 	@PostMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShExchange shImport(@RequestParam("file") MultipartFile multipartFile, final Principal principal)
-			throws IllegalStateException, IOException, ArchiveException {
+			throws IOException, ArchiveException {
 		return shImportExchange.importFromMultipartFile(multipartFile, principal.getName());
 	}
 

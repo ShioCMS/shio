@@ -32,11 +32,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.viglet.shio.sites.component.form.ShFormComponent;
 import com.viglet.shio.website.component.ShGetRelationComponent;
 import com.viglet.shio.website.component.ShNavigationComponent;
 import com.viglet.shio.website.component.ShQueryComponent;
 import com.viglet.shio.website.component.ShSearchComponent;
+import com.viglet.shio.website.component.form.ShFormComponent;
 import com.viglet.shio.website.utils.ShSitesFolderUtils;
 import com.viglet.shio.website.utils.ShSitesObjectUtils;
 import com.viglet.shio.website.utils.ShSitesPostUtils;
