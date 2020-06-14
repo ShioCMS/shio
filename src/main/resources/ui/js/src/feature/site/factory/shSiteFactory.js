@@ -17,7 +17,7 @@ shioApp.factory('shSiteFactory', [
 			delete: function (shSite) {
 				var modalInstance = this.modalDelete(shSite);
 				modalInstance.result.then(function (removeInstance) {
-					deletedMessage = 'The ' + shSite.name + ' Site was deleted.';
+					var deletedMessage = 'The ' + shSite.name + ' Site was deleted.';
 
 					shSiteResource
 						.delete({

@@ -62,7 +62,7 @@ public class ShRoleAPI {
 
 	@PutMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShRole shRoleUpdate(@PathVariable String id, @RequestBody ShRole shRole) throws Exception {
+	public ShRole shRoleUpdate(@PathVariable String id, @RequestBody ShRole shRole) {
 		shRoleRepository.save(shRole);
 		return shRole;
 	}

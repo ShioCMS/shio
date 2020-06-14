@@ -42,7 +42,7 @@ public class ShSiteOnStartup {
 	private ShSiteRepository shSiteRepository;
 	@Autowired
 	private ShCloneExchange shCloneExchange;
-	
+
 	private static final String COULD_NOT_CREATE_SAMPLE_SITE = "Could not create sample site";
 
 	public void createDefaultRows() {
@@ -66,9 +66,8 @@ public class ShSiteOnStartup {
 		File userDir = new File(System.getProperty("user.dir"));
 		if (userDir.exists() && userDir.isDirectory()) {
 			File tmpDir = new File(userDir.getAbsolutePath().concat(File.separator + "store" + File.separator + "tmp"));
-			if (!tmpDir.exists()) {
+			if (!tmpDir.exists())
 				tmpDir.mkdirs();
-			}
 
 			File siteFile = new File(
 					tmpDir.getAbsolutePath().concat(File.separator + slug + UUID.randomUUID() + ".zip"));
@@ -76,16 +75,8 @@ public class ShSiteOnStartup {
 			try {
 				FileUtils.copyURLToFile(siteRepository, siteFile);
 				shCloneExchange.cloneFromFile(siteFile, "admin", null);
-			} catch (IllegalStateException e) {
-				System.out.println(COULD_NOT_CREATE_SAMPLE_SITE);
-				logger.error("createDefaultRows IllegalStateException", e);
-
-			} catch (IOException e) {
-				System.out.println(COULD_NOT_CREATE_SAMPLE_SITE);
-				logger.error("importFromFile IOException", e);
-			} catch (ArchiveException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (IllegalStateException | IOException | ArchiveException e) {
+				logger.error(COULD_NOT_CREATE_SAMPLE_SITE, e);
 			}
 
 			FileUtils.deleteQuietly(siteFile);

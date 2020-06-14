@@ -9,7 +9,7 @@ shioApp.factory('shStaticFileFactory', [
                     if (postType.name == "File") {
                         createPost = false;
                     }
-                    file = shPostAttr.file;
+                    var file = shPostAttr.file;
                     if (!file.$error) {
                         Upload.upload({
                             url: shAPIServerService.get().concat('/v2/staticfile/upload'),

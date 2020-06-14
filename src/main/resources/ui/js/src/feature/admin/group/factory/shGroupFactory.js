@@ -5,7 +5,7 @@ shioApp.factory('shGroupFactory', [
 			delete: function (shGroup) {
 				var modalInstance = this.modalDelete(shGroup);
 				modalInstance.result.then(function (removeInstance) {
-					deletedMessage = 'The ' + shGroup.name + ' was deleted.';
+					var deletedMessage = 'The ' + shGroup.name + ' was deleted.';
 
 					shGroupResource
 						.delete({

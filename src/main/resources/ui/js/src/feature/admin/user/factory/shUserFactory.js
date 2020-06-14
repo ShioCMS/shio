@@ -5,7 +5,7 @@ shioApp.factory('shUserFactory', [
 			delete: function (shUser) {
 				var modalInstance = this.modalDelete(shUser);
 				modalInstance.result.then(function (removeInstance) {
-					deletedMessage = 'The ' + shUser.username + ' was deleted.';
+					var deletedMessage = 'The ' + shUser.username + ' was deleted.';
 
 					shUserResource
 						.delete({

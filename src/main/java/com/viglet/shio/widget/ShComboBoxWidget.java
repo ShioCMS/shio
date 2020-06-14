@@ -46,7 +46,7 @@ public class ShComboBoxWidget implements ShWidgetImplementation {
 		String widgetSettings = shPostTypeAttr.getWidgetSettings();
 		JSONObject settings = new JSONObject(widgetSettings);
 		String[] choicesArray = settings.getString("choices").split("\n");
-		Map<String, String> choices = new HashMap<String, String>();
+		Map<String, String> choices = new HashMap<>();
 		for (String choice : choicesArray) {
 			String[] choiceKV = choice.split(":");
 			String name = choiceKV[0].trim();

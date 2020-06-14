@@ -76,7 +76,7 @@ public class ShPostDraft extends ShObjectDraft {
 	@OneToMany(mappedBy = "shPost", orphanRemoval = true, fetch = FetchType.LAZY)
 	@Cascade({ CascadeType.ALL })
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	private Set<ShPostDraftAttr> shPostAttrs = new HashSet<ShPostDraftAttr>();
+	private Set<ShPostDraftAttr> shPostAttrs = new HashSet<>();
 
 	public ShPostDraft() {
 		this.setObjectType(ShObjectType.POST);

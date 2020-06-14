@@ -85,7 +85,7 @@ public class ShPost extends ShObject {
 	@OneToMany(mappedBy = "shPost", orphanRemoval = true, fetch = FetchType.LAZY)
 	@Cascade({ CascadeType.ALL })
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	private Set<ShPostAttr> shPostAttrs = new HashSet<ShPostAttr>();
+	private Set<ShPostAttr> shPostAttrs = new HashSet<>();
 
 	public ShPost() {
 		this.setObjectType(ShObjectType.POST);

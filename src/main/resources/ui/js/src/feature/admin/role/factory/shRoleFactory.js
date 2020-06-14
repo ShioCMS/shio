@@ -5,7 +5,7 @@ shioApp.factory('shRoleFactory', [
 				delete : function(shRole) {
 					var modalInstance = this.modalDelete(shRole);
 					modalInstance.result.then(function(removeInstance) {
-						deletedMessage = 'The ' + shRole.name +' was deleted.';
+						var deletedMessage = 'The ' + shRole.name +' was deleted.';
 						
 						shRoleResource
 						.delete({

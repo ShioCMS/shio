@@ -49,8 +49,6 @@ public class ShStaticFileUtils {
 	@Autowired
 	private ShFolderUtils shFolderUtils;
 	@Autowired
-	private ShStaticFileUtils shStaticFileUtils;
-	@Autowired
 	private ShPostTypeRepository shPostTypeRepository;
 	@Autowired
 	private ShPostRepository shPostRepository;
@@ -134,7 +132,7 @@ public class ShStaticFileUtils {
 	}
 
 	public ShPost createFilePost(MultipartFile file, String fileName, ShFolder shFolder, Principal principal, boolean createPost) {
-		File directoryPath = shStaticFileUtils.dirPath(shFolder);
+		File directoryPath = this.dirPath(shFolder);
 		ShPost shPost = new ShPost();
 		if (directoryPath != null) {
 			if (!directoryPath.exists()) {

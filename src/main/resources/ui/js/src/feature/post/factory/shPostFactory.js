@@ -26,7 +26,7 @@ shioApp.factory('shPostFactory', [
             delete: function (shPost) {
                 var modalInstance = this.modalDelete(shPost);
                 modalInstance.result.then(function (removeInstance) {
-                    deletedMessage = 'The ' + shPost.title + ' Post was deleted.';
+                    var deletedMessage = 'The ' + shPost.title + ' Post was deleted.';
                     shPostResource.delete({
                         id: shPost.id
                     }, function () {

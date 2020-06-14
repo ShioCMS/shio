@@ -16,7 +16,6 @@
  */
 package com.viglet.shio.api.folder;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -36,7 +35,7 @@ public class ShFolderList {
 	
 	private String folderPath;
 	
-	private ArrayList<ShFolder> breadcrumb;
+	private List<ShFolder> breadcrumb;
 	
 	private ShSite shSite;
 	
@@ -64,11 +63,11 @@ public class ShFolderList {
 		this.folderPath = folderPath;
 	}
 
-	public ArrayList<ShFolder> getBreadcrumb() {
+	public List<ShFolder> getBreadcrumb() {
 		return breadcrumb;
 	}
 
-	public void setBreadcrumb(ArrayList<ShFolder> breadcrumb) {
+	public void setBreadcrumb(List<ShFolder> breadcrumb) {
 		this.breadcrumb = breadcrumb;
 	}
 

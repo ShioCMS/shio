@@ -80,8 +80,7 @@ shPreviewApp.controller('ShPreviewCtrl', [
 		}
 
 		$scope.objectClearCache = function () {
-			$http.get(shAPIServerService.get().concat("/v2/object/" + $scope.objectId + "/clear-cache")).then(function (response) {
-				var shObject = response.data;
+			$http.get(shAPIServerService.get().concat("/v2/object/" + $scope.objectId + "/clear-cache")).then(function (response) {				
 				var clearMessage = null;
 				if ($scope.objectType == "POST") {
 					clearMessage = 'The Post Cache has been cleared.';

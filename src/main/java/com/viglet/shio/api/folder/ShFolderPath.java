@@ -16,7 +16,7 @@
  */
 package com.viglet.shio.api.folder;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.post.ShPost;
@@ -31,7 +31,7 @@ public class ShFolderPath {
 	
 	private ShFolder currentFolder;
 	
-	private ArrayList<ShFolder> breadcrumb;
+	private List<ShFolder> breadcrumb;
 	
 	private ShPost shPost;
 	
@@ -53,11 +53,11 @@ public class ShFolderPath {
 		this.currentFolder = currentFolder;
 	}
 
-	public ArrayList<ShFolder> getBreadcrumb() {
+	public List<ShFolder> getBreadcrumb() {
 		return breadcrumb;
 	}
 
-	public void setBreadcrumb(ArrayList<ShFolder> breadcrumb) {
+	public void setBreadcrumb(List<ShFolder> breadcrumb) {
 		this.breadcrumb = breadcrumb;
 	}
 

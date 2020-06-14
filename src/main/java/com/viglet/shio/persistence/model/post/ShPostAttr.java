@@ -83,7 +83,7 @@ public class ShPostAttr implements Serializable {
 	@CollectionTable(name = "sh_post_attr_array_value")
 	@JoinColumn(name = "post_attr_id")
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	private Set<String> arrayValue = new HashSet<String>();
+	private Set<String> arrayValue = new HashSet<>();
 
 	// bi-directional many-to-one association to shObject
 	@ManyToOne
@@ -98,7 +98,7 @@ public class ShPostAttr implements Serializable {
 	@OneToMany(mappedBy = "shParentPostAttr", orphanRemoval = true, fetch = FetchType.LAZY)
 	@Cascade({ CascadeType.ALL })
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	private Set<ShRelatorItem> shChildrenRelatorItems = new HashSet<ShRelatorItem>();
+	private Set<ShRelatorItem> shChildrenRelatorItems = new HashSet<>();
 
 	// bi-directional many-to-one association to ShPost
 	@ManyToOne(fetch = FetchType.LAZY) // (cascade = {CascadeType.ALL})
