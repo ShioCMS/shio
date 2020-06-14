@@ -51,5 +51,6 @@ public class ShDateWidget implements ShWidgetImplementation {
 
 	@Override
 	public void postRender(ShPost shPost, ShSitesContextURL shSitesContextURL) throws IOException {
+		 // Do nothing 
 	}
 }

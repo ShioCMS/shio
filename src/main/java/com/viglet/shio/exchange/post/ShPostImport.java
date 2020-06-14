@@ -228,20 +228,19 @@ public class ShPostImport {
 		} else {
 			shPost = new ShPost();
 			shPost.setId(shPostExchange.getId());
-			shPost.setDate(isCloned? new Date(): shPostExchange.getDate());
-			if (shPostExchange.getPosition() > 0) {
+			shPost.setDate(isCloned ? new Date() : shPostExchange.getDate());
+			if (shPostExchange.getPosition() > 0)
 				shPost.setPosition(shPostExchange.getPosition());
-			}
+		
 			ShFolder shFolder = shFolderRepository.findById(shPostExchange.getFolder()).orElse(null);
 			shPost.setShFolder(shFolder);
 			shPost.setShPostType(shPostTypeRepository.findByName(shPostExchange.getPostType()));
 			shPost.setShSite(shFolderUtils.getSite(shFolder));
-			if (shPostExchange.getOwner() != null) {
+			if (shPostExchange.getOwner() != null)
 				shPost.setOwner(shPostExchange.getOwner());
-			} else {
+			else
 				shPost.setOwner(username);
-			}
-
+		
 			for (Entry<String, Object> shPostField : shPostExchange.getFields().entrySet()) {
 				ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPost.getShPostType(),
 						shPostField.getKey());
@@ -280,18 +279,19 @@ public class ShPostImport {
 				shPostUtils.updateRelatorInfo(shPostAttr, shPost);
 			}
 
-			if (turingEnabled) {
+			if (turingEnabled)
 				shTuringIntegration.indexObject(shPost);
-			}
 		}
-		logger.info(String.format("........ %s Post (%s)", shPost.getTitle(), shPost.getId()));
+		
+		if (shPost != null)
+			logger.info(String.format("........ %s Post (%s)", shPost.getTitle(), shPost.getId()));
 		return shPost;
 	}
 
 	@SuppressWarnings({ "unchecked" })
 	private void createShPostAttrs(ShPostExchange shPostExchange, ShPost shPost, Map<String, Object> shPostFields,
-			ShRelatorItem shParentRelatorItem, File extractFolder, String username, Map<String, Object> shObjects, boolean isCloned)
-			throws ClientProtocolException, IOException {
+			ShRelatorItem shParentRelatorItem, File extractFolder, String username, Map<String, Object> shObjects,
+			boolean isCloned) throws ClientProtocolException, IOException {
 		for (Entry<String, Object> shPostField : shPostFields.entrySet()) {
 			ShPostType shPostType = shPostTypeRepository.findByName(shPostExchange.getPostType());
 
