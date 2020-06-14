@@ -23,8 +23,6 @@ shioApp.controller('ShPostEditCtrl', [
 			menubar: 'edit insert tools view format table',
 			min_height: 500
 		};
-		var folderURL = null;
-		var folderPath = null;
 		$scope.folderId = null;
 		$scope.postId = $stateParams.postId;
 		$scope.breadcrumb = null;
@@ -66,11 +64,6 @@ shioApp.controller('ShPostEditCtrl', [
 								$scope.shFolder = response.data.currentFolder;
 								$rootScope.shFolder = $scope.shFolder;
 								$scope.shSite = response.data.shSite;
-								folderPath = shAPIServerService.server().concat("/v1/store/file_source/" + $scope.shSite.name + response.data.folderPath);
-								folderURL = shAPIServerService.server().concat(
-									"/v2/sites/" + $scope.shSite.name.replace(new RegExp(" ",
-										'g'), "-") + "/default/pt-br" + response.data.folderPath.replace(new RegExp(" ",
-											'g'), "-"));
 							}
 						));
 			}
@@ -84,15 +77,18 @@ shioApp.controller('ShPostEditCtrl', [
 
 						if (shPostAttr.shPostTypeAttr.shWidget.name === 'Tab') {
 							tabName = shPostAttr.shPostTypeAttr.label;
-							var tab = [];
-							tab["ordinal"] = shPostAttr.shPostTypeAttr.ordinal;
-							tab["name"] = tabName;
+							var tab = {
+								ordinal: shPostAttr.shPostTypeAttr.ordinal,
+								name: tabName
+							}
 							$scope.tabs.push(tab);
 
 						} else if (key === 0) {
 							var tab = [];
-							tab["ordinal"] = 0;
-							tab["name"] = tabName;
+							var tab = {
+								ordinal: 0,
+								name: tabName
+							}
 							$scope.tabs.push(tab);
 						}
 						shPostAttr["tab"] = tabName;
@@ -129,7 +125,7 @@ shioApp.controller('ShPostEditCtrl', [
 			if (parentOfAttr.shPostAttrs != null) {
 				angular
 					.forEach(parentOfAttr.shPostAttrs,
-						function (shPostAttrNested, key) {
+						function (shPostAttrNested, key1) {
 							promiseFiles
 								.push(uploadFile(
 									shPostAttrNested,
@@ -140,10 +136,10 @@ shioApp.controller('ShPostEditCtrl', [
 			else if (parentOfAttr.shChildrenRelatorItems != null) {
 				angular
 					.forEach(parentOfAttr.shChildrenRelatorItems,
-						function (shChildrenRelatorItem, key) {
+						function (shChildrenRelatorItem, key2) {
 							angular
 								.forEach(shChildrenRelatorItem.shChildrenPostAttrs,
-									function (shChildrenPostAttrNested, key) {
+									function (shChildrenPostAttrNested, key3) {
 										promiseFiles
 											.push(uploadFile(
 												shChildrenPostAttrNested,

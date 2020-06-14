@@ -16,7 +16,7 @@
  */
 package com.viglet.shio.api.object;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -28,6 +28,8 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -83,7 +85,7 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/api/v2/object")
 @Api(tags = "Object", description = "Object API")
 public class ShObjectAPI {
-
+	private static final Log logger = LogFactory.getLog(ShObjectAPI.class);
 	@Autowired
 	private ShFolderRepository shFolderRepository;
 	@Autowired
@@ -117,13 +119,13 @@ public class ShObjectAPI {
 
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public List<ShObject> shObjectList() throws Exception {
+	public List<ShObject> shObjectList() {
 		return shObjectRepository.findAll();
 	}
 
 	@GetMapping("/{id}/editor")
-	public ResponseEntity<?> shObjectEditor(@PathVariable String id, HttpServletResponse response,
-			RedirectAttributes attributes) throws UnsupportedEncodingException {
+	public ResponseEntity<String> shObjectEditor(@PathVariable String id, HttpServletResponse response,
+			RedirectAttributes attributes) {
 		String redirect = null;
 		ShObject shObject = shObjectRepository.findById(id).orElse(null);
 		if (shObject != null) {
@@ -136,11 +138,14 @@ public class ShObjectAPI {
 			} else if (shObject instanceof ShFolder) {
 				redirect = String.format("/content#!/list/%s", shObject.getId());
 			}
+			if (redirect != null) {
+				HttpHeaders headers = new HttpHeaders();
 
-			HttpHeaders headers = new HttpHeaders();
-			headers.add("Location", new String(redirect.getBytes("UTF-8"), "ISO-8859-1"));
+				headers.add("Location",
+						new String(redirect.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1));
 
-			return new ResponseEntity<>(null, headers, HttpStatus.FOUND);
+				return new ResponseEntity<>(null, headers, HttpStatus.FOUND);
+			}
 		}
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
@@ -148,7 +153,7 @@ public class ShObjectAPI {
 
 	@GetMapping("/{id}/preview")
 	public RedirectView shObjectPreview(@PathVariable String id, HttpServletResponse response,
-			RedirectAttributes attributes) throws UnsupportedEncodingException {
+			RedirectAttributes attributes) {
 		String redirect = null;
 		ShObject shObject = shObjectRepository.findById(id).orElse(null);
 		if (shObject instanceof ShSite) {
@@ -159,7 +164,8 @@ public class ShObjectAPI {
 			redirect = shSitesFolderUtils.generateFolderLink((ShFolder) shObject);
 		}
 
-		RedirectView redirectView = new RedirectView(new String(redirect.getBytes("UTF-8"), "ISO-8859-1"));
+		RedirectView redirectView = new RedirectView(
+				new String(redirect.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1));
 		redirectView.setHttp10Compatible(false);
 		return redirectView;
 	}
@@ -183,22 +189,26 @@ public class ShObjectAPI {
 	@GetMapping("/{id}/security")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShSecurityBean shObjectGroupsGet(@PathVariable String id) {
-		ShObject shObject = shObjectRepository.findById(id).orElse(null);
-		List<ShObject> shObjects = new ArrayList<>();
-		shObjects.add(shObject);
 		ShSecurityBean shSecurityBean = new ShSecurityBean();
-		ShConsoleSecurityBean shConsoleSecurityBean = new ShConsoleSecurityBean();
-		shConsoleSecurityBean.setShGroups(shObject.getShGroups());
-		shConsoleSecurityBean.setShUsers(shObject.getShUsers());
+		shObjectRepository.findById(id).ifPresent(shObject -> {
+			List<ShObject> shObjects = new ArrayList<>();
+			shObjects.add(shObject);
 
-		ShPageSecurityBean shPageSecurityBean = new ShPageSecurityBean();
-		shPageSecurityBean.setAllowGuestUser(shObject.isPageAllowGuestUser());
-		shPageSecurityBean.setAllowRegisterUser(shObject.isPageAllowRegisterUser());
-		shPageSecurityBean.setShGroups(shObject.getShPageGroups());
+			ShConsoleSecurityBean shConsoleSecurityBean = new ShConsoleSecurityBean();
+			shConsoleSecurityBean.setShGroups(shObject.getShGroups());
+			shConsoleSecurityBean.setShUsers(shObject.getShUsers());
 
-		shSecurityBean.setConsole(shConsoleSecurityBean);
-		shSecurityBean.setPage(shPageSecurityBean);
+			ShPageSecurityBean shPageSecurityBean = new ShPageSecurityBean();
+			shPageSecurityBean.setAllowGuestUser(shObject.isPageAllowGuestUser());
+			shPageSecurityBean.setAllowRegisterUser(shObject.isPageAllowRegisterUser());
+			shPageSecurityBean.setShGroups(shObject.getShPageGroups());
+
+			shSecurityBean.setConsole(shConsoleSecurityBean);
+			shSecurityBean.setPage(shPageSecurityBean);
+
+		});
 		return shSecurityBean;
+
 	}
 
 	@ApiOperation(value = "Update object users and groups")
@@ -226,7 +236,7 @@ public class ShObjectAPI {
 	@PutMapping("/moveto/{globallIdDest}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShObject> shObjectMoveTo(@PathVariable String globallIdDest, @RequestBody List<String> globalIds) {
-		List<ShObject> shObjects = new ArrayList<ShObject>();
+		List<ShObject> shObjects = new ArrayList<>();
 		ShObject shObjectDest = shObjectRepository.findById(globallIdDest).orElse(null);
 		for (String globalId : globalIds) {
 			shCacheObject.deleteCache(globalId);
@@ -248,17 +258,15 @@ public class ShObjectAPI {
 					shFolderRepository.save(shFolder);
 					shObjects.add(shFolder);
 				}
-			} else if (shObjectDest instanceof ShSite) {
-				if (shObject instanceof ShFolder) {
-					ShSite shSiteDest = (ShSite) shObjectDest;
-					ShFolder shFolder = (ShFolder) shObject;
-					shFolder.setParentFolder(null);
-					shFolder.setRootFolder((byte) 1);
-					shFolder.setShSite(shSiteDest);
-					shFolder.setFurl(shURLFormatter.format(shFolder.getName()));
-					shFolderRepository.save(shFolder);
-					shObjects.add(shFolder);
-				}
+			} else if (shObjectDest instanceof ShSite && shObject instanceof ShFolder) {
+				ShSite shSiteDest = (ShSite) shObjectDest;
+				ShFolder shFolder = (ShFolder) shObject;
+				shFolder.setParentFolder(null);
+				shFolder.setRootFolder((byte) 1);
+				shFolder.setShSite(shSiteDest);
+				shFolder.setFurl(shURLFormatter.format(shFolder.getName()));
+				shFolderRepository.save(shFolder);
+				shObjects.add(shFolder);
 			}
 		}
 
@@ -269,7 +277,7 @@ public class ShObjectAPI {
 	@PutMapping("/copyto/{globallIdDest}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShObject> shObjectCopyTo(@PathVariable String globallIdDest, @RequestBody List<String> globalIds) {
-		List<ShObject> shObjects = new ArrayList<ShObject>();
+		List<ShObject> shObjects = new ArrayList<>();
 		for (String globalId : globalIds) {
 			ShObject shObject = shObjectRepository.findById(globalId).orElse(null);
 			ShObject shObjectDest = shObjectRepository.findById(globallIdDest).orElse(null);
@@ -282,11 +290,9 @@ public class ShObjectAPI {
 					ShFolder shFolder = (ShFolder) shObject;
 					shObjects.add(shFolderUtils.copy(shFolder, shObjectDest));
 				}
-			} else if (shObjectDest instanceof ShSite) {
-				if (shObject instanceof ShFolder) {
-					ShFolder shFolder = (ShFolder) shObject;
-					shObjects.add(shFolderUtils.copy(shFolder, shObjectDest));
-				}
+			} else if (shObjectDest instanceof ShSite && shObject instanceof ShFolder) {
+				ShFolder shFolder = (ShFolder) shObject;
+				shObjects.add(shFolderUtils.copy(shFolder, shObjectDest));
 			}
 		}
 		shCacheObject.deleteCache(globallIdDest);
