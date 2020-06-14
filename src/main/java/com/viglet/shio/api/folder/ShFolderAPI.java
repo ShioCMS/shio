@@ -83,7 +83,7 @@ public class ShFolderAPI {
 	private ShSpreadsheet shSpreadsheet;
 	@Autowired
 	private ShHistoryUtils shHistoryUtils;
-	
+
 	@ApiOperation(value = "Folder list")
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
@@ -121,7 +121,7 @@ public class ShFolderAPI {
 				shTuringIntegration.indexObject(shFolderEdit);
 
 				shHistoryUtils.commit(shFolder, principal, ShHistoryUtils.UPDATE);
-				
+
 				return new ResponseEntity<>(shFolderEdit, HttpStatus.OK);
 			}
 		}
@@ -145,8 +145,7 @@ public class ShFolderAPI {
 					}
 				}
 			});
-			
-			
+
 			return new ResponseEntity<>(true, HttpStatus.OK);
 		}
 		return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
@@ -163,23 +162,24 @@ public class ShFolderAPI {
 			else if (shFolder.getParentFolder() != null && shFolder.getParentFolder().getId() != null)
 				shParentObject = shFolder.getParentFolder();
 
-			if (shObjectUtils.canAccess(principal, shParentObject.getId())) {
+			if (shParentObject != null && shObjectUtils.canAccess(principal, shParentObject.getId())) {
 				List<ShObject> shObjects = new ArrayList<>();
 				shObjects.add(shParentObject);
 
-				ShObject shObject = shObjectRepository.findById(shParentObject.getId()).get();
+				shObjectRepository.findById(shParentObject.getId()).ifPresent(shObject -> {
+					shFolder.setDate(new Date());
+					shFolder.setFurl(shURLFormatter.format(shFolder.getName()));
+					shFolder.setShGroups(new HashSet<>(shObject.getShGroups()));
+					shFolder.setShUsers(new HashSet<>(shObject.getShUsers()));
+					shFolderRepository.saveAndFlush(shFolder);
 
-				shFolder.setDate(new Date());
-				shFolder.setFurl(shURLFormatter.format(shFolder.getName()));
-				shFolder.setShGroups(new HashSet<String>(shObject.getShGroups()));
-				shFolder.setShUsers(new HashSet<String>(shObject.getShUsers()));
-				shFolderRepository.saveAndFlush(shFolder);
+					shTuringIntegration.indexObject(shFolder);
 
-				shTuringIntegration.indexObject(shFolder);
+					shHistoryUtils.commit(shFolder, principal, ShHistoryUtils.CREATE);
 
-				shHistoryUtils.commit(shFolder, principal, ShHistoryUtils.CREATE);
-				
+				});
 				return new ResponseEntity<>(shFolder, HttpStatus.OK);
+
 			}
 		}
 		return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
@@ -193,36 +193,36 @@ public class ShFolderAPI {
 			Principal principal) {
 		if (shObjectUtils.canAccess(principal, objectId)) {
 
-			ShObject shObject = shObjectRepository.findById(objectId).get();
+			shObjectRepository.findById(objectId).ifPresent(shObject -> {
+				List<ShObject> shObjects = new ArrayList<>();
+				shObjects.add(shObject);
 
-			List<ShObject> shObjects = new ArrayList<>();
-			shObjects.add(shObject);
+				ShFolder shNewFolder = new ShFolder();
+				shNewFolder.setDate(new Date());
+				shNewFolder.setName(shFolder.getName());
+				shNewFolder.setShGroups(new HashSet<>(shObject.getShGroups()));
+				shNewFolder.setShUsers(new HashSet<>(shObject.getShUsers()));
+				shNewFolder.setFurl(shURLFormatter.format(shNewFolder.getName()));
 
-			ShFolder shNewFolder = new ShFolder();
-			shNewFolder.setDate(new Date());
-			shNewFolder.setName(shFolder.getName());
-			shNewFolder.setShGroups(new HashSet<String>(shObject.getShGroups()));
-			shNewFolder.setShUsers(new HashSet<String>(shObject.getShUsers()));
-			shNewFolder.setFurl(shURLFormatter.format(shNewFolder.getName()));
+				ShObject shParentObject = shObjectRepository.findById(objectId).orElse(null);
+				if (shParentObject instanceof ShFolder) {
+					ShFolder shParentFolder = (ShFolder) shParentObject;
+					shNewFolder.setParentFolder(shParentFolder);
+					shNewFolder.setRootFolder((byte) 0);
+					shNewFolder.setShSite(null);
 
-			ShObject shParentObject = shObjectRepository.findById(objectId).orElse(null);
-			if (shParentObject instanceof ShFolder) {
-				ShFolder shParentFolder = (ShFolder) shParentObject;
-				shNewFolder.setParentFolder(shParentFolder);
-				shNewFolder.setRootFolder((byte) 0);
-				shNewFolder.setShSite(null);
+				} else if (shParentObject instanceof ShSite) {
+					ShSite shSite = (ShSite) shParentObject;
+					shNewFolder.setParentFolder(null);
+					shNewFolder.setRootFolder((byte) 1);
+					shNewFolder.setShSite(shSite);
+				}
 
-			} else if (shParentObject instanceof ShSite) {
-				ShSite shSite = (ShSite) shParentObject;
-				shNewFolder.setParentFolder(null);
-				shNewFolder.setRootFolder((byte) 1);
-				shNewFolder.setShSite(shSite);
-			}
+				shFolderRepository.save(shNewFolder);
 
-			shFolderRepository.save(shNewFolder);
+				shHistoryUtils.commit(shNewFolder, principal, ShHistoryUtils.CREATE);
+			});
 
-			shHistoryUtils.commit(shNewFolder, principal, ShHistoryUtils.CREATE);
-			
 			return new ResponseEntity<>(shFolder, HttpStatus.OK);
 		}
 
@@ -253,8 +253,7 @@ public class ShFolderAPI {
 	@GetMapping("/model")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShFolder shFolderStructure() {
-		ShFolder shFolder = new ShFolder();
-		return shFolder;
+		return new ShFolder();
 
 	}
 

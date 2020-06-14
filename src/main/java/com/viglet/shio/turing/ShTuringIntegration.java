@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -72,10 +73,10 @@ import com.viglet.turing.client.sn.job.TurSNJobItems;
 @Component
 public class ShTuringIntegration {
 	static final Logger logger = LogManager.getLogger(ShTuringIntegration.class);
-	private String encoding = "UTF-8";
-	private String turingServer = "http://localhost:2700";
+	private static final String UTF8 = "UTF-8";
+	private static final String TURING_SERVER = "http://localhost:2700";
 	private ShSite shSite = null;
-	private final boolean turingEnabled = true;
+	private static final boolean TURING_ENABLED = true;
 
 	@Autowired
 	private ShSitesPostUtils shSitesPostUtils;
@@ -98,7 +99,7 @@ public class ShTuringIntegration {
 
 	public void indexObject(ShObject shObject) {
 
-		if (turingEnabled) {
+		if (TURING_ENABLED) {
 			shSite = shObjectUtils.getSite(shObject);
 			TurSNJobItems turSNJobItems = new TurSNJobItems();
 			if (StringUtils.isNotBlank(shSite.getSearchablePostTypes())) {
@@ -141,7 +142,7 @@ public class ShTuringIntegration {
 	}
 
 	public void deindexObject(ShObject shObject) {
-		if (turingEnabled) {
+		if (TURING_ENABLED) {
 			shSite = shObjectUtils.getSite(shObject);
 			TurSNJobItems turSNJobItems = new TurSNJobItems();
 
@@ -163,16 +164,14 @@ public class ShTuringIntegration {
 					boolean isSearchable = searchablePostTypes.getBoolean(objectTypeName);
 					if (isSearchable) {
 						TurSNJobItem turSNJobItem = new TurSNJobItem();
-						Map<String, Object> attributes = new HashMap<String, Object>();
+						Map<String, Object> attributes = new HashMap<>();
 						attributes.put("id", shObject.getId());
 						turSNJobItem.setAttributes(attributes);
 						turSNJobItem.setTurSNJobAction(TurSNJobAction.DELETE);
 						turSNJobItems.add(turSNJobItem);
 					}
 
-					if (turSNJobItems != null) {
-						this.sendServer(turSNJobItems);
-					}
+					this.sendServer(turSNJobItems);
 				}
 			}
 		}
@@ -187,7 +186,7 @@ public class ShTuringIntegration {
 	private TurSNJobItem toTurSNJobItem(ShObject shObject) {
 		try {
 			TurSNJobItem turSNJobItem = new TurSNJobItem();
-			Map<String, Object> attributes = new HashMap<String, Object>();
+			Map<String, Object> attributes = new HashMap<>();
 
 			addGenericAttributes(shObject, attributes);
 
@@ -200,8 +199,9 @@ public class ShTuringIntegration {
 			if (attributes.get("url") != null) {
 				turSNJobItem.setAttributes(attributes);
 				return turSNJobItem;
-			} else
+			} else {
 				return null;
+			}
 		} catch (Exception e) {
 			logger.error(e);
 		}
@@ -210,14 +210,13 @@ public class ShTuringIntegration {
 	}
 
 	private void addPost(ShObject shObject, Map<String, Object> attributes) {
-		ShPost shPost = (ShPost) shObject;
-
-		ShPostType shPostType = shPostTypeRepository.findById(shPost.getShPostType().getId()).orElse(null);
-
-		if (shPost != null && shPostType != null) {
-			addDefaultAttributes(attributes, shPost);
-			addAssociationAttributes(attributes, shPost, shPostType);
-			addAdditionalAttributes(attributes, shPost, shPostType);
+		if (shObject != null && shObject instanceof ShPost) {
+			ShPost shPost = (ShPost) shObject;
+			shPostTypeRepository.findById(shPost.getShPostType().getId()).ifPresent(shPostType -> {
+				addDefaultAttributes(attributes, shPost);
+				addAssociationAttributes(attributes, shPost, shPostType);
+				addAdditionalAttributes(attributes, shPost, shPostType);
+			});
 		}
 	}
 
@@ -338,7 +337,7 @@ public class ShTuringIntegration {
 
 	private void addAdditionalAttributes(Map<String, Object> attributes, ShPost shPost, ShPostType shPostType) {
 		Map<String, ShPostTypeAttr> shPostTypeMap = shPostTypeUtils.toMap(shPostType);
-		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
+		shPost.getShPostAttrs().forEach(shPostAttr -> {
 			ShPostTypeAttr shPostTypeAttr = shPostTypeMap.get(shPostAttr.getShPostTypeAttr().getName());
 			if (isAdditionalField(shPostTypeAttr)) {
 				String attributeName = shPostAttr.getShPostTypeAttr().getName().toLowerCase();
@@ -346,22 +345,22 @@ public class ShTuringIntegration {
 					attributeName = getCustomFieldName(shPostTypeAttr);
 				if (shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.MULTI_SELECT)) {
 					Set<String> multiValue = new HashSet<>();
-					for (String multiSelectId : shPostAttr.getArrayValue()) {
+					shPostAttr.getArrayValue().forEach(multiSelectId -> {
 						ShPost shPostMultiSelect = shPostRepository.findById(multiSelectId).orElse(null);
 						if (shPostMultiSelect != null)
 							multiValue.add(shPostMultiSelect.getTitle());
-					}
+					});
 					attributes.put(attributeName, multiValue);
 				} else {
 					attributes.put(attributeName, shPostAttr.getStrValue());
 				}
 			}
-		}
+		});
 	}
 
 	private void addAssociationAttributes(Map<String, Object> attributes, ShPost shPost, ShPostType shPostType) {
 		Map<String, ShPostAttr> shPostMap = shSitesPostUtils.postToMap(shPost);
-		for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs()) {
+		shPostType.getShPostTypeAttrs().forEach(shPostTypeAttr -> {
 			if (hasAssociation(shPostTypeAttr)) {
 				if (shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.FILE)) {
 					String shPostFileId = shPostMap.get(shPostTypeAttr.getName()).getStrValue();
@@ -372,11 +371,12 @@ public class ShTuringIntegration {
 				} else if (shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.DATE)) {
 					attributes.put(getAssociation(shPostTypeAttr),
 							formatDateToTuring(shPostMap.get(shPostTypeAttr.getName()).getDateValue()));
-				} else
+				} else {
 					attributes.put(getAssociation(shPostTypeAttr),
 							shPostMap.get(shPostTypeAttr.getName()).getStrValue());
+				}
 			}
-		}
+		});
 	}
 
 	private void addDefaultAttributes(Map<String, Object> attributes, ShPost shPost) {
@@ -390,11 +390,12 @@ public class ShTuringIntegration {
 	}
 
 	private void sendServer(TurSNJobItems turSNJobItems) {
+		CloseableHttpResponse response = null;
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			String jsonResult = mapper.writeValueAsString(turSNJobItems);
-			Charset utf8Charset = Charset.forName("UTF-8");
-			Charset customCharset = Charset.forName(encoding);
+			Charset utf8Charset = StandardCharsets.UTF_8;
+			Charset customCharset = StandardCharsets.UTF_8;
 
 			ByteBuffer inputBuffer = ByteBuffer.wrap(jsonResult.toString().getBytes());
 
@@ -406,29 +407,36 @@ public class ShTuringIntegration {
 
 			byte[] outputData;
 
-			outputData = new String(outputBuffer.array()).getBytes("UTF-8");
+			outputData = new String(outputBuffer.array()).getBytes(UTF8);
 
 			String jsonUTF8 = new String(outputData);
 
 			CloseableHttpClient client = HttpClients.createDefault();
 			String serviceAPI = "%s/api/sn/%s/import";
 
-			HttpPost httpPost = new HttpPost(String.format(serviceAPI, turingServer, shSite.getName()));
+			HttpPost httpPost = new HttpPost(String.format(serviceAPI, TURING_SERVER, shSite.getName()));
 			if (logger.isDebugEnabled())
 				logger.debug(jsonUTF8);
 
-			StringEntity entity = new StringEntity(new String(jsonUTF8), "UTF-8");
+			StringEntity entity = new StringEntity(jsonUTF8, UTF8);
 			httpPost.setEntity(entity);
 			httpPost.setHeader("Accept", "application/json");
 			httpPost.setHeader("Content-type", "application/json");
-			httpPost.setHeader("Accept-Encoding", "UTF-8");
+			httpPost.setHeader("Accept-Encoding", UTF8);
 
-			@SuppressWarnings("unused")
-			CloseableHttpResponse response = client.execute(httpPost);
+			response = client.execute(httpPost);
 
 			client.close();
 		} catch (IOException e) {
 			logger.error("sendServer: ", e);
+		} finally {
+			if (response != null)
+				try {
+					response.close();
+				} catch (IOException e) {
+					logger.error("sendServer", e);
+
+				}
 		}
 
 	}

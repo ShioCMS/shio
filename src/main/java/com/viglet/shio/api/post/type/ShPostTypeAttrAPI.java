@@ -50,20 +50,19 @@ public class ShPostTypeAttrAPI {
 	private ShPostAttrRepository shPostAttrRepository;
 
 	@GetMapping
-	public List<ShPostTypeAttr> shPostTypeAttrList() throws Exception {
+	public List<ShPostTypeAttr> shPostTypeAttrList() {
 		return shPostTypeAttrRepository.findAll();
 	}
 
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewPostTypeAttr.class })
-	public ShPostTypeAttr shPostTypeAttrEdit(@PathVariable String id) throws Exception {
+	public ShPostTypeAttr shPostTypeAttrEdit(@PathVariable String id) {
 		return shPostTypeAttrRepository.findById(id).orElse(null);
 	}
 
 	@PutMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewPostTypeAttr.class })
-	public ShPostTypeAttr shPostTypeAttrUpdate(@PathVariable String id, @RequestBody ShPostTypeAttr shPostTypeAttr)
-			throws Exception {
+	public ShPostTypeAttr shPostTypeAttrUpdate(@PathVariable String id, @RequestBody ShPostTypeAttr shPostTypeAttr) {
 		Optional<ShPostTypeAttr> shPostTypeAttrOptional = shPostTypeAttrRepository.findById(id);
 		if (shPostTypeAttrOptional.isPresent()) {
 			ShPostTypeAttr shPostTypeAttrEdit = shPostTypeAttrOptional.get();
@@ -83,7 +82,7 @@ public class ShPostTypeAttrAPI {
 	}
 
 	@DeleteMapping("/{id}")
-	public boolean shPostTypeAttrDelete(@PathVariable String id) throws Exception {
+	public boolean shPostTypeAttrDelete(@PathVariable String id) {
 		Optional<ShPostTypeAttr> shPostTypeAttrOptional = shPostTypeAttrRepository.findById(id);
 		if (shPostTypeAttrOptional.isPresent()) {
 			ShPostTypeAttr shPostTypeAttr = shPostTypeAttrOptional.get();
@@ -98,9 +97,8 @@ public class ShPostTypeAttrAPI {
 
 	@GetMapping("/model")
 	@JsonView({ ShJsonView.ShJsonViewPostTypeAttr.class })
-	public ShPostTypeAttr shPostTypeAttrStructure() throws Exception {
-		ShPostTypeAttr shPostTypeAttr = new ShPostTypeAttr();
-		return shPostTypeAttr;
+	public ShPostTypeAttr shPostTypeAttrStructure() {
+		return new ShPostTypeAttr();
 
 	}
 
