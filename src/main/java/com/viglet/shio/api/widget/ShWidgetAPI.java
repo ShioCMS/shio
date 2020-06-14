@@ -48,21 +48,21 @@ public class ShWidgetAPI {
 	private ShWidgetRepository shWidgetRepository;
 
 	@GetMapping
-	public List<ShWidget> shWidgetList() throws Exception {
+	public List<ShWidget> shWidgetList() {
 		return shWidgetRepository.findAll();
 	}
 
 	@GetMapping("/{id}")
-	public ShWidget shWidgetEdit(@PathVariable String id) throws Exception {
-		Optional<ShWidget> shWidgetOptional = shWidgetRepository.findById(id);
-		if (shWidgetOptional.isPresent()) {
-			return shWidgetOptional.get();
+	public ShWidget shWidgetEdit(@PathVariable String id) {
+		Optional<ShWidget> shWidget = shWidgetRepository.findById(id);
+		if (shWidget.isPresent()) {
+			return shWidget.get();
 		}
 		return null;
 	}
 
 	@PutMapping("/{id}")
-	public ShWidget shWidgetUpdate(@PathVariable String id, @RequestBody ShWidget shWidget) throws Exception {
+	public ShWidget shWidgetUpdate(@PathVariable String id, @RequestBody ShWidget shWidget) {
 		Optional<ShWidget> shWidgetOptional = shWidgetRepository.findById(id);
 		if (shWidgetOptional.isPresent()) {
 			ShWidget shWidgetEdit = shWidgetOptional.get();
@@ -80,13 +80,13 @@ public class ShWidgetAPI {
 
 	@Transactional
 	@DeleteMapping("/{id}")
-	public boolean shWidgetDelete(@PathVariable String id) throws Exception {
+	public boolean shWidgetDelete(@PathVariable String id){
 		shWidgetRepository.delete(id);
 		return true;
 	}
 
 	@PostMapping
-	public ShWidget shWidgetAdd(@RequestBody ShWidget shWidget) throws Exception {
+	public ShWidget shWidgetAdd(@RequestBody ShWidget shWidget) {
 		shWidgetRepository.save(shWidget);
 		return shWidget;
 

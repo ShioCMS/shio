@@ -18,6 +18,7 @@ package com.viglet.shio.api.site;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.Principal;
 import java.util.Date;
@@ -73,7 +74,7 @@ import io.swagger.annotations.Api;
 @Api(tags = "Site", description = "Site API")
 public class ShSiteAPI {
 	static final Logger logger = LogManager.getLogger(ShSiteAPI.class);
-	
+
 	@Autowired
 	private ShSiteRepository shSiteRepository;
 	@Autowired
@@ -90,9 +91,10 @@ public class ShSiteAPI {
 	private ShCloneExchange shCloneExchange;
 	@Autowired
 	private ShHistoryUtils shHistoryUtils;
+
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public List<ShSite> shSiteList(final Principal principal) throws Exception {
+	public List<ShSite> shSiteList(final Principal principal) {
 		if (principal != null) {
 			return shSiteRepository.findByOwnerOrOwnerIsNull(principal.getName());
 		} else {
@@ -102,7 +104,7 @@ public class ShSiteAPI {
 
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShSite shSiteEdit(@PathVariable String id) throws Exception {
+	public ShSite shSiteEdit(@PathVariable String id) {
 		return shSiteRepository.findById(id).orElse(null);
 	}
 
@@ -119,9 +121,9 @@ public class ShSiteAPI {
 			shSiteEdit.setFormSuccess(shSite.getFormSuccess());
 			shSiteEdit.setFurl(shURLFormatter.format(shSite.getName()));
 			shSiteRepository.save(shSiteEdit);
-			
+
 			shHistoryUtils.commit(shSite, principal, ShHistoryUtils.UPDATE);
-			
+
 			return shSiteEdit;
 		}
 
@@ -142,20 +144,25 @@ public class ShSiteAPI {
 			} catch (ClientProtocolException e) {
 				logger.error("shSiteDelete ClientProtocolException: ", e);
 			} catch (IOException e) {
-				logger.error("shSiteDelete IOException: ", e);			
+				logger.error("shSiteDelete IOException: ", e);
 			}
 		}
-		
+
 		shSiteRepository.delete(id);
 
 		shHistoryUtils.commit(shSite, principal, ShHistoryUtils.DELETE);
-		
+
 		return true;
 	}
 
-	public ShExchange importTemplateSite(ShSite shSite) throws IOException, IllegalStateException, ArchiveException {
-
-		URL templateSiteRepository = new URL("https://github.com/ShioCMS/bootstrap-site/archive/0.3.7.zip");
+	public ShExchange importTemplateSite(ShSite shSite) {
+		ShExchange shExchange = null;
+		URL templateSiteRepository = null;
+		try {
+			templateSiteRepository = new URL("https://github.com/ShioCMS/bootstrap-site/archive/0.3.7.zip");
+		} catch (MalformedURLException e) {
+			logger.error(e);
+		}
 
 		File userDir = new File(System.getProperty("user.dir"));
 		if (userDir.exists() && userDir.isDirectory()) {
@@ -167,10 +174,13 @@ public class ShSiteAPI {
 			File templateSiteFile = new File(
 					tmpDir.getAbsolutePath().concat(File.separator + "template-site-" + UUID.randomUUID() + ".zip"));
 
-			FileUtils.copyURLToFile(templateSiteRepository, templateSiteFile);
+			try {
+				FileUtils.copyURLToFile(templateSiteRepository, templateSiteFile);
+				shExchange = shCloneExchange.cloneFromFile(templateSiteFile, "admin", shSite);
+			} catch (IllegalStateException | IOException | ArchiveException e) {
 
-			ShExchange shExchange = shCloneExchange.cloneFromFile(templateSiteFile, "admin", shSite);
-
+				logger.error(e);
+			}
 			FileUtils.deleteQuietly(templateSiteFile);
 
 			return shExchange;
@@ -195,20 +205,16 @@ public class ShSiteAPI {
 			shSite.setId(shSiteExchange.getId());
 		} catch (IllegalStateException e) {
 			logger.error("shSiteAdd IllegalStateException: ", e);
-		} catch (IOException e) {
-			logger.error("shSiteAdd IOException: ", e);
-		} catch (ArchiveException e) {
-			logger.error("shSiteAdd ArchiveException: ", e);		
 		}
-		
+
 		shHistoryUtils.commit(shSite, principal, ShHistoryUtils.CREATE);
-		
+
 		return shSite;
 	}
 
 	@GetMapping("/{id}/folder")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShFolderList shSiteRootFolder(@PathVariable String id) throws Exception {
+	public ShFolderList shSiteRootFolder(@PathVariable String id) {
 		ShSite shSite = shSiteRepository.findById(id).orElse(null);
 		Set<ShFolderTinyBean> shFolders = shFolderRepository.findByShSiteAndRootFolderTiny(shSite, (byte) 1);
 		ShFolderList shFolderList = new ShFolderList();
@@ -226,7 +232,7 @@ public class ShSiteAPI {
 		return shSiteExport.exportObject(id, response);
 
 	}
-	
+
 	@ResponseBody
 	@GetMapping(value = "/{id}/nodejs", produces = "application/zip")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
@@ -238,9 +244,8 @@ public class ShSiteAPI {
 
 	@GetMapping("/model")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShSite shSiteStructure() throws Exception {
-		ShSite shSite = new ShSite();
-		return shSite;
+	public ShSite shSiteStructure() {
+		return new ShSite();
 
 	}
 }

@@ -33,61 +33,61 @@ public final class ShGraphQLConstants {
         // restrict instantiation
 	}
 	
-	public final static String QUERY_TYPE = "Query";
+	public static final String QUERY_TYPE = "Query";
 
-	public final static String SEARCH = "_search";
-	public final static String AND = "AND";
-	public final static String OR = "OR";
-	public final static String NOT = "NOT";
-	public final static String ID = "id";
-	public final static String TITLE = "_title";
-	public final static String DESCRIPTION = "_description";
-	public final static String FURL = "_furl";
-	public final static String MODIFIER = "_modifier";
-	public final static String PUBLISHER = "_publisher";
-	public final static String FOLDER = "_folder";
-	public final static String SITE = "_site";
-	public final static String CREATED_AT = "_createdAt";
-	public final static String UPDATED_AT = "_updatedAt";
-	public final static String PUBLISHED_AT = "_publishedAt";
+	public static final String SEARCH = "_search";
+	public static final String AND = "AND";
+	public static final String OR = "OR";
+	public static final String NOT = "NOT";
+	public static final String ID = "id";
+	public static final String TITLE = "_title";
+	public static final String DESCRIPTION = "_description";
+	public static final String FURL = "_furl";
+	public static final String MODIFIER = "_modifier";
+	public static final String PUBLISHER = "_publisher";
+	public static final String FOLDER = "_folder";
+	public static final String SITE = "_site";
+	public static final String CREATED_AT = "_createdAt";
+	public static final String UPDATED_AT = "_updatedAt";
+	public static final String PUBLISHED_AT = "_publishedAt";
 
-	public final static String CONDITION_EQUAL = "equal";
-	public final static String CONDITION_NOT = "not";
-	public final static String CONDITION_IN = "in";
-	public final static String CONDITION_NOT_IN = "not_in";
-	public final static String CONDITION_CONTAINS = "contains";
-	public final static String CONDITION_NOT_CONTAINS = "not_contains";
-	public final static String CONDITION_STARTS_WITH = "starts_with";
-	public final static String CONDITION_NOT_STARTS_WITH = "not_starts_with";
-	public final static String CONDITION_ENDS_WITH = "ends_with";
-	public final static String CONDITION_NOT_ENDS_WITH = "not_ends_with";
+	public static final String CONDITION_EQUAL = "equal";
+	public static final String CONDITION_NOT = "not";
+	public static final String CONDITION_IN = "in";
+	public static final String CONDITION_NOT_IN = "not_in";
+	public static final String CONDITION_CONTAINS = "contains";
+	public static final String CONDITION_NOT_CONTAINS = "not_contains";
+	public static final String CONDITION_STARTS_WITH = "starts_with";
+	public static final String CONDITION_NOT_STARTS_WITH = "not_starts_with";
+	public static final String CONDITION_ENDS_WITH = "ends_with";
+	public static final String CONDITION_NOT_ENDS_WITH = "not_ends_with";
 
-	public final static String CONDITION_LT = "lt";
-	public final static String CONDITION_LTE = "lte";
-	public final static String CONDITION_GT = "gt";
-	public final static String CONDITION_GTE = "gte";
+	public static final String CONDITION_LT = "lt";
+	public static final String CONDITION_LTE = "lte";
+	public static final String CONDITION_GT = "gt";
+	public static final String CONDITION_GTE = "gte";
 
-	public final static String STAGE_ARG = "stage";
-	public final static String STAGE_ARG_TITLE = "Stage";
-	public final static String LOCALES_ARG = "locales";
-	public final static String LOCALES_ARG_TITLE = "Locale";
-	public final static String SITES_ARG = "sites";
-	public final static String SITES_ARG_TITLE = "Site";
-	public final static String WHERE_ARG = "where";
+	public static final String STAGE_ARG = "stage";
+	public static final String STAGE_ARG_TITLE = "Stage";
+	public static final String LOCALES_ARG = "locales";
+	public static final String LOCALES_ARG_TITLE = "Locale";
+	public static final String SITES_ARG = "sites";
+	public static final String SITES_ARG_TITLE = "Site";
+	public static final String WHERE_ARG = "where";
 
-	public final static String WHERE_UNIQUE_INPUT = "WhereUniqueInput";
-	public final static String WHERE_INPUT = "WhereInput";
-	public final static String CONDITION_SEPARATOR = "_";
+	public static final String WHERE_UNIQUE_INPUT = "WhereUniqueInput";
+	public static final String WHERE_INPUT = "WhereInput";
+	public static final String CONDITION_SEPARATOR = "_";
 
-	public final static String FIELD_TYPE_GRAPHQL_ID = "GraphQLID";
-	public final static String FIELD_TYPE_GRAPHQL_STRING = "GraphQLString";
-	public final static String FIELD_TYPE_GRAPHQL_DATE_TIME = "DateTime";
+	public static final String FIELD_TYPE_GRAPHQL_ID = "GraphQLID";
+	public static final String FIELD_TYPE_GRAPHQL_STRING = "GraphQLString";
+	public static final String FIELD_TYPE_GRAPHQL_DATE_TIME = "DateTime";
 	
-	public final static GraphQLEnumType stageEnum = newEnum().name(STAGE_ARG_TITLE).description("Stage system enumeration")
+	public static final GraphQLEnumType stageEnum = newEnum().name(STAGE_ARG_TITLE).description("Stage system enumeration")
 			.value("PUBLISHED", 10, "System Published Stage.").value("DRAFT", 20, "System Draft Stage")
 			.comparatorRegistry(BY_NAME_REGISTRY).build();
 
-	public final static GraphQLEnumType localeEnum = newEnum().name(LOCALES_ARG_TITLE).description("Locale system enumeration")
+	public static final GraphQLEnumType localeEnum = newEnum().name(LOCALES_ARG_TITLE).description("Locale system enumeration")
 			.value("en", "EN", "System Locale.").comparatorRegistry(BY_NAME_REGISTRY).build();
 	
 	public static GraphQLEnumType siteEnum;

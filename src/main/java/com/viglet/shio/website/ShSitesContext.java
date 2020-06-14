@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.annotation.Resource;
@@ -58,7 +59,12 @@ import com.viglet.shio.website.utils.ShSitesObjectUtils;
  */
 @Controller
 public class ShSitesContext {
+
 	private static final Log logger = LogFactory.getLog(ShSitesContext.class);
+	private static final String USERNAME_SESSION = "shUsername";
+	private static final String USER_GROUPS_SESSION = "shUserGroups";
+	private static final String LOGIN_CALLBACK_SESSION = "shLoginCallBack";
+	private static final String LOGIN_PAGE = "/login-page";
 	@Resource
 	private ApplicationContext applicationContext;
 	@Autowired
@@ -82,20 +88,26 @@ public class ShSitesContext {
 
 	@PostMapping("/sites/**")
 	private ModelAndView sitesPostForm(HttpServletRequest request, HttpServletResponse response) {
-		// TODO: Use Database, need to be cached
 		ShSitesContextURL shSitesContextURL = shSitesContextURLProcess.getContextURL(request, response);
 
 		try {
 			shFormUtils.execute(shSitesContextURL);
 		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | IOException e) {
-			// TODO Auto-generated catch block
 			logger.error("sitesPostForm Exception: ", e);
 		}
 
-		ShSite shSite = shSiteRepository.findById(shSitesContextURL.getInfo().getSiteId()).get();
-		String successUrl = shSitesObjectUtils.generateObjectLinkById(shSite.getFormSuccess());
+		Optional<ShSite> shSite = shSiteRepository.findById(shSitesContextURL.getInfo().getSiteId());
+		if (shSite.isPresent()) {
+			String successUrl = shSitesObjectUtils.generateObjectLinkById(shSite.get().getFormSuccess());
 
-		return new ModelAndView("redirect:" + successUrl);
+			return new ModelAndView("redirect:" + successUrl);
+		}
+		try {
+			response.sendError(HttpServletResponse.SC_NOT_FOUND);
+		} catch (IOException e) {
+			logger.error(e);
+		}
+		return null;
 	}
 
 	@RequestMapping("/sites/**")
@@ -106,8 +118,8 @@ public class ShSitesContext {
 
 		ShSitesContextURL shSitesContextURL = shSitesContextURLProcess.getContextURL(request, response);
 
-		String username = (String) session.getAttribute("shUsername");
-		String[] groups = (String[]) session.getAttribute("shUserGroups");
+		String username = (String) session.getAttribute(USERNAME_SESSION);
+		String[] groups = (String[]) session.getAttribute(USER_GROUPS_SESSION);
 
 		if (username == null && shSitesContextURL.getInfo().isPageAllowGuestUser())
 			showPage = true;
@@ -120,8 +132,9 @@ public class ShSitesContext {
 						if (StringUtils.indexOfAny(group, pageGroups) >= 0)
 							showPage = true;
 
-			} else
+			} else {
 				showPage = true;
+			}
 		}
 
 		if (showPage) {
@@ -137,8 +150,8 @@ public class ShSitesContext {
 					response.sendError(HttpServletResponse.SC_FORBIDDEN);
 			} else {
 				String callback = this.getCurrentUrlFromRequest(request);
-				session.setAttribute("shLoginCallBack", callback);
-				response.sendRedirect("/login-page");
+				session.setAttribute(LOGIN_CALLBACK_SESSION, callback);
+				response.sendRedirect(LOGIN_PAGE);
 			}
 		}
 	}
@@ -151,9 +164,9 @@ public class ShSitesContext {
 
 	@RequestMapping("/logout-page")
 	private void sitesLogoutPage(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
-		session.removeAttribute("shUsername");
+		session.removeAttribute(USERNAME_SESSION);
 		try {
-			response.sendRedirect("/login-page");
+			response.sendRedirect(LOGIN_PAGE);
 		} catch (IOException e) {
 			logger.error("sitesLogoutPage IOException: ", e);
 		}
@@ -167,7 +180,7 @@ public class ShSitesContext {
 
 			if (shUserUtils.isValidUserAndPassword(username, password)) {
 				ShUser shUser = shUserRepository.findByUsername(username);
-				String callback = (String) session.getAttribute("shLoginCallBack");
+				String callback = (String) session.getAttribute(LOGIN_CALLBACK_SESSION);
 
 				List<String> groupList = new ArrayList<>();
 				for (ShGroup group : shUser.getShGroups()) {
@@ -176,15 +189,16 @@ public class ShSitesContext {
 
 				String[] groups = groupList.toArray(new String[groupList.size()]);
 
-				session.setAttribute("shUsername", username);
-				session.setAttribute("shUserGroups", groups);
+				session.setAttribute(USERNAME_SESSION, username);
+				session.setAttribute(USER_GROUPS_SESSION, groups);
 
 				if (callback != null)
 					response.sendRedirect(callback);
 				else
 					response.sendRedirect("/");
-			} else
-				response.sendRedirect("/login-page");
+			} else {
+				response.sendRedirect(LOGIN_PAGE);
+			}
 		} catch (IOException e) {
 			logger.error("sitesLoginPagePost IOException: ", e);
 		}
@@ -214,25 +228,28 @@ public class ShSitesContext {
 			}
 		} else if (shSitesContextURL.getInfo().getObjectId() != null) {
 			ShCachePageBean shCachePageBean = shCachePage.cache(shSitesContextURL);
-			if (shCachePageBean.getExpirationDate() != null
-					&& shCachePageBean.getExpirationDate().compareTo(new Date()) < 0) {
-				shCachePage.deleteCache(shSitesContextURL.getInfo().getObjectId(),
-						shSitesContextURL.getInfo().getContextURLOriginal());
-				shCachePageBean = shCachePage.cache(shSitesContextURL);
-				if (logger.isDebugEnabled()) {
-					logger.debug(String.format("Expired Cache for id %s and URL %s",
-							shSitesContextURL.getInfo().getObjectId(),
-							shSitesContextURL.getInfo().getContextURLOriginal()));
+			if (shCachePageBean != null) {
+				if (shCachePageBean.getExpirationDate() != null
+						&& shCachePageBean.getExpirationDate().compareTo(new Date()) < 0) {
+					shCachePage.deleteCache(shSitesContextURL.getInfo().getObjectId(),
+							shSitesContextURL.getInfo().getContextURLOriginal());
+					shCachePageBean = shCachePage.cache(shSitesContextURL);
+					if (logger.isDebugEnabled()) {
+						logger.debug(String.format("Expired Cache for id %s and URL %s",
+								shSitesContextURL.getInfo().getObjectId(),
+								shSitesContextURL.getInfo().getContextURLOriginal()));
+					}
+
 				}
+				shSitesContextURL.getResponse().setContentType(shCachePageBean.getContentType());
+				shSitesContextURL.getResponse().setCharacterEncoding("UTF-8");
+				if (shCachePageBean.getBody() != null)
+					shSitesContextURL.getResponse().getWriter().write(shCachePageBean.getBody());
 
 			}
-			shSitesContextURL.getResponse().setContentType(shCachePageBean.getContentType());
-			shSitesContextURL.getResponse().setCharacterEncoding("UTF-8");
-			if (shCachePageBean != null && shCachePageBean.getBody() != null) {
-				shSitesContextURL.getResponse().getWriter().write(shCachePageBean.getBody());
-			}
-		} else
+		} else {
 			shSitesContextURL.getResponse().sendError(HttpServletResponse.SC_NOT_FOUND);
+		}
 	}
 
 }

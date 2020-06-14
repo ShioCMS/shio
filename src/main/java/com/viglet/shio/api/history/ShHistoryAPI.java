@@ -16,6 +16,7 @@
  */
 package com.viglet.shio.api.history;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,13 +55,13 @@ public class ShHistoryAPI {
 
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public List<ShHistory> shHistoryList() throws Exception {
+	public List<ShHistory> shHistoryList() {
 		return shHistoryRepository.findAll();
 	}
 
 	@GetMapping("/object/{globalId}/{page}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public List<ShHistory> shHistoryByObject(@PathVariable String globalId, @PathVariable int page) throws Exception {
+	public List<ShHistory> shHistoryByObject(@PathVariable String globalId, @PathVariable int page) {
 		Pageable pageable = PageRequest.of(page, 50);
 		if (shObjectRepository.findById(globalId).isPresent()) {
 			ShObject shObject = shObjectRepository.findById(globalId).orElse(null);
@@ -73,13 +74,12 @@ public class ShHistoryAPI {
 				}
 			}
 		}
-		return null;
+		return Collections.emptyList();
 	}
-
 
 	@GetMapping("/object/{globalId}/count")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public int shHistoryByObjectCount(@PathVariable String globalId) throws Exception {
+	public int shHistoryByObjectCount(@PathVariable String globalId) {
 		if (shObjectRepository.findById(globalId).isPresent()) {
 			ShObject shObject = shObjectRepository.findById(globalId).orElse(null);
 			if (shObject != null) {
