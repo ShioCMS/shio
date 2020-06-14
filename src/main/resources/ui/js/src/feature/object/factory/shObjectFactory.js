@@ -18,11 +18,6 @@ shioApp.factory('shObjectFactory', [
 							shObjectGroups.push(shGroup.name);
 						});
 					}
-					else {
-						angular.forEach(shGroups, function (shGroup, key) {
-							shObjectGroups.push(shGroup.username);
-						});
-					}
 				}, function () {
 					// Selected NO
 				});

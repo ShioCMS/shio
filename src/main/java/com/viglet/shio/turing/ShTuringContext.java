@@ -24,13 +24,13 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.json.JSONException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -47,68 +47,96 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/__tur/sn/{siteName}")
 public class ShTuringContext {
-	@GetMapping ("/search")
+	private static final Log logger = LogFactory.getLog(ShTuringContext.class);
+	private static final String TURING_ENDPOINT = "http://localhost:2700/api/sn/";
+
+	@GetMapping("/search")
 	public ResponseEntity<Object> turSNSiteSearchSelect(@PathVariable String siteName,
 			@RequestParam(required = false, name = "q") String q,
 			@RequestParam(required = false, name = "p") String strCurrentPage,
 			@RequestParam(required = false, name = "fq[]") List<String> fq,
-			@RequestParam(required = false, name = "sort") String sort, HttpServletRequest request)
-			throws JSONException, URISyntaxException, ClientProtocolException, IOException {
+			@RequestParam(required = false, name = "sort") String sort, HttpServletRequest request) {
 
-		URIBuilder turingURL = new URIBuilder("http://localhost:2700/api/sn/" + siteName + "/search")
-				.addParameter("q", q).addParameter("p", strCurrentPage).addParameter("sort", sort);
+		URIBuilder turingURL = null;
+		BufferedReader rd = null;
+		try {
+			turingURL = new URIBuilder(TURING_ENDPOINT + siteName + "/search").addParameter("q", q)
+					.addParameter("p", strCurrentPage).addParameter("sort", sort);
 
-		if (fq != null) {
-			for (String fqItem : fq) {
-				turingURL.addParameter("fq[]", fqItem);
+			if (turingURL != null) {
+				if (fq != null) {
+					for (String fqItem : fq) {
+						turingURL.addParameter("fq[]", fqItem);
+					}
+				}
+
+				CloseableHttpClient client = HttpClients.createDefault();
+				HttpGet httpGet;
+
+				httpGet = new HttpGet(turingURL.build().toString());
+
+				HttpResponse response = client.execute(httpGet);
+
+				rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+
+				StringBuffer result = new StringBuffer();
+				String line = "";
+				while ((line = rd.readLine()) != null) {
+					result.append(line);
+				}
+
+				final HttpHeaders httpHeaders = new HttpHeaders();
+				httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+				return new ResponseEntity<Object>(result.toString(), httpHeaders, HttpStatus.OK);
 			}
+		} catch (URISyntaxException | IOException e) {
+			logger.error(e);
+
+		} finally {
+			if (rd != null)
+				try {
+					rd.close();
+				} catch (IOException e) {
+					logger.error(e);
+				}
 		}
-
-		CloseableHttpClient client = HttpClients.createDefault();
-		HttpGet httpGet = new HttpGet(turingURL.build().toString());
-		
-		HttpResponse response = client.execute(httpGet);
-		
-		BufferedReader rd = new BufferedReader(
-				new InputStreamReader(response.getEntity().getContent()));
-
-			StringBuffer result = new StringBuffer();
-			String line = "";
-			while ((line = rd.readLine()) != null) {
-				result.append(line);
-			}
-			
-		final HttpHeaders httpHeaders= new HttpHeaders();
-		httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-		ResponseEntity<Object> responseEntity = new ResponseEntity<Object>(result.toString(), httpHeaders, HttpStatus.OK);	
-		return responseEntity;
+		return new ResponseEntity<Object>(null, HttpStatus.NOT_FOUND);
 	}
-	
-	@GetMapping ("/ac")
+
+	@GetMapping("/ac")
 	public ResponseEntity<Object> turSNSiteAutoComplete(@PathVariable String siteName,
-			@RequestParam(required = false, name = "q") String q, HttpServletRequest request)
-			throws JSONException, URISyntaxException, ClientProtocolException, IOException {
+			@RequestParam(required = false, name = "q") String q, HttpServletRequest request) {
+		BufferedReader rd = null;
+		URIBuilder turingURL;
+		try {
+			turingURL = new URIBuilder(TURING_ENDPOINT + siteName + "/ac").addParameter("q", q);
 
-		URIBuilder turingURL = new URIBuilder("http://localhost:2700/api/sn/" + siteName + "/ac")
-				.addParameter("q", q);
+			CloseableHttpClient client = HttpClients.createDefault();
+			HttpGet httpGet = new HttpGet(turingURL.build().toString());
 
-		CloseableHttpClient client = HttpClients.createDefault();
-		HttpGet httpGet = new HttpGet(turingURL.build().toString());
-		
-		HttpResponse response = client.execute(httpGet);
-		
-		BufferedReader rd = new BufferedReader(
-				new InputStreamReader(response.getEntity().getContent()));
+			HttpResponse response = client.execute(httpGet);
+
+			rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 
 			StringBuffer result = new StringBuffer();
 			String line = "";
 			while ((line = rd.readLine()) != null) {
 				result.append(line);
 			}
-			
-		final HttpHeaders httpHeaders= new HttpHeaders();
-		httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-		ResponseEntity<Object> responseEntity = new ResponseEntity<Object>(result.toString(), httpHeaders, HttpStatus.OK);	
-		return responseEntity;
+
+			final HttpHeaders httpHeaders = new HttpHeaders();
+			httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+			return new ResponseEntity<Object>(result.toString(), httpHeaders, HttpStatus.OK);
+		} catch (URISyntaxException | IOException e) {
+			logger.error(e);
+		} finally {
+			if (rd != null)
+				try {
+					rd.close();
+				} catch (IOException e) {
+					logger.error(e);
+				}
+		}
+		return new ResponseEntity<Object>(null, HttpStatus.NOT_FOUND);
 	}
 }

@@ -28,10 +28,8 @@
   pre {
     white-space: pre-wrap !important;
     margin-top: 0;
-    margin-bottom: 1rem;
     overflow: auto;
     display: block;
-    margin-top: 0;
     margin-bottom: 1rem;
     font-size: 90%;
     color: #212529;
@@ -12184,7 +12182,7 @@ label {
 
 .form-navbar {
   position: relative;
-  font-family: "bootstrap-themes";
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .form-navbar:before {
@@ -13704,7 +13702,6 @@ textarea {
 .theme-card__body {
   position: relative;
   display: block;
-  transition: all .2s ease-out;
   height: 0;
   padding-bottom: 74.5%;
   background-color: #E5E9EF;
@@ -14385,7 +14382,6 @@ hr {
   border: none;
   color: #ffffff;
   font-size: 13px;
-  font-weight: bold;
   margin-bottom: 0;
   font-weight: normal;
 }

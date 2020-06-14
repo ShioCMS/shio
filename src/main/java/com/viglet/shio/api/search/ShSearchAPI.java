@@ -73,10 +73,10 @@ public class ShSearchAPI {
 	@ApiOperation(value = "Search for Shio Objects")
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public List<ShPostWithBreadcrumb> shSearch(@RequestParam(value = "q") String q) throws Exception {
-		List<ShPostWithBreadcrumb> searchResults = new ArrayList<ShPostWithBreadcrumb>();
+	public List<ShPostWithBreadcrumb> shSearch(@RequestParam(value = "q") String q) {
+		List<ShPostWithBreadcrumb> searchResults = new ArrayList<>();
 		for (ShPost shPost : shPostRepository.fuzzySearch(q)) {
-			ShPost shPostLazy =  shPostUtils.loadLazyPost(shPost.getId(), false);
+			ShPost shPostLazy = shPostUtils.loadLazyPost(shPost.getId(), false);
 			List<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shPostLazy.getShFolder());
 			ShSite shSite = breadcrumb.get(0).getShSite();
 			ShPostWithBreadcrumb shPostWithBreadcrumb = new ShPostWithBreadcrumb();
@@ -91,12 +91,12 @@ public class ShSearchAPI {
 
 	@GetMapping("/type/{objectName}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public List<ShPostWithBreadcrumb> shSearchBytType(@PathVariable String objectName) throws Exception {
-		
+	public List<ShPostWithBreadcrumb> shSearchBytType(@PathVariable String objectName) {
+
 		ShPostType shPostType = shPostTypeRepository.findByName(objectName);
-		List<ShPostWithBreadcrumb> searchResults = new ArrayList<ShPostWithBreadcrumb>();
+		List<ShPostWithBreadcrumb> searchResults = new ArrayList<>();
 		for (ShPost shPost : shPostRepository.findByShPostType(shPostType)) {
-			ShPost shPostLazy =  shPostUtils.loadLazyPost(shPost.getId(), false);
+			ShPost shPostLazy = shPostUtils.loadLazyPost(shPost.getId(), false);
 			List<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shPostLazy.getShFolder());
 			ShSite shSite = breadcrumb.get(0).getShSite();
 			ShPostWithBreadcrumb shPostWithBreadcrumb = new ShPostWithBreadcrumb();
@@ -108,6 +108,7 @@ public class ShSearchAPI {
 
 		return searchResults;
 	}
+
 	@ApiOperation(value = "Indexing by Post Type")
 	@GetMapping("/indexing/{siteName}/{objectName}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
@@ -115,32 +116,41 @@ public class ShSearchAPI {
 		ShSite shSite = shSiteRepository.findByName(siteName);
 		if (shSite != null) {
 			if (objectName.equals(ShObjectType.FOLDER)) {
-				logger.info("Trying to Index Folders");
-				for (ShFolder shFolder : shFolderRepository.findAll()) {
-					if (shFolderUtils.getSite(shFolder).getName().equals(siteName)) {
-						logger.info(String.format("Indexing %s folder", shFolder.getName()));
-						shTuringIntegration.indexObject(shFolder);
-					}
-				}
-				logger.info("Indexed.");
-				return true;
+				return folderIndexing(siteName);
 			} else {
-				logger.info(String.format("Trying to Index posts of %s", objectName));
-				ShPostType shPostType = shPostTypeRepository.findByName(objectName);
-				if (shPostType != null) {
-					logger.info(String.format("Indexing posts of %s", shPostType.getName()));
-					for (ShPost shPost : shPostRepository.findByShPostType(shPostType)) {
-						if (shPostUtils.getSite(shPost).getName().equals(siteName)) {
-							logger.info(String.format("Indexing %s post", shPost.getTitle()));
-							shTuringIntegration.indexObject(shPost);
-						}
-
-					}
-					logger.info("Indexed.");
-					return true;
-				}
+				postIndexing(siteName, objectName);
+				return true;
 			}
 		}
 		return false;
+	}
+
+	private void postIndexing(String siteName, String objectName) {
+		logger.info(String.format("Trying to Index posts of %s", objectName));
+		ShPostType shPostType = shPostTypeRepository.findByName(objectName);
+		if (shPostType != null) {
+			logger.info(String.format("Indexing posts of %s", shPostType.getName()));
+			for (ShPost shPost : shPostRepository.findByShPostType(shPostType)) {
+				if (shPostUtils.getSite(shPost).getName().equals(siteName)) {
+					logger.info(String.format("Indexing %s post", shPost.getTitle()));
+					shTuringIntegration.indexObject(shPost);
+				}
+
+			}
+			logger.info("Indexed.");
+
+		}
+	}
+
+	private boolean folderIndexing(String siteName) {
+		logger.info("Trying to Index Folders");
+		for (ShFolder shFolder : shFolderRepository.findAll()) {
+			if (shFolderUtils.getSite(shFolder).getName().equals(siteName)) {
+				logger.info(String.format("Indexing %s folder", shFolder.getName()));
+				shTuringIntegration.indexObject(shFolder);
+			}
+		}
+		logger.info("Indexed.");
+		return true;
 	}
 }

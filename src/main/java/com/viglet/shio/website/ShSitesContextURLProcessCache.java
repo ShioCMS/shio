@@ -98,7 +98,7 @@ public class ShSitesContextURLProcessCache {
 				shSitesContextURLInfo.setPageAllowGuestUser(shObject.isPageAllowGuestUser());
 				shSitesContextURLInfo.setPageAllowRegisterUser(shObject.isPageAllowRegisterUser());
 				shSitesContextURLInfo.setShPageGroups(shObject.getShPageGroups() != null
-						? (String[]) shObject.getShPageGroups().toArray(new String[shObject.getShPageGroups().size()])
+						? shObject.getShPageGroups().toArray(new String[shObject.getShPageGroups().size()])
 						: null);
 			}
 		});
