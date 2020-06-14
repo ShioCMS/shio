@@ -130,9 +130,9 @@ public class ShPostAPI {
 	private ShWorkflowTaskRepository shWorkflowTaskRepository;
 	@Autowired
 	private ShObjectUtils shObjectUtils;
-	@Autowired 
+	@Autowired
 	private ShHistoryUtils shHistoryUtils;
-	
+
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShPost> shPostList() {
@@ -149,7 +149,7 @@ public class ShPostAPI {
 	/**
 	 * Post Edit API
 	 * 
-	 * @param id Post Id
+	 * @param id        Post Id
 	 * @param principal Logged User
 	 * @return ShPost
 	 */
@@ -169,8 +169,7 @@ public class ShPostAPI {
 	@GetMapping("/attr/model")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShPostAttr shPostAttrModel() {
-		ShPostAttr shPostAttr = new ShPostAttr();
-		return shPostAttr;
+		return new ShPostAttr();
 	}
 
 	@Transactional
@@ -181,9 +180,9 @@ public class ShPostAPI {
 			shCacheObject.deleteCache(id);
 
 			this.postSave(shPost);
-			
+
 			shHistoryUtils.commit(shPost, principal, ShHistoryUtils.UPDATE);
-			
+
 			return this.shPostEdit(shPost.getId(), principal);
 		}
 		return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
@@ -201,18 +200,22 @@ public class ShPostAPI {
 				shPost.setPublished(true);
 			}
 
-			ShObject shObject = shObjectRepository.findById(shPost.getShFolder().getId()).get();
-			List<ShObject> shObjects = new ArrayList<>();
-			shObjects.add(shObject);
+			Optional<ShObject> shObject = shObjectRepository.findById(shPost.getShFolder().getId());
+			if (shObject.isPresent()) {
+				List<ShObject> shObjects = new ArrayList<>();
+				shObjects.add(shObject.get());
 
-			shPost.setShGroups(new HashSet<String>(shObject.getShGroups()));
-			shPost.setShUsers(new HashSet<String>(shObject.getShUsers()));
+				shPost.setShGroups(new HashSet<>(shObject.get().getShGroups()));
+				shPost.setShUsers(new HashSet<>(shObject.get().getShUsers()));
 
-			this.postSave(shPost);
+				this.postSave(shPost);
 
-			shHistoryUtils.commit(shPost, principal, ShHistoryUtils.CREATE);
+				shHistoryUtils.commit(shPost, principal, ShHistoryUtils.CREATE);
 
-			return this.shPostEdit(shPost.getId(), principal);
+				return this.shPostEdit(shPost.getId(), principal);
+			} else {
+				new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+			}
 		}
 		return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
 	}
@@ -227,23 +230,11 @@ public class ShPostAPI {
 
 			if (shPostOptional.isPresent()) {
 				ShPost shPost = shPostOptional.get();
+				Set<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
 
 				shTuringIntegration.deindexObject(shPost);
 
-				Set<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
-				if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE) && shPostAttrs.size() > 0) {
-					File file = shStaticFileUtils.filePath(shPost.getShFolder(),
-							shPostAttrs.iterator().next().getStrValue());
-					if (file != null) {
-						if (file.exists()) {
-							try {
-								Files.delete(file.toPath());
-							} catch (IOException e) {
-								logger.error("shPostDelete: ", e);
-							}
-						}
-					}
-				}
+				this.deleteStaticFiles(shPost);
 
 				shPostAttrRepository.deleteInBatch(shPostAttrs);
 
@@ -263,14 +254,28 @@ public class ShPostAPI {
 		return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
 	}
 
+	private void deleteStaticFiles(ShPost shPost) {
+		Set<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
+		if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE) && !shPostAttrs.isEmpty()) {
+			File file = shStaticFileUtils.filePath(shPost.getShFolder(), shPostAttrs.iterator().next().getStrValue());
+			if (file != null && file.exists()) {
+				try {
+					Files.delete(file.toPath());
+				} catch (IOException e) {
+					logger.error("shPostDelete: ", e);
+				}
+			}
+		}
+	}
+
 	public void postSave(ShPost shPost) {
 		// Get PostAttrs before save, because JPA Lazy
 		Set<ShPostAttr> shPostAttrs = shPost.getShPostAttrs();
 
-		StringBuffer title = new StringBuffer();
-		StringBuffer summary = new StringBuffer();
+		StringBuilder title = new StringBuilder();
+		StringBuilder summary = new StringBuilder();
 
-		List<ShPostAttr> shPostAttrsByOrdinal = new ArrayList<ShPostAttr>(shPostAttrs);
+		List<ShPostAttr> shPostAttrsByOrdinal = new ArrayList<>(shPostAttrs);
 
 		Collections.sort(shPostAttrsByOrdinal, new Comparator<ShPostAttr>() {
 
@@ -278,44 +283,22 @@ public class ShPostAPI {
 				return o1.getShPostTypeAttr().getOrdinal() - o2.getShPostTypeAttr().getOrdinal();
 			}
 		});
-		for (ShPostAttr shPostAttr : shPostAttrsByOrdinal) {
-			if (shPostAttr.getShPostTypeAttr().getIsTitle() == 1) {
-				if (!StringUtils.isEmpty(title.toString()))
-					title.append(", ");
-				if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.DATE)) {
-					SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyyy");
-					title.append(dt.format(shPostAttr.getDateValue()));
-				} else
-					title.append(StringUtils.abbreviate(shPostAttr.getStrValue(), 255));
-			}
-			if (shPostAttr.getShPostTypeAttr().getIsSummary() == 1) {
-				if (!StringUtils.isEmpty(summary.toString()))
-					summary.append(", ");
-				if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.DATE)) {
-					SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyyy");
-					summary.append(dt.format(shPostAttr.getDateValue()));
-				} else
-					summary.append(StringUtils.abbreviate(shPostAttr.getStrValue(), 255));
-			}
-			if (shPostAttr != null) {
-				shPostAttr.setReferenceObject(null);
-			}
-		}
+		this.titleAndSummary(title, summary, shPostAttrsByOrdinal);
 
 		shPost.setDate(new Date());
 		shPost.setTitle(title.toString());
 		shPost.setSummary(summary.toString());
 		shPost.setShSite(shPostUtils.getSite(shPost));
-	
-		if (shPost.getPublicationDate() == null) {
-			shPost.setFurl(shURLFormatter.format(title.toString()));
-		}
 		shPost.setModifiedDate(new Date());
 
-		for (ShPostAttr shPostAttr : shPostAttrs) {
+		if (shPost.getPublicationDate() == null)
+			shPost.setFurl(shURLFormatter.format(title.toString()));
+
+		shPostAttrs.forEach(shPostAttr -> {
 			shPostAttr.setShPost(shPost);
 			this.updateRelatorParent(shPostAttr, shPost);
-		}
+
+		});
 
 		if (shPost.getPublishStatus() != null) {
 			if (shPost.getPublishStatus().equals(ShObjectPublishStatus.PUBLISH))
@@ -333,10 +316,41 @@ public class ShPostAPI {
 
 		}
 
+		this.lastPostTypeUsed(shPost);
+
+	}
+
+	private void lastPostTypeUsed(ShPost shPost) {
 		ShUser shUser = shUserRepository.findByUsername("admin");
 		shUser.setLastPostType(String.valueOf(shPost.getShPostType().getId()));
 		shUserRepository.saveAndFlush(shUser);
+	}
 
+	private void titleAndSummary(StringBuilder title, StringBuilder summary, List<ShPostAttr> shPostAttrsByOrdinal) {
+		for (ShPostAttr shPostAttr : shPostAttrsByOrdinal) {
+			if (shPostAttr.getShPostTypeAttr().getIsTitle() == 1) {
+				if (!StringUtils.isEmpty(title.toString()))
+					title.append(", ");
+				if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.DATE)) {
+					SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyyy");
+					title.append(dt.format(shPostAttr.getDateValue()));
+				} else {
+					title.append(StringUtils.abbreviate(shPostAttr.getStrValue(), 255));
+				}
+			}
+			if (shPostAttr.getShPostTypeAttr().getIsSummary() == 1) {
+				if (!StringUtils.isEmpty(summary.toString()))
+					summary.append(", ");
+				if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.DATE)) {
+					SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyyy");
+					summary.append(dt.format(shPostAttr.getDateValue()));
+				} else
+					summary.append(StringUtils.abbreviate(shPostAttr.getStrValue(), 255));
+			}
+			if (shPostAttr != null) {
+				shPostAttr.setReferenceObject(null);
+			}
+		}
 	}
 
 	public void postPublishSave(ShPost shPost) {
@@ -386,34 +400,39 @@ public class ShPostAPI {
 	}
 
 	public void postDraftSave(ShPost shPost) {
-		if (shPost.getId() == null) {
-			this.postUnpublishSave(shPost);
-		} else {
-			if (shPost.isPublished()) {
-				ShPost shPostEdit = shPostRepository.findById(shPost.getId()).orElse(null);
-				if (shPostEdit != null) {
-					ObjectMapper mapper = new ObjectMapper();
-					try {
-						String jsonInString = mapper.writeValueAsString(shPost);
-						ShPostDraft shPostDraft = mapper.readValue(jsonInString, ShPostDraft.class);
-						Set<ShPostDraftAttr> shPostAttrs = shPostDraft.getShPostAttrs();
-						for (ShPostDraftAttr shPostAttr : shPostAttrs) {
-							shPostAttr.setShPost(shPostDraft);
-							this.updateRelatorParentDraft(shPostAttr, shPostDraft);
-						}
+		if (shPost.getId() != null && shPost.isPublished()) {
+			shPostRepository.findById(shPost.getId()).ifPresent(shPostEdit -> {
+				ShPostDraft shPostDraft = convertPost2Draft(shPost);
+				Set<ShPostDraftAttr> shPostAttrs = shPostDraft.getShPostAttrs();
+				shPostAttrs.forEach(shPostAttr -> {
+					shPostAttr.setShPost(shPostDraft);
+					this.updateRelatorParentDraft(shPostAttr, shPostDraft);
 
-						shPostDraftRepository.saveAndFlush(shPostDraft);
-						this.postReferenceSaveDraft(shPostDraft);
-						shPostEdit.setPublishStatus("DRAFT");
-						shPostRepository.saveAndFlush(shPostEdit);
-					} catch (JsonProcessingException e) {
-						logger.error("postDraftSave JsonProcessingException:", e);
-					}
-				}
-			} else {
-				this.postUnpublishSave(shPost);
-			}
+				});
+
+				shPostDraftRepository.saveAndFlush(shPostDraft);
+				this.postReferenceSaveDraft(shPostDraft);
+				shPostEdit.setPublishStatus("DRAFT");
+				shPostRepository.saveAndFlush(shPostEdit);
+
+			});
+		} else {
+			this.postUnpublishSave(shPost);
 		}
+	}
+
+	private ShPostDraft convertPost2Draft(ShPost shPost) {
+		ShPostDraft shPostDraft = null;
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			String jsonInString = mapper.writeValueAsString(shPost);
+			shPostDraft = mapper.readValue(jsonInString, ShPostDraft.class);
+
+		} catch (JsonProcessingException e) {
+			logger.error("convertPost2Draft JsonProcessingException:", e);
+		}
+
+		return shPostDraft;
 	}
 
 	private void updateRelatorParent(ShPostAttr shPostAttr, ShPost shPost) {
