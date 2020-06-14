@@ -57,7 +57,6 @@ public class ShFolderUtils {
 	@Autowired
 	private ShTuringIntegration shTuringIntegration;
 
-	
 	public ShFolder getParentFolder(String shFolderId) {
 		ShFolder shFolder = shFolderRepository.findById(shFolderId).get();
 		shFolder.getParentFolder();
@@ -75,12 +74,10 @@ public class ShFolderUtils {
 		return null;
 	}
 
-	
-	
-	public ArrayList<ShFolder> breadcrumb(ShFolder shFolder) {
+	public List<ShFolder> breadcrumb(ShFolder shFolder) {
 		if (shFolder != null) {
 			boolean rootFolder = false;
-			ArrayList<ShFolder> folderBreadcrumb = new ArrayList<ShFolder>();
+			List<ShFolder> folderBreadcrumb = new ArrayList<>();
 			folderBreadcrumb.add(shFolder);
 			ShFolder parentFolder = shFolder.getParentFolder();
 			while (parentFolder != null && !rootFolder) {
@@ -95,7 +92,7 @@ public class ShFolderUtils {
 			Collections.reverse(folderBreadcrumb);
 			return folderBreadcrumb;
 		} else {
-			return null;
+			return Collections.emptyList();
 		}
 	}
 
@@ -106,7 +103,7 @@ public class ShFolderUtils {
 	public String folderPath(ShFolder shFolder, String separator, boolean usingFurl, boolean addHomeFolder) {
 		if (shFolder != null) {
 			boolean rootFolder = false;
-			ArrayList<String> pathContexts = new ArrayList<String>();
+			List<String> pathContexts = new ArrayList<>();
 			if (!(shFolder.getFurl().equals("home") && shFolder.getRootFolder() == (byte) 1 && !addHomeFolder)) {
 				if (usingFurl)
 					pathContexts.add(shFolder.getFurl());
@@ -119,7 +116,7 @@ public class ShFolderUtils {
 
 				if ((parentFolder.getRootFolder() == (byte) 1) || (parentFolder.getParentFolder() == null)) {
 					rootFolder = true;
-					if (!parentFolder.getName().toLowerCase().equals("home")) {
+					if (!parentFolder.getName().equalsIgnoreCase("home")) {
 						if (usingFurl)
 							pathContexts.add(parentFolder.getFurl());
 						else
@@ -136,23 +133,25 @@ public class ShFolderUtils {
 				}
 			}
 
-			String path = "";
-
-			for (String context : pathContexts) {
-				path = context + separator + path;
-			}
-			path = separator + path;
-			return path;
+			return pathBuilder(separator, pathContexts);
 		} else {
 			return separator;
 		}
 
 	}
 
+	private String pathBuilder(String separator, List<String> pathContexts) {
+		StringBuilder path = new StringBuilder();
+
+		pathContexts.forEach(context -> path.insert(0, context + separator));
+		path.insert(0, separator);
+		return path.toString();
+	}
+
 	public String directoryPath(ShFolder shFolder, String separator) {
 		if (shFolder != null) {
 			boolean rootFolder = false;
-			ArrayList<String> pathContexts = new ArrayList<String>();
+			List<String> pathContexts = new ArrayList<>();
 			pathContexts.add(shFolder.getName());
 			ShFolder parentFolder = shFolder.getParentFolder();
 			while (parentFolder != null && !rootFolder) {
@@ -164,13 +163,7 @@ public class ShFolderUtils {
 				}
 			}
 
-			String path = "";
-
-			for (String context : pathContexts) {
-				path = context + separator + path;
-			}
-			path = separator + path;
-			return path;
+			return pathBuilder(separator, pathContexts);
 		} else {
 			return separator;
 		}
@@ -234,7 +227,6 @@ public class ShFolderUtils {
 		shTuringIntegration.deindexObject(shFolder);
 
 		for (ShPost shPost : shPostRepository.findByShFolder(shFolder)) {
-			// TODO: Check relation and show to user decides.
 			List<ShReference> shGlobalFromId = shReferenceRepository.findByShObjectFrom(shPost);
 			List<ShReference> shGlobalToId = shReferenceRepository.findByShObjectTo(shPost);
 			shReferenceRepository.deleteInBatch(shGlobalFromId);
@@ -258,7 +250,6 @@ public class ShFolderUtils {
 	}
 
 	public ShFolder copy(ShFolder shFolder, ShObject shObjectDest) {
-		// TODO: Copy objects into Folder
 		ShFolder shFolderCopy = new ShFolder();
 		if (shObjectDest instanceof ShFolder) {
 			ShFolder shFolderDest = (ShFolder) shObjectDest;

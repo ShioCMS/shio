@@ -307,7 +307,7 @@ public class ShObjectAPI {
 
 					ShFolder shFolder = (ShFolder) shObject;
 					String folderPath = shFolderUtils.folderPath(shFolder, true, false);
-					ArrayList<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shFolder);
+					List<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shFolder);
 					ShSite shSite = breadcrumb.get(0).getShSite();
 					ShFolderList shFolderList = new ShFolderList();
 					shFolderList.setShFolders(this.allowedFolders(shUser, shObject));
@@ -420,7 +420,7 @@ public class ShObjectAPI {
 			if (shObject instanceof ShFolder) {
 				ShFolder shFolder = (ShFolder) shObject;
 				String folderPath = shFolderUtils.folderPath(shFolder, true, false);
-				ArrayList<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shFolder);
+				List<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shFolder);
 				ShSite shSite = breadcrumb.get(0).getShSite();
 				ShFolderList shFolderList = new ShFolderList();
 				shFolderList.setShFolders(shFolderRepository.findByParentFolderTiny(shFolder));
@@ -486,7 +486,7 @@ public class ShObjectAPI {
 			if (shFolder != null) {
 				ShFolderPath shFolderPath = new ShFolderPath();
 				String folderPath = shFolderUtils.folderPath(shFolder, true, false);
-				ArrayList<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shFolder);
+				List<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shFolder);
 				ShSite shSite = breadcrumb.get(0).getShSite();
 				shFolderPath.setFolderPath(folderPath);
 				shFolderPath.setCurrentFolder(shFolder);
@@ -500,7 +500,7 @@ public class ShObjectAPI {
 				ShFolder shFolder = shPost.getShFolder();
 				ShFolderPath shFolderPath = new ShFolderPath();
 				String folderPath = shFolderUtils.folderPath(shFolder, true, false);
-				ArrayList<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shFolder);
+				List<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shFolder);
 				ShSite shSite = breadcrumb.get(0).getShSite();
 				shFolderPath.setFolderPath(folderPath);
 				shFolderPath.setCurrentFolder(shFolder);

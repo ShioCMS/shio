@@ -63,9 +63,9 @@ import org.springframework.stereotype.Component;
 public class ShGitProvider {
 	static final Logger logger = LogManager.getLogger(ShGitProvider.class.getName());
 
-	private String fileSourceBase = File.separator + "store" + File.separator + "file_source";
-	private String gitSourceBase = File.separator + "store" + File.separator + "git";
-
+	private static final String fileSourceBase = File.separator + "store" + File.separator + "file_source";
+	private static final String gitSourceBase = File.separator + "store" + File.separator + "git";
+	private static final File userDir = new File(System.getProperty("user.dir"));
 	private Git git;
 	private CloneCommand cloneCommand;
 
@@ -86,8 +86,6 @@ public class ShGitProvider {
 	}
 
 	public void cloneRepository() {
-
-		File userDir = new File(System.getProperty("user.dir"));
 		File gitDirectory = new File(userDir.getAbsolutePath().concat(gitSourceBase));
 		if (!gitDirectory.exists()) {
 			gitDirectory.mkdirs();
@@ -120,7 +118,6 @@ public class ShGitProvider {
 	}
 
 	public void init() throws IOException {
-		File userDir = new File(System.getProperty("user.dir"));
 		File gitDirectory = new File(userDir.getAbsolutePath().concat(gitSourceBase));
 		logger.info("Opening a git repo at '{}'", gitSourceBase);
 		Repository localRepo = new FileRepository(
@@ -161,7 +158,6 @@ public class ShGitProvider {
 	public void newItem(String shObjectId) {
 		ShPost shPost = shPostUtils.getShPostFromObjectId(shObjectId);
 		File source = shStaticFileUtils.filePath(shPost);
-		File userDir = new File(System.getProperty("user.dir"));
 		File fileSourceDirectory = new File(userDir.getAbsolutePath().concat(fileSourceBase));
 		File gitSource = new File(git.getRepository().getDirectory().getParent());
 		String objectGitDirectory = shObjectId.substring(0, 2) + File.separator + shObjectId.substring(2, 4)

@@ -94,7 +94,7 @@ public class ShFolderAPI {
 	@ApiOperation(value = "Show a folder")
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ResponseEntity<?> shFolderGet(@PathVariable String id, Principal principal) {
+	public ResponseEntity<ShFolder> shFolderGet(@PathVariable String id, Principal principal) {
 		if (shObjectUtils.canAccess(principal, id)) {
 			return new ResponseEntity<>(shFolderRepository.findById(id).orElse(null), HttpStatus.OK);
 		}
@@ -104,7 +104,7 @@ public class ShFolderAPI {
 	@ApiOperation(value = "Update a folder")
 	@PutMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ResponseEntity<?> shFolderUpdate(@PathVariable String id, @RequestBody ShFolder shFolder,
+	public ResponseEntity<ShFolder> shFolderUpdate(@PathVariable String id, @RequestBody ShFolder shFolder,
 			Principal principal) {
 		if (shObjectUtils.canAccess(principal, id)) {
 			Optional<ShFolder> shFolderOptional = shFolderRepository.findById(id);
@@ -132,7 +132,7 @@ public class ShFolderAPI {
 	@Transactional
 	@ApiOperation(value = "Delete a folder")
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> shFolderDelete(@PathVariable String id, Principal principal) {
+	public ResponseEntity<Boolean> shFolderDelete(@PathVariable String id, Principal principal) {
 		if (shObjectUtils.canAccess(principal, id)) {
 			shFolderRepository.findById(id).ifPresent(new Consumer<ShFolder>() {
 				@Override
@@ -154,7 +154,7 @@ public class ShFolderAPI {
 	@ApiOperation(value = "Create a folder")
 	@PostMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ResponseEntity<?> shFolderAdd(@RequestBody ShFolder shFolder, Principal principal) {
+	public ResponseEntity<ShFolder> shFolderAdd(@RequestBody ShFolder shFolder, Principal principal) {
 		ShObject shParentObject = null;
 		if (shFolder != null) {
 			if (shFolder.getRootFolder() == 1 && shFolder.getShSite() != null && shFolder.getShSite().getId() != null)
@@ -182,14 +182,14 @@ public class ShFolderAPI {
 
 			}
 		}
-		return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
+		return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
 
 	}
 
 	@ApiOperation(value = "Create a folder from Parent Object")
 	@PostMapping("/object/{objectId}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ResponseEntity<?> shFolderAddFromParentObject(@RequestBody ShFolder shFolder, @PathVariable String objectId,
+	public ResponseEntity<ShFolder> shFolderAddFromParentObject(@RequestBody ShFolder shFolder, @PathVariable String objectId,
 			Principal principal) {
 		if (shObjectUtils.canAccess(principal, objectId)) {
 
@@ -226,7 +226,7 @@ public class ShFolderAPI {
 			return new ResponseEntity<>(shFolder, HttpStatus.OK);
 		}
 
-		return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
+		return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
 	}
 
 	@ApiOperation(value = "Folder path")
@@ -237,7 +237,7 @@ public class ShFolderAPI {
 		if (shFolder != null) {
 			ShFolderPath shFolderPath = new ShFolderPath();
 			String folderPath = shFolderUtils.folderPath(shFolder, true, false);
-			ArrayList<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shFolder);
+			List<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shFolder);
 			ShSite shSite = breadcrumb.get(0).getShSite();
 			shFolderPath.setFolderPath(folderPath);
 			shFolderPath.setCurrentFolder(shFolder);

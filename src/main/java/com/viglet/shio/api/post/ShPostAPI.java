@@ -155,7 +155,7 @@ public class ShPostAPI {
 	 */
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ResponseEntity<?> shPostEdit(@PathVariable String id, Principal principal) {
+	public ResponseEntity<ShPost> shPostEdit(@PathVariable String id, Principal principal) {
 		if (shObjectUtils.canAccess(principal, id)) {
 			ShPost shPost = shPostUtils.loadLazyPost(id, false);
 			shPostUtils.syncWithPostType(shPost);
@@ -175,7 +175,7 @@ public class ShPostAPI {
 	@Transactional
 	@PutMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ResponseEntity<?> shPostUpdate(@PathVariable String id, @RequestBody ShPost shPost, Principal principal) {
+	public ResponseEntity<ShPost> shPostUpdate(@PathVariable String id, @RequestBody ShPost shPost, Principal principal) {
 		if (shObjectUtils.canAccess(principal, id)) {
 			shCacheObject.deleteCache(id);
 
@@ -193,7 +193,7 @@ public class ShPostAPI {
 	@PostMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	@CacheEvict(value = { "page", "pageLayout", "region" }, allEntries = true)
-	public ResponseEntity<?> shPostAdd(@RequestBody ShPost shPost, Principal principal) {
+	public ResponseEntity<ShPost> shPostAdd(@RequestBody ShPost shPost, Principal principal) {
 		if (shObjectUtils.canAccess(principal, shPost.getShFolder().getId())) {
 			if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE)) {
 				shPost.setPublishStatus("PUBLISH");
