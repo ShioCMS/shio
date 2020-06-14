@@ -77,7 +77,7 @@ public class ShSearchAPI {
 		List<ShPostWithBreadcrumb> searchResults = new ArrayList<ShPostWithBreadcrumb>();
 		for (ShPost shPost : shPostRepository.fuzzySearch(q)) {
 			ShPost shPostLazy =  shPostUtils.loadLazyPost(shPost.getId(), false);
-			ArrayList<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shPostLazy.getShFolder());
+			List<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shPostLazy.getShFolder());
 			ShSite shSite = breadcrumb.get(0).getShSite();
 			ShPostWithBreadcrumb shPostWithBreadcrumb = new ShPostWithBreadcrumb();
 			shPostWithBreadcrumb.setShPost(shPostLazy);
@@ -97,7 +97,7 @@ public class ShSearchAPI {
 		List<ShPostWithBreadcrumb> searchResults = new ArrayList<ShPostWithBreadcrumb>();
 		for (ShPost shPost : shPostRepository.findByShPostType(shPostType)) {
 			ShPost shPostLazy =  shPostUtils.loadLazyPost(shPost.getId(), false);
-			ArrayList<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shPostLazy.getShFolder());
+			List<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shPostLazy.getShFolder());
 			ShSite shSite = breadcrumb.get(0).getShSite();
 			ShPostWithBreadcrumb shPostWithBreadcrumb = new ShPostWithBreadcrumb();
 			shPostWithBreadcrumb.setShPost(shPostLazy);

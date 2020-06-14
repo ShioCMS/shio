@@ -502,12 +502,8 @@ public class ShPostUtils {
 
 	public List<ShPostAttr> postAttrsSort(Set<ShPostAttr> shPostAttrs) {
 		List<ShPostAttr> shPostAttrsByOrdinal = new ArrayList<>(shPostAttrs);
-		Collections.sort(shPostAttrsByOrdinal, new Comparator<ShPostAttr>() {
-
-			public int compare(ShPostAttr o1, ShPostAttr o2) {
-				return o1.getShPostTypeAttr().getOrdinal() - o2.getShPostTypeAttr().getOrdinal();
-			}
-		});
+		Collections.sort(shPostAttrsByOrdinal, (ShPostAttr o1, ShPostAttr o2) -> o1.getShPostTypeAttr().getOrdinal()
+				- o2.getShPostTypeAttr().getOrdinal());
 		return shPostAttrsByOrdinal;
 	}
 
@@ -518,12 +514,8 @@ public class ShPostUtils {
 			StringBuilder summary = new StringBuilder();
 
 			List<ShPostDraftAttr> shPostAttrsByOrdinal = new ArrayList<>(shRelatorItem.getShChildrenPostAttrs());
-			Collections.sort(shPostAttrsByOrdinal, new Comparator<ShPostDraftAttr>() {
-
-				public int compare(ShPostDraftAttr o1, ShPostDraftAttr o2) {
-					return o1.getShPostTypeAttr().getOrdinal() - o2.getShPostTypeAttr().getOrdinal();
-				}
-			});
+			Collections.sort(shPostAttrsByOrdinal, (ShPostDraftAttr o1,
+					ShPostDraftAttr o2) -> o1.getShPostTypeAttr().getOrdinal() - o2.getShPostTypeAttr().getOrdinal());
 			for (ShPostDraftAttr shChildrenPostAttr : shPostAttrsByOrdinal) {
 				ShPostTypeAttr shPostTypeAttr = shChildrenPostAttr.getShPostTypeAttr();
 				if (shPostTypeAttr.getIsTitle() == 1) {
@@ -833,8 +825,7 @@ public class ShPostUtils {
 						}
 					}
 
-					shRelatorItem.getShChildrenPostAttrs()
-							.forEach(this::postAttrNotInPostTypeNested);
+					shRelatorItem.getShChildrenPostAttrs().forEach(this::postAttrNotInPostTypeNested);
 
 				}
 			}
