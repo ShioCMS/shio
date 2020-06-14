@@ -84,6 +84,8 @@ import com.viglet.shio.widget.ShSystemWidget;
 public class ShPostUtils {
 	private static final Log logger = LogFactory.getLog(ShPostUtils.class);
 
+	private static final String DATE_FORMAT = "dd/MM/yyyyy";
+
 	@Autowired
 	private ShFolderUtils shFolderUtils;
 	@Autowired
@@ -144,7 +146,7 @@ public class ShPostUtils {
 		shPostCopy.setSummary(shPost.getSummary());
 		shPostCopy.setPosition(lowerPosition - 1);
 
-		shPostCopy.setTitle(copyTitle(shPost, titles, shPostCopy));
+		shPostCopy.setTitle(copyTitle(shPost, titles));
 
 		shPostRepository.save(shPostCopy);
 
@@ -173,7 +175,7 @@ public class ShPostUtils {
 		}
 	}
 
-	private String copyTitle(ShPost shPost, Set<String> titles, ShPost shPostCopy) {
+	private String copyTitle(ShPost shPost, Set<String> titles) {
 		String title = shPost.getTitle();
 		if (titles.contains(String.format("Copy of %s", shPost.getTitle()))) {
 			int countSameTitle = 0;
@@ -334,7 +336,7 @@ public class ShPostUtils {
 		if (!shOldReferences.isEmpty()) {
 			for (ShReferenceDraft shOldReference : shOldReferences) {
 				// Find by shPostAttr.getStrValue()
-				if (shOldReference.getShObjectTo().getId().toString().equals(shPostAttr.getStrValue())) {
+				if (shOldReference.getShObjectTo().getId().equals(shPostAttr.getStrValue())) {
 					shReferenceDraftRepository.delete(shOldReference);
 
 				}
@@ -342,7 +344,7 @@ public class ShPostUtils {
 				// Find by shPostAttr.getReferenceObject()
 				if (shPostAttr.getReferenceObject() != null) {
 					ShObject shObject = shPostAttr.getReferenceObject();
-					if (shOldReference.getShObjectTo().getId().toString().equals(shObject.getId().toString())) {
+					if (shOldReference.getShObjectTo().getId().equals(shObject.getId())) {
 						shReferenceDraftRepository.delete(shOldReference);
 					}
 				}
@@ -385,7 +387,7 @@ public class ShPostUtils {
 			for (ShReference shOldReference : shOldReferences) {
 				if (shPostAttrEdit.getReferenceObject() != null) {
 					ShObject shObject = shPostAttrEdit.getReferenceObject();
-					if (shOldReference.getShObjectTo().getId().toString().equals(shObject.getId().toString())) {
+					if (shOldReference.getShObjectTo().getId().equals(shObject.getId())) {
 						shReferenceRepository.delete(shOldReference);
 						break;
 					}
@@ -434,7 +436,7 @@ public class ShPostUtils {
 							}
 						}
 					} else if (widgetName.equals(ShSystemWidget.DATE)) {
-						SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyyy");
+						SimpleDateFormat dt = new SimpleDateFormat(DATE_FORMAT);
 						if (!StringUtils.isEmpty(title.toString()))
 							title.append(", ");
 						title.append(dt.format(shChildrenPostAttr.getDateValue()));
@@ -480,7 +482,7 @@ public class ShPostUtils {
 							}
 						}
 					} else if (widgetName.equals(ShSystemWidget.DATE)) {
-						SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyyy");
+						SimpleDateFormat dt = new SimpleDateFormat(DATE_FORMAT);
 						if (!StringUtils.isEmpty(title.toString()))
 							summary.append(", ");
 						summary.append(dt.format(shPostAttr.getDateValue()));
@@ -550,7 +552,7 @@ public class ShPostUtils {
 							}
 						}
 					} else if (widgetName.equals(ShSystemWidget.DATE)) {
-						SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyyy");
+						SimpleDateFormat dt = new SimpleDateFormat(DATE_FORMAT);
 						if (!StringUtils.isEmpty(title.toString()))
 							title.append(", ");
 						title.append(dt.format(shChildrenPostAttr.getDateValue()));
@@ -596,7 +598,7 @@ public class ShPostUtils {
 							}
 						}
 					} else if (widgetName.equals(ShSystemWidget.DATE)) {
-						SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyyy");
+						SimpleDateFormat dt = new SimpleDateFormat(DATE_FORMAT);
 						if (!StringUtils.isEmpty(title.toString()))
 							title.append(", ");
 						summary.append(dt.format(shPostAttr.getDateValue()));
@@ -727,7 +729,7 @@ public class ShPostUtils {
 	 */
 	public void syncWithPostType(ShPost shPost) {
 		if (shPost != null) {
-			Set<ShPostAttr> shPostAttrs = new HashSet<ShPostAttr>();
+			Set<ShPostAttr> shPostAttrs = new HashSet<>();
 
 			Map<String, ShPostAttr> shPostAttrMap = this.postAttrMap(shPost);
 			Map<String, ShPostTypeAttr> shPostTypeAttrMap = this.postTypeAttrMap(shPost);
@@ -746,9 +748,9 @@ public class ShPostUtils {
 	 * @return
 	 */
 	private Map<String, ShPostTypeAttr> postTypeAttrMap(ShPost shPost) {
-		Map<String, ShPostTypeAttr> shPostTypeAttrMap = new HashMap<String, ShPostTypeAttr>();
-		ShPostType shPostType = shPostTypeRepository.findByName(shPost.getShPostType().getName());
+		Map<String, ShPostTypeAttr> shPostTypeAttrMap = new HashMap<>();
 		if (shPost != null) {
+			ShPostType shPostType = shPostTypeRepository.findByName(shPost.getShPostType().getName());
 			shPostType.getShPostTypeAttrs()
 					.forEach(shPostTypeAttr -> shPostTypeAttrMap.put(shPostTypeAttr.getId(), shPostTypeAttr));
 		}
@@ -756,7 +758,7 @@ public class ShPostUtils {
 	}
 
 	private Map<String, ShPostTypeAttr> postTypeAttrMap(ShPostTypeAttr shPostTypeAttr) {
-		Map<String, ShPostTypeAttr> shPostTypeAttrMap = new HashMap<String, ShPostTypeAttr>();
+		Map<String, ShPostTypeAttr> shPostTypeAttrMap = new HashMap<>();
 		Set<ShPostTypeAttr> shPostTypeAttrs = shPostTypeAttrRepository.findByShParentPostTypeAttr(shPostTypeAttr);
 		if (shPostTypeAttrs != null) {
 			shPostTypeAttrs.forEach(
@@ -811,7 +813,7 @@ public class ShPostUtils {
 			}
 		}
 
-		shPostAttrs.forEach(shPostAttr -> this.postAttrNotInPostTypeNested(shPostAttr));
+		shPostAttrs.forEach(this::postAttrNotInPostTypeNested);
 	}
 
 	private void postAttrNotInPostTypeNested(ShPostAttr shPostAttr) {
@@ -832,7 +834,7 @@ public class ShPostUtils {
 					}
 
 					shRelatorItem.getShChildrenPostAttrs()
-							.forEach(shPostAttrRelator -> this.postAttrNotInPostTypeNested(shPostAttrRelator));
+							.forEach(this::postAttrNotInPostTypeNested);
 
 				}
 			}
