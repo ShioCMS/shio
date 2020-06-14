@@ -35,6 +35,8 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.viglet.shio.exchange.ShPostExchange;
@@ -124,7 +126,7 @@ public class ShPostImport {
 		return shPost;
 	}
 
-	@SuppressWarnings({ "unchecked" })
+	
 	private void getShPostAttrs(ShPostExchange shPostExchange, ShPost shPost, Map<String, Object> shPostFields,
 			ShRelatorItem shParentRelatorItem) throws ClientProtocolException, IOException {
 		for (Entry<String, Object> shPostField : shPostFields.entrySet()) {
@@ -147,76 +149,87 @@ public class ShPostImport {
 						// Referenced Post not found
 					}
 				} catch (IllegalArgumentException iae) {
-					// iae.printStackTrace();
+					logger.error("getShPostAttrs", iae);
 				}
 			}
 			if (shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.RELATOR)) {
-
-				LinkedHashMap<String, Object> relatorFields = (LinkedHashMap<String, Object>) shPostField.getValue();
-
-				ShPostAttr shPostAttr = new ShPostAttr();
-
-				if (shParentRelatorItem != null) {
-					shPostAttr.setShPost(null);
-					shPostAttr.setShParentRelatorItem(shParentRelatorItem);
-				} else {
-					shPostAttr.setShPost(shPost);
-					shPost.addShPostAttr(shPostAttr);
-				}
-
-				shPostAttr.setId((String) relatorFields.get("id"));
-				shPostAttr.setStrValue((String) relatorFields.get("name"));
-				shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-				shPostAttr.setType(1);
-
-				ObjectMapper mapper = new ObjectMapper();
-				ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
-				String subPostsJson = ow.writeValueAsString(relatorFields.get("shSubPosts"));
-				ShRelatorItemExchanges subPosts = mapper.readValue(subPostsJson, ShRelatorItemExchanges.class);
-
-				for (ShRelatorItemExchange shSubPost : subPosts) {
-					ShRelatorItem shRelatorItem = new ShRelatorItem();
-					shRelatorItem.setOrdinal(shSubPost.getPosition());
-					shRelatorItem.setShParentPostAttr(shPostAttr);
-
-					this.getShPostAttrs(shPostExchange, shPost, (Map<String, Object>) shSubPost.getFields(),
-							shRelatorItem);
-
-				}
+				postAttrRelator(shPostExchange, shPost, shParentRelatorItem, shPostField, shPostTypeAttr);
 			} else {
-				ShPostAttr shPostAttr = new ShPostAttr();
-				if (shPostField.getValue() instanceof ArrayList)
-					shPostAttr.setArrayValue((new HashSet<String>((ArrayList<String>) shPostField.getValue())));
-				else if (shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.DATE)) {
-					if (shPostField.getValue() != null) {
-						try {
-							shPostAttr.setDateValue(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'")
-									.parse((String) shPostField.getValue()));
-						} catch (ParseException e) {
-							logger.error("createShPostAttrs Error:", e);
-						}
-					}
-				} else
-					shPostAttr.setStrValue((String) shPostField.getValue());
-
-				if (shParentRelatorItem != null) {
-					shPostAttr.setShPost(null);
-					shPostAttr.setShParentRelatorItem(shParentRelatorItem);
-					if (shPostTypeAttr.getIsTitle() == 1) {
-						shParentRelatorItem.setTitle("Parent" + shPostAttr.getStrValue());
-					}
-					if (shPostTypeAttr.getIsSummary() == 1) {
-						shParentRelatorItem.setSummary(shPostAttr.getStrValue());
-					}
-				} else {
-					shPostAttr.setShPost(shPost);
-					shPost.addShPostAttr(shPostAttr);
-				}
-
-				shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-				shPostAttr.setType(1);
-				// shPostUtils.referencedObject(shPostAttr, shPost);
+				postAttrNonRelator(shPost, shParentRelatorItem, shPostField, shPostTypeAttr);
 			}
+		}
+	}
+	
+	@SuppressWarnings({ "unchecked" })
+	private void postAttrNonRelator(ShPost shPost, ShRelatorItem shParentRelatorItem, Entry<String, Object> shPostField,
+			ShPostTypeAttr shPostTypeAttr) {
+		ShPostAttr shPostAttr = new ShPostAttr();
+		if (shPostField.getValue() instanceof ArrayList)
+			shPostAttr.setArrayValue((new HashSet<String>((ArrayList<String>) shPostField.getValue())));
+		else if (shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.DATE)) {
+			if (shPostField.getValue() != null) {
+				try {
+					shPostAttr.setDateValue(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'")
+							.parse((String) shPostField.getValue()));
+				} catch (ParseException e) {
+					logger.error("createShPostAttrs Error:", e);
+				}
+			}
+		} else {
+			shPostAttr.setStrValue((String) shPostField.getValue());
+		}
+
+		if (shParentRelatorItem != null) {
+			shPostAttr.setShPost(null);
+			shPostAttr.setShParentRelatorItem(shParentRelatorItem);
+			if (shPostTypeAttr.getIsTitle() == 1) {
+				shParentRelatorItem.setTitle("Parent" + shPostAttr.getStrValue());
+			}
+			if (shPostTypeAttr.getIsSummary() == 1) {
+				shParentRelatorItem.setSummary(shPostAttr.getStrValue());
+			}
+		} else {
+			shPostAttr.setShPost(shPost);
+			shPost.addShPostAttr(shPostAttr);
+		}
+
+		shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+		shPostAttr.setType(1);
+	}
+
+	@SuppressWarnings({ "unchecked" })
+	private void postAttrRelator(ShPostExchange shPostExchange, ShPost shPost, ShRelatorItem shParentRelatorItem,
+			Entry<String, Object> shPostField, ShPostTypeAttr shPostTypeAttr)
+			throws JsonProcessingException, JsonMappingException, ClientProtocolException, IOException {
+		LinkedHashMap<String, Object> relatorFields = (LinkedHashMap<String, Object>) shPostField.getValue();
+
+		ShPostAttr shPostAttr = new ShPostAttr();
+
+		if (shParentRelatorItem != null) {
+			shPostAttr.setShPost(null);
+			shPostAttr.setShParentRelatorItem(shParentRelatorItem);
+		} else {
+			shPostAttr.setShPost(shPost);
+			shPost.addShPostAttr(shPostAttr);
+		}
+
+		shPostAttr.setId((String) relatorFields.get("id"));
+		shPostAttr.setStrValue((String) relatorFields.get("name"));
+		shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+		shPostAttr.setType(1);
+
+		ObjectMapper mapper = new ObjectMapper();
+		ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+		String subPostsJson = ow.writeValueAsString(relatorFields.get("shSubPosts"));
+		ShRelatorItemExchanges subPosts = mapper.readValue(subPostsJson, ShRelatorItemExchanges.class);
+
+		for (ShRelatorItemExchange shSubPost : subPosts) {
+			ShRelatorItem shRelatorItem = new ShRelatorItem();
+			shRelatorItem.setOrdinal(shSubPost.getPosition());
+			shRelatorItem.setShParentPostAttr(shPostAttr);
+
+			this.getShPostAttrs(shPostExchange, shPost, shSubPost.getFields(), shRelatorItem);
+
 		}
 	}
 
@@ -231,7 +244,7 @@ public class ShPostImport {
 			shPost.setDate(isCloned ? new Date() : shPostExchange.getDate());
 			if (shPostExchange.getPosition() > 0)
 				shPost.setPosition(shPostExchange.getPosition());
-		
+
 			ShFolder shFolder = shFolderRepository.findById(shPostExchange.getFolder()).orElse(null);
 			shPost.setShFolder(shFolder);
 			shPost.setShPostType(shPostTypeRepository.findByName(shPostExchange.getPostType()));
@@ -240,29 +253,8 @@ public class ShPostImport {
 				shPost.setOwner(shPostExchange.getOwner());
 			else
 				shPost.setOwner(username);
-		
-			for (Entry<String, Object> shPostField : shPostExchange.getFields().entrySet()) {
-				ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPost.getShPostType(),
-						shPostField.getKey());
-				if (shPostTypeAttr.getIsTitle() == (byte) 1) {
-					shPost.setTitle(StringUtils.abbreviate((String) shPostField.getValue(), 255));
-				} else if (shPostTypeAttr.getIsSummary() == (byte) 1) {
-					shPost.setSummary(StringUtils.abbreviate((String) shPostField.getValue(), 255));
-				}
-				if (shPostTypeAttr.getName().equals(ShSystemPostTypeAttr.FILE)
-						&& shPostExchange.getPostType().equals(ShSystemPostType.FILE)) {
-					String fileName = (String) shPostField.getValue();
-					File directoryPath = shStaticFileUtils.dirPath(shPost.getShFolder());
-					File fileSource = new File(
-							extractFolder.getAbsolutePath().concat(File.separator + shPostExchange.getId()));
-					File fileDest = new File(directoryPath.getAbsolutePath().concat(File.separator + fileName));
-					try {
-						FileUtils.copyFile(fileSource, fileDest);
-					} catch (IOException e) {
-						logger.error("createShPostException", e);
-					}
-				}
-			}
+
+			detectPostAttrs(shPostExchange, extractFolder, shPost);
 
 			if (shPostExchange.getFurl() != null) {
 				shPost.setFurl(shPostExchange.getFurl());
@@ -282,13 +274,38 @@ public class ShPostImport {
 			if (turingEnabled)
 				shTuringIntegration.indexObject(shPost);
 		}
-		
+
 		if (shPost != null)
 			logger.info(String.format("........ %s Post (%s)", shPost.getTitle(), shPost.getId()));
 		return shPost;
 	}
 
-	@SuppressWarnings({ "unchecked" })
+
+	private void detectPostAttrs(ShPostExchange shPostExchange, File extractFolder, ShPost shPost) {
+		for (Entry<String, Object> shPostField : shPostExchange.getFields().entrySet()) {
+			ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPost.getShPostType(),
+					shPostField.getKey());
+			if (shPostTypeAttr.getIsTitle() == (byte) 1) {
+				shPost.setTitle(StringUtils.abbreviate((String) shPostField.getValue(), 255));
+			} else if (shPostTypeAttr.getIsSummary() == (byte) 1) {
+				shPost.setSummary(StringUtils.abbreviate((String) shPostField.getValue(), 255));
+			}
+			if (shPostTypeAttr.getName().equals(ShSystemPostTypeAttr.FILE)
+					&& shPostExchange.getPostType().equals(ShSystemPostType.FILE)) {
+				String fileName = (String) shPostField.getValue();
+				File directoryPath = shStaticFileUtils.dirPath(shPost.getShFolder());
+				File fileSource = new File(
+						extractFolder.getAbsolutePath().concat(File.separator + shPostExchange.getId()));
+				File fileDest = new File(directoryPath.getAbsolutePath().concat(File.separator + fileName));
+				try {
+					FileUtils.copyFile(fileSource, fileDest);
+				} catch (IOException e) {
+					logger.error("createShPostException", e);
+				}
+			}
+		}
+	}
+
 	private void createShPostAttrs(ShPostExchange shPostExchange, ShPost shPost, Map<String, Object> shPostFields,
 			ShRelatorItem shParentRelatorItem, File extractFolder, String username, Map<String, Object> shObjects,
 			boolean isCloned) throws ClientProtocolException, IOException {
@@ -308,89 +325,104 @@ public class ShPostImport {
 					&& shPostField.getValue() != null && !shPostType.getName().equals(ShSystemPostType.FILE)) {
 				try {
 					String shReferencedPostUUID = (String) shPostField.getValue();
-					if (!shPostRepository.findById(shReferencedPostUUID).isPresent()) {
-						// So the referenced Post not exists, need create first
-						if (shObjects.get(shReferencedPostUUID) instanceof ShPostExchange) {
-							ShPostExchange shReferencedPostExchange = (ShPostExchange) shObjects
-									.get(shReferencedPostUUID);
-							this.createShPost(shReferencedPostExchange, extractFolder, username, shObjects, isCloned);
-						}
+					// So the referenced Post not exists, need create first
+					if (!shPostRepository.findById(shReferencedPostUUID).isPresent()
+							&& shObjects.get(shReferencedPostUUID) instanceof ShPostExchange) {
+						ShPostExchange shReferencedPostExchange = (ShPostExchange) shObjects.get(shReferencedPostUUID);
+						this.createShPost(shReferencedPostExchange, extractFolder, username, shObjects, isCloned);
 					}
+
 				} catch (IllegalArgumentException iae) {
-					// iae.printStackTrace();
+					logger.error("createShPostAttrs", iae);
 				}
 			}
 			if (shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.RELATOR)) {
 
-				LinkedHashMap<String, Object> relatorFields = (LinkedHashMap<String, Object>) shPostField.getValue();
-
-				ShPostAttr shPostAttr = new ShPostAttr();
-
-				if (shParentRelatorItem != null) {
-					shPostAttr.setShPost(null);
-					shPostAttr.setShParentRelatorItem(shParentRelatorItem);
-				} else {
-					shPostAttr.setShPost(shPost);
-				}
-
-				shPostAttr.setId((String) relatorFields.get("id"));
-				shPostAttr.setStrValue((String) relatorFields.get("name"));
-				shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-				shPostAttr.setType(1);
-
-				shPostAttrRepository.save(shPostAttr);
-
-				ObjectMapper mapper = new ObjectMapper();
-				ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
-				String subPostsJson = ow.writeValueAsString(relatorFields.get("shSubPosts"));
-				ShRelatorItemExchanges subPosts = mapper.readValue(subPostsJson, ShRelatorItemExchanges.class);
-
-				for (ShRelatorItemExchange shSubPost : subPosts) {
-					ShRelatorItem shRelatorItem = new ShRelatorItem();
-					shRelatorItem.setOrdinal(shSubPost.getPosition());
-					shRelatorItem.setShParentPostAttr(shPostAttr);
-
-					shRelatorItemRepository.save(shRelatorItem);
-					this.createShPostAttrs(shPostExchange, shPost, (Map<String, Object>) shSubPost.getFields(),
-							shRelatorItem, extractFolder, username, shObjects, isCloned);
-
-				}
+				detectPostAttrRelator(shPostExchange, shPost, shParentRelatorItem, extractFolder, username, shObjects,
+						isCloned, shPostField, shPostTypeAttr);
 			} else {
-				ShPostAttr shPostAttr = new ShPostAttr();
-				if (shPostField.getValue() instanceof ArrayList)
-					shPostAttr.setArrayValue((new HashSet<String>((ArrayList<String>) shPostField.getValue())));
-				else if (shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.DATE)) {
-					if (shPostField.getValue() != null) {
-						try {
-							shPostAttr.setDateValue(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'")
-									.parse((String) shPostField.getValue()));
-						} catch (ParseException e) {
-							logger.error("createShPostAttrs Error:", e);
-						}
-					}
-				} else
-					shPostAttr.setStrValue((String) shPostField.getValue());
-
-				if (shParentRelatorItem != null) {
-					shPostAttr.setShPost(null);
-					shPostAttr.setShParentRelatorItem(shParentRelatorItem);
-					if (shPostTypeAttr.getIsTitle() == 1) {
-						shParentRelatorItem.setTitle("Parent" + shPostAttr.getStrValue());
-					}
-					if (shPostTypeAttr.getIsSummary() == 1) {
-						shParentRelatorItem.setSummary(shPostAttr.getStrValue());
-					}
-				} else {
-					shPostAttr.setShPost(shPost);
-				}
-
-				shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-				shPostAttr.setType(1);
-				shPostAttrRepository.save(shPostAttr);
-
-				shPostUtils.referencedObject(shPostAttr, shPost);
-				shPostAttrRepository.save(shPostAttr);
+				detectPostAttrNonRelator(shPost, shParentRelatorItem, shPostField, shPostTypeAttr);
 			}
+		}
+	}
+
+	@SuppressWarnings({ "unchecked" })
+	private void detectPostAttrNonRelator(ShPost shPost, ShRelatorItem shParentRelatorItem,
+			Entry<String, Object> shPostField, ShPostTypeAttr shPostTypeAttr) {
+		ShPostAttr shPostAttr = new ShPostAttr();
+		if (shPostField.getValue() instanceof ArrayList)
+			shPostAttr.setArrayValue((new HashSet<String>((ArrayList<String>) shPostField.getValue())));
+		else if (shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.DATE)) {
+			if (shPostField.getValue() != null) {
+				try {
+					shPostAttr.setDateValue(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'")
+							.parse((String) shPostField.getValue()));
+				} catch (ParseException e) {
+					logger.error("createShPostAttrs Error:", e);
+				}
+			}
+		} else {
+			shPostAttr.setStrValue((String) shPostField.getValue());
+		}
+
+		if (shParentRelatorItem != null) {
+			shPostAttr.setShPost(null);
+			shPostAttr.setShParentRelatorItem(shParentRelatorItem);
+			if (shPostTypeAttr.getIsTitle() == 1) {
+				shParentRelatorItem.setTitle("Parent" + shPostAttr.getStrValue());
+			}
+			if (shPostTypeAttr.getIsSummary() == 1) {
+				shParentRelatorItem.setSummary(shPostAttr.getStrValue());
+			}
+		} else {
+			shPostAttr.setShPost(shPost);
+		}
+
+		shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+		shPostAttr.setType(1);
+		shPostAttrRepository.save(shPostAttr);
+
+		shPostUtils.referencedObject(shPostAttr, shPost);
+		shPostAttrRepository.save(shPostAttr);
+	}
+
+	@SuppressWarnings({ "unchecked" })
+	private void detectPostAttrRelator(ShPostExchange shPostExchange, ShPost shPost, ShRelatorItem shParentRelatorItem,
+			File extractFolder, String username, Map<String, Object> shObjects, boolean isCloned,
+			Entry<String, Object> shPostField, ShPostTypeAttr shPostTypeAttr)
+			throws JsonProcessingException, JsonMappingException, ClientProtocolException, IOException {
+		LinkedHashMap<String, Object> relatorFields = (LinkedHashMap<String, Object>) shPostField.getValue();
+
+		ShPostAttr shPostAttr = new ShPostAttr();
+
+		if (shParentRelatorItem != null) {
+			shPostAttr.setShPost(null);
+			shPostAttr.setShParentRelatorItem(shParentRelatorItem);
+		} else {
+			shPostAttr.setShPost(shPost);
+		}
+
+		shPostAttr.setId((String) relatorFields.get("id"));
+		shPostAttr.setStrValue((String) relatorFields.get("name"));
+		shPostAttr.setShPostTypeAttr(shPostTypeAttr);
+		shPostAttr.setType(1);
+
+		shPostAttrRepository.save(shPostAttr);
+
+		ObjectMapper mapper = new ObjectMapper();
+		ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+		String subPostsJson = ow.writeValueAsString(relatorFields.get("shSubPosts"));
+		ShRelatorItemExchanges subPosts = mapper.readValue(subPostsJson, ShRelatorItemExchanges.class);
+
+		for (ShRelatorItemExchange shSubPost : subPosts) {
+			ShRelatorItem shRelatorItem = new ShRelatorItem();
+			shRelatorItem.setOrdinal(shSubPost.getPosition());
+			shRelatorItem.setShParentPostAttr(shPostAttr);
+
+			shRelatorItemRepository.save(shRelatorItem);
+			this.createShPostAttrs(shPostExchange, shPost, shSubPost.getFields(), shRelatorItem, extractFolder,
+					username, shObjects, isCloned);
+
 		}
 	}
 }
