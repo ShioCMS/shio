@@ -75,13 +75,13 @@ public class ShPostTypeAPI {
 	
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewPostType.class })
-	public List<ShPostType> shPostTypeList() throws Exception {
+	public List<ShPostType> shPostTypeList() {
 		return shPostTypeRepository.findAll();
 	}
 
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewPostType.class })
-	public ShPostType shPostTypeEdit(@PathVariable String id) throws Exception {
+	public ShPostType shPostTypeEdit(@PathVariable String id) {
 		ShPostType shPostType = shPostTypeRepository.findById(id).orElse(null);
 
 		if (shPostType != null) {
@@ -104,18 +104,17 @@ public class ShPostTypeAPI {
 
 	@GetMapping("/model")
 	@JsonView({ ShJsonView.ShJsonViewPostType.class })
-	public ShPostType shPostTypeStructure() throws Exception {
-		ShPostType shPostType = new ShPostType();
-		return shPostType;
+	public ShPostType shPostTypeStructure() {
+		return new ShPostType();
 
 	}
 
 	@GetMapping("/{id}/post/model")
 	@JsonView({ ShJsonView.ShJsonViewPostType.class })
-	public ShPost shPostTypePostStructure(@PathVariable String id) throws Exception {
+	public ShPost shPostTypePostStructure(@PathVariable String id) {
 		ShPost shPost = new ShPost();
 		shPost.setShPostType(shPostTypeRepository.findById(id).orElse(null));
-		Set<ShPostAttr> shPostAttrs = new HashSet<ShPostAttr>();
+		Set<ShPostAttr> shPostAttrs = new HashSet<>();
 		for (ShPostTypeAttr shPostTypeAttr : shPost.getShPostType().getShPostTypeAttrs()) {
 			ShPostAttr shPostAttr = new ShPostAttr();
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
@@ -128,10 +127,10 @@ public class ShPostTypeAPI {
 
 	@GetMapping("/name/{postTypeName}/post/model")
 	@JsonView({ ShJsonView.ShJsonViewPostType.class })
-	public ShPost shPostTypeByNamePostStructure(@PathVariable String postTypeName) throws Exception {
+	public ShPost shPostTypeByNamePostStructure(@PathVariable String postTypeName) {
 		ShPost shPost = new ShPost();
 		shPost.setShPostType(shPostTypeRepository.findByName(postTypeName));
-		Set<ShPostAttr> shPostAttrs = new HashSet<ShPostAttr>();
+		Set<ShPostAttr> shPostAttrs = new HashSet<>();
 		for (ShPostTypeAttr shPostTypeAttr : shPost.getShPostType().getShPostTypeAttrs()) {
 			ShPostAttr shPostAttr = new ShPostAttr();
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
@@ -144,14 +143,14 @@ public class ShPostTypeAPI {
 
 	@PutMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewPostType.class })
-	public ShPostType shPostTypeUpdate(@PathVariable String id, @RequestBody ShPostType shPostType) throws Exception {
+	public ShPostType shPostTypeUpdate(@PathVariable String id, @RequestBody ShPostType shPostType) {
 		this.postTypeSave(shPostType);
 		return shPostType;
 	}
 
 	@Transactional
 	@DeleteMapping("/{id}")
-	public boolean shPostTypeDelete(@PathVariable String id) throws Exception {
+	public boolean shPostTypeDelete(@PathVariable String id){
 		Optional<ShPostType> shPostTypeOptional = shPostTypeRepository.findById(id);
 		if (shPostTypeOptional.isPresent()) {
 			ShPostType shPostType = shPostTypeOptional.get();
@@ -179,7 +178,7 @@ public class ShPostTypeAPI {
 
 	@PostMapping
 	@JsonView({ ShJsonView.ShJsonViewPostType.class })
-	public ShPostType shPostTypeAdd(@RequestBody ShPostType shPostType) throws Exception {
+	public ShPostType shPostTypeAdd(@RequestBody ShPostType shPostType){
 
 		this.postTypeSave(shPostType);
 
