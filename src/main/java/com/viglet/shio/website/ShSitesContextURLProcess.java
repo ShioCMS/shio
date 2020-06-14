@@ -16,7 +16,7 @@
  */
 package com.viglet.shio.website;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -125,7 +125,7 @@ public class ShSitesContextURLProcess {
 		ShSite shSite = shSiteRepository.findByFurl(shSiteName);
 		shSitesContextURL.getInfo().setSiteId(shSite.getId());
 
-		ArrayList<String> contentPath = shSitesContextComponent
+		List<String> contentPath = shSitesContextComponent
 				.contentPathFactory(shSitesContextURL.getInfo().getContextURL());
 
 		String objectName = shSitesContextComponent.objectNameFactory(contentPath);

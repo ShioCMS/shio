@@ -48,7 +48,7 @@ public class ShCacheRegion {
 	@Cacheable(value = "region", key = "{#root.methodName, #regionName, #shSite.getId()}", sync = true)
 	public String templateScopeCache(String regionName, ShSitesPageLayout shSitesPageLayout, ShSite shSite,
 			StringBuilder shObjectJS, String mimeType, HttpServletRequest request) {
-		return shSitesContextComponent.regionProcess(regionName, shSitesPageLayout, shSite, shObjectJS, mimeType,
+		return shSitesContextComponent.regionProcess(regionName, shSitesPageLayout, shSite, mimeType,
 				request);
 	}
 

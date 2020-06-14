@@ -17,6 +17,8 @@
 package com.viglet.shio.website;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,30 +91,27 @@ public class ShSitesContextComponent {
 	@Resource
 	private ApplicationContext context;
 
-	public String folderPathFactory(ArrayList<String> contentPath) {
-		String folderPath = "/";
-		if (contentPath.size() >= 1) {
-			ArrayList<String> folderPathArray = contentPath;
+	public String folderPathFactory(List<String> contentPath) {
+		StringBuilder folderPath = new StringBuilder("/");
+		if (!contentPath.isEmpty()) {
+			List<String> folderPathArray = contentPath;
 
 			// Remove PostName
 			folderPathArray.remove(folderPathArray.size() - 1);
 
 			for (String path : folderPathArray) {
-				folderPath = folderPath + path + "/";
+				folderPath.append(String.format("%s/", path));
 			}
 
 		}
-		return folderPath;
+		return folderPath.toString();
 	}
 
-	public ArrayList<String> contentPathFactory(String url) {
+	public List<String> contentPathFactory(String url) {
 		int contextPathPosition = 5;
 		String[] contexts = url.split("/");
-		ArrayList<String> contentPath = new ArrayList<String>();
-
-		for (int i = contextPathPosition; i < contexts.length; i++) {
-			contentPath.add(contexts[i]);
-		}
+		List<String> contentPath = new ArrayList<>();
+		Collections.addAll(contentPath, Arrays.copyOfRange(contexts, contextPathPosition, contexts.length));
 		return contentPath;
 	}
 
@@ -128,10 +127,10 @@ public class ShSitesContextComponent {
 		return shPostItem;
 	}
 
-	public String objectNameFactory(ArrayList<String> contentPath) {
+	public String objectNameFactory(List<String> contentPath) {
 		String objectName = null;
 		int lastPosition = contentPath.size() - 1;
-		if (contentPath.size() >= 1) {
+		if (!contentPath.isEmpty()) {
 			objectName = contentPath.get(lastPosition);
 		}
 		return objectName;
@@ -217,11 +216,12 @@ public class ShSitesContextComponent {
 
 	public Map<String, ShPostAttr> shFolderPageLayoutMapFactory(ShObject shObjectItem, ShSite shSite, String format) {
 
-		return shSitesPostUtils.postToMap(shSitesPageLayoutUtils.pageLayoutFromFolderAndFolderIndex(shObjectItem, shSite, format));
+		return shSitesPostUtils
+				.postToMap(shSitesPageLayoutUtils.pageLayoutFromFolderAndFolderIndex(shObjectItem, shSite, format));
 	}
 
 	public String shPageLayoutFactory(ShSitesPageLayout shSitesPageLayout, HttpServletRequest request, ShSite shSite,
-			String mimeType) throws Exception {
+			String mimeType) {
 
 		return shCachePageLayout.cache(shSitesPageLayout, request, shSite, mimeType);
 	}
@@ -242,7 +242,7 @@ public class ShSitesContextComponent {
 				cachedRegion = shCacheRegion.templateScopeCache(regionName, shSitesPageLayout, shSite, shObjectJS,
 						mimeType, request);
 			else
-				cachedRegion = this.regionProcess(regionName, shSitesPageLayout, shSite, shObjectJS, mimeType, request);
+				cachedRegion = this.regionProcess(regionName, shSitesPageLayout, shSite, mimeType, request);
 
 			if (cachedRegion != null)
 				element.html(cachedRegion).unwrap();
@@ -254,8 +254,8 @@ public class ShSitesContextComponent {
 		return doc;
 	}
 
-	public String regionProcess(String regionName, ShSitesPageLayout shSitesPageLayout, ShSite shSite,
-			StringBuilder shObjectJS, String mimeType, HttpServletRequest request) {
+	public String regionProcess(String regionName, ShSitesPageLayout shSitesPageLayout, ShSite shSite, String mimeType,
+			HttpServletRequest request) {
 		ShPost shRegion = getRegion(regionName, shSite.getId());
 		if (shRegion != null) {
 			Stopwatch stopwatch = Stopwatch.createStarted();
