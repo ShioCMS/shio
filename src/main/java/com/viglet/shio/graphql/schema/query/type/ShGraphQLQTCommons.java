@@ -27,7 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shio.graphql.ShGraphQLConstants;
-import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.persistence.repository.site.ShSiteRepository;
 
 import graphql.schema.GraphQLEnumType;

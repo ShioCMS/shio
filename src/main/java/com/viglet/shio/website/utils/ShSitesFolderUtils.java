@@ -84,7 +84,7 @@ public class ShSitesFolderUtils {
 	}
 
 	public Map<String, Object> toMap(ShFolder shFolder) {
-		Map<String, Object> shFolderItemAttrs = new HashMap<String, Object>();
+		Map<String, Object> shFolderItemAttrs = new HashMap<>();
 
 		shFolderItemAttrs.put("id", shFolder.getId());
 		shFolderItemAttrs.put("title", shFolder.getName());
@@ -107,7 +107,7 @@ public class ShSitesFolderUtils {
 	}
 
 	public String generateFolderLink(ShFolder shFolder) {
-		String link = shURLScheme.get(shFolder).toString();
+		String link = shURLScheme.get(shFolder);
 		link = link + shFolderUtils.folderPath(shFolder, true, false);
 		return link;
 	}

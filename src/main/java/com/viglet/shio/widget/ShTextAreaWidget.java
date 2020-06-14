@@ -48,13 +48,10 @@ public class ShTextAreaWidget implements ShWidgetImplementation {
 
 	@Override
 	public boolean validateForm(HttpServletRequest request, ShPostTypeAttr shPostTypeAttr) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public void postRender(ShPost shPost, ShSitesContextURL shSitesContextURL) throws IOException {
-		// TODO Auto-generated method stub
-		
 	}
 }

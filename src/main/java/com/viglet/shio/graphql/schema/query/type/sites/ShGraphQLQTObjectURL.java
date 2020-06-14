@@ -47,8 +47,10 @@ public class ShGraphQLQTObjectURL {
 
 	@Autowired
 	private ShSitesObjectUtils shSitesObjectUtils;
-	public final static String OBJECT_ID = "objectId";
-	public final static String SCALE = "scale";
+	
+	public static final String OBJECT_ID = "objectId";
+	public static final String SCALE = "scale";
+	
 	private static final String QUERY_TYPE_NAME = "shObjectURL";
 
 	public void createQueryType(Builder queryTypeBuilder,

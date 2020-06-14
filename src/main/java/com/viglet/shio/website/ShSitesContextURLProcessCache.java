@@ -62,12 +62,29 @@ public class ShSitesContextURLProcessCache {
 		shSitesContextURLInfo.setSiteId(shSitesContextURL.getInfo().getSiteId());
 
 		if (shSitesContextURLInfo.getObjectId() != null) {
-			ShObject shObject = shObjectRepository.findById(shSitesContextURLInfo.getObjectId()).orElse(null);
-			if (shSitesContextURL.getInfo().getObjectId() != null && shObject instanceof ShPost
-					&& ((ShPost) shObject).getShPostType().getName().equals(ShSystemPostType.FILE))
-				shSitesContextURLInfo.setStaticFile(true);
-			else
-				shSitesContextURLInfo.setStaticFile(false);
+			setContectFromObject(shSitesContextURL, shSitesContextURLInfo);
+		} else {
+			shSitesContextURLInfo.setPageAllowGuestUser(true);
+			shSitesContextURLInfo.setPageAllowRegisterUser(false);
+			shSitesContextURLInfo.setStaticFile(false);
+			shSitesContextURLInfo.setShPageGroups(null);
+		}
+
+		if (logger.isDebugEnabled()) {
+			Date after = new Date();
+
+			logger.debug("detectContextURL After: " + shSitesContextURL.toString());
+			logger.debug("URL Time: " + (after.getTime() - now.getTime()));
+		}
+
+		return shSitesContextURLInfo;
+
+	}
+
+	private void setContectFromObject(ShSitesContextURL shSitesContextURL,
+			ShSitesContextURLInfo shSitesContextURLInfo) {
+		shObjectRepository.findById(shSitesContextURLInfo.getObjectId()).ifPresent(shObject -> {
+			shSitesContextURLInfo.setStaticFile(isStaticFile(shSitesContextURL, shObject));
 
 			if (shObject instanceof ShPost && shObject.getFurl().equals("index")) {
 				ShFolder shFolder = shFolderUtils.getParentFolder(shObject);
@@ -84,19 +101,11 @@ public class ShSitesContextURLProcessCache {
 						? (String[]) shObject.getShPageGroups().toArray(new String[shObject.getShPageGroups().size()])
 						: null);
 			}
-		} else {
-			shSitesContextURLInfo.setPageAllowGuestUser(true);
-			shSitesContextURLInfo.setPageAllowRegisterUser(false);
-			shSitesContextURLInfo.setStaticFile(false);
-			shSitesContextURLInfo.setShPageGroups(null);
-		}
+		});
+	}
 
-		if (logger.isDebugEnabled())
-			logger.debug("detectContextURL After: " + shSitesContextURL.toString());
-		Date after = new Date();
-		if (logger.isDebugEnabled())
-			logger.debug("URL Time: " + (after.getTime() - now.getTime()));
-		return shSitesContextURLInfo;
-
+	private boolean isStaticFile(ShSitesContextURL shSitesContextURL, ShObject shObject) {
+		return shSitesContextURL.getInfo().getObjectId() != null && shObject instanceof ShPost
+				&& ((ShPost) shObject).getShPostType().getName().equals(ShSystemPostType.FILE);
 	}
 }

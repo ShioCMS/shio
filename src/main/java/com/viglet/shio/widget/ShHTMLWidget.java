@@ -47,13 +47,10 @@ public class ShHTMLWidget implements ShWidgetImplementation {
 
 	@Override
 	public boolean validateForm(HttpServletRequest request, ShPostTypeAttr shPostTypeAttr) {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
 	@Override
 	public void postRender(ShPost shPost, ShSitesContextURL shSitesContextURL) throws IOException {
-		// TODO Auto-generated method stub
-		
 	}
 }

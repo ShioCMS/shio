@@ -93,19 +93,7 @@ public class ShUserAPI {
 			}
 			ShUser shUser = null;
 			if (instance != null && !instance.getVendor().getId().equals(ShAuthSystemProviderVendor.NATIVE)) {
-				ShAuthenticationProvider shAuthenticationProvider;
-				try {
-					shAuthenticationProvider = (ShAuthenticationProvider) context
-							.getBean(Class.forName(instance.getVendor().getClassName()));
-
-					shAuthenticationProvider.init(instance.getId());
-
-					shUser = shAuthenticationProvider.getShUser(currentUserName);
-				} catch (BeansException e) {
-					logger.error("shUserCurrent BeansException", e);
-				} catch (ClassNotFoundException e) {
-					logger.error("shUserCurrent ClassNotFoundException", e);
-				}
+				shUser = loadAuthProvider(currentUserName, instance, shUser);
 			} else {
 				shUser = shUserRepository.findByUsername(currentUserName);
 
@@ -117,16 +105,42 @@ public class ShUserAPI {
 					}
 				}
 			}
+
+			return setUser(isAdmin, shUser);
+
+		}
+
+		return null;
+	}
+
+	private ShCurrentUser setUser(boolean isAdmin, ShUser shUser) {
+		if (shUser != null) {
 			ShCurrentUser shCurrentUser = new ShCurrentUser();
 			shCurrentUser.setUsername(shUser.getUsername());
 			shCurrentUser.setFirstName(shUser.getFirstName());
 			shCurrentUser.setLastName(shUser.getLastName());
 			shCurrentUser.setAdmin(isAdmin);
-
 			return shCurrentUser;
+		} else {
+			return null;
 		}
+	}
 
-		return null;
+	private ShUser loadAuthProvider(String currentUserName, ShAuthProviderInstance instance, ShUser shUser) {
+		ShAuthenticationProvider shAuthenticationProvider;
+		try {
+			shAuthenticationProvider = (ShAuthenticationProvider) context
+					.getBean(Class.forName(instance.getVendor().getClassName()));
+
+			shAuthenticationProvider.init(instance.getId());
+
+			shUser = shAuthenticationProvider.getShUser(currentUserName);
+		} catch (BeansException e) {
+			logger.error("shUserCurrent BeansException", e);
+		} catch (ClassNotFoundException e) {
+			logger.error("shUserCurrent ClassNotFoundException", e);
+		}
+		return shUser;
 	}
 
 	@GetMapping("/{username}")

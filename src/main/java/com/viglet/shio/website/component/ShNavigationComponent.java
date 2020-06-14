@@ -46,17 +46,15 @@ public class ShNavigationComponent {
 		ShSite shSite = shSiteRepository.findByName(siteName);
 		ShFolder homeFolder = shFolderRepository.findByShSiteAndName(shSite, "Home");
 		List<ShFolder> shFolders = new ArrayList<>();
-		if (home) {
-			if (shSitesObjectUtils.isVisiblePage(homeFolder)) {
-				shFolders.add(homeFolder);
-			}
-		}
+		if (home && shSitesObjectUtils.isVisiblePage(homeFolder))
+			shFolders.add(homeFolder);
 
-		for (ShFolder shFolder : shFolderRepository.findByParentFolderOrderByPositionAsc(homeFolder)) {
-			if (shSitesObjectUtils.isVisiblePage(shFolder)) {
+		shFolderRepository.findByParentFolderOrderByPositionAsc(homeFolder).forEach(shFolder -> {
+			if (shSitesObjectUtils.isVisiblePage(shFolder))
 				shFolders.add(shFolder);
-			}
-		}
+
+		});
+
 		return shFolders;
 	}
 

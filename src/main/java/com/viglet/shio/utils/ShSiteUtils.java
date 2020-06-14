@@ -61,8 +61,7 @@ public class ShSiteUtils {
 	}
 
 	public String generatePostLink(ShSite shSite) {
-		String link = shURLScheme.get(shSite);
-		return link;
+		return shURLScheme.get(shSite);
 	}
 
 }

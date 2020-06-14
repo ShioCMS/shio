@@ -44,7 +44,7 @@ shioApp.controller('ShWidgetFileCtrl', [
 						$scope.folderBreadcrumb(breadcrumb,
 								shFolder.parentFolder);
 					} else if (shFolder.shSite != null) {
-						var breadcrumbItem = {};
+						breadcrumbItem = {};
 						breadcrumbItem.id = shFolder.shSite.id;
 						breadcrumbItem.name = shFolder.shSite.name + " (Site)";
 						breadcrumb.push(breadcrumbItem);

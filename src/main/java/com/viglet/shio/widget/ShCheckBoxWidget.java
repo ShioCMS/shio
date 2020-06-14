@@ -66,7 +66,6 @@ public class ShCheckBoxWidget implements ShWidgetImplementation {
 	}
 
 	@Override
-	public void postRender(ShPost shPost, ShSitesContextURL shSitesContextURL) throws IOException {
-		// Post Render		
+	public void postRender(ShPost shPost, ShSitesContextURL shSitesContextURL) throws IOException {	
 	}
 }

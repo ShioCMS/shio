@@ -37,7 +37,7 @@ import com.viglet.shio.website.ShSitesContextURL;
 public class ShTextWidget implements ShWidgetImplementation {
 	@Autowired
 	private SpringTemplateEngine templateEngine;
-	
+
 	public String render(ShPostTypeAttr shPostTypeAttr, ShObject shObject) {
 		final Context ctx = new Context();
 		ctx.setVariable("shPostTypeAttr", shPostTypeAttr);
@@ -46,13 +46,12 @@ public class ShTextWidget implements ShWidgetImplementation {
 
 	@Override
 	public boolean validateForm(HttpServletRequest request, ShPostTypeAttr shPostTypeAttr) {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
 	@Override
 	public void postRender(ShPost shPost, ShSitesContextURL shSitesContextURL) throws IOException {
-		// TODO Auto-generated method stub
 		
 	}
+
 }
