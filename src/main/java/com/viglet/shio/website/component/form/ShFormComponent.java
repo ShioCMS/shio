@@ -18,7 +18,6 @@ package com.viglet.shio.website.component.form;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -53,7 +52,7 @@ public class ShFormComponent {
 	private SpringTemplateEngine templateEngine;
 	@Autowired
 	private ShObjectRepository shObjectRepository;
-	
+
 	public String byPostType(String shPostTypeName, String shObjectId, HttpServletRequest request)
 			throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 		final Context ctx = new Context();
@@ -66,21 +65,17 @@ public class ShFormComponent {
 
 		List<ShPostTypeAttr> postTypeAttrByOrdinal = new ArrayList<>(shPostType.getShPostTypeAttrs());
 
-		Collections.sort(postTypeAttrByOrdinal, new Comparator<ShPostTypeAttr>() {
-
-			public int compare(ShPostTypeAttr o1, ShPostTypeAttr o2) {
-				return o1.getOrdinal() - o2.getOrdinal();
-			}
-		});
+		Collections.sort(postTypeAttrByOrdinal,
+				(ShPostTypeAttr o1, ShPostTypeAttr o2) -> o1.getOrdinal() - o2.getOrdinal());
 
 		for (ShPostTypeAttr shPostTypeAttr : postTypeAttrByOrdinal) {
 			String className = shPostTypeAttr.getShWidget().getClassName();
 			ShWidgetImplementation object = (ShWidgetImplementation) Class.forName(className).newInstance();
 			applicationContext.getAutowireCapableBeanFactory().autowireBean(object);
 			fields.add(object.render(shPostTypeAttr, shObject));
-			
+
 			if (shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.FORM_CONFIGURATION)) {
-				JSONObject formConfiguration= new JSONObject(shPostTypeAttr.getWidgetSettings());	
+				JSONObject formConfiguration = new JSONObject(shPostTypeAttr.getWidgetSettings());
 				shFormConfiguration = new ShFormConfiguration(formConfiguration);
 			}
 		}
@@ -97,7 +92,7 @@ public class ShFormComponent {
 		ctx.setVariable("token", token);
 		ctx.setVariable("shPostType", shPostType);
 		ctx.setVariable("shPostTypeAttrs", shPostType.getShPostTypeAttrs());
-		ctx.setVariable("fields", fields);		
+		ctx.setVariable("fields", fields);
 		ctx.setVariable("method", method);
 
 		return templateEngine.process("form", ctx);

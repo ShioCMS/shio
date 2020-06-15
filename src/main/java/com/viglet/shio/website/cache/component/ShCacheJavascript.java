@@ -16,11 +16,11 @@
  */
 package com.viglet.shio.website.cache.component;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,46 +33,26 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ShCacheJavascript {
-	static final Logger logger = LogManager.getLogger(ShCacheJavascript.class.getName());
+	private static final Logger logger = LogManager.getLogger(ShCacheJavascript.class);
 	@Autowired
 	private ResourceLoader resourceloader;
 
 	@Cacheable(value = "javascript", sync = true)
 	public StringBuilder shObjectJSFactory() throws IOException {
-		logger.debug("Executando shObjectJSFactory");
-		InputStreamReader isrObjectJS = null;
-		InputStreamReader isrHandlebars = null;
+		
+		if (logger.isDebugEnabled())
+			logger.debug("Executing shObjectJSFactory");
+		
 		StringBuilder shObjectJS = new StringBuilder();
-		try {
-			isrObjectJS = new InputStreamReader(
-					resourceloader.getResource("classpath:/js/server-side/shObject.js").getInputStream());
-			isrHandlebars = new InputStreamReader(
-					resourceloader.getResource("classpath:/js/server-side/handlebars.min.js").getInputStream());
 
-			try (Reader reader = new BufferedReader(isrObjectJS)) {
-				int c = 0;
-				while ((c = reader.read()) != -1) {
-					shObjectJS.append((char) c);
-				}
-			}
-
-			try (Reader reader = new BufferedReader(isrHandlebars)) {
-				int c = 0;
-				while ((c = reader.read()) != -1) {
-					shObjectJS.append((char) c);
-				}
-			}
-
-		} catch (Exception e) {
-			logger.error("shObjectJSFactory Error", e);
-		} finally {
-			if (isrObjectJS != null)
-				isrObjectJS.close();
-			if (isrHandlebars != null)
-				isrHandlebars.close();
-
+		try (InputStream isrObjectJS = resourceloader.getResource("classpath:/js/server-side/shObject.js")
+				.getInputStream();
+				InputStream isrHandlebars = resourceloader.getResource("classpath:/js/server-side/handlebars.min.js")
+						.getInputStream();) {
+			shObjectJS.append(IOUtils.toString(isrObjectJS, StandardCharsets.UTF_8.name()));
+			shObjectJS.append(IOUtils.toString(isrHandlebars, StandardCharsets.UTF_8.name()));
 		}
+
 		return shObjectJS;
 	}
-
 }
