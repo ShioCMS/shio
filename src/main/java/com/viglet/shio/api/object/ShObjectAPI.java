@@ -163,11 +163,15 @@ public class ShObjectAPI {
 		} else if (shObject instanceof ShFolder) {
 			redirect = shSitesFolderUtils.generateFolderLink((ShFolder) shObject);
 		}
+		if (redirect != null) {
+			RedirectView redirectView = new RedirectView(
+					new String(redirect.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1));
+			redirectView.setHttp10Compatible(false);
 
-		RedirectView redirectView = new RedirectView(
-				new String(redirect.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1));
-		redirectView.setHttp10Compatible(false);
-		return redirectView;
+			return redirectView;
+		} else {
+			return null;
+		}
 	}
 
 	@GetMapping("{id}/clear-cache")

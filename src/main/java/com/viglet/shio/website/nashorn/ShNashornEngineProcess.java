@@ -58,7 +58,7 @@ public class ShNashornEngineProcess {
 			Bindings b = scriptEngine.getBindings(ScriptContext.GLOBAL_SCOPE);
 			if (b != null) {
 				for (Map.Entry<String, Object> e : b.entrySet()) {
-					ssc.setAttribute((String) e.getKey(), e.getValue(), ScriptContext.ENGINE_SCOPE);
+					ssc.setAttribute(e.getKey(), e.getValue(), ScriptContext.ENGINE_SCOPE);
 				}
 			}
 			sc = shObjectLib(ssc);
@@ -68,29 +68,32 @@ public class ShNashornEngineProcess {
 
 			return scriptEngine.eval(javascript, sc);
 
-		} catch (Throwable err) {
+		} catch (ScriptException err) {
 			regionError(objectName, javascript, err);
 		}
 		return null;
 	}
 
-	private ScriptContext shObjectLib(SimpleScriptContext ssc) throws IOException, ScriptException {
+	private ScriptContext shObjectLib(SimpleScriptContext ssc) {
 		StringBuilder shObjectJS;
 		ScriptContext sc;
 		if (scriptContexts.get() == null) {
 			logger.debug("Creating TL");
-			scriptContexts.set(new HashMap<String, ScriptContext>());
+			scriptContexts.set(new HashMap<>());
 		}
 		if ((sc = scriptContexts.get().get("shScript")) != null) {
 			logger.debug("Reusing shScript");
 		} else {
 			logger.debug("Creating shScript");
 
-			shObjectJS = shCacheJavascript.shObjectJSFactory();
-			scriptEngine.eval(shObjectJS.toString(), ssc);
+			try {
+				shObjectJS = shCacheJavascript.shObjectJSFactory();
+				scriptEngine.eval(shObjectJS.toString(), ssc);
+			} catch (IOException | ScriptException e) {
+				logger.error(e);
+			}
 			HashMap<String, ScriptContext> elementMap = new HashMap<>();
-			sc = (ScriptContext) ssc;
-			elementMap.put("shScript", sc);
+			elementMap.put("shScript", ssc);
 			scriptContexts.set(elementMap);
 
 		}
@@ -106,7 +109,7 @@ public class ShNashornEngineProcess {
 			String fileName = exc.getFileName();
 			String message = exc.getMessage();
 			String[] javascriptLines = javascript.split("\\n");
-			StringBuffer errorCode = new StringBuffer();
+			StringBuilder errorCode = new StringBuilder();
 			int minlines = 0;
 			if (lineNumber - 5 > minlines) {
 				minlines = lineNumber - 5;
@@ -124,8 +127,8 @@ public class ShNashornEngineProcess {
 				}
 
 			}
-			logger.error(String.format("Javascript Code of %s:\n %s", regionAttr, errorCode));
-			logger.error(String.format("ScriptError: %s '%s' at: <%s>%d:%d\n%s", regionAttr, message, fileName,
+			logger.error(String.format("Javascript Code of %s:%n %s", regionAttr, errorCode));
+			logger.error(String.format("ScriptError: %s '%s' at: <%s>%d:%d%n%s", regionAttr, message, fileName,
 					lineNumber, columnNumber, scriptStack));
 		} else {
 			logger.error((ExceptionUtils.getStackTrace(err)));

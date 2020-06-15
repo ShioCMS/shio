@@ -55,22 +55,19 @@ public class ShUtils {
 	 * @param zipFile      input zip file
 	 * @param outputFolder output Folder
 	 * @throws IOException if the IO fails
+	 * @throws ShUtilsException 
 	 */
-	public void unZipIt(File zipFile, File outputFolder) throws IOException {
+	public void unZipIt(File zipFile, File outputFolder) throws IOException, ShUtilsException {
 
 		try (ZipArchiveInputStream zin = new ZipArchiveInputStream(new FileInputStream(zipFile))) {
 			ZipArchiveEntry entry;
 			while ((entry = zin.getNextZipEntry()) != null) {
-				if (entry.isDirectory()) {
+				if (entry.isDirectory())
 					continue;
-				}
 				File curfile = new File(outputFolder, entry.getName());
 				File parent = curfile.getParentFile();
-				if (!parent.exists()) {
-					if (!parent.mkdirs()) {
-						throw new RuntimeException("could not create directory: " + parent.getPath());
-					}
-				}
+				if (!parent.exists() && !parent.mkdirs()) 
+					throw new ShUtilsException("could not create directory: " + parent.getPath());
 				IOUtils.copy(zin, new FileOutputStream(curfile));
 			}
 		}
@@ -80,42 +77,30 @@ public class ShUtils {
 	 * Add all files from the source directory to the destination zip file
 	 *
 	 * @param source      the directory with files to add
-	 * @param destination the zip file that should contain the files	
+	 * @param destination the zip file that should contain the files
 	 */
 	public void addFilesToZip(File source, File destination) {
-		OutputStream archiveStream = null;
-		try {
-			archiveStream = new FileOutputStream(destination);
-
+		try (OutputStream archiveStream = new FileOutputStream(destination)) {
 			ArchiveOutputStream archive = new ArchiveStreamFactory().createArchiveOutputStream(ArchiveStreamFactory.ZIP,
 					archiveStream);
 
 			Collection<File> fileList = FileUtils.listFiles(source, null, true);
-
-			for (File file : fileList) {
-				String entryName = getEntryName(source, file);
-				ZipArchiveEntry entry = new ZipArchiveEntry(entryName);
-				archive.putArchiveEntry(entry);
-
-				BufferedInputStream input = new BufferedInputStream(new FileInputStream(file));
-
-				IOUtils.copy(input, archive);
-				input.close();
-				archive.closeArchiveEntry();
-			}
+			fileList.forEach(file -> {
+				String entryName;
+				try (BufferedInputStream input = new BufferedInputStream(new FileInputStream(file))) {
+					entryName = getEntryName(source, file);
+					ZipArchiveEntry entry = new ZipArchiveEntry(entryName);
+					archive.putArchiveEntry(entry);
+					IOUtils.copy(input, archive);
+					archive.closeArchiveEntry();
+				} catch (IOException e) {
+					logger.error(e);
+				}
+			});
 
 			archive.finish();
-			archiveStream.close();
 		} catch (ArchiveException | IOException e) {
-			// TODO Auto-generated catch block
 			logger.error("addFilesToZip", e);
-		} finally {
-			try {
-				if (archiveStream != null)
-					archiveStream.close();
-			} catch (IOException e) {
-				logger.error("addFilesToZip Error:", e);
-			}
 		}
 	}
 
@@ -134,21 +119,21 @@ public class ShUtils {
 		return path.substring(index);
 	}
 
-	public static String asJsonString(final Object obj) {
+	public static String asJsonString(final Object obj) throws ShUtilsException {
 		try {
 			return new ObjectMapper().writeValueAsString(obj);
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new ShUtilsException(e);
 		}
 	}
 
-	public static String asJsonStringAndView(final Object obj, @SuppressWarnings("rawtypes") Class clazz) {
+	public static String asJsonStringAndView(final Object obj, @SuppressWarnings("rawtypes") Class clazz) throws ShUtilsException {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 			return mapper.writerWithView(clazz).writeValueAsString(obj);
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new ShUtilsException(e);
 		}
 	}
 

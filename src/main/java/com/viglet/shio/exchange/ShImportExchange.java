@@ -38,6 +38,7 @@ import com.viglet.shio.exchange.post.ShPostImport;
 import com.viglet.shio.exchange.post.type.ShPostTypeImport;
 import com.viglet.shio.exchange.site.ShSiteImport;
 import com.viglet.shio.utils.ShUtils;
+import com.viglet.shio.utils.ShUtilsException;
 
 /**
  * @author Alexandre Oliveira
@@ -87,18 +88,18 @@ public class ShImportExchange {
 			} catch (IOException e1) {
 				logger.error(e1);
 			}
+			if (shExchange != null) {
+				if (shExchange.getPostTypes() != null && !shExchange.getPostTypes().isEmpty())
+					shPostTypeImport.importPostType(shExchange, false);
 
-			if (shExchange.getPostTypes() != null && !shExchange.getPostTypes().isEmpty())
-				shPostTypeImport.importPostType(shExchange, false);
-
-			if (shExchange.getSites() != null && !shExchange.getSites().isEmpty()) {
-				shSiteImport.importSite(shExchange, username, extractFolder, shObjects, shChildObjects);
-			} else if (shExchange.getFolders() == null && shExchange.getPosts() != null) {
-				File extractFolderInner = extractFolder;
-				shExchange.getPosts().forEach(shPostExchange -> shPostImport.createShPost(shPostExchange,
-						extractFolderInner, username, shObjects, false));
+				if (shExchange.getSites() != null && !shExchange.getSites().isEmpty()) {
+					shSiteImport.importSite(shExchange, username, extractFolder, shObjects, shChildObjects);
+				} else if (shExchange.getFolders() == null && shExchange.getPosts() != null) {
+					File extractFolderInner = extractFolder;
+					shExchange.getPosts().forEach(shPostExchange -> shPostImport.createShPost(shPostExchange,
+							extractFolderInner, username, shObjects, false));
+				}
 			}
-
 			try {
 				FileUtils.deleteDirectory(extractFolder);
 				if (parentExtractFolder != null)
@@ -142,7 +143,7 @@ public class ShImportExchange {
 				file.transferTo(zipFile);
 				extractFolder = new File(tmpDir.getAbsolutePath().concat(File.separator + "imp_" + UUID.randomUUID()));
 				shUtils.unZipIt(zipFile, extractFolder);
-			} catch (IllegalStateException | IOException e) {
+			} catch (IllegalStateException | IOException | ShUtilsException e) {
 				logger.error(e);
 			}
 

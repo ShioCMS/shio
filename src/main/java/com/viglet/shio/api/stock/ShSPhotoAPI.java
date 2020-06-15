@@ -89,12 +89,12 @@ public class ShSPhotoAPI {
 
 				shSPhotoBean.setName(shPost.getTitle());
 				shSPhotoBean.setDate(shPost.getDate());
-				shSPhotoBean.setPreview_xxs(new ShSPhotoPreviewBean(imageURL.toString(), width, height));
-				shSPhotoBean.setPreview_xs(new ShSPhotoPreviewBean(imageURL.toString(), width, height));
-				shSPhotoBean.setPreview_s(new ShSPhotoPreviewBean(imageURL.toString(), width, height));
-				shSPhotoBean.setPreview_m(new ShSPhotoPreviewBean(imageURL.toString(), width, height));
-				shSPhotoBean.setPreview_l(new ShSPhotoPreviewBean(imageURL.toString(), width, height));
-				shSPhotoBean.setPreview_xl(new ShSPhotoPreviewBean(imageURL.toString(), width, height));
+				shSPhotoBean.setPreviewXXS(new ShSPhotoPreviewBean(imageURL.toString(), width, height));
+				shSPhotoBean.setPreviewXS(new ShSPhotoPreviewBean(imageURL.toString(), width, height));
+				shSPhotoBean.setPreviewS(new ShSPhotoPreviewBean(imageURL.toString(), width, height));
+				shSPhotoBean.setPreviewM(new ShSPhotoPreviewBean(imageURL.toString(), width, height));
+				shSPhotoBean.setPreviewL(new ShSPhotoPreviewBean(imageURL.toString(), width, height));
+				shSPhotoBean.setPreviewXL(new ShSPhotoPreviewBean(imageURL.toString(), width, height));
 				shSPhotoBean.setRaw(new ShSPhotoPreviewBean(imageURL.toString(), width, height));
 				shSPhotoBean.setDominantColor(rgb);
 				shSPhotoBeans.add(shSPhotoBean);
