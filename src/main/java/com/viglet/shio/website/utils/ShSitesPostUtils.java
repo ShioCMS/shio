@@ -18,7 +18,6 @@ package com.viglet.shio.website.utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,32 +79,34 @@ public class ShSitesPostUtils {
 	private ShPostUtils shPostUtils;
 
 	public ShPost getPostByStage(ShPost shPost) {
-		if (shPost != null) {
-			if (shMgmtProperties.isEnabled()) {
-				if (logger.isDebugEnabled())
-					logger.debug("mgmt is enabled");
-				Optional<ShPostDraft> shPostDraftOptional = shPostDraftRepository.findByIdFull(shPost.getId());
-				if (shPostDraftOptional.isPresent()) {
-					ShPost shPostDraft = shPostUtils.loadPostDraft(shPostDraftOptional.get());
-					if (shPostDraft != null)
-						return shPostDraft;
-				}
-				return shPost;
-			} else {
-				if (logger.isDebugEnabled())
-					logger.debug("mgmt is not enabled: ");
-				if (shPost.isPublished()) {
-					if (logger.isDebugEnabled())
-						logger.debug("is Published ");
-					return shPost;
-				} else {
-					if (logger.isDebugEnabled())
-						logger.debug("is not Published ");
-				}
+		return (shPost != null && shMgmtProperties.isEnabled()) ? this.getMgmtPost(shPost) : this.getLivePost(shPost);
+	}
 
-			}
+	private ShPost getLivePost(ShPost shPost) {
+
+		if (logger.isDebugEnabled())
+			logger.debug("mgmt is not enabled: ");
+		if (shPost.isPublished()) {
+			if (logger.isDebugEnabled())
+				logger.debug("is Published ");
+			return shPost;
+		} else {
+			if (logger.isDebugEnabled())
+				logger.debug("is not Published ");
 		}
 		return null;
+	}
+
+	private ShPost getMgmtPost(ShPost shPost) {
+		if (logger.isDebugEnabled())
+			logger.debug("mgmt is enabled");
+		Optional<ShPostDraft> shPostDraftOptional = shPostDraftRepository.findByIdFull(shPost.getId());
+		if (shPostDraftOptional.isPresent()) {
+			ShPost shPostDraft = shPostUtils.loadPostDraft(shPostDraftOptional.get());
+			if (shPostDraft != null)
+				return shPostDraft;
+		}
+		return shPost;
 	}
 
 	public List<ShPost> getPostsByStage(List<ShPost> shPosts) {
@@ -160,8 +161,8 @@ public class ShSitesPostUtils {
 	}
 
 	public Map<String, ShPostAttr> toMap(String postId) {
-
-		return this.postToMap(this.getPostByStage(shPostRepository.findById(postId).get()));
+		Optional<ShPost> shPost = shPostRepository.findById(postId);
+		return shPost.isPresent() ? this.postToMap(this.getPostByStage(shPost.get())) : null;
 	}
 
 	public JSONObject toJSON(ShPost shPost) {
@@ -211,9 +212,9 @@ public class ShSitesPostUtils {
 		if (shPost != null) {
 			Set<ShPostAttr> shPostAttrList = (shPostAttrRepository.findByShPost(shPost));
 
-			Map<String, ShPostAttr> shPostMap = new HashMap<String, ShPostAttr>();
+			Map<String, ShPostAttr> shPostMap = new HashMap<>();
 			ShPostAttr shPostAttrId = new ShPostAttr();
-			shPostAttrId.setStrValue(shPost.getId().toString());
+			shPostAttrId.setStrValue(shPost.getId());
 			ShPostAttr shPostAttrType = new ShPostAttr();
 			shPostAttrType.setStrValue(shPost.getShPostType().getName());
 			shPostMap.put("__type__", shPostAttrType);
@@ -232,20 +233,17 @@ public class ShSitesPostUtils {
 	public List<Map<String, ShPostAttr>> relationToMap(ShPostAttr shPostAttr) {
 
 		if (shPostAttr != null) {
-			List<Map<String, ShPostAttr>> relations = new ArrayList<Map<String, ShPostAttr>>();
+			List<Map<String, ShPostAttr>> relations = new ArrayList<>();
 
 			Set<ShRelatorItem> shRelatorItems = shPostAttr.getShChildrenRelatorItems();
-			List<ShRelatorItem> shRelatorItemsByOrdinal = new ArrayList<ShRelatorItem>();
+			List<ShRelatorItem> shRelatorItemsByOrdinal = new ArrayList<>();
 			shRelatorItemsByOrdinal.addAll(shRelatorItems);
 
-			Collections.sort(shRelatorItemsByOrdinal, new Comparator<ShRelatorItem>() {
-				public int compare(ShRelatorItem o1, ShRelatorItem o2) {
-					return o1.getOrdinal() - o2.getOrdinal();
-				}
-			});
+			Collections.sort(shRelatorItemsByOrdinal,
+					(ShRelatorItem o1, ShRelatorItem o2) -> o1.getOrdinal() - o2.getOrdinal());
 
 			for (ShRelatorItem shRelatorItem : shRelatorItemsByOrdinal) {
-				Map<String, ShPostAttr> shRelationMap = new HashMap<String, ShPostAttr>();
+				Map<String, ShPostAttr> shRelationMap = new HashMap<>();
 				ShPostAttr shPostAttrId = new ShPostAttr();
 				shPostAttrId.setStrValue(shRelatorItem.getId());
 				shRelationMap.put("id", shPostAttrId);
@@ -257,7 +255,7 @@ public class ShSitesPostUtils {
 
 			return relations;
 		} else {
-			return null;
+			return Collections.emptyList();
 		}
 
 	}
@@ -265,7 +263,7 @@ public class ShSitesPostUtils {
 	public String generatePostLink(ShPost shPost) {
 		ShFolder shFolder = shPost.getShFolder();
 		String link = null;
-		if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE.toString())) {
+		if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE)) {
 			link = shStaticFileUtils.getFileSourceBase() + "/" + shFolderUtils.getSite(shFolder).getName()
 					+ shFolderUtils.folderPath(shFolder, false, true) + shPost.getTitle();
 		} else if (shSitesObjectUtils.isVisiblePage(shPost)) {

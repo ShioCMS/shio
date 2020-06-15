@@ -184,7 +184,7 @@ h6 {
     border-bottom-style: solid;
 }
 
-navbar-default .navbar-left>li:focus,
+.navbar-default .navbar-left>li:focus,
 .navbar-default .navbar-left>li {
     color: #333;
     background-color: transparent;
@@ -199,103 +199,6 @@ navbar-default .navbar-left>li:focus,
     border-bottom-style: solid;
 }
 
-@media only screen and (min-width: 300px) {
-    .cover-welcome {
-        margin-top: 60px;
-        min-width: 100%;
-        min-height: 140px;
-        width: auto;
-        height: auto;
-        z-index: -100;
-        background-size: cover;
-        background-position: center top;
-        -webkit-background-size: cover;
-        -moz-background-size: cover;
-        -o-background-size: cover;
-        overflow: hidden;
-        background: url('../img/banner/aiforeveryone.jpg') 50% 50% / cover no-repeat;
-    }
-
-    .banner-text {
-        margin-top: 10px;
-        margin-bottom: 0px;
-        text-align: center;
-        font-size: 16px;
-        line-height: 150%
-    }
-
-    .turing-text {
-        text-align: left;
-        font-size: 20px;
-        line-height: 150%
-    }
-}
-
-@media only screen and (min-width: 321px) {
-    .cover-welcome {
-        margin-top: 60px;
-        min-width: 100%;
-        min-height: 180px;
-        width: auto;
-        height: auto;
-        z-index: -100;
-        background-size: cover;
-        background-position: center top;
-        -webkit-background-size: cover;
-        -moz-background-size: cover;
-        -o-background-size: cover;
-        overflow: hidden;
-        background: url('../img/banner/aiforeveryone.jpg') 50% 50% / cover no-repeat;
-    }
-
-    .banner-text {
-        margin-top: 10px;
-        margin-bottom: 0px;
-        text-align: center;
-        font-size: 20px;
-        line-height: 150%
-    }
-
-    .turing-text {
-        text-align: left;
-        font-size: 14px;
-        line-height: 150%
-    }
-}
-
-@media only screen and (min-width: 1200px) {
-
-    /* Styles */
-    .cover-welcome {
-        margin-top: 60px;
-        min-width: 100%;
-        min-height: 450px;
-        width: auto;
-        height: auto;
-        z-index: -100;
-        background-size: cover;
-        background-position: center top;
-        -webkit-background-size: cover;
-        -moz-background-size: cover;
-        -o-background-size: cover;
-        overflow: hidden;
-        background: url('../img/banner/aiforeveryone.jpg') 50% 50% / cover no-repeat;
-    }
-
-    .banner-text {
-        margin-top: 10px;
-        margin-bottom: 20px;
-        text-align: center;
-        font-size: 25px;
-        line-height: 150%
-    }
-
-    .turing-text {
-        text-align: left;
-        font-size: 16px;
-        line-height: 150%
-    }
-}
 /* Sidebar - Begin */
 .fa-2x-sidebar {
     font-size: 2em;

@@ -18,6 +18,7 @@ package com.viglet.shio.website.component;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -37,9 +38,11 @@ public class ShGetRelationComponent {
 	@Autowired
 	private ShSitesPostUtils shSitesPostUtils;
 
-	
-	public List<Map<String, ShPostAttr>> findByPostAttrId(String postAttrId) {		
-		ShPostAttr shPostAttr = shPostAttrRepository.findById(postAttrId).get();
-		return shSitesPostUtils.relationToMap(shSitesPostUtils.getPostAttrByStage(shPostAttr));		
+	public List<Map<String, ShPostAttr>> findByPostAttrId(String postAttrId) {
+		Optional<ShPostAttr> shPostAttr = shPostAttrRepository.findById(postAttrId);
+
+		return shPostAttr.isPresent()
+				? shSitesPostUtils.relationToMap(shSitesPostUtils.getPostAttrByStage(shPostAttr.get()))
+				: null;
 	}
 }
