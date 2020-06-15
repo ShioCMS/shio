@@ -17,7 +17,6 @@
 package com.viglet.shio.exchange.folder;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +53,7 @@ public class ShFolderImport {
 	private ShPostImport shPostImport;
 
 	public void shFolderImportNested(String shObject, File extractFolder, String username, boolean importOnlyFolders,
-			Map<String, Object> shObjects, Map<String, List<String>> shChildObjects, boolean isCloned) throws IOException {
+			Map<String, Object> shObjects, Map<String, List<String>> shChildObjects, boolean isCloned) {
 		if (shChildObjects.containsKey(shObject)) {
 			for (String objectId : shChildObjects.get(shObject)) {
 				if (shObjects.get(objectId) instanceof ShFolderExchange) {					
@@ -74,7 +73,7 @@ public class ShFolderImport {
 
 	public ShFolder createShFolder(ShFolderExchange shFolderExchange, File extractFolder, String username,
 			String shObject, boolean importOnlyFolders, Map<String, Object> shObjects,
-			Map<String, List<String>> shChildObjects, boolean isCloned) throws IOException {
+			Map<String, List<String>> shChildObjects, boolean isCloned) {
 		ShFolder shFolderChild = null;
 		Optional<ShFolder> shFolderOptional = shFolderRepository.findById(shFolderExchange.getId());
 		if (shFolderOptional.isPresent()) {

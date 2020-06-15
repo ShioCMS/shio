@@ -69,7 +69,7 @@ public class ShSiteImport {
 	private ShPostTypeRepository shPostTypeRepository;
 
 	public void importSite(ShExchange shExchange, String username, File extractFolder, Map<String, Object> shObjects,
-			Map<String, List<String>> shChildObjects) throws IOException {
+			Map<String, List<String>> shChildObjects) {
 		logger.info("2 of 4 - Importing Sites");
 		for (ShSiteExchange shSiteExchange : shExchange.getSites()) {
 			logger.info(String.format(".... %s Site (%s)", shSiteExchange.getName(), shSiteExchange.getId()));

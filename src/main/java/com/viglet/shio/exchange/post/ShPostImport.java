@@ -126,7 +126,6 @@ public class ShPostImport {
 		return shPost;
 	}
 
-	
 	private void getShPostAttrs(ShPostExchange shPostExchange, ShPost shPost, Map<String, Object> shPostFields,
 			ShRelatorItem shParentRelatorItem) throws ClientProtocolException, IOException {
 		for (Entry<String, Object> shPostField : shPostFields.entrySet()) {
@@ -159,7 +158,7 @@ public class ShPostImport {
 			}
 		}
 	}
-	
+
 	@SuppressWarnings({ "unchecked" })
 	private void postAttrNonRelator(ShPost shPost, ShRelatorItem shParentRelatorItem, Entry<String, Object> shPostField,
 			ShPostTypeAttr shPostTypeAttr) {
@@ -169,8 +168,8 @@ public class ShPostImport {
 		else if (shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.DATE)) {
 			if (shPostField.getValue() != null) {
 				try {
-					shPostAttr.setDateValue(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'")
-							.parse((String) shPostField.getValue()));
+					shPostAttr.setDateValue(
+							new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'").parse((String) shPostField.getValue()));
 				} catch (ParseException e) {
 					logger.error("createShPostAttrs Error:", e);
 				}
@@ -234,7 +233,7 @@ public class ShPostImport {
 	}
 
 	public ShPost createShPost(ShPostExchange shPostExchange, File extractFolder, String username,
-			Map<String, Object> shObjects, boolean isCloned) throws ClientProtocolException, IOException {
+			Map<String, Object> shObjects, boolean isCloned) {
 		ShPost shPost = null;
 		if (shPostRepository.findById(shPostExchange.getId()).isPresent()) {
 			shPost = shPostRepository.findById(shPostExchange.getId()).orElse(null);
@@ -280,7 +279,6 @@ public class ShPostImport {
 		return shPost;
 	}
 
-
 	private void detectPostAttrs(ShPostExchange shPostExchange, File extractFolder, ShPost shPost) {
 		for (Entry<String, Object> shPostField : shPostExchange.getFields().entrySet()) {
 			ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPost.getShPostType(),
@@ -308,7 +306,7 @@ public class ShPostImport {
 
 	private void createShPostAttrs(ShPostExchange shPostExchange, ShPost shPost, Map<String, Object> shPostFields,
 			ShRelatorItem shParentRelatorItem, File extractFolder, String username, Map<String, Object> shObjects,
-			boolean isCloned) throws ClientProtocolException, IOException {
+			boolean isCloned) {
 		for (Entry<String, Object> shPostField : shPostFields.entrySet()) {
 			ShPostType shPostType = shPostTypeRepository.findByName(shPostExchange.getPostType());
 
@@ -355,8 +353,8 @@ public class ShPostImport {
 		else if (shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.DATE)) {
 			if (shPostField.getValue() != null) {
 				try {
-					shPostAttr.setDateValue(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'")
-							.parse((String) shPostField.getValue()));
+					shPostAttr.setDateValue(
+							new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'").parse((String) shPostField.getValue()));
 				} catch (ParseException e) {
 					logger.error("createShPostAttrs Error:", e);
 				}
@@ -389,8 +387,7 @@ public class ShPostImport {
 	@SuppressWarnings({ "unchecked" })
 	private void detectPostAttrRelator(ShPostExchange shPostExchange, ShPost shPost, ShRelatorItem shParentRelatorItem,
 			File extractFolder, String username, Map<String, Object> shObjects, boolean isCloned,
-			Entry<String, Object> shPostField, ShPostTypeAttr shPostTypeAttr)
-			throws JsonProcessingException, JsonMappingException, ClientProtocolException, IOException {
+			Entry<String, Object> shPostField, ShPostTypeAttr shPostTypeAttr) {
 		LinkedHashMap<String, Object> relatorFields = (LinkedHashMap<String, Object>) shPostField.getValue();
 
 		ShPostAttr shPostAttr = new ShPostAttr();
@@ -411,18 +408,23 @@ public class ShPostImport {
 
 		ObjectMapper mapper = new ObjectMapper();
 		ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
-		String subPostsJson = ow.writeValueAsString(relatorFields.get("shSubPosts"));
-		ShRelatorItemExchanges subPosts = mapper.readValue(subPostsJson, ShRelatorItemExchanges.class);
+		ShRelatorItemExchanges subPosts = null;
+		try {
+			String subPostsJson = ow.writeValueAsString(relatorFields.get("shSubPosts"));
+			subPosts = mapper.readValue(subPostsJson, ShRelatorItemExchanges.class);
+		} catch (JsonProcessingException e) {
+			logger.error(e);
+		}
+		if (subPosts != null) {
+			subPosts.forEach(shSubPost -> {
+				ShRelatorItem shRelatorItem = new ShRelatorItem();
+				shRelatorItem.setOrdinal(shSubPost.getPosition());
+				shRelatorItem.setShParentPostAttr(shPostAttr);
 
-		for (ShRelatorItemExchange shSubPost : subPosts) {
-			ShRelatorItem shRelatorItem = new ShRelatorItem();
-			shRelatorItem.setOrdinal(shSubPost.getPosition());
-			shRelatorItem.setShParentPostAttr(shPostAttr);
-
-			shRelatorItemRepository.save(shRelatorItem);
-			this.createShPostAttrs(shPostExchange, shPost, shSubPost.getFields(), shRelatorItem, extractFolder,
-					username, shObjects, isCloned);
-
+				shRelatorItemRepository.save(shRelatorItem);
+				this.createShPostAttrs(shPostExchange, shPost, shSubPost.getFields(), shRelatorItem, extractFolder,
+						username, shObjects, isCloned);
+			});
 		}
 	}
 }

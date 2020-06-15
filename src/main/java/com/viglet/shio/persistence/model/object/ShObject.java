@@ -70,13 +70,13 @@ public class ShObject implements Serializable {
 	@OneToMany(mappedBy = "referenceObject")
 	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
 	@Cascade({ CascadeType.ALL })
-	private Set<ShPostAttr> shPostAttrRefs = new HashSet<ShPostAttr>();
+	private Set<ShPostAttr> shPostAttrRefs = new HashSet<>();
 
 	// bi-directional many-to-one association to ShObject
 	@OneToMany(mappedBy = "referenceObject")
 	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
 	@Cascade({ CascadeType.ALL })
-	private Set<ShPostDraftAttr> shPostDraftAttrRefs = new HashSet<ShPostDraftAttr>();
+	private Set<ShPostDraftAttr> shPostDraftAttrRefs = new HashSet<>();
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date date;

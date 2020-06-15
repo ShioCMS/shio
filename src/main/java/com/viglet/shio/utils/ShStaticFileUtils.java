@@ -58,19 +58,18 @@ public class ShStaticFileUtils {
 	private ShPostAttrRepository shPostAttrRepository;
 	@Autowired
 	private ShHistoryUtils shHistoryUtils;
-	
-	private String fileSourceBase = File.separator + "store" + File.separator + "file_source";
+
+	private static final String FILE_SOURCE_BASE = File.separator + "store" + File.separator + "file_source";
+	private static final String USER_DIR = "user.dir";
+	private File userDir = new File(System.getProperty(USER_DIR));
 
 	public File dirPath(ShFolder shFolder) {
 		File directoryPath = null;
 		ShSite shSite = shFolderUtils.getSite(shFolder);
 		String folderPath = shFolderUtils.directoryPath(shFolder, File.separator);
-		String folderPathFile = fileSourceBase.concat(File.separator + shSite.getName() + folderPath);
-		File userDir = new File(System.getProperty("user.dir"));
-		if (userDir.exists() && userDir.isDirectory()) {
+		String folderPathFile = FILE_SOURCE_BASE.concat(File.separator + shSite.getName() + folderPath);
+		if (userDir.exists() && userDir.isDirectory())
 			directoryPath = new File(userDir.getAbsolutePath().concat(folderPathFile));
-
-		}
 		return directoryPath;
 	}
 
@@ -82,10 +81,8 @@ public class ShStaticFileUtils {
 		File file = null;
 		File directoryPath = this.dirPath(shFolder);
 
-		if (directoryPath != null) {
+		if (directoryPath != null)
 			file = new File(directoryPath.getAbsolutePath().concat(File.separator + fileName));
-
-		}
 		return file;
 	}
 
@@ -94,50 +91,44 @@ public class ShStaticFileUtils {
 		if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE)) {
 			File directoryPath = this.dirPath(shPost.getShFolder());
 
-			if (directoryPath != null) {
+			if (directoryPath != null)
 				file = new File(directoryPath.getAbsolutePath().concat(File.separator + shPost.getTitle()));
-
-			}
 		}
 		return file;
 	}
 
 	public File filePath(String url) {
 		File file = null;
-		File userDir = new File(System.getProperty("user.dir"));
-		String fileRelativePath = url.replaceAll("/", File.separator);
+		String fileRelativePath = url.replace("/", File.separator);
 
 		if (userDir.exists() && userDir.isDirectory()) {
-			String fileSource = userDir.getAbsolutePath().concat(fileSourceBase);
+			String fileSource = userDir.getAbsolutePath().concat(FILE_SOURCE_BASE);
 			file = new File(fileSource.concat(fileRelativePath));
-
 		}
 		return file;
 	}
 
 	public File getFileSource() {
 		File file = null;
-		File userDir = new File(System.getProperty("user.dir"));
 
 		if (userDir.exists() && userDir.isDirectory()) {
-			String fileSource = userDir.getAbsolutePath().concat(fileSourceBase);
+			String fileSource = userDir.getAbsolutePath().concat(FILE_SOURCE_BASE);
 			file = new File(fileSource);
-
 		}
 		return file;
 	}
 
 	public String getFileSourceBase() {
-		return fileSourceBase;
+		return FILE_SOURCE_BASE;
 	}
 
-	public ShPost createFilePost(MultipartFile file, String fileName, ShFolder shFolder, Principal principal, boolean createPost) {
+	public ShPost createFilePost(MultipartFile file, String fileName, ShFolder shFolder, Principal principal,
+			boolean createPost) {
 		File directoryPath = this.dirPath(shFolder);
 		ShPost shPost = new ShPost();
 		if (directoryPath != null) {
-			if (!directoryPath.exists()) {
+			if (!directoryPath.exists())
 				directoryPath.mkdirs();
-			}
 
 			try {
 

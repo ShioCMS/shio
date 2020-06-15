@@ -61,36 +61,35 @@ public class ShPostTypeExport {
 	@Autowired
 	private ShUtils shUtils;
 
-	public StreamingResponseBody exportObject(HttpServletResponse response) throws Exception {
+	public StreamingResponseBody exportObject(HttpServletResponse response) {
 		String folderName = UUID.randomUUID().toString();
 		File userDir = new File(System.getProperty("user.dir"));
 		if (userDir.exists() && userDir.isDirectory()) {
 			File tmpDir = new File(userDir.getAbsolutePath().concat(File.separator + "store" + File.separator + "tmp"));
-			if (!tmpDir.exists()) {
+			if (!tmpDir.exists())
 				tmpDir.mkdirs();
-			}
 
 			List<ShPostType> shPostTypes = shPostTypeRepository.findAll();
 
-			List<ShPostTypeExchange> postTypeExchanges = new ArrayList<ShPostTypeExchange>();
+			List<ShPostTypeExchange> postTypeExchanges = new ArrayList<>();
 
-			for (ShPostType shPostType : shPostTypes) {
-				postTypeExchanges.add(this.exportPostType(shPostType));
-			}
+			shPostTypes.forEach(shPostType -> postTypeExchanges.add(this.exportPostType(shPostType)));
 
 			File exportDir = new File(tmpDir.getAbsolutePath().concat(File.separator + folderName));
-			if (!exportDir.exists()) {
+			if (!exportDir.exists())
 				exportDir.mkdirs();
-			}
 
 			ShExchange shExchange = new ShExchange();
-			if (postTypeExchanges.size() > 0) {
+			if (!postTypeExchanges.isEmpty())
 				shExchange.setPostTypes(postTypeExchanges);
-			}
 			// Object to JSON in file
 			ObjectMapper mapper = new ObjectMapper();
-			mapper.writerWithDefaultPrettyPrinter().writeValue(
-					new File(exportDir.getAbsolutePath().concat(File.separator + "export.json")), shExchange);
+			try {
+				mapper.writerWithDefaultPrettyPrinter().writeValue(
+						new File(exportDir.getAbsolutePath().concat(File.separator + "export.json")), shExchange);
+			} catch (IOException e1) {
+				logger.error(e1);
+			}
 
 			File zipFile = new File(tmpDir.getAbsolutePath().concat(File.separator + folderName + ".zip"));
 
@@ -117,9 +116,7 @@ public class ShPostTypeExport {
 						FileUtils.deleteQuietly(zipFile);
 
 					} catch (IOException ex) {
-						logger.error("exportObjectIOException", ex);
-					} catch (Exception e) {
-						logger.error("exportObjectException", e);
+						logger.error(ex);
 					}
 				}
 			};
@@ -138,16 +135,14 @@ public class ShPostTypeExport {
 		shPostTypeExchange.setDescription(shPostType.getDescription());
 
 		shPostTypeExchange.setOwner(shPostType.getOwner());
-		shPostTypeExchange.setSystem(shPostType.getSystem() == (byte) 1 ? true : false);
+		shPostTypeExchange.setSystem(shPostType.getSystem() == (byte) 1);
 
-		if (shPostType.getShPostTypeAttrs().size() > 0) {
-			Map<String, ShPostTypeFieldExchange> shPostTypeFieldExchanges = new HashMap<String, ShPostTypeFieldExchange>();
-
-			for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs()) {
+		if (!shPostType.getShPostTypeAttrs().isEmpty()) {
+			Map<String, ShPostTypeFieldExchange> shPostTypeFieldExchanges = new HashMap<>();
+			shPostType.getShPostTypeAttrs().forEach(shPostTypeAttr -> {
 				ShPostTypeFieldExchange shPostTypeFieldExchange = this.exportPostTypeField(shPostTypeAttr);
 				shPostTypeFieldExchanges.put(shPostTypeAttr.getName(), shPostTypeFieldExchange);
-			}
-
+			});
 			shPostTypeExchange.setFields(shPostTypeFieldExchanges);
 		}
 
@@ -161,19 +156,18 @@ public class ShPostTypeExport {
 		shPostTypeFieldExchange.setDescription(shPostTypeAttr.getDescription());
 
 		shPostTypeFieldExchange.setOrdinal(shPostTypeAttr.getOrdinal());
-		shPostTypeFieldExchange.setRequired(shPostTypeAttr.getRequired() == (byte) 1 ? true : false);
-		shPostTypeFieldExchange.setSummary(shPostTypeAttr.getIsSummary() == (byte) 1 ? true : false);
-		shPostTypeFieldExchange.setTitle(shPostTypeAttr.getIsTitle() == (byte) 1 ? true : false);
+		shPostTypeFieldExchange.setRequired(shPostTypeAttr.getRequired() == (byte) 1);
+		shPostTypeFieldExchange.setSummary(shPostTypeAttr.getIsSummary() == (byte) 1);
+		shPostTypeFieldExchange.setTitle(shPostTypeAttr.getIsTitle() == (byte) 1);
 		shPostTypeFieldExchange.setWidget(shPostTypeAttr.getShWidget().getName());
 		shPostTypeFieldExchange.setWidgetSettings(shPostTypeAttr.getWidgetSettings());
 
-		if (shPostTypeAttr.getShPostTypeAttrs().size() > 0) {
-			Map<String, ShPostTypeFieldExchange> shPostTypeFieldExchanges = new HashMap<String, ShPostTypeFieldExchange>();
-
-			for (ShPostTypeAttr shPostTypeAttrChild : shPostTypeAttr.getShPostTypeAttrs()) {
+		if (!shPostTypeAttr.getShPostTypeAttrs().isEmpty()) {
+			Map<String, ShPostTypeFieldExchange> shPostTypeFieldExchanges = new HashMap<>();
+			shPostTypeAttr.getShPostTypeAttrs().forEach(shPostTypeAttrChild -> {
 				ShPostTypeFieldExchange shPostTypeFieldExchangeChild = this.exportPostTypeField(shPostTypeAttrChild);
 				shPostTypeFieldExchanges.put(shPostTypeAttrChild.getName(), shPostTypeFieldExchangeChild);
-			}
+			});
 			shPostTypeFieldExchange.setFields(shPostTypeFieldExchanges);
 		}
 		return shPostTypeFieldExchange;

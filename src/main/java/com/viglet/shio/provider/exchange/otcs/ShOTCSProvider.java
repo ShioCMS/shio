@@ -42,7 +42,6 @@ import com.viglet.shio.provider.exchange.ShExchangeProviderFolder;
 import com.viglet.shio.provider.exchange.ShExchangeProviderPost;
 import com.viglet.shio.provider.exchange.otcs.bean.folder.ShOTCSFolderBean;
 import com.viglet.shio.provider.exchange.otcs.bean.object.ShOTCSObjectBean;
-import com.viglet.shio.provider.exchange.otcs.bean.result.ShOTCSResultsBean;
 import com.viglet.shio.provider.exchange.otcs.bean.ticket.ShOTCSTicketBean;
 
 import org.apache.commons.lang3.StringUtils;
@@ -63,9 +62,9 @@ public class ShOTCSProvider implements ShExchangeProvider {
 	private static final String OTCS_TICKET = "OTCSTicket";
 	private static final String ROOT_FOLDER_ID = "2000";
 	private static final String PROVIDER_NAME = "OTCS";
-	private static final String URL = "URL";
-	private static final String USERNAME = "USERNAME";
-	private static final String PASSWORD = "PASSWORD";
+	private static final String URL_VAR = "URL";
+	private static final String USERNAME_VAR = "USERNAME";
+	private static final String PASSWORD_VAR = "PASSWORD";
 
 	private ObjectMapper objectMapper = new ObjectMapper().enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
 
@@ -80,9 +79,9 @@ public class ShOTCSProvider implements ShExchangeProvider {
 	private String password = null;
 
 	public void init(Map<String, String> variables) {
-		this.baseURL = variables.get(URL);
-		this.username = variables.get(USERNAME);
-		this.password = variables.get(PASSWORD);
+		this.baseURL = variables.get(URL_VAR);
+		this.username = variables.get(USERNAME_VAR);
+		this.password = variables.get(PASSWORD_VAR);
 	}
 
 	public ShExchangeProviderFolder getRootFolder() {
@@ -91,96 +90,98 @@ public class ShOTCSProvider implements ShExchangeProvider {
 	}
 
 	public ShExchangeProviderFolder getFolder(String id) {
-		ShOTCSTicketBean sOTCSTicketBean = this.otcsAuth();
-
-		ShOTCSFolderBean shOTCSFolderBean = null;
-		try {
-			HttpGet httpGet = new HttpGet(String.format("%s/api/v2/nodes/%s/nodes", this.baseURL, id));
-			httpGet.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
-			httpGet.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString());
-			httpGet.setHeader(OTCS_TICKET, sOTCSTicketBean.getTicket());
-			HttpResponse response = httpClient.execute(httpGet);
-			shOTCSFolderBean = objectMapper.readValue(responseHandler.handleResponse(response), ShOTCSFolderBean.class);
-
-		} catch (UnsupportedOperationException e) {
-			logger.error("rootFolder UnsupportedOperationException: ", e);
-		} catch (IOException e) {
-			logger.error("rootFolder IOException: ", e);
-		}
-
-		ShExchangeProviderPost shExchangeProviderPost = this.getObject(id, true);
+		ShOTCSTicketBean shOTCSTicketBean = this.otcsAuth();
 		ShExchangeProviderFolder shExchangeProviderFolder = new ShExchangeProviderFolder();
+		if (shOTCSTicketBean != null) {
+			ShOTCSFolderBean shOTCSFolderBean = null;
 
-		shExchangeProviderFolder.setId(id);
-		shExchangeProviderFolder.setName(shExchangeProviderPost.getTitle());
-		shExchangeProviderFolder.setBreadcrumb(this.getBreadcrumb(id));
-		shExchangeProviderFolder.setProviderName(PROVIDER_NAME);
-		shExchangeProviderFolder.setParentId(shExchangeProviderPost.getParentId());
+			try {
+				HttpGet httpGet = new HttpGet(String.format("%s/api/v2/nodes/%s/nodes", this.baseURL, id));
+				httpGet.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
+				httpGet.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString());
+				httpGet.setHeader(OTCS_TICKET, shOTCSTicketBean.getTicket());
+				HttpResponse response = httpClient.execute(httpGet);
+				shOTCSFolderBean = objectMapper.readValue(responseHandler.handleResponse(response),
+						ShOTCSFolderBean.class);
 
-		for (ShOTCSResultsBean results : shOTCSFolderBean.getResults()) {
+			} catch (UnsupportedOperationException | IOException e) {
+				logger.error(e);
+			}
 
-			if (results.getData().getProperties().getTypeName().equals("Folder")) {
+			ShExchangeProviderPost shExchangeProviderPost = this.getObject(id, true);
 
-				String resultId = Integer.toString(results.getData().getProperties().getId());
+			shExchangeProviderFolder.setId(id);
+			shExchangeProviderFolder.setName(shExchangeProviderPost.getTitle());
+			shExchangeProviderFolder.setBreadcrumb(this.getBreadcrumb(id));
+			shExchangeProviderFolder.setProviderName(PROVIDER_NAME);
+			shExchangeProviderFolder.setParentId(shExchangeProviderPost.getParentId());
 
-				String resultName = results.getData().getProperties().getName();
+			if (shOTCSFolderBean != null) {
+				shOTCSFolderBean.getResults().forEach(results -> {
+					if (results.getData().getProperties().getTypeName().equals("Folder")) {
 
-				Date resultDate = results.getData().getProperties().getCreate_date();
+						String resultId = Integer.toString(results.getData().getProperties().getId());
 
-				ShExchangeProviderFolder shExchangeProviderFolderChild = new ShExchangeProviderFolder();
-				shExchangeProviderFolderChild.setId(resultId);
-				shExchangeProviderFolderChild.setName(resultName);
-				shExchangeProviderFolderChild.setDate(resultDate);
+						String resultName = results.getData().getProperties().getName();
 
-				shExchangeProviderFolder.getFolders().add(shExchangeProviderFolderChild);
-			} else {
+						Date resultDate = results.getData().getProperties().getCreate_date();
 
-				String postId = Integer.toString(results.getData().getProperties().getId());
+						ShExchangeProviderFolder shExchangeProviderFolderChild = new ShExchangeProviderFolder();
+						shExchangeProviderFolderChild.setId(resultId);
+						shExchangeProviderFolderChild.setName(resultName);
+						shExchangeProviderFolderChild.setDate(resultDate);
 
-				String postTitle = results.getData().getProperties().getName();
+						shExchangeProviderFolder.getFolders().add(shExchangeProviderFolderChild);
+					} else {
 
-				Date postDate = results.getData().getProperties().getCreate_date();
+						String postId = Integer.toString(results.getData().getProperties().getId());
 
-				String postType = results.getData().getProperties().getTypeName();
+						String postTitle = results.getData().getProperties().getName();
 
-				ShExchangeProviderPost shExchangeProviderPostChild = new ShExchangeProviderPost();
+						Date postDate = results.getData().getProperties().getCreate_date();
 
-				shExchangeProviderPostChild.setId(postId);
-				shExchangeProviderPostChild.setTitle(postTitle);
-				shExchangeProviderPostChild.setDate(postDate);
-				shExchangeProviderPostChild.setType(postType);
+						String postType = results.getData().getProperties().getTypeName();
 
-				shExchangeProviderFolder.getPosts().add(shExchangeProviderPostChild);
+						ShExchangeProviderPost shExchangeProviderPostChild = new ShExchangeProviderPost();
 
+						shExchangeProviderPostChild.setId(postId);
+						shExchangeProviderPostChild.setTitle(postTitle);
+						shExchangeProviderPostChild.setDate(postDate);
+						shExchangeProviderPostChild.setType(postType);
+
+						shExchangeProviderFolder.getPosts().add(shExchangeProviderPostChild);
+
+					}
+				});
 			}
 		}
-
 		return shExchangeProviderFolder;
 	}
 
 	public ShExchangeProviderPost getObject(String id, boolean isFolder) {
 		ShOTCSTicketBean sOTCSTicketBean = this.otcsAuth();
-
-		ShOTCSObjectBean shOTCSObjetBean = null;
-		try {
-			HttpGet httpGet = new HttpGet(String.format("%s/api/v2/nodes/%s", this.baseURL, id));
-			httpGet.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
-			httpGet.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString());
-			httpGet.setHeader(OTCS_TICKET, sOTCSTicketBean.getTicket());
-			HttpResponse response = httpClient.execute(httpGet);
-			shOTCSObjetBean = objectMapper.readValue(responseHandler.handleResponse(response), ShOTCSObjectBean.class);
-
-		} catch (UnsupportedOperationException e) {
-			logger.error("getObject UnsupportedOperationException: ", e);
-		} catch (IOException e) {
-			logger.error("getObject IOException: ", e);
-		}
-
 		ShExchangeProviderPost shExchangeProviderPost = new ShExchangeProviderPost();
-		shExchangeProviderPost.setId(id);
-		shExchangeProviderPost.setTitle(shOTCSObjetBean.getResults().getData().getProperties().getName());
-		shExchangeProviderPost
-				.setParentId(Integer.toString(shOTCSObjetBean.getResults().getData().getProperties().getParentId()));
+		if (sOTCSTicketBean != null) {
+			ShOTCSObjectBean shOTCSObjetBean = null;
+			try {
+				HttpGet httpGet = new HttpGet(String.format("%s/api/v2/nodes/%s", this.baseURL, id));
+				httpGet.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
+				httpGet.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString());
+				httpGet.setHeader(OTCS_TICKET, sOTCSTicketBean.getTicket());
+				HttpResponse response = httpClient.execute(httpGet);
+				shOTCSObjetBean = objectMapper.readValue(responseHandler.handleResponse(response),
+						ShOTCSObjectBean.class);
+			} catch (UnsupportedOperationException | IOException e) {
+				logger.error(e);
+			}
+
+			if (shOTCSObjetBean != null) {
+				shExchangeProviderPost.setId(id);
+				shExchangeProviderPost.setTitle(shOTCSObjetBean.getResults().getData().getProperties().getName());
+				shExchangeProviderPost.setParentId(
+						Integer.toString(shOTCSObjetBean.getResults().getData().getProperties().getParentId()));
+			}
+		}
 		return shExchangeProviderPost;
 	}
 
@@ -201,28 +202,26 @@ public class ShOTCSProvider implements ShExchangeProvider {
 
 			sOTCSTicketBean = objectMapper.readValue(responseHandler.handleResponse(response), ShOTCSTicketBean.class);
 
-		} catch (UnsupportedOperationException e) {
-			logger.error("rootFolder UnsupportedOperationException: ", e);
-		} catch (IOException e) {
-			logger.error("rootFolder IOException: ", e);
+		} catch (UnsupportedOperationException | IOException e) {
+			logger.error(e);
 		}
 		return sOTCSTicketBean;
 	}
 
 	public InputStream getDownload(String id) {
-		ShOTCSTicketBean sOTCSTicketBean = this.otcsAuth();
+		ShOTCSTicketBean shOTCSTicketBean = this.otcsAuth();
 		InputStream inputStream = null;
-		try {
-			HttpGet httpGet = new HttpGet(String.format("%s/api/v2/nodes/%s/content", this.baseURL, id));
-			httpGet.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
-			httpGet.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString());
-			httpGet.setHeader(OTCS_TICKET, sOTCSTicketBean.getTicket());
-			HttpResponse response = httpClient.execute(httpGet);
-			inputStream = response.getEntity().getContent();
-		} catch (UnsupportedOperationException e) {
-			logger.error("rootFolder UnsupportedOperationException: ", e);
-		} catch (IOException e) {
-			logger.error("rootFolder IOException: ", e);
+		if (shOTCSTicketBean != null) {
+			try {
+				HttpGet httpGet = new HttpGet(String.format("%s/api/v2/nodes/%s/content", this.baseURL, id));
+				httpGet.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
+				httpGet.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString());
+				httpGet.setHeader(OTCS_TICKET, shOTCSTicketBean.getTicket());
+				HttpResponse response = httpClient.execute(httpGet);
+				inputStream = response.getEntity().getContent();
+			} catch (UnsupportedOperationException | IOException e) {
+				logger.error(e);
+			}
 		}
 
 		return inputStream;

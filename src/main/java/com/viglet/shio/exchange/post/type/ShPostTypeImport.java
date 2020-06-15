@@ -16,7 +16,6 @@
  */
 package com.viglet.shio.exchange.post.type;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Map.Entry;
@@ -47,7 +46,7 @@ public class ShPostTypeImport {
 	@Autowired
 	ShPostTypeRepository shPostTypeRepository;
 
-	public void importPostType(ShExchange shExchange, boolean isCloned) throws IOException {
+	public void importPostType(ShExchange shExchange, boolean isCloned){
 		logger.info("1 of 4 - Importing Post Types");
 		for (ShPostTypeExchange shPostTypeExchange : shExchange.getPostTypes()) {
 			if (shPostTypeRepository.findByName(shPostTypeExchange.getName()) == null) {

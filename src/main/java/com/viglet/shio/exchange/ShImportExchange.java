@@ -53,14 +53,18 @@ public class ShImportExchange {
 	private ShPostTypeImport shPostTypeImport;
 	@Autowired
 	private ShPostImport shPostImport;
-	
-	private Map<String, Object> shObjects = new HashMap<String, Object>();
-	private Map<String, List<String>> shChildObjects = new HashMap<String, List<String>>();
 
-	public ShExchange importFromMultipartFile(MultipartFile multipartFile, String username)
-			throws IllegalStateException, IOException {
+	private Map<String, Object> shObjects = new HashMap<>();
+	private Map<String, List<String>> shChildObjects = new HashMap<>();
+
+	public ShExchange importFromMultipartFile(MultipartFile multipartFile, String username) {
 		logger.info("Unzip Package");
-		File extractFolder = this.extractZipFile(multipartFile);
+		File extractFolder = null;
+		try {
+			extractFolder = this.extractZipFile(multipartFile);
+		} catch (IllegalStateException e1) {
+			logger.error(e1);
+		}
 		File parentExtractFolder = null;
 
 		if (extractFolder != null) {
@@ -75,32 +79,32 @@ public class ShImportExchange {
 			}
 			ObjectMapper mapper = new ObjectMapper();
 
-			ShExchange shExchange = mapper.readValue(
-					new FileInputStream(extractFolder.getAbsolutePath().concat(File.separator + "export.json")),
-					ShExchange.class);
+			ShExchange shExchange = null;
+			try {
+				shExchange = mapper.readValue(
+						new FileInputStream(extractFolder.getAbsolutePath().concat(File.separator + "export.json")),
+						ShExchange.class);
+			} catch (IOException e1) {
+				logger.error(e1);
+			}
 
-			if (shExchange.getPostTypes() != null && shExchange.getPostTypes().size() > 0) {				
+			if (shExchange.getPostTypes() != null && !shExchange.getPostTypes().isEmpty())
 				shPostTypeImport.importPostType(shExchange, false);
-			}
-			if (shExchange.getSites() != null && shExchange.getSites().size() > 0) {			
+
+			if (shExchange.getSites() != null && !shExchange.getSites().isEmpty()) {
 				shSiteImport.importSite(shExchange, username, extractFolder, shObjects, shChildObjects);
-			}
-			else {
-				//Folders depend site.
-				if (shExchange.getFolders() == null && shExchange.getPosts() != null) {
-					for (ShPostExchange shPostExchange : shExchange.getPosts()) {
-						shPostImport.createShPost(shPostExchange, extractFolder, username, shObjects, false);
-					}
-				}
+			} else if (shExchange.getFolders() == null && shExchange.getPosts() != null) {
+				File extractFolderInner = extractFolder;
+				shExchange.getPosts().forEach(shPostExchange -> shPostImport.createShPost(shPostExchange,
+						extractFolderInner, username, shObjects, false));
 			}
 
 			try {
 				FileUtils.deleteDirectory(extractFolder);
-				if (parentExtractFolder != null) {
+				if (parentExtractFolder != null)
 					FileUtils.deleteDirectory(parentExtractFolder);
-				}
 			} catch (IOException e) {
-				logger.error("importFromMultipartFileException", e);	
+				logger.error(e);
 			}
 			return shExchange;
 		} else {
@@ -108,32 +112,40 @@ public class ShImportExchange {
 		}
 	}
 
-	public ShExchange importFromFile(File file, String username)
-			throws IOException, IllegalStateException {
+	public ShExchange importFromFile(File file, String username) {
 
-		FileInputStream input = new FileInputStream(file);
-		MultipartFile multipartFile = new MockMultipartFile(file.getName(), IOUtils.toByteArray(input));
+		MultipartFile multipartFile = null;
+		try {
+			FileInputStream input = new FileInputStream(file);
+			multipartFile = new MockMultipartFile(file.getName(), IOUtils.toByteArray(input));
+		} catch (IOException e) {
+			logger.error(e);
+		}
 
 		return this.importFromMultipartFile(multipartFile, username);
 	}
 
-	public File extractZipFile(MultipartFile file) throws IllegalStateException, IOException {
+	public File extractZipFile(MultipartFile file) {
 		shObjects.clear();
 		shChildObjects.clear();
 
 		File userDir = new File(System.getProperty("user.dir"));
 		if (userDir.exists() && userDir.isDirectory()) {
 			File tmpDir = new File(userDir.getAbsolutePath().concat(File.separator + "store" + File.separator + "tmp"));
-			if (!tmpDir.exists()) {
+			if (!tmpDir.exists())
 				tmpDir.mkdirs();
-			}
 
 			File zipFile = new File(tmpDir.getAbsolutePath()
 					.concat(File.separator + "imp_" + file.getOriginalFilename() + UUID.randomUUID()));
+			File extractFolder = null;
+			try {
+				file.transferTo(zipFile);
+				extractFolder = new File(tmpDir.getAbsolutePath().concat(File.separator + "imp_" + UUID.randomUUID()));
+				shUtils.unZipIt(zipFile, extractFolder);
+			} catch (IllegalStateException | IOException e) {
+				logger.error(e);
+			}
 
-			file.transferTo(zipFile);
-			File extractFolder = new File(tmpDir.getAbsolutePath().concat(File.separator + "imp_" + UUID.randomUUID()));
-			shUtils.unZipIt(zipFile, extractFolder);
 			FileUtils.deleteQuietly(zipFile);
 			return extractFolder;
 		} else {

@@ -69,7 +69,7 @@ public class ShObjectDraft implements Serializable {
 	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
 	@Cascade({ CascadeType.ALL })
 //	@OnDelete(action = OnDeleteAction.CASCADE)
-	private Set<ShPostDraftAttr> shPostAttrRefs = new HashSet<ShPostDraftAttr>();
+	private Set<ShPostDraftAttr> shPostAttrRefs = new HashSet<>();
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date date;
