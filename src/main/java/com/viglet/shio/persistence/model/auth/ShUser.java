@@ -20,8 +20,9 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.viglet.shio.utils.MD5Util;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -172,7 +173,7 @@ public class ShUser implements Serializable {
 	@JsonProperty("gravatar")
 	private String getGravatar() {
 		if (this.email != null) {
-			return "https://www.gravatar.com/avatar/" + MD5Util.md5Hex(this.email);
+			return "https://www.gravatar.com/avatar/" + DigestUtils.md5Hex(this.email);
 		} else {
 			return null;
 		}
