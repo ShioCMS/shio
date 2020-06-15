@@ -41,7 +41,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.viglet.shio.api.ShJsonView;
+import com.viglet.shio.api.ShJsonView.ShJsonViewGenericType;
 
 /**
  * @author Alexandre Oliveira
@@ -55,8 +55,8 @@ public class ShUtils {
 	 * 
 	 * @param zipFile      input zip file
 	 * @param outputFolder output Folder
-	 * @throws IOException if the IO fails
-	 * @throws ShUtilsException 
+	 * @throws IOException      if the IO fails
+	 * @throws ShUtilsException
 	 */
 	public void unZipIt(File zipFile, File outputFolder) throws IOException, ShUtilsException {
 
@@ -67,7 +67,7 @@ public class ShUtils {
 					continue;
 				File curfile = new File(outputFolder, entry.getName());
 				File parent = curfile.getParentFile();
-				if (!parent.exists() && !parent.mkdirs()) 
+				if (!parent.exists() && !parent.mkdirs())
 					throw new ShUtilsException("could not create directory: " + parent.getPath());
 				IOUtils.copy(zin, new FileOutputStream(curfile));
 			}
@@ -128,7 +128,8 @@ public class ShUtils {
 		}
 	}
 
-	public static String asJsonStringAndView(final Object obj, Class<ShJsonView> clazz) throws ShUtilsException {
+	public static String asJsonStringAndView(final Object obj, Class<? extends ShJsonViewGenericType> clazz)
+			throws ShUtilsException {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);

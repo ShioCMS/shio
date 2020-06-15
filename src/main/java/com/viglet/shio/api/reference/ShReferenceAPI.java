@@ -16,6 +16,7 @@
  */
 package com.viglet.shio.api.reference;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,52 +55,56 @@ public class ShReferenceAPI {
 
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewReference.class })
-	public List<ShReference> shReferenceList() throws Exception {
+	public List<ShReference> shReferenceList() {
 		return shReferenceRepository.findAll();
 	}
 
 	@GetMapping("/from/{fromId}")
 	@JsonView({ ShJsonView.ShJsonViewReference.class })
-	public List<ShReference> shReferenceFrom(@PathVariable String fromId) throws Exception {
+	public List<ShReference> shReferenceFrom(@PathVariable String fromId) {
 		ShObject shObject = shObjectRepository.findById(fromId).orElse(null);
 		return shReferenceRepository.findByShObjectFrom(shObject);
 	}
 
 	@GetMapping("/to/{toId}")
 	@JsonView({ ShJsonView.ShJsonViewReference.class })
-	public List<ShReference> shReferenceTo(@PathVariable String toId) throws Exception {
+	public List<ShReference> shReferenceTo(@PathVariable String toId) {
 		ShObject shObject = shObjectRepository.findById(toId).orElse(null);
 		return shReferenceRepository.findByShObjectTo(shObject);
 	}
 
 	@PostMapping("/to/{toId}/replace/{otherId}")
 	@JsonView({ ShJsonView.ShJsonViewReference.class })
-	public List<ShReference> shReferenceToReplace(@PathVariable String toId, @PathVariable String otherId)
-			throws Exception {
+	public List<ShReference> shReferenceToReplace(@PathVariable String toId, @PathVariable String otherId) {
 		ShObject shObject = shObjectRepository.findById(toId).orElse(null);
 		ShObject shObjectOther = shObjectRepository.findById(otherId).orElse(null);
 		if (shObject != null && shObjectOther != null) {
 			List<ShReference> shReferences = shReferenceRepository.findByShObjectTo(shObject);
-
-			for (ShReference shReference : shReferences) {
-				if (shReference != null && shReference.getShObjectFrom() != null
-						&& shReference.getShObjectFrom() instanceof ShPost) {
-					ShPost shPost = (ShPost) shReference.getShObjectFrom();
-					for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
-						ShObject shObjectReference = shPostAttr.getReferenceObject();
-						if (shObject.getId() != null
-								&& shObjectReference.getId().toString().equals(shObject.getId().toString())) {
-							shPostAttr.setReferenceObject(shObjectOther);
-							shPostAttrRepository.saveAndFlush(shPostAttr);
-						}
-					}
+			shReferences.forEach(shReference -> {
+				if (shReference != null) {
+					this.setReferenceToPostAttr(shObject, shObjectOther, shReference);
+					shReference.setShObjectTo(shObjectOther);
+					shReferenceRepository.saveAndFlush(shReference);
 				}
-				shReference.setShObjectTo(shObjectOther);
-				shReferenceRepository.saveAndFlush(shReference);
-			}
+			});
+
 			return shReferenceRepository.findByShObjectTo(shObject);
 		} else {
-			return null;
+			return Collections.emptyList();
+		}
+	}
+
+	private void setReferenceToPostAttr(ShObject shObject, ShObject shObjectOther, ShReference shReference) {
+		if (shReference.getShObjectFrom() != null && shReference.getShObjectFrom() instanceof ShPost) {
+			ShPost shPost = (ShPost) shReference.getShObjectFrom();
+			for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
+				ShObject shObjectReference = shPostAttr.getReferenceObject();
+				if (shObject.getId() != null
+						&& shObjectReference.getId().equals(shObject.getId())) {
+					shPostAttr.setReferenceObject(shObjectOther);
+					shPostAttrRepository.saveAndFlush(shPostAttr);
+				}
+			}
 		}
 	}
 }

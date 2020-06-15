@@ -24,18 +24,21 @@ import java.io.Serializable;
 public class ShJsonView implements Serializable {
 	private static final long serialVersionUID = 3989499187492868996L;
 
-	public static class ShJsonViewObject {
+	public static class ShJsonViewGenericType {
 	};
 
-	public static class ShJsonViewReference {
+	public static class ShJsonViewObject extends ShJsonViewGenericType {
 	};
 
-	public static class ShJsonViewPostType {
+	public static class ShJsonViewReference extends ShJsonViewGenericType {
 	};
 
-	public static class ShJsonViewPost {
+	public static class ShJsonViewPostType extends ShJsonViewGenericType {
 	};
 
-	public static class ShJsonViewPostTypeAttr {
+	public static class ShJsonViewPost extends ShJsonViewGenericType {
+	};
+
+	public static class ShJsonViewPostTypeAttr extends ShJsonViewGenericType {
 	};
 }

@@ -96,16 +96,16 @@ task minifyAllJs(dependsOn: ':combineAllJs', type: com.eriwen.gradle.js.tasks.Mi
 }
 
 // Shio Stock
-def stockZipDir = "$projectDir/shio-stock-master"
-def stockZipFile = "$projectDir/shio-stock.zip"
-def stockDir = "$projectDir/src/main/resources/ui/public/stock/"
+def stockZipDir = "$projectDir/shio-media-master"
+def stockZipFile = "$projectDir/shio-media.zip"
+def stockDir = "$projectDir/src/main/resources/ui/public/media/"
 
 task deleteGitStock(type: Delete) {
     delete "$stockZipDir", "$stockZipFile"
 }
 
 task downloadStockZipFile(dependsOn: deleteGitStock, type: Download) {
-    src 'https://github.com/ShioCMS/shio-stock/archive/master.zip'
+    src 'https://github.com/ShioCMS/shio-media/archive/master.zip'
     dest stockZipFile
 }
 
