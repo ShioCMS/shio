@@ -23,92 +23,92 @@
 
 <table class="table" style="margin: 0px;border-color: #ddd; border-style: solid; border-width: 1px;">
     <tr>
-        <td style="background: #F9F9F9; width: 30%;">
+        <th scope="row" style="background: #F9F9F9; width: 30%;">
             <p>
                 <strong>Host</strong>
             </p>
-        </td>
+        </th>
         <td><input type="text" class="form-control" ng-model="email.host" autocomplete="new-password" /></td>
     </tr>
     <tr>
-        <td style="background: #F9F9F9; width: 30%;">
+        <th scope="row" style="background: #F9F9F9; width: 30%;">
             <p>
                 <strong>Port</strong>
             </p>
-        </td>
+        </th>
         <td><input type="text" class="form-control" ng-model="email.port" autocomplete="new-password" /></td>
     </tr>
     <tr>
-        <td style="background: #F9F9F9; width: 30%;">
+        <th scope="row" style="background: #F9F9F9; width: 30%;">
             <p>
                 <strong>Username</strong>
             </p>
-        </td>
+        </th>
         <td><input type="text" class="form-control" ng-model="email.username" autocomplete="new-password" /></td>
     </tr>
     <tr>
-        <td style="background: #F9F9F9; width: 30%;">
+        <th scope="row" style="background: #F9F9F9; width: 30%;">
             <p>
                 <strong>Password</strong>
             </p>
-        </td>
+        </th>
         <td><input type="password" class="form-control" ng-model="email.password" autocomplete="new-password" /></td>
     </tr>
     <tr>
-        <td style="background: #F9F9F9; width: 30%;">
+        <th scope="row" style="background: #F9F9F9; width: 30%;">
             <p>
                 <strong>Test Connection</strong>
             </p>
-        </td>
+        </th>
         <td> <select class="form-control" ng-model="email.testConnection" autocomplete="new-password"
                 ng-options="o.v as o.n for o in [{ n: 'No', v: false }, { n: 'Yes', v: true }]">
             </select></td>
     </tr>
     <tr>
-        <td style="background: #F9F9F9; width: 30%;">
+        <th scope="row" style="background: #F9F9F9; width: 30%;">
             <p>
                 <b>SMTP</b>
             </p>
-        </td>
+        </th>
         <td>
             <table class="table" style="margin: 0px;border-color: #ddd; border-style: solid; border-width: 1px;">
                 <tr>
-                    <td style="background: #F9F9F9; width: 30%;">
+                    <th scope="row" style="background: #F9F9F9; width: 30%;">
                         <p>
                             <strong>Auth</strong>
                         </p>
-                    </td>
+                    </th>
                     <td> <select class="form-control" ng-model="email.smtpAuth" autocomplete="new-password"
                             ng-options="o.v as o.n for o in [{ n: 'No', v: false }, { n: 'Yes', v: true }]">
                         </select></td>
                 </tr>
 
                 <tr>
-                    <td style="background: #F9F9F9; width: 30%;">
+                    <th scope="row" style="background: #F9F9F9; width: 30%;">
                         <p>
                             <strong>TLS Enabled</strong>
                         </p>
-                    </td>
+                    </th>
                     <td> <select class="form-control" ng-model="email.smtpTLSEnabled" autocomplete="new-password"
                             ng-options="o.v as o.n for o in [{ n: 'No', v: false }, { n: 'Yes', v: true }]">
                         </select></td>
                 </tr>
                 <tr>
-                    <td style="background: #F9F9F9; width: 30%;">
+                    <th scope="row" style="background: #F9F9F9; width: 30%;">
                         <p>
                             <strong>TLS Required</strong>
                         </p>
-                    </td>
+                    </th>
                     <td> <select class="form-control" ng-model="email.smtpTLSRequired" autocomplete="new-password"
                             ng-options="o.v as o.n for o in [{ n: 'No', v: false }, { n: 'Yes', v: true }]">
                         </select></td>
                 </tr>
                 <tr>
-                    <td style="background: #F9F9F9; width: 30%;">
+                    <th scope="row" style="background: #F9F9F9; width: 30%;">
                         <p>
                             <strong>SSL Enabled</strong>
                         </p>
-                    </td>
+                    </th>
                     <td> <select class="form-control" ng-model="authProvider.smtpSSLEnabled" autocomplete="new-password"
                             ng-options="o.v as o.n for o in [{ n: 'No', v: false }, { n: 'Yes', v: true }]">
                         </select></td>

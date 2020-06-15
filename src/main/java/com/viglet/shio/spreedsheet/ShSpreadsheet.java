@@ -78,7 +78,9 @@ public class ShSpreadsheet {
 				if (shPostsEntry != null && !shPostsEntry.isEmpty()) {
 					XSSFSheet sheet = this.tableDefinition(workbook, entryPost.getKey(), shPostsEntry);
 					this.tableRows(workbook, sheet, shPostsEntry);
-					this.autoSize(sheet, shPostsEntry.get(0).getShPostAttrs().size());
+					if (sheet != null)
+						this.autoSize(sheet, shPostsEntry.get(0).getShPostAttrs().size());
+
 				}
 			}
 
@@ -141,83 +143,109 @@ public class ShSpreadsheet {
 
 	private void tableRows(Workbook workbook, XSSFSheet sheet, List<ShPost> shPostsEntry) {
 		CreationHelper createHelper = workbook.getCreationHelper();
+		int rowCount = 0;	
+		
+		shPostsEntry.forEach(shPost -> createRow(workbook, sheet, createHelper, rowCount, shPost));
+	
 
+	} 
+
+	private void createRow(Workbook workbook, XSSFSheet sheet, CreationHelper createHelper, int rowCount,
+			ShPost shPost) {
 		int columnCount;
-		int rowCount = 0;
-		for (ShPost shPost : shPostsEntry) {
+		CellStyle cellTextStyle = workbook.createCellStyle();
+		cellTextStyle.setVerticalAlignment(VerticalAlignment.TOP);
 
-			rowCount++;
-			columnCount = 0;
-			CellStyle cellTextStyle = workbook.createCellStyle();
-			cellTextStyle.setVerticalAlignment(VerticalAlignment.TOP);
+		CellStyle cellTextAreaStyle = workbook.createCellStyle();
+		cellTextAreaStyle.setWrapText(true);
+		cellTextAreaStyle.setVerticalAlignment(VerticalAlignment.TOP);
 
-			CellStyle cellTextAreaStyle = workbook.createCellStyle();
-			cellTextAreaStyle.setWrapText(true);
-			cellTextAreaStyle.setVerticalAlignment(VerticalAlignment.TOP);
+		CellStyle cellDateStyle = workbook.createCellStyle();
+		cellDateStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd/mm/yyyy"));
+		cellDateStyle.setVerticalAlignment(VerticalAlignment.TOP);
+		rowCount++;
+		columnCount = 0;
 
-			CellStyle cellDateStyle = workbook.createCellStyle();
-			cellDateStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd/mm/yyyy"));
-			cellDateStyle.setVerticalAlignment(VerticalAlignment.TOP);
+		XSSFRow row = sheet.createRow(rowCount);
+		this.createColumns(shPost, columnCount, cellTextStyle, cellTextAreaStyle, cellDateStyle, row);
+	}
 
-			XSSFRow row = sheet.createRow(rowCount);
-			Cell cellDate = row.createCell(0);
-			cellDate.setCellValue((Date) shPost.getDate());
-			cellDate.setCellStyle(cellDateStyle);
+	private void createColumns(ShPost shPost, int columnCount, CellStyle cellTextStyle, CellStyle cellTextAreaStyle,
+			CellStyle cellDateStyle, XSSFRow row) {
+		this.createdDateCell(shPost, cellDateStyle, row);
 
-			for (ShPostAttr shPostAttr : shPostUtils.postAttrsSort(shPost.getShPostAttrs())) {
-				columnCount++;
-				String widgetName = shPostAttr.getShPostTypeAttr().getShWidget().getName();
-				if (!widgetName.contains(ShSystemWidget.TAB)) {
-					XSSFCell cell = row.createCell(columnCount);
-					if (widgetName.equals(ShSystemWidget.DATE)) {
-						cell.setCellValue((Date) shPostAttr.getDateValue());
-						cell.setCellStyle(cellDateStyle);
-					} else if (widgetName.equals(ShSystemWidget.CONTENT_SELECT)
-							|| widgetName.equals(ShSystemWidget.FILE)) {
-						String value = null;
-						if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE)) {
-							value = shPostAttr.getStrValue();
-						} else {
-							ShObject shObject = shPostAttr.getReferenceObject();
-
-							if (shObject instanceof ShFolder) {
-								value = ((ShFolder) shObject).getName();
-							} else if (shObject instanceof ShPost) {
-								value = ((ShPost) shObject).getTitle();
-							} else if (shObject instanceof ShSite) {
-								value = ((ShSite) shObject).getName();
-							}
-						}
-						cell.setCellValue((String) value);
-						cell.setCellStyle(cellTextStyle);
-					} else if (widgetName.equals(ShSystemWidget.TEXT_AREA)
-							|| widgetName.equals(ShSystemWidget.HTML_EDITOR)) {
-						cell.setCellValue((String) shPostAttr.getStrValue());
-						cell.setCellStyle(cellTextAreaStyle);
-					} else if (widgetName.equals(ShSystemWidget.MULTI_SELECT)) {
-						List<String> msItems = new ArrayList<>();
-						for (String id : shPostAttr.getArrayValue()) {
-							Optional<ShPost> shPostMultSelect = shPostRepository.findById(id);
-							if (shPostMultSelect.isPresent()) {
-								msItems.add(shPostMultSelect.get().getTitle());
-							}
-						}
-						cell.setCellValue((String) String.join(", ", msItems));
-						cell.setCellStyle(cellTextAreaStyle);
-					} else {
-						cell.setCellValue((String) shPostAttr.getStrValue());
-						cell.setCellStyle(cellTextStyle);
-					}
+		for (ShPostAttr shPostAttr : shPostUtils.postAttrsSort(shPost.getShPostAttrs())) {
+			columnCount++;
+			String widgetName = shPostAttr.getShPostTypeAttr().getShWidget().getName();
+			if (!widgetName.contains(ShSystemWidget.TAB)) {
+				XSSFCell cell = row.createCell(columnCount);
+				if (widgetName.equals(ShSystemWidget.DATE)) {
+					this.dateCell(cellDateStyle, shPostAttr, cell);
+				} else if (widgetName.equals(ShSystemWidget.CONTENT_SELECT)
+						|| widgetName.equals(ShSystemWidget.FILE)) {
+					this.relatorCell(cellTextStyle, shPost, shPostAttr, cell);
+				} else if (widgetName.equals(ShSystemWidget.TEXT_AREA)
+						|| widgetName.equals(ShSystemWidget.HTML_EDITOR)) {
+					this.textAreaCell(cellTextAreaStyle, shPostAttr, cell);
+				} else if (widgetName.equals(ShSystemWidget.MULTI_SELECT)) {
+					multiSelectCell(cellTextAreaStyle, shPostAttr, cell);
+				} else {
+					this.textAreaCell(cellTextStyle, shPostAttr, cell);
 				}
-
 			}
 
 		}
+	}
 
+	private void createdDateCell(ShPost shPost, CellStyle cellDateStyle, XSSFRow row) {
+		Cell cellDate = row.createCell(0);
+		cellDate.setCellValue((Date) shPost.getDate());
+		cellDate.setCellStyle(cellDateStyle);
+	}
+
+	private void dateCell(CellStyle cellDateStyle, ShPostAttr shPostAttr, XSSFCell cell) {
+		cell.setCellValue((Date) shPostAttr.getDateValue());
+		cell.setCellStyle(cellDateStyle);
+	}
+
+	private void multiSelectCell(CellStyle cellTextAreaStyle, ShPostAttr shPostAttr, XSSFCell cell) {
+		List<String> msItems = new ArrayList<>();
+		for (String id : shPostAttr.getArrayValue()) {
+			Optional<ShPost> shPostMultSelect = shPostRepository.findById(id);
+			if (shPostMultSelect.isPresent()) {
+				msItems.add(shPostMultSelect.get().getTitle());
+			}
+		}
+		cell.setCellValue((String) String.join(", ", msItems));
+		cell.setCellStyle(cellTextAreaStyle);
+	}
+
+	private void textAreaCell(CellStyle cellTextAreaStyle, ShPostAttr shPostAttr, XSSFCell cell) {
+		cell.setCellValue((String) shPostAttr.getStrValue());
+		cell.setCellStyle(cellTextAreaStyle);
+	}
+
+	private void relatorCell(CellStyle cellTextStyle, ShPost shPost, ShPostAttr shPostAttr, XSSFCell cell) {
+		String value = null;
+		if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE)) {
+			value = shPostAttr.getStrValue();
+		} else {
+			ShObject shObject = shPostAttr.getReferenceObject();
+
+			if (shObject instanceof ShFolder) {
+				value = ((ShFolder) shObject).getName();
+			} else if (shObject instanceof ShPost) {
+				value = ((ShPost) shObject).getTitle();
+			} else if (shObject instanceof ShSite) {
+				value = ((ShSite) shObject).getName();
+			}
+		}
+		cell.setCellValue((String) value);
+		cell.setCellStyle(cellTextStyle);
 	}
 
 	private XSSFSheet tableDefinition(Workbook workbook, String sheetName, List<ShPost> shPostsEntry) {
-		if (shPostsEntry != null && ! shPostsEntry.isEmpty()) {
+		if (shPostsEntry != null && !shPostsEntry.isEmpty()) {
 			XSSFSheet sheet = (XSSFSheet) workbook.createSheet(sheetName);
 
 			int totalCols = shPostsEntry.get(0).getShPostAttrs().size();

@@ -1,11 +1,11 @@
 <table ng-controller="ShWidgetMultiSelectSettingCtrl" class="table"
 	style="margin: 0px;">
 	<tr>
-		<td style="background: #F9F9F9; width: 20%;">
+		<th scope="row" style="background: #F9F9F9; width: 20%;">
 			<p>
 				<strong>Post Type</strong>
 			</p>
-		</td>
+		</th>
 		<td><select class="form-control"
 			ng-model="shPostTypeAttr.widgetSettingsObject.multiselect.postType"
 			ng-options="postType.name as postType.title for postType in postTypes | orderBy: 'title'">
@@ -13,11 +13,11 @@
 		</select></td>
 	</tr>
 	<tr>
-		<td style="background: #F9F9F9; width: 20%;">
+		<th scope="row" style="background: #F9F9F9; width: 20%;">
 			<p>
 				<strong>Folder</strong>
 			</p>
-		</td>
+		</th>
 		<td><input type="text" class="form-control"
 			ng-model="shPostTypeAttr.widgetSettingsObject.multiselect.folderId"></td>
 	</tr>	

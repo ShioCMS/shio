@@ -30,11 +30,6 @@ shioApp.factory('shObjectFactory', [
 							shObjectUsers.push(shUser.username);
 						});
 					}
-					else {
-						angular.forEach(shUsers, function (shUser, key) {
-							shObjectUsers.push(shUser.username);
-						});
-					}
 				}, function () {
 					// Selected NO
 				});

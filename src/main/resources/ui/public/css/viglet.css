@@ -255,7 +255,7 @@ nav.sidebar-menu.expanded {
     border-collapse: collapse;
     border-spacing: 0;
     color: #999;
-    font-family: arial;
+    font-family: Arial, Helvetica, sans-serif;
     font-size: 14px;
     text-decoration: none;
     transform: translateZ(0) scale(1, 1);
@@ -280,7 +280,7 @@ nav.sidebar-menu.expanded {
     display: table-cell;
     vertical-align: middle;
     width: 190px;
-    font-family: 'Titillium Web', sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .sidebar-menu>ul.sidebar-bottom {

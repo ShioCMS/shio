@@ -3,11 +3,11 @@
 	style="margin: 0px; border-color: #ddd; border-style: solid; border-width: 1px;">
 
 	<tr>
-		<td style="background: #F9F9F9; width: 20%;">
+		<th scope="row" style="background: #F9F9F9; width: 20%;">
 			<p>
 				<b>Search Field Association</b>
 			</p>
-		</td>
+		</th>
 		<td><select class="form-control"
 			ng-model="shPostTypeAttr.widgetSettingsObject.search.association">
 				<option value="">NONE</option>
@@ -18,15 +18,14 @@
 				<option value="image">image</option>
 				<option value="publication_date">publication_date</option>
 				<option value="url">url</option>
-
 		</select></td>
 	</tr>
 	<tr>
-		<td style="background: #F9F9F9; width: 20%;">
+		<tth scope="row" style="background: #F9F9F9; width: 20%;">
 			<p>
 				<b>Create Additional Search Field?</b>
 			</p>
-		</td>
+		</th>
 		<td><input type="checkbox"
 			ng-model="shPostTypeAttr.widgetSettingsObject.search.isAdditionalField"
 			ng-true-value="1" ng-false-value="0">
@@ -35,11 +34,11 @@
 				ng-if="shPostTypeAttr.widgetSettingsObject.search.isAdditionalField == 1"
 				style="margin: 0px; border-color: #ddd; border-style: solid; border-width: 1px; margin-top: 10px">
 				<tr>
-					<td style="background: #F9F9F9; width: 20%;">
+					<th scope="row" style="background: #F9F9F9; width: 20%;">
 						<p>
 							<b>Search Field Name</b>
 						</p>
-					</td>
+					</th>
 					<td><label> <input type="checkbox"
 							ng-model="shPostTypeAttr.widgetSettingsObject.search.isSamePostTypeField"
 							ng-true-value="1" ng-false-value="0"> Same Post Type

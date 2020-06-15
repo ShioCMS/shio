@@ -2,11 +2,11 @@
 	ng-init="init(shPostTypeAttr)">
 	<table class="table" style="margin: 0px;">
 		<tr>
-			<td style="background: #F9F9F9; width: 20%;">
+			<th scope="row" style="background: #F9F9F9; width: 20%;">
 				<p>
 					<b>Method</b>
 				</p>
-			</td>
+			</th>
 			<td><select class="form-control"
 				ng-model="shPostTypeAttr.widgetSettingsObject.method">
 					<option value="GET">GET</option>
@@ -16,12 +16,12 @@
 			</select></td>
 		</tr>
 		<tr>
-			<td style="background: #F9F9F9; width: 20%;">
+			<th scope="row" style="background: #F9F9F9; width: 20%;">
 				<p>
 					<b>Action</b>
 				</p>
 				<p>Select Page Layout that will receive the request</p>
-			</td>
+			</th>
 			<td><select class="form-control"
 				ng-model="shPostTypeAttr.widgetSettingsObject.pageLayout"
 				ng-options="pageLayout.id as pageLayout.title for pageLayout in pageLayouts">
@@ -29,22 +29,22 @@
 			</select></td>
 		</tr>
 		<tr>
-			<td style="background: #F9F9F9; width: 20%;">
+			<th scope="row" style="background: #F9F9F9; width: 20%;">
 				<p>
 					<b>Create Post from Form?</b>
 				</p>
 
-			</td>
+			</th>
 			<td><input type="checkbox" class="form-control" ng-true-value="1" ng-false-value="0"
 				ng-model="shPostTypeAttr.widgetSettingsObject.createPost"></td>
 		</tr>
 		<tr>
-			<td style="background: #F9F9F9; width: 20%;">
+			<th scope="row" style="background: #F9F9F9; width: 20%;">
 				<p>
 					<b>Destination Folder</b>
 				</p>
 
-			</td>
+			</th>
 			<td><input type="text" class="form-control"
 			ng-model="shPostTypeAttr.widgetSettingsObject.folder" /></td>
 		</tr>

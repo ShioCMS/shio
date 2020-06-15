@@ -1,19 +1,19 @@
 <table class="table" style="margin: 0px;" ng-controller="ShWidgetRelatorSettingCtrl">
 	<tr>
-		<td style="background: #F9F9F9; width: 20%;">
+		<th scope="row" style="background: #F9F9F9; width: 20%;">
 			<p>
 				<strong>Relator Title</strong>
 			</p>
-		</td>
+		</th>
 		<td><input type="text" class="form-control"
 			ng-model="shPostTypeAttr.widgetSettingsObject.relator.title"></td>
 	</tr>
 	<tr>
-		<td style="background: #F9F9F9; width: 20%;">
+		<th scope="row" style="background: #F9F9F9; width: 20%;">
 			<p>
 				<strong>Sub Fields</strong>
 			</p>
-		</td>
+		</th>
 		<td><uib-accordion> <span style="display: none">{{shParentPostTypeAttr
 				= shPostTypeAttr}}</span>
 			<div uib-accordion-group class="panel-default"

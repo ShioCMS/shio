@@ -1,64 +1,56 @@
-
-<table class="table"
-	style="margin: 0px;border-color: #ddd; border-style: solid; border-width: 1px;">
+<table class="table" style="margin: 0px;border-color: #ddd; border-style: solid; border-width: 1px;">
 	<tr>
-		<td style="background: #F9F9F9; width: 20%;">
+		<th scope="row" style="background: #F9F9F9; width: 20%;">
 			<p>
 				<b>Field Label</b>
 			</p>
 			<p>This is the name that will appear on the Edit page</p>
-		</td>
-		<td><input type="text" class="form-control"
-			ng-model="shPostTypeAttr.label" /></td>
+		</th>
+		<td><input type="text" class="form-control" ng-model="shPostTypeAttr.label" /></td>
 	</tr>
 	<tr>
-		<td style="background: #F9F9F9; width: 20%;">
+		<th scope="row" style="background: #F9F9F9; width: 20%;">
 			<p>
 				<b>Field Identifier</b>
 			</p>
 			<p>One word, no spaces. Bottom dash (_) and dashes (-) are
 				allowed</p>
-		</td>
-		<td><input type="text" class="form-control"
-			ng-model="shPostTypeAttr.name" /></td>
+		</th>
+		<td><input type="text" class="form-control" ng-model="shPostTypeAttr.name" /></td>
 	</tr>
 	<tr>
-		<td style="background: #F9F9F9; width: 20%;">
+		<th scope="row" style="background: #F9F9F9; width: 20%;">
 			<p>
 				<b>Title?</b>
 			</p>
-		</td>
-		<td><input type="checkbox" ng-model="shPostTypeAttr.isTitle"
-			ng-true-value="1" ng-false-value="0"></td>
+		</th>
+		<td><input type="checkbox" ng-model="shPostTypeAttr.isTitle" ng-true-value="1" ng-false-value="0"></td>
 	</tr>
 	<tr>
-		<td style="background: #F9F9F9; width: 20%;">
+		<th scope="row" style="background: #F9F9F9; width: 20%;">
 			<p>
 				<b>Description?</b>
 			</p>
-		</td>
-		<td><input type="checkbox" ng-model="shPostTypeAttr.isSummary"
-			ng-true-value="1" ng-false-value="0"></td>
+		</th>
+		<td><input type="checkbox" ng-model="shPostTypeAttr.isSummary" ng-true-value="1" ng-false-value="0"></td>
 	</tr>
 	<tr>
-		<td style="background: #F9F9F9; width: 20%;">
+		<th scope="row" style="background: #F9F9F9; width: 20%;">
 			<p>
 				<b>Required?</b>
 			</p>
-		</td>
-		<td><input type="checkbox" ng-model="shPostTypeAttr.required"
-			ng-true-value="1" ng-false-value="0"></td>
+		</th>
+		<td><input type="checkbox" ng-model="shPostTypeAttr.required" ng-true-value="1" ng-false-value="0"></td>
 	</tr>
 	<tr>
-		<td style="background: #F9F9F9; width: 20%;">
+		<th scope="row" style="background: #F9F9F9; width: 20%;">
 			<p>
 				<b>Field Type</b>
 			</p>
-		</td>
-		<td><select class="form-control"
-			ng-model="shPostTypeAttr.shWidget"
-			ng-options="shWidget as shWidget.name for shWidget in shWidgets track by shWidget.id">
+		</th>
+		<td><select class="form-control" ng-model="shPostTypeAttr.shWidget"
+				ng-options="shWidget as shWidget.name for shWidget in shWidgets track by shWidget.id">
 				<option value="">- Pick One -</option>
-		</select></td>
+			</select></td>
 	</tr>
 </table>
