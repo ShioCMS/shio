@@ -19,7 +19,7 @@ package com.viglet.shio.api.folder;
 import java.util.List;
 
 import com.viglet.shio.persistence.model.folder.ShFolder;
-import com.viglet.shio.persistence.model.post.ShPost;
+import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.site.ShSite;
 
 /**
@@ -33,7 +33,7 @@ public class ShFolderPath {
 	
 	private List<ShFolder> breadcrumb;
 	
-	private ShPost shPost;
+	private ShPostImpl shPost;
 	
 	private ShSite shSite;
 
@@ -69,11 +69,11 @@ public class ShFolderPath {
 		this.shSite = shSite;
 	}
 
-	public ShPost getShPost() {
+	public ShPostImpl getShPost() {
 		return shPost;
 	}
 
-	public void setShPost(ShPost shPost) {
+	public void setShPost(ShPostImpl shPost) {
 		this.shPost = shPost;
 	}
 

@@ -36,6 +36,7 @@ import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.object.ShObject;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
+import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
 import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shio.persistence.repository.folder.ShFolderRepository;
@@ -77,7 +78,7 @@ public class ShFormUtils {
 		ShPost shPost = null;
 		ShObject shObject = shObjectRepository.findById(shSitesContextURL.getInfo().getObjectId()).orElse(null);
 		if (shFormConfiguration != null || shObject instanceof ShFolder
-				|| (shObject instanceof ShPost && ((ShPost) shObject).getTitle().equals("index"))) {
+				|| (shObject instanceof ShPost && ((ShPostImpl) shObject).getTitle().equals("index"))) {
 			ShFolder shFolder = null;
 
 			if (shFormConfiguration != null && StringUtils.isNotBlank(shFormConfiguration.getFolder().toString())) {
@@ -87,7 +88,7 @@ public class ShFormUtils {
 					shFolder = (ShFolder) shObject;
 				} else {
 					if (shObject != null)
-						shFolder = ((ShPost) shObject).getShFolder();
+						shFolder = ((ShPostImpl) shObject).getShFolder();
 				}
 			}
 

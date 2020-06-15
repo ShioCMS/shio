@@ -26,6 +26,7 @@ import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.history.ShHistory;
 import com.viglet.shio.persistence.model.object.ShObject;
 import com.viglet.shio.persistence.model.post.ShPost;
+import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.persistence.repository.history.ShHistoryRepository;
 
@@ -65,7 +66,7 @@ public class ShHistoryUtils {
 			ShSite shSite = null;
 
 			if (shObject instanceof ShPost) {
-				ShPost shPost = (ShPost) shObject;
+				ShPostImpl shPost = (ShPostImpl) shObject;
 				description = String.format(message, shPost.getTitle(), "Post");
 				shSite = shPostUtils.getSite(shPost);
 			} else if (shObject instanceof ShFolder) {

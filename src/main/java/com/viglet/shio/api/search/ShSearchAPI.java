@@ -34,6 +34,7 @@ import com.viglet.shio.api.post.ShPostWithBreadcrumb;
 import com.viglet.shio.object.ShObjectType;
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.post.ShPost;
+import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
 import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.persistence.repository.folder.ShFolderRepository;
@@ -76,7 +77,7 @@ public class ShSearchAPI {
 	public List<ShPostWithBreadcrumb> shSearch(@RequestParam(value = "q") String q) {
 		List<ShPostWithBreadcrumb> searchResults = new ArrayList<>();
 		for (ShPost shPost : shPostRepository.fuzzySearch(q)) {
-			ShPost shPostLazy = shPostUtils.loadLazyPost(shPost.getId(), false);
+			ShPostImpl shPostLazy = shPostUtils.loadLazyPost(shPost.getId(), false);
 			List<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shPostLazy.getShFolder());
 			ShSite shSite = breadcrumb.get(0).getShSite();
 			ShPostWithBreadcrumb shPostWithBreadcrumb = new ShPostWithBreadcrumb();
@@ -96,7 +97,7 @@ public class ShSearchAPI {
 		ShPostType shPostType = shPostTypeRepository.findByName(objectName);
 		List<ShPostWithBreadcrumb> searchResults = new ArrayList<>();
 		for (ShPost shPost : shPostRepository.findByShPostType(shPostType)) {
-			ShPost shPostLazy = shPostUtils.loadLazyPost(shPost.getId(), false);
+			ShPostImpl shPostLazy = shPostUtils.loadLazyPost(shPost.getId(), false);
 			List<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shPostLazy.getShFolder());
 			ShSite shSite = breadcrumb.get(0).getShSite();
 			ShPostWithBreadcrumb shPostWithBreadcrumb = new ShPostWithBreadcrumb();

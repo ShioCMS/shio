@@ -25,7 +25,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.viglet.shio.persistence.model.post.ShPostAttr;
+import com.viglet.shio.persistence.model.post.impl.ShPostAttrImpl;
 import com.viglet.shio.persistence.model.post.relator.ShRelatorItem;
 
 /**
@@ -38,7 +38,7 @@ public interface ShRelatorItemRepository extends JpaRepository<ShRelatorItem, St
 	
 	Optional<ShRelatorItem> findById(String id);
 	
-	Set<ShRelatorItem> findByShParentPostAttr (ShPostAttr shPostAttr);
+	Set<ShRelatorItem> findByShParentPostAttr (ShPostAttrImpl shPostAttr);
 	
 	@SuppressWarnings("unchecked")
 	ShRelatorItem save(ShRelatorItem shRelatorItem);

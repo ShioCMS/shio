@@ -48,6 +48,7 @@ import com.viglet.shio.bean.error.ShHttpMessageBean;
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.object.ShObject;
 import com.viglet.shio.persistence.model.post.ShPost;
+import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shio.persistence.repository.object.ShObjectRepository;
@@ -131,12 +132,12 @@ public class ShStaticFileAPI {
 			extensions.add("jpg");
 			extensions.add("jpeg");
 			extensions.add("gif");
-			File filePath = shStaticFileUtils.filePath((ShPost) shObject);
+			File filePath = shStaticFileUtils.filePath((ShPostImpl) shObject);
 			String extension = FilenameUtils.getExtension(filePath.getAbsolutePath());
 
 			if (extensions.contains(extension.toLowerCase())) {
 				try {
-					Thumbnails.of(shStaticFileUtils.filePath((ShPost) shObject)).size(230, 230).outputFormat("png")
+					Thumbnails.of(shStaticFileUtils.filePath((ShPostImpl) shObject)).size(230, 230).outputFormat("png")
 							.outputQuality(1).toOutputStream(response.getOutputStream());
 				} catch (IOException e) {
 

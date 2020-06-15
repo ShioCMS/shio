@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shio.api.ShJsonView;
-import com.viglet.shio.persistence.model.post.ShPostAttr;
+import com.viglet.shio.persistence.model.post.impl.ShPostAttrImpl;
 import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shio.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shio.persistence.repository.post.type.ShPostTypeAttrRepository;
@@ -86,7 +86,7 @@ public class ShPostTypeAttrAPI {
 		Optional<ShPostTypeAttr> shPostTypeAttrOptional = shPostTypeAttrRepository.findById(id);
 		if (shPostTypeAttrOptional.isPresent()) {
 			ShPostTypeAttr shPostTypeAttr = shPostTypeAttrOptional.get();
-			for (ShPostAttr shPostAttr : shPostTypeAttr.getShPostAttrs()) {
+			for (ShPostAttrImpl shPostAttr : shPostTypeAttr.getShPostAttrs()) {
 				shPostAttrRepository.delete(shPostAttr.getId());
 			}
 			shPostTypeAttrRepository.delete(id);

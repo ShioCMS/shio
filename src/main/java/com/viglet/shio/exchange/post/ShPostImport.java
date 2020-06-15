@@ -45,7 +45,10 @@ import com.viglet.shio.exchange.ShRelatorItemExchanges;
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
+import com.viglet.shio.persistence.model.post.impl.ShPostAttrImpl;
+import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.post.relator.ShRelatorItem;
+import com.viglet.shio.persistence.model.post.relator.impl.ShRelatorItemImpl;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
 import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shio.persistence.repository.folder.ShFolderRepository;
@@ -94,7 +97,7 @@ public class ShPostImport {
 
 	private boolean turingEnabled = true;
 
-	public ShPost getShPost(ShPostExchange shPostExchange) throws ClientProtocolException, IOException {
+	public ShPostImpl getShPost(ShPostExchange shPostExchange) throws ClientProtocolException, IOException {
 		ShPost shPost = new ShPost();
 		shPost.setId(shPostExchange.getId());
 		shPost.setDate(shPostExchange.getDate());
@@ -127,7 +130,7 @@ public class ShPostImport {
 	}
 
 	private void getShPostAttrs(ShPostExchange shPostExchange, ShPost shPost, Map<String, Object> shPostFields,
-			ShRelatorItem shParentRelatorItem) throws ClientProtocolException, IOException {
+			ShRelatorItemImpl shParentRelatorItem) throws ClientProtocolException, IOException {
 		for (Entry<String, Object> shPostField : shPostFields.entrySet()) {
 			ShPostType shPostType = shPostTypeRepository.findByName(shPostExchange.getPostType());
 
@@ -160,7 +163,7 @@ public class ShPostImport {
 	}
 
 	@SuppressWarnings({ "unchecked" })
-	private void postAttrNonRelator(ShPost shPost, ShRelatorItem shParentRelatorItem, Entry<String, Object> shPostField,
+	private void postAttrNonRelator(ShPost shPost, ShRelatorItemImpl shParentRelatorItem, Entry<String, Object> shPostField,
 			ShPostTypeAttr shPostTypeAttr) {
 		ShPostAttr shPostAttr = new ShPostAttr();
 		if (shPostField.getValue() instanceof ArrayList)
@@ -197,7 +200,7 @@ public class ShPostImport {
 	}
 
 	@SuppressWarnings({ "unchecked" })
-	private void postAttrRelator(ShPostExchange shPostExchange, ShPost shPost, ShRelatorItem shParentRelatorItem,
+	private void postAttrRelator(ShPostExchange shPostExchange, ShPost shPost, ShRelatorItemImpl shParentRelatorItem,
 			Entry<String, Object> shPostField, ShPostTypeAttr shPostTypeAttr)
 			throws JsonProcessingException, JsonMappingException, ClientProtocolException, IOException {
 		LinkedHashMap<String, Object> relatorFields = (LinkedHashMap<String, Object>) shPostField.getValue();
@@ -223,7 +226,7 @@ public class ShPostImport {
 		ShRelatorItemExchanges subPosts = mapper.readValue(subPostsJson, ShRelatorItemExchanges.class);
 
 		for (ShRelatorItemExchange shSubPost : subPosts) {
-			ShRelatorItem shRelatorItem = new ShRelatorItem();
+			ShRelatorItemImpl shRelatorItem = new ShRelatorItem();
 			shRelatorItem.setOrdinal(shSubPost.getPosition());
 			shRelatorItem.setShParentPostAttr(shPostAttr);
 
@@ -232,7 +235,7 @@ public class ShPostImport {
 		}
 	}
 
-	public ShPost createShPost(ShPostExchange shPostExchange, File extractFolder, String username,
+	public ShPostImpl createShPost(ShPostExchange shPostExchange, File extractFolder, String username,
 			Map<String, Object> shObjects, boolean isCloned) {
 		ShPost shPost = null;
 		if (shPostRepository.findById(shPostExchange.getId()).isPresent()) {
@@ -266,7 +269,7 @@ public class ShPostImport {
 			this.createShPostAttrs(shPostExchange, shPost, shPostExchange.getFields(), null, extractFolder, username,
 					shObjects, isCloned);
 
-			for (ShPostAttr shPostAttr : shPostAttrRepository.findByShPost(shPost)) {
+			for (ShPostAttrImpl shPostAttr : shPostAttrRepository.findByShPost(shPost)) {
 				shPostUtils.updateRelatorInfo(shPostAttr, shPost);
 			}
 
@@ -279,7 +282,7 @@ public class ShPostImport {
 		return shPost;
 	}
 
-	private void detectPostAttrs(ShPostExchange shPostExchange, File extractFolder, ShPost shPost) {
+	private void detectPostAttrs(ShPostExchange shPostExchange, File extractFolder, ShPostImpl shPost) {
 		for (Entry<String, Object> shPostField : shPostExchange.getFields().entrySet()) {
 			ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPost.getShPostType(),
 					shPostField.getKey());
@@ -305,7 +308,7 @@ public class ShPostImport {
 	}
 
 	private void createShPostAttrs(ShPostExchange shPostExchange, ShPost shPost, Map<String, Object> shPostFields,
-			ShRelatorItem shParentRelatorItem, File extractFolder, String username, Map<String, Object> shObjects,
+			ShRelatorItemImpl shParentRelatorItem, File extractFolder, String username, Map<String, Object> shObjects,
 			boolean isCloned) {
 		for (Entry<String, Object> shPostField : shPostFields.entrySet()) {
 			ShPostType shPostType = shPostTypeRepository.findByName(shPostExchange.getPostType());
@@ -345,7 +348,7 @@ public class ShPostImport {
 	}
 
 	@SuppressWarnings({ "unchecked" })
-	private void detectPostAttrNonRelator(ShPost shPost, ShRelatorItem shParentRelatorItem,
+	private void detectPostAttrNonRelator(ShPost shPost, ShRelatorItemImpl shParentRelatorItem,
 			Entry<String, Object> shPostField, ShPostTypeAttr shPostTypeAttr) {
 		ShPostAttr shPostAttr = new ShPostAttr();
 		if (shPostField.getValue() instanceof ArrayList)
@@ -385,7 +388,7 @@ public class ShPostImport {
 	}
 
 	@SuppressWarnings({ "unchecked" })
-	private void detectPostAttrRelator(ShPostExchange shPostExchange, ShPost shPost, ShRelatorItem shParentRelatorItem,
+	private void detectPostAttrRelator(ShPostExchange shPostExchange, ShPost shPost, ShRelatorItemImpl shParentRelatorItem,
 			File extractFolder, String username, Map<String, Object> shObjects, boolean isCloned,
 			Entry<String, Object> shPostField, ShPostTypeAttr shPostTypeAttr) {
 		LinkedHashMap<String, Object> relatorFields = (LinkedHashMap<String, Object>) shPostField.getValue();

@@ -28,7 +28,10 @@ import org.hibernate.search.annotations.Field;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.viglet.shio.persistence.model.object.ShObject;
+import com.viglet.shio.persistence.model.post.impl.ShPostAttrImpl;
+import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.post.relator.ShRelatorItem;
+import com.viglet.shio.persistence.model.post.relator.impl.ShRelatorItemImpl;
 import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
 
 import java.util.Date;
@@ -57,7 +60,7 @@ import javax.persistence.TemporalType;
 @Entity
 @NamedQuery(name = "ShPostAttr.findAll", query = "SELECT s FROM ShPostAttr s")
 @JsonIgnoreProperties({ "shPostType", "shPost", "shParentRelatorItem", "tab" })
-public class ShPostAttr implements Serializable {
+public class ShPostAttr implements Serializable, ShPostAttrImpl {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -116,10 +119,12 @@ public class ShPostAttr implements Serializable {
 	@JoinColumn(name = "post_attr_id")
 	private ShRelatorItem shParentRelatorItem;
 
+	@Override
 	public ShObject getReferenceObject() {
 		return referenceObject;
 	}
 
+	@Override
 	public void setReferenceObject(ShObject referenceObject) {
 		this.referenceObject = referenceObject;
 	}
@@ -127,42 +132,52 @@ public class ShPostAttr implements Serializable {
 	public ShPostAttr() {
 	}
 
+	@Override
 	public String getId() {
 		return this.id;
 	}
 
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
 
+	@Override
 	public Date getDateValue() {
 		return this.dateValue;
 	}
 
+	@Override
 	public void setDateValue(Date dateValue) {
 		this.dateValue = dateValue;
 	}
 
+	@Override
 	public int getIntValue() {
 		return this.intValue;
 	}
 
+	@Override
 	public void setIntValue(int intValue) {
 		this.intValue = intValue;
 	}
 
+	@Override
 	public String getStrValue() {
 		return this.strValue;
 	}
 
+	@Override
 	public void setStrValue(String strValue) {
 		this.strValue = strValue;
 	}
 
+	@Override
 	public Set<String> getArrayValue() {
 		return arrayValue;
 	}
 
+	@Override
 	public void setArrayValue(Set<String> arrayValue) {
 		this.arrayValue.clear();
 		if (arrayValue != null) {
@@ -170,47 +185,58 @@ public class ShPostAttr implements Serializable {
 		}
 	}
 
+	@Override
 	public int getType() {
 		return this.type;
 	}
 
+	@Override
 	public void setType(int type) {
 		this.type = type;
 	}
 
+	@Override
 	public ShPost getShPost() {
 		return this.shPost;
 	}
 
-	public void setShPost(ShPost shPost) {
-		this.shPost = shPost;
+	@Override
+	public void setShPost(ShPostImpl shPost) {
+		this.shPost = (ShPost) shPost;
 	}
 
+	@Override
 	public ShPostTypeAttr getShPostTypeAttr() {
 		return this.shPostTypeAttr;
 	}
 
+	@Override
 	public void setShPostTypeAttr(ShPostTypeAttr shPostTypeAttr) {
 		this.shPostTypeAttr = shPostTypeAttr;
 	}
 
-	public Set<ShRelatorItem> getShChildrenRelatorItems() {
+	@Override
+	public Set<? extends ShRelatorItemImpl> getShChildrenRelatorItems() {
 		return shChildrenRelatorItems;
 	}
 
-	public void setShChildrenRelatorItems(Set<ShRelatorItem> shChildrenRelatorItems) {
+	@Override
+	public void setShChildrenRelatorItems(Set<? extends ShRelatorItemImpl> shChildrenRelatorItems) {
 		this.shChildrenRelatorItems.clear();
 		if (shChildrenRelatorItems != null) {
-			this.shChildrenRelatorItems.addAll(shChildrenRelatorItems);
+			shChildrenRelatorItems.forEach(
+					shChildrenRelatorItem -> this.shChildrenRelatorItems.add((ShRelatorItem) shChildrenRelatorItem));
 		}
 	}
 
-	public ShRelatorItem getShParentRelatorItem() {
+	@Override
+	public ShRelatorItemImpl getShParentRelatorItem() {
 		return shParentRelatorItem;
 	}
 
-	public void setShParentRelatorItem(ShRelatorItem shParentRelatorItem) {
-		this.shParentRelatorItem = shParentRelatorItem;
+	@Override
+	public void setShParentRelatorItem(ShRelatorItemImpl shParentRelatorItem) {
+		this.shParentRelatorItem = (ShRelatorItem) shParentRelatorItem;
 	}
 
 }

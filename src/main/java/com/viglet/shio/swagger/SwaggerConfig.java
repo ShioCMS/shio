@@ -41,7 +41,8 @@ public class SwaggerConfig {
 
 		return new Docket(DocumentationType.SWAGGER_2).pathProvider(pathProvider).select()
 				.apis(RequestHandlerSelectors.basePackage("com.viglet.shio.api")).paths(PathSelectors.any()).build()
-				.apiInfo(apiInfo());
+				.apiInfo(apiInfo())
+				.enable(false);
 	}
 
 	private ApiInfo apiInfo() {

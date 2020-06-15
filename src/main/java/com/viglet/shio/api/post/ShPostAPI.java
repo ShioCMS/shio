@@ -50,8 +50,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
 import com.viglet.shio.persistence.model.post.ShPostDraft;
 import com.viglet.shio.persistence.model.post.ShPostDraftAttr;
-import com.viglet.shio.persistence.model.post.relator.ShRelatorItem;
+import com.viglet.shio.persistence.model.post.impl.ShPostAttrImpl;
 import com.viglet.shio.persistence.model.post.relator.ShRelatorItemDraft;
+import com.viglet.shio.persistence.model.post.relator.impl.ShRelatorItemImpl;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
 import com.viglet.shio.persistence.model.reference.ShReference;
 import com.viglet.shio.persistence.model.reference.ShReferenceDraft;
@@ -270,7 +271,8 @@ public class ShPostAPI {
 
 	public void postSave(ShPost shPost) {
 		// Get PostAttrs before save, because JPA Lazy
-		Set<ShPostAttr> shPostAttrs = shPost.getShPostAttrs();
+		@SuppressWarnings("unchecked")
+		Set<ShPostAttr> shPostAttrs = (Set<ShPostAttr>) shPost.getShPostAttrs();
 
 		StringBuilder title = new StringBuilder();
 		StringBuilder summary = new StringBuilder();
@@ -403,7 +405,8 @@ public class ShPostAPI {
 		if (shPost.getId() != null && shPost.isPublished()) {
 			shPostRepository.findById(shPost.getId()).ifPresent(shPostEdit -> {
 				ShPostDraft shPostDraft = convertPost2Draft(shPost);
-				Set<ShPostDraftAttr> shPostAttrs = shPostDraft.getShPostAttrs();
+				@SuppressWarnings("unchecked")
+				Set<ShPostDraftAttr> shPostAttrs = (Set<ShPostDraftAttr>) shPostDraft.getShPostAttrs();
 				shPostAttrs.forEach(shPostAttr -> {
 					shPostAttr.setShPost(shPostDraft);
 					this.updateRelatorParentDraft(shPostAttr, shPostDraft);
@@ -436,11 +439,11 @@ public class ShPostAPI {
 	}
 
 	private void updateRelatorParent(ShPostAttr shPostAttr, ShPost shPost) {
-		for (ShRelatorItem shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
+		for (ShRelatorItemImpl shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
 			shRelatorItem.setShParentPostAttr(shPostAttr);
-			for (ShPostAttr shChildrenPostAttr : shRelatorItem.getShChildrenPostAttrs()) {
+			for (ShPostAttrImpl shChildrenPostAttr : shRelatorItem.getShChildrenPostAttrs()) {
 				shChildrenPostAttr.setShParentRelatorItem(shRelatorItem);
-				this.updateRelatorParent(shChildrenPostAttr, shPost);
+				this.updateRelatorParent((ShPostAttr) shChildrenPostAttr, shPost);
 			}
 		}
 	}
@@ -461,22 +464,22 @@ public class ShPostAPI {
 		List<ShReference> shOldReferences = shReferenceRepository.findByShObjectFrom(shPost);
 		shReferenceRepository.deleteInBatch(shOldReferences);
 
-		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
+		for (ShPostAttrImpl shPostAttr : shPost.getShPostAttrs()) {
 			shPostUtils.referencedObject(shPostAttr, shPost);
-			this.nestedReferenceSave(shPostAttr, shPost);
+			this.nestedReferenceSave((ShPostAttr)shPostAttr, shPost);
 		}
 
-		for (ShPostAttr shPostAttr : shPost.getShPostAttrs())
-			shPostUtils.updateRelatorInfo(shPostAttr, shPost);
+		for (ShPostAttrImpl shPostAttr : shPost.getShPostAttrs())
+			shPostUtils.updateRelatorInfo((ShPostAttr)shPostAttr, shPost);
 
 		shPostRepository.saveAndFlush(shPost);
 	}
 
 	private void nestedReferenceSave(ShPostAttr shPostAttr, ShPost shPost) {
-		for (ShRelatorItem shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
-			for (ShPostAttr shChildrenPostAttr : shRelatorItem.getShChildrenPostAttrs()) {
+		for (ShRelatorItemImpl shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
+			for (ShPostAttrImpl shChildrenPostAttr : shRelatorItem.getShChildrenPostAttrs()) {
 				shPostUtils.referencedObject(shChildrenPostAttr, shPost);
-				this.nestedReferenceSave(shChildrenPostAttr, shPost);
+				this.nestedReferenceSave((ShPostAttr)shChildrenPostAttr, shPost);
 			}
 		}
 	}

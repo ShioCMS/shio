@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 
 import com.google.common.base.CaseFormat;
 import com.viglet.shio.persistence.model.post.ShPost;
-import com.viglet.shio.persistence.model.post.ShPostAttr;
+import com.viglet.shio.persistence.model.post.impl.ShPostAttrImpl;
 import com.viglet.shio.utils.ShObjectUtils;
 
 /**
@@ -61,7 +61,7 @@ public class ShGraphQLUtils {
 			shPostAttrMap.put(ShGraphQLConstants.PUBLISHER, shPost.getPublisher());
 			shPostAttrMap.put(ShGraphQLConstants.FOLDER, shPost.getShFolder().getName());
 			shPostAttrMap.put(ShGraphQLConstants.SITE, shObjectUtils.getSite(shPost).getName());
-			for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
+			for (ShPostAttrImpl shPostAttr : shPost.getShPostAttrs()) {
 				String postTypeAttrName = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL,
 						shPostAttr.getShPostTypeAttr().getName().toLowerCase().replace("-", "_"));
 				shPostAttrMap.put(postTypeAttrName, shPostAttr.getStrValue());

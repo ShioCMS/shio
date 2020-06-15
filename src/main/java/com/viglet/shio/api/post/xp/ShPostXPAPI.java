@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shio.api.ShJsonView;
 import com.viglet.shio.bean.xp.ShPostXP;
-import com.viglet.shio.persistence.model.post.ShPost;
+import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.property.ShMgmtProperties;
 import com.viglet.shio.utils.ShObjectUtils;
 import com.viglet.shio.utils.ShPostUtils;
@@ -73,7 +73,7 @@ public class ShPostXPAPI {
 				logger.debug("Mgmt: " + shMgmtProperties.isEnabled());
 			ShPostXP shPostXP = new ShPostXP();
 
-			ShPost shPost = shPostUtils.loadLazyPost(id, false);
+			ShPostImpl shPost = shPostUtils.loadLazyPost(id, false);
 			shPostUtils.syncWithPostType(shPost);
 
 			shPostXP.setShPost(shPost);

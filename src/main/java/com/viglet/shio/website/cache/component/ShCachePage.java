@@ -32,6 +32,7 @@ import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.object.ShObject;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
+import com.viglet.shio.persistence.model.post.impl.ShPostAttrImpl;
 import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.persistence.repository.object.ShObjectRepository;
 import com.viglet.shio.persistence.repository.site.ShSiteRepository;
@@ -93,7 +94,7 @@ public class ShCachePage {
 				String format = shSitesContextURL.getInfo().getShFormat();
 				Map<String, ShPostAttr> shFolderIndexMap = shSitesPostUtils.postToMap(shPost);
 				// TTL
-				ShPostAttr shPostAttrCacheTTL = shFolderIndexMap.get("CACHE_TTL");
+				ShPostAttrImpl shPostAttrCacheTTL = shFolderIndexMap.get("CACHE_TTL");
 				if (shPostAttrCacheTTL != null && shPostAttrCacheTTL.getStrValue() != null) {
 					int minutes = Integer.parseInt(shPostAttrCacheTTL.getStrValue());
 
@@ -106,7 +107,7 @@ public class ShCachePage {
 					if (shSitesContextURL.getInfo().getContextURL().endsWith(".json"))
 						mimeType = "json";
 				} else {
-					ShPostAttr shPostAttrFormats = shFolderIndexMap.get("FORMATS");
+					ShPostAttrImpl shPostAttrFormats = shFolderIndexMap.get("FORMATS");
 					List<Map<String, ShPostAttr>> shPostAttrFormatList = shSitesPostUtils
 							.relationToMap(shPostAttrFormats);
 					if (shPostAttrFormatList != null) {

@@ -30,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
+import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
 import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shio.persistence.model.site.ShSite;
@@ -86,7 +87,7 @@ public class ShStaticFileUtils {
 		return file;
 	}
 
-	public File filePath(ShPost shPost) {
+	public File filePath(ShPostImpl shPost) {
 		File file = null;
 		if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE)) {
 			File directoryPath = this.dirPath(shPost.getShFolder());

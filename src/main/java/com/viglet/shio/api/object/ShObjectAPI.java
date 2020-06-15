@@ -55,6 +55,7 @@ import com.viglet.shio.persistence.model.auth.ShUser;
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.object.ShObject;
 import com.viglet.shio.persistence.model.post.ShPost;
+import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
 import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.persistence.repository.auth.ShUserRepository;
@@ -285,7 +286,7 @@ public class ShObjectAPI {
 			if (shObjectDest instanceof ShFolder) {
 				ShFolder shFolderDest = (ShFolder) shObjectDest;
 				if (shObject instanceof ShPost) {
-					ShPost shPost = (ShPost) shObject;
+					ShPostImpl shPost = (ShPostImpl) shObject;
 					shObjects.add(shPostUtils.copy(shPost, shFolderDest));
 				} else if (shObject instanceof ShFolder) {
 					ShFolder shFolder = (ShFolder) shObject;
@@ -462,7 +463,7 @@ public class ShObjectAPI {
 		ShObject shObject = shObjectRepository.findById(id).orElse(null);
 		String label = "";
 		if (shObject instanceof ShPost) {
-			label = ((ShPost) shObject).getTitle();
+			label = ((ShPostImpl) shObject).getTitle();
 		} else if (shObject instanceof ShFolder) {
 			label = ((ShFolder) shObject).getName();
 		} else if (shObject instanceof ShSite) {
@@ -502,7 +503,7 @@ public class ShObjectAPI {
 				return shFolderPath;
 			}
 		} else if (shObject instanceof ShPost) {
-			ShPost shPost = shPostUtils.loadLazyPost(shObject.getId(), false);
+			ShPostImpl shPost = shPostUtils.loadLazyPost(shObject.getId(), false);
 			if (shPost != null) {
 				ShFolder shFolder = shPost.getShFolder();
 				ShFolderPath shFolderPath = new ShFolderPath();

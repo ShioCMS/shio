@@ -34,7 +34,7 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import com.google.gson.Gson;
 import com.viglet.shio.persistence.model.object.ShObject;
-import com.viglet.shio.persistence.model.post.ShPost;
+import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shio.website.ShSitesContextURL;
 
@@ -120,7 +120,7 @@ public class ShReCaptchaWidget implements ShWidgetImplementation {
 	}
 
 	@Override
-	public void postRender(ShPost shPost, ShSitesContextURL shSitesContextURL) throws IOException {
+	public void postRender(ShPostImpl shPost, ShSitesContextURL shSitesContextURL) throws IOException {
 		 // Do nothing 
 	}
 }

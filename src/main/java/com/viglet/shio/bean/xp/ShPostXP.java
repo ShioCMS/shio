@@ -16,22 +16,22 @@
  */
 package com.viglet.shio.bean.xp;
 
-import com.viglet.shio.persistence.model.post.ShPost;
+import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 
 /**
  * @author Alexandre Oliveira
  */
 public class ShPostXP {
 
-	private ShPost shPost;
+	private ShPostImpl shPost;
 	
 	private boolean allowPublish;
 
-	public ShPost getShPost() {
+	public ShPostImpl getShPost() {
 		return shPost;
 	}
 
-	public void setShPost(ShPost shPost) {
+	public void setShPost(ShPostImpl shPost) {
 		this.shPost = shPost;
 	}
 

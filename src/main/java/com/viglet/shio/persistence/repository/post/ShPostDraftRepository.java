@@ -29,9 +29,9 @@ import org.springframework.stereotype.Repository;
 
 import com.viglet.shio.bean.ShPostTinyBean;
 import com.viglet.shio.persistence.model.folder.ShFolder;
-import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
 import com.viglet.shio.persistence.model.post.ShPostDraft;
+import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
 
 /**
@@ -66,9 +66,9 @@ public interface ShPostDraftRepository extends JpaRepository<ShPostDraft, String
 
 	List<ShPostDraft> findByTitle(String title);
 
-	ShPost findByShFolderAndTitle(ShFolder shFolder, String title);
+	ShPostImpl findByShFolderAndTitle(ShFolder shFolder, String title);
 
-	ShPost findByShFolderAndFurl(ShFolder shFolder, String furl);
+	ShPostImpl findByShFolderAndFurl(ShFolder shFolder, String furl);
 
 	@SuppressWarnings("unchecked")
 	ShPostDraft save(ShPostDraft shPost);

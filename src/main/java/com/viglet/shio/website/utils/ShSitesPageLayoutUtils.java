@@ -36,6 +36,8 @@ import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.object.ShObject;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
+import com.viglet.shio.persistence.model.post.impl.ShPostAttrImpl;
+import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.persistence.repository.object.ShObjectRepository;
 import com.viglet.shio.persistence.repository.post.ShPostRepository;
@@ -97,7 +99,7 @@ public class ShSitesPageLayoutUtils {
 		return null;
 	}
 
-	public ShPost pageLayoutFromPost(ShPost shPostItem, ShSite shSite, String format) {
+	public ShPost pageLayoutFromPost(ShPostImpl shPostItem, ShSite shSite, String format) {
 		JSONObject postTypeLayout = new JSONObject();
 
 		if (shSite.getPostTypeLayout() != null)
@@ -136,12 +138,12 @@ public class ShSitesPageLayoutUtils {
 		String shPostFolderPageLayoutId = null;
 		ShPost shFolderPageLayout = null;
 		if (shObjectItem instanceof ShPost) {
-			ShPost shSelectedPost = shSitesPostUtils.getPostByStage((ShPost) shObjectItem);
+			ShPostImpl shSelectedPost = shSitesPostUtils.getPostByStage((ShPost) shObjectItem);
 			if (shSelectedPost != null) {
 				Map<String, ShPostAttr> shFolderIndexMap = shSitesPostUtils.postToMap((ShPost) shSelectedPost);
 				shPostFolderPageLayoutId = shFolderIndexMap.get(ShSystemPostTypeAttr.PAGE_LAYOUT).getStrValue();
 				if (!format.equalsIgnoreCase(DEFAULT_FORMAT)) {
-					ShPostAttr shPostAttrFormats = shFolderIndexMap.get("FORMATS");
+					ShPostAttrImpl shPostAttrFormats = shFolderIndexMap.get("FORMATS");
 					List<Map<String, ShPostAttr>> shPostAttrFormatList = shSitesPostUtils
 							.relationToMap(shPostAttrFormats);
 					if (shPostAttrFormatList != null)

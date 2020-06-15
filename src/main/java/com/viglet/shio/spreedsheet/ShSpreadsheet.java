@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import javax.servlet.ServletOutputStream;
@@ -48,6 +49,8 @@ import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.object.ShObject;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
+import com.viglet.shio.persistence.model.post.impl.ShPostAttrImpl;
+import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.persistence.repository.post.ShPostRepository;
 import com.viglet.shio.post.type.ShSystemPostType;
@@ -170,11 +173,12 @@ public class ShSpreadsheet {
 		this.createColumns(shPost, columnCount, cellTextStyle, cellTextAreaStyle, cellDateStyle, row);
 	}
 
+	@SuppressWarnings("unchecked")
 	private void createColumns(ShPost shPost, int columnCount, CellStyle cellTextStyle, CellStyle cellTextAreaStyle,
 			CellStyle cellDateStyle, XSSFRow row) {
 		this.createdDateCell(shPost, cellDateStyle, row);
 
-		for (ShPostAttr shPostAttr : shPostUtils.postAttrsSort(shPost.getShPostAttrs())) {
+		for (ShPostAttrImpl shPostAttr : shPostUtils.postAttrsSort((Set<ShPostAttr>) shPost.getShPostAttrs())) {
 			columnCount++;
 			String widgetName = shPostAttr.getShPostTypeAttr().getShWidget().getName();
 			if (!widgetName.contains(ShSystemWidget.TAB)) {
@@ -203,12 +207,12 @@ public class ShSpreadsheet {
 		cellDate.setCellStyle(cellDateStyle);
 	}
 
-	private void dateCell(CellStyle cellDateStyle, ShPostAttr shPostAttr, XSSFCell cell) {
+	private void dateCell(CellStyle cellDateStyle, ShPostAttrImpl shPostAttr, XSSFCell cell) {
 		cell.setCellValue((Date) shPostAttr.getDateValue());
 		cell.setCellStyle(cellDateStyle);
 	}
 
-	private void multiSelectCell(CellStyle cellTextAreaStyle, ShPostAttr shPostAttr, XSSFCell cell) {
+	private void multiSelectCell(CellStyle cellTextAreaStyle, ShPostAttrImpl shPostAttr, XSSFCell cell) {
 		List<String> msItems = new ArrayList<>();
 		for (String id : shPostAttr.getArrayValue()) {
 			Optional<ShPost> shPostMultSelect = shPostRepository.findById(id);
@@ -220,12 +224,12 @@ public class ShSpreadsheet {
 		cell.setCellStyle(cellTextAreaStyle);
 	}
 
-	private void textAreaCell(CellStyle cellTextAreaStyle, ShPostAttr shPostAttr, XSSFCell cell) {
+	private void textAreaCell(CellStyle cellTextAreaStyle, ShPostAttrImpl shPostAttr, XSSFCell cell) {
 		cell.setCellValue((String) shPostAttr.getStrValue());
 		cell.setCellStyle(cellTextAreaStyle);
 	}
 
-	private void relatorCell(CellStyle cellTextStyle, ShPost shPost, ShPostAttr shPostAttr, XSSFCell cell) {
+	private void relatorCell(CellStyle cellTextStyle, ShPostImpl shPost, ShPostAttrImpl shPostAttr, XSSFCell cell) {
 		String value = null;
 		if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE)) {
 			value = shPostAttr.getStrValue();
@@ -235,7 +239,7 @@ public class ShSpreadsheet {
 			if (shObject instanceof ShFolder) {
 				value = ((ShFolder) shObject).getName();
 			} else if (shObject instanceof ShPost) {
-				value = ((ShPost) shObject).getTitle();
+				value = ((ShPostImpl) shObject).getTitle();
 			} else if (shObject instanceof ShSite) {
 				value = ((ShSite) shObject).getName();
 			}
@@ -244,6 +248,7 @@ public class ShSpreadsheet {
 		cell.setCellStyle(cellTextStyle);
 	}
 
+	@SuppressWarnings("unchecked")
 	private XSSFSheet tableDefinition(Workbook workbook, String sheetName, List<ShPost> shPostsEntry) {
 		if (shPostsEntry != null && !shPostsEntry.isEmpty()) {
 			XSSFSheet sheet = (XSSFSheet) workbook.createSheet(sheetName);
@@ -257,7 +262,7 @@ public class ShSpreadsheet {
 			Cell cellHeaderDate = row.createCell(columnCount);
 			cellHeaderDate.setCellValue("Date");
 
-			for (ShPostAttr shPostAttr : shPostUtils.postAttrsSort(shPostsEntry.get(0).getShPostAttrs())) {
+			for (ShPostAttrImpl shPostAttr : shPostUtils.postAttrsSort((Set<ShPostAttr>) shPostsEntry.get(0).getShPostAttrs())) {
 				columnCount++;
 				XSSFCell cell = row.createCell(columnCount);
 				cell.setCellValue(shPostAttr.getShPostTypeAttr().getLabel());

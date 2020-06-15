@@ -39,6 +39,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import com.viglet.shio.persistence.model.post.ShPostAttr;
+import com.viglet.shio.persistence.model.post.impl.ShPostAttrImpl;
+import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shio.api.ShJsonView;
 import com.viglet.shio.exchange.post.type.ShPostTypeExport;
@@ -111,8 +113,8 @@ public class ShPostTypeAPI {
 
 	@GetMapping("/{id}/post/model")
 	@JsonView({ ShJsonView.ShJsonViewPostType.class })
-	public ShPost shPostTypePostStructure(@PathVariable String id) {
-		ShPost shPost = new ShPost();
+	public ShPostImpl shPostTypePostStructure(@PathVariable String id) {
+		ShPostImpl shPost = new ShPost();
 		shPost.setShPostType(shPostTypeRepository.findById(id).orElse(null));
 		Set<ShPostAttr> shPostAttrs = new HashSet<>();
 		for (ShPostTypeAttr shPostTypeAttr : shPost.getShPostType().getShPostTypeAttrs()) {
@@ -127,8 +129,8 @@ public class ShPostTypeAPI {
 
 	@GetMapping("/name/{postTypeName}/post/model")
 	@JsonView({ ShJsonView.ShJsonViewPostType.class })
-	public ShPost shPostTypeByNamePostStructure(@PathVariable String postTypeName) {
-		ShPost shPost = new ShPost();
+	public ShPostImpl shPostTypeByNamePostStructure(@PathVariable String postTypeName) {
+		ShPostImpl shPost = new ShPost();
 		shPost.setShPostType(shPostTypeRepository.findByName(postTypeName));
 		Set<ShPostAttr> shPostAttrs = new HashSet<>();
 		for (ShPostTypeAttr shPostTypeAttr : shPost.getShPostType().getShPostTypeAttrs()) {
@@ -156,14 +158,14 @@ public class ShPostTypeAPI {
 			ShPostType shPostType = shPostTypeOptional.get();
 
 			for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs()) {
-				for (ShPostAttr shPostAttr : shPostTypeAttr.getShPostAttrs()) {
+				for (ShPostAttrImpl shPostAttr : shPostTypeAttr.getShPostAttrs()) {
 					shPostAttrRepository.delete(shPostAttr.getId());
 				}
 				shPostTypeAttrRepository.delete(shPostTypeAttr.getId());
 			}
 
 			for (ShPost shPost : shPostType.getShPosts()) {
-				for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
+				for (ShPostAttrImpl shPostAttr : shPost.getShPostAttrs()) {
 					shPostAttrRepository.delete(shPostAttr.getId());
 				}
 				shPostRepository.delete(shPost.getId());

@@ -34,8 +34,9 @@ import com.viglet.shio.exchange.ShRelatorExchange;
 import com.viglet.shio.exchange.ShRelatorItemExchange;
 import com.viglet.shio.exchange.ShRelatorItemExchanges;
 import com.viglet.shio.persistence.model.post.ShPost;
-import com.viglet.shio.persistence.model.post.ShPostAttr;
-import com.viglet.shio.persistence.model.post.relator.ShRelatorItem;
+import com.viglet.shio.persistence.model.post.impl.ShPostAttrImpl;
+import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
+import com.viglet.shio.persistence.model.post.relator.impl.ShRelatorItemImpl;
 import com.viglet.shio.post.type.ShSystemPostType;
 import com.viglet.shio.post.type.ShSystemPostTypeAttr;
 import com.viglet.shio.utils.ShStaticFileUtils;
@@ -87,15 +88,15 @@ public class ShPostExport {
 		});
 	}
 
-	private boolean postAttrIsNotNull(ShPostAttr shPostAttr) {
+	private boolean postAttrIsNotNull(ShPostAttrImpl shPostAttr) {
 		return shPostAttr != null && shPostAttr.getShPostTypeAttr() != null;
 	}
 
-	private boolean isRelator(ShPostAttr shPostAttr) {
+	private boolean isRelator(ShPostAttrImpl shPostAttr) {
 		return shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.RELATOR);
 	}
 
-	private void exportAttrs(Map<String, Object> fields, ShPostAttr shPostAttr) {
+	private void exportAttrs(Map<String, Object> fields, ShPostAttrImpl shPostAttr) {
 		if (!shPostAttr.getArrayValue().isEmpty())
 			fields.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getArrayValue());
 		else if (shPostAttr.getDateValue() != null) {
@@ -107,12 +108,12 @@ public class ShPostExport {
 	}
 
 	private void exportRelatorAttrs(ShPost shPost, Map<String, Object> fields, List<ShFileExchange> files,
-			ShPostAttr shPostAttr) {
+			ShPostAttrImpl shPostAttr) {
 		ShRelatorExchange shRelatorExchange = new ShRelatorExchange();
 		shRelatorExchange.setId(shPostAttr.getId());
 		shRelatorExchange.setName(shPostAttr.getStrValue());
 		ShRelatorItemExchanges relators = new ShRelatorItemExchanges();
-		for (ShRelatorItem shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
+		for (ShRelatorItemImpl shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
 			ShRelatorItemExchange shRelatorItemExchange = new ShRelatorItemExchange();
 			shRelatorItemExchange.setPosition(shRelatorItem.getOrdinal());
 			Map<String, Object> relatorFields = new HashMap<>();
@@ -124,12 +125,12 @@ public class ShPostExport {
 		fields.put(shPostAttr.getShPostTypeAttr().getName(), shRelatorExchange);
 	}
 
-	private boolean canExportStaticFile(ShPost shPost, List<ShFileExchange> files, ShPostAttr shPostAttr) {
+	private boolean canExportStaticFile(ShPostImpl shPost, List<ShFileExchange> files, ShPostAttrImpl shPostAttr) {
 		return files != null && shPostAttr.getShPostTypeAttr().getName().equals(ShSystemPostTypeAttr.FILE)
 				&& shPost.getShPostType().getName().equals(ShSystemPostType.FILE);
 	}
 
-	private void exportStaticFiles(ShPost shPost, List<ShFileExchange> files, ShPostAttr shPostAttr) {
+	private void exportStaticFiles(ShPost shPost, List<ShFileExchange> files, ShPostAttrImpl shPostAttr) {
 		if (canExportStaticFile(shPost, files, shPostAttr)) {
 			String fileName = shPostAttr.getStrValue();
 			File directoryPath = shStaticFileUtils.dirPath(shPost.getShFolder());

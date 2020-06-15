@@ -45,6 +45,8 @@ import com.viglet.shio.api.ShJsonView;
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
+import com.viglet.shio.persistence.model.post.impl.ShPostAttrImpl;
+import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
 import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.persistence.repository.folder.ShFolderRepository;
@@ -121,7 +123,7 @@ public class ShPostAPITest {
 		shPostAttrTitle.setShPostTypeAttr(
 				shPostTypeAttrRepository.findByShPostTypeAndName(shPostType, ShSystemPostTypeAttr.TITLE));
 
-		shPost.getShPostAttrs().add(shPostAttrTitle);
+		shPost.getShPostAttrsNonDraft().add(shPostAttrTitle);
 
 		// Description Field
 		ShPostAttr shPostAttrDescription = new ShPostAttr();
@@ -130,7 +132,7 @@ public class ShPostAPITest {
 		shPostAttrDescription.setShPostTypeAttr(
 				shPostTypeAttrRepository.findByShPostTypeAndName(shPostType, ShSystemPostTypeAttr.DESCRIPTION));
 
-		shPost.getShPostAttrs().add(shPostAttrDescription);
+		shPost.getShPostAttrsNonDraft().add(shPostAttrDescription);
 		/*
 		 * // Text Relation ShRelatorItem shRelatorItem = new ShRelatorItem();
 		 * 
@@ -170,9 +172,9 @@ public class ShPostAPITest {
 	@Test
 	public void stage03ShPostUpdate() throws Exception {
 
-		ShPost shPost = shPostRepository.findById(newPostId).get();
+		ShPostImpl shPost = shPostRepository.findById(newPostId).get();
 
-		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
+		for (ShPostAttrImpl shPostAttr : shPost.getShPostAttrsNonDraft()) {
 			shPostAttr.setStrValue("Test Value was changed");
 		}
 

@@ -29,6 +29,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
+import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shio.persistence.model.site.ShSite;
 
@@ -48,7 +49,7 @@ public class ShPostAttrSpecs {
 
 	public static Specification<ShPostAttr> hasSites(List<ShSite> shSites) {
 		return (shPostAttr, query, cb) -> {
-			final Path<ShPost> shPost = shPostAttr.<ShPost>get("shPost");
+			final Path<ShPostImpl> shPost = shPostAttr.<ShPostImpl>get("shPost");
 
 			query.distinct(true);
 			Subquery<ShPost> postSubQuery = query.subquery(ShPost.class);

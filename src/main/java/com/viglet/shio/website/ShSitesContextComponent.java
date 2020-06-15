@@ -44,6 +44,8 @@ import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.object.ShObject;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
+import com.viglet.shio.persistence.model.post.impl.ShPostAttrImpl;
+import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shio.persistence.repository.post.ShPostRepository;
@@ -117,8 +119,8 @@ public class ShSitesContextComponent {
 
 	public ShPost shPostAlias(ShPost shPostItem) {
 		if (shPostItem.getShPostType().getName().equals(ShSystemPostType.ALIAS)) {
-			Set<ShPostAttr> shPostAttrs = shPostItem.getShPostAttrs();
-			for (ShPostAttr shPostAttr : shPostAttrs) {
+			Set<? extends ShPostAttrImpl> shPostAttrs = shPostItem.getShPostAttrs();
+			for (ShPostAttrImpl shPostAttr : shPostAttrs) {
 				if (shPostAttr.getShPostTypeAttr().getName().equals(ShSystemPostTypeAttr.CONTENT)) {
 					shPostItem = shPostRepository.findById(shPostAttr.getStrValue()).orElse(null);
 				}
@@ -205,7 +207,7 @@ public class ShSitesContextComponent {
 		return shChildFolderItems;
 	}
 
-	public ShFolder shFolderItemFactory(ShPost shPostItem) {
+	public ShFolder shFolderItemFactory(ShPostImpl shPostItem) {
 		ShFolder shFolderItem = null;
 		if (shPostItem != null && shPostItem.getShPostType().getName().equals(ShSystemPostType.FOLDER_INDEX)) {
 			shFolderItem = shPostItem.getShFolder();

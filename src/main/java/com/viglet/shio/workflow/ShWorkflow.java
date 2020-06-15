@@ -34,6 +34,7 @@ import com.viglet.shio.persistence.model.auth.ShUser;
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.object.ShObject;
 import com.viglet.shio.persistence.model.post.ShPost;
+import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.workflow.ShWorkflowTask;
 import com.viglet.shio.persistence.repository.auth.ShGroupRepository;
 import com.viglet.shio.persistence.repository.auth.ShUserRepository;
@@ -62,7 +63,7 @@ public class ShWorkflow {
 			shWorkflowTask.setTitle("Request to Publish");
 			shWorkflowTask.setShObject(shObject);
 			shWorkflowTask.setRequester(principal.getName());
-			ShPost shPost = (ShPost) shObject;
+			ShPostImpl shPost = (ShPostImpl) shObject;
 			shWorkflowTask.setRequested(shPost.getShPostType().getWorkflowPublishEntity());
 
 			shWorkflowTaskRepository.save(shWorkflowTask);
@@ -77,7 +78,7 @@ public class ShWorkflow {
 
 			String title = "";
 			if (shWorkflowTask.getShObject() instanceof ShPost) {
-				ShPost shPost = (ShPost) shWorkflowTask.getShObject();
+				ShPostImpl shPost = (ShPostImpl) shWorkflowTask.getShObject();
 				title = shPost.getTitle();
 			} else if (shWorkflowTask.getShObject() instanceof ShFolder) {
 				ShFolder shFolder = (ShFolder) shWorkflowTask.getShObject();

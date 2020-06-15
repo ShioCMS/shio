@@ -39,6 +39,9 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
+import com.viglet.shio.persistence.model.post.ShPostDraftAttr;
+import com.viglet.shio.persistence.model.post.impl.ShPostAttrImpl;
+import com.viglet.shio.persistence.model.post.relator.impl.ShRelatorItemImpl;
 
 /**
  * The persistent class for the ShRelatorItem database table.
@@ -47,8 +50,8 @@ import com.viglet.shio.persistence.model.post.ShPostAttr;
  */
 @Entity
 @NamedQuery(name = "ShRelatorItem.findAll", query = "SELECT ri FROM ShRelatorItem ri")
-@JsonIgnoreProperties({ "shPostAttr", "shParentPostAttr" })
-public class ShRelatorItem implements Serializable {
+@JsonIgnoreProperties({ "shPostAttr", "shParentPostAttr", "shChildrenPostAttrsDraft", "shChildrenPostAttrsNonDraft" })
+public class ShRelatorItem implements Serializable, ShRelatorItemImpl {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -58,71 +61,94 @@ public class ShRelatorItem implements Serializable {
 	private String id;
 
 	private String title;
-	
+
 	private String summary;
-	
+
 	private int ordinal;
-	
+
 	// bi-directional many-to-one association to ShPostAttr
 	@OneToMany(mappedBy = "shParentRelatorItem", orphanRemoval = true, fetch = FetchType.LAZY)
-	// Need this join, because without this show error when try to remove a relator item.
+	// Need this join, because without this show error when try to remove a relator
+	// item.
 	@Fetch(org.hibernate.annotations.FetchMode.JOIN)
-	@Cascade({CascadeType.ALL})
+	@Cascade({ CascadeType.ALL })
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	private Set<ShPostAttr> shChildrenPostAttrs = new HashSet<ShPostAttr>();
+	private Set<ShPostAttr> shChildrenPostAttrs = new HashSet<>();
 
 	// bi-directional many-to-one association to ShPost
 	@ManyToOne(fetch = FetchType.LAZY) // (cascade = {CascadeType.ALL})
 	@JoinColumn(name = "post_attr_id")
 	private ShPostAttr shParentPostAttr;
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
 
-	public Set<ShPostAttr> getShChildrenPostAttrs() {
+	public Set<? extends ShPostAttrImpl> getShChildrenPostAttrs() {
 		return shChildrenPostAttrs;
 	}
 
-	public void setShChildrenPostAttrs(Set<ShPostAttr> shChildrenPostAttrs) {
+	@Override
+	public Set<ShPostAttr> getShChildrenPostAttrsNonDraft() {
+		return shChildrenPostAttrs;
+	}
+
+	@Override
+	public Set<ShPostDraftAttr> getShChildrenPostAttrsDraft() {
+		return null;
+	}
+
+	@Override
+	public void setShChildrenPostAttrs(Set<? extends ShPostAttrImpl> shChildrenPostAttrs) {
 		this.shChildrenPostAttrs.clear();
 		if (shChildrenPostAttrs != null) {
-			this.shChildrenPostAttrs.addAll(shChildrenPostAttrs);
+			shChildrenPostAttrs
+					.forEach(shChildrenPostAttr -> this.shChildrenPostAttrs.add((ShPostAttr) shChildrenPostAttr));
 		}
 	}
 
-	public ShPostAttr getShParentPostAttr() {
+	@Override
+	public ShPostAttrImpl getShParentPostAttr() {
 		return shParentPostAttr;
 	}
 
-	public void setShParentPostAttr(ShPostAttr shParentPostAttr) {
-		this.shParentPostAttr = shParentPostAttr;
+	@Override
+	public void setShParentPostAttr(ShPostAttrImpl shParentPostAttr) {
+		this.shParentPostAttr = (ShPostAttr) shParentPostAttr;
 	}
 
+	@Override
 	public String getTitle() {
 		return title;
 	}
 
+	@Override
 	public void setTitle(String title) {
 		this.title = title;
 	}
 
+	@Override
 	public String getSummary() {
 		return summary;
 	}
 
+	@Override
 	public void setSummary(String summary) {
 		this.summary = summary;
 	}
 
+	@Override
 	public int getOrdinal() {
 		return ordinal;
 	}
 
+	@Override
 	public void setOrdinal(int ordinal) {
 		this.ordinal = ordinal;
 	}

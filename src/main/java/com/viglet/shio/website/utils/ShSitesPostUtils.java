@@ -35,7 +35,9 @@ import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
 import com.viglet.shio.persistence.model.post.ShPostDraft;
 import com.viglet.shio.persistence.model.post.ShPostDraftAttr;
+import com.viglet.shio.persistence.model.post.impl.ShPostAttrImpl;
 import com.viglet.shio.persistence.model.post.relator.ShRelatorItem;
+import com.viglet.shio.persistence.model.post.relator.impl.ShRelatorItemImpl;
 import com.viglet.shio.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shio.persistence.repository.post.ShPostDraftAttrRepository;
 import com.viglet.shio.persistence.repository.post.ShPostDraftRepository;
@@ -120,7 +122,7 @@ public class ShSitesPostUtils {
 		return shSelectedPosts;
 	}
 
-	public ShPostAttr getPostAttrByStage(ShPostAttr shPostAttr) {
+	public ShPostAttrImpl getPostAttrByStage(ShPostAttrImpl shPostAttr) {
 		if (shPostAttr != null) {
 			if (shMgmtProperties.isEnabled()) {
 				Optional<ShPostDraftAttr> shPostDraftAttrOptional = shPostDraftAttrRepository
@@ -141,19 +143,19 @@ public class ShSitesPostUtils {
 
 	}
 
-	public ShPost getPost(ShPostAttr shPostAttr) {
+	public ShPost getPost(ShPostAttrImpl shPostAttr) {
 		if (shPostAttr.getShPost() != null) {
-			return shPostAttr.getShPost();
+			return (ShPost) shPostAttr.getShPost();
 		} else {
 			return this.getPostNested(shPostAttr);
 		}
 	}
 
-	private ShPost getPostNested(ShPostAttr shPostAttr) {
+	private ShPost getPostNested(ShPostAttrImpl shPostAttr) {
 		if (shPostAttr.getShParentRelatorItem() != null
 				&& shPostAttr.getShParentRelatorItem().getShParentPostAttr() != null) {
 			if (shPostAttr.getShParentRelatorItem().getShParentPostAttr().getShPost() != null)
-				return shPostAttr.getShParentRelatorItem().getShParentPostAttr().getShPost();
+				return (ShPost) shPostAttr.getShParentRelatorItem().getShParentPostAttr().getShPost();
 			else
 				return this.getPostNested(shPostAttr.getShParentRelatorItem().getShParentPostAttr());
 
@@ -176,7 +178,7 @@ public class ShSitesPostUtils {
 		shPostObject.put("summary", shPost.getSummary());
 		shPostObject.put("link", this.generatePostLink(shPost));
 		shPostObject.put("parentFolder", shPost.getShFolder().getId());
-		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
+		for (ShPostAttrImpl shPostAttr : shPost.getShPostAttrs()) {
 			if (shPostAttr.getShPostTypeAttr().getName() != null) {
 				shPostItemAttrs.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
 			}
@@ -197,7 +199,7 @@ public class ShSitesPostUtils {
 		shPostObject.put("summary", shPost.getSummary());
 		shPostObject.put("link", this.generatePostLink(shPost));
 		shPostObject.put("parentFolder", shPost.getShFolder().getId());
-		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
+		for (ShPostAttrImpl shPostAttr : shPost.getShPostAttrs()) {
 			if (shPostAttr.getShPostTypeAttr().getName() != null) {
 				shPostItemAttrs.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
 			}
@@ -230,26 +232,27 @@ public class ShSitesPostUtils {
 		}
 
 	}
-
-	public List<Map<String, ShPostAttr>> relationToMap(ShPostAttr shPostAttr) {
+	@SuppressWarnings("unchecked")
+	public List<Map<String, ShPostAttr>> relationToMap(ShPostAttrImpl shPostAttr) {
 
 		if (shPostAttr != null) {
 			List<Map<String, ShPostAttr>> relations = new ArrayList<>();
 
-			Set<ShRelatorItem> shRelatorItems = shPostAttr.getShChildrenRelatorItems();
+			
+			Set<ShRelatorItem> shRelatorItems = (Set<ShRelatorItem>) shPostAttr.getShChildrenRelatorItems();
 			List<ShRelatorItem> shRelatorItemsByOrdinal = new ArrayList<>();
 			shRelatorItemsByOrdinal.addAll(shRelatorItems);
 
 			Collections.sort(shRelatorItemsByOrdinal,
 					(ShRelatorItem o1, ShRelatorItem o2) -> o1.getOrdinal() - o2.getOrdinal());
 
-			for (ShRelatorItem shRelatorItem : shRelatorItemsByOrdinal) {
+			for (ShRelatorItemImpl shRelatorItem : shRelatorItemsByOrdinal) {
 				Map<String, ShPostAttr> shRelationMap = new HashMap<>();
 				ShPostAttr shPostAttrId = new ShPostAttr();
 				shPostAttrId.setStrValue(shRelatorItem.getId());
 				shRelationMap.put("id", shPostAttrId);
-				for (ShPostAttr shPostAttrRelation : shRelatorItem.getShChildrenPostAttrs()) {
-					shRelationMap.put(shPostAttrRelation.getShPostTypeAttr().getName(), shPostAttrRelation);
+				for (ShPostAttrImpl shPostAttrRelation : shRelatorItem.getShChildrenPostAttrs()) {
+					shRelationMap.put(shPostAttrRelation.getShPostTypeAttr().getName(), (ShPostAttr) shPostAttrRelation);
 				}
 				relations.add(shRelationMap);
 			}

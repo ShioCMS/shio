@@ -29,6 +29,7 @@ import com.viglet.shio.object.ShObjectType;
 import com.viglet.shio.persistence.model.object.ShObject;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostDraft;
+import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.post.type.ShSystemPostType;
 
 import java.util.HashSet;
@@ -141,14 +142,14 @@ public class ShPostType extends ShObject {
 		}
 	}
 
-	public ShPost addShPost(ShPost shPost) {
+	public ShPostImpl addShPost(ShPost shPost) {
 		getShPosts().add(shPost);
 		shPost.setShPostType(this);
 
 		return shPost;
 	}
 
-	public ShPost removeShPost(ShPost shPost) {
+	public ShPostImpl removeShPost(ShPostImpl shPost) {
 		getShPosts().remove(shPost);
 		shPost.setShPostType(null);
 

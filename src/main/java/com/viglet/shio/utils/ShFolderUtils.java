@@ -33,6 +33,7 @@ import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.object.ShObject;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
+import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.reference.ShReference;
 import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.persistence.repository.folder.ShFolderRepository;
@@ -64,7 +65,7 @@ public class ShFolderUtils {
 
 	public ShFolder getParentFolder(ShObject shObject) {
 		if (shObject instanceof ShPost) {
-			ShPost shPost = (ShPost) shObject;
+			ShPostImpl shPost = (ShPostImpl) shObject;
 			return shPost.getShFolder();
 		} else if (shObject instanceof ShFolder) {
 			ShFolder shFolder = (ShFolder) shObject;
@@ -240,7 +241,7 @@ public class ShFolderUtils {
 			shReferenceRepository.deleteInBatch(shGlobalToId);
 		}
 
-		for (ShPost shPost : shPostRepository.findByShFolder(shFolder)) {
+		for (ShPostImpl shPost : shPostRepository.findByShFolder(shFolder)) {
 			Set<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
 			shPostAttrRepository.deleteInBatch(shPostAttrs);
 		}

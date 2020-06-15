@@ -42,7 +42,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.viglet.shio.persistence.model.auth.ShGroup;
 import com.viglet.shio.persistence.model.auth.ShUser;
-import com.viglet.shio.persistence.model.post.ShPost;
+import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.persistence.repository.auth.ShUserRepository;
 import com.viglet.shio.persistence.repository.post.ShPostRepository;
@@ -218,7 +218,7 @@ public class ShSitesContext {
 
 		File staticFile = null;
 		if (shSitesContextURL.getInfo().isStaticFile()) {
-			ShPost shPost = shPostRepository.findById(shSitesContextURL.getInfo().getObjectId()).orElse(null);
+			ShPostImpl shPost = shPostRepository.findById(shSitesContextURL.getInfo().getObjectId()).orElse(null);
 			staticFile = shStaticFileUtils.filePath(shPost);
 			if (staticFile != null && staticFile.exists()) {
 				byte[] binaryFile = FileUtils.readFileToByteArray(staticFile);

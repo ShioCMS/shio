@@ -28,6 +28,7 @@ import com.viglet.shio.persistence.model.auth.ShUser;
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.object.ShObject;
 import com.viglet.shio.persistence.model.post.ShPost;
+import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.persistence.repository.auth.ShUserRepository;
 import com.viglet.shio.persistence.repository.object.ShObjectRepository;
@@ -48,7 +49,7 @@ public class ShObjectUtils {
 
 	public ShSite getSite(ShObject shObject) {
 		if (shObject instanceof ShPost) {
-			return shPostUtils.getSite((ShPost) shObject);
+			return shPostUtils.getSite((ShPostImpl) shObject);
 		} else if (shObject instanceof ShFolder) {
 			return shFolderUtils.getSite((ShFolder) shObject);
 		} else {

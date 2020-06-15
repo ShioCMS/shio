@@ -49,7 +49,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shio.api.ShJsonView;
 import com.viglet.shio.bean.provider.exchange.ShExchangeProviderInstanceBean;
 import com.viglet.shio.persistence.model.folder.ShFolder;
-import com.viglet.shio.persistence.model.post.ShPost;
+import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.provider.exchange.ShExchangeProviderInstance;
 import com.viglet.shio.persistence.model.provider.exchange.ShExchangeProviderVendor;
 import com.viglet.shio.persistence.model.system.ShConfigVar;
@@ -257,7 +257,7 @@ public class ShExchangeProviderAPI {
 
 	@PostMapping("/{providerInstanceId}/import/{providerItemId}/to/{folderId}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShPost shExchangeProviderImportItem(@PathVariable String folderId, @PathVariable String providerInstanceId,
+	public ShPostImpl shExchangeProviderImportItem(@PathVariable String folderId, @PathVariable String providerInstanceId,
 			@PathVariable String providerItemId, Principal principal) {
 
 		this.initProvider(providerInstanceId);

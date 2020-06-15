@@ -27,6 +27,7 @@ import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.object.ShObject;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
+import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.repository.object.ShObjectRepository;
 import com.viglet.shio.utils.ShFolderUtils;
 
@@ -64,7 +65,7 @@ public class ShSitesObjectUtils {
 				return false;
 			}
 		} else if (shObject instanceof ShPost) {
-			ShPost shPost = (ShPost) shObject;
+			ShPostImpl shPost = (ShPostImpl) shObject;
 			shFolder = shPost.getShFolder();
 		}
 		if (shFolder != null) {

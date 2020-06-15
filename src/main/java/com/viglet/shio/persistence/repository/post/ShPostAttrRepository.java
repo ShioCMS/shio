@@ -27,9 +27,9 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
-import com.viglet.shio.persistence.model.post.relator.ShRelatorItem;
+import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
+import com.viglet.shio.persistence.model.post.relator.impl.ShRelatorItemImpl;
 
 /**
  * @author Alexandre Oliveira
@@ -42,14 +42,14 @@ public interface ShPostAttrRepository extends JpaRepository<ShPostAttr, String>,
 	List<ShPostAttr> findAll();
 
 	@Query("select p from ShPostAttr p JOIN FETCH p.shPostTypeAttr where p.shPost = ?1")
-	Set<ShPostAttr> findByShPostAll(ShPost shPost);
+	Set<ShPostAttr> findByShPostAll(ShPostImpl shPost);
 
-	Set<ShPostAttr> findByShPost(ShPost shPost);
+	Set<ShPostAttr> findByShPost(ShPostImpl shPost);
 
 	@Query("select p from ShPostAttr p JOIN FETCH p.shPostTypeAttr where p.shParentRelatorItem = ?1")
-	Set<ShPostAttr> findByShParentRelatorItemJoin(ShRelatorItem shRelatorItem);
+	Set<ShPostAttr> findByShParentRelatorItemJoin(ShRelatorItemImpl shRelatorItem);
 
-	Set<ShPostAttr> findByShParentRelatorItem(ShRelatorItem shRelatorItem);
+	Set<ShPostAttr> findByShParentRelatorItem(ShRelatorItemImpl shRelatorItem);
 
 	@Query("select p from ShPostAttr p JOIN FETCH p.shPostTypeAttr where p.id = ?1")
 	Optional<ShPostAttr> findByIdAll(String id);

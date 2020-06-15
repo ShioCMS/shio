@@ -31,6 +31,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shio.api.ShJsonView;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
 import com.viglet.shio.persistence.model.post.ShPostDraftAttr;
+import com.viglet.shio.persistence.model.post.impl.ShPostAttrImpl;
 import com.viglet.shio.persistence.model.widget.ShWidget;
 
 import java.util.HashSet;
@@ -202,14 +203,14 @@ public class ShPostTypeAttr implements Serializable {
 		}
 	}
 
-	public ShPostAttr addShPostAttr(ShPostAttr shPostAttr) {
+	public ShPostAttrImpl addShPostAttr(ShPostAttr shPostAttr) {
 		getShPostAttrs().add(shPostAttr);
 		shPostAttr.setShPostTypeAttr(this);
 
 		return shPostAttr;
 	}
 
-	public ShPostAttr removeShPostAttr(ShPostAttr shPostAttr) {
+	public ShPostAttrImpl removeShPostAttr(ShPostAttrImpl shPostAttr) {
 		getShPostAttrs().remove(shPostAttr);
 		shPostAttr.setShPostTypeAttr(null);
 

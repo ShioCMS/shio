@@ -48,6 +48,7 @@ import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.object.ShObject;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
+import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
 import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shio.persistence.model.site.ShSite;
@@ -108,7 +109,7 @@ public class ShTuringIntegration {
 				String objectTypeName = null;
 
 				if (shObject instanceof ShPost) {
-					ShPost shPost = (ShPost) shObject;
+					ShPostImpl shPost = (ShPostImpl) shObject;
 					objectName = shPost.getTitle();
 
 					objectTypeName = shPost.getShPostType().getName();
@@ -150,7 +151,7 @@ public class ShTuringIntegration {
 				JSONObject searchablePostTypes = new JSONObject(shSite.getSearchablePostTypes());
 				String objectTypeName = null;
 				if (shObject instanceof ShPost) {
-					objectTypeName = ((ShPost) shObject).getShPostType().getName();
+					objectTypeName = ((ShPostImpl) shObject).getShPostType().getName();
 				} else if (shObject instanceof ShFolder) {
 					objectTypeName = "FOLDER";
 					ShFolder shFolder = (ShFolder) shObject;
@@ -335,24 +336,24 @@ public class ShTuringIntegration {
 
 	}
 
-	private void addAdditionalAttributes(Map<String, Object> attributes, ShPost shPost, ShPostType shPostType) {
+	private void addAdditionalAttributes(Map<String, Object> attributes, ShPostImpl shPost, ShPostType shPostType) {
 		Map<String, ShPostTypeAttr> shPostTypeMap = shPostTypeUtils.toMap(shPostType);
 		shPost.getShPostAttrs().forEach(shPostAttr -> {
-			ShPostTypeAttr shPostTypeAttr = shPostTypeMap.get(shPostAttr.getShPostTypeAttr().getName());
+			ShPostTypeAttr shPostTypeAttr = shPostTypeMap.get(((ShPostAttr) shPostAttr).getShPostTypeAttr().getName());
 			if (isAdditionalField(shPostTypeAttr)) {
-				String attributeName = shPostAttr.getShPostTypeAttr().getName().toLowerCase();
+				String attributeName = ((ShPostAttr) shPostAttr).getShPostTypeAttr().getName().toLowerCase();
 				if (!isSamePostTypeField(shPostTypeAttr) && hasCustomFieldName(shPostTypeAttr))
 					attributeName = getCustomFieldName(shPostTypeAttr);
 				if (shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.MULTI_SELECT)) {
 					Set<String> multiValue = new HashSet<>();
-					shPostAttr.getArrayValue().forEach(multiSelectId -> {
+					((ShPostAttr) shPostAttr).getArrayValue().forEach(multiSelectId -> {
 						ShPost shPostMultiSelect = shPostRepository.findById(multiSelectId).orElse(null);
 						if (shPostMultiSelect != null)
 							multiValue.add(shPostMultiSelect.getTitle());
 					});
 					attributes.put(attributeName, multiValue);
 				} else {
-					attributes.put(attributeName, shPostAttr.getStrValue());
+					attributes.put(attributeName, ((ShPostAttr) shPostAttr).getStrValue());
 				}
 			}
 		});
