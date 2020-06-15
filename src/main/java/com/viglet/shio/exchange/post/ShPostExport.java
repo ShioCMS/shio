@@ -60,7 +60,7 @@ public class ShPostExport {
 		shPostExchange.setFurl(shPost.getFurl());
 		shPostExchange.setPosition(shPost.getPosition());
 
-		Map<String, Object> fields = new HashMap<String, Object>();
+		Map<String, Object> fields = new HashMap<>();
 
 		this.shPostAttrExchangeIterate(shPost, fields);
 

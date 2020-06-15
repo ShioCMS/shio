@@ -52,7 +52,6 @@ public class ShNashornEngineProcess {
 	public Object render(String objectName, String javascript, String html, HttpServletRequest request,
 			Map<String, Object> shContent) {
 		try {
-			ScriptContext sc = new SimpleScriptContext();
 			SimpleScriptContext ssc = new SimpleScriptContext();
 			ssc.setBindings(scriptEngine.createBindings(), ScriptContext.ENGINE_SCOPE);
 			Bindings b = scriptEngine.getBindings(ScriptContext.GLOBAL_SCOPE);
@@ -61,7 +60,7 @@ public class ShNashornEngineProcess {
 					ssc.setAttribute(e.getKey(), e.getValue(), ScriptContext.ENGINE_SCOPE);
 				}
 			}
-			sc = shObjectLib(ssc);
+			ScriptContext sc = shObjectLib(ssc);
 			if (sc != null) {
 				sc.setAttribute("shContent", shContent, ScriptContext.ENGINE_SCOPE);
 				sc.setAttribute("html", html, ScriptContext.ENGINE_SCOPE);

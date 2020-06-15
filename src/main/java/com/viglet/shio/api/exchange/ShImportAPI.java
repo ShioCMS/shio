@@ -16,10 +16,7 @@
  */
 package com.viglet.shio.api.exchange;
 
-import java.io.IOException;
 import java.security.Principal;
-
-import org.apache.commons.compress.archivers.ArchiveException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,8 +45,7 @@ public class ShImportAPI {
 
 	@PostMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShExchange shImport(@RequestParam("file") MultipartFile multipartFile, final Principal principal)
-			throws IOException, ArchiveException {
+	public ShExchange shImport(@RequestParam("file") MultipartFile multipartFile, final Principal principal) {
 		return shImportExchange.importFromMultipartFile(multipartFile, principal.getName());
 	}
 

@@ -41,6 +41,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.viglet.shio.api.ShJsonView;
 
 /**
  * @author Alexandre Oliveira
@@ -127,7 +128,7 @@ public class ShUtils {
 		}
 	}
 
-	public static String asJsonStringAndView(final Object obj, @SuppressWarnings("rawtypes") Class clazz) throws ShUtilsException {
+	public static String asJsonStringAndView(final Object obj, Class<ShJsonView> clazz) throws ShUtilsException {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
