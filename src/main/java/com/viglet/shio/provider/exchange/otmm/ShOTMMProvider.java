@@ -70,9 +70,9 @@ public class ShOTMMProvider implements ShExchangeProvider {
 	private static final String PROVIDER_NAME = "OTMM";
 	private static final String ROOT_FOLDER_ID = "_root";
 	private static final String ROOT_FOLDER_NAME = "OTMM Root Folder";
-	private static final String URL = "URL";
-	private static final String USERNAME = "USERNAME";
-	private static final String PASSWORD = "PASSWORD";
+	private static final String URL_VAR = "URL";
+	private static final String USERNAME_VAR = "USERNAME";
+	private static final String PASSWORD_VAR = "PASSWORD";
 
 	private ObjectMapper objectMapper = new ObjectMapper().enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
 
@@ -92,9 +92,9 @@ public class ShOTMMProvider implements ShExchangeProvider {
 	private String password = null;
 
 	public void init(Map<String, String> variables) {
-		this.baseURL = variables.get(URL);
-		this.username = variables.get(USERNAME);
-		this.password = variables.get(PASSWORD);
+		this.baseURL = variables.get(URL_VAR);
+		this.username = variables.get(USERNAME_VAR);
+		this.password = variables.get(PASSWORD_VAR);
 		this.otmmAuth();
 	}
 
@@ -123,22 +123,24 @@ public class ShOTMMProvider implements ShExchangeProvider {
 		shExchangeProviderFolder.setProviderName(PROVIDER_NAME);
 		shExchangeProviderFolder.setParentId(null);
 
-		for (ShOTMMFolderBean folder : shOTMMFoldersBean.getFoldersResource().getFolderList()) {
-			String resultId = folder.getAssetId();
+		if (shOTMMFoldersBean != null && shOTMMFoldersBean.getFoldersResource() != null
+				&& shOTMMFoldersBean.getFoldersResource().getFolderList() != null) {
 
-			String resultName = folder.getName();
+			shOTMMFoldersBean.getFoldersResource().getFolderList().forEach(folder -> {
+				String resultId = folder.getAssetId();
 
-			Date resultDate = folder.getDateLastUpdated();
+				String resultName = folder.getName();
 
-			ShExchangeProviderFolder shExchangeProviderFolderChild = new ShExchangeProviderFolder();
-			shExchangeProviderFolderChild.setId(resultId);
-			shExchangeProviderFolderChild.setName(resultName);
-			shExchangeProviderFolderChild.setDate(resultDate);
+				Date resultDate = folder.getDateLastUpdated();
 
-			shExchangeProviderFolder.getFolders().add(shExchangeProviderFolderChild);
+				ShExchangeProviderFolder shExchangeProviderFolderChild = new ShExchangeProviderFolder();
+				shExchangeProviderFolderChild.setId(resultId);
+				shExchangeProviderFolderChild.setName(resultName);
+				shExchangeProviderFolderChild.setDate(resultDate);
 
+				shExchangeProviderFolder.getFolders().add(shExchangeProviderFolderChild);
+			});
 		}
-
 		return shExchangeProviderFolder;
 	}
 
@@ -178,9 +180,9 @@ public class ShOTMMProvider implements ShExchangeProvider {
 				shOTMMFoldersBean = objectMapper.readValue(responseHandler.handleResponse(response),
 						ShOTMMFoldersBean.class);
 		} catch (UnsupportedOperationException e) {
-			logger.error("getOTMMFolders UnsupportedOperationException: ", e);
+			logger.error(e);
 		} catch (IOException e) {
-			logger.error("getOTMMFolders IOException: ", e);
+			logger.error(e);
 		}
 
 		return shOTMMFoldersBean;
@@ -198,9 +200,9 @@ public class ShOTMMProvider implements ShExchangeProvider {
 					ShOTMMFoldersBean.class);
 
 		} catch (UnsupportedOperationException e) {
-			logger.error("getOTMMFolders UnsupportedOperationException: ", e);
+			logger.error(e);
 		} catch (IOException e) {
-			logger.error("getOTMMFolders IOException: ", e);
+			logger.error(e);
 		}
 
 		return shOTMMFoldersBean;
@@ -216,26 +218,26 @@ public class ShOTMMProvider implements ShExchangeProvider {
 			HttpResponse response = httpClient.execute(httpGet);
 			shOTMMFoldersBean = objectMapper.readValue(responseHandler.handleResponse(response),
 					ShOTMMFoldersBean.class);
-		} catch (UnsupportedOperationException e) {
-			logger.error("getOTMMFolders UnsupportedOperationException: ", e);
-		} catch (IOException e) {
-			logger.error("getOTMMFolders IOException: ", e);
+		} catch (UnsupportedOperationException | IOException e) {
+			logger.error(e);
 		}
 
-		for (ShOTMMFolderBean folder : shOTMMFoldersBean.getFoldersResource().getFolderList()) {
-			String resultId = folder.getAssetId();
+		if (shOTMMFoldersBean != null && shOTMMFoldersBean.getFoldersResource() != null
+				&& shOTMMFoldersBean.getFoldersResource().getFolderList() != null) {
+			shOTMMFoldersBean.getFoldersResource().getFolderList().forEach(folder -> {
+				String resultId = folder.getAssetId();
 
-			String resultName = folder.getName();
+				String resultName = folder.getName();
 
-			Date resultDate = folder.getDateLastUpdated();
+				Date resultDate = folder.getDateLastUpdated();
 
-			ShExchangeProviderFolder shExchangeProviderFolderChild = new ShExchangeProviderFolder();
-			shExchangeProviderFolderChild.setId(resultId);
-			shExchangeProviderFolderChild.setName(resultName);
-			shExchangeProviderFolderChild.setDate(resultDate);
+				ShExchangeProviderFolder shExchangeProviderFolderChild = new ShExchangeProviderFolder();
+				shExchangeProviderFolderChild.setId(resultId);
+				shExchangeProviderFolderChild.setName(resultName);
+				shExchangeProviderFolderChild.setDate(resultDate);
 
-			shExchangeProviderFolder.getFolders().add(shExchangeProviderFolderChild);
-
+				shExchangeProviderFolder.getFolders().add(shExchangeProviderFolderChild);
+			});
 		}
 	}
 
@@ -248,92 +250,110 @@ public class ShOTMMProvider implements ShExchangeProvider {
 			httpGet.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString());
 			HttpResponse response = httpClient.execute(httpGet);
 			shOTMMAssetsBean = objectMapper.readValue(responseHandler.handleResponse(response), ShOTMMAssetsBean.class);
-		} catch (UnsupportedOperationException e) {
-			logger.error("getOTMMAssets UnsupportedOperationException: ", e);
-		} catch (IOException e) {
-			logger.error("getOTMMAssets IOException: ", e);
+		} catch (UnsupportedOperationException | IOException e) {
+			logger.error(e);
 		}
+		if (shOTMMAssetsBean != null && shOTMMAssetsBean.getAssetsResource() != null
+				&& shOTMMAssetsBean.getAssetsResource().getAssetList() != null) {
 
-		for (ShOTMMAssetBean asset : shOTMMAssetsBean.getAssetsResource().getAssetList()) {
-			String postId = asset.getAssetId();
+			shOTMMAssetsBean.getAssetsResource().getAssetList().forEach(asset -> {
+				String postId = asset.getAssetId();
 
-			String postTitle = asset.getName();
+				String postTitle = asset.getName();
 
-			Date postDate = asset.getDateLastUpdated();
+				Date postDate = asset.getDateLastUpdated();
 
-			String postType = asset.getContentType();
+				String postType = asset.getContentType();
 
-			ShExchangeProviderPost shExchangeProviderPostChild = new ShExchangeProviderPost();
+				ShExchangeProviderPost shExchangeProviderPostChild = new ShExchangeProviderPost();
 
-			shExchangeProviderPostChild.setId(postId);
-			shExchangeProviderPostChild.setTitle(postTitle);
-			shExchangeProviderPostChild.setDate(postDate);
-			shExchangeProviderPostChild.setType(postType);
+				shExchangeProviderPostChild.setId(postId);
+				shExchangeProviderPostChild.setTitle(postTitle);
+				shExchangeProviderPostChild.setDate(postDate);
+				shExchangeProviderPostChild.setType(postType);
 
-			shExchangeProviderFolder.getPosts().add(shExchangeProviderPostChild);
-
+				shExchangeProviderFolder.getPosts().add(shExchangeProviderPostChild);
+			});
 		}
 	}
 
 	public ShExchangeProviderPost getObject(String id, boolean isFolder) {
 
 		if (isFolder) {
-			ShOTMMFolderDetailBean shOTMMFolderDetailBean = null;
-			try {
-				HttpGet httpGet = new HttpGet(String.format("%s/otmmapi/v5/folders/%s", this.baseURL, id));
-				httpGet.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
-				httpGet.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString());
-				HttpResponse response = httpClient.execute(httpGet);
-				shOTMMFolderDetailBean = objectMapper.readValue(responseHandler.handleResponse(response),
-						ShOTMMFolderDetailBean.class);
-			} catch (UnsupportedOperationException e) {
-				logger.error("getObject UnsupportedOperationException: ", e);
-			} catch (IOException e) {
-				logger.error("getObject IOException: ", e);
-			}
-
-			ShExchangeProviderPost shExchangeProviderPost = new ShExchangeProviderPost();
-			shExchangeProviderPost.setId(id);
-			shExchangeProviderPost.setTitle(shOTMMFolderDetailBean.getFolderResource().getFolder().getName());
-			ShOTMMFoldersBean shOTMMFoldersBean = this.getOTMMFolderParents(id);
-			if (shOTMMFoldersBean != null) {
-				List<ShOTMMFolderBean> parentFolderList = shOTMMFoldersBean.getFoldersResource().getFolderList();
-				if (!parentFolderList.isEmpty()) {
-					shExchangeProviderPost.setParentId(parentFolderList.get(0).getAssetId());
-				}
-			} else {
-				shExchangeProviderPost.setParentId(null);
-			}
-			return shExchangeProviderPost;
+			return this.folderObject(id);
 		} else {
-			ShOTMMAssetDetailBean shOTMMAssetDetailBean = null;
-			try {
-				HttpGet httpGet = new HttpGet(String.format("%s/otmmapi/v5/assets/%s", this.baseURL, id));
-				httpGet.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
-				httpGet.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString());
-				HttpResponse response = httpClient.execute(httpGet);
-				shOTMMAssetDetailBean = objectMapper.readValue(responseHandler.handleResponse(response),
-						ShOTMMAssetDetailBean.class);
-
-			} catch (UnsupportedOperationException e) {
-				logger.error("getObject UnsupportedOperationException: ", e);
-			} catch (IOException e) {
-				logger.error("getObject IOException: ", e);
-			}
-
-			ShExchangeProviderPost shExchangeProviderPost = new ShExchangeProviderPost();
-			shExchangeProviderPost.setId(id);
-			shExchangeProviderPost.setTitle(shOTMMAssetDetailBean.getAssetResource().getAsset().getName());
-			ShOTMMFoldersBean shOTMMFoldersBean = this.getOTMMAssetParents(id);
-			if (shOTMMFoldersBean != null) {
-				List<ShOTMMFolderBean> parentFolderList = shOTMMFoldersBean.getFoldersResource().getFolderList();
-				if (!parentFolderList.isEmpty())
-					shExchangeProviderPost.setParentId(parentFolderList.get(0).getAssetId());
-			} else {
-				shExchangeProviderPost.setParentId(null);
-			}
-			return shExchangeProviderPost;
+			return this.assetObject(id);
 		}
+	}
+
+	private ShExchangeProviderPost assetObject(String id) {
+		ShOTMMAssetDetailBean shOTMMAssetDetailBean = null;
+		shOTMMAssetDetailBean = this.getAssetFromOTMM(id, shOTMMAssetDetailBean);
+
+		ShExchangeProviderPost shExchangeProviderPost = new ShExchangeProviderPost();
+		shExchangeProviderPost.setId(id);
+		if (shOTMMAssetDetailBean != null)
+			shExchangeProviderPost.setTitle(shOTMMAssetDetailBean.getAssetResource().getAsset().getName());
+		ShOTMMFoldersBean shOTMMFoldersBean = this.getOTMMAssetParents(id);
+		if (shOTMMFoldersBean != null) {
+			List<ShOTMMFolderBean> parentFolderList = shOTMMFoldersBean.getFoldersResource().getFolderList();
+			if (!parentFolderList.isEmpty())
+				shExchangeProviderPost.setParentId(parentFolderList.get(0).getAssetId());
+		} else {
+			shExchangeProviderPost.setParentId(null);
+		}
+		return shExchangeProviderPost;
+	}
+
+	private ShExchangeProviderPost folderObject(String id) {
+		ShOTMMFolderDetailBean shOTMMFolderDetailBean = null;
+		shOTMMFolderDetailBean = this.getFolderFromOTMM(id, shOTMMFolderDetailBean);
+
+		ShExchangeProviderPost shExchangeProviderPost = new ShExchangeProviderPost();
+		shExchangeProviderPost.setId(id);
+		if (shOTMMFolderDetailBean != null) {
+			shExchangeProviderPost.setTitle(shOTMMFolderDetailBean.getFolderResource().getFolder().getName());
+		}
+		ShOTMMFoldersBean shOTMMFoldersBean = this.getOTMMFolderParents(id);
+		if (shOTMMFoldersBean != null) {
+			List<ShOTMMFolderBean> parentFolderList = shOTMMFoldersBean.getFoldersResource().getFolderList();
+			if (!parentFolderList.isEmpty()) {
+				shExchangeProviderPost.setParentId(parentFolderList.get(0).getAssetId());
+			}
+		} else {
+			shExchangeProviderPost.setParentId(null);
+		}
+
+		return shExchangeProviderPost;
+	}
+
+	private ShOTMMAssetDetailBean getAssetFromOTMM(String id, ShOTMMAssetDetailBean shOTMMAssetDetailBean) {
+		try {
+			HttpGet httpGet = new HttpGet(String.format("%s/otmmapi/v5/assets/%s", this.baseURL, id));
+			httpGet.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
+			httpGet.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString());
+			HttpResponse response = httpClient.execute(httpGet);
+			shOTMMAssetDetailBean = objectMapper.readValue(responseHandler.handleResponse(response),
+					ShOTMMAssetDetailBean.class);
+
+		} catch (UnsupportedOperationException | IOException e) {
+			logger.error(e);
+		}
+		return shOTMMAssetDetailBean;
+	}
+
+	private ShOTMMFolderDetailBean getFolderFromOTMM(String id, ShOTMMFolderDetailBean shOTMMFolderDetailBean) {
+		try {
+			HttpGet httpGet = new HttpGet(String.format("%s/otmmapi/v5/folders/%s", this.baseURL, id));
+			httpGet.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
+			httpGet.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString());
+			HttpResponse response = httpClient.execute(httpGet);
+			shOTMMFolderDetailBean = objectMapper.readValue(responseHandler.handleResponse(response),
+					ShOTMMFolderDetailBean.class);
+		} catch (UnsupportedOperationException | IOException e) {
+			logger.error(e);
+		}
+		return shOTMMFolderDetailBean;
 	}
 
 	private ShOTMMSessionsBean otmmAuth() {
@@ -360,10 +380,8 @@ public class ShOTMMProvider implements ShExchangeProvider {
 			shOTMMSessionsBean = objectMapper.readValue(responseHandler.handleResponse(response),
 					ShOTMMSessionsBean.class);
 
-		} catch (UnsupportedOperationException e) {
-			logger.error("otmmAuth UnsupportedOperationException: ", e);
-		} catch (IOException e) {
-			logger.error("otmmAuth IOException: ", e);
+		} catch (UnsupportedOperationException | IOException e) {
+			logger.error(e);
 		}
 		return shOTMMSessionsBean;
 	}
@@ -379,10 +397,8 @@ public class ShOTMMProvider implements ShExchangeProvider {
 			HttpResponse response = httpClient.execute(httpGet);
 			inputStream = response.getEntity().getContent();
 
-		} catch (UnsupportedOperationException e) {
-			logger.error("getDownload UnsupportedOperationException: ", e);
-		} catch (IOException e) {
-			logger.error("getDownload IOException: ", e);
+		} catch (UnsupportedOperationException | IOException e) {
+			logger.error(e);
 		}
 
 		return inputStream;
