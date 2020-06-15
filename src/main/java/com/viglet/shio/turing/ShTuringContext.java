@@ -58,7 +58,6 @@ public class ShTuringContext {
 			@RequestParam(required = false, name = "sort") String sort, HttpServletRequest request) {
 
 		URIBuilder turingURL = null;
-		BufferedReader rd = null;
 		try {
 			turingURL = new URIBuilder(TURING_ENDPOINT + siteName + "/search").addParameter("q", q)
 					.addParameter("p", strCurrentPage).addParameter("sort", sort);
@@ -76,8 +75,40 @@ public class ShTuringContext {
 				httpGet = new HttpGet(turingURL.build().toString());
 
 				HttpResponse response = client.execute(httpGet);
+				try (BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()))) {
 
-				rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+					StringBuilder result = new StringBuilder();
+					String line = "";
+					while ((line = rd.readLine()) != null) {
+						result.append(line);
+					}
+
+					final HttpHeaders httpHeaders = new HttpHeaders();
+					httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+					return new ResponseEntity<>(result.toString(), httpHeaders, HttpStatus.OK);
+				} catch (IOException e) {
+					logger.error(e);
+				}
+			}
+		} catch (URISyntaxException | IOException e) {
+			logger.error(e);
+
+		}
+		return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+	}
+
+	@GetMapping("/ac")
+	public ResponseEntity<Object> turSNSiteAutoComplete(@PathVariable String siteName,
+			@RequestParam(required = false, name = "q") String q, HttpServletRequest request) {
+		URIBuilder turingURL;
+		try {
+			turingURL = new URIBuilder(TURING_ENDPOINT + siteName + "/ac").addParameter("q", q);
+
+			CloseableHttpClient client = HttpClients.createDefault();
+			HttpGet httpGet = new HttpGet(turingURL.build().toString());
+
+			HttpResponse response = client.execute(httpGet);
+			try (BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()))) {
 
 				StringBuffer result = new StringBuffer();
 				String line = "";
@@ -87,56 +118,14 @@ public class ShTuringContext {
 
 				final HttpHeaders httpHeaders = new HttpHeaders();
 				httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-				return new ResponseEntity<Object>(result.toString(), httpHeaders, HttpStatus.OK);
+				return new ResponseEntity<>(result.toString(), httpHeaders, HttpStatus.OK);
+			} catch (IOException e) {
+				logger.error(e);
 			}
 		} catch (URISyntaxException | IOException e) {
 			logger.error(e);
-
-		} finally {
-			if (rd != null)
-				try {
-					rd.close();
-				} catch (IOException e) {
-					logger.error(e);
-				}
 		}
-		return new ResponseEntity<Object>(null, HttpStatus.NOT_FOUND);
-	}
 
-	@GetMapping("/ac")
-	public ResponseEntity<Object> turSNSiteAutoComplete(@PathVariable String siteName,
-			@RequestParam(required = false, name = "q") String q, HttpServletRequest request) {
-		BufferedReader rd = null;
-		URIBuilder turingURL;
-		try {
-			turingURL = new URIBuilder(TURING_ENDPOINT + siteName + "/ac").addParameter("q", q);
-
-			CloseableHttpClient client = HttpClients.createDefault();
-			HttpGet httpGet = new HttpGet(turingURL.build().toString());
-
-			HttpResponse response = client.execute(httpGet);
-
-			rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-
-			StringBuffer result = new StringBuffer();
-			String line = "";
-			while ((line = rd.readLine()) != null) {
-				result.append(line);
-			}
-
-			final HttpHeaders httpHeaders = new HttpHeaders();
-			httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-			return new ResponseEntity<Object>(result.toString(), httpHeaders, HttpStatus.OK);
-		} catch (URISyntaxException | IOException e) {
-			logger.error(e);
-		} finally {
-			if (rd != null)
-				try {
-					rd.close();
-				} catch (IOException e) {
-					logger.error(e);
-				}
-		}
-		return new ResponseEntity<Object>(null, HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
 	}
 }

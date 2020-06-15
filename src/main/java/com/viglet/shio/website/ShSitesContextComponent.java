@@ -55,9 +55,9 @@ import com.viglet.shio.website.cache.component.ShCacheJavascript;
 import com.viglet.shio.website.cache.component.ShCachePageLayout;
 import com.viglet.shio.website.cache.component.ShCacheRegion;
 import com.viglet.shio.website.component.ShSitesPageLayout;
-import com.viglet.shio.website.component.ShSitesPageLayoutUtils;
 import com.viglet.shio.website.nashorn.ShNashornEngineProcess;
 import com.viglet.shio.website.utils.ShSitesFolderUtils;
+import com.viglet.shio.website.utils.ShSitesPageLayoutUtils;
 import com.viglet.shio.website.utils.ShSitesPostUtils;
 
 /**

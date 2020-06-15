@@ -14,11 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.viglet.shio.website.component;
+package com.viglet.shio.website.utils;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,7 +45,6 @@ import com.viglet.shio.post.type.ShSystemPostTypeAttr;
 import com.viglet.shio.utils.ShPostUtils;
 import com.viglet.shio.website.ShSitesContextURL;
 import com.viglet.shio.website.ShSitesContextURLProcess;
-import com.viglet.shio.website.utils.ShSitesPostUtils;
 
 /**
  * Page Layout Utils.
@@ -54,7 +54,8 @@ import com.viglet.shio.website.utils.ShSitesPostUtils;
  */
 @Component
 public class ShSitesPageLayoutUtils {
-	static final Logger logger = LogManager.getLogger(ShSitesPageLayoutUtils.class);
+	private static final Logger logger = LogManager.getLogger(ShSitesPageLayoutUtils.class);
+	private static final String DEFAULT_FORMAT = "default";
 	@Autowired
 	private ShSitesPostUtils shSitesPostUtils;
 	@Autowired
@@ -73,24 +74,24 @@ public class ShSitesPageLayoutUtils {
 
 		shSitesContextURLProcess.detectContextURL(url, shSitesContextURL);
 
-		ShObject shObject = shObjectRepository.findById(shSitesContextURL.getInfo().getObjectId()).orElse(null);
+		Optional<ShObject> shObject = shObjectRepository.findById(shSitesContextURL.getInfo().getObjectId());
 
-		ShSite shSite = shSiteRepository.findById(shSitesContextURL.getInfo().getSiteId()).orElse(null);
+		Optional<ShSite> shSite = shSiteRepository.findById(shSitesContextURL.getInfo().getSiteId());
 
 		String format = shSitesContextURL.getInfo().getShFormat();
 
-		if (shObject instanceof ShFolder) {
-			ShFolder shFolder = (ShFolder) shObject;
-			return this.pageLayoutFromFolderAndFolderIndex(shFolder, shSite, format);
-		} else if (shObject instanceof ShPost) {
-			ShPost shPost = (ShPost) shObject;
-			if (shPost != null) {
+		if (shObject.isPresent() && shSite.isPresent()) {
+			if (shObject.get() instanceof ShFolder) {
+				ShFolder shFolder = (ShFolder) shObject.get();
+				return this.pageLayoutFromFolderAndFolderIndex(shFolder, shSite.get(), format);
+			} else if (shObject.get() instanceof ShPost) {
+				ShPost shPost = (ShPost) shObject.get();
 				if (shPost.getShPostType().getName().equals(ShSystemPostType.FOLDER_INDEX)) {
-					return this.pageLayoutFromFolderAndFolderIndex(shPost, shSite, format);
-
+					return this.pageLayoutFromFolderAndFolderIndex(shPost, shSite.get(), format);
 				} else {
-					return this.pageLayoutFromPost(shPost, shSite, format);
+					return this.pageLayoutFromPost(shPost, shSite.get(), format);
 				}
+
 			}
 		}
 		return null;
@@ -114,12 +115,11 @@ public class ShSitesPageLayoutUtils {
 		String pageLayoutName = null;
 
 		if (format == null)
-			format = "default";
+			format = DEFAULT_FORMAT;
 
 		for (ShSitePostTypeLayout shSitePostTypeLayout : shSitePostTypeLayouts) {
-			if (shSitePostTypeLayout.getFormat().equals(format)) {
+			if (shSitePostTypeLayout.getFormat().equals(format))
 				pageLayoutName = shSitePostTypeLayout.getLayout();
-			}
 		}
 		List<ShPost> shPostPageLayouts = shPostRepository.findByTitle(pageLayoutName);
 
@@ -140,7 +140,7 @@ public class ShSitesPageLayoutUtils {
 			if (shSelectedPost != null) {
 				Map<String, ShPostAttr> shFolderIndexMap = shSitesPostUtils.postToMap((ShPost) shSelectedPost);
 				shPostFolderPageLayoutId = shFolderIndexMap.get(ShSystemPostTypeAttr.PAGE_LAYOUT).getStrValue();
-				if (!format.toLowerCase().equals("default")) {
+				if (!format.equalsIgnoreCase(DEFAULT_FORMAT)) {
 					ShPostAttr shPostAttrFormats = shFolderIndexMap.get("FORMATS");
 					List<Map<String, ShPostAttr>> shPostAttrFormatList = shSitesPostUtils
 							.relationToMap(shPostAttrFormats);
@@ -155,42 +155,40 @@ public class ShSitesPageLayoutUtils {
 					shFolderPageLayout = shPostRepository.findById(shPostFolderPageLayoutId).orElse(null);
 				}
 			}
-		} else if (shObjectItem instanceof ShFolder) {
+		} else if (shObjectItem instanceof ShFolder && shSite.getPostTypeLayout() != null) {
 			// If Folder doesn't have PageLayout, it will try use default Folder Page Layout
-			if (shSite.getPostTypeLayout() != null) {
-				JSONObject postTypeLayout = new JSONObject(shSite.getPostTypeLayout());
 
-				if (postTypeLayout.has("FOLDER")) {
-					ObjectMapper mapper = new ObjectMapper();
+			JSONObject postTypeLayout = new JSONObject(shSite.getPostTypeLayout());
 
-					ShSitePostTypeLayouts shSitePostTypeLayouts;
-					try {
-						shSitePostTypeLayouts = mapper.readValue(postTypeLayout.get("FOLDER").toString(),
-								ShSitePostTypeLayouts.class);
+			if (postTypeLayout.has("FOLDER")) {
+				ObjectMapper mapper = new ObjectMapper();
 
-						String pageLayoutName = null;
-						if (format == null)
-							format = "default";
+				ShSitePostTypeLayouts shSitePostTypeLayouts;
+				try {
+					shSitePostTypeLayouts = mapper.readValue(postTypeLayout.get("FOLDER").toString(),
+							ShSitePostTypeLayouts.class);
 
-						for (ShSitePostTypeLayout shSitePostTypeLayout : shSitePostTypeLayouts) {
-							if (shSitePostTypeLayout.getFormat().equals(format)) {
-								pageLayoutName = shSitePostTypeLayout.getLayout();
-							}
-						}
-						List<ShPost> shPostPageLayouts = shPostRepository.findByTitle(pageLayoutName);
+					String pageLayoutName = null;
+					if (format == null)
+						format = DEFAULT_FORMAT;
 
-						if (shPostPageLayouts != null) {
-							for (ShPost shPostPageLayout : shPostPageLayouts) {
-								if (shPostUtils.getSite(shPostPageLayout).getId().equals(shSite.getId())) {
-									shFolderPageLayout = shPostPageLayout;
-								}
-							}
-						}
-					} catch (JSONException | IOException e) {
-						logger.error("pageLayoutFromFolderAndFolderIndex Error", e);
+					for (ShSitePostTypeLayout shSitePostTypeLayout : shSitePostTypeLayouts) {
+						if (shSitePostTypeLayout.getFormat().equals(format))
+							pageLayoutName = shSitePostTypeLayout.getLayout();						
 					}
+					List<ShPost> shPostPageLayouts = shPostRepository.findByTitle(pageLayoutName);
+
+					if (shPostPageLayouts != null) {
+						for (ShPost shPostPageLayout : shPostPageLayouts) {
+							if (shPostUtils.getSite(shPostPageLayout).getId().equals(shSite.getId()))
+								shFolderPageLayout = shPostPageLayout;
+						}
+					}
+				} catch (JSONException | IOException e) {
+					logger.error("pageLayoutFromFolderAndFolderIndex Error", e);
 				}
 			}
+
 		}
 		return shFolderPageLayout;
 	}

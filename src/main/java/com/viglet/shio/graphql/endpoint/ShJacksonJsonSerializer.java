@@ -17,7 +17,11 @@
 package com.viglet.shio.graphql.endpoint;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import graphql.spring.web.servlet.JsonSerializer;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +29,7 @@ import java.io.IOException;
 
 @Component
 public class ShJacksonJsonSerializer implements JsonSerializer {
-
+	private static final Logger logger = LogManager.getLogger(ShJacksonJsonSerializer.class);
     private ObjectMapper objectMapper;
 
     @Autowired
@@ -38,8 +42,9 @@ public class ShJacksonJsonSerializer implements JsonSerializer {
         try {
             return objectMapper.writeValueAsString(object);
         } catch (IOException e) {
-            throw new RuntimeException("Error serializing object to JSON: " + e.getMessage(), e);
+        	logger.error("Error serializing object to JSON: " + e.getMessage(), e);
         }
+		return null;
     }
 
     @Override
@@ -47,7 +52,8 @@ public class ShJacksonJsonSerializer implements JsonSerializer {
         try {
             return objectMapper.readValue(json, requiredType);
         } catch (IOException e) {
-            throw new RuntimeException("Error deserializing object from JSON: " + e.getMessage(), e);
+        	logger.error("Error deserializing object from JSON: " + e.getMessage(), e);
         }
+		return null;
     }
 }

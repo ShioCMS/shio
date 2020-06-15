@@ -62,11 +62,14 @@ public class ShNashornEngineProcess {
 				}
 			}
 			sc = shObjectLib(ssc);
-			sc.setAttribute("shContent", shContent, ScriptContext.ENGINE_SCOPE);
-			sc.setAttribute("html", html, ScriptContext.ENGINE_SCOPE);
-			sc.setAttribute("request", request, ScriptContext.ENGINE_SCOPE);
+			if (sc != null) {
+				sc.setAttribute("shContent", shContent, ScriptContext.ENGINE_SCOPE);
+				sc.setAttribute("html", html, ScriptContext.ENGINE_SCOPE);
+				sc.setAttribute("request", request, ScriptContext.ENGINE_SCOPE);
 
-			return scriptEngine.eval(javascript, sc);
+				return scriptEngine.eval(javascript, sc);
+			}
+			return null;
 
 		} catch (ScriptException err) {
 			regionError(objectName, javascript, err);
@@ -115,9 +118,9 @@ public class ShNashornEngineProcess {
 				minlines = lineNumber - 5;
 			}
 			int maxlines = javascriptLines.length;
-			
+
 			if (lineNumber + 5 < maxlines)
-				maxlines = lineNumber + 5;			
+				maxlines = lineNumber + 5;
 			for (int x = minlines; x <= maxlines; x++) {
 				errorCode.append(javascriptLines[x] + "\n");
 				if (x == lineNumber - 1) {

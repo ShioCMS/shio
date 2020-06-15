@@ -173,7 +173,7 @@ public class ShSiteImport {
 				if (shChildObjects.containsKey(shFolderExchange.getParentFolder())) {
 					shChildObjects.get(shFolderExchange.getParentFolder()).add(shFolderExchange.getId());
 				} else {
-					List<String> childFolderList = new ArrayList<String>();
+					List<String> childFolderList = new ArrayList<>();
 					childFolderList.add(shFolderExchange.getId());
 					shChildObjects.put(shFolderExchange.getParentFolder(), childFolderList);
 				}
@@ -202,7 +202,7 @@ public class ShSiteImport {
 					if (shChildObjects.containsKey(shPostExchange.getFolder())) {
 						shChildObjects.get(shPostExchange.getFolder()).add(shPostExchange.getId());
 					} else {
-						List<String> childObjectList = new ArrayList<String>();
+						List<String> childObjectList = new ArrayList<>();
 						childObjectList.add(shPostExchange.getId());
 						shChildObjects.put(shPostExchange.getFolder(), childObjectList);
 					}
@@ -214,11 +214,11 @@ public class ShSiteImport {
 	public ShExchange prepareClone(ShExchange shExchange, File extractFolder) {
 		ShExchange shExchangeWithNewIds = new ShExchange();
 
-		Map<String, String> shNewIds = new HashMap<String, String>();
-		Map<String, String> shNewIdsReverse = new HashMap<String, String>();
-		List<ShSiteExchange> shSiteExchangeWithNewIds = new ArrayList<ShSiteExchange>();
+		Map<String, String> shNewIds = new HashMap<>();
+		Map<String, String> shNewIdsReverse = new HashMap<>();
+		List<ShSiteExchange> shSiteExchangeWithNewIds = new ArrayList<>();
 		for (ShSiteExchange shSiteExchange : shExchange.getSites()) {
-			List<String> rootFolders = new ArrayList<String>();
+			List<String> rootFolders = new ArrayList<>();
 			for (String rootFolderId : shSiteExchange.getRootFolders()) {
 				if (!shNewIds.containsKey(rootFolderId)) {
 					String newUUID = UUID.randomUUID().toString();
@@ -240,7 +240,7 @@ public class ShSiteImport {
 			shSiteExchangeWithNewIds.add(shSiteExchange);
 		}
 
-		List<ShFolderExchange> shFolderExchangeWithNewIds = new ArrayList<ShFolderExchange>();
+		List<ShFolderExchange> shFolderExchangeWithNewIds = new ArrayList<>();
 		for (ShFolderExchange shFolderExchange : shExchange.getFolders()) {
 			if (!shNewIds.containsKey(shFolderExchange.getId())) {
 				String newUUID = UUID.randomUUID().toString();
@@ -261,7 +261,7 @@ public class ShSiteImport {
 		}
 		shExchange.setFolders(shFolderExchangeWithNewIds);
 
-		List<ShPostExchange> shPostExchangeWithNewIds = new ArrayList<ShPostExchange>();
+		List<ShPostExchange> shPostExchangeWithNewIds = new ArrayList<>();
 		for (ShPostExchange shPostExchange : shExchange.getPosts()) {
 			if (!shNewIds.containsKey(shPostExchange.getId())) {
 				String newUUID = UUID.randomUUID().toString();
@@ -294,7 +294,7 @@ public class ShSiteImport {
 	@SuppressWarnings("unchecked")
 	private Map<String, Object> updateFieldRelation(Map<String, String> shNewIds, Map<String, String> shNewIdsReverse,
 			ShPostExchange shPostExchange, Map<String, Object> shPostFields, File extractFolder) {
-		Map<String, Object> fieldsWithNewIds = new HashMap<String, Object>();
+		Map<String, Object> fieldsWithNewIds = new HashMap<>();
 		for (Entry<String, Object> shPostField : shPostFields.entrySet()) {
 
 			ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(
@@ -321,16 +321,14 @@ public class ShSiteImport {
 
 				} else if ((shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.FILE)
 						&& !shPostExchange.getPostType().equals(ShSystemPostType.FILE))
-						|| shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.CONTENT_SELECT)) {
-
-					if (shPostField.getValue() != null && shPostField.getKey().trim().length() > 0) {
-						if (!shNewIds.containsKey(shPostField.getValue())) {
-							String newUUID = UUID.randomUUID().toString();
-							shNewIds.put((String) shPostField.getValue(), newUUID);
-							shNewIdsReverse.put(newUUID, (String) shPostField.getValue());
-						}
-						shPostField.setValue(shNewIds.get(shPostField.getValue()));
+						|| shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.CONTENT_SELECT)
+								&& shPostField.getValue() != null && shPostField.getKey().trim().length() > 0) {
+					if (!shNewIds.containsKey(shPostField.getValue())) {
+						String newUUID = UUID.randomUUID().toString();
+						shNewIds.put((String) shPostField.getValue(), newUUID);
+						shNewIdsReverse.put(newUUID, (String) shPostField.getValue());
 					}
+					shPostField.setValue(shNewIds.get(shPostField.getValue()));
 
 				}
 				fieldsWithNewIds.put(shPostField.getKey(), shPostField.getValue());

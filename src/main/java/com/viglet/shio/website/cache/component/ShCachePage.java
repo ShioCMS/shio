@@ -97,17 +97,18 @@ public class ShCachePage {
 				if (shPostAttrCacheTTL != null && shPostAttrCacheTTL.getStrValue() != null) {
 					int minutes = Integer.parseInt(shPostAttrCacheTTL.getStrValue());
 
-					Calendar expirationDate = Calendar.getInstance(); 
+					Calendar expirationDate = Calendar.getInstance();
 					expirationDate.add(Calendar.MINUTE, minutes);
 					shCachePageBean.setExpirationDate(expirationDate.getTime());
 				}
 				// Formats
-				if (format.toLowerCase().equals("default")) {
+				if (format.equalsIgnoreCase("default")) {
 					if (shSitesContextURL.getInfo().getContextURL().endsWith(".json"))
 						mimeType = "json";
 				} else {
 					ShPostAttr shPostAttrFormats = shFolderIndexMap.get("FORMATS");
-					List<Map<String, ShPostAttr>> shPostAttrFormatList = shSitesPostUtils.relationToMap(shPostAttrFormats);
+					List<Map<String, ShPostAttr>> shPostAttrFormatList = shSitesPostUtils
+							.relationToMap(shPostAttrFormats);
 					if (shPostAttrFormatList != null) {
 						for (Map<String, ShPostAttr> shPostAttrFormat : shPostAttrFormatList) {
 							if (shPostAttrFormat.get("NAME").getStrValue().equals(format))
@@ -116,11 +117,10 @@ public class ShCachePage {
 					}
 				}
 
-			}
-			else {
-				
+			} else {
+
 				if (shSitesPageLayout.getCacheTTL() != null) {
-					Calendar expirationDate = Calendar.getInstance(); 
+					Calendar expirationDate = Calendar.getInstance();
 					expirationDate.add(Calendar.MINUTE, shSitesPageLayout.getCacheTTL());
 					shCachePageBean.setExpirationDate(expirationDate.getTime());
 				}
@@ -147,5 +147,7 @@ public class ShCachePage {
 
 	@CacheEvict(value = "page", key = "{#id, #url}")
 	public void deleteCache(String id, String url) {
+		if (logger.isDebugEnabled())
+			logger.debug(String.format("Deleted cache of id %s, %s", id, url));
 	}
 }

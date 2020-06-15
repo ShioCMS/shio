@@ -40,7 +40,7 @@ import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.persistence.repository.object.ShObjectRepository;
 import com.viglet.shio.website.ShContent;
 import com.viglet.shio.website.component.ShSitesContent;
-import com.viglet.shio.website.component.ShSitesPageLayoutUtils;
+import com.viglet.shio.website.utils.ShSitesPageLayoutUtils;
 
 import graphql.schema.DataFetcher;
 import graphql.schema.GraphQLObjectType;
