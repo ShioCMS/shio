@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.http.client.ClientProtocolException;
@@ -58,9 +58,8 @@ public class ShFolderUtils {
 	private ShTuringIntegration shTuringIntegration;
 
 	public ShFolder getParentFolder(String shFolderId) {
-		ShFolder shFolder = shFolderRepository.findById(shFolderId).get();
-		shFolder.getParentFolder();
-		return shFolder.getParentFolder();
+		Optional<ShFolder> shFolder = shFolderRepository.findById(shFolderId);
+		return shFolder.isPresent() ? shFolder.get().getParentFolder() : null;
 	}
 
 	public ShFolder getParentFolder(ShObject shObject) {
@@ -104,40 +103,48 @@ public class ShFolderUtils {
 		if (shFolder != null) {
 			boolean rootFolder = false;
 			List<String> pathContexts = new ArrayList<>();
-			if (!(shFolder.getFurl().equals("home") && shFolder.getRootFolder() == (byte) 1 && !addHomeFolder)) {
-				if (usingFurl)
-					pathContexts.add(shFolder.getFurl());
-				else
-					pathContexts.add(shFolder.getName());
+			this.getFolderNameFromPath(shFolder, usingFurl, addHomeFolder, pathContexts);
+			this.getParentPath(usingFurl, rootFolder, pathContexts, shFolder.getParentFolder());
+			return this.pathBuilder(separator, pathContexts);
+		} else {
+			return separator;
+		}
 
-			}
-			ShFolder parentFolder = shFolder.getParentFolder();
-			while (parentFolder != null && !rootFolder) {
+	}
 
-				if ((parentFolder.getRootFolder() == (byte) 1) || (parentFolder.getParentFolder() == null)) {
-					rootFolder = true;
-					if (!parentFolder.getName().equalsIgnoreCase("home")) {
-						if (usingFurl)
-							pathContexts.add(parentFolder.getFurl());
-						else
-							pathContexts.add(parentFolder.getName());
+	private void getParentPath(boolean usingFurl, boolean rootFolder, List<String> pathContexts,
+			ShFolder parentFolder) {
+		while (parentFolder != null && !rootFolder) {
 
-					}
-				} else {
+			if ((parentFolder.getRootFolder() == (byte) 1) || (parentFolder.getParentFolder() == null)) {
+				rootFolder = true;
+				if (!parentFolder.getName().equalsIgnoreCase("home")) {
 					if (usingFurl)
 						pathContexts.add(parentFolder.getFurl());
 					else
 						pathContexts.add(parentFolder.getName());
 
-					parentFolder = parentFolder.getParentFolder();
 				}
+			} else {
+				if (usingFurl)
+					pathContexts.add(parentFolder.getFurl());
+				else
+					pathContexts.add(parentFolder.getName());
+
+				parentFolder = parentFolder.getParentFolder();
 			}
-
-			return pathBuilder(separator, pathContexts);
-		} else {
-			return separator;
 		}
+	}
 
+	private void getFolderNameFromPath(ShFolder shFolder, boolean usingFurl, boolean addHomeFolder,
+			List<String> pathContexts) {
+		if (!(shFolder.getFurl().equals("home") && shFolder.getRootFolder() == (byte) 1 && !addHomeFolder)) {
+			if (usingFurl)
+				pathContexts.add(shFolder.getFurl());
+			else
+				pathContexts.add(shFolder.getName());
+
+		}
 	}
 
 	private String pathBuilder(String separator, List<String> pathContexts) {

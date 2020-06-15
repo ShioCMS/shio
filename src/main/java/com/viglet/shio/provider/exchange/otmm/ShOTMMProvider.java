@@ -44,7 +44,6 @@ import com.viglet.shio.provider.exchange.ShExchangeProvider;
 import com.viglet.shio.provider.exchange.ShExchangeProviderBreadcrumbItem;
 import com.viglet.shio.provider.exchange.ShExchangeProviderFolder;
 import com.viglet.shio.provider.exchange.ShExchangeProviderPost;
-import com.viglet.shio.provider.exchange.otmm.bean.assets.ShOTMMAssetBean;
 import com.viglet.shio.provider.exchange.otmm.bean.assets.ShOTMMAssetDetailBean;
 import com.viglet.shio.provider.exchange.otmm.bean.assets.ShOTMMAssetsBean;
 import com.viglet.shio.provider.exchange.otmm.bean.folders.ShOTMMFolderBean;

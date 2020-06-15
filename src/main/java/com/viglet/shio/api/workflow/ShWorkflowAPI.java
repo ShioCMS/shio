@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.viglet.shio.persistence.model.auth.ShGroup;
 import com.viglet.shio.persistence.model.auth.ShUser;
 import com.viglet.shio.persistence.model.workflow.ShWorkflowTask;
 import com.viglet.shio.persistence.repository.auth.ShGroupRepository;
@@ -57,20 +56,17 @@ public class ShWorkflowAPI {
 	public Set<ShWorkflowTask> shWorkflowTasksGet(Principal principal) {
 		ShUser shUser = shUserRepository.findByUsername(principal.getName());
 		List<ShUser> shUsers = new ArrayList<>();
-		shUsers.add(shUser);
-		Set<ShGroup> shGroups = shGroupRepository.findByShUsersIn(shUsers);
 		List<String> requesters = new ArrayList<>();
+
+		shUsers.add(shUser);
 		
-		for (ShGroup shGroup : shGroups) {
-			requesters.add(shGroup.getName());
-		}
+		shGroupRepository.findByShUsersIn(shUsers).forEach(shGroup -> requesters.add(shGroup.getName()));
 		
 		Set<ShWorkflowTask> shWorkflowTasks = shWorkflowTaskRepository.findByRequestedIn(requesters);
-
-		for (ShWorkflowTask shWorkflowTask : shWorkflowTasks) {
-			String id = shWorkflowTask.getShObject().getId();
-			shWorkflowTask.setShObject(shPostRepository.findByIdFull(id).get());
-		}
+		
+		shWorkflowTasks.forEach(shWorkflowTask -> 
+			shPostRepository.findByIdFull(shWorkflowTask.getShObject().getId()).ifPresent(shWorkflowTask::setShObject));	
+		
 		return shWorkflowTasks;
 	}
 }
