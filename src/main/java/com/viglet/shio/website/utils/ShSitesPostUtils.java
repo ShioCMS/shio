@@ -79,7 +79,8 @@ public class ShSitesPostUtils {
 	private ShPostUtils shPostUtils;
 
 	public ShPost getPostByStage(ShPost shPost) {
-		return (shPost != null && shMgmtProperties.isEnabled()) ? this.getMgmtPost(shPost) : this.getLivePost(shPost);
+		return (shPost != null) ? shMgmtProperties.isEnabled() ? this.getMgmtPost(shPost) : this.getLivePost(shPost)
+				: null;
 	}
 
 	private ShPost getLivePost(ShPost shPost) {

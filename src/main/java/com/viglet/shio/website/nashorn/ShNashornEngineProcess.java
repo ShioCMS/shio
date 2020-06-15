@@ -49,6 +49,10 @@ public class ShNashornEngineProcess {
 	@Autowired
 	private ShCacheJavascript shCacheJavascript;
 
+	public void cleanup() {
+		scriptContexts.remove();
+	}
+
 	public Object render(String objectName, String javascript, String html, HttpServletRequest request,
 			Map<String, Object> shContent) {
 		try {
