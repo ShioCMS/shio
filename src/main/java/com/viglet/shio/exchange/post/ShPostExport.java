@@ -22,7 +22,6 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,7 +36,6 @@ import com.viglet.shio.exchange.ShRelatorItemExchanges;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
 import com.viglet.shio.persistence.model.post.relator.ShRelatorItem;
-import com.viglet.shio.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shio.post.type.ShSystemPostType;
 import com.viglet.shio.post.type.ShSystemPostTypeAttr;
 import com.viglet.shio.utils.ShStaticFileUtils;
@@ -51,8 +49,6 @@ public class ShPostExport {
 	static final Logger logger = LogManager.getLogger(ShPostExport.class.getName());
 	@Autowired
 	private ShStaticFileUtils shStaticFileUtils;
-	@Autowired
-	private ShPostAttrRepository shPostAttrRepository;
 
 	public ShPostExchange exportShPostDraft(ShPost shPost) {
 		ShPostExchange shPostExchange = new ShPostExchange();
@@ -63,92 +59,85 @@ public class ShPostExport {
 		shPostExchange.setOwner(shPost.getOwner());
 		shPostExchange.setFurl(shPost.getFurl());
 		shPostExchange.setPosition(shPost.getPosition());
-			
+
 		Map<String, Object> fields = new HashMap<String, Object>();
 
-		this.shPostDraftAttrExchangeIterate(shPost, shPostAttrRepository.findByShPost(shPost), fields);
+		this.shPostAttrExchangeIterate(shPost, fields);
 
 		shPostExchange.setFields(fields);
 		return shPostExchange;
 	}
 
-	public void shPostDraftAttrExchangeIterate(ShPost shPost, Set<ShPostAttr> shPostAttrs, Map<String, Object> fields) {
-		for (ShPostAttr shPostAttr : shPost.getShPostAttrs()) {
-			if (shPostAttr != null && shPostAttr.getShPostTypeAttr() != null) {
-				if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.RELATOR)) {
-					ShRelatorExchange shRelatorExchange = new ShRelatorExchange();
-					shRelatorExchange.setId(shPostAttr.getId());
-					shRelatorExchange.setName(shPostAttr.getStrValue());
-					ShRelatorItemExchanges relators = new ShRelatorItemExchanges();
-					for (ShRelatorItem shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
-						ShRelatorItemExchange shRelatorItemExchange = new ShRelatorItemExchange();
-						shRelatorItemExchange.setPosition(shRelatorItem.getOrdinal());
-						Map<String, Object> relatorFields = new HashMap<String, Object>();
-						this.shPostDraftAttrExchangeIterate(shPost, shRelatorItem.getShChildrenPostAttrs(), relatorFields);
-						shRelatorItemExchange.setFields(relatorFields);
-						relators.add(shRelatorItemExchange);
-					}
-					shRelatorExchange.setShSubPosts(relators);
-					fields.put(shPostAttr.getShPostTypeAttr().getName(), shRelatorExchange);
-				} else {
-					if (!shPostAttr.getArrayValue().isEmpty())
-						fields.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getArrayValue());
-					else if (shPostAttr.getDateValue() != null) {
-						DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
-						fields.put(shPostAttr.getShPostTypeAttr().getName(),
-								dateFormat.format(shPostAttr.getDateValue()));
-					} else {
-						fields.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
-					}
-				}
-			
-			}
-		}
+	public void shPostAttrExchangeIterate(ShPost shPost, Map<String, Object> fields) {
+		this.shPostAttrExchangeIterate(shPost, fields, null);
+
 	}
-	
-	public void shPostAttrExchangeIterate(ShPost shPost, Set<ShPostAttr> shPostAttrs, Map<String, Object> fields,
-			List<ShFileExchange> files) {
-		for (ShPostAttr shPostAttr : shPostAttrs) {
-			if (shPostAttr != null && shPostAttr.getShPostTypeAttr() != null) {
-				if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.RELATOR)) {
-					ShRelatorExchange shRelatorExchange = new ShRelatorExchange();
-					shRelatorExchange.setId(shPostAttr.getId());
-					shRelatorExchange.setName(shPostAttr.getStrValue());
-					ShRelatorItemExchanges relators = new ShRelatorItemExchanges();
-					for (ShRelatorItem shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
-						ShRelatorItemExchange shRelatorItemExchange = new ShRelatorItemExchange();
-						shRelatorItemExchange.setPosition(shRelatorItem.getOrdinal());
-						Map<String, Object> relatorFields = new HashMap<String, Object>();
-						this.shPostAttrExchangeIterate(shPost, shRelatorItem.getShChildrenPostAttrs(), relatorFields,
-								files);
-						shRelatorItemExchange.setFields(relatorFields);
-						relators.add(shRelatorItemExchange);
-					}
-					shRelatorExchange.setShSubPosts(relators);
-					fields.put(shPostAttr.getShPostTypeAttr().getName(), shRelatorExchange);
+
+	public void shPostAttrExchangeIterate(ShPost shPost, Map<String, Object> fields, List<ShFileExchange> files) {
+		shPost.getShPostAttrs().forEach(shPostAttr -> {
+			if (this.postAttrIsNotNull(shPostAttr)) {
+				if (this.isRelator(shPostAttr)) {
+					this.exportRelatorAttrs(shPost, fields, files, shPostAttr);
 				} else {
-					if (!shPostAttr.getArrayValue().isEmpty())
-						fields.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getArrayValue());
-					else if (shPostAttr.getDateValue() != null) {
-						DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
-						fields.put(shPostAttr.getShPostTypeAttr().getName(),
-								dateFormat.format(shPostAttr.getDateValue()));
-					} else {
-						fields.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
-					}
+					this.exportAttrs(fields, shPostAttr);
 				}
 
-				if (shPostAttr.getShPostTypeAttr().getName().equals(ShSystemPostTypeAttr.FILE)
-						&& shPost.getShPostType().getName().equals(ShSystemPostType.FILE)) {
-					String fileName = shPostAttr.getStrValue();
-					File directoryPath = shStaticFileUtils.dirPath(shPost.getShFolder());
-					File file = new File(directoryPath.getAbsolutePath().concat(File.separator + fileName));
-					ShFileExchange shFileExchange = new ShFileExchange();
-					shFileExchange.setId(shPost.getId());
-					shFileExchange.setFile(file);
-					files.add(shFileExchange);
-				}
+				this.exportStaticFiles(shPost, files, shPostAttr);
 			}
+		});
+	}
+
+	private boolean postAttrIsNotNull(ShPostAttr shPostAttr) {
+		return shPostAttr != null && shPostAttr.getShPostTypeAttr() != null;
+	}
+
+	private boolean isRelator(ShPostAttr shPostAttr) {
+		return shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.RELATOR);
+	}
+
+	private void exportAttrs(Map<String, Object> fields, ShPostAttr shPostAttr) {
+		if (!shPostAttr.getArrayValue().isEmpty())
+			fields.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getArrayValue());
+		else if (shPostAttr.getDateValue() != null) {
+			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+			fields.put(shPostAttr.getShPostTypeAttr().getName(), dateFormat.format(shPostAttr.getDateValue()));
+		} else {
+			fields.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
+		}
+	}
+
+	private void exportRelatorAttrs(ShPost shPost, Map<String, Object> fields, List<ShFileExchange> files,
+			ShPostAttr shPostAttr) {
+		ShRelatorExchange shRelatorExchange = new ShRelatorExchange();
+		shRelatorExchange.setId(shPostAttr.getId());
+		shRelatorExchange.setName(shPostAttr.getStrValue());
+		ShRelatorItemExchanges relators = new ShRelatorItemExchanges();
+		for (ShRelatorItem shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
+			ShRelatorItemExchange shRelatorItemExchange = new ShRelatorItemExchange();
+			shRelatorItemExchange.setPosition(shRelatorItem.getOrdinal());
+			Map<String, Object> relatorFields = new HashMap<>();
+			this.shPostAttrExchangeIterate(shPost, relatorFields, files);
+			shRelatorItemExchange.setFields(relatorFields);
+			relators.add(shRelatorItemExchange);
+		}
+		shRelatorExchange.setShSubPosts(relators);
+		fields.put(shPostAttr.getShPostTypeAttr().getName(), shRelatorExchange);
+	}
+
+	private boolean canExportStaticFile(ShPost shPost, List<ShFileExchange> files, ShPostAttr shPostAttr) {
+		return files != null && shPostAttr.getShPostTypeAttr().getName().equals(ShSystemPostTypeAttr.FILE)
+				&& shPost.getShPostType().getName().equals(ShSystemPostType.FILE);
+	}
+
+	private void exportStaticFiles(ShPost shPost, List<ShFileExchange> files, ShPostAttr shPostAttr) {
+		if (canExportStaticFile(shPost, files, shPostAttr)) {
+			String fileName = shPostAttr.getStrValue();
+			File directoryPath = shStaticFileUtils.dirPath(shPost.getShFolder());
+			File file = new File(directoryPath.getAbsolutePath().concat(File.separator + fileName));
+			ShFileExchange shFileExchange = new ShFileExchange();
+			shFileExchange.setId(shPost.getId());
+			shFileExchange.setFile(file);
+			files.add(shFileExchange);
 		}
 	}
 }

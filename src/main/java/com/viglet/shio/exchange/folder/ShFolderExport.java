@@ -35,7 +35,6 @@ import com.viglet.shio.exchange.post.type.ShPostTypeExport;
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.repository.folder.ShFolderRepository;
-import com.viglet.shio.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shio.persistence.repository.post.ShPostRepository;
 
 /**
@@ -47,8 +46,6 @@ public class ShFolderExport {
 	private ShFolderRepository shFolderRepository;
 	@Autowired
 	private ShPostRepository shPostRepository;
-	@Autowired
-	private ShPostAttrRepository shPostAttrRepository;
 	@Autowired
 	private ShPostExport shPostExport;
 	@Autowired
@@ -115,7 +112,7 @@ public class ShFolderExport {
 		}
 		Map<String, Object> fields = new HashMap<>();
 
-		shPostExport.shPostAttrExchangeIterate(shPost, shPostAttrRepository.findByShPost(shPost), fields, files);
+		shPostExport.shPostAttrExchangeIterate(shPost, fields, files);
 
 		shPostExchange.setFields(fields);
 		return shPostExchange;

@@ -69,28 +69,13 @@ public class ShTuringContext {
 					}
 				}
 
-				CloseableHttpClient client = HttpClients.createDefault();
-				HttpGet httpGet;
+				final HttpHeaders httpHeaders = new HttpHeaders();
+				httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-				httpGet = new HttpGet(turingURL.build().toString());
+				return new ResponseEntity<>(this.getResults(turingURL.build().toString()), httpHeaders, HttpStatus.OK);
 
-				HttpResponse response = client.execute(httpGet);
-				try (BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()))) {
-
-					StringBuilder result = new StringBuilder();
-					String line = "";
-					while ((line = rd.readLine()) != null) {
-						result.append(line);
-					}
-
-					final HttpHeaders httpHeaders = new HttpHeaders();
-					httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-					return new ResponseEntity<>(result.toString(), httpHeaders, HttpStatus.OK);
-				} catch (IOException e) {
-					logger.error(e);
-				}
 			}
-		} catch (URISyntaxException | IOException e) {
+		} catch (URISyntaxException e) {
 			logger.error(e);
 
 		}
@@ -103,29 +88,39 @@ public class ShTuringContext {
 		URIBuilder turingURL;
 		try {
 			turingURL = new URIBuilder(TURING_ENDPOINT + siteName + "/ac").addParameter("q", q);
-
-			CloseableHttpClient client = HttpClients.createDefault();
-			HttpGet httpGet = new HttpGet(turingURL.build().toString());
-
-			HttpResponse response = client.execute(httpGet);
-			try (BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()))) {
-
-				StringBuffer result = new StringBuffer();
-				String line = "";
-				while ((line = rd.readLine()) != null) {
-					result.append(line);
-				}
-
-				final HttpHeaders httpHeaders = new HttpHeaders();
-				httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-				return new ResponseEntity<>(result.toString(), httpHeaders, HttpStatus.OK);
-			} catch (IOException e) {
-				logger.error(e);
-			}
-		} catch (URISyntaxException | IOException e) {
+			final HttpHeaders httpHeaders = new HttpHeaders();
+			httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+			return new ResponseEntity<>(this.getResults(turingURL.build().toString()), httpHeaders, HttpStatus.OK);
+		} catch (URISyntaxException e) {
 			logger.error(e);
 		}
 
 		return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+	}
+
+	private String getResults(String url) {
+		StringBuilder result = new StringBuilder();
+		CloseableHttpClient client = HttpClients.createDefault();
+		HttpGet httpGet;
+
+		httpGet = new HttpGet(url);
+
+		HttpResponse response = null;
+		try {
+			response = client.execute(httpGet);
+		} catch (IOException e1) {
+			logger.error(e1);
+		}
+		if (response != null) {
+
+			try (BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()))) {
+				String line = "";
+				while ((line = rd.readLine()) != null)
+					result.append(line);
+			} catch (IOException e) {
+				logger.error(e);
+			}
+		}
+		return result.toString();
 	}
 }
