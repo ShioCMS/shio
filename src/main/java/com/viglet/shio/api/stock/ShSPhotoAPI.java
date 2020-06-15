@@ -26,6 +26,8 @@ import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,7 +35,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.viglet.shio.bean.ShPostTinyBean;
-import com.viglet.shio.image.colorthief.ColorThief;
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.repository.folder.ShFolderRepository;
@@ -43,6 +44,7 @@ import com.viglet.shio.stock.beans.ShSPhotoPreviewBean;
 import com.viglet.shio.utils.ShStaticFileUtils;
 import com.viglet.shio.website.utils.ShSitesPostUtils;
 
+import de.androidpit.colorthief.ColorThief;
 import io.swagger.annotations.Api;
 
 /**
@@ -53,7 +55,7 @@ import io.swagger.annotations.Api;
 @RequestMapping("/api/v2/stock/photos")
 @Api(value = "/photos", tags = "Photos", description = "Photos")
 public class ShSPhotoAPI {
-
+	private static final Logger logger = LogManager.getLogger(ShSPhotoAPI.class);
 	@Autowired
 	private ShFolderRepository shFolderRepository;
 	@Autowired
@@ -62,6 +64,7 @@ public class ShSPhotoAPI {
 	private ShStaticFileUtils shStaticFileUtils;
 	@Autowired
 	private ShSitesPostUtils shSitesPostUtils;
+
 	@GetMapping
 	public List<ShSPhotoBean> getPhotos() throws ClientProtocolException, IOException {
 
@@ -84,7 +87,9 @@ public class ShSPhotoAPI {
 				int[] rgbArray = ColorThief.getColor(image);
 				String rgb = String.format("rgb(%d,%d,%d)", rgbArray[0], rgbArray[1], rgbArray[2]);
 
-				System.out.println(imageURL.toString() + " " + rgb);
+				if (logger.isDebugEnabled())
+					logger.debug(imageURL.toString() + " " + rgb);
+				
 				ShSPhotoBean shSPhotoBean = new ShSPhotoBean();
 
 				shSPhotoBean.setName(shPost.getTitle());
@@ -100,8 +105,7 @@ public class ShSPhotoAPI {
 				shSPhotoBeans.add(shSPhotoBean);
 			}
 		} catch (JSONException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e);
 		}
 
 		return shSPhotoBeans;
