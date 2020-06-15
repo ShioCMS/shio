@@ -56,21 +56,18 @@ public class ShWorkflow {
 	private ShGroupRepository shGroupRepository;
 
 	public void requestWorkFlow(ShObject shObject, Principal principal) {
-		if (shObject != null && shObject instanceof ShPost) {
-			if (shWorkflowTaskRepository.countByShObject(shObject) == 0) {
-				ShWorkflowTask shWorkflowTask = new ShWorkflowTask();
-				shWorkflowTask.setDate(new Date());
-				shWorkflowTask.setTitle("Request to Publish");
-				shWorkflowTask.setShObject(shObject);
-				shWorkflowTask.setRequester(principal.getName());
-				ShPost shPost = (ShPost) shObject;
-				shWorkflowTask.setRequested(shPost.getShPostType().getWorkflowPublishEntity());
+		if (shObject instanceof ShPost && shWorkflowTaskRepository.countByShObject(shObject) == 0) {
+			ShWorkflowTask shWorkflowTask = new ShWorkflowTask();
+			shWorkflowTask.setDate(new Date());
+			shWorkflowTask.setTitle("Request to Publish");
+			shWorkflowTask.setShObject(shObject);
+			shWorkflowTask.setRequester(principal.getName());
+			ShPost shPost = (ShPost) shObject;
+			shWorkflowTask.setRequested(shPost.getShPostType().getWorkflowPublishEntity());
 
-				shWorkflowTaskRepository.save(shWorkflowTask);
+			shWorkflowTaskRepository.save(shWorkflowTask);
 
-				this.sendWorkflowEmail(shWorkflowTask);
-			}
-
+			this.sendWorkflowEmail(shWorkflowTask);
 		}
 
 	}
@@ -79,15 +76,15 @@ public class ShWorkflow {
 		try {
 
 			String title = "";
-			if (shWorkflowTask.getShObject() != null && shWorkflowTask.getShObject() instanceof ShPost) {
+			if (shWorkflowTask.getShObject() instanceof ShPost) {
 				ShPost shPost = (ShPost) shWorkflowTask.getShObject();
 				title = shPost.getTitle();
-			} else if (shWorkflowTask.getShObject() != null && shWorkflowTask.getShObject() instanceof ShFolder) {
+			} else if (shWorkflowTask.getShObject() instanceof ShFolder) {
 				ShFolder shFolder = (ShFolder) shWorkflowTask.getShObject();
 				title = shFolder.getName();
 			}
 
-			List<ShGroup> shGroups = new ArrayList<ShGroup>();
+			List<ShGroup> shGroups = new ArrayList<>();
 			ShGroup shGroup = shGroupRepository.findByName(shWorkflowTask.getRequested());
 			shGroups.add(shGroup);
 			Set<ShUser> shUsers = shUserRepository.findByShGroupsIn(shGroups);
@@ -97,7 +94,7 @@ public class ShWorkflow {
 				msg.setTo(shUser.getEmail());
 
 				msg.setSubject("New publish request");
-				msg.setText(String.format("Hi %s, \n There a new publish request for content: %s",
+				msg.setText(String.format("Hi %s,%n There a new publish request for content: %s",
 						shUser.getFirstName(), title));
 
 				javaMailSender.send(msg);
