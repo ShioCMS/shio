@@ -5,7 +5,7 @@ shioApp.factory('shExchangeProviderFactory', [
 			delete: function (shExchangeProvider) {
 				var modalInstance = this.modalDelete(shExchangeProvider);
 				modalInstance.result.then(function (removeInstance) {
-					deletedMessage = 'The ' + shExchangeProvider.name + ' Exchange Provider was deleted.';
+					var deletedMessage = 'The ' + shExchangeProvider.name + ' Exchange Provider was deleted.';
 
 					shExchangeProviderResource
 						.delete({

@@ -303,7 +303,7 @@ public class ShObjectAPI {
 
 	@GetMapping("/{id}/list")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ResponseEntity<?> shObjectListItem(@PathVariable String id, final Principal principal) {
+	public ResponseEntity<ShFolderList> shObjectListItem(@PathVariable String id, final Principal principal) {
 		if (shObjectUtils.canAccess(principal, id)) {
 			Optional<ShObject> shObjectOptional = shObjectRepository.findById(id);
 			if (shObjectOptional.isPresent()) {
@@ -341,6 +341,28 @@ public class ShObjectAPI {
 
 	private Set<ShFolderTinyBean> allowedFolders(ShUser shUser, ShObject shObject) {
 
+		Set<ShFolderTinyBean> folders = this.foldersFromObject(shObject);
+
+		if (this.userHasGroups(shUser)) {
+			return this.isAdministrator(shUser) ? folders : this.showFolderWithRestriction(shUser, folders);
+		} else {
+			return folders;
+		}
+	}
+
+	private boolean isAdministrator(ShUser shUser) {
+		boolean fullAccess = false;
+		for (ShGroup shGroup : shUser.getShGroups())
+			if (shGroup.getName().equals("Administrator"))
+				fullAccess = true;
+		return fullAccess;
+	}
+
+	private boolean userHasGroups(ShUser shUser) {
+		return shUser != null && shUser.getShGroups() != null;
+	}
+
+	private Set<ShFolderTinyBean> foldersFromObject(ShObject shObject) {
 		Set<ShFolderTinyBean> folders = new HashSet<>();
 		if (shObject instanceof ShFolder) {
 			ShFolder shFolder = (ShFolder) shObject;
@@ -349,73 +371,60 @@ public class ShObjectAPI {
 			ShSite shSite = (ShSite) shObject;
 			folders = shFolderRepository.findByShSiteAndRootFolderTiny(shSite, (byte) 1);
 		}
+		return folders;
+	}
 
+	private Set<ShFolderTinyBean> showFolderWithRestriction(ShUser shUser, Set<ShFolderTinyBean> folders) {
 		Set<String> shGroups = new HashSet<>();
 		Set<String> shUsers = new HashSet<>();
-		if (shUser != null && shUser.getShGroups() != null) {
-			boolean fullAccess = false;
-			for (ShGroup shGroup : shUser.getShGroups()) {
-				if (shGroup.getName().equals("Administrator")) {
-					fullAccess = true;
-				}
-			}
-			if (fullAccess) {
-				return folders;
-			} else {
-				Set<ShFolderTinyBean> shFolders = new HashSet<>();
+		Set<ShFolderTinyBean> shFolders = new HashSet<>();
 
-				for (ShGroup shGroup : shUser.getShGroups()) {
-					shGroups.add(shGroup.getName());
-				}
-				shUsers.add(shUser.getUsername());
-				for (ShFolderTinyBean folder : folders)
-					if (shObjectRepository.countByIdAndShGroupsInOrIdAndShUsersInOrIdAndShGroupsIsNullAndShUsersIsNull(
-							folder.getId(), shGroups, folder.getId(), shUsers, folder.getId()) > 0)
-						shFolders.add(folder);
-
-				return shFolders;
-			}
-		} else {
-			return folders;
+		for (ShGroup shGroup : shUser.getShGroups()) {
+			shGroups.add(shGroup.getName());
 		}
+		shUsers.add(shUser.getUsername());
+		for (ShFolderTinyBean folder : folders)
+			if (shObjectRepository.countByIdAndShGroupsInOrIdAndShUsersInOrIdAndShGroupsIsNullAndShUsersIsNull(
+					folder.getId(), shGroups, folder.getId(), shUsers, folder.getId()) > 0)
+				shFolders.add(folder);
 
+		return shFolders;
 	}
 
 	private List<ShPostTinyBean> allowedPosts(ShUser shUser, ShObject shObject) {
 
+		List<ShPostTinyBean> posts = postsFromObject(shObject);
+
+		if (userHasGroups(shUser)) {
+			return this.isAdministrator(shUser) ? posts : this.showPostWithRestriction(shUser, posts);
+		} else {
+			return posts;
+		}
+
+	}
+
+	private List<ShPostTinyBean> postsFromObject(ShObject shObject) {
 		List<ShPostTinyBean> posts = new ArrayList<>();
 		if (shObject instanceof ShFolder) {
 			ShFolder shFolder = (ShFolder) shObject;
 			posts = shPostRepository.findByShFolderTiny(shFolder.getId());
 		}
+		return posts;
+	}
 
+	private List<ShPostTinyBean> showPostWithRestriction(ShUser shUser, List<ShPostTinyBean> posts) {
 		Set<String> shGroups = new HashSet<>();
 		Set<String> shUsers = new HashSet<>();
-		if (shUser != null && shUser.getShGroups() != null) {
-			boolean fullAccess = false;
-			for (ShGroup shGroup : shUser.getShGroups()) {
-				if (shGroup.getName().equals("Administrator")) {
-					fullAccess = true;
-				}
-			}
-			if (fullAccess) {
-				return posts;
-			} else {
-				List<ShPostTinyBean> shPosts = new ArrayList<>();
-				for (ShGroup shGroup : shUser.getShGroups()) {
-					shGroups.add(shGroup.getName());
-				}
-				shUsers.add(shUser.getUsername());
-				for (ShPostTinyBean post : posts)
-					if (shObjectRepository.countByIdAndShGroupsInOrIdAndShUsersInOrIdAndShGroupsIsNullAndShUsersIsNull(
-							post.getId(), shGroups, post.getId(), shUsers, post.getId()) > 0)
-						shPosts.add(post);
-				return shPosts;
-			}
-		} else {
-			return posts;
+		List<ShPostTinyBean> shPosts = new ArrayList<>();
+		for (ShGroup shGroup : shUser.getShGroups()) {
+			shGroups.add(shGroup.getName());
 		}
-
+		shUsers.add(shUser.getUsername());
+		for (ShPostTinyBean post : posts)
+			if (shObjectRepository.countByIdAndShGroupsInOrIdAndShUsersInOrIdAndShGroupsIsNullAndShUsersIsNull(
+					post.getId(), shGroups, post.getId(), shUsers, post.getId()) > 0)
+				shPosts.add(post);
+		return shPosts;
 	}
 
 	@GetMapping("/{id}/list/{postTypeName}")

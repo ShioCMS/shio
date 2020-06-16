@@ -121,7 +121,7 @@ public class ShPostDraft extends ShObjectDraft implements ShPostImpl {
 
 	@Override
 	public Set<ShPostAttr> getShPostAttrsNonDraft() {
-		return null;
+		return new HashSet<>();
 	}
 	
 	@Override

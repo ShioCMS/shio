@@ -304,8 +304,8 @@ shioApp.controller('ShObjectChildrenCtrl', [
                 var parameter = JSON.stringify(objectGlobalIds);
                 $http.put(shAPIServerService.get().concat("/v2/object/copyto/" + shObjectSelected.id), parameter).then(function (response) {
                     var shObjects = response.data;
-                    for (i = 0; i < shObjects.length; i++) {
-                        shObject = shObjects[i];
+                    for (var i = 0; i < shObjects.length; i++) {
+                        var shObject = shObjects[i];
                         if (shObjectSelected.id == $scope.objectId) {
                             $scope.shStateObjects[shObject.id] = false;
                             $scope.shObjects[shObject.id] = shObject;
@@ -351,7 +351,7 @@ shioApp.controller('ShObjectChildrenCtrl', [
             var modalInstance = ShDialogSelectObject.dialog($scope.objectId, "shFolder");
             modalInstance.result.then(function (shObjectSelected) {
                 if (shObjectSelected.id == $scope.objectId) {
-                    movedMessage = 'No moved, because you selected the same folder as destination';
+                    var movedMessage = 'No moved, because you selected the same folder as destination';
                     Notification.warning(movedMessage);
                 }
                 else {
@@ -467,7 +467,7 @@ shioApp.controller('ShObjectChildrenCtrl', [
                 angular.forEach(shSelectedObjects, function (value, key) {
                     $scope.shStateObjects[value.id] = false;
                     if (value.objectType === "POST") {
-                        shPost = value;
+                        var shPost = value;
                         var deletedMessage = 'The ' + shPost.title + ' Post was deleted.';
                         shPostResource.delete({
                             id: shPost.id
@@ -485,7 +485,7 @@ shioApp.controller('ShObjectChildrenCtrl', [
                         });
                     }
                     else if (value.objectType === "FOLDER") {
-                        shFolder = value;
+                        var shFolder = value;
                         var deletedMessage = 'The ' + shFolder.name + ' Folder was deleted.';
                         shFolderResource.delete({
                             id: shFolder.id

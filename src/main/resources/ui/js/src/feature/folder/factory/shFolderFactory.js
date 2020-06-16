@@ -5,7 +5,7 @@ shioApp.factory('shFolderFactory', [
 			deleteFromList: function (shFolder, shFolders) {
 				var modalInstance = this.modalDelete(shFolder);
 				modalInstance.result.then(function (removeInstance) {
-					deletedMessage = 'The '
+					var deletedMessage = 'The '
 						+ shFolder.name
 						+ ' Folder was deleted.';
 

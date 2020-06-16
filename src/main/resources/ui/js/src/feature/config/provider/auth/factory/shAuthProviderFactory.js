@@ -5,7 +5,7 @@ shioApp.factory('shAuthProviderFactory', [
 			delete: function (shAuthProvider) {
 				var modalInstance = this.modalDelete(shAuthProvider);
 				modalInstance.result.then(function (removeInstance) {
-					deletedMessage = 'The ' + shAuthProvider.name + ' Auth Provider was deleted.';
+					var deletedMessage = 'The ' + shAuthProvider.name + ' Auth Provider was deleted.';
 
 					shAuthProviderResource
 						.delete({
