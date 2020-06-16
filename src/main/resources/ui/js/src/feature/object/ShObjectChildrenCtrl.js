@@ -146,8 +146,7 @@ shioApp.controller('ShObjectChildrenCtrl', [
         $scope.sortableFolders = {
             disabled: false,
             stop: function (e, ui) {
-                var sortObject = {};
-                var i = 1;
+                var sortObject = {};               
                 angular.forEach($scope.shFolders, function (shFolder, key) {
                     sortObject[shFolder.id] = shFolder.position;
                 });
@@ -159,7 +158,6 @@ shioApp.controller('ShObjectChildrenCtrl', [
             disabled: false,
             stop: function (e, ui) {
                 var sortObject = {};
-                var i = 1;
                 angular.forEach($scope.shPosts, function (shPost, key) {
                     sortObject[shPost.id] = shPost.position;
                 });
@@ -259,7 +257,7 @@ shioApp.controller('ShObjectChildrenCtrl', [
             $scope.checkSomeItemSelected();
         }
         $scope.isRecent = function (date) {
-            var momentDate = moment(date);
+            var momentDate = new moment(date);
             var now = new moment();
             var duration = moment.duration(momentDate.diff(now))
             if (duration.as('minutes') >= -5) {
@@ -351,8 +349,8 @@ shioApp.controller('ShObjectChildrenCtrl', [
             var modalInstance = ShDialogSelectObject.dialog($scope.objectId, "shFolder");
             modalInstance.result.then(function (shObjectSelected) {
                 if (shObjectSelected.id == $scope.objectId) {
-                    var movedMessage = 'No moved, because you selected the same folder as destination';
-                    Notification.warning(movedMessage);
+                    var movedMessageSameFolder = 'No moved, because you selected the same folder as destination';
+                    Notification.warning(movedMessageSameFolder);
                 }
                 else {
                     var parameter = JSON.stringify(objectGlobalIds);
@@ -361,9 +359,9 @@ shioApp.controller('ShObjectChildrenCtrl', [
                         for (var i = 0; i < shObjects.length; i++) {
                             var shObject = shObjects[i];
                             $scope.shStateObjects[shObject.id] = false;
-                            var movedMessage = null;
+                            var movedMessagePost = null;
                             if (shObject.objectType == "POST") {
-                                movedMessage = 'The ' + shObject.title + ' Post was moved.';
+                                movedMessagePost = 'The ' + shObject.title + ' Post was moved.';
                                 var foundItem = $filter('filter')
                                     ($scope.shPosts, {
                                         id: shObject.id
@@ -372,15 +370,15 @@ shioApp.controller('ShObjectChildrenCtrl', [
                                 $scope.shPosts.splice(index, 1);
                             }
                             else if (shObject.objectType == "FOLDER") {
-                                movedMessage = 'The ' + shObject.name + ' Folder was moved.';
-                                var foundItem = $filter('filter')
+                                movedMessageFolder = 'The ' + shObject.name + ' Folder was moved.';
+                                var foundItemFolder = $filter('filter')
                                     ($scope.shFolders, {
                                         id: shObject.id
                                     }, true)[0];
-                                var index = $scope.shFolders.indexOf(foundItem);
-                                $scope.shFolders.splice(index, 1);
+                                var indexFolder = $scope.shFolders.indexOf(foundItemFolder);
+                                $scope.shFolders.splice(indexFolder, 1);
                             }
-                            Notification.warning(movedMessage);
+                            Notification.warning(movedMessageFolder);
                         }
                         $scope.checkSomeItemSelected();
                     });
@@ -402,7 +400,7 @@ shioApp.controller('ShObjectChildrenCtrl', [
             }
             $http.put(shAPIServerService.get().concat("/v2/object/copyto/" + parentObjectId), parameter).then(function (response) {
                 var shObjects = response.data;
-                for (i = 0; i < shObjects.length; i++) {
+                for (var i = 0; i < shObjects.length; i++) {
                     shObject = shObjects[i];
                     $scope.shStateObjects[shObject.id] = false;
                     $scope.shObjects[shObject.id] = shObject;
@@ -422,8 +420,8 @@ shioApp.controller('ShObjectChildrenCtrl', [
             });
         }
 
-        $scope.objectClearCache = function (shObject) {
-            $http.get(shAPIServerService.get().concat("/v2/object/" + shObject.id + "/clear-cache")).then(function (response) {
+        $scope.objectClearCache = function (shObjectItem) {
+            $http.get(shAPIServerService.get().concat("/v2/object/" + shObjectItem.id + "/clear-cache")).then(function (response) {
                 var shObject = response.data;
                 var clearMessage = null;
                 if (shObject.objectType == "POST") {
@@ -486,20 +484,20 @@ shioApp.controller('ShObjectChildrenCtrl', [
                     }
                     else if (value.objectType === "FOLDER") {
                         var shFolder = value;
-                        var deletedMessage = 'The ' + shFolder.name + ' Folder was deleted.';
+                        var deletedMessageFolder = 'The ' + shFolder.name + ' Folder was deleted.';
                         shFolderResource.delete({
                             id: shFolder.id
                         }, function () {
                             delete $scope.shStateObjects[shFolder.id];
                             // filter the array
-                            var foundItem = $filter('filter')($scope.shFolders, {
+                            var foundItemFolder = $filter('filter')($scope.shFolders, {
                                 id: shFolder.id
                             }, true)[0];
                             // get the index
-                            var index = $scope.shFolders.indexOf(foundItem);
+                            var indexFolder = $scope.shFolders.indexOf(foundItemFolder);
                             // remove the item from array
-                            $scope.shFolders.splice(index, 1);
-                            Notification.error(deletedMessage);
+                            $scope.shFolders.splice(indexFolder, 1);
+                            Notification.error(deletedMessageFolder);
                         });
                     }
                     $scope.checkSomeItemSelected();
