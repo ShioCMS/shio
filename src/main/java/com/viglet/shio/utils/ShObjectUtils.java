@@ -18,11 +18,15 @@ package com.viglet.shio.utils;
 
 import java.security.Principal;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
 
+import com.viglet.shio.api.folder.ShFolderPath;
 import com.viglet.shio.persistence.model.auth.ShGroup;
 import com.viglet.shio.persistence.model.auth.ShUser;
 import com.viglet.shio.persistence.model.folder.ShFolder;
@@ -75,7 +79,7 @@ public class ShObjectUtils {
 				if (fullAccess) {
 					return true;
 				} else {
-					for (ShGroup shGroup: shUser.getShGroups()) {
+					for (ShGroup shGroup : shUser.getShGroups()) {
 						shGroups.add(shGroup.getName());
 					}
 					shUsers.add(shUser.getUsername());
@@ -88,7 +92,47 @@ public class ShObjectUtils {
 				return true;
 			}
 		}
-		
+
 		return false;
+	}
+
+	public ShFolderPath objectPath(@PathVariable String id) {
+		Optional<ShObject> shObject = shObjectRepository.findById(id);
+		if (shObject.isPresent()) {
+			if (shObject.get() instanceof ShSite) {
+				ShSite shSite = (ShSite) shObject.get();
+				ShFolderPath shFolderPath = new ShFolderPath();
+				shFolderPath.setFolderPath(null);
+				shFolderPath.setCurrentFolder(null);
+				shFolderPath.setBreadcrumb(null);
+				shFolderPath.setShSite(shSite);
+				return shFolderPath;
+			} else if (shObject.get() instanceof ShFolder) {
+				ShFolder shFolder = (ShFolder) shObject.get();
+				ShFolderPath shFolderPath = new ShFolderPath();
+				String folderPath = shFolderUtils.folderPath(shFolder, true, false);
+				List<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shFolder);
+				ShSite shSite = breadcrumb.get(0).getShSite();
+				shFolderPath.setFolderPath(folderPath);
+				shFolderPath.setCurrentFolder(shFolder);
+				shFolderPath.setBreadcrumb(breadcrumb);
+				shFolderPath.setShSite(shSite);
+				return shFolderPath;
+			} else if (shObject.get() instanceof ShPost) {
+				ShPostImpl shPost = shPostUtils.loadLazyPost(shObject.get().getId(), false);
+				ShFolder shFolder = shPost.getShFolder();
+				ShFolderPath shFolderPath = new ShFolderPath();
+				String folderPath = shFolderUtils.folderPath(shFolder, true, false);
+				List<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shFolder);
+				ShSite shSite = breadcrumb.get(0).getShSite();
+				shFolderPath.setFolderPath(folderPath);
+				shFolderPath.setCurrentFolder(shFolder);
+				shFolderPath.setBreadcrumb(breadcrumb);
+				shFolderPath.setShSite(shSite);
+				shFolderPath.setShPost(shPost);
+				return shFolderPath;
+			}
+		}
+		return null;
 	}
 }

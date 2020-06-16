@@ -23,7 +23,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -134,15 +133,12 @@ public class ShFolderAPI {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Boolean> shFolderDelete(@PathVariable String id, Principal principal) {
 		if (shObjectUtils.canAccess(principal, id)) {
-			shFolderRepository.findById(id).ifPresent(new Consumer<ShFolder>() {
-				@Override
-				public void accept(ShFolder shFolder) {
-					try {
-						shFolderUtils.deleteFolder(shFolder);
-						shHistoryUtils.commit(shFolder, principal, ShHistoryUtils.DELETE);
-					} catch (IOException e) {
-						logger.error("FolderDeleteException", e);
-					}
+			shFolderRepository.findById(id).ifPresent(shFolder -> {
+				try {
+					shFolderUtils.deleteFolder(shFolder);
+					shHistoryUtils.commit(shFolder, principal, ShHistoryUtils.DELETE);
+				} catch (IOException e) {
+					logger.error("FolderDeleteException", e);
 				}
 			});
 
@@ -189,8 +185,8 @@ public class ShFolderAPI {
 	@ApiOperation(value = "Create a folder from Parent Object")
 	@PostMapping("/object/{objectId}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ResponseEntity<ShFolder> shFolderAddFromParentObject(@RequestBody ShFolder shFolder, @PathVariable String objectId,
-			Principal principal) {
+	public ResponseEntity<ShFolder> shFolderAddFromParentObject(@RequestBody ShFolder shFolder,
+			@PathVariable String objectId, Principal principal) {
 		if (shObjectUtils.canAccess(principal, objectId)) {
 
 			shObjectRepository.findById(objectId).ifPresent(shObject -> {
@@ -233,20 +229,7 @@ public class ShFolderAPI {
 	@GetMapping("/{id}/path")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShFolderPath shFolderPath(@PathVariable String id) {
-		ShFolder shFolder = shFolderRepository.findById(id).orElse(null);
-		if (shFolder != null) {
-			ShFolderPath shFolderPath = new ShFolderPath();
-			String folderPath = shFolderUtils.folderPath(shFolder, true, false);
-			List<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shFolder);
-			ShSite shSite = breadcrumb.get(0).getShSite();
-			shFolderPath.setFolderPath(folderPath);
-			shFolderPath.setCurrentFolder(shFolder);
-			shFolderPath.setBreadcrumb(breadcrumb);
-			shFolderPath.setShSite(shSite);
-			return shFolderPath;
-		} else {
-			return null;
-		}
+		return shObjectUtils.objectPath(id);
 	}
 
 	@ApiOperation(value = "Folder model")

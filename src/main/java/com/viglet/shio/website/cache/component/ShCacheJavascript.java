@@ -38,11 +38,11 @@ public class ShCacheJavascript {
 	private ResourceLoader resourceloader;
 
 	@Cacheable(value = "javascript", sync = true)
-	public StringBuilder shObjectJSFactory() throws IOException {
-		
+	public StringBuilder shObjectJSFactory() {
+
 		if (logger.isDebugEnabled())
 			logger.debug("Executing shObjectJSFactory");
-		
+
 		StringBuilder shObjectJS = new StringBuilder();
 
 		try (InputStream isrObjectJS = resourceloader.getResource("classpath:/js/server-side/shObject.js")
@@ -51,6 +51,8 @@ public class ShCacheJavascript {
 						.getInputStream();) {
 			shObjectJS.append(IOUtils.toString(isrObjectJS, StandardCharsets.UTF_8.name()));
 			shObjectJS.append(IOUtils.toString(isrHandlebars, StandardCharsets.UTF_8.name()));
+		} catch (IOException e) {
+			logger.error(e);
 		}
 
 		return shObjectJS;

@@ -92,6 +92,7 @@ public class ShSitesContextComponent {
 	private ShSitesPageLayoutUtils shSitesPageLayoutUtils;
 	@Resource
 	private ApplicationContext context;
+	private static final String SEPARATOR = "/";
 
 	public String folderPathFactory(List<String> contentPath) {
 		StringBuilder folderPath = new StringBuilder("/");
@@ -102,7 +103,7 @@ public class ShSitesContextComponent {
 			folderPathArray.remove(folderPathArray.size() - 1);
 
 			for (String path : folderPathArray) {
-				folderPath.append(String.format("%s/", path));
+				folderPath.append(path.concat(SEPARATOR));
 			}
 
 		}
@@ -111,19 +112,17 @@ public class ShSitesContextComponent {
 
 	public List<String> contentPathFactory(String url) {
 		int contextPathPosition = 5;
-		String[] contexts = url.split("/");
+		String[] contexts = url.split(SEPARATOR);
 		List<String> contentPath = new ArrayList<>();
 		Collections.addAll(contentPath, Arrays.copyOfRange(contexts, contextPathPosition, contexts.length));
 		return contentPath;
 	}
 
 	public ShPost shPostAlias(ShPost shPostItem) {
-		if (shPostItem.getShPostType().getName().equals(ShSystemPostType.ALIAS)) {
-			Set<? extends ShPostAttrImpl> shPostAttrs = shPostItem.getShPostAttrs();
-			for (ShPostAttrImpl shPostAttr : shPostAttrs) {
+		if (shPostItem.getShPostType().getName().equals(ShSystemPostType.ALIAS)) {		
+			for (ShPostAttrImpl shPostAttr : shPostItem.getShPostAttrs())
 				if (shPostAttr.getShPostTypeAttr().getName().equals(ShSystemPostTypeAttr.CONTENT)) {
 					shPostItem = shPostRepository.findById(shPostAttr.getStrValue()).orElse(null);
-				}
 			}
 		}
 		return shPostItem;
@@ -145,27 +144,21 @@ public class ShSitesContextComponent {
 		if (objectName != null) {
 			ShFolder shParentFolder = shFolder;
 			shObjectItem = shPostRepository.findByShFolderAndFurl(shParentFolder, objectName);
-			if (shObjectItem == null) {
+			if (shObjectItem == null)
 				shObjectItem = shPostRepository.findByShFolderAndTitle(shParentFolder, objectName);
-			}
 		}
 
 		if (shObjectItem != null) {
 			shObjectItem = this.shPostAlias((ShPost) shObjectItem);
 		} else {
 			String folderPathCurrent = shFolderUtils.folderPath(shFolder, true, false);
-			if (objectName != null) {
-				folderPathCurrent = folderPathCurrent + objectName + "/";
-			}
+			if (objectName != null)
+				folderPathCurrent = folderPathCurrent.concat(objectName).concat(SEPARATOR);
+
 			ShFolder shFolderItem = shFolderUtils.folderFromPath(shSite, folderPathCurrent);
 			if (shFolderItem != null) {
 				ShPost shFolderIndex = shPostRepository.findByShFolderAndFurl(shFolderItem, "index");
-
-				if (shFolderIndex != null) {
-					shObjectItem = shFolderIndex;
-				} else {
-					shObjectItem = shFolderItem;
-				}
+				shObjectItem = shFolderIndex != null ? shFolderIndex : shFolderItem;
 			}
 		}
 		return shObjectItem;
@@ -229,7 +222,7 @@ public class ShSitesContextComponent {
 	}
 
 	public Document shRegionFactory(ShSitesPageLayout shSitesPageLayout, String regionResult, ShSite shSite,
-			String mimeType, HttpServletRequest request) throws Exception {
+			String mimeType, HttpServletRequest request) {
 		StringBuilder shObjectJS = shCacheJavascript.shObjectJSFactory();
 		Document doc = null;
 		if (shSitesPageLayout.getPageCacheKey().endsWith(".json") || mimeType.equals("json") || mimeType.equals("xml"))
@@ -250,7 +243,7 @@ public class ShSitesContextComponent {
 				element.html(cachedRegion).unwrap();
 			else {
 				element.html("<div> Region Error </div>").unwrap();
-				throw new Exception("Region Error Exception");
+				logger.error("Region Error");
 			}
 		}
 		return doc;
@@ -269,23 +262,18 @@ public class ShSitesContextComponent {
 
 			Object regionResultChild = shNashornEngineProcess.render(regionName, shRegionJS, shRegionHTML, request,
 					shSitesPageLayout.getShContent());
-			try {
 
-				String regionHTML = this
-						.shRegionFactory(shSitesPageLayout, regionResultChild.toString(), shSite, mimeType, request)
-						.html();
+			String regionHTML = this
+					.shRegionFactory(shSitesPageLayout, regionResultChild.toString(), shSite, mimeType, request).html();
 
-				stopwatch.stop();
+			stopwatch.stop();
 
-				long timeProcess = stopwatch.elapsed(TimeUnit.MILLISECONDS);
+			long timeProcess = stopwatch.elapsed(TimeUnit.MILLISECONDS);
 
-				Comment comment = new Comment(String.format(" sh-region: %s, id: %s, processed in: %s ms ", regionName,
-						shRegion.getId(), String.valueOf(timeProcess)));
-				return String.format("%s%s", comment.toString(), regionHTML);
-			} catch (Throwable err) {
+			Comment comment = new Comment(String.format(" sh-region: %s, id: %s, processed in: %s ms ", regionName,
+					shRegion.getId(), String.valueOf(timeProcess)));
+			return String.format("%s%s", comment.toString(), regionHTML);
 
-				return null;
-			}
 		}
 		return null;
 

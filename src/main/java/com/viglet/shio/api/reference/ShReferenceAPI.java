@@ -18,6 +18,7 @@ package com.viglet.shio.api.reference;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +32,6 @@ import com.viglet.shio.api.ShJsonView;
 import com.viglet.shio.persistence.model.object.ShObject;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
-import com.viglet.shio.persistence.model.post.impl.ShPostAttrImpl;
 import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.reference.ShReference;
 import com.viglet.shio.persistence.repository.object.ShObjectRepository;
@@ -64,48 +64,52 @@ public class ShReferenceAPI {
 	@GetMapping("/from/{fromId}")
 	@JsonView({ ShJsonView.ShJsonViewReference.class })
 	public List<ShReference> shReferenceFrom(@PathVariable String fromId) {
-		ShObject shObject = shObjectRepository.findById(fromId).orElse(null);
-		return shReferenceRepository.findByShObjectFrom(shObject);
+		Optional<ShObject> shObject = shObjectRepository.findById(fromId);
+		if (shObject.isPresent())
+			return shReferenceRepository.findByShObjectFrom(shObject.get());
+		return Collections.emptyList();
 	}
 
 	@GetMapping("/to/{toId}")
 	@JsonView({ ShJsonView.ShJsonViewReference.class })
 	public List<ShReference> shReferenceTo(@PathVariable String toId) {
-		ShObject shObject = shObjectRepository.findById(toId).orElse(null);
-		return shReferenceRepository.findByShObjectTo(shObject);
+		Optional<ShObject> shObject = shObjectRepository.findById(toId);
+		if (shObject.isPresent())
+			return shReferenceRepository.findByShObjectTo(shObject.get());
+		return Collections.emptyList();
 	}
 
 	@PostMapping("/to/{toId}/replace/{otherId}")
 	@JsonView({ ShJsonView.ShJsonViewReference.class })
 	public List<ShReference> shReferenceToReplace(@PathVariable String toId, @PathVariable String otherId) {
-		ShObject shObject = shObjectRepository.findById(toId).orElse(null);
-		ShObject shObjectOther = shObjectRepository.findById(otherId).orElse(null);
-		if (shObject != null && shObjectOther != null) {
-			List<ShReference> shReferences = shReferenceRepository.findByShObjectTo(shObject);
+		Optional<ShObject> shObject = shObjectRepository.findById(toId);
+		Optional<ShObject> shObjectOther = shObjectRepository.findById(otherId);
+		if (shObject.isPresent() && shObjectOther.isPresent()) {
+			List<ShReference> shReferences = shReferenceRepository.findByShObjectTo(shObject.get());
 			shReferences.forEach(shReference -> {
 				if (shReference != null) {
-					this.setReferenceToPostAttr(shObject, shObjectOther, shReference);
-					shReference.setShObjectTo(shObjectOther);
+					this.setReferenceToPostAttr(shObject.get(), shObjectOther.get(), shReference);
+					shReference.setShObjectTo(shObjectOther.get());
 					shReferenceRepository.saveAndFlush(shReference);
 				}
 			});
 
-			return shReferenceRepository.findByShObjectTo(shObject);
+			return shReferenceRepository.findByShObjectTo(shObject.get());
 		} else {
 			return Collections.emptyList();
 		}
 	}
 
 	private void setReferenceToPostAttr(ShObject shObject, ShObject shObjectOther, ShReference shReference) {
-		if (shReference.getShObjectFrom() != null && shReference.getShObjectFrom() instanceof ShPost) {
+		if (shReference.getShObjectFrom() instanceof ShPost) {
 			ShPostImpl shPost = (ShPostImpl) shReference.getShObjectFrom();
-			for (ShPostAttrImpl shPostAttr : shPost.getShPostAttrsNonDraft()) {
+			shPost.getShPostAttrsNonDraft().forEach(shPostAttr -> {
 				ShObject shObjectReference = shPostAttr.getReferenceObject();
 				if (shObject.getId() != null && shObjectReference.getId().equals(shObject.getId())) {
 					shPostAttr.setReferenceObject(shObjectOther);
 					shPostAttrRepository.saveAndFlush((ShPostAttr) shPostAttr);
 				}
-			}
+			});
 		}
 	}
 }

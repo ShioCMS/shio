@@ -487,47 +487,7 @@ public class ShObjectAPI {
 	@GetMapping("/{id}/path")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShFolderPath shObjectPath(@PathVariable String id) {
-		ShObject shObject = shObjectRepository.findById(id).orElse(null);
-		if (shObject instanceof ShSite) {
-			ShSite shSite = (ShSite) shObject;
-			if (shSite != null) {
-				ShFolderPath shFolderPath = new ShFolderPath();
-				shFolderPath.setFolderPath(null);
-				shFolderPath.setCurrentFolder(null);
-				shFolderPath.setBreadcrumb(null);
-				shFolderPath.setShSite(shSite);
-				return shFolderPath;
-			}
-		} else if (shObject instanceof ShFolder) {
-			ShFolder shFolder = (ShFolder) shObject;
-			if (shFolder != null) {
-				ShFolderPath shFolderPath = new ShFolderPath();
-				String folderPath = shFolderUtils.folderPath(shFolder, true, false);
-				List<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shFolder);
-				ShSite shSite = breadcrumb.get(0).getShSite();
-				shFolderPath.setFolderPath(folderPath);
-				shFolderPath.setCurrentFolder(shFolder);
-				shFolderPath.setBreadcrumb(breadcrumb);
-				shFolderPath.setShSite(shSite);
-				return shFolderPath;
-			}
-		} else if (shObject instanceof ShPost) {
-			ShPostImpl shPost = shPostUtils.loadLazyPost(shObject.getId(), false);
-			if (shPost != null) {
-				ShFolder shFolder = shPost.getShFolder();
-				ShFolderPath shFolderPath = new ShFolderPath();
-				String folderPath = shFolderUtils.folderPath(shFolder, true, false);
-				List<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shFolder);
-				ShSite shSite = breadcrumb.get(0).getShSite();
-				shFolderPath.setFolderPath(folderPath);
-				shFolderPath.setCurrentFolder(shFolder);
-				shFolderPath.setBreadcrumb(breadcrumb);
-				shFolderPath.setShSite(shSite);
-				shFolderPath.setShPost(shPost);
-				return shFolderPath;
-			}
-		}
-		return null;
+		return shObjectUtils.objectPath(id);
 	}
 
 	@ApiOperation(value = "Sort Object")

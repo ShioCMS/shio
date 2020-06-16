@@ -358,8 +358,8 @@ shioApp.controller('ShObjectChildrenCtrl', [
                     var parameter = JSON.stringify(objectGlobalIds);
                     $http.put(shAPIServerService.get().concat("/v2/object/moveto/" + shObjectSelected.id), parameter).then(function (response) {
                         var shObjects = response.data;
-                        for (i = 0; i < shObjects.length; i++) {
-                            shObject = shObjects[i];
+                        for (var i = 0; i < shObjects.length; i++) {
+                            var shObject = shObjects[i];
                             $scope.shStateObjects[shObject.id] = false;
                             var movedMessage = null;
                             if (shObject.objectType == "POST") {
