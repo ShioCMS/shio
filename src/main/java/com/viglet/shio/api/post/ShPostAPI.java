@@ -421,7 +421,7 @@ public class ShPostAPI {
 				});
 
 				shPostDraftRepository.saveAndFlush(shPostDraft);
-				this.postReferenceSaveDraft(shPostDraft);
+				this.postReferenceSave(shPostDraft);
 				shPostEdit.setPublishStatus("DRAFT");
 				shPostRepository.saveAndFlush(shPostEdit);
 
@@ -455,51 +455,40 @@ public class ShPostAPI {
 		});
 	}
 
-	private void postReferenceSave(ShPost shPost) {
+	private void postReferenceSave(ShPostImpl shPost) {
 
 		// Delete all old references to recreate in next step
-		List<ShReference> shOldReferences = shReferenceRepository.findByShObjectFrom(shPost);
-		shReferenceRepository.deleteInBatch(shOldReferences);
+		if (shPost instanceof ShPost) {
+			List<ShReference> shOldReferences = shReferenceRepository.findByShObjectFrom((ShPost) shPost);
+			shReferenceRepository.deleteInBatch(shOldReferences);
+		} else {
+			List<ShReferenceDraft> shOldReferences = shReferenceDraftRepository
+					.findByShObjectFrom((ShPostDraft) shPost);
+			shReferenceDraftRepository.deleteInBatch(shOldReferences);
+		}
 
 		shPost.getShPostAttrs().forEach(shPostAttr -> {
-			shPostUtils.referencedObject(shPostAttr, shPost);
-			this.nestedReferenceSave((ShPostAttr) shPostAttr, shPost);
+			shPostUtils.referencedObject((ShPostAttrImpl) shPostAttr, shPost);
+			this.nestedReferenceSave((ShPostAttrImpl) shPostAttr, shPost);
 		});
 
-		shPost.getShPostAttrs().forEach(shPostAttr -> shPostUtils.updateRelatorInfo((ShPostAttr) shPostAttr, shPost));
+		shPost.getShPostAttrs().forEach(shPostAttr -> {
+			shPostUtils.updateRelatorInfo((ShPostAttrImpl) shPostAttr, shPost);
+		
+		});
 
-		shPostRepository.saveAndFlush(shPost);
+		if (shPost instanceof ShPost) {
+			shPostRepository.saveAndFlush((ShPost) shPost);
+		} else {
+			shPostDraftRepository.saveAndFlush((ShPostDraft) shPost);
+		}
 	}
 
-	private void nestedReferenceSave(ShPostAttr shPostAttr, ShPost shPost) {
+	private void nestedReferenceSave(ShPostAttrImpl shPostAttr, ShPostImpl shPost) {
 		shPostAttr.getShChildrenRelatorItems().forEach(shRelatorItem -> {
 			shRelatorItem.getShChildrenPostAttrs().forEach(shChildrenPostAttr -> {
 				shPostUtils.referencedObject(shChildrenPostAttr, shPost);
 				this.nestedReferenceSave((ShPostAttr) shChildrenPostAttr, shPost);
-			});
-		});
-	}
-
-	private void postReferenceSaveDraft(ShPostDraft shPost) {
-
-		// Delete all old references to recreate in next step
-		List<ShReferenceDraft> shOldReferences = shReferenceDraftRepository.findByShObjectFrom(shPost);
-		shReferenceDraftRepository.deleteInBatch(shOldReferences);
-
-		shPost.getShPostAttrs().forEach(shPostAttr -> {
-			shPostUtils.referencedObjectDraft(shPostAttr, shPost);
-			this.nestedReferenceSaveDraft(shPostAttr, shPost);
-		});
-		shPost.getShPostAttrs().forEach(shPostAttr -> shPostUtils.updateRelatorInfoDraft(shPostAttr, shPost));
-
-		shPostDraftRepository.saveAndFlush(shPost);
-	}
-
-	private void nestedReferenceSaveDraft(ShPostDraftAttr shPostAttr, ShPostDraft shPost) {
-		shPostAttr.getShChildrenRelatorItems().forEach(shRelatorItem -> {
-			shRelatorItem.getShChildrenPostAttrs().forEach(shChildrenPostAttr -> {
-				shPostUtils.referencedObjectDraft(shChildrenPostAttr, shPost);
-				this.nestedReferenceSaveDraft(shChildrenPostAttr, shPost);
 			});
 		});
 	}

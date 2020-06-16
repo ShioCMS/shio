@@ -178,7 +178,7 @@ public class ShSpreadsheet {
 			CellStyle cellDateStyle, XSSFRow row) {
 		this.createdDateCell(shPost, cellDateStyle, row);
 
-		for (ShPostAttrImpl shPostAttr : shPostUtils.postAttrsSort((Set<ShPostAttr>) shPost.getShPostAttrs())) {
+		for (ShPostAttrImpl shPostAttr : shPostUtils.postAttrsSort((Set<ShPostAttrImpl>) shPost.getShPostAttrs())) {
 			columnCount++;
 			String widgetName = shPostAttr.getShPostTypeAttr().getShWidget().getName();
 			if (!widgetName.contains(ShSystemWidget.TAB)) {
@@ -262,7 +262,7 @@ public class ShSpreadsheet {
 			Cell cellHeaderDate = row.createCell(columnCount);
 			cellHeaderDate.setCellValue("Date");
 
-			for (ShPostAttrImpl shPostAttr : shPostUtils.postAttrsSort((Set<ShPostAttr>) shPostsEntry.get(0).getShPostAttrs())) {
+			for (ShPostAttrImpl shPostAttr : shPostUtils.postAttrsSort((Set<ShPostAttrImpl>) shPostsEntry.get(0).getShPostAttrs())) {
 				columnCount++;
 				XSSFCell cell = row.createCell(columnCount);
 				cell.setCellValue(shPostAttr.getShPostTypeAttr().getLabel());

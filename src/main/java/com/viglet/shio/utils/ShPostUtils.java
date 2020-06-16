@@ -52,7 +52,6 @@ import com.viglet.shio.persistence.model.post.ShPostDraft;
 import com.viglet.shio.persistence.model.post.ShPostDraftAttr;
 import com.viglet.shio.persistence.model.post.impl.ShPostAttrImpl;
 import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
-import com.viglet.shio.persistence.model.post.relator.ShRelatorItemDraft;
 import com.viglet.shio.persistence.model.post.relator.impl.ShRelatorItemImpl;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
 import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
@@ -194,14 +193,14 @@ public class ShPostUtils {
 		return title;
 	}
 
-	public void referencedFile(ShPostAttrImpl shPostAttr, ShPost shPost) {
+	public void referencedFile(ShPostAttrImpl shPostAttr, ShPostImpl shPost) {
 		if (!shPost.getShPostType().getName().equals(ShSystemPostType.FILE)) {
 			this.referencedPost(shPostAttr, shPost);
 		}
 	}
 
 	@Transactional
-	public void referencedPost(ShPostAttrImpl shPostAttr, ShPost shPost) {
+	public void referencedPost(ShPostAttrImpl shPostAttr, ShPostImpl shPost) {
 		if (shPostAttr.getStrValue() == null) {
 			shPostAttr.setReferenceObject(null);
 		} else {
@@ -210,13 +209,13 @@ public class ShPostUtils {
 		}
 	}
 
-	private void createNewReference(ShPostAttrImpl shPostAttr, ShPost shPost) {
+	private void createNewReference(ShPostAttrImpl shPostAttr, ShPostImpl shPost) {
 		try {
 			ShObject shObjectReferenced = shObjectRepository.findById(shPostAttr.getStrValue()).orElse(null);
 			// Create new reference
 			if (shPost != null && shObjectReferenced != null) {
 				ShReference shReference = new ShReference();
-				shReference.setShObjectFrom(shPost);
+				shReference.setShObjectFrom((ShObject) shPost);
 				shReference.setShObjectTo(shObjectReferenced);
 				shReferenceRepository.saveAndFlush(shReference);
 				shPostAttr.setReferenceObject(shObjectReferenced);
@@ -227,11 +226,11 @@ public class ShPostUtils {
 		}
 	}
 
-	private void removeOldReference(ShPostAttrImpl shPostAttr, ShPost shPost) {
+	private void removeOldReference(ShPostAttrImpl shPostAttr, ShPostImpl shPost) {
 		// Two or more attributes with FILE Widget and same file, it cannot remove
 		// a valid reference
 		// Remove old references
-		List<ShReference> shOldReferences = shReferenceRepository.findByShObjectFrom(shPost);
+		List<ShReference> shOldReferences = shReferenceRepository.findByShObjectFrom((ShObject) shPost);
 		if (!shOldReferences.isEmpty()) {
 			for (ShReference shOldReference : shOldReferences) {
 				// Find by shPostAttr.getStrValue()
@@ -253,7 +252,7 @@ public class ShPostUtils {
 		}
 	}
 
-	public void referencedObject(ShPostAttrImpl shPostAttr, ShPost shPost) {
+	public void referencedObject(ShPostAttrImpl shPostAttr, ShPostImpl shPost) {
 		if (shPostAttr.getShPostTypeAttr().getShWidget() != null) {
 			if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.FILE)) {
 				this.referencedFile(shPostAttr, shPost);
@@ -263,7 +262,7 @@ public class ShPostUtils {
 		}
 	}
 
-	public void referencedObject(ShPostAttrImpl shPostAttrEdit, ShPostAttrImpl shPostAttr, ShPost shPost) {
+	public void referencedObject(ShPostAttrImpl shPostAttrEdit, ShPostAttrImpl shPostAttr, ShPostImpl shPost) {
 		if (shPostAttr.getShPostTypeAttr().getShWidget() != null) {
 			if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.FILE)) {
 				this.referencedFile(shPostAttrEdit, shPostAttr, shPost);
@@ -273,7 +272,7 @@ public class ShPostUtils {
 		}
 	}
 
-	public void referencedFile(ShPostAttrImpl shPostAttrEdit, ShPostAttrImpl shPostAttr, ShPost shPost) {
+	public void referencedFile(ShPostAttrImpl shPostAttrEdit, ShPostAttrImpl shPostAttr, ShPostImpl shPost) {
 		if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE)) {
 			File fileFrom = shStaticFileUtils.filePath(shPost.getShFolder(), shPostAttrEdit.getStrValue());
 			File fileTo = shStaticFileUtils.filePath(shPost.getShFolder(), shPostAttr.getStrValue());
@@ -354,7 +353,7 @@ public class ShPostUtils {
 	}
 
 	@Transactional
-	public void referencedPost(ShPostAttrImpl shPostAttrEdit, ShPostAttrImpl shPostAttr, ShPost shPost) {
+	public void referencedPost(ShPostAttrImpl shPostAttrEdit, ShPostAttrImpl shPostAttr, ShPostImpl shPost) {
 		if (shPostAttr.getStrValue() == null) {
 			shPostAttr.setReferenceObject(null);
 		} else {
@@ -364,12 +363,12 @@ public class ShPostUtils {
 		}
 	}
 
-	private void createNewReferenceEdit(ShPostAttrImpl shPostAttr, ShPost shPost) {
+	private void createNewReferenceEdit(ShPostAttrImpl shPostAttr, ShPostImpl shPost) {
 		try {
 			ShObject shObjectReferenced = shObjectRepository.findById(shPostAttr.getStrValue()).orElse(null);
 
 			ShReference shReference = new ShReference();
-			shReference.setShObjectFrom(shPost);
+			shReference.setShObjectFrom((ShObject) shPost);
 			shReference.setShObjectTo(shObjectReferenced);
 			shReferenceRepository.saveAndFlush(shReference);
 			shPostAttr.setReferenceObject(shObjectReferenced);
@@ -379,11 +378,11 @@ public class ShPostUtils {
 		}
 	}
 
-	private void removeOldReferenceEdit(ShPostAttrImpl shPostAttrEdit, ShPost shPost) {
+	private void removeOldReferenceEdit(ShPostAttrImpl shPostAttrEdit, ShPostImpl shPost) {
 		// Two or more attributes with FILE Widget and same file, it cannot remove
 		// a valid reference
 		// Remove old references
-		List<ShReference> shOldReferences = shReferenceRepository.findByShObjectFrom(shPost);
+		List<ShReference> shOldReferences = shReferenceRepository.findByShObjectFrom((ShObject) shPost);
 		if (!shOldReferences.isEmpty()) {
 			for (ShReference shOldReference : shOldReferences) {
 				if (shPostAttrEdit.getReferenceObject() != null) {
@@ -409,13 +408,12 @@ public class ShPostUtils {
 			StringBuilder title = new StringBuilder();
 			StringBuilder summary = new StringBuilder();
 
-			List<ShPostAttr> shPostAttrsByOrdinal = postAttrsSort(
-					(Set<ShPostAttr>) shRelatorItem.getShChildrenPostAttrs());
-			for (ShPostAttrImpl shChildrenPostAttr : shPostAttrsByOrdinal) {
+			for (ShPostAttrImpl shChildrenPostAttr : postAttrsSort(
+					 (Set<ShPostAttrImpl>) shRelatorItem.getShChildrenPostAttrs())) {
 				ShPostTypeAttr shPostTypeAttr = shChildrenPostAttr.getShPostTypeAttr();
 				title = setPostTitle(shRelatorItem, title, shChildrenPostAttr, shPostTypeAttr);
 
-				setPostSummary(shPostAttr, shRelatorItem, title, summary, shChildrenPostAttr, shPostTypeAttr);
+				this.setPostSummary(shPostAttr, shRelatorItem, title, summary, shChildrenPostAttr, shPostTypeAttr);
 
 				this.updateRelatorInfo(shChildrenPostAttr, shPost);
 			}
@@ -455,21 +453,29 @@ public class ShPostUtils {
 	private void summaryRelator(StringBuilder title, StringBuilder summary, ShPostImpl shChildrenPostAttr) {
 		ShObject shObject = ((ShPostAttr) shChildrenPostAttr).getReferenceObject();
 		if (shObject != null) {
-			if (shObject.getObjectType().equals(ShObjectType.POST)) {
-				Optional<ShPost> shPostReferenced = shPostRepository.findById(shObject.getId());
-				if (shPostReferenced.isPresent()) {
-					if (!StringUtils.isEmpty(title.toString()))
-						summary.append(", ");
-					summary.append(shPostReferenced.get().getTitle());
-				}
-			} else if (shObject.getObjectType().equals(ShObjectType.FOLDER)) {
-				Optional<ShFolder> shFolderReferenced = shFolderRepository.findById(shObject.getId());
-				if (shFolderReferenced.isPresent()) {
-					if (!StringUtils.isEmpty(title.toString()))
-						summary.append(", ");
-					summary.append(shFolderReferenced.get().getName());
-				}
-			}
+			if (shObject.getObjectType().equals(ShObjectType.POST))
+				summaryPost(title, summary, shObject);
+			 else if (shObject.getObjectType().equals(ShObjectType.FOLDER))
+				summaryFolder(title, summary, shObject);
+		
+		}
+	}
+
+	private void summaryFolder(StringBuilder title, StringBuilder summary, ShObject shObject) {
+		Optional<ShFolder> shFolderReferenced = shFolderRepository.findById(shObject.getId());
+		if (shFolderReferenced.isPresent()) {
+			if (!StringUtils.isEmpty(title.toString()))
+				summary.append(", ");
+			summary.append(shFolderReferenced.get().getName());
+		}
+	}
+
+	private void summaryPost(StringBuilder title, StringBuilder summary, ShObject shObject) {
+		Optional<ShPost> shPostReferenced = shPostRepository.findById(shObject.getId());
+		if (shPostReferenced.isPresent()) {
+			if (!StringUtils.isEmpty(title.toString()))
+				summary.append(", ");
+			summary.append(shPostReferenced.get().getTitle());
 		}
 	}
 
@@ -502,95 +508,11 @@ public class ShPostUtils {
 		return title;
 	}
 
-	public List<ShPostAttr> postAttrsSort(Set<ShPostAttr> shPostAttrs) {
-		List<ShPostAttr> shPostAttrsByOrdinal = new ArrayList<>(shPostAttrs);
-		Collections.sort(shPostAttrsByOrdinal, (ShPostAttr o1, ShPostAttr o2) -> o1.getShPostTypeAttr().getOrdinal()
+	public List<ShPostAttrImpl> postAttrsSort(Set<ShPostAttrImpl> shPostAttrs) {
+		List<ShPostAttrImpl> shPostAttrsByOrdinal = new ArrayList<>(shPostAttrs);
+		Collections.sort(shPostAttrsByOrdinal, (ShPostAttrImpl o1, ShPostAttrImpl o2) -> o1.getShPostTypeAttr().getOrdinal()
 				- o2.getShPostTypeAttr().getOrdinal());
 		return shPostAttrsByOrdinal;
-	}
-
-	public void updateRelatorInfoDraft(ShPostDraftAttr shPostAttr, ShPostDraft shPost) {
-		for (ShRelatorItemDraft shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
-			shRelatorItem.setShParentPostAttr(shPostAttr);
-			StringBuilder title = new StringBuilder();
-			StringBuilder summary = new StringBuilder();
-			List<ShPostDraftAttr> shPostAttrsByOrdinal = new ArrayList<>();
-			shRelatorItem.getShChildrenPostAttrs()
-					.forEach(shChildrenPostAttr -> shPostAttrsByOrdinal.add((ShPostDraftAttr) shChildrenPostAttr));
-			Collections.sort(shPostAttrsByOrdinal, (ShPostDraftAttr o1,
-					ShPostDraftAttr o2) -> o1.getShPostTypeAttr().getOrdinal() - o2.getShPostTypeAttr().getOrdinal());
-			for (ShPostDraftAttr shChildrenPostAttr : shPostAttrsByOrdinal) {
-				ShPostTypeAttr shPostTypeAttr = shChildrenPostAttr.getShPostTypeAttr();
-				if (shPostTypeAttr.getIsTitle() == 1) {
-					String widgetName = shPostTypeAttr.getShWidget().getName();
-
-					if (shChildrenPostAttr.getReferenceObject() != null
-							&& widgetName.equals(ShSystemWidget.CONTENT_SELECT)
-							|| widgetName.equals(ShSystemWidget.FILE)) {
-						ShObject shObject = shChildrenPostAttr.getReferenceObject();
-						if (shObject != null) {
-							if (shObject.getObjectType().equals(ShObjectType.POST)) {
-
-								Optional<ShPost> shPostReferenced = shPostRepository.findById(shObject.getId());
-								if (shPostReferenced.isPresent()) {
-									if (!StringUtils.isEmpty(title.toString()))
-										title.append(", ");
-									title.append(shPostReferenced.get().getTitle());
-								}
-							} else if (shObject.getObjectType().equals(ShObjectType.FOLDER)) {
-								Optional<ShFolder> shFolderReferenced = shFolderRepository.findById(shObject.getId());
-								if (shFolderReferenced.isPresent()) {
-									if (!StringUtils.isEmpty(title.toString()))
-										title.append(", ");
-									title.append(shFolderReferenced.get().getName());
-								}
-							}
-						}
-					} else if (widgetName.equals(ShSystemWidget.DATE)) {
-						SimpleDateFormat dt = new SimpleDateFormat(DATE_FORMAT);
-						if (!StringUtils.isEmpty(title.toString()))
-							title.append(", ");
-						title.append(dt.format(shChildrenPostAttr.getDateValue()));
-					} else {
-						if (!StringUtils.isEmpty(title.toString()))
-							title.append(", ");
-						title.append(shChildrenPostAttr.getStrValue());
-					}
-
-					String titleStr = title.toString();
-					if (StringUtils.isEmpty(titleStr) || titleStr.equals("null")) {
-						title = new StringBuilder();
-						titleStr = shChildrenPostAttr.getId();
-						if (StringUtils.isEmpty(titleStr) || titleStr.equals("null")) {
-							titleStr = "Untitled";
-						}
-					}
-
-					shRelatorItem.setTitle(StringUtils.abbreviate(titleStr, 255));
-				}
-
-				if (shPostTypeAttr.getIsSummary() == 1) {
-					String widgetName = shPostTypeAttr.getShWidget().getName();
-					if (shChildrenPostAttr.getReferenceObject() != null
-							&& widgetName.equals(ShSystemWidget.CONTENT_SELECT)
-							|| widgetName.equals(ShSystemWidget.FILE)) {
-						this.summaryRelator(title, summary, (ShPostImpl) shChildrenPostAttr);
-					} else if (widgetName.equals(ShSystemWidget.DATE)) {
-						SimpleDateFormat dt = new SimpleDateFormat(DATE_FORMAT);
-						if (!StringUtils.isEmpty(title.toString()))
-							title.append(", ");
-						summary.append(dt.format(shPostAttr.getDateValue()));
-					} else {
-						if (!StringUtils.isEmpty(title.toString()))
-							title.append(", ");
-						summary.append(shChildrenPostAttr.getStrValue());
-					}
-					shRelatorItem.setSummary(StringUtils.abbreviate(summary.toString(), 255));
-				}
-
-				this.updateRelatorInfoDraft(shChildrenPostAttr, shPost);
-			}
-		}
 	}
 
 	@SuppressWarnings("unchecked")
