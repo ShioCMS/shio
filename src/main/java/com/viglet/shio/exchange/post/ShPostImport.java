@@ -215,14 +215,16 @@ public class ShPostImport {
 		shPostAttr.setType(1);
 
 		ShRelatorItemExchanges subPosts = this.getSubPosts(relatorFields);
-		subPosts.forEach(shSubPost -> {
-			ShRelatorItemImpl shRelatorItem = new ShRelatorItem();
-			shRelatorItem.setOrdinal(shSubPost.getPosition());
-			shRelatorItem.setShParentPostAttr(shPostAttr);
-			
-			this.getShPostAttrs(shPostExchange, shPost, shSubPost.getFields(), shRelatorItem);
-			
-		});		
+		if (subPosts != null)
+			subPosts.forEach(shSubPost -> {
+				ShRelatorItemImpl shRelatorItem = new ShRelatorItem();
+				shRelatorItem.setOrdinal(shSubPost.getPosition());
+				shRelatorItem.setShParentPostAttr(shPostAttr);
+
+				this.getShPostAttrs(shPostExchange, shPost, shSubPost.getFields(), shRelatorItem);
+
+			});
+
 	}
 
 	private ShRelatorItemExchanges getSubPosts(LinkedHashMap<String, Object> relatorFields) {
