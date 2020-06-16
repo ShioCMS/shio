@@ -63,44 +63,42 @@ public class ShSPhotoAPI {
 	private ShSitesPostUtils shSitesPostUtils;
 
 	@GetMapping
-	public List<ShSPhotoBean> getPhotos() throws ClientProtocolException, IOException {
+	public List<ShSPhotoBean> getPhotos() throws ClientProtocolException {
 		List<ShSPhotoBean> shSPhotoBeans = new ArrayList<>();
-		shFolderRepository.findById("39cef32e-e754-4f1a-991c-c45a1ecebe7c").ifPresent(shFolder -> {
-			shPostRepository.findByShFolderTiny(shFolder.getId()).forEach(shPostTinyBean -> {
-				shPostRepository.findById(shPostTinyBean.getId()).ifPresent(shPost -> {
-					try {
-						File fileImage = shStaticFileUtils.filePath(shPost);
-						String imageURL = "http://localhost:2710" + shSitesPostUtils.generatePostLink(shPost);
-						BufferedImage image = ImageIO.read(FileUtils.openInputStream(fileImage));
-						int height = image.getHeight();
-						int width = image.getWidth();
+		shFolderRepository.findById("39cef32e-e754-4f1a-991c-c45a1ecebe7c")
+				.ifPresent(shFolder -> shPostRepository.findByShFolderTiny(shFolder.getId()).forEach(
+						shPostTinyBean -> shPostRepository.findById(shPostTinyBean.getId()).ifPresent(shPost -> {
+							try {
+								File fileImage = shStaticFileUtils.filePath(shPost);
+								String imageURL = "http://localhost:2710" + shSitesPostUtils.generatePostLink(shPost);
+								BufferedImage image = ImageIO.read(FileUtils.openInputStream(fileImage));
+								int height = image.getHeight();
+								int width = image.getWidth();
 
-						int[] rgbArray = ColorThief.getColor(image);
-						String rgb = String.format("rgb(%d,%d,%d)", rgbArray[0], rgbArray[1], rgbArray[2]);
+								int[] rgbArray = ColorThief.getColor(image);
+								String rgb = String.format("rgb(%d,%d,%d)", rgbArray[0], rgbArray[1], rgbArray[2]);
 
-						if (logger.isDebugEnabled())
-							logger.debug(imageURL + " " + rgb);
+								if (logger.isDebugEnabled())
+									logger.debug(imageURL + " " + rgb);
 
-						ShSPhotoBean shSPhotoBean = new ShSPhotoBean();
+								ShSPhotoBean shSPhotoBean = new ShSPhotoBean();
 
-						shSPhotoBean.setName(shPost.getTitle());
-						shSPhotoBean.setDate(shPost.getDate());
-						shSPhotoBean.setPreviewXXS(new ShSPhotoPreviewBean(imageURL, width, height));
-						shSPhotoBean.setPreviewXS(new ShSPhotoPreviewBean(imageURL, width, height));
-						shSPhotoBean.setPreviewS(new ShSPhotoPreviewBean(imageURL, width, height));
-						shSPhotoBean.setPreviewM(new ShSPhotoPreviewBean(imageURL, width, height));
-						shSPhotoBean.setPreviewL(new ShSPhotoPreviewBean(imageURL, width, height));
-						shSPhotoBean.setPreviewXL(new ShSPhotoPreviewBean(imageURL, width, height));
-						shSPhotoBean.setRaw(new ShSPhotoPreviewBean(imageURL, width, height));
-						shSPhotoBean.setDominantColor(rgb);
-						shSPhotoBeans.add(shSPhotoBean);
-						
-					} catch (JSONException | IOException e) {
-						logger.error(e);
-					}
-				});
-			});
-		});
+								shSPhotoBean.setName(shPost.getTitle());
+								shSPhotoBean.setDate(shPost.getDate());
+								shSPhotoBean.setPreviewXXS(new ShSPhotoPreviewBean(imageURL, width, height));
+								shSPhotoBean.setPreviewXS(new ShSPhotoPreviewBean(imageURL, width, height));
+								shSPhotoBean.setPreviewS(new ShSPhotoPreviewBean(imageURL, width, height));
+								shSPhotoBean.setPreviewM(new ShSPhotoPreviewBean(imageURL, width, height));
+								shSPhotoBean.setPreviewL(new ShSPhotoPreviewBean(imageURL, width, height));
+								shSPhotoBean.setPreviewXL(new ShSPhotoPreviewBean(imageURL, width, height));
+								shSPhotoBean.setRaw(new ShSPhotoPreviewBean(imageURL, width, height));
+								shSPhotoBean.setDominantColor(rgb);
+								shSPhotoBeans.add(shSPhotoBean);
+
+							} catch (JSONException | IOException e) {
+								logger.error(e);
+							}
+						})));
 
 		return shSPhotoBeans;
 	}

@@ -119,10 +119,10 @@ public class ShOTMMAssetBean {
 	private String metadataLockStateUserName;
 
 	@JsonProperty("metadata_model_id")
-	private String metadata_model_id;
+	private String metadataModelId;
 
 	@JsonProperty("metadata_state_user_name")
-	private String metadata_state_user_name;
+	private String metadataStateUserName;
 
 	@JsonProperty("mime_type")
 	private String mimeType;
@@ -385,6 +385,22 @@ public class ShOTMMAssetBean {
 		this.metadataLockStateUserName = metadataLockStateUserName;
 	}
 
+	public String getMetadataModelId() {
+		return metadataModelId;
+	}
+
+	public void setMetadataModelId(String metadataModelId) {
+		this.metadataModelId = metadataModelId;
+	}
+
+	public String getMetadataStateUserName() {
+		return metadataStateUserName;
+	}
+
+	public void setMetadataStateUserName(String metadataStateUserName) {
+		this.metadataStateUserName = metadataStateUserName;
+	}
+
 	public String getMimeType() {
 		return mimeType;
 	}
@@ -423,22 +439,6 @@ public class ShOTMMAssetBean {
 
 	public void setVersion(int version) {
 		this.version = version;
-	}
-
-	public String getMetadata_model_id() {
-		return metadata_model_id;
-	}
-
-	public void setMetadata_model_id(String metadata_model_id) {
-		this.metadata_model_id = metadata_model_id;
-	}
-
-	public String getMetadata_state_user_name() {
-		return metadata_state_user_name;
-	}
-
-	public void setMetadata_state_user_name(String metadata_state_user_name) {
-		this.metadata_state_user_name = metadata_state_user_name;
 	}
 
 }

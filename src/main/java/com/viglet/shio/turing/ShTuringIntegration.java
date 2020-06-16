@@ -74,7 +74,6 @@ import com.viglet.turing.client.sn.job.TurSNJobItems;
 @Component
 public class ShTuringIntegration {
 	static final Logger logger = LogManager.getLogger(ShTuringIntegration.class);
-	private static final String UTF8 = "UTF-8";
 	private static final String TURING_SERVER = "http://localhost:2700";
 	private ShSite shSite = null;
 	private static final boolean TURING_ENABLED = true;
@@ -102,9 +101,8 @@ public class ShTuringIntegration {
 
 		if (TURING_ENABLED) {
 			shSite = shObjectUtils.getSite(shObject);
-			TurSNJobItems turSNJobItems = new TurSNJobItems();
-			if (StringUtils.isNotBlank(shSite.getSearchablePostTypes())) {
-				JSONObject searchablePostTypes = new JSONObject(shSite.getSearchablePostTypes());
+			if (shSite != null && StringUtils.isNotBlank(shSite.getSearchablePostTypes())) {
+
 				String objectName = null;
 				String objectTypeName = null;
 
@@ -123,59 +121,61 @@ public class ShTuringIntegration {
 				}
 				logger.info(String.format("Preparing to index %s...", objectName));
 
-				if (objectTypeName != null && searchablePostTypes.has(objectTypeName)) {
-					boolean isSearchable = searchablePostTypes.getBoolean(objectTypeName);
-					if (isSearchable) {
-						TurSNJobItem turSNJobItem = this.toTurSNJobItem(shObject);
-						if (turSNJobItem != null) {
-							turSNJobItem.setTurSNJobAction(TurSNJobAction.CREATE);
-							turSNJobItems.add(turSNJobItem);
-						}
+				if (this.isSearchable(objectTypeName)) {
+					TurSNJobItems turSNJobItems = new TurSNJobItems();
+					TurSNJobItem turSNJobItem = this.toTurSNJobItem(shObject);
+					if (turSNJobItem != null) {
+						turSNJobItem.setTurSNJobAction(TurSNJobAction.CREATE);
+						turSNJobItems.add(turSNJobItem);
 					}
 
-					if (turSNJobItems != null) {
-						this.sendServer(turSNJobItems);
-						logger.info(String.format("Sent to index queue: %s", objectName));
-					}
+					this.sendServer(turSNJobItems);
+					logger.info(String.format("Sent to index queue: %s", objectName));
 				}
+
 			}
 		}
+	}
+
+	public boolean isSearchable(String objectTypeName) {
+		JSONObject searchablePostTypes = new JSONObject(shSite.getSearchablePostTypes());
+
+		return (objectTypeName != null && searchablePostTypes.has(objectTypeName)
+				&& searchablePostTypes.getBoolean(objectTypeName));
 	}
 
 	public void deindexObject(ShObject shObject) {
 		if (TURING_ENABLED) {
 			shSite = shObjectUtils.getSite(shObject);
-			TurSNJobItems turSNJobItems = new TurSNJobItems();
 
-			if (StringUtils.isNotBlank(shSite.getSearchablePostTypes())) {
-				JSONObject searchablePostTypes = new JSONObject(shSite.getSearchablePostTypes());
+			if (shSite != null && StringUtils.isNotBlank(shSite.getSearchablePostTypes())) {
 				String objectTypeName = null;
 				if (shObject instanceof ShPost) {
 					objectTypeName = ((ShPostImpl) shObject).getShPostType().getName();
 				} else if (shObject instanceof ShFolder) {
 					objectTypeName = "FOLDER";
-					ShFolder shFolder = (ShFolder) shObject;
-					this.deindexInBatch(shPostRepository.findByShFolder(shFolder));
-					for (ShFolder shFolderChild : shFolderRepository.findByParentFolder(shFolder)) {
-						this.deindexObject(shFolderChild);
-					}
+					this.desindexChildObjects(shObject);
 				}
 
-				if (searchablePostTypes.has(objectTypeName)) {
-					boolean isSearchable = searchablePostTypes.getBoolean(objectTypeName);
-					if (isSearchable) {
-						TurSNJobItem turSNJobItem = new TurSNJobItem();
-						Map<String, Object> attributes = new HashMap<>();
-						attributes.put("id", shObject.getId());
-						turSNJobItem.setAttributes(attributes);
-						turSNJobItem.setTurSNJobAction(TurSNJobAction.DELETE);
-						turSNJobItems.add(turSNJobItem);
-					}
+				if (this.isSearchable(objectTypeName)) {
+					TurSNJobItems turSNJobItems = new TurSNJobItems();
+					TurSNJobItem turSNJobItem = new TurSNJobItem();
+					Map<String, Object> attributes = new HashMap<>();
+					attributes.put("id", shObject.getId());
+					turSNJobItem.setAttributes(attributes);
+					turSNJobItem.setTurSNJobAction(TurSNJobAction.DELETE);
+					turSNJobItems.add(turSNJobItem);
 
 					this.sendServer(turSNJobItems);
 				}
 			}
 		}
+	}
+
+	private void desindexChildObjects(ShObject shObject) {
+		ShFolder shFolder = (ShFolder) shObject;
+		this.deindexInBatch(shPostRepository.findByShFolder(shFolder));
+		shFolderRepository.findByParentFolder(shFolder).forEach(this::deindexObject);
 	}
 
 	private void deindexInBatch(Iterable<ShPost> shPosts) {
@@ -211,7 +211,7 @@ public class ShTuringIntegration {
 	}
 
 	private void addPost(ShObject shObject, Map<String, Object> attributes) {
-		if (shObject != null && shObject instanceof ShPost) {
+		if (shObject instanceof ShPost) {
 			ShPost shPost = (ShPost) shObject;
 			shPostTypeRepository.findById(shPost.getShPostType().getId()).ifPresent(shPostType -> {
 				addDefaultAttributes(attributes, shPost);
@@ -398,7 +398,7 @@ public class ShTuringIntegration {
 			Charset utf8Charset = StandardCharsets.UTF_8;
 			Charset customCharset = StandardCharsets.UTF_8;
 
-			ByteBuffer inputBuffer = ByteBuffer.wrap(jsonResult.toString().getBytes());
+			ByteBuffer inputBuffer = ByteBuffer.wrap(jsonResult.getBytes());
 
 			// decode UTF-8
 			CharBuffer data = utf8Charset.decode(inputBuffer);
@@ -408,7 +408,7 @@ public class ShTuringIntegration {
 
 			byte[] outputData;
 
-			outputData = new String(outputBuffer.array()).getBytes(UTF8);
+			outputData = new String(outputBuffer.array()).getBytes(StandardCharsets.UTF_8);
 
 			String jsonUTF8 = new String(outputData);
 
@@ -419,11 +419,11 @@ public class ShTuringIntegration {
 			if (logger.isDebugEnabled())
 				logger.debug(jsonUTF8);
 
-			StringEntity entity = new StringEntity(jsonUTF8, UTF8);
+			StringEntity entity = new StringEntity(jsonUTF8, StandardCharsets.UTF_8.name());
 			httpPost.setEntity(entity);
 			httpPost.setHeader("Accept", "application/json");
 			httpPost.setHeader("Content-type", "application/json");
-			httpPost.setHeader("Accept-Encoding", UTF8);
+			httpPost.setHeader("Accept-Encoding", StandardCharsets.UTF_8.name());
 
 			response = client.execute(httpPost);
 
