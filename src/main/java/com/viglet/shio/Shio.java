@@ -41,10 +41,8 @@ import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 public class Shio {
 
 	public static void main(String[] args) throws Exception {
-		System.out.println("Viglet Shio CMS starting...");
 		SpringApplication application = new SpringApplication(Shio.class);
-		application.run(args);
-		System.out.println("Viglet Shio CMS started");
+		application.run();
 	}
 
 	@Bean

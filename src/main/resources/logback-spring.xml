@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+	<appender name="CONSOLE"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>
+				%msg%n
+			</Pattern>
+		</layout>
+	</appender>
+	<logger name="com.viglet.shio.Shio" level="info"
+		additivity="false">
+		<appender-ref ref="CONSOLE" />
+	</logger>
+	<logger name="com.viglet.shio.onstartup.ShOnStartup"
+		level="info" additivity="false">
+		<appender-ref ref="CONSOLE" />
+	</logger>
+
 	<include
 		resource="org/springframework/boot/logging/logback/defaults.xml" />
 	<property name="LOG_FILE"

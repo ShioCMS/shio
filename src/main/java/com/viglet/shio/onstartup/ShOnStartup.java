@@ -16,6 +16,8 @@
  */
 package com.viglet.shio.onstartup;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -39,7 +41,7 @@ import com.viglet.shio.persistence.repository.system.ShConfigVarRepository;
  */
 @Component
 public class ShOnStartup implements ApplicationRunner {
-
+	private static final Logger logger = LogManager.getLogger(ShOnStartup.class);
 	@Autowired
 	private ShConfigVarRepository shConfigVarRepository;
 	@Autowired
@@ -71,7 +73,7 @@ public class ShOnStartup implements ApplicationRunner {
 		if (!shConfigVarRepository.existsByPathAndName(ShConfigVarOnStartup.FIRST_TIME_PATH,
 				ShConfigVarOnStartup.FIRST_TIME_NAME)) {
 
-			System.out.println("First Time Configuration ...");
+			logger.info("First Time Configuration ...");
 
 			shLocaleOnStartup.createDefaultRows();
 			shWidgetOnStartup.createDefaultRows();
@@ -85,7 +87,7 @@ public class ShOnStartup implements ApplicationRunner {
 			shConfigVarOnStartup.createDefaultRows();
 			shSiteOnStartup.createDefaultRows();
 
-			System.out.println("Configuration finished.");
+			logger.info("Configuration finished.");
 		}
 
 	}
