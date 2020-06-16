@@ -28,11 +28,10 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.viglet.shio.exchange.ShFileExchange;
-import com.viglet.shio.exchange.ShPostExchange;
-import com.viglet.shio.exchange.ShRelatorExchange;
-import com.viglet.shio.exchange.ShRelatorItemExchange;
-import com.viglet.shio.exchange.ShRelatorItemExchanges;
+import com.viglet.shio.exchange.file.ShFileExchange;
+import com.viglet.shio.exchange.relator.ShRelatorExchange;
+import com.viglet.shio.exchange.relator.ShRelatorItemExchange;
+import com.viglet.shio.exchange.relator.ShRelatorItemExchanges;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.impl.ShPostAttrImpl;
 import com.viglet.shio.persistence.model.post.impl.ShPostImpl;

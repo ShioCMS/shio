@@ -14,21 +14,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.viglet.shio.exchange.file;
+package com.viglet.shio.exchange.object;
 
-import java.io.File;
+import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
+ * ShObject Exchange
+ * 
  * @author Alexandre Oliveira
+ * @since 0.3.7
+ * 
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ShFileExchange {
+public class ShObjectExchange {
 	
 	private String id;
 
-	private File file;
+	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm'Z'")
+	private Date date;
+
+	private String owner;
+	
+	private String furl;
+
+	private int position;
 
 	public String getId() {
 		return id;
@@ -38,12 +50,36 @@ public class ShFileExchange {
 		this.id = id;
 	}
 
-	public File getFile() {
-		return file;
+	public Date getDate() {
+		return date;
 	}
 
-	public void setFile(File file) {
-		this.file = file;
+	public void setDate(Date date) {
+		this.date = date;
 	}
 
+	public String getOwner() {
+		return owner;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
+
+	public String getFurl() {
+		return furl;
+	}
+
+	public void setFurl(String furl) {
+		this.furl = furl;
+	}
+
+	public int getPosition() {
+		return position;
+	}
+
+	public void setPosition(int position) {
+		this.position = position;
+	}
+	
 }

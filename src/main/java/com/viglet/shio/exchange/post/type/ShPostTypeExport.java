@@ -39,8 +39,6 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viglet.shio.exchange.ShExchange;
-import com.viglet.shio.exchange.ShPostTypeExchange;
-import com.viglet.shio.exchange.ShPostTypeFieldExchange;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
 import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shio.persistence.repository.post.type.ShPostTypeRepository;

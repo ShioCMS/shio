@@ -27,10 +27,9 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.viglet.shio.exchange.ShFolderExchange;
-import com.viglet.shio.exchange.ShPostExchange;
-import com.viglet.shio.exchange.ShSiteExchange;
+import com.viglet.shio.exchange.post.ShPostExchange;
 import com.viglet.shio.exchange.post.ShPostImport;
+import com.viglet.shio.exchange.site.ShSiteExchange;
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.persistence.repository.folder.ShFolderRepository;

@@ -27,8 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shio.exchange.ShExchange;
-import com.viglet.shio.exchange.ShPostTypeExchange;
-import com.viglet.shio.exchange.ShPostTypeFieldExchange;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
 import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shio.persistence.model.widget.ShWidget;

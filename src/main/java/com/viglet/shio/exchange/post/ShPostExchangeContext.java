@@ -19,7 +19,6 @@ package com.viglet.shio.exchange.post;
 import java.io.File;
 import java.util.Map;
 
-import com.viglet.shio.exchange.ShPostExchange;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.relator.impl.ShRelatorItemImpl;
 

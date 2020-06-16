@@ -53,7 +53,7 @@ import com.viglet.shio.api.folder.ShFolderList;
 import com.viglet.shio.bean.ShFolderTinyBean;
 import com.viglet.shio.exchange.ShCloneExchange;
 import com.viglet.shio.exchange.ShExchange;
-import com.viglet.shio.exchange.ShSiteExchange;
+import com.viglet.shio.exchange.site.ShSiteExchange;
 import com.viglet.shio.exchange.site.ShSiteExport;
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.site.ShSite;

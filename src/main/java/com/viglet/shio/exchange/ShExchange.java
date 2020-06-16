@@ -21,6 +21,11 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.viglet.shio.exchange.file.ShFileExchange;
+import com.viglet.shio.exchange.folder.ShFolderExchange;
+import com.viglet.shio.exchange.post.ShPostExchange;
+import com.viglet.shio.exchange.post.type.ShPostTypeExchange;
+import com.viglet.shio.exchange.site.ShSiteExchange;
 
 /**
  * @author Alexandre Oliveira

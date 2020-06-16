@@ -122,6 +122,12 @@ public class ShOTMMProvider implements ShExchangeProvider {
 		shExchangeProviderFolder.setProviderName(PROVIDER_NAME);
 		shExchangeProviderFolder.setParentId(null);
 
+		this.folderChildren(shOTMMFoldersBean, shExchangeProviderFolder);
+		return shExchangeProviderFolder;
+	}
+
+	private void folderChildren(ShOTMMFoldersBean shOTMMFoldersBean,
+			ShExchangeProviderFolder shExchangeProviderFolder) {
 		if (shOTMMFoldersBean != null && shOTMMFoldersBean.getFoldersResource() != null
 				&& shOTMMFoldersBean.getFoldersResource().getFolderList() != null) {
 
@@ -140,7 +146,6 @@ public class ShOTMMProvider implements ShExchangeProvider {
 				shExchangeProviderFolder.getFolders().add(shExchangeProviderFolderChild);
 			});
 		}
-		return shExchangeProviderFolder;
 	}
 
 	public ShExchangeProviderFolder getFolder(String id) {
@@ -167,77 +172,32 @@ public class ShOTMMProvider implements ShExchangeProvider {
 	}
 
 	public ShOTMMFoldersBean getOTMMFolderParents(String id) {
+		return restAPIFolderGet(id, "%s/otmmapi/v5/folders/%s/parents");
+	}
 
+	private ShOTMMFoldersBean restAPIFolderGet(String id, String restAPI) {
 		ShOTMMFoldersBean shOTMMFoldersBean = null;
 		try {
 
-			HttpGet httpGet = new HttpGet(String.format("%s/otmmapi/v5/folders/%s/parents", this.baseURL, id));
+			HttpGet httpGet = new HttpGet(String.format(restAPI, this.baseURL, id));
 			httpGet.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
 			httpGet.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString());
 			HttpResponse response = httpClient.execute(httpGet);
 			if (response.getStatusLine().getStatusCode() == 200)
 				shOTMMFoldersBean = objectMapper.readValue(responseHandler.handleResponse(response),
 						ShOTMMFoldersBean.class);
-		} catch (UnsupportedOperationException e) {
-			logger.error(e);
-		} catch (IOException e) {
+		} catch (UnsupportedOperationException | IOException e) {
 			logger.error(e);
 		}
-
 		return shOTMMFoldersBean;
 	}
 
 	private ShOTMMFoldersBean getOTMMAssetParents(String id) {
-
-		ShOTMMFoldersBean shOTMMFoldersBean = null;
-		try {
-			HttpGet httpGet = new HttpGet(String.format("%s/otmmapi/v5/assets/%s/parents", this.baseURL, id));
-			httpGet.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
-			httpGet.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString());
-			HttpResponse response = httpClient.execute(httpGet);
-			shOTMMFoldersBean = objectMapper.readValue(responseHandler.handleResponse(response),
-					ShOTMMFoldersBean.class);
-
-		} catch (UnsupportedOperationException e) {
-			logger.error(e);
-		} catch (IOException e) {
-			logger.error(e);
-		}
-
-		return shOTMMFoldersBean;
+		return restAPIFolderGet(id, "%s/otmmapi/v5/assets/%s/parents");
 	}
 
 	private void getOTMMFolders(String id, ShExchangeProviderFolder shExchangeProviderFolder) {
-
-		ShOTMMFoldersBean shOTMMFoldersBean = null;
-		try {
-			HttpGet httpGet = new HttpGet(String.format("%s/otmmapi/v5/folders/%s/folders", this.baseURL, id));
-			httpGet.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString());
-			httpGet.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON.toString());
-			HttpResponse response = httpClient.execute(httpGet);
-			shOTMMFoldersBean = objectMapper.readValue(responseHandler.handleResponse(response),
-					ShOTMMFoldersBean.class);
-		} catch (UnsupportedOperationException | IOException e) {
-			logger.error(e);
-		}
-
-		if (shOTMMFoldersBean != null && shOTMMFoldersBean.getFoldersResource() != null
-				&& shOTMMFoldersBean.getFoldersResource().getFolderList() != null) {
-			shOTMMFoldersBean.getFoldersResource().getFolderList().forEach(folder -> {
-				String resultId = folder.getAssetId();
-
-				String resultName = folder.getName();
-
-				Date resultDate = folder.getDateLastUpdated();
-
-				ShExchangeProviderFolder shExchangeProviderFolderChild = new ShExchangeProviderFolder();
-				shExchangeProviderFolderChild.setId(resultId);
-				shExchangeProviderFolderChild.setName(resultName);
-				shExchangeProviderFolderChild.setDate(resultDate);
-
-				shExchangeProviderFolder.getFolders().add(shExchangeProviderFolderChild);
-			});
-		}
+		this.folderChildren(restAPIFolderGet(id, "%s/otmmapi/v5/folders/%s/folders"), shExchangeProviderFolder);
 	}
 
 	private void getOTMMAssets(String id, ShExchangeProviderFolder shExchangeProviderFolder) {

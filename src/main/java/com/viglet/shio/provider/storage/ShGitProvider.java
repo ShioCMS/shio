@@ -19,7 +19,7 @@ package com.viglet.shio.provider.storage;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
-import com.viglet.shio.exchange.ShPostExchange;
+import com.viglet.shio.exchange.post.ShPostExchange;
 import com.viglet.shio.exchange.post.ShPostExport;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.property.ShGitProperties;

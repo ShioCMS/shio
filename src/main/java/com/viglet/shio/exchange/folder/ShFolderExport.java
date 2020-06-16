@@ -26,11 +26,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shio.exchange.ShExchange;
-import com.viglet.shio.exchange.ShFileExchange;
-import com.viglet.shio.exchange.ShFolderExchange;
-import com.viglet.shio.exchange.ShPostExchange;
-import com.viglet.shio.exchange.ShPostTypeExchange;
+import com.viglet.shio.exchange.file.ShFileExchange;
+import com.viglet.shio.exchange.post.ShPostExchange;
 import com.viglet.shio.exchange.post.ShPostExport;
+import com.viglet.shio.exchange.post.type.ShPostTypeExchange;
 import com.viglet.shio.exchange.post.type.ShPostTypeExport;
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.post.ShPost;
