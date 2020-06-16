@@ -91,6 +91,8 @@ task minifyAllJs(dependsOn: ':combineAllJs', type: com.eriwen.gradle.js.tasks.Mi
  	source = "${projectDir}/src/main/resources/ui/js/build/shio.js"
     dest = file("${projectDir}/src/main/resources/ui/public/js/dist/shio.min.js")
     closure {
+		compilerOptions.languageIn="ECMASCRIPT6"
+		compilerOptions.languageOut="ECMASCRIPT5"
         warningLevel = 'QUIET'
     }
 }
