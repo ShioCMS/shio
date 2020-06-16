@@ -76,7 +76,7 @@ public class ShStaticFileAPI {
 
 	@GetMapping("/pre-upload/{folderId}/{fileName}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ResponseEntity<?> shStaticFilePreUpload(@PathVariable String fileName, @PathVariable String folderId)
+	public ResponseEntity<ShHttpMessageBean> shStaticFilePreUpload(@PathVariable String fileName, @PathVariable String folderId)
 			throws URISyntaxException, IOException {
 
 		ShFolder shFolder = shFolderRepository.findById(folderId).orElse(null);
@@ -101,7 +101,7 @@ public class ShStaticFileAPI {
 
 	@PostMapping("/upload")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ResponseEntity<?> shStaticFileUpload(@RequestParam("file") MultipartFile file,
+	public ResponseEntity<Object> shStaticFileUpload(@RequestParam("file") MultipartFile file,
 			@RequestParam("folderId") String folderId, @RequestParam("createPost") boolean createPost, Principal principal)
 			throws URISyntaxException, IOException {
 

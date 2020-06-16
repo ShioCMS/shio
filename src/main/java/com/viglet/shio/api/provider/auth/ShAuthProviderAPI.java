@@ -165,8 +165,9 @@ public class ShAuthProviderAPI {
 			shConfigVarRepository.deleteByPath(providerInstancePath);
 			shAuthProviderInstanceRepository.delete(id);
 			return true;
-		} else
+		} else {
 			return false;
+		}
 	}
 
 	@GetMapping("/model")

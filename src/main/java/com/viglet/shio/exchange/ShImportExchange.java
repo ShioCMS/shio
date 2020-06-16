@@ -45,7 +45,7 @@ import com.viglet.shio.utils.ShUtilsException;
  */
 @Component
 public class ShImportExchange {
-	static final Logger logger = LogManager.getLogger(ShImportExchange.class);
+	private static final Logger logger = LogManager.getLogger(ShImportExchange.class);
 	@Autowired
 	private ShUtils shUtils;
 	@Autowired
@@ -54,7 +54,9 @@ public class ShImportExchange {
 	private ShPostTypeImport shPostTypeImport;
 	@Autowired
 	private ShPostImport shPostImport;
-
+	
+	private static final String EXPORT_FILE = "export.json";
+	
 	private Map<String, Object> shObjects = new HashMap<>();
 	private Map<String, List<String>> shChildObjects = new HashMap<>();
 
@@ -70,46 +72,61 @@ public class ShImportExchange {
 
 		if (extractFolder != null) {
 			// Check if export.json exists, if it is not exist try access a sub directory
-			if (!(new File(extractFolder, "export.json").exists()) && (extractFolder.listFiles().length == 1)) {
+			if (!(new File(extractFolder, EXPORT_FILE).exists()) && (extractFolder.listFiles().length == 1)) {
 				for (File fileOrDirectory : extractFolder.listFiles()) {
-					if (fileOrDirectory.isDirectory() && new File(fileOrDirectory, "export.json").exists()) {
+					if (fileOrDirectory.isDirectory() && new File(fileOrDirectory, EXPORT_FILE).exists()) {
 						parentExtractFolder = extractFolder;
 						extractFolder = fileOrDirectory;
 					}
 				}
 			}
-			ObjectMapper mapper = new ObjectMapper();
+			ShExchange shExchange = readExportFile(extractFolder);
 
-			ShExchange shExchange = null;
-			try {
-				shExchange = mapper.readValue(
-						new FileInputStream(extractFolder.getAbsolutePath().concat(File.separator + "export.json")),
-						ShExchange.class);
-			} catch (IOException e1) {
-				logger.error(e1);
-			}
-			if (shExchange != null) {
-				if (shExchange.getPostTypes() != null && !shExchange.getPostTypes().isEmpty())
-					shPostTypeImport.importPostType(shExchange, false);
+			this.importObjects(username, extractFolder, shExchange);
 
-				if (shExchange.getSites() != null && !shExchange.getSites().isEmpty()) {
-					shSiteImport.importSite(shExchange, username, extractFolder, shObjects, shChildObjects);
-				} else if (shExchange.getFolders() == null && shExchange.getPosts() != null) {
-					File extractFolderInner = extractFolder;
-					shExchange.getPosts().forEach(shPostExchange -> shPostImport.createShPost(shPostExchange,
-							extractFolderInner, username, shObjects, false));
-				}
-			}
-			try {
-				FileUtils.deleteDirectory(extractFolder);
-				if (parentExtractFolder != null)
-					FileUtils.deleteDirectory(parentExtractFolder);
-			} catch (IOException e) {
-				logger.error(e);
-			}
+			this.deleteTempoaryFile(extractFolder, parentExtractFolder);
 			return shExchange;
 		} else {
 			return null;
+		}
+	}
+
+	private ShExchange readExportFile(File extractFolder) {
+		ObjectMapper mapper = new ObjectMapper();
+
+		ShExchange shExchange = null;
+		try {
+			shExchange = mapper.readValue(
+					new FileInputStream(extractFolder.getAbsolutePath().concat(File.separator + EXPORT_FILE)),
+					ShExchange.class);
+		} catch (IOException e1) {
+			logger.error(e1);
+		}
+		return shExchange;
+	}
+
+	private void importObjects(String username, File extractFolder, ShExchange shExchange) {
+		if (shExchange != null) {
+			if (shExchange.getPostTypes() != null && !shExchange.getPostTypes().isEmpty())
+				shPostTypeImport.importPostType(shExchange, false);
+
+			if (shExchange.getSites() != null && !shExchange.getSites().isEmpty()) {
+				shSiteImport.importSite(shExchange, username, extractFolder, shObjects, shChildObjects);
+			} else if (shExchange.getFolders() == null && shExchange.getPosts() != null) {
+				File extractFolderInner = extractFolder;
+				shExchange.getPosts().forEach(shPostExchange -> shPostImport.createShPost(shPostExchange,
+						extractFolderInner, username, shObjects, false));
+			}
+		}
+	}
+
+	private void deleteTempoaryFile(File extractFolder, File parentExtractFolder) {
+		try {
+			FileUtils.deleteDirectory(extractFolder);
+			if (parentExtractFolder != null)
+				FileUtils.deleteDirectory(parentExtractFolder);
+		} catch (IOException e) {
+			logger.error(e);
 		}
 	}
 

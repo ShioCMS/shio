@@ -51,8 +51,7 @@ import com.viglet.shio.persistence.model.post.ShPostAttr;
 import com.viglet.shio.persistence.model.post.ShPostDraft;
 import com.viglet.shio.persistence.model.post.ShPostDraftAttr;
 import com.viglet.shio.persistence.model.post.impl.ShPostAttrImpl;
-import com.viglet.shio.persistence.model.post.relator.ShRelatorItemDraft;
-import com.viglet.shio.persistence.model.post.relator.impl.ShRelatorItemImpl;
+import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
 import com.viglet.shio.persistence.model.reference.ShReference;
 import com.viglet.shio.persistence.model.reference.ShReferenceDraft;
@@ -134,6 +133,8 @@ public class ShPostAPI {
 	@Autowired
 	private ShHistoryUtils shHistoryUtils;
 
+	private final SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyyy");
+
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShPost> shPostList() {
@@ -176,7 +177,8 @@ public class ShPostAPI {
 	@Transactional
 	@PutMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ResponseEntity<ShPost> shPostUpdate(@PathVariable String id, @RequestBody ShPost shPost, Principal principal) {
+	public ResponseEntity<ShPost> shPostUpdate(@PathVariable String id, @RequestBody ShPost shPost,
+			Principal principal) {
 		if (shObjectUtils.canAccess(principal, id)) {
 			shCacheObject.deleteCache(id);
 
@@ -223,7 +225,7 @@ public class ShPostAPI {
 
 	@Transactional
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> shPostDelete(@PathVariable String id, Principal principal) {
+	public ResponseEntity<Boolean> shPostDelete(@PathVariable String id, Principal principal) {
 		if (shObjectUtils.canAccess(principal, id)) {
 			shCacheObject.deleteCache(id);
 
@@ -329,28 +331,34 @@ public class ShPostAPI {
 	}
 
 	private void titleAndSummary(StringBuilder title, StringBuilder summary, List<ShPostAttr> shPostAttrsByOrdinal) {
-		for (ShPostAttr shPostAttr : shPostAttrsByOrdinal) {
-			if (shPostAttr.getShPostTypeAttr().getIsTitle() == 1) {
-				if (!StringUtils.isEmpty(title.toString()))
-					title.append(", ");
-				if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.DATE)) {
-					SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyyy");
-					title.append(dt.format(shPostAttr.getDateValue()));
-				} else {
-					title.append(StringUtils.abbreviate(shPostAttr.getStrValue(), 255));
-				}
-			}
-			if (shPostAttr.getShPostTypeAttr().getIsSummary() == 1) {
-				if (!StringUtils.isEmpty(summary.toString()))
-					summary.append(", ");
-				if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.DATE)) {
-					SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyyy");
-					summary.append(dt.format(shPostAttr.getDateValue()));
-				} else
-					summary.append(StringUtils.abbreviate(shPostAttr.getStrValue(), 255));
-			}
-			if (shPostAttr != null) {
+		shPostAttrsByOrdinal.forEach(shPostAttr -> {
+			this.setTitle(title, shPostAttr);
+			this.setSummary(summary, shPostAttr);
+			if (shPostAttr != null)
 				shPostAttr.setReferenceObject(null);
+		});
+	}
+
+	private void setSummary(StringBuilder summary, ShPostAttr shPostAttr) {
+		if (shPostAttr.getShPostTypeAttr().getIsSummary() == 1) {
+			if (!StringUtils.isEmpty(summary.toString()))
+				summary.append(", ");
+			if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.DATE)) {
+				summary.append(dt.format(shPostAttr.getDateValue()));
+			} else {
+				summary.append(StringUtils.abbreviate(shPostAttr.getStrValue(), 255));
+			}
+		}
+	}
+
+	private void setTitle(StringBuilder title, ShPostAttr shPostAttr) {
+		if (shPostAttr.getShPostTypeAttr().getIsTitle() == 1) {
+			if (!StringUtils.isEmpty(title.toString()))
+				title.append(", ");
+			if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.DATE)) {
+				title.append(dt.format(shPostAttr.getDateValue()));
+			} else {
+				title.append(StringUtils.abbreviate(shPostAttr.getStrValue(), 255));
 			}
 		}
 	}
@@ -409,8 +417,7 @@ public class ShPostAPI {
 				Set<ShPostDraftAttr> shPostAttrs = (Set<ShPostDraftAttr>) shPostDraft.getShPostAttrs();
 				shPostAttrs.forEach(shPostAttr -> {
 					shPostAttr.setShPost(shPostDraft);
-					this.updateRelatorParentDraft(shPostAttr, shPostDraft);
-
+					this.updateRelatorParent(shPostAttr, shPostDraft);
 				});
 
 				shPostDraftRepository.saveAndFlush(shPostDraft);
@@ -438,24 +445,14 @@ public class ShPostAPI {
 		return shPostDraft;
 	}
 
-	private void updateRelatorParent(ShPostAttr shPostAttr, ShPost shPost) {
-		for (ShRelatorItemImpl shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
+	private void updateRelatorParent(ShPostAttrImpl shPostAttr, ShPostImpl shPost) {
+		shPostAttr.getShChildrenRelatorItems().forEach(shRelatorItem -> {
 			shRelatorItem.setShParentPostAttr(shPostAttr);
-			for (ShPostAttrImpl shChildrenPostAttr : shRelatorItem.getShChildrenPostAttrs()) {
+			shRelatorItem.getShChildrenPostAttrs().forEach(shChildrenPostAttr -> {
 				shChildrenPostAttr.setShParentRelatorItem(shRelatorItem);
-				this.updateRelatorParent((ShPostAttr) shChildrenPostAttr, shPost);
-			}
-		}
-	}
-
-	private void updateRelatorParentDraft(ShPostDraftAttr shPostAttr, ShPostDraft shPost) {
-		for (ShRelatorItemDraft shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
-			shRelatorItem.setShParentPostAttr(shPostAttr);
-			for (ShPostDraftAttr shChildrenPostAttr : shRelatorItem.getShChildrenPostAttrs()) {
-				shChildrenPostAttr.setShParentRelatorItem(shRelatorItem);
-				this.updateRelatorParentDraft(shChildrenPostAttr, shPost);
-			}
-		}
+				this.updateRelatorParent(shChildrenPostAttr, shPost);
+			});
+		});
 	}
 
 	private void postReferenceSave(ShPost shPost) {
@@ -464,24 +461,23 @@ public class ShPostAPI {
 		List<ShReference> shOldReferences = shReferenceRepository.findByShObjectFrom(shPost);
 		shReferenceRepository.deleteInBatch(shOldReferences);
 
-		for (ShPostAttrImpl shPostAttr : shPost.getShPostAttrs()) {
+		shPost.getShPostAttrs().forEach(shPostAttr -> {
 			shPostUtils.referencedObject(shPostAttr, shPost);
-			this.nestedReferenceSave((ShPostAttr)shPostAttr, shPost);
-		}
+			this.nestedReferenceSave((ShPostAttr) shPostAttr, shPost);
+		});
 
-		for (ShPostAttrImpl shPostAttr : shPost.getShPostAttrs())
-			shPostUtils.updateRelatorInfo((ShPostAttr)shPostAttr, shPost);
+		shPost.getShPostAttrs().forEach(shPostAttr -> shPostUtils.updateRelatorInfo((ShPostAttr) shPostAttr, shPost));
 
 		shPostRepository.saveAndFlush(shPost);
 	}
 
 	private void nestedReferenceSave(ShPostAttr shPostAttr, ShPost shPost) {
-		for (ShRelatorItemImpl shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
-			for (ShPostAttrImpl shChildrenPostAttr : shRelatorItem.getShChildrenPostAttrs()) {
+		shPostAttr.getShChildrenRelatorItems().forEach(shRelatorItem -> {
+			shRelatorItem.getShChildrenPostAttrs().forEach(shChildrenPostAttr -> {
 				shPostUtils.referencedObject(shChildrenPostAttr, shPost);
-				this.nestedReferenceSave((ShPostAttr)shChildrenPostAttr, shPost);
-			}
-		}
+				this.nestedReferenceSave((ShPostAttr) shChildrenPostAttr, shPost);
+			});
+		});
 	}
 
 	private void postReferenceSaveDraft(ShPostDraft shPost) {
@@ -490,23 +486,21 @@ public class ShPostAPI {
 		List<ShReferenceDraft> shOldReferences = shReferenceDraftRepository.findByShObjectFrom(shPost);
 		shReferenceDraftRepository.deleteInBatch(shOldReferences);
 
-		for (ShPostDraftAttr shPostAttr : shPost.getShPostAttrs()) {
+		shPost.getShPostAttrs().forEach(shPostAttr -> {
 			shPostUtils.referencedObjectDraft(shPostAttr, shPost);
 			this.nestedReferenceSaveDraft(shPostAttr, shPost);
-		}
-
-		for (ShPostDraftAttr shPostAttr : shPost.getShPostAttrs())
-			shPostUtils.updateRelatorInfoDraft(shPostAttr, shPost);
+		});
+		shPost.getShPostAttrs().forEach(shPostAttr -> shPostUtils.updateRelatorInfoDraft(shPostAttr, shPost));
 
 		shPostDraftRepository.saveAndFlush(shPost);
 	}
 
 	private void nestedReferenceSaveDraft(ShPostDraftAttr shPostAttr, ShPostDraft shPost) {
-		for (ShRelatorItemDraft shRelatorItem : shPostAttr.getShChildrenRelatorItems()) {
-			for (ShPostDraftAttr shChildrenPostAttr : shRelatorItem.getShChildrenPostAttrs()) {
+		shPostAttr.getShChildrenRelatorItems().forEach(shRelatorItem -> {
+			shRelatorItem.getShChildrenPostAttrs().forEach(shChildrenPostAttr -> {
 				shPostUtils.referencedObjectDraft(shChildrenPostAttr, shPost);
 				this.nestedReferenceSaveDraft(shChildrenPostAttr, shPost);
-			}
-		}
+			});
+		});
 	}
 }

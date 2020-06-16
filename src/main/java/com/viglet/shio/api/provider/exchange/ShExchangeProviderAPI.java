@@ -106,7 +106,8 @@ public class ShExchangeProviderAPI {
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShExchangeProviderInstanceBean shExchangeProviderEdit(@PathVariable String id) {
-		ShExchangeProviderInstance shExchangeProviderInstance = shExchangeProviderInstanceRepository.findById(id).orElse(null);
+		ShExchangeProviderInstance shExchangeProviderInstance = shExchangeProviderInstanceRepository.findById(id)
+				.orElse(null);
 		ShExchangeProviderInstanceBean shExchangeProviderInstanceBean = new ShExchangeProviderInstanceBean();
 		if (shExchangeProviderInstance != null) {
 			shExchangeProviderInstanceBean = new ShExchangeProviderInstanceBean();
@@ -115,7 +116,7 @@ public class ShExchangeProviderAPI {
 			shExchangeProviderInstanceBean.setDescription(shExchangeProviderInstance.getDescription());
 			shExchangeProviderInstanceBean.setVendor(shExchangeProviderInstance.getVendor());
 			shExchangeProviderInstanceBean.setEnabled(shExchangeProviderInstance.getEnabled());
-			
+
 			String providerInstancePath = String.format(PROVIDER_PATH, shExchangeProviderInstance.getId());
 
 			List<ShConfigVar> shConfigVars = shConfigVarRepository.findByPath(providerInstancePath);
@@ -130,7 +131,8 @@ public class ShExchangeProviderAPI {
 
 	@PostMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShExchangeProviderInstanceBean shExchangeProviderInstanceAdd(@RequestBody ShExchangeProviderInstanceBean shExchangeProviderInstanceBean) {
+	public ShExchangeProviderInstanceBean shExchangeProviderInstanceAdd(
+			@RequestBody ShExchangeProviderInstanceBean shExchangeProviderInstanceBean) {
 		ShExchangeProviderInstance shExchangeProviderInstance = new ShExchangeProviderInstance();
 
 		shExchangeProviderInstance.setName(shExchangeProviderInstanceBean.getName());
@@ -165,7 +167,8 @@ public class ShExchangeProviderAPI {
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShExchangeProviderInstanceBean shExchangeProviderInstanceUpdate(@PathVariable String id,
 			@RequestBody ShExchangeProviderInstanceBean shExchangeProviderInstanceBean) {
-		Optional<ShExchangeProviderInstance> shExchangeProviderInstanceOptional = shExchangeProviderInstanceRepository.findById(id);
+		Optional<ShExchangeProviderInstance> shExchangeProviderInstanceOptional = shExchangeProviderInstanceRepository
+				.findById(id);
 		if (shExchangeProviderInstanceOptional.isPresent()) {
 			ShExchangeProviderInstance shExchangeProviderInstanceEdit = shExchangeProviderInstanceOptional.get();
 			shExchangeProviderInstanceEdit.setName(shExchangeProviderInstanceBean.getName());
@@ -201,14 +204,16 @@ public class ShExchangeProviderAPI {
 	@DeleteMapping("/{id}")
 	@Transactional
 	public boolean shExchangeProviderInstanceDelete(@PathVariable String id) {
-		Optional<ShExchangeProviderInstance> shExchangeProviderInstance = shExchangeProviderInstanceRepository.findById(id);
+		Optional<ShExchangeProviderInstance> shExchangeProviderInstance = shExchangeProviderInstanceRepository
+				.findById(id);
 		if (shExchangeProviderInstance.isPresent()) {
 			String providerInstancePath = String.format(PROVIDER_PATH, id);
 			shConfigVarRepository.deleteByPath(providerInstancePath);
 			shExchangeProviderInstanceRepository.delete(id);
 			return true;
-		} else
+		} else {
 			return false;
+		}
 	}
 
 	@GetMapping("/model")
@@ -241,13 +246,15 @@ public class ShExchangeProviderAPI {
 	}
 
 	private void initProvider(String providerInstanceId) {
-		ShExchangeProviderInstance shExchangeProviderInstance = shExchangeProviderInstanceRepository.findById(providerInstanceId).orElse(null);
+		ShExchangeProviderInstance shExchangeProviderInstance = shExchangeProviderInstanceRepository
+				.findById(providerInstanceId).orElse(null);
 		if (shExchangeProviderInstance != null) {
 			Map<String, String> variables = shConfigVarUtils
-					.getVariablesFromPath(String.format("/provider/%s", providerInstanceId));
+					.getVariablesFromPath(String.format(PROVIDER_PATH, providerInstanceId));
 
 			try {
-				shExchangeProvider = (ShExchangeProvider) Class.forName(shExchangeProviderInstance.getVendor().getClassName()).newInstance();
+				shExchangeProvider = (ShExchangeProvider) Class
+						.forName(shExchangeProviderInstance.getVendor().getClassName()).newInstance();
 			} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
 				logger.error("initProvider: ", e);
 			}
@@ -257,8 +264,8 @@ public class ShExchangeProviderAPI {
 
 	@PostMapping("/{providerInstanceId}/import/{providerItemId}/to/{folderId}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShPostImpl shExchangeProviderImportItem(@PathVariable String folderId, @PathVariable String providerInstanceId,
-			@PathVariable String providerItemId, Principal principal) {
+	public ShPostImpl shExchangeProviderImportItem(@PathVariable String folderId,
+			@PathVariable String providerInstanceId, @PathVariable String providerItemId, Principal principal) {
 
 		this.initProvider(providerInstanceId);
 
@@ -284,22 +291,19 @@ public class ShExchangeProviderAPI {
 				}
 				return shStaticFileUtils.createFilePost(file, fileName, shFolder, principal, true);
 			}
-		} catch (IOException e) {
-			logger.error("shExchangeProviderImportItemIOException", e);
-		} catch (MimeTypeException e) {
-			logger.error("shExchangeProviderImportItemMimeTypeException", e);
+		} catch (IOException | MimeTypeException e) {
+			logger.error(e);
 		}
 		return null;
 	}
 
 	@GetMapping("/{providerInstanceId}/{id}/list")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShExchangeProviderFolder shExchangeProviderListItem(@PathVariable String providerInstanceId, @PathVariable String id) {
+	public ShExchangeProviderFolder shExchangeProviderListItem(@PathVariable String providerInstanceId,
+			@PathVariable String id) {
 		this.initProvider(providerInstanceId);
-		if (id.equals("_root"))
-			return shExchangeProvider.getRootFolder();
-		else
-			return shExchangeProvider.getFolder(id);
+
+		return id.equals("_root") ? shExchangeProvider.getRootFolder() : shExchangeProvider.getFolder(id);
 
 	}
 }

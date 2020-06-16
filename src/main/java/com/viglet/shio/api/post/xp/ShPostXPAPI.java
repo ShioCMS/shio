@@ -67,7 +67,7 @@ public class ShPostXPAPI {
 	 */
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ResponseEntity<?> shPostEdit(@PathVariable String id, Principal principal) {
+	public ResponseEntity<ShPostXP> shPostEdit(@PathVariable String id, Principal principal) {
 		if (shObjectUtils.canAccess(principal, id)) {
 			if (logger.isDebugEnabled())
 				logger.debug("Mgmt: " + shMgmtProperties.isEnabled());
