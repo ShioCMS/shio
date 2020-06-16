@@ -3,27 +3,22 @@
 	<li>Post Types</li>
 </ul>
 
-<div class="settings">
-	<section class="content no-padding">
-		<fieldset class="user-details-top" style="margin-bottom: 30px">
+<div>
+	<h3>Select your Post Type</h3>
 
-			<div class="form-group">
-				<h3>Select your Post Type</h3>
-			</div>
-			<div class="pull-right" style="margin: -40px 0 0;">
-				<a ui-sref="content.post-type-editor" class="btn btn-success"><i class="fa fa-cube" aria-hidden="true"
-						style="margin-right: 10px;"></i>
-					New</a>
-			</div>
-		</fieldset>
-	</section>
+	<div class="pull-right" style="margin: -40px 0 0;">
+		<a ui-sref="content.post-type-editor" class="btn btn-success"><i class="fa fa-cube" aria-hidden="true"
+				style="margin-right: 10px;"></i>
+			New</a>
+	</div>
 </div>
 <div class="row">
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 		<div style="margin-bottom: 10px; height: 40px">
 			<div class="pull-left" style="width: 100%;">
 				<input class="form-control" id="search-folder-input" type="text" ng-model="shSearchFilter"
-					placeholder="Find a post type..." style="width: 100%;" ng-change="changeSearchTextBox(shSearchFilter)">
+					placeholder="Find a post type..." style="width: 100%;"
+					ng-change="changeSearchTextBox(shSearchFilter)">
 			</div>
 		</div>
 		<div>

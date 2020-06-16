@@ -7,25 +7,17 @@
 	<uib-tabset active="active" style="margin:5px">
 		<uib-tab index="0" heading="Sites">
 			<div style="padding: 16px;">
-				<div class="settings">
-					<section class="content no-padding">
+				<div>
+					<h3>Select your site</h3>
 
-						<fieldset class="user-details-top" style="margin-bottom: 30px">
-
-							<div class="form-group">
-								<h3>Select your site</h3>
-							</div>
-							<div class="pull-right" style="margin: -40px 0 0;">
-								<a ui-sref="content.site-import" class="btn btn-viglet"><span
-										class="glyphicon glyphicon-import" aria-hidden="true"
-										style="margin-right: 10px;"></span>
-									Import</a>
-								<a ui-sref="content.site-new" class="btn btn-success"><i class="fa fa-sitemap"
-										aria-hidden="true" style="margin-right: 10px;"></i>
-									New</a>
-							</div>
-						</fieldset>
-					</section>
+					<div class="pull-right" style="margin: -40px 0 0;">
+						<a ui-sref="content.site-import" class="btn btn-viglet"><span class="glyphicon glyphicon-import"
+								aria-hidden="true" style="margin-right: 10px;"></span>
+							Import</a>
+						<a ui-sref="content.site-new" class="btn btn-success"><i class="fa fa-sitemap"
+								aria-hidden="true" style="margin-right: 10px;"></i>
+							New</a>
+					</div>
 				</div>
 				<div class="row" ng-controller="ShSiteListCtrl">
 					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -122,17 +114,7 @@
 				Tasks <span ng-if="shWorkflowTasks.length > 0" class="badge">{{shWorkflowTasks.length}}</span>
 			</uib-tab-heading>
 			<div style="padding: 16px;">
-				<div class="settings">
-					<section class="content no-padding">
-
-						<fieldset class="user-details-top" style="margin-bottom: 30px">
-
-							<div class="form-group">
-								<h3>Your Tasks </h3>
-							</div>
-						</fieldset>
-					</section>
-				</div>
+				<h3>Your Tasks </h3>
 				<div>
 					<div ng-repeat="shWorkflowTask in shWorkflowTasks" class="list-group-item">
 						<div class="row">

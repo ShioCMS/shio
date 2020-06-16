@@ -5,7 +5,7 @@
 	<tr>
 		<th scope="row" style="background: #F9F9F9; width: 20%;">
 			<p>
-				<b>Search Field Association</b>
+				<strong>Search Field Association</strong>
 			</p>
 		</th>
 		<td><select class="form-control"
@@ -23,20 +23,20 @@
 	<tr>
 		<tth scope="row" style="background: #F9F9F9; width: 20%;">
 			<p>
-				<b>Create Additional Search Field?</b>
+				<strong>Create Additional Search Field?</strong>
 			</p>
 		</th>
 		<td><input type="checkbox"
 			ng-model="shPostTypeAttr.widgetSettingsObject.search.isAdditionalField"
 			ng-true-value="1" ng-false-value="0">
 
-			<table class="table"
+			<table summary="Additional Search Field" class="table"
 				ng-if="shPostTypeAttr.widgetSettingsObject.search.isAdditionalField == 1"
 				style="margin: 0px; border-color: #ddd; border-style: solid; border-width: 1px; margin-top: 10px">
 				<tr>
 					<th scope="row" style="background: #F9F9F9; width: 20%;">
 						<p>
-							<b>Search Field Name</b>
+							<strong>Search Field Name</strong>
 						</p>
 					</th>
 					<td><label> <input type="checkbox"
