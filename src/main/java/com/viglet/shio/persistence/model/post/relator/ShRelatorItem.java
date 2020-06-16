@@ -91,7 +91,7 @@ public class ShRelatorItem implements Serializable, ShRelatorItemImpl {
 	}
 
 	public Set<? extends ShPostAttrImpl> getShChildrenPostAttrs() {
-		return shChildrenPostAttrs;
+		return this.getShChildrenPostAttrsNonDraft();
 	}
 
 	@Override
@@ -101,7 +101,7 @@ public class ShRelatorItem implements Serializable, ShRelatorItemImpl {
 
 	@Override
 	public Set<ShPostDraftAttr> getShChildrenPostAttrsDraft() {
-		return null;
+		return new HashSet<>();
 	}
 
 	@Override

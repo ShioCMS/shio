@@ -126,7 +126,7 @@ public class ShPost extends ShObject implements ShPostImpl {
 
 	@Override
 	public Set<? extends ShPostAttrImpl> getShPostAttrs() {
-		return this.shPostAttrs;
+		return this.getShPostAttrsNonDraft();
 	}
 
 	@Override

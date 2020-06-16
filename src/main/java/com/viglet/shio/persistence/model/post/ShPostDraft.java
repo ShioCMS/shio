@@ -50,7 +50,8 @@ import javax.persistence.PrimaryKeyJoinColumn;
 @Entity
 @NamedQuery(name = "ShPostDraft.findAll", query = "SELECT pd FROM ShPostDraft pd")
 @PrimaryKeyJoinColumn(name = "object_id")
-@JsonIgnoreProperties({ "shPostAttrRefs", "shGroups", "shUsers", "shPostDraftAttrRefs","shPostAttrsDraft", "shPostAttrsNonDraft" })
+@JsonIgnoreProperties({ "shPostAttrRefs", "shGroups", "shUsers", "shPostDraftAttrRefs", "shPostAttrsDraft",
+		"shPostAttrsNonDraft" })
 public class ShPostDraft extends ShObjectDraft implements ShPostImpl {
 	private static final long serialVersionUID = 1L;
 
@@ -83,17 +84,17 @@ public class ShPostDraft extends ShObjectDraft implements ShPostImpl {
 	public ShPostDraft() {
 		this.setObjectType(ShObjectType.POST);
 	}
-	
+
 	@Override
 	public String getSummary() {
 		return this.summary;
 	}
-	
+
 	@Override
 	public void setSummary(String summary) {
 		this.summary = summary;
 	}
-	
+
 	@Override
 	public String getTitle() {
 		return this.title;
@@ -113,27 +114,27 @@ public class ShPostDraft extends ShObjectDraft implements ShPostImpl {
 	public void setShPostType(ShPostType shPostType) {
 		this.shPostType = shPostType;
 	}
-	
+
 	@Override
 	public Set<? extends ShPostDraftAttr> getShPostAttrs() {
-		return (Set<ShPostDraftAttr>) this.shPostAttrs;
+		return this.getShPostAttrsDraft();
 	}
 
 	@Override
 	public Set<ShPostAttr> getShPostAttrsNonDraft() {
 		return new HashSet<>();
 	}
-	
+
 	@Override
 	public Set<ShPostDraftAttr> getShPostAttrsDraft() {
 		return this.shPostAttrs;
 	}
-	
+
 	@Override
 	public void setShPostAttrs(Set<? extends ShPostAttrImpl> shPostAttrs) {
 		this.shPostAttrs.clear();
 		if (shPostAttrs != null)
-			shPostAttrs.forEach(shPostAttr -> this.shPostAttrs.add((ShPostDraftAttr)shPostAttr));
+			shPostAttrs.forEach(shPostAttr -> this.shPostAttrs.add((ShPostDraftAttr) shPostAttr));
 	}
 
 	@Override
