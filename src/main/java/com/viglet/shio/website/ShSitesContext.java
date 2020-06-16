@@ -111,16 +111,20 @@ public class ShSitesContext {
 	}
 
 	@RequestMapping("/sites/**")
-	private void sitesFullGeneric(HttpServletRequest request, HttpServletResponse response, HttpSession session)
-			throws Exception {
-
-		boolean showPage = false;
+	private void sitesFullGeneric(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 
 		ShSitesContextURL shSitesContextURL = shSitesContextURLProcess.getContextURL(request, response);
+	
+		boolean showPage = checkIfShowPage(shSitesContextURL, session);
 
+		renderPage(request, response, session, showPage, shSitesContextURL);
+	}
+
+	private boolean checkIfShowPage(ShSitesContextURL shSitesContextURL, HttpSession session) {
 		String username = (String) session.getAttribute(USERNAME_SESSION);
 		String[] groups = (String[]) session.getAttribute(USER_GROUPS_SESSION);
 
+		boolean showPage = false;
 		if (username == null && shSitesContextURL.getInfo().isPageAllowGuestUser())
 			showPage = true;
 		else if (username != null && shSitesContextURL.getInfo().isPageAllowRegisterUser()) {
@@ -136,23 +140,34 @@ public class ShSitesContext {
 				showPage = true;
 			}
 		}
+		return showPage;
+	}
 
-		if (showPage) {
-			if (shSitesContextURL.getInfo().getSiteId() != null)
-				this.siteContext(shSitesContextURL);
-			else
-				response.sendError(HttpServletResponse.SC_NOT_FOUND);
-		} else {
-			if (username != null) {
-				if (shSitesContextURL.getInfo().isPageAllowGuestUser())
-					response.sendError(HttpServletResponse.SC_NOT_FOUND);
+	private void renderPage(HttpServletRequest request, HttpServletResponse response, HttpSession session,
+			boolean showPage, ShSitesContextURL shSitesContextURL) {
+		
+		String username = (String) session.getAttribute(USERNAME_SESSION);
+		try {
+			if (showPage) {
+				if (shSitesContextURL.getInfo().getSiteId() != null)
+					this.siteContext(shSitesContextURL);
 				else
-					response.sendError(HttpServletResponse.SC_FORBIDDEN);
+					response.sendError(HttpServletResponse.SC_NOT_FOUND);
+
 			} else {
-				String callback = this.getCurrentUrlFromRequest(request);
-				session.setAttribute(LOGIN_CALLBACK_SESSION, callback);
-				response.sendRedirect(LOGIN_PAGE);
+				if (username != null) {
+					if (shSitesContextURL.getInfo().isPageAllowGuestUser())
+						response.sendError(HttpServletResponse.SC_NOT_FOUND);
+					else
+						response.sendError(HttpServletResponse.SC_FORBIDDEN);
+				} else {
+					String callback = this.getCurrentUrlFromRequest(request);
+					session.setAttribute(LOGIN_CALLBACK_SESSION, callback);
+					response.sendRedirect(LOGIN_PAGE);
+				}
 			}
+		} catch (IOException e) {
+			logger.error(e);
 		}
 	}
 
@@ -214,41 +229,63 @@ public class ShSitesContext {
 		return requestURL.append('?').append(queryString).toString();
 	}
 
-	public void siteContext(ShSitesContextURL shSitesContextURL) throws Exception {
-
-		File staticFile = null;
+	public void siteContext(ShSitesContextURL shSitesContextURL) {
+		
 		if (shSitesContextURL.getInfo().isStaticFile()) {
-			ShPostImpl shPost = shPostRepository.findById(shSitesContextURL.getInfo().getObjectId()).orElse(null);
-			staticFile = shStaticFileUtils.filePath(shPost);
-			if (staticFile != null && staticFile.exists()) {
-				byte[] binaryFile = FileUtils.readFileToByteArray(staticFile);
+			this.requestStaticFile(shSitesContextURL);
+		} else if (shSitesContextURL.getInfo().getObjectId() != null) {
+			this.requestPage(shSitesContextURL);
+		} else {
+			try {
+				shSitesContextURL.getResponse().sendError(HttpServletResponse.SC_NOT_FOUND);
+			} catch (IOException e) {
+				logger.error(e);
+			}
+		}
+	}
+
+	private void requestPage(ShSitesContextURL shSitesContextURL) {
+		ShCachePageBean shCachePageBean = shCachePage.cache(shSitesContextURL);
+		if (shCachePageBean != null) {
+			if (shCachePageBean.getExpirationDate() != null
+					&& shCachePageBean.getExpirationDate().compareTo(new Date()) < 0) {
+				shCachePage.deleteCache(shSitesContextURL.getInfo().getObjectId(),
+						shSitesContextURL.getInfo().getContextURLOriginal());
+				shCachePageBean = shCachePage.cache(shSitesContextURL);
+				if (logger.isDebugEnabled()) {
+					logger.debug(String.format("Expired Cache for id %s and URL %s",
+							shSitesContextURL.getInfo().getObjectId(),
+							shSitesContextURL.getInfo().getContextURLOriginal()));
+				}
+
+			}
+			shSitesContextURL.getResponse().setContentType(shCachePageBean.getContentType());
+			shSitesContextURL.getResponse().setCharacterEncoding("UTF-8");
+			if (shCachePageBean.getBody() != null)
+				try {
+					shSitesContextURL.getResponse().getWriter().write(shCachePageBean.getBody());
+				} catch (IOException e) {
+					logger.error(e);
+				}
+
+		}
+	}
+
+	private void requestStaticFile(ShSitesContextURL shSitesContextURL) {
+		File staticFile;
+		ShPostImpl shPost = shPostRepository.findById(shSitesContextURL.getInfo().getObjectId()).orElse(null);
+		staticFile = shStaticFileUtils.filePath(shPost);
+		if (staticFile != null && staticFile.exists()) {
+			byte[] binaryFile;
+			try {
+				binaryFile = FileUtils.readFileToByteArray(staticFile);
+
 				MimetypesFileTypeMap mimetypesFileTypeMap = new MimetypesFileTypeMap();
 				shSitesContextURL.getResponse().setContentType(mimetypesFileTypeMap.getContentType(staticFile));
 				shSitesContextURL.getResponse().getOutputStream().write(binaryFile);
+			} catch (IOException e) {
+				logger.error(e);
 			}
-		} else if (shSitesContextURL.getInfo().getObjectId() != null) {
-			ShCachePageBean shCachePageBean = shCachePage.cache(shSitesContextURL);
-			if (shCachePageBean != null) {
-				if (shCachePageBean.getExpirationDate() != null
-						&& shCachePageBean.getExpirationDate().compareTo(new Date()) < 0) {
-					shCachePage.deleteCache(shSitesContextURL.getInfo().getObjectId(),
-							shSitesContextURL.getInfo().getContextURLOriginal());
-					shCachePageBean = shCachePage.cache(shSitesContextURL);
-					if (logger.isDebugEnabled()) {
-						logger.debug(String.format("Expired Cache for id %s and URL %s",
-								shSitesContextURL.getInfo().getObjectId(),
-								shSitesContextURL.getInfo().getContextURLOriginal()));
-					}
-
-				}
-				shSitesContextURL.getResponse().setContentType(shCachePageBean.getContentType());
-				shSitesContextURL.getResponse().setCharacterEncoding("UTF-8");
-				if (shCachePageBean.getBody() != null)
-					shSitesContextURL.getResponse().getWriter().write(shCachePageBean.getBody());
-
-			}
-		} else {
-			shSitesContextURL.getResponse().sendError(HttpServletResponse.SC_NOT_FOUND);
 		}
 	}
 
