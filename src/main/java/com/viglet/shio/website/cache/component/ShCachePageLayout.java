@@ -16,9 +16,6 @@
  */
 package com.viglet.shio.website.cache.component;
 
-import java.io.IOException;
-
-import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.logging.log4j.LogManager;
@@ -56,10 +53,6 @@ public class ShCachePageLayout {
 				return shSitesContextComponent
 						.shRegionFactory(shSitesPageLayout, pageLayoutResult.toString(), shSite, mimeType, request)
 						.html();
-			} catch (ScriptException e) {
-				logger.error("ShCachePageLayout Script Exception: ", e);
-			} catch (IOException e) {
-				logger.error("ShCachePageLayout IOException: ", e);
 			} catch (Exception e) {
 				logger.error("ShCachePageLayout Exception: ", e);
 			}

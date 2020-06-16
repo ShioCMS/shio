@@ -16,7 +16,6 @@
  */
 package com.viglet.shio.website.nashorn;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -95,7 +94,7 @@ public class ShNashornEngineProcess {
 			try {
 				shObjectJS = shCacheJavascript.shObjectJSFactory();
 				scriptEngine.eval(shObjectJS.toString(), ssc);
-			} catch (IOException | ScriptException e) {
+			} catch (ScriptException e) {
 				logger.error(e);
 			}
 			HashMap<String, ScriptContext> elementMap = new HashMap<>();
