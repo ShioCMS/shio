@@ -1,16 +1,17 @@
 shioApp.factory('shObjectFactory', [
-	'$uibModal', 'shPostResource', 'Notification', '$filter', "$state"
-, function ($uibModal, shPostResource, Notification, $filter, $state) {
-        return {
-            openProperties: function (shObject) {
+	'$uibModal',
+	, function ($uibModal) {
+		const varToString = varObj => Object.keys(varObj)[0]
+		return {
+			openProperties: function (shObject) {
 				var modalInstance = this.modalProperties(shObject);
 				modalInstance.result.then(function (shGroups) {
 					shObject.shGroups = shGroups;
 				}, function () {
 					// Selected NO
 				});
-            },
-            addGroups: function (shObjectGroups) {
+			},
+			addGroups: function (shObjectGroups) {
 				var modalInstance = this.modalSelectGroup(shObjectGroups);
 				modalInstance.result.then(function (shGroups) {
 					if (shObjectGroups != null) {
@@ -33,8 +34,8 @@ shioApp.factory('shObjectFactory', [
 				}, function () {
 					// Selected NO
 				});
-			},            
-            modalProperties: function (shObject) {
+			},
+			modalProperties: function (shObject) {
 				var $ctrl = this;
 				return $uibModal.open({
 					animation: true
@@ -42,7 +43,7 @@ shioApp.factory('shObjectFactory', [
 					, ariaDescribedBy: 'modal-body'
 					, templateUrl: 'template/object/object-properties.html'
 					, controller: 'ShObjectPropertiesCtrl'
-					, controllerAs: '$ctrl'
+					, controllerAs: varToString({ $ctrl })
 					, size: null
 					, appendTo: undefined
 					, resolve: {
@@ -51,8 +52,8 @@ shioApp.factory('shObjectFactory', [
 						}
 					}
 				});
-            },             
-            modalSelectGroup: function (shObjectGroups) {
+			},
+			modalSelectGroup: function (shObjectGroups) {
 				var $ctrl = this;
 				return $uibModal.open({
 					animation: true
@@ -60,7 +61,7 @@ shioApp.factory('shObjectFactory', [
 					, ariaDescribedBy: 'modal-body'
 					, templateUrl: 'template/admin/group/group-select-dialog.html'
 					, controller: 'ShModalSelectGroupListCtrl'
-					, controllerAs: '$ctrl'
+					, controllerAs: varToString({ $ctrl })
 					, size: null
 					, appendTo: undefined
 					, resolve: {
@@ -78,7 +79,7 @@ shioApp.factory('shObjectFactory', [
 					, ariaDescribedBy: 'modal-body'
 					, templateUrl: 'template/admin/user/user-select-dialog.html'
 					, controller: 'ShModalSelectUserListCtrl'
-					, controllerAs: '$ctrl'
+					, controllerAs: varToString({ $ctrl  })
 					, size: null
 					, appendTo: undefined
 					, resolve: {
@@ -88,5 +89,5 @@ shioApp.factory('shObjectFactory', [
 					}
 				});
 			}
-        }
-		}]);
+		}
+	}]);
