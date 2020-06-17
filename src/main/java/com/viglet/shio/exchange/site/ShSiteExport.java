@@ -116,78 +116,17 @@ public class ShSiteExport {
 
 			ShExchange shExchangeFolder = shFolderExport.shFolderExchangeIterate(rootFolders);
 
-			List<ShPostTypeExchange> shExchangePostTypes = shExchangeFolder.getPostTypes();
-
-			if (shUtils.isJSONValid(shSiteExchange.getPostTypeLayout())) {
-				Gson gson = new Gson();
-				Type type = new TypeToken<Set<String>>() {
-				}.getType();
-				Set<String> postTypes = gson.fromJson(shSiteExchange.getPostTypeLayout(), type);
-
-				Set<String> shExchangePostTypeMap = new HashSet<>();
-				if (shExchangePostTypes != null)
-					shExchangePostTypes
-							.forEach(shPostTypeExchange -> shExchangePostTypeMap.add(shPostTypeExchange.getName()));
-				else
-					shExchangePostTypes = new ArrayList<ShPostTypeExchange>();
-
-				for (String postType : postTypes) {
-					if (!shExchangePostTypeMap.contains(postType)) {
-						ShPostType shPostType = shPostTypeRepository.findByName(postType);
-						if (shPostType != null) {
-							shExchangePostTypes.add(shPostTypeExport.exportPostType(shPostType));
-						}
-					}
-				}
-			}
-
 			shExchange.setFolders(shExchangeFolder.getFolders());
 			shExchange.setPosts(shExchangeFolder.getPosts());
-			shExchange.setPostTypes(shExchangePostTypes);
-			shExchangeFolder.getFiles().forEach(fileExchange -> {
-				try {
-					File fileSource = fileExchange.getFile();
-					File fileDestination = new File(
-							exportDir.getAbsolutePath().concat(File.separator + fileExchange.getId()));
-					if (fileSource.exists())
-						FileUtils.copyFile(fileSource, fileDestination);
-					else {
-						logger.warn(String.format(
-								"Exporting the file %s, but it does not exist, so it is creating a new empty file to export.",
-								fileSource.getAbsoluteFile()));
-						if (fileDestination.createNewFile())
-							logger.debug(String.format("File was created %s", fileDestination));
-						else
-							logger.error(String.format("File was not created: %s", fileDestination));
-					}
+			shExchange.setPostTypes(exportPostTypes(shSiteExchange, shExchangeFolder));
+			exportStaticFiles(exportDir, shExchangeFolder);
+			createExportJSONFile(shExchange, exportDir);
 
-				} catch (IOException e) {
-					logger.error("exportObject: ", e);
-				}
-
-			});
-			ObjectMapper mapper = new ObjectMapper();
-			try {
-				mapper.writerWithDefaultPrettyPrinter().writeValue(
-						new File(exportDir.getAbsolutePath().concat(File.separator + "export.json")), shExchange);
-			} catch (IOException mapperException) {
-				logger.error("exportObject, MapperObject", mapperException);
-			}
-
-			File zipFile = new File(tmpDir.getAbsolutePath().concat(File.separator + folderName + ".zip"));
-
-			shUtils.addFilesToZip(exportDir, zipFile);
-
-			String zipFileName = String.format("%s_%s.zip", shSite.getName(),
-					new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(new Date()));
-
-			response.addHeader("Content-disposition", "attachment;filename=" + zipFileName);
-			response.setContentType("application/octet-stream");
-			response.setStatus(HttpServletResponse.SC_OK);
+			File zipFile = compressExport(response, folderName, tmpDir, exportDir, shSite);
 
 			return new StreamingResponseBody() {
 				@Override
-				public void writeTo(java.io.OutputStream output) throws IOException {
+				public void writeTo(java.io.OutputStream output) {
 
 					try {
 						IOUtils.copy(new FileInputStream(zipFile), output);
@@ -207,5 +146,83 @@ public class ShSiteExport {
 			return null;
 		}
 
+	}
+
+	private List<ShPostTypeExchange> exportPostTypes(ShSiteExchange shSiteExchange, ShExchange shExchangeFolder) {
+		List<ShPostTypeExchange> shExchangePostTypes = shExchangeFolder.getPostTypes();
+
+		if (shUtils.isJSONValid(shSiteExchange.getPostTypeLayout())) {
+			Gson gson = new Gson();
+			Type type = new TypeToken<Set<String>>() {
+			}.getType();
+			Set<String> postTypes = gson.fromJson(shSiteExchange.getPostTypeLayout(), type);
+
+			Set<String> shExchangePostTypeMap = new HashSet<>();
+			if (shExchangePostTypes != null)
+				shExchangePostTypes
+						.forEach(shPostTypeExchange -> shExchangePostTypeMap.add(shPostTypeExchange.getName()));
+			else
+				shExchangePostTypes = new ArrayList<>();
+
+			for (String postType : postTypes) {
+				if (!shExchangePostTypeMap.contains(postType)) {
+					ShPostType shPostType = shPostTypeRepository.findByName(postType);
+					if (shPostType != null) {
+						shExchangePostTypes.add(shPostTypeExport.exportPostType(shPostType));
+					}
+				}
+			}
+		}
+		return shExchangePostTypes;
+	}
+
+	private File compressExport(HttpServletResponse response, String folderName, File tmpDir, File exportDir,
+			ShSite shSite) {
+		File zipFile = new File(tmpDir.getAbsolutePath().concat(File.separator + folderName + ".zip"));
+
+		shUtils.addFilesToZip(exportDir, zipFile);
+
+		String zipFileName = String.format("%s_%s.zip", shSite.getName(),
+				new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(new Date()));
+
+		response.addHeader("Content-disposition", "attachment;filename=" + zipFileName);
+		response.setContentType("application/octet-stream");
+		response.setStatus(HttpServletResponse.SC_OK);
+		return zipFile;
+	}
+
+	private void createExportJSONFile(ShExchange shExchange, File exportDir) {
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			mapper.writerWithDefaultPrettyPrinter().writeValue(
+					new File(exportDir.getAbsolutePath().concat(File.separator + "export.json")), shExchange);
+		} catch (IOException mapperException) {
+			logger.error("exportObject, MapperObject", mapperException);
+		}
+	}
+
+	private void exportStaticFiles(File exportDir, ShExchange shExchangeFolder) {
+		shExchangeFolder.getFiles().forEach(fileExchange -> {
+			try {
+				File fileSource = fileExchange.getFile();
+				File fileDestination = new File(
+						exportDir.getAbsolutePath().concat(File.separator + fileExchange.getId()));
+				if (fileSource.exists())
+					FileUtils.copyFile(fileSource, fileDestination);
+				else {
+					logger.warn(String.format(
+							"Exporting the file %s, but it does not exist, so it is creating a new empty file to export.",
+							fileSource.getAbsoluteFile()));
+					if (fileDestination.createNewFile())
+						logger.debug(String.format("File was created %s", fileDestination));
+					else
+						logger.error(String.format("File was not created: %s", fileDestination));
+				}
+
+			} catch (IOException e) {
+				logger.error("exportObject: ", e);
+			}
+
+		});
 	}
 }

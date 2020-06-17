@@ -18,6 +18,7 @@ package com.viglet.shio.api.provider.exchange;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
@@ -253,9 +254,13 @@ public class ShExchangeProviderAPI {
 					.getVariablesFromPath(String.format(PROVIDER_PATH, providerInstanceId));
 
 			try {
+
 				shExchangeProvider = (ShExchangeProvider) Class
-						.forName(shExchangeProviderInstance.getVendor().getClassName()).newInstance();
-			} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+						.forName(shExchangeProviderInstance.getVendor().getClassName()).getDeclaredConstructor()
+						.newInstance();
+
+			} catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException
+					| InstantiationException | IllegalAccessException | ClassNotFoundException e) {
 				logger.error("initProvider: ", e);
 			}
 			shExchangeProvider.init(variables);

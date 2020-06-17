@@ -80,20 +80,20 @@ public class ShCloneExchange {
 	}
 
 	private ShExchange cloneObjects(String username, ShSite shSite, File extractFolder, ShExchange shExchangeModified) {
-	
-			ShExchange shExchange = readExportFile(extractFolder);
-			if (hasPostTypes(shExchange))
-				shPostTypeImport.importPostType(shExchange, true);
 
-			if (hasSites(shExchange))
-				shExchangeModified = shSiteImport.cloneSite(shExchange, username, extractFolder, shObjects,
-						shChildObjects, shSite);
-		
+		ShExchange shExchange = readExportFile(extractFolder);
+		if (hasPostTypes(shExchange))
+			shPostTypeImport.importPostType(shExchange, true);
+
+		if (hasSites(shExchange))
+			shExchangeModified = shSiteImport.cloneSite(shExchange, username, extractFolder, shObjects, shChildObjects,
+					shSite);
+
 		return shExchangeModified;
 	}
 
 	private boolean hasSites(ShExchange shExchange) {
-		return shExchange != null &&  shExchange.getSites() != null && !shExchange.getSites().isEmpty();
+		return shExchange != null && shExchange.getSites() != null && !shExchange.getSites().isEmpty();
 	}
 
 	private boolean hasPostTypes(ShExchange shExchange) {

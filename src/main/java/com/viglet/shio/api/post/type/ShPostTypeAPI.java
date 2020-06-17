@@ -74,7 +74,7 @@ public class ShPostTypeAPI {
 	private ShPostTypeExport shPostTypeExport;
 	@Autowired
 	private ShPostTypeUtils shPostTypeUtils;
-	
+
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewPostType.class })
 	public List<ShPostType> shPostTypeList() {
@@ -84,23 +84,22 @@ public class ShPostTypeAPI {
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewPostType.class })
 	public ShPostType shPostTypeEdit(@PathVariable String id) {
-		ShPostType shPostType = shPostTypeRepository.findById(id).orElse(null);
 
-		if (shPostType != null) {
+		Optional<ShPostType> shPostType = shPostTypeRepository.findById(id);
 
-			shPostType.setShPostTypeAttrs(shPostTypeAttrRepository.findByShPostType(shPostType));
-			for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs()) {
-				getChildrenPostAttrs(shPostTypeAttr);
-			}
+		if (shPostType.isPresent()) {
+			shPostType.get().setShPostTypeAttrs(shPostTypeAttrRepository.findByShPostType(shPostType.get()));
+			shPostType.get().getShPostTypeAttrs().forEach(this::getChildrenPostAttrs);
+			return shPostType.get();
+		} else {
+			return null;
 		}
-		return shPostType;
+
 	}
 
 	private void getChildrenPostAttrs(ShPostTypeAttr shPostTypeAttr) {
 		Set<ShPostTypeAttr> shPostTypeAttrs = shPostTypeAttrRepository.findByShParentPostTypeAttr(shPostTypeAttr);
-		for (ShPostTypeAttr shPostTypeAttrChild : shPostTypeAttrs) {
-			getChildrenPostAttrs(shPostTypeAttrChild);
-		}
+		shPostTypeAttrs.forEach(this::getChildrenPostAttrs);
 		shPostTypeAttr.setShPostTypeAttrs(shPostTypeAttrs);
 	}
 
@@ -116,13 +115,7 @@ public class ShPostTypeAPI {
 	public ShPostImpl shPostTypePostStructure(@PathVariable String id) {
 		ShPostImpl shPost = new ShPost();
 		shPost.setShPostType(shPostTypeRepository.findById(id).orElse(null));
-		Set<ShPostAttr> shPostAttrs = new HashSet<>();
-		for (ShPostTypeAttr shPostTypeAttr : shPost.getShPostType().getShPostTypeAttrs()) {
-			ShPostAttr shPostAttr = new ShPostAttr();
-			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
-			shPostAttrs.add(shPostAttr);
-		}
-		shPost.setShPostAttrs(shPostAttrs);
+		setPostTypeAttrs(shPost);
 		return shPost;
 
 	}
@@ -132,15 +125,19 @@ public class ShPostTypeAPI {
 	public ShPostImpl shPostTypeByNamePostStructure(@PathVariable String postTypeName) {
 		ShPostImpl shPost = new ShPost();
 		shPost.setShPostType(shPostTypeRepository.findByName(postTypeName));
+		setPostTypeAttrs(shPost);
+		return shPost;
+
+	}
+
+	private void setPostTypeAttrs(ShPostImpl shPost) {
 		Set<ShPostAttr> shPostAttrs = new HashSet<>();
-		for (ShPostTypeAttr shPostTypeAttr : shPost.getShPostType().getShPostTypeAttrs()) {
+		shPost.getShPostType().getShPostTypeAttrs().forEach(shPostTypeAttr -> {
 			ShPostAttr shPostAttr = new ShPostAttr();
 			shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 			shPostAttrs.add(shPostAttr);
-		}
+		});
 		shPost.setShPostAttrs(shPostAttrs);
-		return shPost;
-
 	}
 
 	@PutMapping("/{id}")
@@ -152,24 +149,18 @@ public class ShPostTypeAPI {
 
 	@Transactional
 	@DeleteMapping("/{id}")
-	public boolean shPostTypeDelete(@PathVariable String id){
+	public boolean shPostTypeDelete(@PathVariable String id) {
 		Optional<ShPostType> shPostTypeOptional = shPostTypeRepository.findById(id);
 		if (shPostTypeOptional.isPresent()) {
 			ShPostType shPostType = shPostTypeOptional.get();
-
-			for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs()) {
-				for (ShPostAttrImpl shPostAttr : shPostTypeAttr.getShPostAttrs()) {
-					shPostAttrRepository.delete(shPostAttr.getId());
-				}
+			shPostType.getShPostTypeAttrs().forEach(shPostTypeAttr -> {
+				shPostTypeAttr.getShPostAttrs().forEach(shPostAttr -> shPostAttrRepository.delete(shPostAttr.getId()));
 				shPostTypeAttrRepository.delete(shPostTypeAttr.getId());
-			}
-
-			for (ShPost shPost : shPostType.getShPosts()) {
-				for (ShPostAttrImpl shPostAttr : shPost.getShPostAttrs()) {
-					shPostAttrRepository.delete(shPostAttr.getId());
-				}
+			});
+			shPostType.getShPosts().forEach(shPost -> {
+				shPost.getShPostAttrs().forEach(shPostAttr -> shPostAttrRepository.delete(shPostAttr.getId()));
 				shPostRepository.delete(shPost.getId());
-			}
+			});
 
 			shPostTypeRepository.delete(id);
 			return true;
@@ -180,7 +171,7 @@ public class ShPostTypeAPI {
 
 	@PostMapping
 	@JsonView({ ShJsonView.ShJsonViewPostType.class })
-	public ShPostType shPostTypeAdd(@RequestBody ShPostType shPostType){
+	public ShPostType shPostTypeAdd(@RequestBody ShPostType shPostType) {
 
 		this.postTypeSave(shPostType);
 
@@ -190,8 +181,7 @@ public class ShPostTypeAPI {
 
 	@PostMapping("/{id}/attr")
 	@JsonView({ ShJsonView.ShJsonViewPostType.class })
-	public ShPostTypeAttr shPostTypeAttrAdd(@PathVariable String id, @RequestBody ShPostTypeAttr shPostTypeAttr)
-			throws Exception {
+	public ShPostTypeAttr shPostTypeAttrAdd(@PathVariable String id, @RequestBody ShPostTypeAttr shPostTypeAttr){
 		Optional<ShPostType> shPostTypeOptional = shPostTypeRepository.findById(id);
 		if (shPostTypeOptional.isPresent()) {
 			ShPostType shPostType = shPostTypeOptional.get();
@@ -208,7 +198,7 @@ public class ShPostTypeAPI {
 	@ResponseBody
 	@GetMapping(value = "/export", produces = "application/zip")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public StreamingResponseBody shPostTypeExport(HttpServletResponse response) throws Exception {
+	public StreamingResponseBody shPostTypeExport(HttpServletResponse response) {
 
 		return shPostTypeExport.exportObject(response);
 
@@ -217,11 +207,10 @@ public class ShPostTypeAPI {
 	private void postTypeSave(ShPostType shPostType) {
 
 		shPostType.setDate(new Date());
-
-		for (ShPostTypeAttr shPostTypeAttr : shPostType.getShPostTypeAttrs()) {
+		shPostType.getShPostTypeAttrs().forEach(shPostTypeAttr -> {
 			shPostTypeAttr.setShPostType(shPostType);
 			this.postTypeAttrSave(shPostTypeAttr, shPostType);
-		}
+		});		
 
 		shPostTypeRepository.saveAndFlush(shPostType);
 
@@ -231,20 +220,17 @@ public class ShPostTypeAPI {
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShPostType> shObjectClone(@RequestBody List<String> ids) {
 		List<ShPostType> shPostTypes = new ArrayList<>();
-		for (String id : ids) {
+		ids.forEach(id -> {
 			ShPostType shPostType = shPostTypeRepository.findById(id).orElse(null);
-
 			shPostTypes.add(shPostTypeUtils.clone(shPostType));
-
-		}
+		});
 		return shPostTypes;
 	}
 
 	private void postTypeAttrSave(ShPostTypeAttr shPostTypeAttr, ShPostType shPostType) {
-
-		for (ShPostTypeAttr shChildPostTypeAttr : shPostTypeAttr.getShPostTypeAttrs()) {
+		shPostTypeAttr.getShPostTypeAttrs().forEach(shChildPostTypeAttr -> {
 			shChildPostTypeAttr.setShParentPostTypeAttr(shPostTypeAttr);
 			this.postTypeAttrSave(shChildPostTypeAttr, shPostType);
-		}
+		});
 	}
 }

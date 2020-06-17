@@ -173,8 +173,7 @@ public class ShAuthProviderAPI {
 	@GetMapping("/model")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShAuthProviderInstanceBean shAuthProviderInstanceStructure() {
-		ShAuthProviderInstanceBean shAuthProviderInstanceBean = new ShAuthProviderInstanceBean();
-		return shAuthProviderInstanceBean;
+		return new ShAuthProviderInstanceBean();
 
 	}
 
