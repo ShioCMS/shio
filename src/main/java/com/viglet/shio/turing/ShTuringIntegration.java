@@ -75,7 +75,6 @@ import com.viglet.turing.client.sn.job.TurSNJobItems;
 public class ShTuringIntegration {
 	static final Logger logger = LogManager.getLogger(ShTuringIntegration.class);
 	private static final String TURING_SERVER = "http://localhost:2700";
-	private ShSite shSite = null;
 	private static final boolean TURING_ENABLED = true;
 
 	@Autowired
@@ -98,46 +97,64 @@ public class ShTuringIntegration {
 	private ShSitesFolderUtils shSitesFolderUtils;
 
 	public void indexObject(ShObject shObject) {
+		ShSite shSite = shObjectUtils.getSite(shObject);
 
-		if (TURING_ENABLED) {
-			shSite = shObjectUtils.getSite(shObject);
-			if (shSite != null && StringUtils.isNotBlank(shSite.getSearchablePostTypes())) {
+		if (TURING_ENABLED && hasSearchablePostTypes(shSite)) {
+			if (isFolderIndex(shObject))
+				shObject = ((ShPostImpl) shObject).getShFolder();
 
-				String objectName = null;
-				String objectTypeName = null;
+			String objectTypeName = getObjectTypeName(shObject);
+			String objectName = getObjectName(shObject);
 
-				if (shObject instanceof ShPost) {
-					ShPostImpl shPost = (ShPostImpl) shObject;
-					objectName = shPost.getTitle();
+			logger.info(String.format("Preparing to index %s...", objectName));
 
-					objectTypeName = shPost.getShPostType().getName();
-					if (objectTypeName.equals(ShSystemPostType.FOLDER_INDEX)) {
-						objectTypeName = ShObjectType.FOLDER;
-						shObject = shPost.getShFolder();
-					}
-				} else if (shObject instanceof ShFolder) {
+			this.sendServerToIndex(shObject, objectName, objectTypeName, shSite);
 
-					objectTypeName = ShObjectType.FOLDER;
-				}
-				logger.info(String.format("Preparing to index %s...", objectName));
-
-				if (this.isSearchable(objectTypeName)) {
-					TurSNJobItems turSNJobItems = new TurSNJobItems();
-					TurSNJobItem turSNJobItem = this.toTurSNJobItem(shObject);
-					if (turSNJobItem != null) {
-						turSNJobItem.setTurSNJobAction(TurSNJobAction.CREATE);
-						turSNJobItems.add(turSNJobItem);
-					}
-
-					this.sendServer(turSNJobItems);
-					logger.info(String.format("Sent to index queue: %s", objectName));
-				}
-
-			}
 		}
 	}
 
-	public boolean isSearchable(String objectTypeName) {
+	private boolean hasSearchablePostTypes(ShSite shSite) {
+		return shSite != null && StringUtils.isNotBlank(shSite.getSearchablePostTypes());
+	}
+
+	private boolean isFolderIndex(ShObject shObject) {
+		return shObject instanceof ShPost
+				&& ((ShPostImpl) shObject).getShPostType().getName().equals(ShSystemPostType.FOLDER_INDEX);
+	}
+
+	private String getObjectTypeName(ShObject shObject) {
+		String objectTypeName = null;
+		if (shObject instanceof ShPost)
+			objectTypeName = ((ShPostImpl) shObject).getShPostType().getName();
+		else if (shObject instanceof ShFolder)
+			objectTypeName = ShObjectType.FOLDER;
+		return objectTypeName;
+	}
+
+	private String getObjectName(ShObject shObject) {
+		String objectName = null;
+		if (shObject instanceof ShPost)
+			objectName = ((ShPostImpl) shObject).getTitle();
+		else if (shObject instanceof ShFolder)
+			objectName = ((ShFolder) shObject).getName();
+		return objectName;
+	}
+
+	private void sendServerToIndex(ShObject shObject, String objectName, String objectTypeName, ShSite shSite) {
+		if (this.isSearchable(objectTypeName, shSite)) {
+			TurSNJobItems turSNJobItems = new TurSNJobItems();
+			TurSNJobItem turSNJobItem = this.toTurSNJobItem(shObject);
+			if (turSNJobItem != null) {
+				turSNJobItem.setTurSNJobAction(TurSNJobAction.CREATE);
+				turSNJobItems.add(turSNJobItem);
+			}
+
+			this.sendServer(turSNJobItems, shSite);
+			logger.info(String.format("Sent to index queue: %s", objectName));
+		}
+	}
+
+	public boolean isSearchable(String objectTypeName, ShSite shSite) {
 		JSONObject searchablePostTypes = new JSONObject(shSite.getSearchablePostTypes());
 
 		return (objectTypeName != null && searchablePostTypes.has(objectTypeName)
@@ -145,29 +162,22 @@ public class ShTuringIntegration {
 	}
 
 	public void deindexObject(ShObject shObject) {
-		if (TURING_ENABLED) {
-			shSite = shObjectUtils.getSite(shObject);
+		ShSite shSite = shObjectUtils.getSite(shObject);
 
-			if (shSite != null && StringUtils.isNotBlank(shSite.getSearchablePostTypes())) {
-				String objectTypeName = null;
-				if (shObject instanceof ShPost) {
-					objectTypeName = ((ShPostImpl) shObject).getShPostType().getName();
-				} else if (shObject instanceof ShFolder) {
-					objectTypeName = "FOLDER";
-					this.desindexChildObjects(shObject);
-				}
+		if (TURING_ENABLED && hasSearchablePostTypes(shSite)) {
+			String objectTypeName = getObjectTypeName(shObject);
+			if (shObject instanceof ShFolder)
+				this.desindexChildObjects(shObject);
+			if (this.isSearchable(objectTypeName, shSite)) {
+				TurSNJobItems turSNJobItems = new TurSNJobItems();
+				TurSNJobItem turSNJobItem = new TurSNJobItem();
+				Map<String, Object> attributes = new HashMap<>();
+				attributes.put("id", shObject.getId());
+				turSNJobItem.setAttributes(attributes);
+				turSNJobItem.setTurSNJobAction(TurSNJobAction.DELETE);
+				turSNJobItems.add(turSNJobItem);
 
-				if (this.isSearchable(objectTypeName)) {
-					TurSNJobItems turSNJobItems = new TurSNJobItems();
-					TurSNJobItem turSNJobItem = new TurSNJobItem();
-					Map<String, Object> attributes = new HashMap<>();
-					attributes.put("id", shObject.getId());
-					turSNJobItem.setAttributes(attributes);
-					turSNJobItem.setTurSNJobAction(TurSNJobAction.DELETE);
-					turSNJobItems.add(turSNJobItem);
-
-					this.sendServer(turSNJobItems);
-				}
+				this.sendServer(turSNJobItems, shSite);
 			}
 		}
 	}
@@ -390,7 +400,7 @@ public class ShTuringIntegration {
 		}
 	}
 
-	private void sendServer(TurSNJobItems turSNJobItems) {
+	private void sendServer(TurSNJobItems turSNJobItems, ShSite shSite) {
 		CloseableHttpResponse response = null;
 		try {
 			ObjectMapper mapper = new ObjectMapper();

@@ -1,6 +1,6 @@
 shioApp.factory('shObjectFactory', [
 	'$uibModal',
-	, function ($uibModal) {
+	function ($uibModal) {
 		const varToString = varObj => Object.keys(varObj)[0];
 		return {
 			openProperties: function (shObject) {
@@ -79,7 +79,7 @@ shioApp.factory('shObjectFactory', [
 					, ariaDescribedBy: 'modal-body'
 					, templateUrl: 'template/admin/user/user-select-dialog.html'
 					, controller: 'ShModalSelectUserListCtrl'
-					, controllerAs: varToString({ $ctrl  })
+					, controllerAs: varToString({ $ctrl })
 					, size: null
 					, appendTo: undefined
 					, resolve: {
