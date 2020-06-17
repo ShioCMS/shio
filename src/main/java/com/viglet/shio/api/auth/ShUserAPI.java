@@ -117,7 +117,7 @@ public class ShUserAPI {
 
 	private boolean isAdminFromNative(ShUser shUser, ShAuthProviderInstance instance) {
 		boolean isAdmin = false;
-		if (!isNotNativeAuth(instance) && shUser.getShGroups() != null) {
+		if (!isNotNativeAuth(instance) && shUser != null && shUser.getShGroups() != null) {
 			for (ShGroup shGroup : shUser.getShGroups()) {
 				if (shGroup.getName().equals("Administrator"))
 					isAdmin = true;
