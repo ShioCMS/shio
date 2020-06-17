@@ -77,18 +77,18 @@ shioApp.controller('ShPostEditCtrl', [
 
 						if (shPostAttr.shPostTypeAttr.shWidget.name === 'Tab') {
 							tabName = shPostAttr.shPostTypeAttr.label;
-							var tab = {
+							var tab1 = {
 								ordinal: shPostAttr.shPostTypeAttr.ordinal,
 								name: tabName
 							}
-							$scope.tabs.push(tab);
+							$scope.tabs.push(tab1);
 
 						} else if (key === 0) {
-							var tab = {
+							var tab2 = {
 								ordinal: 0,
 								name: tabName
 							}
-							$scope.tabs.push(tab);
+							$scope.tabs.push(tab2);
 						}
 						shPostAttr["tab"] = tabName;
 					});

@@ -359,9 +359,9 @@ shioApp.controller('ShObjectChildrenCtrl', [
                         for (var i = 0; i < shObjects.length; i++) {
                             var shObject = shObjects[i];
                             $scope.shStateObjects[shObject.id] = false;
-                            var movedMessagePost = null;
+                            var movedMessage = null;
                             if (shObject.objectType == "POST") {
-                                movedMessagePost = 'The ' + shObject.title + ' Post was moved.';
+                                movedMessage = 'The ' + shObject.title + ' Post was moved.';
                                 var foundItem = $filter('filter')
                                     ($scope.shPosts, {
                                         id: shObject.id
@@ -370,7 +370,7 @@ shioApp.controller('ShObjectChildrenCtrl', [
                                 $scope.shPosts.splice(index, 1);
                             }
                             else if (shObject.objectType == "FOLDER") {
-                                movedMessageFolder = 'The ' + shObject.name + ' Folder was moved.';
+                                movedMessage = 'The ' + shObject.name + ' Folder was moved.';
                                 var foundItemFolder = $filter('filter')
                                     ($scope.shFolders, {
                                         id: shObject.id
@@ -378,7 +378,7 @@ shioApp.controller('ShObjectChildrenCtrl', [
                                 var indexFolder = $scope.shFolders.indexOf(foundItemFolder);
                                 $scope.shFolders.splice(indexFolder, 1);
                             }
-                            Notification.warning(movedMessageFolder);
+                            Notification.warning(movedMessage);
                         }
                         $scope.checkSomeItemSelected();
                     });

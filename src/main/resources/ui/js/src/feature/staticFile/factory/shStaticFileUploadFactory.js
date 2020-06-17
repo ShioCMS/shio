@@ -1,6 +1,6 @@
-shioApp.factory('shStaticFileUploadFactory', [ '$uibModal', 'shPostResource',
-		'Notification', '$filter', "$state",
-		function($uibModal, shPostResource, Notification, $filter, $state) {
+shioApp.factory('shStaticFileUploadFactory', [ '$uibModal',
+		function($uibModal) {
+			const varToString = varObj => Object.keys(varObj)[0];
 			return {
 				modalUploadFiles : function(folderId) {
 					var $ctrl = this;
@@ -10,7 +10,7 @@ shioApp.factory('shStaticFileUploadFactory', [ '$uibModal', 'shPostResource',
 						ariaDescribedBy : 'modal-body',
 						templateUrl : 'template/staticfile/staticfile-upload.html',
 						controller : 'ShStaticFileUploadSelectCtrl',
-						controllerAs : '$ctrl',
+						controllerAs : varToString({ $ctrl }),
 						size : null,
 						appendTo : undefined,
 						resolve : {

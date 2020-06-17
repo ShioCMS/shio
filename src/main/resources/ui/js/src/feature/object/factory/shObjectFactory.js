@@ -1,7 +1,7 @@
 shioApp.factory('shObjectFactory', [
 	'$uibModal',
 	, function ($uibModal) {
-		const varToString = varObj => Object.keys(varObj)[0]
+		const varToString = varObj => Object.keys(varObj)[0];
 		return {
 			openProperties: function (shObject) {
 				var modalInstance = this.modalProperties(shObject);

@@ -1,6 +1,7 @@
 shioApp.factory('shSiteFactory', [
 	'$uibModal', 'shSiteResource', 'shAPIServerService', 'Notification', '$state',
 	function ($uibModal, shSiteResource, shAPIServerService, Notification, $state) {
+		const varToString = varObj => Object.keys(varObj)[0];
 		return {
 			export: function (shSite) {
 				window.open(shAPIServerService
@@ -54,7 +55,7 @@ shioApp.factory('shSiteFactory', [
 					, ariaDescribedBy: 'modal-body'
 					, templateUrl: 'template/modal/shDeleteObject.html'
 					, controller: 'ShModalDeleteObjectCtrl'
-					, controllerAs: '$ctrl'
+					, controllerAs: varToString({ $ctrl })
 					, size: null
 					, appendTo: undefined
 					, resolve: {

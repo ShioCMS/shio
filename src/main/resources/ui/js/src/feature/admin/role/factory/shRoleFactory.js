@@ -1,6 +1,7 @@
 shioApp.factory('shRoleFactory', [
 	'$uibModal','shRoleResource', 'Notification','$state',
 		function($uibModal,shRoleResource, Notification, $state) {
+			const varToString = varObj => Object.keys(varObj)[0];
 			return {
 				delete : function(shRole) {
 					var modalInstance = this.modalDelete(shRole);
@@ -42,7 +43,7 @@ shioApp.factory('shRoleFactory', [
 						, ariaDescribedBy: 'modal-body'
 						, templateUrl: 'template/admin/user/user-delete.html'
 						, controller: 'ShModalDeleteUserCtrl'
-						, controllerAs: '$ctrl'
+						, controllerAs: varToString({ $ctrl })
 						, size: null
 						, appendTo: undefined
 						, resolve: {
