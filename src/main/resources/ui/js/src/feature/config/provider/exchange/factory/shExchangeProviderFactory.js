@@ -1,6 +1,7 @@
 shioApp.factory('shExchangeProviderFactory', [
 	'$uibModal', 'shExchangeProviderResource', 'Notification', '$state',
 	function ($uibModal, shExchangeProviderResource, Notification, $state) {
+		const varToString = varObj => Object.keys(varObj)[0];
 		return {
 			delete: function (shExchangeProvider) {
 				var modalInstance = this.modalDelete(shExchangeProvider);
@@ -26,7 +27,7 @@ shioApp.factory('shExchangeProviderFactory', [
 					, ariaDescribedBy: 'modal-body'
 					, templateUrl: 'template/modal/shDeleteGenericObject.html'
 					, controller: 'ShModalDeleteGenericObjectCtrl'
-					, controllerAs: '$ctrl'
+					, controllerAs: varToString({ $ctrl })
 					, size: null
 					, appendTo: undefined
 					, resolve: {

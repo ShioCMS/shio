@@ -9,16 +9,15 @@ shioApp.controller('ShWidgetCheckBoxCtrl', [
 			var choicesArray = $scope.widgetSettingsObject.choices.replace(/(\r\n\n\r)/gm, "\n").split("\n");
 			angular.forEach(choicesArray, function (value, key) {
 				var choiceRowArray = value.split(":");
-				var choiceRow = [];
-				choiceRow["id"] = choiceRowArray[0];
-				choiceRow["label"] = choiceRowArray[1];
-				if (arrayValue.indexOf(choiceRowArray[0]) > -1) {
-					choiceRow["checked"] = true;
+				var choiceRow = {
+					id :choiceRowArray[0],
+					label : choiceRowArray[1],
+					checked: (arrayValue.indexOf(choiceRowArray[0]) > -1)
+				}
+				
+				if (arrayValue.indexOf(choiceRowArray[0]) > -1)
 					$scope.checkItems.push(choiceRowArray[0]);
-				}
-				else {
-					choiceRow["checked"] = false;
-				}
+				
 				$scope.choices.push(choiceRow);
 
 			});

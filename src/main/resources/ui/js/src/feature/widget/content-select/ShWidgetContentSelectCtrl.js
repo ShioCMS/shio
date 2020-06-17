@@ -25,7 +25,7 @@ shioApp
 										$scope.folderBreadcrumb(breadcrumb,
 												shFolder.parentFolder);
 									} else if (shFolder.shSite != null) {
-										var breadcrumbItem = {};
+										breadcrumbItem = {};
 										breadcrumbItem.id = shFolder.shSite.id;
 										breadcrumbItem.name = shFolder.shSite.name
 												+ " (Site)";
@@ -75,7 +75,7 @@ shioApp
 										.fromJson(shPostAttr.shPostTypeAttr.widgetSettings);
 								var folderIdSetting = null;
 								if (widgetSettingsObject != null) {
-									var folderIdSetting = widgetSettingsObject.contentSelect.folderId;
+									folderIdSetting = widgetSettingsObject.contentSelect.folderId;
 								}
 								var shFolderId = null;
 								if (folderIdSetting != null

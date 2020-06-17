@@ -4,19 +4,17 @@ shioApp
 		[
 			"$scope",
 			"$http",
-			"$window",
 			"$stateParams",
 			"$state",
 			"$rootScope",
 			"$filter",
 			"shWidgetResource",
 			"shPostTypeResource",
-			"shPostTypeAttrResource",
 			"shAPIServerService",
 			"Notification",
-			function ($scope, $http, $window, $stateParams, $state,
+			function ($scope, $http, $stateParams, $state,
 				$rootScope, $filter, shWidgetResource,
-				shPostTypeResource, shPostTypeAttrResource,
+				shPostTypeResource,
 				shAPIServerService, Notification) {
 				$scope.postTypeId = $stateParams.postTypeId;
 				$scope.shPostType = null;
@@ -38,8 +36,8 @@ shioApp
 
 				shPostTypeResource
 					.get({
-							id: $scope.postTypeId
-						},
+						id: $scope.postTypeId
+					},
 						function (response) {
 							// $scope.shPostNewItem =
 							// angular.copy($scope.shPostType);
@@ -54,9 +52,9 @@ shioApp
 					.$evalAsync($http
 						.get(
 							shAPIServerService
-							.get()
-							.concat(
-								"/v2/post/type/attr/model"))
+								.get()
+								.concat(
+									"/v2/post/type/attr/model"))
 						.then(
 							function (response) {
 								$scope.shPostTypeAttrModel = response.data;
@@ -73,7 +71,6 @@ shioApp
 
 
 				$scope.postTypeSave = function () {
-					var log = [];
 					$scope.updateWidgetSettings($scope.shPostType);
 					$scope.shPostType.$update(function () {
 						$scope.shPostType.shPostTypeAttrs = $filter('orderBy')($scope.shPostType.shPostTypeAttrs, 'ordinal');
@@ -104,10 +101,10 @@ shioApp
 				}
 
 				$scope.postTypeAttrDelete = function (shPostTypeAttrs, shPostTypeAttr, index) {
-					var index = shPostTypeAttrs
+					var indexItem = shPostTypeAttrs
 						.indexOf(shPostTypeAttr);
 					shPostTypeAttrs.splice(
-						index, 1);
+						indexItem, 1);
 
 				}
 			}

@@ -5,7 +5,6 @@ tinymce.PluginManager.add('shTinyMCE', function (editor, url) {
         //cmd: 'mceMailTo',
         image: '/img/widget/tinymce/email-icon.png',
         onclick: function() {
-            var linkText = editor.selection.getContent({ format: 'text' });
             // Open window
             editor.windowManager.open({
               title: 'Insert e-mail link',              

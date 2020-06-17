@@ -1,6 +1,6 @@
-shioApp.factory('shWidgetRelatorFactory', [ '$uibModal', 'shPostResource',
-		'Notification', '$filter', "$state",
-		function($uibModal, shPostResource, Notification, $filter, $state) {
+shioApp.factory('shWidgetRelatorFactory', [ '$uibModal',
+		function($uibModal) {
+			const varToString = varObj => Object.keys(varObj)[0];
 			return {
 				modalSelectRelatorItem : function(shPostAttr, shChildrenRelatorItem) {
 					var $ctrl = this;
@@ -10,7 +10,7 @@ shioApp.factory('shWidgetRelatorFactory', [ '$uibModal', 'shPostResource',
 						ariaDescribedBy : 'modal-body',
 						templateUrl : 'template/widget/relator/relator-select.html',
 						controller : 'ShWidgetRelatorSelectCtrl',
-						controllerAs : '$ctrl',
+						controllerAs : varToString({ $ctrl }),
 						size : null,
 						appendTo : undefined,
 						resolve : {
@@ -31,7 +31,7 @@ shioApp.factory('shWidgetRelatorFactory', [ '$uibModal', 'shPostResource',
 						ariaDescribedBy : 'modal-body',
 						templateUrl : 'template/widget/relator/relator-select.html',
 						controller : 'ShWidgetRelatorAddCtrl',
-						controllerAs : '$ctrl',
+						controllerAs : varToString({ $ctrl }),
 						size : null,
 						appendTo : undefined,
 						resolve : {

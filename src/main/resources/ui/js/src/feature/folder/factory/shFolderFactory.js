@@ -1,6 +1,7 @@
 shioApp.factory('shFolderFactory', [
 	'$uibModal', 'shFolderResource', 'Notification', '$filter',
 	function ($uibModal, shFolderResource, Notification, $filter) {
+		const varToString = varObj => Object.keys(varObj)[0];
 		return {
 			deleteFromList: function (shFolder, shFolders) {
 				var modalInstance = this.modalDelete(shFolder);
@@ -33,7 +34,7 @@ shioApp.factory('shFolderFactory', [
 					, ariaDescribedBy: 'modal-body'
 					, templateUrl: 'template/modal/shDeleteObject.html'
 					, controller: 'ShModalDeleteObjectCtrl'
-					, controllerAs: '$ctrl'
+					, controllerAs: varToString({ $ctrl })
 					, size: null
 					, appendTo: undefined
 					, resolve: {

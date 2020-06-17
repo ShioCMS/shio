@@ -1,11 +1,7 @@
 shioApp.controller('ShDialogDeleteObjectCtrl', [
 		"$uibModalInstance",
-		"$http",
 		"shObjects",
-		"shAPIServerService",
-		"shWidgetFileFactory",
-		function($uibModalInstance, $http, shObjects, shAPIServerService,
-				shWidgetFileFactory) {
+		function($uibModalInstance, shObjects) {
 			var $ctrl = this;
 			$ctrl.removeInstance = false;
 			$ctrl.shObjects = shObjects;

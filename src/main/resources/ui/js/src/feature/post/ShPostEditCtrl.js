@@ -84,7 +84,6 @@ shioApp.controller('ShPostEditCtrl', [
 							$scope.tabs.push(tab);
 
 						} else if (key === 0) {
-							var tab = [];
 							var tab = {
 								ordinal: 0,
 								name: tabName

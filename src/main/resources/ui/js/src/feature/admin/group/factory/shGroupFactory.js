@@ -1,6 +1,7 @@
 shioApp.factory('shGroupFactory', [
 	'$uibModal', 'shGroupResource', 'Notification', '$state',
 	function ($uibModal, shGroupResource, Notification, $state) {
+		const varToString = varObj => Object.keys(varObj)[0];
 		return {
 			delete: function (shGroup) {
 				var modalInstance = this.modalDelete(shGroup);
@@ -57,7 +58,7 @@ shioApp.factory('shGroupFactory', [
 					, ariaDescribedBy: 'modal-body'
 					, templateUrl: 'template/admin/user/user-delete.html'
 					, controller: 'ShModalDeleteUserCtrl'
-					, controllerAs: '$ctrl'
+					, controllerAs: varToString({ $ctrl })
 					, size: null
 					, appendTo: undefined
 					, resolve: {
@@ -75,7 +76,7 @@ shioApp.factory('shGroupFactory', [
 					, ariaDescribedBy: 'modal-body'
 					, templateUrl: 'template/admin/user/user-select-dialog.html'
 					, controller: 'ShModalSelectUserListCtrl'
-					, controllerAs: '$ctrl'
+					, controllerAs: varToString({ $ctrl })
 					, size: null
 					, appendTo: undefined
 					, resolve: {

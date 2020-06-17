@@ -18,19 +18,15 @@ shioApp.controller('ShModalSelectGroupListCtrl', [
 		$ctrl.itemSelected = false;
 		$ctrl.ok = function () {			
 			var objects = [];
-			console.log("ok");
             for (var stateKey in $ctrl.shStateObjects) {
 				console.log($ctrl.shStateObjects[stateKey]);
                 if ($ctrl.shStateObjects[stateKey] === true) {
-					console.log("Add");
 					objects.push($ctrl.shObjects[stateKey]);
                 }
 			}
-			console.log("Valida");
 			angular.forEach(objects, function (shGroup, key) {
 				console.log(shGroup.name)
 			});
-			console.log("Termina");
 			$uibModalInstance.close(objects);
 		};
 
@@ -46,10 +42,6 @@ shioApp.controller('ShModalSelectGroupListCtrl', [
 					$ctrl.itemSelected = true;
 				}
 			}
-			console.log("checkSomeItemSelected");
-			for (var stateKey in $ctrl.shStateObjects) {
-				console.log($ctrl.shStateObjects[stateKey]);
-            }
 		}
 		$ctrl.selectEverything = function () {
 			if ($ctrl.checkAll) {

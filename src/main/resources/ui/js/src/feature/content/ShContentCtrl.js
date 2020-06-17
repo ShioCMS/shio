@@ -12,17 +12,7 @@ shioApp.controller('ShContentCtrl', [
 				$state, $window, $translate, vigLocale) {
 			$scope.vigLanguage = vigLocale.getLocale().substring(0, 2);
 			$translate.use($scope.vigLanguage);
-
-			var authenticate = function(credentials) {
-
-				var headers = credentials ? {
-					authorization : "Basic "
-							+ btoa(credentials.username + ":"
-									+ credentials.password)
-				} : {};
-			}
-
-			// authenticate();
+			
 			if (!$rootScope.authenticated) {
 				$http.get(shAPIServerService.get().concat("/v2/user/current"))
 						.then(function(response) {

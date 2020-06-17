@@ -1,6 +1,7 @@
 shioApp.factory('shPostFactory', [
-	'$uibModal', 'shPostResource', 'Notification', '$filter', "$state"
-, function ($uibModal, shPostResource, Notification, $filter, $state) {
+    '$uibModal', 'shPostResource', 'Notification', '$filter', "$state"
+    , function ($uibModal, shPostResource, Notification, $filter, $state) {
+        const varToString = varObj => Object.keys(varObj)[0];
         return {
             deleteFromList: function (shPost, shPosts) {
                 var modalInstance = this.modalDelete(shPost);
@@ -47,15 +48,15 @@ shioApp.factory('shPostFactory', [
                     , ariaDescribedBy: 'modal-body'
                     , templateUrl: 'template/modal/shDeleteObject.html'
                     , controller: 'ShModalDeleteObjectCtrl'
-                    , controllerAs: '$ctrl'
+                    , controllerAs: varToString({ $ctrl })
                     , size: null
                     , appendTo: undefined
                     , resolve: {
-                    	shObject: function () {
+                        shObject: function () {
                             return shPost;
                         }
                     }
                 });
             }
         }
-		}]);
+    }]);
