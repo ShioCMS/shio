@@ -29,14 +29,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class ShOTCSPropertiesBean {
 
-	private String advanced_versioning;
+	@JsonProperty("advanced_versioning")
+	private String advancedVersioning;
 
 	private boolean container;
 
 	@JsonProperty("container_size")
 	private int containerSize;
 
-	private Date create_date;
+	@JsonProperty("create_date")
+	private Date createDate;
 
 	@JsonProperty("create_user_id")
 	private int createUserId;
@@ -132,12 +134,12 @@ public class ShOTCSPropertiesBean {
 	@JsonProperty("volume_id")
 	private int volumeId;
 
-	public String getAdvanced_versioning() {
-		return advanced_versioning;
+	public String getAdvancedVersioning() {
+		return advancedVersioning;
 	}
 
-	public void setAdvanced_versioning(String advanced_versioning) {
-		this.advanced_versioning = advanced_versioning;
+	public void setAdvancedVersioning(String advancedVersioning) {
+		this.advancedVersioning = advancedVersioning;
 	}
 
 	public boolean isContainer() {
@@ -156,12 +158,12 @@ public class ShOTCSPropertiesBean {
 		this.containerSize = containerSize;
 	}
 
-	public Date getCreate_date() {
-		return create_date;
+	public Date getCreateDate() {
+		return createDate;
 	}
 
-	public void setCreate_date(Date create_date) {
-		this.create_date = create_date;
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
 	}
 
 	public int getCreateUserId() {
@@ -443,4 +445,5 @@ public class ShOTCSPropertiesBean {
 	public void setVolumeId(int volumeId) {
 		this.volumeId = volumeId;
 	}
+
 }

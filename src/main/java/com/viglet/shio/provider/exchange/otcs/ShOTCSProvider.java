@@ -124,7 +124,7 @@ public class ShOTCSProvider implements ShExchangeProvider {
 
 						String resultName = results.getData().getProperties().getName();
 
-						Date resultDate = results.getData().getProperties().getCreate_date();
+						Date resultDate = results.getData().getProperties().getCreateDate();
 
 						ShExchangeProviderFolder shExchangeProviderFolderChild = new ShExchangeProviderFolder();
 						shExchangeProviderFolderChild.setId(resultId);
@@ -138,7 +138,7 @@ public class ShOTCSProvider implements ShExchangeProvider {
 
 						String postTitle = results.getData().getProperties().getName();
 
-						Date postDate = results.getData().getProperties().getCreate_date();
+						Date postDate = results.getData().getProperties().getCreateDate();
 
 						String postType = results.getData().getProperties().getTypeName();
 
