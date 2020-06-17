@@ -225,8 +225,9 @@ dependencies {
 	compile group: 'org.hibernate', name: 'hibernate-search-orm', version: "${hibernateVersion}"
 	
 	//Hazelcast
-	compile group: 'com.hazelcast', name: 'hazelcast'
-	compile group: 'com.hazelcast', name: 'hazelcast-spring'
+	compile group: 'com.hazelcast', name: 'hazelcast', version : '4.0.1'	
+	compile group: 'com.hazelcast', name: 'hazelcast-spring', version: '4.0.1'
+	
 	
 	// Swagger 2
 	compile group: 'io.springfox', name: 'springfox-swagger2', version: "${swaggerVersion}"

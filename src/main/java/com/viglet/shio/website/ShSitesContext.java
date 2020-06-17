@@ -90,8 +90,7 @@ public class ShSitesContext {
 	private ModelAndView sitesPostForm(HttpServletRequest request, HttpServletResponse response) {
 		ShSitesContextURL shSitesContextURL = shSitesContextURLProcess.getContextURL(request, response);
 
-			shFormUtils.execute(shSitesContextURL);
-		
+		shFormUtils.execute(shSitesContextURL);
 
 		Optional<ShSite> shSite = shSiteRepository.findById(shSitesContextURL.getInfo().getSiteId());
 		if (shSite.isPresent()) {
@@ -111,7 +110,7 @@ public class ShSitesContext {
 	private void sitesFullGeneric(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 
 		ShSitesContextURL shSitesContextURL = shSitesContextURLProcess.getContextURL(request, response);
-	
+
 		boolean showPage = checkIfShowPage(shSitesContextURL, session);
 
 		renderPage(request, response, session, showPage, shSitesContextURL);
@@ -142,7 +141,7 @@ public class ShSitesContext {
 
 	private void renderPage(HttpServletRequest request, HttpServletResponse response, HttpSession session,
 			boolean showPage, ShSitesContextURL shSitesContextURL) {
-		
+
 		String username = (String) session.getAttribute(USERNAME_SESSION);
 		try {
 			if (showPage) {
@@ -227,7 +226,7 @@ public class ShSitesContext {
 	}
 
 	public void siteContext(ShSitesContextURL shSitesContextURL) {
-		
+
 		if (shSitesContextURL.getInfo().isStaticFile()) {
 			this.requestStaticFile(shSitesContextURL);
 		} else if (shSitesContextURL.getInfo().getObjectId() != null) {

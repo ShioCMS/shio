@@ -17,6 +17,7 @@
 package com.viglet.shio.website.cache.hazelcast;
 
 import com.hazelcast.config.Config;
+import com.hazelcast.config.EvictionConfig;
 import com.hazelcast.config.EvictionPolicy;
 import com.hazelcast.config.MapConfig;
 
@@ -26,43 +27,45 @@ import com.hazelcast.config.MapConfig;
 public class HazelcastCacheConfig {
 
 	public Config hazelCastConfig() {
-
+		EvictionConfig evictionConfig = new EvictionConfig();
+		evictionConfig.setEvictionPolicy(EvictionPolicy.LFU);
+		evictionConfig.setMaxSizePolicy(EvictionConfig.DEFAULT_MAX_SIZE_POLICY);
 		Config config = new Config();
 		config.setInstanceName("hazelcast-cache");
 
 		MapConfig shobject = new MapConfig();
 		shobject.setTimeToLiveSeconds(86400);
-		shobject.setEvictionPolicy(EvictionPolicy.LFU);
+		shobject.setEvictionConfig(evictionConfig);
 		config.getMapConfigs().put("shobject", shobject);
 
 		MapConfig page = new MapConfig();
 		page.setTimeToLiveSeconds(86400);
-		page.setEvictionPolicy(EvictionPolicy.LFU);
+		page.setEvictionConfig(evictionConfig);
 		config.getMapConfigs().put("page", page);
 
 		MapConfig pageLayout = new MapConfig();
 		pageLayout.setTimeToLiveSeconds(86400);
-		pageLayout.setEvictionPolicy(EvictionPolicy.LFU);
+		pageLayout.setEvictionConfig(evictionConfig);
 		config.getMapConfigs().put("pageLayout", pageLayout);
 
 		MapConfig region = new MapConfig();
 		region.setTimeToLiveSeconds(86400);
-		region.setEvictionPolicy(EvictionPolicy.LFU);
+		region.setEvictionConfig(evictionConfig);
 		config.getMapConfigs().put("region", region);
 
 		MapConfig javascript = new MapConfig();
 		javascript.setTimeToLiveSeconds(86400);
-		javascript.setEvictionPolicy(EvictionPolicy.LFU);
+		javascript.setEvictionConfig(evictionConfig);
 		config.getMapConfigs().put("javascript", javascript);
 
 		MapConfig component = new MapConfig();
 		component.setTimeToLiveSeconds(86400);
-		component.setEvictionPolicy(EvictionPolicy.LFU);
+		component.setEvictionConfig(evictionConfig);
 		config.getMapConfigs().put("component", component);
 
 		MapConfig url = new MapConfig();
 		url.setTimeToLiveSeconds(86400);
-		url.setEvictionPolicy(EvictionPolicy.LFU);
+		url.setEvictionConfig(evictionConfig);
 		config.getMapConfigs().put("url", url);
 
 		return config;

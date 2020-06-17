@@ -128,10 +128,6 @@ public class ShPostAttr implements Serializable, ShPostAttrImpl {
 		this.referenceObject = referenceObject;
 	}
 
-	public ShPostAttr() {
-		throw new UnsupportedOperationException();
-	}
-
 	@Override
 	public String getId() {
 		return this.id;
