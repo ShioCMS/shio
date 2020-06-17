@@ -1,7 +1,7 @@
 
-<table summary="Configuration Table" class="table"
+<table class="table"
 	style="margin: 0px; border-color: #ddd; border-style: solid; border-width: 1px;">
-
+	<caption style="display:none">Default Search</caption>
 	<tr>
 		<th scope="row" style="background: #F9F9F9; width: 20%;">
 			<p>
@@ -21,7 +21,7 @@
 		</select></td>
 	</tr>
 	<tr>
-		<tth scope="row" style="background: #F9F9F9; width: 20%;">
+		<th scope="row" style="background: #F9F9F9; width: 20%;">
 			<p>
 				<strong>Create Additional Search Field?</strong>
 			</p>
@@ -30,9 +30,10 @@
 			ng-model="shPostTypeAttr.widgetSettingsObject.search.isAdditionalField"
 			ng-true-value="1" ng-false-value="0">
 
-			<table summary="Additional Search Field" class="table"
+			<table class="table"
 				ng-if="shPostTypeAttr.widgetSettingsObject.search.isAdditionalField == 1"
 				style="margin: 0px; border-color: #ddd; border-style: solid; border-width: 1px; margin-top: 10px">
+				<caption style="display:none">Additional Search Field</caption>
 				<tr>
 					<th scope="row" style="background: #F9F9F9; width: 20%;">
 						<p>
