@@ -84,33 +84,50 @@ public class ShUserAPI {
 	public ShCurrentUser shUserCurrent(HttpSession session) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (!(authentication instanceof AnonymousAuthenticationToken)) {
-			boolean isAdmin = false;
 			String currentUserName = authentication.getName();
-			String providerId = (String) session.getAttribute("authProvider");
-			ShAuthProviderInstance instance = null;
-			if (providerId != null) {
-				instance = shAuthProviderInstanceRepository.findById(providerId).orElse(null);
-			}
-			ShUser shUser = null;
-			if (instance != null && !instance.getVendor().getId().equals(ShAuthSystemProviderVendor.NATIVE)) {
-				shUser = loadAuthProvider(currentUserName, instance, shUser);
-			} else {
-				shUser = shUserRepository.findByUsername(currentUserName);
-
-				shUser.setPassword(null);
-				if (shUser.getShGroups() != null) {
-					for (ShGroup shGroup : shUser.getShGroups()) {
-						if (shGroup.getName().equals("Administrator"))
-							isAdmin = true;
-					}
-				}
-			}
+			ShAuthProviderInstance instance = this.getProviderInstance(session);
+			ShUser shUser = this.getUserFromAuth(currentUserName, instance);
+			boolean isAdmin = this.isAdminFromNative(shUser, instance);
 
 			return setUser(isAdmin, shUser);
-
 		}
 
 		return null;
+	}
+
+	private ShAuthProviderInstance getProviderInstance(HttpSession session) {
+		String providerId = (String) session.getAttribute("authProvider");
+		ShAuthProviderInstance instance = null;
+		if (providerId != null)
+			instance = shAuthProviderInstanceRepository.findById(providerId).orElse(null);
+		return instance;
+	}
+
+	private ShUser getUserFromAuth(String currentUserName, ShAuthProviderInstance instance) {
+		ShUser shUser = null;
+		if (isNotNativeAuth(instance)) {
+			shUser = loadAuthProvider(currentUserName, instance, shUser);
+		} else {
+			shUser = shUserRepository.findByUsername(currentUserName);
+			shUser.setPassword(null);
+
+		}
+		return shUser;
+	}
+
+	private boolean isAdminFromNative(ShUser shUser, ShAuthProviderInstance instance) {
+		boolean isAdmin = false;
+		if (!isNotNativeAuth(instance) && shUser.getShGroups() != null) {
+			for (ShGroup shGroup : shUser.getShGroups()) {
+				if (shGroup.getName().equals("Administrator"))
+					isAdmin = true;
+			}
+		}
+		return isAdmin;
+	}
+
+	private boolean isNotNativeAuth(ShAuthProviderInstance instance) {
+		return instance != null && !instance.getVendor().getId().equals(ShAuthSystemProviderVendor.NATIVE);
 	}
 
 	private ShCurrentUser setUser(boolean isAdmin, ShUser shUser) {

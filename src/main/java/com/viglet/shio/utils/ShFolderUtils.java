@@ -82,7 +82,7 @@ public class ShFolderUtils {
 			ShFolder parentFolder = shFolder.getParentFolder();
 			while (parentFolder != null && !rootFolder) {
 				folderBreadcrumb.add(parentFolder);
-				if ((parentFolder.getRootFolder() == (byte) 1) || (parentFolder.getParentFolder() == null)) {
+				if (isRootFolder(parentFolder)) {
 					rootFolder = true;
 				} else {
 					parentFolder = parentFolder.getParentFolder();
@@ -116,34 +116,33 @@ public class ShFolderUtils {
 	private void getParentPath(boolean usingFurl, boolean rootFolder, List<String> pathContexts,
 			ShFolder parentFolder) {
 		while (parentFolder != null && !rootFolder) {
-
-			if ((parentFolder.getRootFolder() == (byte) 1) || (parentFolder.getParentFolder() == null)) {
+			if (isRootFolder(parentFolder)) {
 				rootFolder = true;
-				if (!parentFolder.getName().equalsIgnoreCase("home")) {
-					if (usingFurl)
-						pathContexts.add(parentFolder.getFurl());
-					else
-						pathContexts.add(parentFolder.getName());
+				if (!parentFolder.getName().equalsIgnoreCase("home"))
+					this.addFolderToPath(usingFurl, pathContexts, parentFolder);
 
-				}
 			} else {
-				if (usingFurl)
-					pathContexts.add(parentFolder.getFurl());
-				else
-					pathContexts.add(parentFolder.getName());
-
+				this.addFolderToPath(usingFurl, pathContexts, parentFolder);
 				parentFolder = parentFolder.getParentFolder();
 			}
 		}
 	}
 
+	private void addFolderToPath(boolean usingFurl, List<String> pathContexts, ShFolder parentFolder) {
+		if (usingFurl)
+			pathContexts.add(parentFolder.getFurl());
+		else
+			pathContexts.add(parentFolder.getName());
+	}
+
+	private boolean isRootFolder(ShFolder parentFolder) {
+		return (parentFolder.getRootFolder() == (byte) 1) || (parentFolder.getParentFolder() == null);
+	}
+
 	private void getFolderNameFromPath(ShFolder shFolder, boolean usingFurl, boolean addHomeFolder,
 			List<String> pathContexts) {
 		if (!(shFolder.getFurl().equals("home") && shFolder.getRootFolder() == (byte) 1 && !addHomeFolder)) {
-			if (usingFurl)
-				pathContexts.add(shFolder.getFurl());
-			else
-				pathContexts.add(shFolder.getName());
+			addFolderToPath(usingFurl, pathContexts, shFolder);
 
 		}
 	}
@@ -164,7 +163,7 @@ public class ShFolderUtils {
 			ShFolder parentFolder = shFolder.getParentFolder();
 			while (parentFolder != null && !rootFolder) {
 				pathContexts.add(parentFolder.getName());
-				if ((parentFolder.getRootFolder() == (byte) 1) || (parentFolder.getParentFolder() == null)) {
+				if (isRootFolder(parentFolder)) {
 					rootFolder = true;
 				} else {
 					parentFolder = parentFolder.getParentFolder();
@@ -182,12 +181,12 @@ public class ShFolderUtils {
 		ShSite shSite = null;
 		if (shFolder != null) {
 			boolean rootFolder = false;
-			if ((shFolder.getRootFolder() == (byte) 1) || (shFolder.getParentFolder() == null)) {
+			if (isRootFolder(shFolder)) {
 				shSite = shFolder.getShSite();
 			} else {
 				ShFolder parentFolder = shFolder.getParentFolder();
 				while (parentFolder != null && !rootFolder) {
-					if ((parentFolder.getRootFolder() == (byte) 1) || (parentFolder.getParentFolder() == null)) {
+					if (isRootFolder(parentFolder)) {
 						rootFolder = true;
 						shSite = parentFolder.getShSite();
 					} else {
