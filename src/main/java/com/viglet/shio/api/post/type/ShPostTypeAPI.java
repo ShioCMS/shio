@@ -39,7 +39,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import com.viglet.shio.persistence.model.post.ShPostAttr;
-import com.viglet.shio.persistence.model.post.impl.ShPostAttrImpl;
 import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shio.api.ShJsonView;
