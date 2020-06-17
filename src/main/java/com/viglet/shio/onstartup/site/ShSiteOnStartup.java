@@ -22,7 +22,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.UUID;
 
-import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -75,7 +74,7 @@ public class ShSiteOnStartup {
 			try {
 				FileUtils.copyURLToFile(siteRepository, siteFile);
 				shCloneExchange.cloneFromFile(siteFile, "admin", null);
-			} catch (IllegalStateException | IOException | ArchiveException e) {
+			} catch (IllegalStateException | IOException e) {
 				logger.error(COULD_NOT_CREATE_SAMPLE_SITE, e);
 			}
 

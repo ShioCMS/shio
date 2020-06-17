@@ -23,7 +23,6 @@ import java.security.Principal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -281,12 +280,8 @@ public class ShPostAPI {
 
 		List<ShPostAttr> shPostAttrsByOrdinal = new ArrayList<>(shPostAttrs);
 
-		Collections.sort(shPostAttrsByOrdinal, new Comparator<ShPostAttr>() {
-
-			public int compare(ShPostAttr o1, ShPostAttr o2) {
-				return o1.getShPostTypeAttr().getOrdinal() - o2.getShPostTypeAttr().getOrdinal();
-			}
-		});
+		Collections.sort(shPostAttrsByOrdinal, (ShPostAttr o1, ShPostAttr o2) -> o1.getShPostTypeAttr().getOrdinal()
+				- o2.getShPostTypeAttr().getOrdinal());
 		this.titleAndSummary(title, summary, shPostAttrsByOrdinal);
 
 		shPost.setDate(new Date());
@@ -472,10 +467,8 @@ public class ShPostAPI {
 			this.nestedReferenceSave((ShPostAttrImpl) shPostAttr, shPost);
 		});
 
-		shPost.getShPostAttrs().forEach(shPostAttr -> {
-			shPostUtils.updateRelatorInfo((ShPostAttrImpl) shPostAttr, shPost);
-		
-		});
+		shPost.getShPostAttrs()
+				.forEach(shPostAttr -> shPostUtils.updateRelatorInfo((ShPostAttrImpl) shPostAttr, shPost));
 
 		if (shPost instanceof ShPost) {
 			shPostRepository.saveAndFlush((ShPost) shPost);
@@ -485,11 +478,10 @@ public class ShPostAPI {
 	}
 
 	private void nestedReferenceSave(ShPostAttrImpl shPostAttr, ShPostImpl shPost) {
-		shPostAttr.getShChildrenRelatorItems().forEach(shRelatorItem -> {
-			shRelatorItem.getShChildrenPostAttrs().forEach(shChildrenPostAttr -> {
-				shPostUtils.referencedObject(shChildrenPostAttr, shPost);
-				this.nestedReferenceSave((ShPostAttr) shChildrenPostAttr, shPost);
-			});
-		});
+		shPostAttr.getShChildrenRelatorItems()
+				.forEach(shRelatorItem -> shRelatorItem.getShChildrenPostAttrs().forEach(shChildrenPostAttr -> {
+					shPostUtils.referencedObject(shChildrenPostAttr, shPost);
+					this.nestedReferenceSave((ShPostAttr) shChildrenPostAttr, shPost);
+				}));
 	}
 }
