@@ -18,13 +18,11 @@ package com.viglet.shio.exchange;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
@@ -34,8 +32,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viglet.shio.exchange.post.type.ShPostTypeImport;
 import com.viglet.shio.exchange.site.ShSiteImport;
@@ -55,11 +51,10 @@ public class ShCloneExchange {
 	private ShImportExchange shImportExchange;
 
 	private static final String EXPORT_FILE = "export.json";
-	private Map<String, Object> shObjects = new HashMap<String, Object>();
-	private Map<String, List<String>> shChildObjects = new HashMap<String, List<String>>();
+	private Map<String, Object> shObjects = new HashMap<>();
+	private Map<String, List<String>> shChildObjects = new HashMap<>();
 
-	public ShExchange cloneFromMultipartFile(MultipartFile multipartFile, String username, ShSite shSite)
-			throws IllegalStateException, IOException, ArchiveException {
+	public ShExchange cloneFromMultipartFile(MultipartFile multipartFile, String username, ShSite shSite) {
 		File extractFolder = shImportExchange.extractZipFile(multipartFile);
 
 		if (extractFolder != null) {
@@ -75,14 +70,7 @@ public class ShCloneExchange {
 						extractFolder = fileOrDirectory;
 					}
 
-			ShExchange shExchange = readExportFile(extractFolder);
-
-			if (shExchange.getPostTypes() != null && !shExchange.getPostTypes().isEmpty())
-				shPostTypeImport.importPostType(shExchange, true);
-
-			if (shExchange.getSites() != null && !shExchange.getSites().isEmpty())
-				shExchangeModified = shSiteImport.cloneSite(shExchange, username, extractFolder, shObjects,
-						shChildObjects, shSite);
+			shExchangeModified = cloneObjects(username, shSite, extractFolder, shExchangeModified);
 
 			this.deleteTempoaryFile(extractFolder, parentExtractFolder);
 			return shExchangeModified;
@@ -91,13 +79,32 @@ public class ShCloneExchange {
 		}
 	}
 
-	private ShExchange readExportFile(File extractFolder)
-			throws IOException, JsonParseException, JsonMappingException, FileNotFoundException {
+	private ShExchange cloneObjects(String username, ShSite shSite, File extractFolder, ShExchange shExchangeModified) {
+		try {
+			ShExchange shExchange = readExportFile(extractFolder);
+			if (shExchange.getPostTypes() != null && !shExchange.getPostTypes().isEmpty())
+				shPostTypeImport.importPostType(shExchange, true);
+
+			if (shExchange.getSites() != null && !shExchange.getSites().isEmpty())
+				shExchangeModified = shSiteImport.cloneSite(shExchange, username, extractFolder, shObjects,
+						shChildObjects, shSite);
+		} catch (IOException e) {
+			logger.error(e);
+		}
+		return shExchangeModified;
+	}
+
+	private ShExchange readExportFile(File extractFolder) {
 		ObjectMapper mapper = new ObjectMapper();
 
-		ShExchange shExchange = mapper.readValue(
-				new FileInputStream(extractFolder.getAbsolutePath().concat(File.separator + EXPORT_FILE)),
-				ShExchange.class);
+		ShExchange shExchange = null;
+		try {
+			shExchange = mapper.readValue(
+					new FileInputStream(extractFolder.getAbsolutePath().concat(File.separator + EXPORT_FILE)),
+					ShExchange.class);
+		} catch (IOException e) {
+			logger.error(e);
+		}
 		return shExchange;
 	}
 
@@ -112,11 +119,15 @@ public class ShCloneExchange {
 		}
 	}
 
-	public ShExchange cloneFromFile(File file, String username, ShSite shSite)
-			throws IOException, IllegalStateException, ArchiveException {
+	public ShExchange cloneFromFile(File file, String username, ShSite shSite) {
 
-		FileInputStream input = new FileInputStream(file);
-		MultipartFile multipartFile = new MockMultipartFile(file.getName(), IOUtils.toByteArray(input));
+		MultipartFile multipartFile = null;
+		try {
+			FileInputStream input = new FileInputStream(file);
+			multipartFile = new MockMultipartFile(file.getName(), IOUtils.toByteArray(input));
+		} catch (IOException e) {
+			logger.error(e);
+		}
 
 		return this.cloneFromMultipartFile(multipartFile, username, shSite);
 	}
