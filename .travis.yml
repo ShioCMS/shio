@@ -2,7 +2,7 @@ language: java
 os: linux
 dist: trusty
 jdk:
-  - oraclejdk8
+  - oraclejdk11
 addons:
   sonarcloud:
     organization: "shiocms"
