@@ -90,11 +90,8 @@ public class ShSitesContext {
 	private ModelAndView sitesPostForm(HttpServletRequest request, HttpServletResponse response) {
 		ShSitesContextURL shSitesContextURL = shSitesContextURLProcess.getContextURL(request, response);
 
-		try {
 			shFormUtils.execute(shSitesContextURL);
-		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | IOException e) {
-			logger.error("sitesPostForm Exception: ", e);
-		}
+		
 
 		Optional<ShSite> shSite = shSiteRepository.findById(shSitesContextURL.getInfo().getSiteId());
 		if (shSite.isPresent()) {

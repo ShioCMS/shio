@@ -135,62 +135,70 @@ public class ShSitesPageLayoutUtils {
 	}
 
 	public ShPost pageLayoutFromFolderAndFolderIndex(ShObject shObjectItem, ShSite shSite, String format) {
-		String shPostFolderPageLayoutId = null;
 		ShPost shFolderPageLayout = null;
 		if (shObjectItem instanceof ShPost) {
-			ShPostImpl shSelectedPost = shSitesPostUtils.getPostByStage((ShPost) shObjectItem);
-			if (shSelectedPost != null) {
-				Map<String, ShPostAttr> shFolderIndexMap = shSitesPostUtils.postToMap((ShPost) shSelectedPost);
-				shPostFolderPageLayoutId = shFolderIndexMap.get(ShSystemPostTypeAttr.PAGE_LAYOUT).getStrValue();
-				if (!format.equalsIgnoreCase(DEFAULT_FORMAT)) {
-					ShPostAttrImpl shPostAttrFormats = shFolderIndexMap.get("FORMATS");
-					List<Map<String, ShPostAttr>> shPostAttrFormatList = shSitesPostUtils
-							.relationToMap(shPostAttrFormats);
-					if (shPostAttrFormatList != null)
-						for (Map<String, ShPostAttr> shPostAttrFormat : shPostAttrFormatList)
-							if (shPostAttrFormat.get("NAME").getStrValue().equals(format))
-								shPostFolderPageLayoutId = shPostAttrFormat.get("PAGE_LAYOUT").getStrValue();
-
-				}
-
-				if (shPostFolderPageLayoutId != null) {
-					shFolderPageLayout = shPostRepository.findById(shPostFolderPageLayoutId).orElse(null);
-				}
-			}
+			shFolderPageLayout = folderIndexPageLayout(shObjectItem, format, shFolderPageLayout);
 		} else if (shObjectItem instanceof ShFolder && shSite.getPostTypeLayout() != null) {
-			// If Folder doesn't have PageLayout, it will try use default Folder Page Layout
+			shFolderPageLayout = this.defaultFolderPageLayout(shSite, format, shFolderPageLayout);
 
-			JSONObject postTypeLayout = new JSONObject(shSite.getPostTypeLayout());
+		}
+		return shFolderPageLayout;
+	}
 
-			if (postTypeLayout.has("FOLDER")) {
-				ObjectMapper mapper = new ObjectMapper();
+	private ShPost folderIndexPageLayout(ShObject shObjectItem, String format, ShPost shFolderPageLayout) {
+		String shPostFolderPageLayoutId;
+		ShPostImpl shSelectedPost = shSitesPostUtils.getPostByStage((ShPost) shObjectItem);
+		if (shSelectedPost != null) {
+			Map<String, ShPostAttr> shFolderIndexMap = shSitesPostUtils.postToMap((ShPost) shSelectedPost);
+			shPostFolderPageLayoutId = shFolderIndexMap.get(ShSystemPostTypeAttr.PAGE_LAYOUT).getStrValue();
+			if (!format.equalsIgnoreCase(DEFAULT_FORMAT)) {
+				ShPostAttrImpl shPostAttrFormats = shFolderIndexMap.get("FORMATS");
+				List<Map<String, ShPostAttr>> shPostAttrFormatList = shSitesPostUtils
+						.relationToMap(shPostAttrFormats);
+				if (shPostAttrFormatList != null)
+					for (Map<String, ShPostAttr> shPostAttrFormat : shPostAttrFormatList)
+						if (shPostAttrFormat.get("NAME").getStrValue().equals(format))
+							shPostFolderPageLayoutId = shPostAttrFormat.get("PAGE_LAYOUT").getStrValue();
 
-				ShSitePostTypeLayouts shSitePostTypeLayouts;
-				try {
-					shSitePostTypeLayouts = mapper.readValue(postTypeLayout.get("FOLDER").toString(),
-							ShSitePostTypeLayouts.class);
-
-					String pageLayoutName = null;
-					if (format == null)
-						format = DEFAULT_FORMAT;
-
-					for (ShSitePostTypeLayout shSitePostTypeLayout : shSitePostTypeLayouts) {
-						if (shSitePostTypeLayout.getFormat().equals(format))
-							pageLayoutName = shSitePostTypeLayout.getLayout();						
-					}
-					List<ShPost> shPostPageLayouts = shPostRepository.findByTitle(pageLayoutName);
-
-					if (shPostPageLayouts != null) {
-						for (ShPost shPostPageLayout : shPostPageLayouts) {
-							if (shPostUtils.getSite(shPostPageLayout).getId().equals(shSite.getId()))
-								shFolderPageLayout = shPostPageLayout;
-						}
-					}
-				} catch (JSONException | IOException e) {
-					logger.error("pageLayoutFromFolderAndFolderIndex Error", e);
-				}
 			}
 
+			if (shPostFolderPageLayoutId != null) {
+				shFolderPageLayout = shPostRepository.findById(shPostFolderPageLayoutId).orElse(null);
+			}
+		}
+		return shFolderPageLayout;
+	}
+
+	private ShPost defaultFolderPageLayout(ShSite shSite, String format, ShPost shFolderPageLayout) {
+		JSONObject postTypeLayout = new JSONObject(shSite.getPostTypeLayout());
+
+		if (postTypeLayout.has("FOLDER")) {
+			ObjectMapper mapper = new ObjectMapper();
+
+			ShSitePostTypeLayouts shSitePostTypeLayouts;
+			try {
+				shSitePostTypeLayouts = mapper.readValue(postTypeLayout.get("FOLDER").toString(),
+						ShSitePostTypeLayouts.class);
+
+				String pageLayoutName = null;
+				if (format == null)
+					format = DEFAULT_FORMAT;
+
+				for (ShSitePostTypeLayout shSitePostTypeLayout : shSitePostTypeLayouts) {
+					if (shSitePostTypeLayout.getFormat().equals(format))
+						pageLayoutName = shSitePostTypeLayout.getLayout();						
+				}
+				List<ShPost> shPostPageLayouts = shPostRepository.findByTitle(pageLayoutName);
+
+				if (shPostPageLayouts != null) {
+					for (ShPost shPostPageLayout : shPostPageLayouts) {
+						if (shPostUtils.getSite(shPostPageLayout).getId().equals(shSite.getId()))
+							shFolderPageLayout = shPostPageLayout;
+					}
+				}
+			} catch (JSONException | IOException e) {
+				logger.error("pageLayoutFromFolderAndFolderIndex Error", e);
+			}
 		}
 		return shFolderPageLayout;
 	}
