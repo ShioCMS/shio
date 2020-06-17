@@ -80,18 +80,24 @@ public class ShCloneExchange {
 	}
 
 	private ShExchange cloneObjects(String username, ShSite shSite, File extractFolder, ShExchange shExchangeModified) {
-		try {
+	
 			ShExchange shExchange = readExportFile(extractFolder);
-			if (shExchange.getPostTypes() != null && !shExchange.getPostTypes().isEmpty())
+			if (hasPostTypes(shExchange))
 				shPostTypeImport.importPostType(shExchange, true);
 
-			if (shExchange.getSites() != null && !shExchange.getSites().isEmpty())
+			if (hasSites(shExchange))
 				shExchangeModified = shSiteImport.cloneSite(shExchange, username, extractFolder, shObjects,
 						shChildObjects, shSite);
-		} catch (IOException e) {
-			logger.error(e);
-		}
+		
 		return shExchangeModified;
+	}
+
+	private boolean hasSites(ShExchange shExchange) {
+		return shExchange != null &&  shExchange.getSites() != null && !shExchange.getSites().isEmpty();
+	}
+
+	private boolean hasPostTypes(ShExchange shExchange) {
+		return shExchange != null && shExchange.getPostTypes() != null && !shExchange.getPostTypes().isEmpty();
 	}
 
 	private ShExchange readExportFile(File extractFolder) {

@@ -86,7 +86,7 @@ public class ShSiteImport {
 	}
 
 	public ShExchange cloneSite(ShExchange shExchange, String username, File extractFolder,
-			Map<String, Object> shObjects, Map<String, List<String>> shChildObjects, ShSite shSite) throws IOException {
+			Map<String, Object> shObjects, Map<String, List<String>> shChildObjects, ShSite shSite) {
 		shExchange = this.prepareClone(shExchange, extractFolder);
 		logger.info("2 of 4 - Cloning Sites");
 		for (ShSiteExchange shSiteExchange : shExchange.getSites()) {
