@@ -56,9 +56,17 @@ public class ShFolderImport {
 		if (shChildObjects.containsKey(shObject)) {
 			for (String objectId : shChildObjects.get(shObject)) {
 				if (shObjects.get(objectId) instanceof ShFolderExchange) {					
-					ShFolderExchange shFolderExchange = (ShFolderExchange) shObjects.get(objectId);					
-					this.createShFolder(shFolderExchange, extractFolder, username, shObject, importOnlyFolders,
-							shObjects, shChildObjects, isCloned);
+					ShFolderExchange shFolderExchange = (ShFolderExchange) shObjects.get(objectId);	
+					ShFolderExchangeContext context = new ShFolderExchangeContext(); 
+					context.setCloned(isCloned);
+					context.setExtractFolder(extractFolder);
+					context.setImportOnlyFolders(importOnlyFolders);
+					context.setShChildObjects(shChildObjects);
+					context.setShFolderExchange(shFolderExchange);
+					context.setShObject(shObject);
+					context.setShObjects(shObjects);
+					context.setUsername(username);
+					this.createShFolder(context);
 				}
 
 				if (!importOnlyFolders && shObjects.get(objectId) instanceof ShPostExchange) {
@@ -70,52 +78,62 @@ public class ShFolderImport {
 		}
 	}
 
-	public ShFolder createShFolder(ShFolderExchange shFolderExchange, File extractFolder, String username,
-			String shObject, boolean importOnlyFolders, Map<String, Object> shObjects,
-			Map<String, List<String>> shChildObjects, boolean isCloned) {
+	public ShFolder createShFolder(ShFolderExchangeContext context) {
 		ShFolder shFolderChild = null;
-		Optional<ShFolder> shFolderOptional = shFolderRepository.findById(shFolderExchange.getId());
+		Optional<ShFolder> shFolderOptional = shFolderRepository.findById(context.getShFolderExchange().getId());
 		if (shFolderOptional.isPresent()) {
 			shFolderChild = shFolderOptional.get();
 		} else {
-			shFolderChild = new ShFolder();
-			shFolderChild.setId(shFolderExchange.getId());
-			shFolderChild.setDate(isCloned? new Date(): shFolderExchange.getDate());
-			shFolderChild.setName(shFolderExchange.getName());
-			if (shFolderExchange.getPosition() > 0) {
-				shFolderChild.setPosition(shFolderExchange.getPosition());
-			}
-			if (shFolderExchange.getOwner() != null) {
-				shFolderChild.setOwner(shFolderExchange.getOwner());
-			} else {
-				shFolderChild.setOwner(username);
-			}
-			if (shFolderExchange.getFurl() != null) {
-				shFolderChild.setFurl(shFolderExchange.getFurl());
-			} else {
-				shFolderChild.setFurl(shURLFormatter.format(shFolderExchange.getName()));
-			}
-			if (shFolderExchange.getParentFolder() != null) {
-				ShFolder parentFolder = shFolderRepository.findById(shFolderExchange.getParentFolder()).orElse(null);
-				shFolderChild.setParentFolder(parentFolder);
-				shFolderChild.setRootFolder((byte) 0);
-			} else {
-				if (shObjects.get(shObject) instanceof ShSiteExchange) {
-					ShSiteExchange shSiteExchange = (ShSiteExchange) shObjects.get(shObject);
-					if (shSiteExchange.getRootFolders().contains(shFolderExchange.getId())) {
-						shFolderChild.setRootFolder((byte) 1);
-						ShSite parentSite = shSiteRepository.findById(shSiteExchange.getId()).orElse(null);
-						shFolderChild.setShSite(parentSite);
-					}
-				}
-			}
-			logger.info(String.format("...... %s Folder (%s)", shFolderChild.getName(), shFolderChild.getId()));
-			shFolderRepository.save(shFolderChild);
+			shFolderChild = this.createFolderObject(context.getShFolderExchange(), context.getUsername(), context.getShObject(), context.getShObjects(), context.isCloned());
 		}
 
-		this.shFolderImportNested(shFolderChild.getId(), extractFolder, username, importOnlyFolders, shObjects,
-				shChildObjects, isCloned);
+		this.shFolderImportNested(shFolderChild.getId(), context.getExtractFolder(), context.getUsername(), context.isImportOnlyFolders(), context.getShObjects(),
+				context.getShChildObjects(), context.isCloned());
 
 		return shFolderChild;
+	}
+
+	private ShFolder createFolderObject(ShFolderExchange shFolderExchange, String username, String shObject,
+			Map<String, Object> shObjects, boolean isCloned) {
+		ShFolder shFolderChild;
+		shFolderChild = new ShFolder();
+		shFolderChild.setId(shFolderExchange.getId());
+		shFolderChild.setDate(isCloned? new Date(): shFolderExchange.getDate());
+		shFolderChild.setName(shFolderExchange.getName());
+		if (shFolderExchange.getPosition() > 0) {
+			shFolderChild.setPosition(shFolderExchange.getPosition());
+		}
+		if (shFolderExchange.getOwner() != null) {
+			shFolderChild.setOwner(shFolderExchange.getOwner());
+		} else {
+			shFolderChild.setOwner(username);
+		}
+		if (shFolderExchange.getFurl() != null) {
+			shFolderChild.setFurl(shFolderExchange.getFurl());
+		} else {
+			shFolderChild.setFurl(shURLFormatter.format(shFolderExchange.getName()));
+		}
+		this.rootFolderSettings(shFolderExchange, shObject, shObjects, shFolderChild);
+		logger.info(String.format("...... %s Folder (%s)", shFolderChild.getName(), shFolderChild.getId()));
+		shFolderRepository.save(shFolderChild);
+		return shFolderChild;
+	}
+
+	private void rootFolderSettings(ShFolderExchange shFolderExchange, String shObject, Map<String, Object> shObjects,
+			ShFolder shFolderChild) {
+		if (shFolderExchange.getParentFolder() != null) {
+			ShFolder parentFolder = shFolderRepository.findById(shFolderExchange.getParentFolder()).orElse(null);
+			shFolderChild.setParentFolder(parentFolder);
+			shFolderChild.setRootFolder((byte) 0);
+		} else {
+			if (shObjects.get(shObject) instanceof ShSiteExchange) {
+				ShSiteExchange shSiteExchange = (ShSiteExchange) shObjects.get(shObject);
+				if (shSiteExchange.getRootFolders().contains(shFolderExchange.getId())) {
+					shFolderChild.setRootFolder((byte) 1);
+					ShSite parentSite = shSiteRepository.findById(shSiteExchange.getId()).orElse(null);
+					shFolderChild.setShSite(parentSite);
+				}
+			}
+		}
 	}
 }
