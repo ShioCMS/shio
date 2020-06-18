@@ -29,7 +29,7 @@ import com.viglet.shio.persistence.repository.system.ShConfigVarRepository;
 @Component
 public class ShConfigVarOnStartup {
 	@Value("${shio.config.system}")
-	public static String FIRST_TIME_PATH;
+	public static String firstTimePath;
 	
 	public static final String FIRST_TIME_NAME = "FIRST_TIME";
 	
@@ -40,9 +40,9 @@ public class ShConfigVarOnStartup {
 
 		ShConfigVar shConfigVar = new ShConfigVar();
 
-		if (!shConfigVarRepository.existsByPathAndName(FIRST_TIME_PATH, FIRST_TIME_NAME)) {
+		if (!shConfigVarRepository.existsByPathAndName(firstTimePath, FIRST_TIME_NAME)) {
 
-			shConfigVar.setPath(FIRST_TIME_PATH);
+			shConfigVar.setPath(firstTimePath);
 			shConfigVar.setName(FIRST_TIME_NAME);
 			shConfigVar.setValue("true");
 			shConfigVarRepository.save(shConfigVar);

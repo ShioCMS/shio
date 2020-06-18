@@ -60,7 +60,7 @@ public class ShAuthProviderAPI {
 	private static final Log logger = LogFactory.getLog(ShAuthProviderAPI.class);
 
 	@Value("${shio.config.provider.auth}")
-	private  String PROVIDER_PATH ;
+	private String providerPath ;
 
 	@Autowired
 	private ShAuthProviderInstanceRepository shAuthProviderInstanceRepository;
@@ -101,7 +101,7 @@ public class ShAuthProviderAPI {
 		shAuthProviderInstanceRepository.save(shAuthProviderInstance);
 
 		for (Entry<String, String> propertyEntry : shAuthProviderInstanceBean.getProperties().entrySet()) {
-			String providerInstancePath = String.format(PROVIDER_PATH, shAuthProviderInstance.getId());
+			String providerInstancePath = String.format(providerPath, shAuthProviderInstance.getId());
 
 			ShConfigVar shConfigVar = shConfigVarRepository.findByPathAndName(providerInstancePath,
 					propertyEntry.getKey());
@@ -136,7 +136,7 @@ public class ShAuthProviderAPI {
 			shAuthProviderInstanceRepository.save(shAuthProviderInstanceEdit);
 			
 			for (Entry<String, String> propertyEntry : shAuthProviderInstanceBean.getProperties().entrySet()) {
-				String providerInstancePath = String.format(PROVIDER_PATH, shAuthProviderInstanceEdit.getId());
+				String providerInstancePath = String.format(providerPath, shAuthProviderInstanceEdit.getId());
 
 				ShConfigVar shConfigVar = shConfigVarRepository.findByPathAndName(providerInstancePath,
 						propertyEntry.getKey());
@@ -163,7 +163,7 @@ public class ShAuthProviderAPI {
 	public boolean shAuthProviderInstanceDelete(@PathVariable String id) {
 		Optional<ShAuthProviderInstance> shAuthProviderInstance = shAuthProviderInstanceRepository.findById(id);
 		if (shAuthProviderInstance.isPresent()) {
-			String providerInstancePath = String.format(PROVIDER_PATH, id);
+			String providerInstancePath = String.format(providerPath, id);
 			shConfigVarRepository.deleteByPath(providerInstancePath);
 			shAuthProviderInstanceRepository.delete(id);
 			return true;

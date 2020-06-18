@@ -78,7 +78,7 @@ public class ShExchangeProviderAPI {
 	private static final Log logger = LogFactory.getLog(ShExchangeProviderAPI.class);
 
 	@Value("${shio.config.provider.exchange}")
-	private String PROVIDER_PATH;
+	private String providerPath;
 
 	private ShExchangeProvider shExchangeProvider;
 	@Autowired
@@ -120,7 +120,7 @@ public class ShExchangeProviderAPI {
 			shExchangeProviderInstanceBean.setVendor(shExchangeProviderInstance.getVendor());
 			shExchangeProviderInstanceBean.setEnabled(shExchangeProviderInstance.getEnabled());
 
-			String providerInstancePath = String.format(PROVIDER_PATH, shExchangeProviderInstance.getId());
+			String providerInstancePath = String.format(providerPath, shExchangeProviderInstance.getId());
 
 			List<ShConfigVar> shConfigVars = shConfigVarRepository.findByPath(providerInstancePath);
 
@@ -145,7 +145,7 @@ public class ShExchangeProviderAPI {
 		shExchangeProviderInstanceRepository.save(shExchangeProviderInstance);
 
 		for (Entry<String, String> propertyEntry : shExchangeProviderInstanceBean.getProperties().entrySet()) {
-			String providerInstancePath = String.format(PROVIDER_PATH, shExchangeProviderInstance.getId());
+			String providerInstancePath = String.format(providerPath, shExchangeProviderInstance.getId());
 
 			ShConfigVar shConfigVar = shConfigVarRepository.findByPathAndName(providerInstancePath,
 					propertyEntry.getKey());
@@ -181,7 +181,7 @@ public class ShExchangeProviderAPI {
 			shExchangeProviderInstanceRepository.save(shExchangeProviderInstanceEdit);
 
 			for (Entry<String, String> propertyEntry : shExchangeProviderInstanceBean.getProperties().entrySet()) {
-				String providerInstancePath = String.format(PROVIDER_PATH, shExchangeProviderInstanceEdit.getId());
+				String providerInstancePath = String.format(providerPath, shExchangeProviderInstanceEdit.getId());
 
 				ShConfigVar shConfigVar = shConfigVarRepository.findByPathAndName(providerInstancePath,
 						propertyEntry.getKey());
@@ -210,7 +210,7 @@ public class ShExchangeProviderAPI {
 		Optional<ShExchangeProviderInstance> shExchangeProviderInstance = shExchangeProviderInstanceRepository
 				.findById(id);
 		if (shExchangeProviderInstance.isPresent()) {
-			String providerInstancePath = String.format(PROVIDER_PATH, id);
+			String providerInstancePath = String.format(providerPath, id);
 			shConfigVarRepository.deleteByPath(providerInstancePath);
 			shExchangeProviderInstanceRepository.delete(id);
 			return true;
@@ -252,7 +252,7 @@ public class ShExchangeProviderAPI {
 				.findById(providerInstanceId).orElse(null);
 		if (shExchangeProviderInstance != null) {
 			Map<String, String> variables = shConfigVarUtils
-					.getVariablesFromPath(String.format(PROVIDER_PATH, providerInstanceId));
+					.getVariablesFromPath(String.format(providerPath, providerInstanceId));
 
 			try {
 

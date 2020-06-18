@@ -16,11 +16,9 @@
  */
 package com.viglet.shio.graphql.schema.object.type.sites;
 
-import static graphql.Scalars.GraphQLString;
 import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
 import static graphql.schema.GraphQLObjectType.newObject;
 import static graphql.schema.GraphqlTypeComparatorRegistry.BY_NAME_REGISTRY;
-import static graphql.schema.GraphQLList.list;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
