@@ -55,7 +55,7 @@ public class ShUserOnStartup {
 			Set<ShGroup> shGroups = new HashSet<>();
 			shGroups.add(shGroup);
 			
-			ShPostType shPostType = shPostTypeRepository.findByName(ShSystemPostType.TEXT.toString());
+			ShPostType shPostType = shPostTypeRepository.findByName(ShSystemPostType.TEXT);
 
 			ShUser shUser = new ShUser();
 

@@ -56,7 +56,7 @@ public class ShOTDSAuthProvider implements ShAuthenticationProvider {
 		String name = authentication.getName();
 		String password = authentication.getCredentials().toString();
 
-		if (shOTDSService.isAuthorizedUser(name, password, true)) {
+		if (shOTDSService.isAuthorizedUser(name, password)) {
 			HttpSession session = httpSessionFactory.getObject();
 			session.setAttribute("authProvider", this.providerId);
 			return new UsernamePasswordAuthenticationToken(name, password, new ArrayList<>());

@@ -64,19 +64,19 @@ public class ShFolder extends ShObject {
 	@OneToMany(mappedBy = "parentFolder", orphanRemoval = true)
 	@Cascade({ CascadeType.ALL })
 	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
-	private Set<ShFolder> shFolders = new HashSet<ShFolder>();
+	private Set<ShFolder> shFolders = new HashSet<>();
 
 	// bi-directional many-to-one association to ShFolder
 	@OneToMany(mappedBy = "shFolder", orphanRemoval = true)
 	@Cascade({ CascadeType.ALL })
 	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
-	private Set<ShPost> shPosts = new HashSet<ShPost>();
+	private Set<ShPost> shPosts = new HashSet<>();
 
 	// bi-directional many-to-one association to ShFolder
 	@OneToMany(mappedBy = "shFolder", orphanRemoval = true)
 	@Cascade({ CascadeType.ALL })
 	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
-	private Set<ShPostDraft> shPostDrafts = new HashSet<ShPostDraft>();
+	private Set<ShPostDraft> shPostDrafts = new HashSet<>();
 
 	public ShFolder() {
 		this.setObjectType(ShObjectType.FOLDER);

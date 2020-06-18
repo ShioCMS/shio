@@ -66,17 +66,17 @@ public class ShPostType extends ShObject {
 
 	// bi-directional many-to-one association to ShPost
 	@OneToMany(mappedBy = "shPostType", orphanRemoval = true, fetch = FetchType.LAZY)
-	private Set<ShPost> shPosts = new HashSet<ShPost>();
+	private Set<ShPost> shPosts = new HashSet<>();
 
 	@OneToMany(mappedBy = "shPostType", orphanRemoval = true, fetch = FetchType.LAZY)
-	private Set<ShPostDraft> shPostDrafts = new HashSet<ShPostDraft>();
+	private Set<ShPostDraft> shPostDrafts = new HashSet<>();
 
 	// bi-directional many-to-one association to ShPostTypeAttr
 	@OneToMany(mappedBy = "shPostType", orphanRemoval = true, fetch = FetchType.LAZY)
 	@Cascade({ CascadeType.ALL })
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JsonView({ ShJsonView.ShJsonViewPostType.class })
-	private Set<ShPostTypeAttr> shPostTypeAttrs = new HashSet<ShPostTypeAttr>();
+	private Set<ShPostTypeAttr> shPostTypeAttrs = new HashSet<>();
 
 	private String workflowPublishEntity;
 

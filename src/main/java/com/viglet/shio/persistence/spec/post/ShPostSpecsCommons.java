@@ -24,32 +24,42 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.viglet.shio.api.post.ShPostAPI;
 
 /**
  * @author Alexandre Oliveira
  * @since 0.3.7
  */
 public class ShPostSpecsCommons {
-	private final static String EQUAL = "equal";
-	private final static String IN = "in";
-	private final static String NOT_IN = "not_in";
-	private final static String CONTAINS = "contains";
-	private final static String NOT_CONTAINS = "not_contains";
-	private final static String STARTS_WITH = "starts_with";
-	private final static String NOT_STARTS_WITH = "not_starts_with";
-	private final static String ENDS_WITH = "ends_with";
-	private final static String NOT_ENDS_WITH = "not_ends_with";
+	private static final Log logger = LogFactory.getLog(ShPostSpecsCommons.class);
+	private static final String EQUAL = "equal";
+	private static final String IN = "in";
+	private static final String NOT_IN = "not_in";
+	private static final String CONTAINS = "contains";
+	private static final String NOT_CONTAINS = "not_contains";
+	private static final String STARTS_WITH = "starts_with";
+	private static final String NOT_STARTS_WITH = "not_starts_with";
+	private static final String ENDS_WITH = "ends_with";
+	private static final String NOT_ENDS_WITH = "not_ends_with";
 
-	public static List<Predicate> predicateAttrCondition(String attrName, String attrValue, String condition, Root<?> root,
-			CriteriaBuilder criteriaBuilder ) {
+	private ShPostSpecsCommons() {
+		throw new IllegalStateException("Post Specs Commons class");
+	}
+
+	public static List<Predicate> predicateAttrCondition(String attrName, String attrValue, String condition,
+			Root<?> root, CriteriaBuilder criteriaBuilder) {
 		List<Predicate> predicates = new ArrayList<>();
 
 		if (StringUtils.isEmpty(condition) || condition.equals(EQUAL)) {
 			predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get(attrName), attrValue)));
 		} else if (condition.equals(IN)) {
+			logger.warn("IN CLAUSE");
 
 		} else if (condition.equals(NOT_IN)) {
-
+			logger.warn("NOT IN CLAUSE");
 		} else if (condition.equals(CONTAINS)) {
 			predicates.add(
 					criteriaBuilder.and(criteriaBuilder.like(root.get(attrName), String.format("%%%s%%", attrValue))));

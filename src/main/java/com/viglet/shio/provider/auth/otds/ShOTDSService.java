@@ -93,7 +93,7 @@ public class ShOTDSService {
 		otdsInstance = this.getInstance(providerId);
 	}
 
-	public boolean isAuthorizedUser(String username, String password, boolean requestSsoTicket) {	
+	public boolean isAuthorizedUser(String username, String password) {	
 		ShOTDSCredencialBean shOTDSCredencialBean = new ShOTDSCredencialBean();
 		shOTDSCredencialBean.setUserName(username);
 		shOTDSCredencialBean.setPassword(password);

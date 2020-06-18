@@ -112,7 +112,6 @@ public class ShPostDraftAttr implements Serializable, ShPostAttrImpl {
 	private ShPostTypeAttr shPostTypeAttr;
 
 	// bi-directional many-to-one association to ShPost
-	// TODO: Change name of Column
 	@ManyToOne(fetch = FetchType.LAZY) // (cascade = {CascadeType.ALL})
 	@JoinColumn(name = "post_attr_id")
 	private ShRelatorItemDraft shParentRelatorItem;

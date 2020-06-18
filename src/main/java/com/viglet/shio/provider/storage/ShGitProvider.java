@@ -63,11 +63,10 @@ import org.springframework.stereotype.Component;
 public class ShGitProvider {
 	static final Logger logger = LogManager.getLogger(ShGitProvider.class.getName());
 
-	private static final String fileSourceBase = File.separator + "store" + File.separator + "file_source";
-	private static final String gitSourceBase = File.separator + "store" + File.separator + "git";
-	private static final File userDir = new File(System.getProperty("user.dir"));
+	private static final String FILE_SOURCE_BASE = File.separator + "store" + File.separator + "file_source";
+	private static final String GIT_SOURCE_BASE = File.separator + "store" + File.separator + "git";
+	private static final File USER_DIR = new File(System.getProperty("user.dir"));
 	private Git git;
-	private CloneCommand cloneCommand;
 
 	@Autowired
 	private ShPostUtils shPostUtils;
@@ -86,7 +85,8 @@ public class ShGitProvider {
 	}
 
 	public void cloneRepository() {
-		File gitDirectory = new File(userDir.getAbsolutePath().concat(gitSourceBase));
+		CloneCommand cloneCommand = null;
+		File gitDirectory = new File(USER_DIR.getAbsolutePath().concat(GIT_SOURCE_BASE));
 		if (!gitDirectory.exists()) {
 			gitDirectory.mkdirs();
 
@@ -118,8 +118,8 @@ public class ShGitProvider {
 	}
 
 	public void init() throws IOException {
-		File gitDirectory = new File(userDir.getAbsolutePath().concat(gitSourceBase));
-		logger.info("Opening a git repo at '{}'", gitSourceBase);
+		File gitDirectory = new File(USER_DIR.getAbsolutePath().concat(GIT_SOURCE_BASE));
+		logger.info("Opening a git repo at '{}'", GIT_SOURCE_BASE);
 		Repository localRepo = new FileRepository(
 				new File(gitDirectory.getAbsolutePath().concat(File.separator + ".git")));
 		if (!localRepo.getDirectory().exists()) {
@@ -158,7 +158,6 @@ public class ShGitProvider {
 	public void newItem(String shObjectId) {
 		ShPost shPost = shPostUtils.getShPostFromObjectId(shObjectId);
 		File source = shStaticFileUtils.filePath(shPost);
-		File fileSourceDirectory = new File(userDir.getAbsolutePath().concat(fileSourceBase));
 		File gitSource = new File(git.getRepository().getDirectory().getParent());
 		String objectGitDirectory = shObjectId.substring(0, 2) + File.separator + shObjectId.substring(2, 4)
 				+ File.separator + shObjectId.substring(4, 6);

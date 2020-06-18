@@ -32,6 +32,7 @@ public class ShWidgetOnStartup {
 	@Autowired
 	private ShWidgetRepository shWidgetRepository;
 
+	private static final String TEXT_TYPE = "TEXT,TEXTAREA";
 	public void createDefaultRows() {
 
 		if (shWidgetRepository.findAll().isEmpty()) {
@@ -42,7 +43,7 @@ public class ShWidgetOnStartup {
 			shWidget.setClassName("com.viglet.shio.widget.ShHiddenWidget");
 			shWidget.setImplementationCode("template/widget/hidden/hidden.html");
 			shWidget.setSettingPath("template/widget/hidden/setting/hidden-setting.html");
-			shWidget.setType("TEXT,TEXTAREA");
+			shWidget.setType(TEXT_TYPE);
 
 			shWidgetRepository.save(shWidget);
 			
@@ -51,7 +52,7 @@ public class ShWidgetOnStartup {
 			shWidget.setDescription("Text Widget");
 			shWidget.setClassName("com.viglet.shio.widget.ShTextWidget");
 			shWidget.setImplementationCode("template/widget/text.html");
-			shWidget.setType("TEXT,TEXTAREA");
+			shWidget.setType(TEXT_TYPE);
 
 			shWidgetRepository.save(shWidget);
 
@@ -60,7 +61,7 @@ public class ShWidgetOnStartup {
 			shWidget.setDescription("Text Area Widget");
 			shWidget.setClassName("com.viglet.shio.widget.ShTextAreaWidget");
 			shWidget.setImplementationCode("template/widget/textarea.html");
-			shWidget.setType("TEXT,TEXTAREA");
+			shWidget.setType(TEXT_TYPE);
 
 			shWidgetRepository.save(shWidget);
 
@@ -70,7 +71,7 @@ public class ShWidgetOnStartup {
 			shWidget.setClassName("com.viglet.shio.widget.ShFileWidget");
 			shWidget.setImplementationCode("template/widget/file.html");
 			shWidget.setSettingPath("template/widget/file/setting/file-setting.html");
-			shWidget.setType("TEXT,TEXTAREA");
+			shWidget.setType(TEXT_TYPE);
 
 			shWidgetRepository.save(shWidget);
 
@@ -79,7 +80,7 @@ public class ShWidgetOnStartup {
 			shWidget.setDescription("Ace Editor Widget");
 			shWidget.setClassName("com.viglet.shio.widget.ShAceEditorWidget");
 			shWidget.setImplementationCode("template/widget/ace-editor-js.html");
-			shWidget.setType("TEXT,TEXTAREA");
+			shWidget.setType(TEXT_TYPE);
 
 			shWidgetRepository.save(shWidget);
 
@@ -88,7 +89,7 @@ public class ShWidgetOnStartup {
 			shWidget.setDescription("Ace Editor Widget");
 			shWidget.setClassName("com.viglet.shio.widget.ShAceEditorWidget");
 			shWidget.setImplementationCode("template/widget/ace-editor-html.html");
-			shWidget.setType("TEXT,TEXTAREA");
+			shWidget.setType(TEXT_TYPE);
 
 			shWidgetRepository.save(shWidget);
 
@@ -98,7 +99,7 @@ public class ShWidgetOnStartup {
 			shWidget.setClassName("com.viglet.shio.widget.ShHTMLWidget");
 			shWidget.setImplementationCode("template/widget/html-editor/html-editor.html");
 			shWidget.setSettingPath("template/widget/html-editor/setting/html-editor-setting.html");
-			shWidget.setType("TEXT,TEXTAREA");
+			shWidget.setType(TEXT_TYPE);
 
 			shWidgetRepository.save(shWidget);
 
@@ -108,7 +109,7 @@ public class ShWidgetOnStartup {
 			shWidget.setClassName("com.viglet.shio.widget.ShContentSelectWidget");
 			shWidget.setImplementationCode("template/widget/content-select.html");
 			shWidget.setSettingPath("template/widget/content-select/setting/content-select-setting.html");
-			shWidget.setType("TEXT,TEXTAREA");
+			shWidget.setType(TEXT_TYPE);
 
 			shWidgetRepository.save(shWidget);
 
@@ -118,7 +119,7 @@ public class ShWidgetOnStartup {
 			shWidget.setClassName("com.viglet.shio.widget.ShRelatorWidget");
 			shWidget.setImplementationCode("template/widget/relator/relator-list.html");
 			shWidget.setSettingPath("template/widget/relator/setting/relator-setting.html");
-			shWidget.setType("TEXT,TEXTAREA");
+			shWidget.setType(TEXT_TYPE);
 
 			shWidgetRepository.save(shWidget);
 			
@@ -128,7 +129,7 @@ public class ShWidgetOnStartup {
 			shWidget.setClassName("com.viglet.shio.widget.ShComboBoxWidget");
 			shWidget.setImplementationCode("template/widget/combo-box/combo-box.html");
 			shWidget.setSettingPath("template/widget/combo-box/setting/combo-box-setting.html");
-			shWidget.setType("TEXT,TEXTAREA");
+			shWidget.setType(TEXT_TYPE);
 
 			shWidgetRepository.save(shWidget);
 			
@@ -138,7 +139,7 @@ public class ShWidgetOnStartup {
 			shWidget.setClassName("com.viglet.shio.widget.ShReCaptchaWidget");
 			shWidget.setImplementationCode("template/widget/recaptcha/recaptcha.html");
 			shWidget.setSettingPath("template/widget/recaptcha/setting/recaptcha-setting.html");
-			shWidget.setType("TEXT,TEXTAREA");
+			shWidget.setType(TEXT_TYPE);
 
 			shWidgetRepository.save(shWidget);			
 			
@@ -148,7 +149,7 @@ public class ShWidgetOnStartup {
 			shWidget.setClassName("com.viglet.shio.widget.ShFormConfigurationWidget");
 			shWidget.setImplementationCode("template/widget/form/form-configuration.html");
 			shWidget.setSettingPath("template/widget/form/setting/form-configuration-setting.html");
-			shWidget.setType("TEXT,TEXTAREA");
+			shWidget.setType(TEXT_TYPE);
 
 			shWidgetRepository.save(shWidget);
 			
@@ -158,7 +159,7 @@ public class ShWidgetOnStartup {
 			shWidget.setClassName("com.viglet.shio.widget.ShDateWidget");
 			shWidget.setImplementationCode("template/widget/date/date.html");
 			shWidget.setSettingPath("template/widget/date/setting/date-setting.html");
-			shWidget.setType("DATE,TEXT,TEXTAREA");
+			shWidget.setType("DATE,".concat(TEXT_TYPE));
 
 			shWidgetRepository.save(shWidget);
 						
@@ -168,7 +169,7 @@ public class ShWidgetOnStartup {
 			shWidget.setClassName("com.viglet.shio.widget.ShMultiSelectWidget");
 			shWidget.setImplementationCode("template/widget/multi-select/multi-select.html");
 			shWidget.setSettingPath("template/widget/multi-select/setting/multi-select-setting.html");
-			shWidget.setType("TEXT,TEXTAREA");
+			shWidget.setType(TEXT_TYPE);
 
 			shWidgetRepository.save(shWidget);
 			
@@ -178,7 +179,7 @@ public class ShWidgetOnStartup {
 			shWidget.setClassName("com.viglet.shio.widget.ShTabWidget");
 			shWidget.setImplementationCode("template/widget/tab/tab.html");
 			shWidget.setSettingPath("template/widget/tab/setting/tab-setting.html");
-			shWidget.setType("TEXT,TEXTAREA");
+			shWidget.setType(TEXT_TYPE);
 
 			shWidgetRepository.save(shWidget);
 			
@@ -188,7 +189,7 @@ public class ShWidgetOnStartup {
 			shWidget.setClassName("com.viglet.shio.widget.ShCheckBoxWidget");
 			shWidget.setImplementationCode("template/widget/check-box/check-box.html");
 			shWidget.setSettingPath("template/widget/check-box/setting/check-box-setting.html");
-			shWidget.setType("TEXT,TEXTAREA");
+			shWidget.setType(TEXT_TYPE);
 
 			shWidgetRepository.save(shWidget);
 		}
