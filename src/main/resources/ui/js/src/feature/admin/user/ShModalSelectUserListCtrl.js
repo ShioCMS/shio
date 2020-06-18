@@ -46,13 +46,13 @@ shioApp.controller('ShModalSelectUserListCtrl', [
 		}
 		$ctrl.selectEverything = function () {
 			if ($ctrl.checkAll) {
-				for (var stateKey in $ctrl.shStateObjects) {
-					$ctrl.shStateObjects[stateKey] = true;
+				for (var stateKey1 in $ctrl.shStateObjects) {
+					$ctrl.shStateObjects[stateKey1] = true;
 				}
 			}
 			else {
-				for (var stateKey in $ctrl.shStateObjects) {
-					$ctrl.shStateObjects[stateKey] = false;
+				for (var stateKey2 in $ctrl.shStateObjects) {
+					$ctrl.shStateObjects[stateKey2] = false;
 				}
 			}
 			$ctrl.checkSomeItemSelected();

@@ -452,13 +452,12 @@ public class ShPostUtils {
 
 	private void summaryRelator(StringBuilder title, StringBuilder summary, ShPostImpl shChildrenPostAttr) {
 		ShObject shObject = ((ShPostAttr) shChildrenPostAttr).getReferenceObject();
-		if (shObject != null) {
+		if (shObject != null)
 			if (shObject.getObjectType().equals(ShObjectType.POST))
 				summaryPost(title, summary, shObject);
-			 else if (shObject.getObjectType().equals(ShObjectType.FOLDER))
-				summaryFolder(title, summary, shObject);
-		
-		}
+			 else if (shObject.getObjectType().equals(ShObjectType.FOLDER)) {
+				 summaryFolder(title, summary, shObject); 
+			 }
 	}
 
 	private void summaryFolder(StringBuilder title, StringBuilder summary, ShObject shObject) {

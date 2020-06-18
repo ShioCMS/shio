@@ -62,8 +62,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class ShGitProvider {
 	static final Logger logger = LogManager.getLogger(ShGitProvider.class.getName());
-
-	private static final String FILE_SOURCE_BASE = File.separator + "store" + File.separator + "file_source";
 	private static final String GIT_SOURCE_BASE = File.separator + "store" + File.separator + "git";
 	private static final File USER_DIR = new File(System.getProperty("user.dir"));
 	private Git git;
@@ -129,7 +127,7 @@ public class ShGitProvider {
 		git = new Git(localRepo);
 	}
 
-	public void move(String shObjectId, String shObjectPath, String newShObjectPath) throws IOException {
+	public void move(String shObjectId) throws IOException {
 		String shObjectFileName = "<<DEFINE>";
 		String newShObjectFileName = "<<DEFINE>";
 		git.rm().addFilepattern(shObjectFileName);
@@ -189,7 +187,7 @@ public class ShGitProvider {
 		try {
 			git.add().addFilepattern(staticFileRelative).call();
 			git.add().addFilepattern(jsonFileRelative).call();
-			RevCommit commit = git.commit().setMessage("Added the Object " + source.getName() + " (" + shObjectId + ")")
+			git.commit().setMessage("Added the Object " + source.getName() + " (" + shObjectId + ")")
 					.call();
 			logger.info("Add new item '{}'", source.getAbsolutePath());
 		} catch (GitAPIException e) {
@@ -197,7 +195,6 @@ public class ShGitProvider {
 		}
 	}
 
-	@SuppressWarnings("unused")
 	public String checkpoint(String shObjectId, String shObjectPath, String commitMessage) throws IOException {
 		String shObjectFileName = "store/file_source/Viglet/_static_files/css/viglet.css";
 		try {
@@ -208,7 +205,7 @@ public class ShGitProvider {
 				logger.debug("Changes found for pattern '{}': {}", shObjectFileName, gitDiff);
 				DirCache added = git.add().addFilepattern(shObjectFileName).call();
 				logger.debug("{} changes are about to be commited", added.getEntryCount());
-				RevCommit commit = git.commit().setMessage(commitMessage).call();
+				git.commit().setMessage(commitMessage).call();
 			} else {
 				logger.debug("No changes found {}", shObjectFileName);
 			}
@@ -218,7 +215,7 @@ public class ShGitProvider {
 		return null;
 	}
 
-	public synchronized String get(String shObjectId, String shObjectPath, String revId) throws IOException {
+	public synchronized String get(String revId) throws IOException {
 		RevCommit stash = null;
 		String shObjectFileName = "<<DEFINE>>";
 		try {
@@ -245,7 +242,7 @@ public class ShGitProvider {
 		return null;
 	}
 
-	public List<String> revisionHistory(String shObjectId, String shObjectPath) throws IOException {
+	public List<String> revisionHistory() throws IOException {
 		List<String> history = Lists.newArrayList();
 		String shObjectFileName = "<<DEFINE>>";
 		logger.debug("Listing history for {}:", shObjectFileName);
@@ -264,7 +261,7 @@ public class ShGitProvider {
 	}
 
 	public String setShObjectRevision(String shObjectId, String shObjectPath, String revId) throws IOException {
-		String revisionShObject = get(shObjectId, shObjectPath, revId);
+		String revisionShObject = get(revId);
 		if (revisionShObject != null) {
 			// Save
 		}

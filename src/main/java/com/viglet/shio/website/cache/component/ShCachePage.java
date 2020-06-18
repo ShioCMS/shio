@@ -81,60 +81,87 @@ public class ShCachePage {
 		shSitesPageLayout.setPageCacheKey(shSitesContextURL.getInfo().getContextURLOriginal());
 
 		if (shObject instanceof ShFolder) {
-			shSitesPage.shFolderPage(shSitesPageLayout, shSite, shSitesContextURL);
-			if (shSitesContextURL.getInfo().getContextURL().endsWith(".json"))
-				mimeType = "json";
+			mimeType = setFolderInfo(shSitesContextURL, mimeType, shSite, shSitesPageLayout);
 
 		} else if (shObject instanceof ShPost) {
 
-			mimeType = shSitesPage.shPostPage(shSitesPageLayout, shSite, shSitesContextURL, mimeType);
+			mimeType = setPostInfo(shSitesContextURL, shCachePageBean, mimeType, shObject, shSite, shSitesPageLayout);
+		}
 
-			ShPost shPost = (ShPost) shObject;
-			if (shPost.getShPostType().getName().equals(ShSystemPostType.FOLDER_INDEX)) {
-				String format = shSitesContextURL.getInfo().getShFormat();
-				Map<String, ShPostAttr> shFolderIndexMap = shSitesPostUtils.postToMap(shPost);
-				// TTL
-				ShPostAttrImpl shPostAttrCacheTTL = shFolderIndexMap.get("CACHE_TTL");
-				if (shPostAttrCacheTTL != null && shPostAttrCacheTTL.getStrValue() != null) {
-					int minutes = Integer.parseInt(shPostAttrCacheTTL.getStrValue());
+		setContentType(shCachePageBean, mimeType);
 
-					Calendar expirationDate = Calendar.getInstance();
-					expirationDate.add(Calendar.MINUTE, minutes);
-					shCachePageBean.setExpirationDate(expirationDate.getTime());
-				}
-				// Formats
-				if (format.equalsIgnoreCase("default")) {
-					if (shSitesContextURL.getInfo().getContextURL().endsWith(".json"))
-						mimeType = "json";
-				} else {
-					ShPostAttrImpl shPostAttrFormats = shFolderIndexMap.get("FORMATS");
-					List<Map<String, ShPostAttr>> shPostAttrFormatList = shSitesPostUtils
-							.relationToMap(shPostAttrFormats);
-					if (shPostAttrFormatList != null) {
-						for (Map<String, ShPostAttr> shPostAttrFormat : shPostAttrFormatList) {
-							if (shPostAttrFormat.get("NAME").getStrValue().equals(format))
-								mimeType = shPostAttrFormat.get("MIME_TYPE").getStrValue();
-						}
-					}
-				}
+		setBody(shSitesContextURL, shCachePageBean, mimeType, shSite, shSitesPageLayout);
+		return shCachePageBean;
+	}
 
-			} else {
+	private String setPostInfo(ShSitesContextURL shSitesContextURL, ShCachePageBean shCachePageBean, String mimeType,
+			ShObject shObject, ShSite shSite, ShSitesPageLayout shSitesPageLayout) {
+		mimeType = shSitesPage.shPostPage(shSitesPageLayout, shSite, shSitesContextURL, mimeType);
 
-				if (shSitesPageLayout.getCacheTTL() != null) {
-					Calendar expirationDate = Calendar.getInstance();
-					expirationDate.add(Calendar.MINUTE, shSitesPageLayout.getCacheTTL());
-					shCachePageBean.setExpirationDate(expirationDate.getTime());
+		ShPost shPost = (ShPost) shObject;
+		if (shPost.getShPostType().getName().equals(ShSystemPostType.FOLDER_INDEX)) {
+			String format = shSitesContextURL.getInfo().getShFormat();
+			Map<String, ShPostAttr> shFolderIndexMap = shSitesPostUtils.postToMap(shPost);
+			setExpirationDate(shCachePageBean, shFolderIndexMap);
+			mimeType = contentTypeByFormat(shSitesContextURL, mimeType, format, shFolderIndexMap);
+
+		} else {
+
+			setCustomExpirationDate(shCachePageBean, shSitesPageLayout);
+		}
+		return mimeType;
+	}
+
+	private String contentTypeByFormat(ShSitesContextURL shSitesContextURL, String mimeType, String format,
+			Map<String, ShPostAttr> shFolderIndexMap) {
+		// Formats
+		if (format.equalsIgnoreCase("default")) {
+			if (shSitesContextURL.getInfo().getContextURL().endsWith(".json"))
+				mimeType = "json";
+		} else {
+			ShPostAttrImpl shPostAttrFormats = shFolderIndexMap.get("FORMATS");
+			List<Map<String, ShPostAttr>> shPostAttrFormatList = shSitesPostUtils
+					.relationToMap(shPostAttrFormats);
+			if (shPostAttrFormatList != null) {
+				for (Map<String, ShPostAttr> shPostAttrFormat : shPostAttrFormatList) {
+					if (shPostAttrFormat.get("NAME").getStrValue().equals(format))
+						mimeType = shPostAttrFormat.get("MIME_TYPE").getStrValue();
 				}
 			}
 		}
+		return mimeType;
+	}
 
-		if (mimeType.equals("json"))
-			shCachePageBean.setContentType(MediaType.APPLICATION_JSON_VALUE);
-		else if (mimeType.equals("xml"))
-			shCachePageBean.setContentType(MediaType.APPLICATION_XML_VALUE);
-		else
-			shCachePageBean.setContentType(MediaType.TEXT_HTML_VALUE);
+	private void setCustomExpirationDate(ShCachePageBean shCachePageBean, ShSitesPageLayout shSitesPageLayout) {
+		if (shSitesPageLayout.getCacheTTL() != null) {
+			Calendar expirationDate = Calendar.getInstance();
+			expirationDate.add(Calendar.MINUTE, shSitesPageLayout.getCacheTTL());
+			shCachePageBean.setExpirationDate(expirationDate.getTime());
+		}
+	}
 
+	private void setExpirationDate(ShCachePageBean shCachePageBean, Map<String, ShPostAttr> shFolderIndexMap) {
+		// TTL
+		ShPostAttrImpl shPostAttrCacheTTL = shFolderIndexMap.get("CACHE_TTL");
+		if (shPostAttrCacheTTL != null && shPostAttrCacheTTL.getStrValue() != null) {
+			int minutes = Integer.parseInt(shPostAttrCacheTTL.getStrValue());
+
+			Calendar expirationDate = Calendar.getInstance();
+			expirationDate.add(Calendar.MINUTE, minutes);
+			shCachePageBean.setExpirationDate(expirationDate.getTime());
+		}
+	}
+
+	private String setFolderInfo(ShSitesContextURL shSitesContextURL, String mimeType, ShSite shSite,
+			ShSitesPageLayout shSitesPageLayout) {
+		shSitesPage.shFolderPage(shSitesPageLayout, shSite, shSitesContextURL);
+		if (shSitesContextURL.getInfo().getContextURL().endsWith(".json"))
+			mimeType = "json";
+		return mimeType;
+	}
+
+	private void setBody(ShSitesContextURL shSitesContextURL, ShCachePageBean shCachePageBean, String mimeType,
+			ShSite shSite, ShSitesPageLayout shSitesPageLayout) {
 		String shPageLayoutHTML = null;
 		try {
 			shPageLayoutHTML = shSitesContextComponent.shPageLayoutFactory(shSitesPageLayout,
@@ -143,7 +170,15 @@ public class ShCachePage {
 			logger.error("ShCachePage Error:", e);
 		}
 		shCachePageBean.setBody(shPageLayoutHTML);
-		return shCachePageBean;
+	}
+
+	private void setContentType(ShCachePageBean shCachePageBean, String mimeType) {
+		if (mimeType.equals("json"))
+			shCachePageBean.setContentType(MediaType.APPLICATION_JSON_VALUE);
+		else if (mimeType.equals("xml"))
+			shCachePageBean.setContentType(MediaType.APPLICATION_XML_VALUE);
+		else
+			shCachePageBean.setContentType(MediaType.TEXT_HTML_VALUE);
 	}
 
 	@CacheEvict(value = "page", key = "{#id, #url}")

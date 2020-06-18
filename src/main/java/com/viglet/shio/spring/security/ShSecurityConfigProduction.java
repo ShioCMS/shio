@@ -16,6 +16,8 @@
  */
 package com.viglet.shio.spring.security;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -51,6 +53,7 @@ import com.viglet.shio.provider.auth.ShAuthenticationProvider;
 @Profile("production")
 @ComponentScan(basePackageClasses = ShCustomUserDetailsService.class)
 public class ShSecurityConfigProduction extends WebSecurityConfigurerAdapter {
+	private static final Logger logger = LogManager.getLogger(ShSecurityConfigProduction.class);
 	@Autowired
 	private UserDetailsService userDetailsService;
 	@Autowired
@@ -104,8 +107,12 @@ public class ShSecurityConfigProduction extends WebSecurityConfigurerAdapter {
 	}
 
 	@Autowired
-	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userDetailsService).passwordEncoder(passwordencoder());
+	public void configureGlobal(AuthenticationManagerBuilder auth) {
+		try {
+			auth.userDetailsService(userDetailsService).passwordEncoder(passwordencoder());
+		} catch (Exception e) {
+			logger.error(e);
+		}
 	}
 
 	@SuppressWarnings("unused")

@@ -64,36 +64,49 @@ public class ShObjectUtils {
 	public boolean canAccess(Principal principal, String shObjectId) {
 		ShUser shUser = null;
 		ShObject shObject = shObjectRepository.findById(shObjectId).orElse(null);
-		if (shObject != null) {
-			if (principal != null)
-				shUser = shUserRepository.findByUsername(principal.getName());
-			Set<String> shGroups = new HashSet<>();
-			Set<String> shUsers = new HashSet<>();
-			if (shUser != null && shUser.getShGroups() != null) {
-				boolean fullAccess = false;
-				for (ShGroup shGroup : shUser.getShGroups()) {
-					if (shGroup.getName().equals("Administrator")) {
-						fullAccess = true;
-					}
-				}
-				if (fullAccess) {
-					return true;
-				} else {
-					for (ShGroup shGroup : shUser.getShGroups()) {
-						shGroups.add(shGroup.getName());
-					}
-					shUsers.add(shUser.getUsername());
-					if (shObjectRepository.countByIdAndShGroupsInOrIdAndShUsersInOrIdAndShGroupsIsNullAndShUsersIsNull(
-							shObject.getId(), shGroups, shObject.getId(), shUsers, shObject.getId()) > 0) {
-						return true;
-					}
-				}
+		shUser = getShUser(principal, shUser);
+		if (shObject != null) 			
+			if (userHasGroups(shUser)) {
+				return isAdministrator(shUser) ? true : hasAccess(shUser, shObject);
 			} else {
 				return true;
 			}
-		}
 
 		return false;
+	}
+
+	private ShUser getShUser(Principal principal, ShUser shUser) {
+		if (principal != null)
+			shUser = shUserRepository.findByUsername(principal.getName());
+		return shUser;
+	}
+
+	private boolean userHasGroups(ShUser shUser) {
+		return shUser != null && shUser.getShGroups() != null;
+	}
+
+	private boolean isAdministrator(ShUser shUser) {
+		boolean fullAccess = false;
+		for (ShGroup shGroup : shUser.getShGroups()) {
+			if (shGroup.getName().equals("Administrator")) {
+				fullAccess = true;
+			}
+		}
+		return fullAccess;
+	}
+
+	private boolean hasAccess(ShUser shUser, ShObject shObject) {
+		Set<String> shGroups = new HashSet<>();
+		Set<String> shUsers = new HashSet<>();
+		shUser.getShGroups().forEach(shGroup -> shGroups.add(shGroup.getName()));
+		shUsers.add(shUser.getUsername());
+		if (shObjectRepository.countByIdAndShGroupsInOrIdAndShUsersInOrIdAndShGroupsIsNullAndShUsersIsNull(
+				shObject.getId(), shGroups, shObject.getId(), shUsers, shObject.getId()) > 0)
+			return true;
+		else {
+			return false;
+		}
+
 	}
 
 	public ShFolderPath objectPath(@PathVariable String id) {

@@ -55,7 +55,11 @@ import com.viglet.shio.website.cache.component.ShCachePageBean;
 import com.viglet.shio.website.utils.ShSitesObjectUtils;
 
 /**
+ * 
+ * Site Context
+ * 
  * @author Alexandre Oliveira
+ * 
  */
 @Controller
 public class ShSitesContext {
@@ -117,26 +121,34 @@ public class ShSitesContext {
 	}
 
 	private boolean checkIfShowPage(ShSitesContextURL shSitesContextURL, HttpSession session) {
-		String username = (String) session.getAttribute(USERNAME_SESSION);
-		String[] groups = (String[]) session.getAttribute(USER_GROUPS_SESSION);
+		return isRestrictPage(shSitesContextURL, session) ? checkIfShowRestrictPage(shSitesContextURL, session)
+				: isPublicPage(shSitesContextURL);
+	}
 
+	private boolean checkIfShowRestrictPage(ShSitesContextURL shSitesContextURL, HttpSession session) {
 		boolean showPage = false;
-		if (username == null && shSitesContextURL.getInfo().isPageAllowGuestUser())
+		String[] groups = (String[]) session.getAttribute(USER_GROUPS_SESSION);
+		String[] pageGroups = shSitesContextURL.getInfo().getShPageGroups();
+
+		if (pageGroups != null && pageGroups.length > 0) {
+			if (groups.length > 0)
+				for (String group : groups)
+					if (StringUtils.indexOfAny(group, pageGroups) >= 0)
+						showPage = true;
+
+		} else {
 			showPage = true;
-		else if (username != null && shSitesContextURL.getInfo().isPageAllowRegisterUser()) {
-			String[] pageGroups = shSitesContextURL.getInfo().getShPageGroups();
-
-			if (pageGroups != null && pageGroups.length > 0) {
-				if (groups.length > 0)
-					for (String group : groups)
-						if (StringUtils.indexOfAny(group, pageGroups) >= 0)
-							showPage = true;
-
-			} else {
-				showPage = true;
-			}
 		}
 		return showPage;
+	}
+
+	private boolean isRestrictPage(ShSitesContextURL shSitesContextURL, HttpSession session) {
+		return (String) session.getAttribute(USERNAME_SESSION) != null
+				&& shSitesContextURL.getInfo().isPageAllowRegisterUser();
+	}
+
+	private boolean isPublicPage(ShSitesContextURL shSitesContextURL) {
+		return shSitesContextURL.getInfo().isPageAllowGuestUser();
 	}
 
 	private void renderPage(HttpServletRequest request, HttpServletResponse response, HttpSession session,

@@ -16,7 +16,6 @@
  */
 package com.viglet.shio.website.utils;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -105,6 +104,19 @@ public class ShSitesPageLayoutUtils {
 		if (shSite.getPostTypeLayout() != null)
 			postTypeLayout = new JSONObject(shSite.getPostTypeLayout());
 
+		String pageLayoutName = getPageLayoutNamePost(shPostItem, format, postTypeLayout);
+		List<ShPost> shPostPageLayouts = shPostRepository.findByTitle(pageLayoutName);
+
+		ShPost shPostPageLayout = null;
+		if (shPostPageLayouts != null)
+			for (ShPost shPostPageLayoutItem : shPostPageLayouts)
+				if (shPostUtils.getSite(shPostPageLayoutItem).getId().equals(shSite.getId()))
+					shPostPageLayout = shPostPageLayoutItem;
+
+		return shPostPageLayout;
+	}
+
+	private String getPageLayoutNamePost(ShPostImpl shPostItem, String format, JSONObject postTypeLayout) {
 		ShSitePostTypeLayouts shSitePostTypeLayouts = null;
 		ObjectMapper mapper = new ObjectMapper();
 		try {
@@ -119,19 +131,8 @@ public class ShSitesPageLayoutUtils {
 		if (format == null)
 			format = DEFAULT_FORMAT;
 
-		for (ShSitePostTypeLayout shSitePostTypeLayout : shSitePostTypeLayouts) {
-			if (shSitePostTypeLayout.getFormat().equals(format))
-				pageLayoutName = shSitePostTypeLayout.getLayout();
-		}
-		List<ShPost> shPostPageLayouts = shPostRepository.findByTitle(pageLayoutName);
-
-		ShPost shPostPageLayout = null;
-		if (shPostPageLayouts != null)
-			for (ShPost shPostPageLayoutItem : shPostPageLayouts)
-				if (shPostUtils.getSite(shPostPageLayoutItem).getId().equals(shSite.getId()))
-					shPostPageLayout = shPostPageLayoutItem;
-
-		return shPostPageLayout;
+		pageLayoutName = getPageLayoutName(format, pageLayoutName, shSitePostTypeLayouts);
+		return pageLayoutName;
 	}
 
 	public ShPost pageLayoutFromFolderAndFolderIndex(ShObject shObjectItem, ShSite shSite, String format) {
@@ -146,60 +147,84 @@ public class ShSitesPageLayoutUtils {
 	}
 
 	private ShPost folderIndexPageLayout(ShObject shObjectItem, String format, ShPost shFolderPageLayout) {
-		String shPostFolderPageLayoutId;
+
 		ShPostImpl shSelectedPost = shSitesPostUtils.getPostByStage((ShPost) shObjectItem);
 		if (shSelectedPost != null) {
 			Map<String, ShPostAttr> shFolderIndexMap = shSitesPostUtils.postToMap((ShPost) shSelectedPost);
-			shPostFolderPageLayoutId = shFolderIndexMap.get(ShSystemPostTypeAttr.PAGE_LAYOUT).getStrValue();
-			if (!format.equalsIgnoreCase(DEFAULT_FORMAT)) {
-				ShPostAttrImpl shPostAttrFormats = shFolderIndexMap.get("FORMATS");
-				List<Map<String, ShPostAttr>> shPostAttrFormatList = shSitesPostUtils
-						.relationToMap(shPostAttrFormats);
-				if (shPostAttrFormatList != null)
-					for (Map<String, ShPostAttr> shPostAttrFormat : shPostAttrFormatList)
-						if (shPostAttrFormat.get("NAME").getStrValue().equals(format))
-							shPostFolderPageLayoutId = shPostAttrFormat.get("PAGE_LAYOUT").getStrValue();
-
-			}
-
-			if (shPostFolderPageLayoutId != null) {
-				shFolderPageLayout = shPostRepository.findById(shPostFolderPageLayoutId).orElse(null);
-			}
+			String shPostFolderPageLayoutId = shFolderIndexMap.get(ShSystemPostTypeAttr.PAGE_LAYOUT).getStrValue();
+			shPostFolderPageLayoutId = pageLayoutFromFormat(format, shPostFolderPageLayoutId, shFolderIndexMap);
+			shFolderPageLayout = getFolderPageLayout(shFolderPageLayout, shPostFolderPageLayoutId);
 		}
 		return shFolderPageLayout;
+	}
+
+	private ShPost getFolderPageLayout(ShPost shFolderPageLayout, String shPostFolderPageLayoutId) {
+		if (shPostFolderPageLayoutId != null) {
+			shFolderPageLayout = shPostRepository.findById(shPostFolderPageLayoutId).orElse(null);
+		}
+		return shFolderPageLayout;
+	}
+
+	private String pageLayoutFromFormat(String format, String shPostFolderPageLayoutId,
+			Map<String, ShPostAttr> shFolderIndexMap) {
+		if (!format.equalsIgnoreCase(DEFAULT_FORMAT)) {
+			ShPostAttrImpl shPostAttrFormats = shFolderIndexMap.get("FORMATS");
+			List<Map<String, ShPostAttr>> shPostAttrFormatList = shSitesPostUtils.relationToMap(shPostAttrFormats);
+			if (shPostAttrFormatList != null)
+				for (Map<String, ShPostAttr> shPostAttrFormat : shPostAttrFormatList)
+					if (shPostAttrFormat.get("NAME").getStrValue().equals(format))
+						shPostFolderPageLayoutId = shPostAttrFormat.get("PAGE_LAYOUT").getStrValue();
+
+		}
+		return shPostFolderPageLayoutId;
 	}
 
 	private ShPost defaultFolderPageLayout(ShSite shSite, String format, ShPost shFolderPageLayout) {
 		JSONObject postTypeLayout = new JSONObject(shSite.getPostTypeLayout());
 
 		if (postTypeLayout.has("FOLDER")) {
-			ObjectMapper mapper = new ObjectMapper();
+			String pageLayoutName = getPageLayoutNameFolder(postTypeLayout, format);
+			shFolderPageLayout = getFolderPageLayout(shSite, shFolderPageLayout, pageLayoutName);
+		}
+		return shFolderPageLayout;
+	}
 
-			ShSitePostTypeLayouts shSitePostTypeLayouts;
-			try {
-				shSitePostTypeLayouts = mapper.readValue(postTypeLayout.get("FOLDER").toString(),
-						ShSitePostTypeLayouts.class);
+	private ShPost getFolderPageLayout(ShSite shSite, ShPost shFolderPageLayout, String pageLayoutName) {
+		List<ShPost> shPostPageLayouts = shPostRepository.findByTitle(pageLayoutName);
 
-				String pageLayoutName = null;
-				if (format == null)
-					format = DEFAULT_FORMAT;
-
-				for (ShSitePostTypeLayout shSitePostTypeLayout : shSitePostTypeLayouts) {
-					if (shSitePostTypeLayout.getFormat().equals(format))
-						pageLayoutName = shSitePostTypeLayout.getLayout();						
-				}
-				List<ShPost> shPostPageLayouts = shPostRepository.findByTitle(pageLayoutName);
-
-				if (shPostPageLayouts != null) {
-					for (ShPost shPostPageLayout : shPostPageLayouts) {
-						if (shPostUtils.getSite(shPostPageLayout).getId().equals(shSite.getId()))
-							shFolderPageLayout = shPostPageLayout;
-					}
-				}
-			} catch (JSONException | IOException e) {
-				logger.error("pageLayoutFromFolderAndFolderIndex Error", e);
+		if (shPostPageLayouts != null) {
+			for (ShPost shPostPageLayout : shPostPageLayouts) {
+				if (shPostUtils.getSite(shPostPageLayout).getId().equals(shSite.getId()))
+					shFolderPageLayout = shPostPageLayout;
 			}
 		}
 		return shFolderPageLayout;
+	}
+
+	private String getPageLayoutNameFolder(JSONObject postTypeLayout, String format) {
+		String pageLayoutName = null;
+		ObjectMapper mapper = new ObjectMapper();
+		ShSitePostTypeLayouts shSitePostTypeLayouts;
+		try {
+			shSitePostTypeLayouts = mapper.readValue(postTypeLayout.get("FOLDER").toString(),
+					ShSitePostTypeLayouts.class);
+			if (format == null)
+				format = DEFAULT_FORMAT;
+
+			pageLayoutName = getPageLayoutName(format, pageLayoutName, shSitePostTypeLayouts);
+		} catch (JsonProcessingException | JSONException e) {
+			logger.error(e);
+		}
+
+		return pageLayoutName;
+	}
+
+	private String getPageLayoutName(String format, String pageLayoutName,
+			ShSitePostTypeLayouts shSitePostTypeLayouts) {
+		for (ShSitePostTypeLayout shSitePostTypeLayout : shSitePostTypeLayouts) {
+			if (shSitePostTypeLayout.getFormat().equals(format))
+				pageLayoutName = shSitePostTypeLayout.getLayout();
+		}
+		return pageLayoutName;
 	}
 }

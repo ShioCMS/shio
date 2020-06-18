@@ -77,7 +77,7 @@ public class ShNashornEngineConfiguration {
 			nashornScriptEngineFactory = Class.forName("jdk.nashorn.api.scripting.NashornScriptEngineFactory");
 
 			Method getScriptEngine = nashornScriptEngineFactory.getDeclaredMethod("getScriptEngine", String[].class);
-			ScriptEngineFactory scriptEngineFactory = (ScriptEngineFactory) nashornScriptEngineFactory.newInstance();
+			ScriptEngineFactory scriptEngineFactory = (ScriptEngineFactory) nashornScriptEngineFactory.getDeclaredConstructor().newInstance();
 			ScriptEngine engine = (ScriptEngine) getScriptEngine.invoke(scriptEngineFactory, new Object[] {NASHORN_CONFIGURATION});
 			Bindings bindings = engine.createBindings();
 

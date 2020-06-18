@@ -16,6 +16,7 @@
  */
 package com.viglet.shio.website.component.form;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,6 +24,8 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -44,6 +47,7 @@ import com.viglet.shio.widget.ShWidgetImplementation;
  */
 @Component
 public class ShFormComponent {
+	private static final Log logger = LogFactory.getLog(ShFormComponent.class);
 	@Autowired
 	private ShPostTypeRepository shPostTypeRepository;
 	@Resource
@@ -53,8 +57,7 @@ public class ShFormComponent {
 	@Autowired
 	private ShObjectRepository shObjectRepository;
 
-	public String byPostType(String shPostTypeName, String shObjectId, HttpServletRequest request)
-			throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+	public String byPostType(String shPostTypeName, String shObjectId, HttpServletRequest request) {
 		final Context ctx = new Context();
 		ShFormConfiguration shFormConfiguration = null;
 		ShObject shObject = shObjectRepository.findById(shObjectId).orElse(null);
@@ -70,9 +73,17 @@ public class ShFormComponent {
 
 		for (ShPostTypeAttr shPostTypeAttr : postTypeAttrByOrdinal) {
 			String className = shPostTypeAttr.getShWidget().getClassName();
-			ShWidgetImplementation object = (ShWidgetImplementation) Class.forName(className).newInstance();
-			applicationContext.getAutowireCapableBeanFactory().autowireBean(object);
-			fields.add(object.render(shPostTypeAttr, shObject));
+
+			try {
+				ShWidgetImplementation object = (ShWidgetImplementation) Class.forName(className)
+						.getDeclaredConstructor().newInstance();
+				applicationContext.getAutowireCapableBeanFactory().autowireBean(object);
+				fields.add(object.render(shPostTypeAttr, shObject));
+			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+					| InvocationTargetException | NoSuchMethodException | SecurityException
+					| ClassNotFoundException e) {
+				logger.error(e);
+			}
 
 			if (shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.FORM_CONFIGURATION)) {
 				JSONObject formConfiguration = new JSONObject(shPostTypeAttr.getWidgetSettings());

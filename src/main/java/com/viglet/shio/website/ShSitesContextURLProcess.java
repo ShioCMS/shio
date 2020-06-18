@@ -49,24 +49,27 @@ public class ShSitesContextURLProcess {
 	@Autowired
 	private ShSitesContextURLProcessCache shSitesContextURLProcessCache;
 
+	private static final String SITE_HEADER = "x-sh-site";
+	private static final String NO_CACHE_HEADER = "x-sh-nocache";
+	private static final String FORMAT_PARAM = "sh-format";
+	private static final String SEPARATOR = "/";
+
 	public ShSitesContextURL getContextURL(HttpServletRequest request, HttpServletResponse response) {
 		ShSitesContextURL shSitesContextURL = new ShSitesContextURL();
 		shSitesContextURL.setRequest(request);
 		shSitesContextURL.setResponse(response);
 
-		String shXSiteName = request.getHeader("x-sh-site");
-		shSitesContextURL.getInfo().setCacheEnabled(
-				request.getHeader("x-sh-nocache") != null && request.getHeader("x-sh-nocache").equals("1") ? false
-						: true);
+		String shXSiteName = request.getHeader(SITE_HEADER);
+		shSitesContextURL.getInfo().setCacheEnabled(cacheIsEnabled(request));
 		String context = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
 		if (shXSiteName != null) {
 			String contextOriginal = context.replaceAll("^/sites", "");
-			if (request.getParameter("sh-format") != null) {
-				String format = request.getParameter("sh-format");
+			if (request.getParameter(FORMAT_PARAM) != null) {
+				String format = request.getParameter(FORMAT_PARAM);
 				shSitesContextURL.getInfo()
 						.setContextURL(String.format("/sites/%s/%s/en-us%s", shXSiteName, format, contextOriginal));
 				shSitesContextURL.getInfo()
-						.setContextURLOriginal(contextOriginal.concat(String.format("?sh-format=%s", format)));
+						.setContextURLOriginal(contextOriginal.concat(String.format("?%s=%s", FORMAT_PARAM, format)));
 			} else {
 				shSitesContextURL.getInfo().setContextURLOriginal(context.replaceAll("^/sites", ""));
 				shSitesContextURL.getInfo().setContextURL(String.format("/sites/%s/default/en-us%s", shXSiteName,
@@ -74,18 +77,18 @@ public class ShSitesContextURLProcess {
 			}
 		} else {
 
-			if (request.getParameter("sh-format") != null) {
-				String[] contexts = context.split("/");
-				contexts[3] = request.getParameter("sh-format");
-				context = StringUtils.join(contexts, "/");
+			if (request.getParameter(FORMAT_PARAM) != null) {
+				String[] contexts = context.split(SEPARATOR);
+				contexts[3] = request.getParameter(FORMAT_PARAM);
+				context = StringUtils.join(contexts, SEPARATOR);
 			}
 
 			shSitesContextURL.getInfo().setContextURLOriginal(context);
 			shSitesContextURL.getInfo().setContextURL(shSitesContextURL.getInfo().getContextURLOriginal());
 		}
 
-		if (request.getParameter("sh-format") != null) {
-			shSitesContextURL.getInfo().setShFormat(request.getParameter("sh-format"));
+		if (request.getParameter(FORMAT_PARAM) != null) {
+			shSitesContextURL.getInfo().setShFormat(request.getParameter(FORMAT_PARAM));
 		}
 
 		ShSitesContextURLInfo shSitesContextURLInfo = shSitesContextURLProcessCache.detectContextURL(shSitesContextURL);
@@ -93,6 +96,10 @@ public class ShSitesContextURLProcess {
 
 		return shSitesContextURL;
 
+	}
+
+	private boolean cacheIsEnabled(HttpServletRequest request) {
+		return request.getHeader(NO_CACHE_HEADER) != null && !request.getHeader(NO_CACHE_HEADER).equals("1");
 	}
 
 	public void detectContextURL(ShSitesContextURL shSitesContextURL) {
@@ -103,7 +110,7 @@ public class ShSitesContextURLProcess {
 	public void detectContextURL(String url, ShSitesContextURL shSitesContextURL) {
 		shSitesContextURL.getInfo().setContextURL(url);
 		String shSiteName = null;
-		String[] contexts = url.split("/");
+		String[] contexts = url.split(SEPARATOR);
 		for (int i = 1; i < contexts.length; i++) {
 			switch (i) {
 			case 1:
@@ -118,10 +125,11 @@ public class ShSitesContextURLProcess {
 			case 4:
 				shSitesContextURL.getInfo().setShLocale(contexts[i]);
 				break;
+			default:
+				break;
 			}
 		}
 
-		// TODO: Use Database, need to be cached
 		ShSite shSite = shSiteRepository.findByFurl(shSiteName);
 		shSitesContextURL.getInfo().setSiteId(shSite.getId());
 
@@ -130,7 +138,6 @@ public class ShSitesContextURLProcess {
 
 		String objectName = shSitesContextComponent.objectNameFactory(contentPath);
 
-		// TODO: Use Database, need to be cached
 		ShFolder shFolder = shFolderUtils.folderFromPath(shSite,
 				shSitesContextComponent.folderPathFactory(contentPath));
 		if (shFolder != null) {
@@ -138,7 +145,7 @@ public class ShSitesContextURLProcess {
 		} else {
 			logger.info("No folder for " + shSitesContextURL.getInfo().getContextURL());
 		}
-		// TODO: Use Database, need to be cached
+
 		ShObject shObject = shSitesContextComponent.shObjectItemFactory(shSite, shFolder, objectName);
 		if (shObject != null) {
 			shSitesContextURL.getInfo().setObjectId(shObject.getId());

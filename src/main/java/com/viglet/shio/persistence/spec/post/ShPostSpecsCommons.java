@@ -27,8 +27,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.viglet.shio.api.post.ShPostAPI;
-
 /**
  * @author Alexandre Oliveira
  * @since 0.3.7
