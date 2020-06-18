@@ -70,7 +70,7 @@ public class ShOnStartup implements ApplicationRunner {
 	@Override
 	public void run(ApplicationArguments arg0) throws Exception {
 
-		if (!shConfigVarRepository.existsByPathAndName(ShConfigVarOnStartup.FIRST_TIME_PATH,
+		if (!shConfigVarRepository.existsByPathAndName(ShConfigVarOnStartup.firstTimePath,
 				ShConfigVarOnStartup.FIRST_TIME_NAME)) {
 
 			logger.info("First Time Configuration ...");
