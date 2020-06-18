@@ -409,7 +409,7 @@ public class ShPostUtils {
 			StringBuilder summary = new StringBuilder();
 
 			for (ShPostAttrImpl shChildrenPostAttr : postAttrsSort(
-					 (Set<ShPostAttrImpl>) shRelatorItem.getShChildrenPostAttrs())) {
+					(Set<ShPostAttrImpl>) shRelatorItem.getShChildrenPostAttrs())) {
 				ShPostTypeAttr shPostTypeAttr = shChildrenPostAttr.getShPostTypeAttr();
 				title = setPostTitle(shRelatorItem, title, shChildrenPostAttr, shPostTypeAttr);
 
@@ -453,11 +453,11 @@ public class ShPostUtils {
 	private void summaryRelator(StringBuilder title, StringBuilder summary, ShPostImpl shChildrenPostAttr) {
 		ShObject shObject = ((ShPostAttr) shChildrenPostAttr).getReferenceObject();
 		if (shObject != null)
-			if (shObject.getObjectType().equals(ShObjectType.POST))
+			if (shObject.getObjectType().equals(ShObjectType.POST)) {
 				summaryPost(title, summary, shObject);
-			 else if (shObject.getObjectType().equals(ShObjectType.FOLDER)) {
-				 summaryFolder(title, summary, shObject); 
-			 }
+			} else if (shObject.getObjectType().equals(ShObjectType.FOLDER)) {
+				summaryFolder(title, summary, shObject);
+			}
 	}
 
 	private void summaryFolder(StringBuilder title, StringBuilder summary, ShObject shObject) {
@@ -509,8 +509,8 @@ public class ShPostUtils {
 
 	public List<ShPostAttrImpl> postAttrsSort(Set<ShPostAttrImpl> shPostAttrs) {
 		List<ShPostAttrImpl> shPostAttrsByOrdinal = new ArrayList<>(shPostAttrs);
-		Collections.sort(shPostAttrsByOrdinal, (ShPostAttrImpl o1, ShPostAttrImpl o2) -> o1.getShPostTypeAttr().getOrdinal()
-				- o2.getShPostTypeAttr().getOrdinal());
+		Collections.sort(shPostAttrsByOrdinal, (ShPostAttrImpl o1,
+				ShPostAttrImpl o2) -> o1.getShPostTypeAttr().getOrdinal() - o2.getShPostTypeAttr().getOrdinal());
 		return shPostAttrsByOrdinal;
 	}
 
@@ -680,8 +680,8 @@ public class ShPostUtils {
 
 		Map<String, ShPostAttr> shPostAttrMap = new HashMap<>();
 		if (shPost != null) {
-			shPost.getShPostAttrs().forEach(
-					shPostAttr -> shPostAttrMap.put(((ShPostAttr) shPostAttr).getShPostTypeAttr().getId(), (ShPostAttr) shPostAttr));
+			shPost.getShPostAttrs().forEach(shPostAttr -> shPostAttrMap
+					.put(((ShPostAttr) shPostAttr).getShPostTypeAttr().getId(), (ShPostAttr) shPostAttr));
 
 		}
 		return shPostAttrMap;

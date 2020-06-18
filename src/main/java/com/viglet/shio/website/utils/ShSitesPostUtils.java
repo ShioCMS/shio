@@ -81,8 +81,11 @@ public class ShSitesPostUtils {
 	private ShPostUtils shPostUtils;
 
 	public ShPost getPostByStage(ShPost shPost) {
-		return (shPost != null) ? shMgmtProperties.isEnabled() ? this.getMgmtPost(shPost) : this.getLivePost(shPost)
-				: null;
+		if (shPost != null) {
+				return shMgmtProperties.isEnabled()? this.getMgmtPost(shPost):this.getLivePost(shPost);
+		} else {
+			return null;
+		}
 	}
 
 	private ShPost getLivePost(ShPost shPost) {
@@ -232,13 +235,13 @@ public class ShSitesPostUtils {
 		}
 
 	}
+
 	@SuppressWarnings("unchecked")
 	public List<Map<String, ShPostAttr>> relationToMap(ShPostAttrImpl shPostAttr) {
 
 		if (shPostAttr != null) {
 			List<Map<String, ShPostAttr>> relations = new ArrayList<>();
 
-			
 			Set<ShRelatorItem> shRelatorItems = (Set<ShRelatorItem>) shPostAttr.getShChildrenRelatorItems();
 			List<ShRelatorItem> shRelatorItemsByOrdinal = new ArrayList<>();
 			shRelatorItemsByOrdinal.addAll(shRelatorItems);
@@ -252,7 +255,8 @@ public class ShSitesPostUtils {
 				shPostAttrId.setStrValue(shRelatorItem.getId());
 				shRelationMap.put("id", shPostAttrId);
 				for (ShPostAttrImpl shPostAttrRelation : shRelatorItem.getShChildrenPostAttrs()) {
-					shRelationMap.put(shPostAttrRelation.getShPostTypeAttr().getName(), (ShPostAttr) shPostAttrRelation);
+					shRelationMap.put(shPostAttrRelation.getShPostTypeAttr().getName(),
+							(ShPostAttr) shPostAttrRelation);
 				}
 				relations.add(shRelationMap);
 			}

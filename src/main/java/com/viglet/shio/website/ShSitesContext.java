@@ -228,13 +228,9 @@ public class ShSitesContext {
 	}
 
 	public String getCurrentUrlFromRequest(HttpServletRequest request) {
-		StringBuffer requestURL = request.getRequestURL();
 		String queryString = request.getQueryString();
-
-		if (queryString == null)
-			return requestURL.toString();
-
-		return requestURL.append('?').append(queryString).toString();
+		return queryString == null ? request.getRequestURL().toString()
+				: request.getRequestURL().append('?').append(queryString).toString();
 	}
 
 	public void siteContext(ShSitesContextURL shSitesContextURL) {

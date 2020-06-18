@@ -65,12 +65,13 @@ public class ShObjectUtils {
 		ShUser shUser = null;
 		ShObject shObject = shObjectRepository.findById(shObjectId).orElse(null);
 		shUser = getShUser(principal, shUser);
-		if (shObject != null) 			
+		if (shObject != null) {
 			if (userHasGroups(shUser)) {
-				return isAdministrator(shUser) ? true : hasAccess(shUser, shObject);
+				return isAdministrator(shUser) || hasAccess(shUser, shObject);
 			} else {
 				return true;
 			}
+		}
 
 		return false;
 	}
@@ -100,12 +101,8 @@ public class ShObjectUtils {
 		Set<String> shUsers = new HashSet<>();
 		shUser.getShGroups().forEach(shGroup -> shGroups.add(shGroup.getName()));
 		shUsers.add(shUser.getUsername());
-		if (shObjectRepository.countByIdAndShGroupsInOrIdAndShUsersInOrIdAndShGroupsIsNullAndShUsersIsNull(
-				shObject.getId(), shGroups, shObject.getId(), shUsers, shObject.getId()) > 0)
-			return true;
-		else {
-			return false;
-		}
+		return (shObjectRepository.countByIdAndShGroupsInOrIdAndShUsersInOrIdAndShGroupsIsNullAndShUsersIsNull(
+				shObject.getId(), shGroups, shObject.getId(), shUsers, shObject.getId()) > 0);
 
 	}
 
