@@ -110,7 +110,7 @@ public class ShSiteExport {
 			shSiteExchange.setOwner(shSite.getOwner());
 			shSiteExchange.setFurl(shSite.getFurl());
 
-			List<ShSiteExchange> shSiteExchanges = new ArrayList<ShSiteExchange>();
+			List<ShSiteExchange> shSiteExchanges = new ArrayList<>();
 			shSiteExchanges.add(shSiteExchange);
 			shExchange.setSites(shSiteExchanges);
 

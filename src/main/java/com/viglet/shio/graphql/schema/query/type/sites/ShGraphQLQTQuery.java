@@ -29,12 +29,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import com.viglet.shio.api.ShJsonView;
@@ -54,14 +55,15 @@ import graphql.schema.GraphQLObjectType.Builder;
  */
 @Component
 public class ShGraphQLQTQuery {
-
+	private static final Log logger = LogFactory.getLog(ShGraphQLQTQuery.class);
 	@Autowired
 	private ShQueryComponent shQueryComponent;
-	public final static String POST_TYPE_NAME = "postTypeName";
-	public final static String FOLDER_ID = "folderId";
-	public final static String POST_ATTR_NAME = "postAttrName";
-	public final static String ARRAY_VALUE = "arrayValue";
 	private static final String QUERY_TYPE_NAME = "shQuery";
+
+	public static final String POST_TYPE_NAME = "postTypeName";
+	public static final String FOLDER_ID = "folderId";
+	public static final String POST_ATTR_NAME = "postAttrName";
+	public static final String ARRAY_VALUE = "arrayValue";
 
 	public void createQueryType(Builder queryTypeBuilder,
 			graphql.schema.GraphQLCodeRegistry.Builder codeRegistryBuilder, GraphQLObjectType graphQLObjectType) {
@@ -89,37 +91,35 @@ public class ShGraphQLQTQuery {
 			String postAttrName = dataFetchingEnvironment.getArgument(POST_ATTR_NAME);
 			List<String> arrayValue = dataFetchingEnvironment.getArgument(ARRAY_VALUE);
 			if (folderId == null && postAttrName == null && arrayValue == null) {
-				for (Map<String, ShPostAttr> post : shQueryComponent.findByPostTypeName(postTypeName)) {
-					Map<String, Object> result = postToGraphQL(post);
-					results.add(result);
-				}
-			} else {
-				if (folderId != null) {
-					for (Map<String, ShPostAttr> post : shQueryComponent.findByFolderName(folderId, postTypeName)) {
-						Map<String, Object> result = postToGraphQL(post);
-						results.add(result);
-					}
-				} else if (postAttrName != null && arrayValue != null) {
-					for (Map<String, ShPostAttr> post : shQueryComponent.findByPostTypeNameIn(postTypeName,
-							Sets.newHashSet(arrayValue))) {
-						Map<String, Object> result = postToGraphQL(post);
-						results.add(result);
-					}
-				}
+				shQueryComponent.findByPostTypeName(postTypeName).forEach(post -> results.add(postToGraphQL(post)));
+			} else if (folderId != null) {
+				shQueryComponent.findByFolderName(folderId, postTypeName)
+						.forEach(post -> results.add(postToGraphQL(post)));
+			} else if (postAttrName != null && arrayValue != null) {
+				shQueryComponent.findByPostTypeNameIn(postTypeName, Sets.newHashSet(arrayValue))
+						.forEach(post -> results.add(postToGraphQL(post)));
 			}
+
 			return results;
 		};
 	}
 
-	private Map<String, Object> postToGraphQL(Map<String, ShPostAttr> post)
-			throws JsonProcessingException, JsonMappingException {
+	private Map<String, Object> postToGraphQL(Map<String, ShPostAttr> post) {
 		Map<String, Object> result = new HashMap<>();
 		ObjectMapper mapper = new ObjectMapper();
-		String jsonInString = mapper.writerWithView(ShJsonView.ShJsonViewObject.class).writeValueAsString(post);
-		Map<String, ShPostAttr> tinyPost = mapper.readValue(jsonInString, new TypeReference<Map<String, ShPostAttr>>() {
-		});
-		tinyPost.remove("__type__");
-		result.put("post", tinyPost);
+		String jsonInString;
+		try {
+			jsonInString = mapper.writerWithView(ShJsonView.ShJsonViewObject.class).writeValueAsString(post);
+
+			Map<String, ShPostAttr> tinyPost = mapper.readValue(jsonInString,
+					new TypeReference<Map<String, ShPostAttr>>() {
+					});
+			tinyPost.remove("__type__");
+			result.put("post", tinyPost);
+		} catch (JsonProcessingException e) {
+			logger.error(e);
+		}
+
 		return result;
 	}
 }

@@ -220,8 +220,7 @@ public class ShExchangeProviderAPI {
 	@GetMapping("/model")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShExchangeProviderInstanceBean shExchangeProviderInstanceStructure() {
-		ShExchangeProviderInstanceBean shExchangeProviderInstanceBean = new ShExchangeProviderInstanceBean();
-		return shExchangeProviderInstanceBean;
+		return new ShExchangeProviderInstanceBean();
 
 	}
 

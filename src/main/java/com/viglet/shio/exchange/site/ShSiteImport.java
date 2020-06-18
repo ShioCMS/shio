@@ -165,29 +165,40 @@ public class ShSiteImport {
 
 	private void prepareFolderImport(ShExchange shExchange, ShSiteExchange shSiteExchange,
 			Map<String, Object> shObjects, Map<String, List<String>> shChildObjects, List<String> rootFolders) {
-		for (ShFolderExchange shFolderExchange : shExchange.getFolders()) {
-
+		shExchange.getFolders().forEach(shFolderExchange -> {
 			shObjects.put(shFolderExchange.getId(), shFolderExchange);
-			if (shFolderExchange.getParentFolder() != null) {
-				if (shChildObjects.containsKey(shFolderExchange.getParentFolder())) {
-					shChildObjects.get(shFolderExchange.getParentFolder()).add(shFolderExchange.getId());
-				} else {
-					List<String> childFolderList = new ArrayList<>();
-					childFolderList.add(shFolderExchange.getId());
-					shChildObjects.put(shFolderExchange.getParentFolder(), childFolderList);
-				}
+			if (isParentFolder(shFolderExchange)) {
+				this.setParentFolder(shChildObjects, shFolderExchange);
 			} else {
-				if (rootFolders.contains(shFolderExchange.getId())) {
-					if (shChildObjects.containsKey(shSiteExchange.getId())) {
-						shChildObjects.get(shSiteExchange.getId()).add(shFolderExchange.getId());
-					} else {
-						List<String> childFolderList = new ArrayList<String>();
-						childFolderList.add(shFolderExchange.getId());
-						shChildObjects.put(shSiteExchange.getId(), childFolderList);
-					}
-				}
-
+				this.setRootFolder(shSiteExchange, shChildObjects, rootFolders, shFolderExchange);
 			}
+		});
+	}
+
+	private boolean isParentFolder(ShFolderExchange shFolderExchange) {
+		return shFolderExchange.getParentFolder() != null;
+	}
+
+	private void setRootFolder(ShSiteExchange shSiteExchange, Map<String, List<String>> shChildObjects,
+			List<String> rootFolders, ShFolderExchange shFolderExchange) {
+		if (rootFolders.contains(shFolderExchange.getId())) {
+			if (shChildObjects.containsKey(shSiteExchange.getId())) {
+				shChildObjects.get(shSiteExchange.getId()).add(shFolderExchange.getId());
+			} else {
+				List<String> childFolderList = new ArrayList<>();
+				childFolderList.add(shFolderExchange.getId());
+				shChildObjects.put(shSiteExchange.getId(), childFolderList);
+			}
+		}
+	}
+
+	private void setParentFolder(Map<String, List<String>> shChildObjects, ShFolderExchange shFolderExchange) {
+		if (shChildObjects.containsKey(shFolderExchange.getParentFolder())) {
+			shChildObjects.get(shFolderExchange.getParentFolder()).add(shFolderExchange.getId());
+		} else {
+			List<String> childFolderList = new ArrayList<>();
+			childFolderList.add(shFolderExchange.getId());
+			shChildObjects.put(shFolderExchange.getParentFolder(), childFolderList);
 		}
 	}
 
@@ -216,29 +227,54 @@ public class ShSiteImport {
 		Map<String, String> shNewIds = new HashMap<>();
 		Map<String, String> shNewIdsReverse = new HashMap<>();
 		List<ShSiteExchange> shSiteExchangeWithNewIds = new ArrayList<>();
-		for (ShSiteExchange shSiteExchange : shExchange.getSites()) {
-			List<String> rootFolders = new ArrayList<>();
-			for (String rootFolderId : shSiteExchange.getRootFolders()) {
-				if (!shNewIds.containsKey(rootFolderId)) {
-					String newUUID = UUID.randomUUID().toString();
-					shNewIds.put(rootFolderId, newUUID);
-					shNewIdsReverse.put(newUUID, rootFolderId);
-				}
-				rootFolders.add(shNewIds.get(rootFolderId));
-			}
-			shSiteExchange.setRootFolders(rootFolders);
+		shExchange.getSites().forEach(shSiteExchange -> {
+			setRootFolderWithNewIds(shNewIds, shNewIdsReverse, shSiteExchange);
+			importSitesWithNewIds(shNewIds, shNewIdsReverse, shSiteExchangeWithNewIds, shSiteExchange);
+		});
 
-			if (!shNewIds.containsKey(shSiteExchange.getId())) {
-				String newUUID = UUID.randomUUID().toString();
-				shNewIds.put(shSiteExchange.getId(), newUUID);
-				shNewIdsReverse.put(newUUID, shSiteExchange.getId());
-			}
+		List<ShFolderExchange> shFolderExchangeWithNewIds = importFoldersWithNewIds(shExchange, shNewIds,
+				shNewIdsReverse);
 
-			shSiteExchange.setId(shNewIds.get(shSiteExchange.getId()));
+		List<ShPostExchange> shPostExchangeWithNewIds = importPostsWithNewIds(shExchange, extractFolder, shNewIds,
+				shNewIdsReverse);
 
-			shSiteExchangeWithNewIds.add(shSiteExchange);
+		shExchange.setPosts(shPostExchangeWithNewIds);
+		shExchangeWithNewIds.setFiles(shExchange.getFiles());
+		shExchangeWithNewIds.setFolders(shFolderExchangeWithNewIds);
+		shExchangeWithNewIds.setPosts(shPostExchangeWithNewIds);
+		shExchangeWithNewIds.setSites(shSiteExchangeWithNewIds);
+		return shExchangeWithNewIds;
+	}
+
+	private void importSitesWithNewIds(Map<String, String> shNewIds, Map<String, String> shNewIdsReverse,
+			List<ShSiteExchange> shSiteExchangeWithNewIds, ShSiteExchange shSiteExchange) {
+		if (!shNewIds.containsKey(shSiteExchange.getId())) {
+			String newUUID = UUID.randomUUID().toString();
+			shNewIds.put(shSiteExchange.getId(), newUUID);
+			shNewIdsReverse.put(newUUID, shSiteExchange.getId());
 		}
 
+		shSiteExchange.setId(shNewIds.get(shSiteExchange.getId()));
+
+		shSiteExchangeWithNewIds.add(shSiteExchange);
+	}
+
+	private void setRootFolderWithNewIds(Map<String, String> shNewIds, Map<String, String> shNewIdsReverse,
+			ShSiteExchange shSiteExchange) {
+		List<String> rootFolders = new ArrayList<>();
+		shSiteExchange.getRootFolders().forEach(rootFolderId -> {
+			if (!shNewIds.containsKey(rootFolderId)) {
+				String newUUID = UUID.randomUUID().toString();
+				shNewIds.put(rootFolderId, newUUID);
+				shNewIdsReverse.put(newUUID, rootFolderId);
+			}
+			rootFolders.add(shNewIds.get(rootFolderId));
+		});
+		shSiteExchange.setRootFolders(rootFolders);
+	}
+
+	private List<ShFolderExchange> importFoldersWithNewIds(ShExchange shExchange, Map<String, String> shNewIds,
+			Map<String, String> shNewIdsReverse) {
 		List<ShFolderExchange> shFolderExchangeWithNewIds = new ArrayList<>();
 		for (ShFolderExchange shFolderExchange : shExchange.getFolders()) {
 			if (!shNewIds.containsKey(shFolderExchange.getId())) {
@@ -248,7 +284,7 @@ public class ShSiteImport {
 			}
 			shFolderExchange.setId(shNewIds.get(shFolderExchange.getId()));
 
-			if (shFolderExchange.getParentFolder() != null) {
+			if (isParentFolder(shFolderExchange)) {
 				if (!shNewIds.containsKey(shFolderExchange.getParentFolder())) {
 					String newUUID = UUID.randomUUID().toString();
 					shNewIds.put(shFolderExchange.getParentFolder(), newUUID);
@@ -259,7 +295,11 @@ public class ShSiteImport {
 			shFolderExchangeWithNewIds.add(shFolderExchange);
 		}
 		shExchange.setFolders(shFolderExchangeWithNewIds);
+		return shFolderExchangeWithNewIds;
+	}
 
+	private List<ShPostExchange> importPostsWithNewIds(ShExchange shExchange, File extractFolder,
+			Map<String, String> shNewIds, Map<String, String> shNewIdsReverse) {
 		List<ShPostExchange> shPostExchangeWithNewIds = new ArrayList<>();
 		for (ShPostExchange shPostExchange : shExchange.getPosts()) {
 			if (!shNewIds.containsKey(shPostExchange.getId())) {
@@ -281,59 +321,79 @@ public class ShSiteImport {
 			shPostExchangeWithNewIds.add(shPostExchange);
 
 		}
-
-		shExchange.setPosts(shPostExchangeWithNewIds);
-		shExchangeWithNewIds.setFiles(shExchange.getFiles());
-		shExchangeWithNewIds.setFolders(shFolderExchangeWithNewIds);
-		shExchangeWithNewIds.setPosts(shPostExchangeWithNewIds);
-		shExchangeWithNewIds.setSites(shSiteExchangeWithNewIds);
-		return shExchangeWithNewIds;
+		return shPostExchangeWithNewIds;
 	}
 
-	@SuppressWarnings("unchecked")
 	private Map<String, Object> updateFieldRelation(Map<String, String> shNewIds, Map<String, String> shNewIdsReverse,
 			ShPostExchange shPostExchange, Map<String, Object> shPostFields, File extractFolder) {
 		Map<String, Object> fieldsWithNewIds = new HashMap<>();
-		for (Entry<String, Object> shPostField : shPostFields.entrySet()) {
 
+		shPostFields.entrySet().forEach(shPostField -> {
 			ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(
 					shPostTypeRepository.findByName(shPostExchange.getPostType()), shPostField.getKey());
 			if (shPostTypeAttr != null) {
-				if (shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.RELATOR)) {
-					LinkedHashMap<String, Object> relatorFields = (LinkedHashMap<String, Object>) shPostField
-							.getValue();
-					for (Object shSubPost : (ArrayList<Object>) relatorFields.get("shSubPosts")) {
-						shPostField.setValue(this.updateFieldRelation(shNewIds, shNewIdsReverse, shPostExchange,
-								(Map<String, Object>) shSubPost, extractFolder));
-					}
-				} else if (shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.FILE)
-						&& shPostExchange.getPostType().equals(ShSystemPostType.FILE)) {
-					File fileSource = new File(extractFolder.getAbsolutePath()
-							.concat(File.separator + shNewIdsReverse.get(shPostExchange.getId())));
-					File fileDest = new File(
-							extractFolder.getAbsolutePath().concat(File.separator + shPostExchange.getId()));
-					try {
-						FileUtils.moveFile(fileSource, fileDest);
-					} catch (IOException e) {
-						logger.error("updateFieldRelationException", e);
-					}
+				if (isRelatorWidget(shPostTypeAttr)) {
+					setRelatorValue(shNewIds, shNewIdsReverse, shPostExchange, extractFolder, shPostField);
+				} else if (isFileWidget(shPostExchange, shPostTypeAttr)) {
+					importStaticFile(shNewIdsReverse, shPostExchange, extractFolder);
 
-				} else if ((shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.FILE)
-						&& !shPostExchange.getPostType().equals(ShSystemPostType.FILE))
-						|| shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.CONTENT_SELECT)
-								&& shPostField.getValue() != null && shPostField.getKey().trim().length() > 0) {
-					if (!shNewIds.containsKey(shPostField.getValue())) {
-						String newUUID = UUID.randomUUID().toString();
-						shNewIds.put((String) shPostField.getValue(), newUUID);
-						shNewIdsReverse.put(newUUID, (String) shPostField.getValue());
-					}
-					shPostField.setValue(shNewIds.get(shPostField.getValue()));
+				} else if (isReferencedWidget(shPostExchange, shPostField, shPostTypeAttr)) {
+					setReferenceValue(shNewIds, shNewIdsReverse, shPostField);
 
 				}
 				fieldsWithNewIds.put(shPostField.getKey(), shPostField.getValue());
 			}
-		}
+		});
 
 		return fieldsWithNewIds;
+	}
+
+	private void setReferenceValue(Map<String, String> shNewIds, Map<String, String> shNewIdsReverse,
+			Entry<String, Object> shPostField) {
+		if (!shNewIds.containsKey(shPostField.getValue())) {
+			String newUUID = UUID.randomUUID().toString();
+			shNewIds.put((String) shPostField.getValue(), newUUID);
+			shNewIdsReverse.put(newUUID, (String) shPostField.getValue());
+		}
+		shPostField.setValue(shNewIds.get(shPostField.getValue()));
+	}
+
+	@SuppressWarnings("unchecked")
+	private void setRelatorValue(Map<String, String> shNewIds, Map<String, String> shNewIdsReverse,
+			ShPostExchange shPostExchange, File extractFolder, Entry<String, Object> shPostField) {
+		LinkedHashMap<String, Object> relatorFields = (LinkedHashMap<String, Object>) shPostField.getValue();
+		for (Object shSubPost : (ArrayList<Object>) relatorFields.get("shSubPosts")) {
+			shPostField.setValue(this.updateFieldRelation(shNewIds, shNewIdsReverse, shPostExchange,
+					(Map<String, Object>) shSubPost, extractFolder));
+		}
+	}
+
+	private void importStaticFile(Map<String, String> shNewIdsReverse, ShPostExchange shPostExchange,
+			File extractFolder) {
+		File fileSource = new File(
+				extractFolder.getAbsolutePath().concat(File.separator + shNewIdsReverse.get(shPostExchange.getId())));
+		File fileDest = new File(extractFolder.getAbsolutePath().concat(File.separator + shPostExchange.getId()));
+		try {
+			FileUtils.moveFile(fileSource, fileDest);
+		} catch (IOException e) {
+			logger.error("updateFieldRelationException", e);
+		}
+	}
+
+	private boolean isRelatorWidget(ShPostTypeAttr shPostTypeAttr) {
+		return shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.RELATOR);
+	}
+
+	private boolean isFileWidget(ShPostExchange shPostExchange, ShPostTypeAttr shPostTypeAttr) {
+		return shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.FILE)
+				&& shPostExchange.getPostType().equals(ShSystemPostType.FILE);
+	}
+
+	private boolean isReferencedWidget(ShPostExchange shPostExchange, Entry<String, Object> shPostField,
+			ShPostTypeAttr shPostTypeAttr) {
+		return (shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.FILE)
+				&& !shPostExchange.getPostType().equals(ShSystemPostType.FILE))
+				|| shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.CONTENT_SELECT)
+						&& shPostField.getValue() != null && shPostField.getKey().trim().length() > 0;
 	}
 }
