@@ -17,7 +17,6 @@
 package com.viglet.shio.widget;
 
 import java.io.IOException;
-import java.io.Serializable;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -35,17 +34,14 @@ import com.viglet.shio.website.ShSitesContextURL;
  * @author Alexandre Oliveira
  */
 @Component
-public class ShTextWidget implements ShWidgetImplementation, Serializable  {
-
-	private static final long serialVersionUID = -8966997682653564903L;
-	
+public abstract class ShDefaultWidget implements ShWidgetImplementation {
 	@Autowired
 	private SpringTemplateEngine templateEngine;
 
 	public String render(ShPostTypeAttr shPostTypeAttr, ShObject shObject) {
 		final Context ctx = new Context();
 		ctx.setVariable("shPostTypeAttr", shPostTypeAttr);
-		return templateEngine.process("widget/text/text-widget", ctx);
+		return templateEngine.process("widget/empty/empty-widget", ctx);
 	}
 
 	@Override
@@ -57,4 +53,5 @@ public class ShTextWidget implements ShWidgetImplementation, Serializable  {
 	public void postRender(ShPostImpl shPost, ShSitesContextURL shSitesContextURL) throws IOException {
 		 // Do nothing 
 	}
+
 }

@@ -16,41 +16,16 @@
  */
 package com.viglet.shio.widget;
 
-import java.io.IOException;
+import java.io.Serializable;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.thymeleaf.context.Context;
-import org.thymeleaf.spring5.SpringTemplateEngine;
 
-import com.viglet.shio.persistence.model.object.ShObject;
-import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
-import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
-import com.viglet.shio.website.ShSitesContextURL;
 
 /**
  * @author Alexandre Oliveira
  */
 @Component
-public class ShDateWidget implements ShWidgetImplementation {
-	@Autowired
-	private SpringTemplateEngine templateEngine;
-	
-	public String render(ShPostTypeAttr shPostTypeAttr, ShObject shObject) {
-		final Context ctx = new Context();
-		ctx.setVariable("shPostTypeAttr", shPostTypeAttr);
-		return templateEngine.process("widget/text/text-widget", ctx);
-	}
+public class ShDateWidget extends ShDefaultWidget implements ShWidgetImplementation, Serializable {
 
-	@Override
-	public boolean validateForm(HttpServletRequest request, ShPostTypeAttr shPostTypeAttr) {
-		return true;
-	}
-
-	@Override
-	public void postRender(ShPostImpl shPost, ShSitesContextURL shSitesContextURL) throws IOException {
-		 // Do nothing 
-	}
+	private static final long serialVersionUID = -2989766978577180180L;
 }
