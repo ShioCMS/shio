@@ -99,7 +99,8 @@ public class ShGraphQLQTObjectFromURL {
 				String type = null;
 
 				if (shObject.get() instanceof ShPost) {
-					ShPost shPost = (ShPost) shObject.get();
+					ShObject shObjectItem = shObject.get();
+					ShPost shPost = (ShPost) shObjectItem;
 					type = shGraphQLUtils.normalizedPostType(shPost.getShPostType().getName());
 
 				} else if (shObject.get() instanceof ShFolder) {
