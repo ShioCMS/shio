@@ -57,9 +57,9 @@ public interface ShPostRepository extends JpaRepository<ShPost, String>, ShPostR
 	
 	List<ShPost> findByShPostType(ShPostType shPostType);
 	
-	List<ShPost> findByShSite_IdIn(Collection<String> shSiteId);
+	List<ShPost> findByShSite_IdIn(Collection<String> shSiteId); //NOSONAR
 	
-	List<ShPost> findByShSite_IdInAndShPostType(Collection<String> shSiteId, ShPostType shPostType);
+	List<ShPost> findByShSite_IdInAndShPostType(Collection<String> shSiteId, ShPostType shPostType); //NOSONAR
 	
 	List<ShPost> findByShFolderAndShPostTypeOrderByPositionAsc(ShFolder shFolder, ShPostType shPostType);
 
@@ -78,7 +78,8 @@ public interface ShPostRepository extends JpaRepository<ShPost, String>, ShPostR
 	
 	List<ShPost> findByPublisher(String publisher);
 	
-	List<ShPost> findByShFolder_Name(String folderName);
+	List<ShPost> findByShFolder_Name(String folderName); //NOSONAR
+	
 	List<ShPost> findByShPostAttrsIn(Collection<ShPostAttr> shPostAttr);
 	
 	ShPost findByShFolderAndTitle(ShFolder shFolder, String title);

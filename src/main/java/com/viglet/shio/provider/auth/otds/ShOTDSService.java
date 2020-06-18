@@ -56,7 +56,6 @@ import com.viglet.shio.provider.auth.ShAuthProviderService;
 @Component
 public class ShOTDSService {
 
-	public static final String PROVIDER_PATH = "/provider/auth/%s";
 	public static final String HOST = "HOST";
 	public static final String PORT = "PORT";
 	public static final String RESOURCE_ID = "RESOURCE_ID";

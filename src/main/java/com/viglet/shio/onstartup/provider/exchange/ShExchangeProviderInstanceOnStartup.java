@@ -17,6 +17,7 @@
 package com.viglet.shio.onstartup.provider.exchange;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shio.persistence.model.provider.exchange.ShExchangeProviderInstance;
@@ -31,7 +32,8 @@ import com.viglet.shio.provider.exchange.ShExchangeSystemProviderVendor;
  */
 @Component
 public class ShExchangeProviderInstanceOnStartup {
-	private static final String PROVIDER_PATH = "/provider/%s";
+	@Value("${shio.config.provider.exchange}")
+	private String providerPath;
 	private static final String URL = "URL";
 	private static final String USERNAME = "USERNAME";
 	private static final String PASSWORD = "PASSWORD";
@@ -61,7 +63,7 @@ public class ShExchangeProviderInstanceOnStartup {
 		
 		shExchangeProviderInstanceRepository.save(shExchangeProviderInstance);
 
-		String providerInstance = String.format(PROVIDER_PATH, shExchangeProviderInstance.getId());
+		String providerInstance = String.format(providerPath, shExchangeProviderInstance.getId());
 
 		ShConfigVar shConfigVar = new ShConfigVar();
 		shConfigVar.setPath(providerInstance);
@@ -91,7 +93,7 @@ public class ShExchangeProviderInstanceOnStartup {
 		
 		shExchangeProviderInstanceRepository.save(shExchangeProviderInstance);
 
-		String providerInstance = String.format(PROVIDER_PATH, shExchangeProviderInstance.getId());
+		String providerInstance = String.format(providerPath, shExchangeProviderInstance.getId());
 
 		ShConfigVar shConfigVar = new ShConfigVar();
 		shConfigVar.setPath(providerInstance);

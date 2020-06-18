@@ -195,7 +195,7 @@ public class ShGitProvider {
 		}
 	}
 
-	public String checkpoint(String shObjectId, String shObjectPath, String commitMessage) throws IOException {
+	public String checkpoint(String commitMessage) throws IOException {
 		String shObjectFileName = "store/file_source/Viglet/_static_files/css/viglet.css";
 		try {
 			List<DiffEntry> gitDiff = git.diff().call();
@@ -260,7 +260,7 @@ public class ShGitProvider {
 		return history;
 	}
 
-	public String setShObjectRevision(String shObjectId, String shObjectPath, String revId) throws IOException {
+	public String setShObjectRevision(String revId) throws IOException {
 		String revisionShObject = get(revId);
 		if (revisionShObject != null) {
 			// Save
