@@ -13,5 +13,20 @@
     "name": "shio.git.token",
     "type": "java.lang.String",
     "description": "A description for 'shio.git.token'"
+  },
+  {
+    "name": "shio.config.system",
+    "type": "java.lang.String",
+    "description": "A description for 'shio.config.system'"
+  },
+  {
+    "name": "shio.config.provider.auth",
+    "type": "java.lang.String",
+    "description": "A description for 'shio.config.provider.auth'"
+  },
+  {
+    "name": "shio.config.provider.exchange",
+    "type": "java.lang.String",
+    "description": "A description for 'shio.config.provider.exchange'"
   }
 ]}

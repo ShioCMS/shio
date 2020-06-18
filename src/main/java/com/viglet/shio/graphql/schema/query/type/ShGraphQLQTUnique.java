@@ -77,7 +77,7 @@ public class ShGraphQLQTUnique {
 				postTypeWhereUniqueInputBuilder, false);
 
 		codeRegistryBuilder.dataFetcher(coordinates(ShGraphQLConstants.QUERY_TYPE, postTypeName),
-				this.getPostTypeAllDataFetcherUnique(shPostType));
+				this.getPostTypeAllDataFetcherUnique());
 	}
 
 	private void whereFieldsUnique(GraphQLInputObjectType.Builder postTypeWhereInputBuilder) {
@@ -85,14 +85,14 @@ public class ShGraphQLQTUnique {
 				null, GraphQLID, "Identifier");
 	}
 
-	private DataFetcher<Map<String, String>> getPostTypeAllDataFetcherUnique(ShPostType shPostType) {
+	private DataFetcher<Map<String, String>> getPostTypeAllDataFetcherUnique() {
 		return dataFetchingEnvironment -> {
 			Map<String, String> post = new HashMap<>();
 
 			Map<String, Object> whereMap = dataFetchingEnvironment.getArgument(ShGraphQLConstants.WHERE_ARG);
 
 			if (whereMap != null) {
-				for (Entry<String, Object> whereArgItem : whereMap.entrySet()) {
+				for (Entry<String, Object> whereArgItem : whereMap.entrySet()) { //NOSONAR
 					String arg = whereArgItem.getKey();
 					if (arg.equals(ShGraphQLConstants.ID)) {
 						String objectId = whereMap.get(ShGraphQLConstants.ID).toString();

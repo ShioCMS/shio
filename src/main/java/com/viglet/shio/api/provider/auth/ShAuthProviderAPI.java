@@ -24,6 +24,7 @@ import java.util.Optional;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -58,7 +59,8 @@ public class ShAuthProviderAPI {
 	@SuppressWarnings("unused")
 	private static final Log logger = LogFactory.getLog(ShAuthProviderAPI.class);
 
-	private static final String PROVIDER_PATH = "/provider/auth/%s";
+	@Value("${shio.config.provider.auth}")
+	private  String PROVIDER_PATH ;
 
 	@Autowired
 	private ShAuthProviderInstanceRepository shAuthProviderInstanceRepository;

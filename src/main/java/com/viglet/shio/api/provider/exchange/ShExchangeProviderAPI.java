@@ -34,6 +34,7 @@ import org.apache.tika.config.TikaConfig;
 import org.apache.tika.mime.MimeType;
 import org.apache.tika.mime.MimeTypeException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -76,7 +77,8 @@ import io.swagger.annotations.ApiOperation;
 public class ShExchangeProviderAPI {
 	private static final Log logger = LogFactory.getLog(ShExchangeProviderAPI.class);
 
-	private static final String PROVIDER_PATH = "/provider/%s";
+	@Value("${shio.config.provider.exchange}")
+	private String PROVIDER_PATH;
 
 	private ShExchangeProvider shExchangeProvider;
 	@Autowired

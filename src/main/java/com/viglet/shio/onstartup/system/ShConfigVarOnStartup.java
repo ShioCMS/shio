@@ -17,6 +17,7 @@
 package com.viglet.shio.onstartup.system;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shio.persistence.model.system.ShConfigVar;
@@ -27,7 +28,9 @@ import com.viglet.shio.persistence.repository.system.ShConfigVarRepository;
  */
 @Component
 public class ShConfigVarOnStartup {
-	public static final String FIRST_TIME_PATH = "/system";
+	@Value("${shio.config.system}")
+	public static String FIRST_TIME_PATH;
+	
 	public static final String FIRST_TIME_NAME = "FIRST_TIME";
 	
 	@Autowired
