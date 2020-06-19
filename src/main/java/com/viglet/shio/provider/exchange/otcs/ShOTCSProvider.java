@@ -112,7 +112,7 @@ public class ShOTCSProvider implements ShExchangeProvider {
 
 			shExchangeProviderFolder.setId(id);
 			shExchangeProviderFolder.setName(shExchangeProviderPost.getTitle());
-			shExchangeProviderFolder.setBreadcrumb(this.getBreadcrumb(id));
+			shExchangeProviderFolder.setBreadcrumb(this.getOTCSBreadcrumb(id));
 			shExchangeProviderFolder.setProviderName(PROVIDER_NAME);
 			shExchangeProviderFolder.setParentId(shExchangeProviderPost.getParentId());
 
@@ -228,15 +228,15 @@ public class ShOTCSProvider implements ShExchangeProvider {
 
 	}
 
-	private List<ShExchangeProviderBreadcrumbItem> getBreadcrumb(String id) {
+	private List<ShExchangeProviderBreadcrumbItem> getOTCSBreadcrumb(String id) {
 		ArrayList<ShExchangeProviderBreadcrumbItem> breadcrumb = new ArrayList<>();
 
-		this.getParentBreadcrumbItem(id, breadcrumb);
+		this.getOTCSParentBreadcrumbItem(id, breadcrumb);
 
 		return breadcrumb;
 	}
 
-	private void getParentBreadcrumbItem(String id, ArrayList<ShExchangeProviderBreadcrumbItem> breadcrumb) {
+	private void getOTCSParentBreadcrumbItem(String id, ArrayList<ShExchangeProviderBreadcrumbItem> breadcrumb) {
 		if (!StringUtils.isBlank(id) && Integer.parseInt(id) > 0) {
 			ShExchangeProviderPost shExchangeProviderPost = this.getObject(id, true);
 
@@ -244,7 +244,7 @@ public class ShOTCSProvider implements ShExchangeProvider {
 			shExchangeProviderBreadcrumbItem.setId(shExchangeProviderPost.getId());
 			shExchangeProviderBreadcrumbItem.setTitle(shExchangeProviderPost.getTitle());
 
-			this.getParentBreadcrumbItem(shExchangeProviderPost.getParentId(), breadcrumb);
+			this.getOTCSParentBreadcrumbItem(shExchangeProviderPost.getParentId(), breadcrumb);
 			breadcrumb.add(shExchangeProviderBreadcrumbItem);
 		}
 	}

@@ -118,7 +118,7 @@ public class ShOTMMProvider implements ShExchangeProvider {
 
 		shExchangeProviderFolder.setId(ROOT_FOLDER_ID);
 		shExchangeProviderFolder.setName(ROOT_FOLDER_NAME);
-		shExchangeProviderFolder.setBreadcrumb(this.getBreadcrumb(ROOT_FOLDER_ID));
+		shExchangeProviderFolder.setBreadcrumb(this.getOTMMBreadcrumb(ROOT_FOLDER_ID));
 		shExchangeProviderFolder.setProviderName(PROVIDER_NAME);
 		shExchangeProviderFolder.setParentId(null);
 
@@ -154,7 +154,7 @@ public class ShOTMMProvider implements ShExchangeProvider {
 		ShExchangeProviderPost shExchangeProviderPost = this.getObject(id, true);
 		shExchangeProviderFolder.setId(id);
 		shExchangeProviderFolder.setName(shExchangeProviderPost.getTitle());
-		shExchangeProviderFolder.setBreadcrumb(this.getBreadcrumb(id));
+		shExchangeProviderFolder.setBreadcrumb(this.getOTMMBreadcrumb(id));
 		shExchangeProviderFolder.setProviderName(PROVIDER_NAME);
 		ShOTMMFoldersBean shOTMMFoldersBean = this.getOTMMFolderParents(id);
 		if (shOTMMFoldersBean != null) {
@@ -364,15 +364,15 @@ public class ShOTMMProvider implements ShExchangeProvider {
 
 	}
 
-	private List<ShExchangeProviderBreadcrumbItem> getBreadcrumb(String id) {
+	private List<ShExchangeProviderBreadcrumbItem> getOTMMBreadcrumb(String id) {
 		ArrayList<ShExchangeProviderBreadcrumbItem> breadcrumb = new ArrayList<>();
 
-		this.getParentBreadcrumbItem(id, breadcrumb);
+		this.getOTMMParentBreadcrumbItem(id, breadcrumb);
 
 		return breadcrumb;
 	}
 
-	private void getParentBreadcrumbItem(String id, ArrayList<ShExchangeProviderBreadcrumbItem> breadcrumb) {
+	private void getOTMMParentBreadcrumbItem(String id, ArrayList<ShExchangeProviderBreadcrumbItem> breadcrumb) {
 		if (!StringUtils.isBlank(id) && !id.equals(ROOT_FOLDER_ID)) {
 			ShExchangeProviderPost shExchangeProviderPost = this.getObject(id, true);
 
@@ -380,7 +380,7 @@ public class ShOTMMProvider implements ShExchangeProvider {
 			shExchangeProviderBreadcrumbItem.setId(shExchangeProviderPost.getId());
 			shExchangeProviderBreadcrumbItem.setTitle(shExchangeProviderPost.getTitle());
 
-			this.getParentBreadcrumbItem(shExchangeProviderPost.getParentId(), breadcrumb);
+			this.getOTMMParentBreadcrumbItem(shExchangeProviderPost.getParentId(), breadcrumb);
 			breadcrumb.add(shExchangeProviderBreadcrumbItem);
 		} else {
 			ShExchangeProviderBreadcrumbItem shExchangeProviderBreadcrumbItem = new ShExchangeProviderBreadcrumbItem();
