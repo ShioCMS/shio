@@ -18,6 +18,8 @@ package com.viglet.shio.provider.exchange.otmm.bean.permission;
 
 import java.util.List;
 
+import com.viglet.shio.provider.exchange.ot.bean.ShOTEntryBean;
+
 /**
  * @author Alexandre Oliveira
  * 
@@ -25,13 +27,13 @@ import java.util.List;
  */
 public class ShOTMMPermissionMapBean {
 
-	private List<ShOTMMPermisionEntryBean> entry;
+	private List<ShOTEntryBean> entry;
 
-	public List<ShOTMMPermisionEntryBean> getEntry() {
+	public List<ShOTEntryBean> getEntry() {
 		return entry;
 	}
 
-	public void setEntry(List<ShOTMMPermisionEntryBean> entry) {
+	public void setEntry(List<ShOTEntryBean> entry) {
 		this.entry = entry;
 	}
 

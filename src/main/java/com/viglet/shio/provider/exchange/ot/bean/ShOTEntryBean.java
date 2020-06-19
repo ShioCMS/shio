@@ -14,14 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.viglet.shio.provider.exchange.otmm.bean.permission;
+package com.viglet.shio.provider.exchange.ot.bean;
 
 /**
  * @author Alexandre Oliveira
  * 
  * @since 0.3.6
  */
-public class ShOTMMPermisionEntryBean {
+public class ShOTEntryBean {
 
 	private String key;
 

@@ -18,6 +18,8 @@ package com.viglet.shio.provider.exchange.otcs.bean.collection;
 
 import java.util.List;
 
+import com.viglet.shio.provider.exchange.ot.bean.ShOTEntryBean;
+
 /**
  * @author Alexandre Oliveira
  * 
@@ -25,13 +27,13 @@ import java.util.List;
  */
 public class ShOTCSSortingBean {
 
-	private List<ShOTCSSortBean> sort;
+	private List<ShOTEntryBean> sort;
 
-	public List<ShOTCSSortBean> getSort() {
+	public List<ShOTEntryBean> getSort() {
 		return sort;
 	}
 
-	public void setSort(List<ShOTCSSortBean> sort) {
+	public void setSort(List<ShOTEntryBean> sort) {
 		this.sort = sort;
 	}
 
