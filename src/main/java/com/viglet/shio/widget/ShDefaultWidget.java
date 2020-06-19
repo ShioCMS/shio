@@ -35,13 +35,17 @@ import com.viglet.shio.website.ShSitesContextURL;
  */
 @Component
 public abstract class ShDefaultWidget implements ShWidgetImplementation {
+	
+	String template ="widget/empty/empty-widget";
+	
 	@Autowired
-	private SpringTemplateEngine templateEngine;
+	protected SpringTemplateEngine templateEngine;
 
+	@Override
 	public String render(ShPostTypeAttr shPostTypeAttr, ShObject shObject) {
 		final Context ctx = new Context();
 		ctx.setVariable("shPostTypeAttr", shPostTypeAttr);
-		return templateEngine.process("widget/empty/empty-widget", ctx);
+		return templateEngine.process(template, ctx);
 	}
 
 	@Override

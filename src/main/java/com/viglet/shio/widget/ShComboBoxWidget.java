@@ -16,30 +16,24 @@
  */
 package com.viglet.shio.widget;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
-import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import com.viglet.shio.persistence.model.object.ShObject;
-import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
-import com.viglet.shio.website.ShSitesContextURL;
 
 /**
  * @author Alexandre Oliveira
  */
 @Component
-public class ShComboBoxWidget implements ShWidgetImplementation {
-	@Autowired
-	private SpringTemplateEngine templateEngine;
+public class ShComboBoxWidget extends ShDefaultWidget implements ShWidgetImplementation {
+	
+	String template = "widget/combo-box/combo-box-widget";
+	
 
 	public String render(ShPostTypeAttr shPostTypeAttr, ShObject shObject) {
 
@@ -58,16 +52,6 @@ public class ShComboBoxWidget implements ShWidgetImplementation {
 		ctx.setVariable("shPostTypeAttr", shPostTypeAttr);
 		ctx.setVariable("choices", choices);
 
-		return templateEngine.process("widget/combo-box/combo-box-widget", ctx);
-	}
-
-	@Override
-	public boolean validateForm(HttpServletRequest request, ShPostTypeAttr shPostTypeAttr) {
-		return true;
-	}
-
-	@Override
-	public void postRender(ShPostImpl shPost, ShSitesContextURL shSitesContextURL) throws IOException {
-		 // Do nothing 
+		return templateEngine.process(template, ctx);
 	}
 }

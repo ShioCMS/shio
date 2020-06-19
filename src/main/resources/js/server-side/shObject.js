@@ -1,4 +1,4 @@
-var viglet = this.viglet || {};
+var viglet = this.viglet || {}; //NOSONAR
 viglet.shio = viglet.shio || {};
 
 /**
