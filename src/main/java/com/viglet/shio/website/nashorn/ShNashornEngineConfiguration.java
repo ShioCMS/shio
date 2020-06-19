@@ -47,8 +47,8 @@ import com.viglet.shio.website.utils.ShSitesPostUtils;
 @Configuration
 public class ShNashornEngineConfiguration {
 	private static final Log logger = LogFactory.getLog(ShNashornEngineConfiguration.class);
-	private static final String[] NASHORN_CONFIGURATION = new String[] { "--persistent-code-cache",
-			"--optimistic-types=true", "-pcc", "--class-cache-size=50000" };
+	private static final Object[] NASHORN_CONFIGURATION = new Object[] {new String[] { "--persistent-code-cache",
+			"--optimistic-types=true", "-pcc", "--class-cache-size=50000" }};
 	@Resource
 	private ApplicationContext context;
 	@Autowired
@@ -78,7 +78,7 @@ public class ShNashornEngineConfiguration {
 
 			Method getScriptEngine = nashornScriptEngineFactory.getDeclaredMethod("getScriptEngine", String[].class);
 			ScriptEngineFactory scriptEngineFactory = (ScriptEngineFactory) nashornScriptEngineFactory.getDeclaredConstructor().newInstance();
-			ScriptEngine engine = (ScriptEngine) getScriptEngine.invoke(scriptEngineFactory, new Object[] {NASHORN_CONFIGURATION});
+			ScriptEngine engine = (ScriptEngine) getScriptEngine.invoke(scriptEngineFactory, NASHORN_CONFIGURATION);
 			Bindings bindings = engine.createBindings();
 
 			bindings.put("shNavigationComponent", shNavigationComponent);
