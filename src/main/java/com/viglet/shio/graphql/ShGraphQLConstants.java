@@ -90,6 +90,6 @@ public final class ShGraphQLConstants {
 	public static final GraphQLEnumType localeEnum = newEnum().name(LOCALES_ARG_TITLE).description("Locale system enumeration")
 			.value("en", "EN", "System Locale.").comparatorRegistry(BY_NAME_REGISTRY).build();
 	
-	public static GraphQLEnumType siteEnum;
+	public static GraphQLEnumType siteEnum; //NOSONAR
 
 }
