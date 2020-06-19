@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
+ * Copyright (C) 2016-2020 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 package com.viglet.shio.api.post;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -156,12 +155,11 @@ public class ShPostAPITest {
 		}
 
 		String postRequestBody = ShUtils.asJsonStringAndView(shPost, ShJsonView.ShJsonViewPost.class);
-		System.out.println(postRequestBody);
+
 		RequestBuilder folderRequestBuilder = MockMvcRequestBuilders.put("/api/v2/post/" + newPostId)
 				.principal(mockPrincipal).accept(MediaType.APPLICATION_JSON).content(postRequestBody)
 				.contentType("application/json");
 
-		System.out.println("/api/v2/post/" + newPostId);
 		mockMvc.perform(folderRequestBuilder).andExpect(status().isOk());
 	}
 
