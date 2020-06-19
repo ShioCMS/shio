@@ -45,8 +45,6 @@ import com.viglet.shio.api.ShJsonView;
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
-import com.viglet.shio.persistence.model.post.impl.ShPostAttrImpl;
-import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
 import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.persistence.repository.folder.ShFolderRepository;
@@ -81,7 +79,7 @@ public class ShPostAPITest {
 	private Principal mockPrincipal;
 
 	private String newPostId = "553923c7-fda4-4a91-9700-eb9a549bb522";
-	
+
 	@Before
 	public void setup() {
 		log.debug("PostAPITest Setup");
@@ -133,30 +131,9 @@ public class ShPostAPITest {
 				shPostTypeAttrRepository.findByShPostTypeAndName(shPostType, ShSystemPostTypeAttr.DESCRIPTION));
 
 		shPost.getShPostAttrsNonDraft().add(shPostAttrDescription);
-		/*
-		 * // Text Relation ShRelatorItem shRelatorItem = new ShRelatorItem();
-		 * 
-		 * ShPostAttr shPostAttrTextRelation = new ShPostAttr();
-		 * shPostAttrTextRelation.setStrValue("Test Text Relation Value");
-		 * shPostAttrTextRelation.setType(1);
-		 * shPostAttrTextRelation.setShPostTypeAttr(shPostTypeAttrRepository.
-		 * findByShParentPostTypeAttrAndName(
-		 * shPostTypeAttrRepository.findByShPostTypeAndName(shPostType,
-		 * ShSystemPostTypeAttr.RELATION), "TEXT_RELATION"));
-		 * 
-		 * shRelatorItem.getShChildrenPostAttrs().add(shPostAttrTextRelation);
-		 * 
-		 * // Relation ShPostAttr shPostAttrRelation = new ShPostAttr();
-		 * shPostAttrRelation.getShChildrenRelatorItems().add(shRelatorItem);
-		 * shPostAttrRelation.setType(1); shPostAttrRelation.setShPostTypeAttr(
-		 * shPostTypeAttrRepository.findByShPostTypeAndName(shPostType,
-		 * ShSystemPostTypeAttr.RELATION));
-		 * 
-		 * shPost.getShPostAttrs().add(shPostAttrRelation);
-		 */
+
 		String postRequestBody = ShUtils.asJsonStringAndView(shPost, ShJsonView.ShJsonViewObject.class);
 
-		System.out.println(postRequestBody);
 		RequestBuilder folderRequestBuilder = MockMvcRequestBuilders.post("/api/v2/post").principal(mockPrincipal)
 				.accept(MediaType.APPLICATION_JSON).content(postRequestBody).contentType("application/json");
 
@@ -172,18 +149,19 @@ public class ShPostAPITest {
 	@Test
 	public void stage03ShPostUpdate() throws Exception {
 
-		ShPostImpl shPost = shPostRepository.findById(newPostId).get();
+		ShPost shPost = shPostRepository.findById(newPostId).get();
 
-		for (ShPostAttrImpl shPostAttr : shPost.getShPostAttrsNonDraft()) {
+		for (ShPostAttr shPostAttr : shPost.getShPostAttrsNonDraft()) {
 			shPostAttr.setStrValue("Test Value was changed");
 		}
 
 		String postRequestBody = ShUtils.asJsonStringAndView(shPost, ShJsonView.ShJsonViewPost.class);
-
+		System.out.println(postRequestBody);
 		RequestBuilder folderRequestBuilder = MockMvcRequestBuilders.put("/api/v2/post/" + newPostId)
 				.principal(mockPrincipal).accept(MediaType.APPLICATION_JSON).content(postRequestBody)
 				.contentType("application/json");
 
+		System.out.println("/api/v2/post/" + newPostId);
 		mockMvc.perform(folderRequestBuilder).andExpect(status().isOk());
 	}
 
@@ -196,5 +174,4 @@ public class ShPostAPITest {
 		mockMvc.perform(folderRequestBuilder).andExpect(status().isOk())
 				.andExpect(content().contentType("application/json"));
 	}
-
 }

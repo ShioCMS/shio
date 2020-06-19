@@ -1,22 +1,12 @@
 package com.viglet.shio.persistence.model.object.impl;
 
-import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.PROPERTY;
-import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
 
 import java.util.Date;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.viglet.shio.persistence.model.object.ShObject;
-import com.viglet.shio.persistence.model.object.ShObjectDraft;
 import com.viglet.shio.persistence.model.post.impl.ShPostAttrImpl;
 
-@JsonTypeInfo(use = NAME, include = PROPERTY)
-@JsonSubTypes({
-  @JsonSubTypes.Type(value=ShObject.class, name = "ShObject"),
-  @JsonSubTypes.Type(value=ShObjectDraft.class, name = "ShObjectDraft")
-})
+
 public interface ShObjectImpl {
 
 	String getId();
