@@ -14,20 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.viglet.shio.widget;
+package com.viglet.shio.provider.exchange.utils;
 
 import org.springframework.stereotype.Component;
 
 /**
+ * Provider Exchange Utils
+ * 
  * @author Alexandre Oliveira
+ * @since 0.3.7
+ * 
  */
+
 @Component
-public class ShCheckBoxWidget extends ShComboBoxWidget {
-
-	@Override
-	public void setTemplate() {
-		this.template = "widget/check-box/check-box-widget";
-
-	}
+public class ShProviderExchangeUtils {
 
 }

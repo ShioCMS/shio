@@ -16,8 +16,6 @@
  */
 package com.viglet.shio.widget;
 
-import java.io.Serializable;
-
 import org.springframework.stereotype.Component;
 
 
@@ -25,8 +23,4 @@ import org.springframework.stereotype.Component;
  * @author Alexandre Oliveira
  */
 @Component
-public class ShAceEditorWidget extends ShTextWidget implements ShWidgetImplementation, Serializable {
-
-	private static final long serialVersionUID = -528353982367834868L;
-
-}
+public class ShAceEditorWidget extends ShTextWidget {}

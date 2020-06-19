@@ -172,24 +172,8 @@ public class ShSitesPostUtils {
 	}
 
 	public JSONObject toJSON(ShPost shPost) {
-		JSONObject shPostItemAttrs = new JSONObject();
 
-		JSONObject shPostObject = new JSONObject();
-		shPostObject.put("id", shPost.getId());
-		shPostObject.put("postTypeName", shPost.getShPostType().getName());
-		shPostObject.put("title", shPost.getTitle());
-		shPostObject.put("summary", shPost.getSummary());
-		shPostObject.put("link", this.generatePostLink(shPost));
-		shPostObject.put("parentFolder", shPost.getShFolder().getId());
-		for (ShPostAttrImpl shPostAttr : shPost.getShPostAttrs()) {
-			if (shPostAttr.getShPostTypeAttr().getName() != null) {
-				shPostItemAttrs.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
-			}
-		}
-
-		shPostItemAttrs.put("system", shPostObject);
-
-		return shPostItemAttrs;
+		return new JSONObject(this.toSystemMap(shPost));
 	}
 
 	public ShContent toSystemMap(ShPost shPost) {

@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
  * @author Alexandre Oliveira
  */
 @Component
-public class ShTextAreaWidget extends ShDefaultWidget implements ShWidgetImplementation {
+public class ShTextAreaWidget extends ShDefaultWidget {
 	@Override
 	public void setTemplate() {
 		this.template = "widget/text/text-widget";

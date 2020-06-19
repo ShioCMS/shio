@@ -278,7 +278,7 @@ public class ShPostImport {
 		else
 			shPost.setOwner(context.getUsername());
 
-		detectPostAttrs(shPostExchange, context.getExtractFolder(), shPost);
+		this.detectPostAttrs(shPostExchange, context.getExtractFolder(), shPost);
 
 		if (shPostExchange.getFurl() != null) {
 			shPost.setFurl(shPostExchange.getFurl());

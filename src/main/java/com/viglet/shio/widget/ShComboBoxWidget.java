@@ -30,7 +30,7 @@ import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
  * @author Alexandre Oliveira
  */
 @Component
-public class ShComboBoxWidget extends ShDefaultWidget implements ShWidgetImplementation {
+public class ShComboBoxWidget extends ShDefaultWidget {
 
 	@Override
 	public void setTemplate() {

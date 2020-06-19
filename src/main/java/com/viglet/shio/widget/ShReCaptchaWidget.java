@@ -40,7 +40,7 @@ import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
  * @since 0.3.0
  */
 @Component
-public class ShReCaptchaWidget  extends ShDefaultWidget implements ShWidgetImplementation {
+public class ShReCaptchaWidget  extends ShDefaultWidget {
 
 	private static final Log logger = LogFactory.getLog(ShReCaptchaWidget.class);
 	

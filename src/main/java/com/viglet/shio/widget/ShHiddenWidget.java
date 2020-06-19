@@ -27,7 +27,7 @@ import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
  * @author Alexandre Oliveira
  */
 @Component
-public class ShHiddenWidget extends ShDefaultWidget implements ShWidgetImplementation {
+public class ShHiddenWidget extends ShDefaultWidget {
 	@Override
 	public void setTemplate() {
 		this.template = "widget/hidden/hidden-widget";

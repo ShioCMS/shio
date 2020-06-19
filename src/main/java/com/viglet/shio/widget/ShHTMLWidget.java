@@ -16,16 +16,10 @@
  */
 package com.viglet.shio.widget;
 
-import java.io.Serializable;
-
 import org.springframework.stereotype.Component;
 
 /**
  * @author Alexandre Oliveira
  */
 @Component
-public class ShHTMLWidget extends ShTextWidget implements ShWidgetImplementation, Serializable {
-
-	private static final long serialVersionUID = -3345778304325499482L;
-
-}
+public class ShHTMLWidget extends ShTextWidget {}

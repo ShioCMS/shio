@@ -151,8 +151,7 @@ public class ShGitProvider {
 			throw new IOException(e);
 		}
 	}
-
-	@SuppressWarnings("unused")
+	
 	public void newItem(String shObjectId) {
 		ShPost shPost = shPostUtils.getShPostFromObjectId(shObjectId);
 		File source = shStaticFileUtils.filePath(shPost);
