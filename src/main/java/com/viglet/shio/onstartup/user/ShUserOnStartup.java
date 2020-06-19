@@ -33,6 +33,8 @@ import com.viglet.shio.persistence.repository.post.type.ShPostTypeRepository;
 import com.viglet.shio.post.type.ShSystemPostType;
 
 /**
+ * User OnStartup
+ * 
  * @author Alexandre Oliveira
  */
 @Component
@@ -45,51 +47,46 @@ public class ShUserOnStartup {
 	private ShPostTypeRepository shPostTypeRepository;
 	@Autowired
 	private ShGroupRepository shGroupRepository;
-	
+
 	public void createDefaultRows() {
 
 		if (shUserRepository.findAll().isEmpty()) {
-			
+
 			ShGroup shGroup = shGroupRepository.findByName("Administrator");
-			
+
 			Set<ShGroup> shGroups = new HashSet<>();
 			shGroups.add(shGroup);
-			
-			ShPostType shPostType = shPostTypeRepository.findByName(ShSystemPostType.TEXT);
 
-			ShUser shUser = new ShUser();
-
-			shUser.setEmail("admin@localhost.local");
-			shUser.setFirstName("Shio");
-			shUser.setLastLogin(new Date());
-			shUser.setLastName("Administrator");
-			shUser.setLastPostType(String.valueOf(shPostType.getId()));
-			shUser.setLoginTimes(0);
-			shUser.setPassword(passwordEncoder.encode("admin"));
-			shUser.setRealm("default");
-			shUser.setUsername("admin");
-			shUser.setEnabled(1);
+			ShUser shUser = setUser("admin@localhost.local", "Shio", "Administrator", "admin", "admin");
 
 			shUser.setShGroups(shGroups);
-			
-			shUserRepository.save(shUser);			
-						
-			
-			shUser = new ShUser();
 
-			shUser.setEmail("sample@localhost.local");
-			shUser.setFirstName("Sample user");
-			shUser.setLastLogin(new Date());
-			shUser.setLastName("Sample");
-			shUser.setLastPostType(String.valueOf(shPostType.getId()));
-			shUser.setLoginTimes(0);
-			shUser.setPassword(passwordEncoder.encode("sample123"));
-			shUser.setRealm("default");
-			shUser.setUsername("sample");
-			shUser.setEnabled(1);
-			
-			shUserRepository.save(shUser);			
+			shUserRepository.save(shUser);
+
+			shUser = setUser("sample@localhost.local", "Sample user", "Sample", "sample123", "sample");
+
+			shUserRepository.save(shUser);
 		}
 
+	}
+
+	private ShUser setUser(String email, String firstName, String lastName, String password, String username) {
+
+		ShPostType shPostType = shPostTypeRepository.findByName(ShSystemPostType.TEXT);
+
+		ShUser shUser = new ShUser();
+
+		shUser.setEmail(email);
+		shUser.setFirstName(firstName);
+		shUser.setLastLogin(new Date());
+		shUser.setLastName(lastName);
+		shUser.setLastPostType(String.valueOf(shPostType.getId()));
+		shUser.setLoginTimes(0);
+		shUser.setPassword(passwordEncoder.encode(password));
+		shUser.setRealm("default");
+		shUser.setUsername(username);
+		shUser.setEnabled(1);
+		
+		return shUser;
 	}
 }
