@@ -27,6 +27,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.viglet.shio.exchange.ShExchangeContext;
 import com.viglet.shio.exchange.post.ShPostExchange;
 import com.viglet.shio.exchange.post.ShPostImport;
 import com.viglet.shio.exchange.site.ShSiteExchange;
@@ -71,7 +72,7 @@ public class ShFolderImport {
 
 				if (!importOnlyFolders && shObjects.get(objectId) instanceof ShPostExchange) {
 					ShPostExchange shPostExchange = (ShPostExchange) shObjects.get(objectId);					
-					shPostImport.createShPost(shPostExchange, extractFolder, username, shObjects, isCloned);
+					shPostImport.createShPost(new ShExchangeContext(extractFolder, username, isCloned), shPostExchange, shObjects);
 				}
 			}
 

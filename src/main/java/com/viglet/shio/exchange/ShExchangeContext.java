@@ -14,13 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.viglet.shio.exchange.post;
+package com.viglet.shio.exchange;
 
 import java.io.File;
-import java.util.Map;
-
-import com.viglet.shio.persistence.model.post.ShPost;
-import com.viglet.shio.persistence.model.post.relator.impl.ShRelatorItemImpl;
 
 /**
  * Post Exchange Context
@@ -29,46 +25,15 @@ import com.viglet.shio.persistence.model.post.relator.impl.ShRelatorItemImpl;
  * @since 0.3.7
  * 
  */
-public class ShPostExchangeContext {
-	private ShPostExchange shPostExchange;
-	private ShPost shPost;
-	private Map<String, Object> shPostFields;
-	private ShRelatorItemImpl shParentRelatorItem;
+public class ShExchangeContext {
 	private File extractFolder;
 	private String username;
-	private Map<String, Object> shObjects;
 	private boolean isCloned;
 
-	public ShPostExchange getShPostExchange() {
-		return shPostExchange;
-	}
-
-	public void setShPostExchange(ShPostExchange shPostExchange) {
-		this.shPostExchange = shPostExchange;
-	}
-
-	public ShPost getShPost() {
-		return shPost;
-	}
-
-	public void setShPost(ShPost shPost) {
-		this.shPost = shPost;
-	}
-
-	public Map<String, Object> getShPostFields() {
-		return shPostFields;
-	}
-
-	public void setShPostFields(Map<String, Object> shPostFields) {
-		this.shPostFields = shPostFields;
-	}
-
-	public ShRelatorItemImpl getShParentRelatorItem() {
-		return shParentRelatorItem;
-	}
-
-	public void setShParentRelatorItem(ShRelatorItemImpl shParentRelatorItem) {
-		this.shParentRelatorItem = shParentRelatorItem;
+	public ShExchangeContext(File extractFolder, String username, boolean isCloned) {
+		this.extractFolder = extractFolder;
+		this.username = username;
+		this.isCloned = isCloned;
 	}
 
 	public File getExtractFolder() {
@@ -85,14 +50,6 @@ public class ShPostExchangeContext {
 
 	public void setUsername(String username) {
 		this.username = username;
-	}
-
-	public Map<String, Object> getShObjects() {
-		return shObjects;
-	}
-
-	public void setShObjects(Map<String, Object> shObjects) {
-		this.shObjects = shObjects;
 	}
 
 	public boolean isCloned() {

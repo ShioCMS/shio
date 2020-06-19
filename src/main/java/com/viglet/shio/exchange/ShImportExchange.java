@@ -54,9 +54,9 @@ public class ShImportExchange {
 	private ShPostTypeImport shPostTypeImport;
 	@Autowired
 	private ShPostImport shPostImport;
-	
+
 	private static final String EXPORT_FILE = "export.json";
-	
+
 	private Map<String, Object> shObjects = new HashMap<>();
 	private Map<String, List<String>> shChildObjects = new HashMap<>();
 
@@ -114,8 +114,8 @@ public class ShImportExchange {
 				shSiteImport.importSite(shExchange, username, extractFolder, shObjects, shChildObjects);
 			} else if (shExchange.getFolders() == null && shExchange.getPosts() != null) {
 				File extractFolderInner = extractFolder;
-				shExchange.getPosts().forEach(shPostExchange -> shPostImport.createShPost(shPostExchange,
-						extractFolderInner, username, shObjects, false));
+				shExchange.getPosts().forEach(shPostExchange -> shPostImport.createShPost(
+						new ShExchangeContext(extractFolderInner, username, false), shPostExchange, shObjects));
 			}
 		}
 	}
