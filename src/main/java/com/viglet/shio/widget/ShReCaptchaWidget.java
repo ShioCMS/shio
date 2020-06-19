@@ -17,7 +17,6 @@
 package com.viglet.shio.widget;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -27,16 +26,12 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
-import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import com.google.gson.Gson;
 import com.viglet.shio.persistence.model.object.ShObject;
-import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
-import com.viglet.shio.website.ShSitesContextURL;
 
 /**
  * reCAPTCHA Widget.
@@ -45,12 +40,17 @@ import com.viglet.shio.website.ShSitesContextURL;
  * @since 0.3.0
  */
 @Component
-public class ShReCaptchaWidget implements ShWidgetImplementation {
+public class ShReCaptchaWidget  extends ShDefaultWidget implements ShWidgetImplementation {
 
 	private static final Log logger = LogFactory.getLog(ShReCaptchaWidget.class);
-	@Autowired
-	private SpringTemplateEngine templateEngine;
+	
+	@Override
+	public void setTemplate() {
+		this.template = "widget/recaptcha/recaptcha-widget";
 
+	}
+	
+	@Override
 	public String render(ShPostTypeAttr shPostTypeAttr, ShObject shObject) {
 		String widgetSettings = shPostTypeAttr.getWidgetSettings();
 		JSONObject settings = new JSONObject(widgetSettings);
@@ -58,7 +58,7 @@ public class ShReCaptchaWidget implements ShWidgetImplementation {
 		final Context ctx = new Context();
 		ctx.setVariable("shPostTypeAttr", shPostTypeAttr);
 		ctx.setVariable("siteKey", siteKey);
-		return templateEngine.process("widget/recaptcha/recaptcha-widget", ctx);
+		return templateEngine.process(this.template, ctx);
 	}
 
 	@Override
@@ -117,10 +117,5 @@ public class ShReCaptchaWidget implements ShWidgetImplementation {
 			this.errorCodes = errorCodes;
 		}
 
-	}
-
-	@Override
-	public void postRender(ShPostImpl shPost, ShSitesContextURL shSitesContextURL) throws IOException {
-		 // Do nothing 
 	}
 }

@@ -36,8 +36,7 @@ import com.viglet.shio.website.ShSitesContextURL;
 @Component
 public abstract class ShDefaultWidget implements ShWidgetImplementation {
 	
-	String template ="widget/empty/empty-widget";
-	
+	protected String template;
 	@Autowired
 	protected SpringTemplateEngine templateEngine;
 
@@ -45,7 +44,7 @@ public abstract class ShDefaultWidget implements ShWidgetImplementation {
 	public String render(ShPostTypeAttr shPostTypeAttr, ShObject shObject) {
 		final Context ctx = new Context();
 		ctx.setVariable("shPostTypeAttr", shPostTypeAttr);
-		return templateEngine.process(template, ctx);
+		return templateEngine.process(this.template, ctx);
 	}
 
 	@Override
@@ -58,4 +57,9 @@ public abstract class ShDefaultWidget implements ShWidgetImplementation {
 		 // Do nothing 
 	}
 
+	@Override
+	public void setTemplate() {
+		this.template = "widget/empty/empty-widget";
+		
+	}
 }

@@ -24,10 +24,13 @@ import org.springframework.stereotype.Component;
  * @author Alexandre Oliveira
  */
 @Component
-public class ShTextWidget extends ShDefaultWidget implements ShWidgetImplementation, Serializable  {
-	
-	String template = "widget/text/text-widget";
-	
+public class ShTextWidget extends ShDefaultWidget implements ShWidgetImplementation, Serializable {
+
 	private static final long serialVersionUID = -8966997682653564903L;
 
+	@Override
+	public void setTemplate() {
+		this.template = "widget/text/text-widget";
+
+	}
 }

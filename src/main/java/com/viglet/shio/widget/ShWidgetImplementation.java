@@ -32,6 +32,7 @@ import com.viglet.shio.website.ShSitesContextURL;
  */
 @Component
 public interface ShWidgetImplementation {
+	void setTemplate();
 	public String render(ShPostTypeAttr shPostTypeAttr, ShObject shObject);
 	public boolean validateForm(HttpServletRequest request, ShPostTypeAttr shPostTypeAttr);
 	public void postRender(ShPostImpl shPost, ShSitesContextURL shSitesContextURL) throws IOException;
