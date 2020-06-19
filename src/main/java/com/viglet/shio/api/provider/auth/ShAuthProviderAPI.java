@@ -24,7 +24,6 @@ import java.util.Optional;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,6 +43,7 @@ import com.viglet.shio.persistence.model.system.ShConfigVar;
 import com.viglet.shio.persistence.repository.provider.auth.ShAuthProviderInstanceRepository;
 import com.viglet.shio.persistence.repository.provider.auth.ShAuthProviderVendorRepository;
 import com.viglet.shio.persistence.repository.system.ShConfigVarRepository;
+import com.viglet.shio.property.ShConfigProperties;
 import com.viglet.shio.provider.auth.ShAuthProviderService;
 
 import io.swagger.annotations.Api;
@@ -58,10 +58,8 @@ import io.swagger.annotations.ApiOperation;
 public class ShAuthProviderAPI {
 	@SuppressWarnings("unused")
 	private static final Log logger = LogFactory.getLog(ShAuthProviderAPI.class);
-
-	@Value("${shio.config.provider.auth}")
-	private String providerPath ;
-
+	@Autowired
+	private ShConfigProperties shConfigProperties;
 	@Autowired
 	private ShAuthProviderInstanceRepository shAuthProviderInstanceRepository;
 	@Autowired
@@ -101,7 +99,7 @@ public class ShAuthProviderAPI {
 		shAuthProviderInstanceRepository.save(shAuthProviderInstance);
 
 		for (Entry<String, String> propertyEntry : shAuthProviderInstanceBean.getProperties().entrySet()) {
-			String providerInstancePath = String.format(providerPath, shAuthProviderInstance.getId());
+			String providerInstancePath = String.format(shConfigProperties.getAuth(), shAuthProviderInstance.getId());
 
 			ShConfigVar shConfigVar = shConfigVarRepository.findByPathAndName(providerInstancePath,
 					propertyEntry.getKey());
@@ -136,7 +134,7 @@ public class ShAuthProviderAPI {
 			shAuthProviderInstanceRepository.save(shAuthProviderInstanceEdit);
 			
 			for (Entry<String, String> propertyEntry : shAuthProviderInstanceBean.getProperties().entrySet()) {
-				String providerInstancePath = String.format(providerPath, shAuthProviderInstanceEdit.getId());
+				String providerInstancePath = String.format(shConfigProperties.getAuth(), shAuthProviderInstanceEdit.getId());
 
 				ShConfigVar shConfigVar = shConfigVarRepository.findByPathAndName(providerInstancePath,
 						propertyEntry.getKey());
@@ -163,7 +161,7 @@ public class ShAuthProviderAPI {
 	public boolean shAuthProviderInstanceDelete(@PathVariable String id) {
 		Optional<ShAuthProviderInstance> shAuthProviderInstance = shAuthProviderInstanceRepository.findById(id);
 		if (shAuthProviderInstance.isPresent()) {
-			String providerInstancePath = String.format(providerPath, id);
+			String providerInstancePath = String.format(shConfigProperties.getAuth(), id);
 			shConfigVarRepository.deleteByPath(providerInstancePath);
 			shAuthProviderInstanceRepository.delete(id);
 			return true;

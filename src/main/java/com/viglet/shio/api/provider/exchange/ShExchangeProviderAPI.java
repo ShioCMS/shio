@@ -34,7 +34,6 @@ import org.apache.tika.config.TikaConfig;
 import org.apache.tika.mime.MimeType;
 import org.apache.tika.mime.MimeTypeException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -59,6 +58,7 @@ import com.viglet.shio.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shio.persistence.repository.provider.exchange.ShExchangeProviderInstanceRepository;
 import com.viglet.shio.persistence.repository.provider.exchange.ShExchangeProviderVendorRepository;
 import com.viglet.shio.persistence.repository.system.ShConfigVarRepository;
+import com.viglet.shio.property.ShConfigProperties;
 import com.viglet.shio.provider.exchange.ShExchangeProvider;
 import com.viglet.shio.provider.exchange.ShExchangeProviderFolder;
 import com.viglet.shio.provider.exchange.ShExchangeProviderPost;
@@ -77,10 +77,8 @@ import io.swagger.annotations.ApiOperation;
 public class ShExchangeProviderAPI {
 	private static final Log logger = LogFactory.getLog(ShExchangeProviderAPI.class);
 
-	@Value("${shio.config.provider.exchange}")
-	private String providerPath;
-
-	private ShExchangeProvider shExchangeProvider;
+	@Autowired
+	private ShConfigProperties shConfigProperties;
 	@Autowired
 	private ShFolderRepository shFolderRepository;
 	@Autowired
@@ -93,6 +91,8 @@ public class ShExchangeProviderAPI {
 	private ShExchangeProviderVendorRepository shExchangeProviderVendorRepository;
 	@Autowired
 	private ShConfigVarRepository shConfigVarRepository;
+
+	private ShExchangeProvider shExchangeProvider;
 
 	@GetMapping("/vendor")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
@@ -120,7 +120,8 @@ public class ShExchangeProviderAPI {
 			shExchangeProviderInstanceBean.setVendor(shExchangeProviderInstance.getVendor());
 			shExchangeProviderInstanceBean.setEnabled(shExchangeProviderInstance.getEnabled());
 
-			String providerInstancePath = String.format(providerPath, shExchangeProviderInstance.getId());
+			String providerInstancePath = String.format(shConfigProperties.getExchange(),
+					shExchangeProviderInstance.getId());
 
 			List<ShConfigVar> shConfigVars = shConfigVarRepository.findByPath(providerInstancePath);
 
@@ -145,7 +146,8 @@ public class ShExchangeProviderAPI {
 		shExchangeProviderInstanceRepository.save(shExchangeProviderInstance);
 
 		for (Entry<String, String> propertyEntry : shExchangeProviderInstanceBean.getProperties().entrySet()) {
-			String providerInstancePath = String.format(providerPath, shExchangeProviderInstance.getId());
+			String providerInstancePath = String.format(shConfigProperties.getExchange(),
+					shExchangeProviderInstance.getId());
 
 			ShConfigVar shConfigVar = shConfigVarRepository.findByPathAndName(providerInstancePath,
 					propertyEntry.getKey());
@@ -181,7 +183,8 @@ public class ShExchangeProviderAPI {
 			shExchangeProviderInstanceRepository.save(shExchangeProviderInstanceEdit);
 
 			for (Entry<String, String> propertyEntry : shExchangeProviderInstanceBean.getProperties().entrySet()) {
-				String providerInstancePath = String.format(providerPath, shExchangeProviderInstanceEdit.getId());
+				String providerInstancePath = String.format(shConfigProperties.getExchange(),
+						shExchangeProviderInstanceEdit.getId());
 
 				ShConfigVar shConfigVar = shConfigVarRepository.findByPathAndName(providerInstancePath,
 						propertyEntry.getKey());
@@ -210,7 +213,7 @@ public class ShExchangeProviderAPI {
 		Optional<ShExchangeProviderInstance> shExchangeProviderInstance = shExchangeProviderInstanceRepository
 				.findById(id);
 		if (shExchangeProviderInstance.isPresent()) {
-			String providerInstancePath = String.format(providerPath, id);
+			String providerInstancePath = String.format(shConfigProperties.getExchange(), id);
 			shConfigVarRepository.deleteByPath(providerInstancePath);
 			shExchangeProviderInstanceRepository.delete(id);
 			return true;
@@ -252,7 +255,7 @@ public class ShExchangeProviderAPI {
 				.findById(providerInstanceId).orElse(null);
 		if (shExchangeProviderInstance != null) {
 			Map<String, String> variables = shConfigVarUtils
-					.getVariablesFromPath(String.format(providerPath, providerInstanceId));
+					.getVariablesFromPath(String.format(shConfigProperties.getExchange(), providerInstanceId));
 
 			try {
 

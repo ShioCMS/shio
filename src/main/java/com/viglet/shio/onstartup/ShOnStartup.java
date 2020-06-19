@@ -35,6 +35,7 @@ import com.viglet.shio.onstartup.user.ShGroupOnStartup;
 import com.viglet.shio.onstartup.user.ShUserOnStartup;
 import com.viglet.shio.onstartup.widget.ShWidgetOnStartup;
 import com.viglet.shio.persistence.repository.system.ShConfigVarRepository;
+import com.viglet.shio.property.ShConfigProperties;
 
 /**
  * @author Alexandre Oliveira
@@ -42,6 +43,8 @@ import com.viglet.shio.persistence.repository.system.ShConfigVarRepository;
 @Component
 public class ShOnStartup implements ApplicationRunner {
 	private static final Logger logger = LogManager.getLogger(ShOnStartup.class);
+	@Autowired
+	private ShConfigProperties shConfigProperties;
 	@Autowired
 	private ShConfigVarRepository shConfigVarRepository;
 	@Autowired
@@ -70,7 +73,7 @@ public class ShOnStartup implements ApplicationRunner {
 	@Override
 	public void run(ApplicationArguments arg0) throws Exception {
 
-		if (!shConfigVarRepository.existsByPathAndName(ShConfigVarOnStartup.firstTimePath,
+		if (!shConfigVarRepository.existsByPathAndName(shConfigProperties.getSystem(),
 				ShConfigVarOnStartup.FIRST_TIME_NAME)) {
 
 			logger.info("First Time Configuration ...");
