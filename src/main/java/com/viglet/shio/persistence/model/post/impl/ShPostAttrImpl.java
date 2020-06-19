@@ -81,7 +81,7 @@ public interface ShPostAttrImpl {
 
 	void setShPostTypeAttr(ShPostTypeAttr shPostTypeAttr);
 
-	Set<? extends ShRelatorItemImpl> getShChildrenRelatorItems();
+	Set<? extends ShRelatorItemImpl> getShChildrenRelatorItems(); //NOSONAR
 
 	void setShChildrenRelatorItems(Set<? extends ShRelatorItemImpl> shChildrenRelatorItems);
 

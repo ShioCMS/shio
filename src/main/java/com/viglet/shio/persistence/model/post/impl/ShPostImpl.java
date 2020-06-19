@@ -57,7 +57,7 @@ public interface ShPostImpl {
 
 	void setShPostType(ShPostType shPostType);
 
-	Set<?> getShPostAttrs();
+	Set<? extends ShPostAttrImpl> getShPostAttrs(); //NOSONAR
 
 	void setShPostAttrs(Set<? extends ShPostAttrImpl> shPostAttrs);
 

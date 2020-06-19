@@ -90,6 +90,7 @@ public class ShRelatorItem implements Serializable, ShRelatorItemImpl {
 		this.id = id;
 	}
 
+	@Override
 	public Set<? extends ShPostAttrImpl> getShChildrenPostAttrs() {
 		return this.getShChildrenPostAttrsNonDraft();
 	}

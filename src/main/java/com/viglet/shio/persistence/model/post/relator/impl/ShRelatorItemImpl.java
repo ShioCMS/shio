@@ -47,7 +47,7 @@ public interface ShRelatorItemImpl {
 
 	void setId(String id);
 
-	Set<? extends ShPostAttrImpl> getShChildrenPostAttrs();
+	Set<? extends ShPostAttrImpl> getShChildrenPostAttrs(); //NOSONAR
 	
 	Set<ShPostAttr> getShChildrenPostAttrsNonDraft();
 	

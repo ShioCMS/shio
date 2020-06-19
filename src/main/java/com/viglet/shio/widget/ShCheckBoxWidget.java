@@ -24,6 +24,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class ShCheckBoxWidget extends ShComboBoxWidget implements ShWidgetImplementation {
 
-	String template = "widget/check-box/check-box-widget";
+	@Override
+	public void setTemplate() {
+		this.template = "widget/check-box/check-box-widget";
+
+	}
 
 }

@@ -31,10 +31,14 @@ import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
  */
 @Component
 public class ShComboBoxWidget extends ShDefaultWidget implements ShWidgetImplementation {
-	
-	String template = "widget/combo-box/combo-box-widget";
-	
 
+	@Override
+	public void setTemplate() {
+		this.template = "widget/combo-box/combo-box-widget";
+
+	}
+
+	@Override
 	public String render(ShPostTypeAttr shPostTypeAttr, ShObject shObject) {
 
 		String widgetSettings = shPostTypeAttr.getWidgetSettings();
@@ -52,6 +56,6 @@ public class ShComboBoxWidget extends ShDefaultWidget implements ShWidgetImpleme
 		ctx.setVariable("shPostTypeAttr", shPostTypeAttr);
 		ctx.setVariable("choices", choices);
 
-		return templateEngine.process(template, ctx);
+		return templateEngine.process(this.template, ctx);
 	}
 }
