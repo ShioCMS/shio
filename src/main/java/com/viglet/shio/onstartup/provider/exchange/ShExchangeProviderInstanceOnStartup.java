@@ -48,70 +48,59 @@ public class ShExchangeProviderInstanceOnStartup {
 	public void createDefaultRows() {
 
 		if (shExchangeProviderInstanceRepository.findAll().isEmpty()) {
-
 			this.createOTCSInstance();
 			this.createOTMMInstance();
 		}
 	}
 
 	private void createOTCSInstance() {
-		ShExchangeProviderInstance shExchangeProviderInstance = new ShExchangeProviderInstance();
-		shExchangeProviderInstance.setName("OpenText Content Services");
-		shExchangeProviderInstance.setDescription("Sample of OTCS");
-		shExchangeProviderInstance.setVendor(shExchangeProviderVendorRepository.findById(ShExchangeSystemProviderVendor.OTCS).orElse(null));
-		shExchangeProviderInstance.setEnabled(false);
-		
-		shExchangeProviderInstanceRepository.save(shExchangeProviderInstance);
+		ShExchangeProviderInstance shExchangeProviderInstance = setProviderInstance("OpenText Content Services",
+				"Sample of OTCS", ShExchangeSystemProviderVendor.OTCS, false);
 
 		String providerInstance = String.format(shConfigProperties.getExchange(), shExchangeProviderInstance.getId());
 
+		this.setConfigVar(providerInstance, "http://localhost/OTCS/cs.exe", "admin", "password");
+	}
+
+	private ShExchangeProviderInstance setProviderInstance(String name, String description, String provider,
+			boolean isEnabled) {
+		ShExchangeProviderInstance shExchangeProviderInstance = new ShExchangeProviderInstance();
+		shExchangeProviderInstance.setName(name);
+		shExchangeProviderInstance.setDescription(description);
+		shExchangeProviderInstance.setVendor(shExchangeProviderVendorRepository.findById(provider).orElse(null));
+		shExchangeProviderInstance.setEnabled(isEnabled);
+
+		shExchangeProviderInstanceRepository.save(shExchangeProviderInstance);
+		return shExchangeProviderInstance;
+	}
+
+	private void setConfigVar(String providerInstance, String url, String username, String password) {
 		ShConfigVar shConfigVar = new ShConfigVar();
 		shConfigVar.setPath(providerInstance);
 		shConfigVar.setName(URL);
-		shConfigVar.setValue("http://localhost/OTCS/cs.exe");
+		shConfigVar.setValue(url);
 		shConfigVarRepository.save(shConfigVar);
 
 		shConfigVar = new ShConfigVar();
 		shConfigVar.setPath(providerInstance);
 		shConfigVar.setName(USERNAME);
-		shConfigVar.setValue("admin");
+		shConfigVar.setValue(username);
 		shConfigVarRepository.save(shConfigVar);
 
 		shConfigVar = new ShConfigVar();
 		shConfigVar.setPath(providerInstance);
 		shConfigVar.setName(PASSWORD);
-		shConfigVar.setValue("password");
+		shConfigVar.setValue(password);
 		shConfigVarRepository.save(shConfigVar);
 	}
 
 	private void createOTMMInstance() {
-		ShExchangeProviderInstance shExchangeProviderInstance = new ShExchangeProviderInstance();
-		shExchangeProviderInstance.setName("OpenText Media Management");
-		shExchangeProviderInstance.setDescription("Sample of OTMM");
-		shExchangeProviderInstance.setVendor(shExchangeProviderVendorRepository.findById(ShExchangeSystemProviderVendor.OTMM).orElse(null));
-		shExchangeProviderInstance.setEnabled(false);
-		
-		shExchangeProviderInstanceRepository.save(shExchangeProviderInstance);
+		ShExchangeProviderInstance shExchangeProviderInstance = setProviderInstance("OpenText Media Management",
+				"Sample of OTMM", ShExchangeSystemProviderVendor.OTMM, false);
 
 		String providerInstance = String.format(shConfigProperties.getExchange(), shExchangeProviderInstance.getId());
 
-		ShConfigVar shConfigVar = new ShConfigVar();
-		shConfigVar.setPath(providerInstance);
-		shConfigVar.setName(URL);
-		shConfigVar.setValue("http://localhost:11090");
-		shConfigVarRepository.save(shConfigVar);
-
-		shConfigVar = new ShConfigVar();
-		shConfigVar.setPath(providerInstance);
-		shConfigVar.setName(USERNAME);
-		shConfigVar.setValue("admin");
-		shConfigVarRepository.save(shConfigVar);
-
-		shConfigVar = new ShConfigVar();
-		shConfigVar.setPath(providerInstance);
-		shConfigVar.setName(PASSWORD);
-		shConfigVar.setValue("password");
-		shConfigVarRepository.save(shConfigVar);
+		this.setConfigVar(providerInstance, "http://localhost:11090", "admin", "password");
 	}
 
 }
