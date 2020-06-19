@@ -36,7 +36,7 @@ import org.springframework.stereotype.Component;
 
 import com.viglet.shio.api.post.ShPostAPI;
 import com.viglet.shio.persistence.model.folder.ShFolder;
-import com.viglet.shio.persistence.model.object.ShObject;
+import com.viglet.shio.persistence.model.object.impl.ShObjectImpl;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
 import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
@@ -80,7 +80,7 @@ public class ShFormUtils {
 			ShPostType shPostType) {
 		Enumeration<String> parameters = shSitesContextURL.getRequest().getParameterNames();
 		ShPost shPost = null;
-		ShObject shObject = shObjectRepository.findById(shSitesContextURL.getInfo().getObjectId()).orElse(null);
+		ShObjectImpl shObject = shObjectRepository.findById(shSitesContextURL.getInfo().getObjectId()).orElse(null);
 		if (shFormConfiguration != null || shObject instanceof ShFolder
 				|| (shObject instanceof ShPost && ((ShPostImpl) shObject).getTitle().equals("index"))) {
 			ShFolder shFolder = null;

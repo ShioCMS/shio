@@ -23,7 +23,7 @@ import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 
-import com.viglet.shio.persistence.model.object.ShObject;
+import com.viglet.shio.persistence.model.object.impl.ShObjectImpl;
 import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
 
 /**
@@ -39,7 +39,7 @@ public class ShComboBoxWidget extends ShDefaultWidget implements ShWidgetImpleme
 	}
 
 	@Override
-	public String render(ShPostTypeAttr shPostTypeAttr, ShObject shObject) {
+	public String render(ShPostTypeAttr shPostTypeAttr, ShObjectImpl shObject) {
 
 		String widgetSettings = shPostTypeAttr.getWidgetSettings();
 		JSONObject settings = new JSONObject(widgetSettings);

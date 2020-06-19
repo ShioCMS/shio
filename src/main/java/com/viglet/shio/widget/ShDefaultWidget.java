@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
-import com.viglet.shio.persistence.model.object.ShObject;
+import com.viglet.shio.persistence.model.object.impl.ShObjectImpl;
 import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shio.website.ShSitesContextURL;
@@ -41,7 +41,7 @@ public abstract class ShDefaultWidget implements ShWidgetImplementation {
 	protected SpringTemplateEngine templateEngine;
 
 	@Override
-	public String render(ShPostTypeAttr shPostTypeAttr, ShObject shObject) {
+	public String render(ShPostTypeAttr shPostTypeAttr, ShObjectImpl shObject) {
 		final Context ctx = new Context();
 		ctx.setVariable("shPostTypeAttr", shPostTypeAttr);
 		return templateEngine.process(this.template, ctx);

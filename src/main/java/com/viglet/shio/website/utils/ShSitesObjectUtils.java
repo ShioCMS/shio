@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.object.ShObject;
+import com.viglet.shio.persistence.model.object.impl.ShObjectImpl;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
 import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
@@ -49,7 +50,7 @@ public class ShSitesObjectUtils {
 	@Autowired
 	private ShSitesPostUtils shSitesPostUtils;
 
-	public boolean isVisiblePage(ShObject shObject) {
+	public boolean isVisiblePage(ShObjectImpl shObject) {
 		ShFolder shFolder = null;
 		if (shObject instanceof ShFolder) {
 			shFolder = (ShFolder) shObject;
@@ -81,7 +82,7 @@ public class ShSitesObjectUtils {
 		if (objectId != null) {
 			Optional<ShObject> shObjectOptional = shObjectRepository.findById(objectId);
 			if (shObjectOptional.isPresent()) {
-				ShObject shObject = shObjectOptional.get();
+				ShObjectImpl shObject = shObjectOptional.get();
 				if (shObject instanceof ShPost) {
 					return shSitesPostUtils.generatePostLink((ShPost) shObject);
 				} else if (shObject instanceof ShFolder) {
@@ -97,7 +98,7 @@ public class ShSitesObjectUtils {
 		if (objectId != null) {
 			Optional<ShObject> shObjectOptional = shObjectRepository.findById(objectId);
 			if (shObjectOptional.isPresent()) {
-				ShObject shObject = shObjectOptional.get();
+				ShObjectImpl shObject = shObjectOptional.get();
 				if (shObject instanceof ShPost) {
 					if (scale == 1) {
 						return shSitesPostUtils.generatePostLink((ShPost) shObject);
@@ -114,7 +115,7 @@ public class ShSitesObjectUtils {
 		return null;
 	}
 
-	public String generateObjectLink(ShObject shObject) {
+	public String generateObjectLink(ShObjectImpl shObject) {
 		return this.generateObjectLinkById(shObject.getId());
 	}
 }

@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Component;
 
-import com.viglet.shio.persistence.model.object.ShObject;
+import com.viglet.shio.persistence.model.object.impl.ShObjectImpl;
 import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shio.website.ShSitesContextURL;
@@ -33,7 +33,7 @@ import com.viglet.shio.website.ShSitesContextURL;
 @Component
 public interface ShWidgetImplementation {
 	void setTemplate();
-	public String render(ShPostTypeAttr shPostTypeAttr, ShObject shObject);
+	public String render(ShPostTypeAttr shPostTypeAttr, ShObjectImpl shObject);
 	public boolean validateForm(HttpServletRequest request, ShPostTypeAttr shPostTypeAttr);
 	public void postRender(ShPostImpl shPost, ShSitesContextURL shSitesContextURL) throws IOException;
 }

@@ -54,6 +54,7 @@ import com.viglet.shio.persistence.model.auth.ShGroup;
 import com.viglet.shio.persistence.model.auth.ShUser;
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.object.ShObject;
+import com.viglet.shio.persistence.model.object.impl.ShObjectImpl;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
@@ -125,7 +126,7 @@ public class ShObjectAPI {
 	public ResponseEntity<String> shObjectEditor(@PathVariable String id, HttpServletResponse response,
 			RedirectAttributes attributes) {
 		String redirect = null;
-		ShObject shObject = shObjectRepository.findById(id).orElse(null);
+		ShObjectImpl shObject = shObjectRepository.findById(id).orElse(null);
 		if (shObject != null) {
 			if (shObject instanceof ShSite) {
 				redirect = String.format("/content#!/list/%s", shObject.getId());
@@ -153,7 +154,7 @@ public class ShObjectAPI {
 	public RedirectView shObjectPreview(@PathVariable String id, HttpServletResponse response,
 			RedirectAttributes attributes) {
 		String redirect = null;
-		ShObject shObject = shObjectRepository.findById(id).orElse(null);
+		ShObjectImpl shObject = shObjectRepository.findById(id).orElse(null);
 		if (shObject instanceof ShSite) {
 			redirect = shSiteUtils.generatePostLink((ShSite) shObject);
 		} else if (shObject instanceof ShPost) {
@@ -173,14 +174,14 @@ public class ShObjectAPI {
 	}
 
 	@GetMapping("{id}/clear-cache")
-	public ShObject shObjectClearCache(@PathVariable String id, HttpServletResponse response) {
-		ShObject shObject = shObjectRepository.findById(id).orElse(null);
+	public ShObjectImpl shObjectClearCache(@PathVariable String id, HttpServletResponse response) {
+		ShObjectImpl shObject = shObjectRepository.findById(id).orElse(null);
 		shCacheObject.deleteCache(id);
 		return shObject;
 	}
 
 	@GetMapping("{id}/request-workflow/{publishStatus}")
-	public ShObject shObjectRequestWorkflow(@PathVariable String id, @PathVariable String publishStatus,
+	public ShObjectImpl shObjectRequestWorkflow(@PathVariable String id, @PathVariable String publishStatus,
 			Principal principal) {
 		ShObject shObject = shObjectRepository.findById(id).orElse(null);
 		shWorkflow.requestWorkFlow(shObject, principal);
@@ -239,10 +240,10 @@ public class ShObjectAPI {
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShObject> shObjectMoveTo(@PathVariable String globallIdDest, @RequestBody List<String> globalIds) {
 		List<ShObject> shObjects = new ArrayList<>();
-		ShObject shObjectDest = shObjectRepository.findById(globallIdDest).orElse(null);
+		ShObjectImpl shObjectDest = shObjectRepository.findById(globallIdDest).orElse(null);
 		for (String globalId : globalIds) {
 			shCacheObject.deleteCache(globalId);
-			ShObject shObject = shObjectRepository.findById(globalId).orElse(null);
+			ShObjectImpl shObject = shObjectRepository.findById(globalId).orElse(null);
 			if (shObjectDest instanceof ShFolder) {
 				ShFolder shFolderDest = (ShFolder) shObjectDest;
 				if (shObject instanceof ShPost) {
@@ -281,8 +282,8 @@ public class ShObjectAPI {
 	public List<ShObject> shObjectCopyTo(@PathVariable String globallIdDest, @RequestBody List<String> globalIds) {
 		List<ShObject> shObjects = new ArrayList<>();
 		for (String globalId : globalIds) {
-			ShObject shObject = shObjectRepository.findById(globalId).orElse(null);
-			ShObject shObjectDest = shObjectRepository.findById(globallIdDest).orElse(null);
+			ShObjectImpl shObject = shObjectRepository.findById(globalId).orElse(null);
+			ShObjectImpl shObjectDest = shObjectRepository.findById(globallIdDest).orElse(null);
 			if (shObjectDest instanceof ShFolder) {
 				ShFolder shFolderDest = (ShFolder) shObjectDest;
 				if (shObject instanceof ShPost) {
@@ -310,7 +311,7 @@ public class ShObjectAPI {
 				ShUser shUser = null;
 				if (principal != null)
 					shUser = shUserRepository.findByUsername(principal.getName());
-				ShObject shObject = shObjectOptional.get();
+				ShObjectImpl shObject = shObjectOptional.get();
 				if (shObject instanceof ShFolder) {
 
 					ShFolder shFolder = (ShFolder) shObject;
@@ -339,7 +340,7 @@ public class ShObjectAPI {
 		return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
 	}
 
-	private Set<ShFolderTinyBean> allowedFolders(ShUser shUser, ShObject shObject) {
+	private Set<ShFolderTinyBean> allowedFolders(ShUser shUser, ShObjectImpl shObject) {
 
 		Set<ShFolderTinyBean> folders = this.foldersFromObject(shObject);
 
@@ -362,7 +363,7 @@ public class ShObjectAPI {
 		return shUser != null && shUser.getShGroups() != null;
 	}
 
-	private Set<ShFolderTinyBean> foldersFromObject(ShObject shObject) {
+	private Set<ShFolderTinyBean> foldersFromObject(ShObjectImpl shObject) {
 		Set<ShFolderTinyBean> folders = new HashSet<>();
 		if (shObject instanceof ShFolder) {
 			ShFolder shFolder = (ShFolder) shObject;
@@ -391,7 +392,7 @@ public class ShObjectAPI {
 		return shFolders;
 	}
 
-	private List<ShPostTinyBean> allowedPosts(ShUser shUser, ShObject shObject) {
+	private List<ShPostTinyBean> allowedPosts(ShUser shUser, ShObjectImpl shObject) {
 
 		List<ShPostTinyBean> posts = postsFromObject(shObject);
 
@@ -403,7 +404,7 @@ public class ShObjectAPI {
 
 	}
 
-	private List<ShPostTinyBean> postsFromObject(ShObject shObject) {
+	private List<ShPostTinyBean> postsFromObject(ShObjectImpl shObject) {
 		List<ShPostTinyBean> posts = new ArrayList<>();
 		if (shObject instanceof ShFolder) {
 			ShFolder shFolder = (ShFolder) shObject;
@@ -432,7 +433,7 @@ public class ShObjectAPI {
 	public ShFolderList shFolderListByPostType(@PathVariable String id, @PathVariable String postTypeName) {
 		Optional<ShObject> shObjectOptional = shObjectRepository.findById(id);
 		if (shObjectOptional.isPresent()) {
-			ShObject shObject = shObjectOptional.get();
+			ShObjectImpl shObject = shObjectOptional.get();
 			ShPostType shPostType = shPostTypeRepository.findByName(postTypeName);
 			if (shObject instanceof ShFolder) {
 				ShFolder shFolder = (ShFolder) shObject;
@@ -469,7 +470,7 @@ public class ShObjectAPI {
 	@GetMapping("/{id}/url")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public String shObjectURL(@PathVariable String id) {
-		ShObject shObject = shObjectRepository.findById(id).orElse(null);
+		ShObjectImpl shObject = shObjectRepository.findById(id).orElse(null);
 		String label = "";
 		if (shObject instanceof ShPost) {
 			label = ((ShPostImpl) shObject).getTitle();

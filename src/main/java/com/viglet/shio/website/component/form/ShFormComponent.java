@@ -34,7 +34,7 @@ import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
-import com.viglet.shio.persistence.model.object.ShObject;
+import com.viglet.shio.persistence.model.object.impl.ShObjectImpl;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
 import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shio.persistence.repository.object.ShObjectRepository;
@@ -60,7 +60,7 @@ public class ShFormComponent {
 	public String byPostType(String shPostTypeName, String shObjectId, HttpServletRequest request) {
 		final Context ctx = new Context();
 		ShFormConfiguration shFormConfiguration = null;
-		ShObject shObject = shObjectRepository.findById(shObjectId).orElse(null);
+		ShObjectImpl shObject = shObjectRepository.findById(shObjectId).orElse(null);
 		ShPostType shPostType = shPostTypeRepository.findByName(shPostTypeName);
 		CsrfToken csrf = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
 

@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.history.ShHistory;
-import com.viglet.shio.persistence.model.object.ShObject;
+import com.viglet.shio.persistence.model.object.impl.ShObjectImpl;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.site.ShSite;
@@ -48,7 +48,7 @@ public class ShHistoryUtils {
 	public static final String DELETE = "DELETE";
 	public static final String UPDATE = "UPDATE";
 
-	public void commit(ShObject shObject, Principal principal, String action) {
+	public void commit(ShObjectImpl shObject, Principal principal, String action) {
 		if (shObject != null) {
 			String message = null;
 

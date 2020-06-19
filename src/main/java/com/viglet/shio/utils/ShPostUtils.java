@@ -46,6 +46,7 @@ import com.viglet.shio.object.ShObjectType;
 import com.viglet.shio.persistence.model.auth.ShUser;
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.object.ShObject;
+import com.viglet.shio.persistence.model.object.impl.ShObjectImpl;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
 import com.viglet.shio.persistence.model.post.ShPostDraft;
@@ -241,7 +242,7 @@ public class ShPostUtils {
 
 				// Find by shPostAttr.getReferenceObject()
 				if (shPostAttr.getReferenceObject() != null) {
-					ShObject shObject = shPostAttr.getReferenceObject();
+					ShObjectImpl shObject = shPostAttr.getReferenceObject();
 					if (shOldReference.getShObjectTo().getId().equals(shObject.getId())) {
 						shReferenceRepository.delete(shOldReference);
 					}
@@ -343,7 +344,7 @@ public class ShPostUtils {
 
 				// Find by shPostAttr.getReferenceObject()
 				if (shPostAttr.getReferenceObject() != null) {
-					ShObject shObject = shPostAttr.getReferenceObject();
+					ShObjectImpl shObject = shPostAttr.getReferenceObject();
 					if (shOldReference.getShObjectTo().getId().equals(shObject.getId())) {
 						shReferenceDraftRepository.delete(shOldReference);
 					}
@@ -386,7 +387,7 @@ public class ShPostUtils {
 		if (!shOldReferences.isEmpty()) {
 			for (ShReference shOldReference : shOldReferences) {
 				if (shPostAttrEdit.getReferenceObject() != null) {
-					ShObject shObject = shPostAttrEdit.getReferenceObject();
+					ShObjectImpl shObject = shPostAttrEdit.getReferenceObject();
 					if (shOldReference.getShObjectTo().getId().equals(shObject.getId())) {
 						shReferenceRepository.delete(shOldReference);
 						break;
@@ -451,7 +452,7 @@ public class ShPostUtils {
 	}
 
 	private void summaryRelator(StringBuilder title, StringBuilder summary, ShPostImpl shChildrenPostAttr) {
-		ShObject shObject = ((ShPostAttr) shChildrenPostAttr).getReferenceObject();
+		ShObjectImpl shObject = ((ShPostAttr) shChildrenPostAttr).getReferenceObject();
 		if (shObject != null) {
 			if (shObject.getObjectType().equals(ShObjectType.POST)) {
 				summaryPost(title, summary, shObject);
@@ -461,7 +462,7 @@ public class ShPostUtils {
 		}
 	}
 
-	private void summaryFolder(StringBuilder title, StringBuilder summary, ShObject shObject) {
+	private void summaryFolder(StringBuilder title, StringBuilder summary, ShObjectImpl shObject) {
 		Optional<ShFolder> shFolderReferenced = shFolderRepository.findById(shObject.getId());
 		if (shFolderReferenced.isPresent()) {
 			if (!StringUtils.isEmpty(title.toString()))
@@ -470,7 +471,7 @@ public class ShPostUtils {
 		}
 	}
 
-	private void summaryPost(StringBuilder title, StringBuilder summary, ShObject shObject) {
+	private void summaryPost(StringBuilder title, StringBuilder summary, ShObjectImpl shObject) {
 		Optional<ShPost> shPostReferenced = shPostRepository.findById(shObject.getId());
 		if (shPostReferenced.isPresent()) {
 			if (!StringUtils.isEmpty(title.toString()))

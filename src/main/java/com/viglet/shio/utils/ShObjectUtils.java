@@ -31,6 +31,7 @@ import com.viglet.shio.persistence.model.auth.ShGroup;
 import com.viglet.shio.persistence.model.auth.ShUser;
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.object.ShObject;
+import com.viglet.shio.persistence.model.object.impl.ShObjectImpl;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.site.ShSite;
@@ -51,7 +52,7 @@ public class ShObjectUtils {
 	@Autowired
 	private ShPostUtils shPostUtils;
 
-	public ShSite getSite(ShObject shObject) {
+	public ShSite getSite(ShObjectImpl shObject) {
 		if (shObject instanceof ShPost) {
 			return shPostUtils.getSite((ShPostImpl) shObject);
 		} else if (shObject instanceof ShFolder) {
@@ -63,7 +64,7 @@ public class ShObjectUtils {
 
 	public boolean canAccess(Principal principal, String shObjectId) {
 		ShUser shUser = null;
-		ShObject shObject = shObjectRepository.findById(shObjectId).orElse(null);
+		ShObjectImpl shObject = shObjectRepository.findById(shObjectId).orElse(null);
 		shUser = getShUser(principal, shUser);
 		if (shObject != null) {
 			if (userHasGroups(shUser)) {
@@ -96,7 +97,7 @@ public class ShObjectUtils {
 		return fullAccess;
 	}
 
-	private boolean hasAccess(ShUser shUser, ShObject shObject) {
+	private boolean hasAccess(ShUser shUser, ShObjectImpl shObject) {
 		Set<String> shGroups = new HashSet<>();
 		Set<String> shUsers = new HashSet<>();
 		shUser.getShGroups().forEach(shGroup -> shGroups.add(shGroup.getName()));

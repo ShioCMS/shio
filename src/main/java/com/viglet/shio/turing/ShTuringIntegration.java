@@ -45,7 +45,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viglet.shio.object.ShObjectType;
 import com.viglet.shio.persistence.model.folder.ShFolder;
-import com.viglet.shio.persistence.model.object.ShObject;
+import com.viglet.shio.persistence.model.object.impl.ShObjectImpl;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
 import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
@@ -96,7 +96,7 @@ public class ShTuringIntegration {
 	@Autowired
 	private ShSitesFolderUtils shSitesFolderUtils;
 
-	public void indexObject(ShObject shObject) {
+	public void indexObject(ShObjectImpl shObject) {
 		ShSite shSite = shObjectUtils.getSite(shObject);
 
 		if (TURING_ENABLED && hasSearchablePostTypes(shSite)) {
@@ -117,12 +117,12 @@ public class ShTuringIntegration {
 		return shSite != null && StringUtils.isNotBlank(shSite.getSearchablePostTypes());
 	}
 
-	private boolean isFolderIndex(ShObject shObject) {
+	private boolean isFolderIndex(ShObjectImpl shObject) {
 		return shObject instanceof ShPost
 				&& ((ShPostImpl) shObject).getShPostType().getName().equals(ShSystemPostType.FOLDER_INDEX);
 	}
 
-	private String getObjectTypeName(ShObject shObject) {
+	private String getObjectTypeName(ShObjectImpl shObject) {
 		String objectTypeName = null;
 		if (shObject instanceof ShPost)
 			objectTypeName = ((ShPostImpl) shObject).getShPostType().getName();
@@ -131,7 +131,7 @@ public class ShTuringIntegration {
 		return objectTypeName;
 	}
 
-	private String getObjectName(ShObject shObject) {
+	private String getObjectName(ShObjectImpl shObject) {
 		String objectName = null;
 		if (shObject instanceof ShPost)
 			objectName = ((ShPostImpl) shObject).getTitle();
@@ -140,7 +140,7 @@ public class ShTuringIntegration {
 		return objectName;
 	}
 
-	private void sendServerToIndex(ShObject shObject, String objectName, String objectTypeName, ShSite shSite) {
+	private void sendServerToIndex(ShObjectImpl shObject, String objectName, String objectTypeName, ShSite shSite) {
 		if (this.isSearchable(objectTypeName, shSite)) {
 			TurSNJobItems turSNJobItems = new TurSNJobItems();
 			TurSNJobItem turSNJobItem = this.toTurSNJobItem(shObject);
@@ -161,7 +161,7 @@ public class ShTuringIntegration {
 				&& searchablePostTypes.getBoolean(objectTypeName));
 	}
 
-	public void deindexObject(ShObject shObject) {
+	public void deindexObject(ShObjectImpl shObject) {
 		ShSite shSite = shObjectUtils.getSite(shObject);
 
 		if (TURING_ENABLED && hasSearchablePostTypes(shSite)) {
@@ -182,7 +182,7 @@ public class ShTuringIntegration {
 		}
 	}
 
-	private void desindexChildObjects(ShObject shObject) {
+	private void desindexChildObjects(ShObjectImpl shObject) {
 		ShFolder shFolder = (ShFolder) shObject;
 		this.deindexInBatch(shPostRepository.findByShFolder(shFolder));
 		shFolderRepository.findByParentFolder(shFolder).forEach(this::deindexObject);
@@ -194,7 +194,7 @@ public class ShTuringIntegration {
 		}
 	}
 
-	private TurSNJobItem toTurSNJobItem(ShObject shObject) {
+	private TurSNJobItem toTurSNJobItem(ShObjectImpl shObject) {
 		try {
 			TurSNJobItem turSNJobItem = new TurSNJobItem();
 			Map<String, Object> attributes = new HashMap<>();
@@ -220,7 +220,7 @@ public class ShTuringIntegration {
 		return null;
 	}
 
-	private void addPost(ShObject shObject, Map<String, Object> attributes) {
+	private void addPost(ShObjectImpl shObject, Map<String, Object> attributes) {
 		if (shObject instanceof ShPost) {
 			ShPost shPost = (ShPost) shObject;
 			shPostTypeRepository.findById(shPost.getShPostType().getId()).ifPresent(shPostType -> {
@@ -231,7 +231,7 @@ public class ShTuringIntegration {
 		}
 	}
 
-	private void addGenericAttributes(ShObject shObject, Map<String, Object> attributes) {
+	private void addGenericAttributes(ShObjectImpl shObject, Map<String, Object> attributes) {
 		attributes.put("id", shObject.getId());
 		attributes.put("publication_date", formatDateToTuring(shObject.getDate()));
 		attributes.put("url", shSitesObjectUtils.generateObjectLink(shObject));
@@ -244,7 +244,7 @@ public class ShTuringIntegration {
 		return df.format(date);
 	}
 
-	private void addFolder(ShObject shObject, Map<String, Object> attributes) {
+	private void addFolder(ShObjectImpl shObject, Map<String, Object> attributes) {
 		ShFolder shFolder = (ShFolder) shObject;
 		attributes.put("title", shFolder.getName());
 		ShPost shFolderIndexPost = shSitesFolderUtils.getFolderIndex(shFolder);

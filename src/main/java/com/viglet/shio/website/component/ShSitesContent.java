@@ -32,7 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viglet.shio.bean.ShSitePostTypeLayout;
 import com.viglet.shio.bean.ShSitePostTypeLayouts;
 import com.viglet.shio.persistence.model.folder.ShFolder;
-import com.viglet.shio.persistence.model.object.ShObject;
+import com.viglet.shio.persistence.model.object.impl.ShObjectImpl;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
 import com.viglet.shio.persistence.model.site.ShSite;
@@ -87,7 +87,7 @@ public class ShSitesContent {
 
 		shSitesContextURLProcess.detectContextURL(url, shSitesContextURL);
 
-		ShObject shObject = shObjectRepository.findById(shSitesContextURL.getInfo().getObjectId()).orElse(null);
+		ShObjectImpl shObject = shObjectRepository.findById(shSitesContextURL.getInfo().getObjectId()).orElse(null);
 
 		ShSite shSite = shSiteRepository.findById(shSitesContextURL.getInfo().getSiteId()).orElse(null);
 

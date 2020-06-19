@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shio.api.ShJsonView;
 import com.viglet.shio.persistence.model.object.ShObject;
+import com.viglet.shio.persistence.model.object.impl.ShObjectImpl;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
 import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
@@ -100,7 +101,7 @@ public class ShReferenceAPI {
 		}
 	}
 
-	private void setReferenceToPostAttr(ShObject shObject, ShObject shObjectOther, ShReference shReference) {
+	private void setReferenceToPostAttr(ShObjectImpl shObject, ShObject shObjectOther, ShReference shReference) {
 		if (shReference.getShObjectFrom() instanceof ShPost) {
 			ShPostImpl shPost = (ShPostImpl) shReference.getShObjectFrom();
 			shPost.getShPostAttrsNonDraft().forEach(shPostAttr -> {

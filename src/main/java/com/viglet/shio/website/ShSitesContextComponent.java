@@ -41,7 +41,7 @@ import org.springframework.stereotype.Component;
 
 import com.google.common.base.Stopwatch;
 import com.viglet.shio.persistence.model.folder.ShFolder;
-import com.viglet.shio.persistence.model.object.ShObject;
+import com.viglet.shio.persistence.model.object.impl.ShObjectImpl;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
 import com.viglet.shio.persistence.model.post.impl.ShPostAttrImpl;
@@ -137,8 +137,8 @@ public class ShSitesContextComponent {
 		return objectName;
 	}
 
-	public ShObject shObjectItemFactory(ShSite shSite, ShFolder shFolder, String objectName) {
-		ShObject shObjectItem = null;
+	public ShObjectImpl shObjectItemFactory(ShSite shSite, ShFolder shFolder, String objectName) {
+		ShObjectImpl shObjectItem = null;
 
 		// If shPostItem is not null, so is a Post, otherwise is a Folder
 		if (objectName != null) {
@@ -209,7 +209,7 @@ public class ShSitesContextComponent {
 		return shFolderItem;
 	}
 
-	public Map<String, ShPostAttr> shFolderPageLayoutMapFactory(ShObject shObjectItem, ShSite shSite, String format) {
+	public Map<String, ShPostAttr> shFolderPageLayoutMapFactory(ShObjectImpl shObjectItem, ShSite shSite, String format) {
 
 		return shSitesPostUtils
 				.postToMap(shSitesPageLayoutUtils.pageLayoutFromFolderAndFolderIndex(shObjectItem, shSite, format));

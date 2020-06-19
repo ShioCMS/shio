@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.viglet.shio.persistence.model.folder.ShFolder;
-import com.viglet.shio.persistence.model.object.ShObject;
+import com.viglet.shio.persistence.model.object.impl.ShObjectImpl;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
 import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
@@ -63,7 +63,7 @@ public class ShFolderUtils {
 		return shFolder.isPresent() ? shFolder.get().getParentFolder() : null;
 	}
 
-	public ShFolder getParentFolder(ShObject shObject) {
+	public ShFolder getParentFolder(ShObjectImpl shObject) {
 		if (shObject instanceof ShPost) {
 			ShPostImpl shPost = (ShPostImpl) shObject;
 			return shPost.getShFolder();
@@ -256,7 +256,7 @@ public class ShFolderUtils {
 		return true;
 	}
 
-	public ShFolder copy(ShFolder shFolder, ShObject shObjectDest) {
+	public ShFolder copy(ShFolder shFolder, ShObjectImpl shObjectDest) {
 		ShFolder shFolderCopy = new ShFolder();
 		if (shObjectDest instanceof ShFolder) {
 			ShFolder shFolderDest = (ShFolder) shObjectDest;

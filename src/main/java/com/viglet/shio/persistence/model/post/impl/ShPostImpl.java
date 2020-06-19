@@ -21,6 +21,7 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.viglet.shio.persistence.model.folder.ShFolder;
+import com.viglet.shio.persistence.model.object.impl.ShObjectImpl;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
 import com.viglet.shio.persistence.model.post.ShPostDraft;
@@ -43,7 +44,7 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
   @JsonSubTypes.Type(value=ShPost.class, name = "ShPost"),
   @JsonSubTypes.Type(value=ShPostDraft.class, name = "ShPostDraft")
 })
-public interface ShPostImpl {
+public interface ShPostImpl extends ShObjectImpl {
 	
 	String getSummary();
 

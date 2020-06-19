@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shio.api.ShJsonView;
-import com.viglet.shio.persistence.model.object.ShObject;
+import com.viglet.shio.persistence.model.object.impl.ShObjectImpl;
 import com.viglet.shio.persistence.repository.object.ShObjectRepository;
 import com.viglet.shio.website.ShSitesContextURL;
 import com.viglet.shio.website.ShSitesContextURLProcess;
@@ -52,7 +52,7 @@ public class ShPreviewAPI {
 	@ApiOperation(value = "Detect URL")
 	@PostMapping("/detect-url")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShObject shPreviewDetectURL(HttpServletRequest request, HttpServletResponse response)
+	public ShObjectImpl shPreviewDetectURL(HttpServletRequest request, HttpServletResponse response)
 			throws MalformedURLException {
 
 		URL url = new URL(request.getParameter("url"));

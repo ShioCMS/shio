@@ -29,7 +29,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shio.persistence.model.folder.ShFolder;
-import com.viglet.shio.persistence.model.object.ShObject;
+import com.viglet.shio.persistence.model.object.impl.ShObjectImpl;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
 import com.viglet.shio.persistence.model.post.impl.ShPostAttrImpl;
@@ -73,7 +73,7 @@ public class ShCachePage {
 					+ shSitesContextURL.getInfo().getContextURLOriginal());
 		shCacheObject.updateCache(shSitesContextURL.getInfo().getObjectId(), shSitesContextURL);
 
-		ShObject shObject = shObjectRepository.findById(shSitesContextURL.getInfo().getObjectId()).orElse(null);
+		ShObjectImpl shObject = shObjectRepository.findById(shSitesContextURL.getInfo().getObjectId()).orElse(null);
 
 		ShSite shSite = shSiteRepository.findById(shSitesContextURL.getInfo().getSiteId()).orElse(null);
 
@@ -95,7 +95,7 @@ public class ShCachePage {
 	}
 
 	private String setPostInfo(ShSitesContextURL shSitesContextURL, ShCachePageBean shCachePageBean, String mimeType,
-			ShObject shObject, ShSite shSite, ShSitesPageLayout shSitesPageLayout) {
+			ShObjectImpl shObject, ShSite shSite, ShSitesPageLayout shSitesPageLayout) {
 		mimeType = shSitesPage.shPostPage(shSitesPageLayout, shSite, shSitesContextURL, mimeType);
 
 		ShPost shPost = (ShPost) shObject;

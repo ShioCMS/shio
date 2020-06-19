@@ -18,8 +18,7 @@ package com.viglet.shio.bean;
 
 import java.util.Date;
 
-import com.viglet.shio.persistence.model.post.ShPost;
-import com.viglet.shio.persistence.model.post.ShPostDraft;
+import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
 
 /**
@@ -45,7 +44,7 @@ public class ShPostTinyBean {
 
 	private boolean published;
 
-	public ShPostTinyBean(ShPost shPost) {
+	public ShPostTinyBean(ShPostImpl shPost) {
 		this.id = shPost.getId();
 		this.title = shPost.getTitle();
 		this.summary = shPost.getSummary();
@@ -61,22 +60,6 @@ public class ShPostTinyBean {
 		this.shPostType.setTitle(shPost.getShPostType().getTitle());
 	}
 	
-	public ShPostTinyBean(ShPostDraft shPost) {
-		this.id = shPost.getId();
-		this.title = shPost.getTitle();
-		this.summary = shPost.getSummary();
-		this.position = shPost.getPosition();
-		this.date = shPost.getDate();
-		this.objectType = shPost.getObjectType();
-		this.publishStatus = shPost.getPublishStatus();
-		this.published = shPost.isPublished();
-
-		this.shPostType = new ShPostType();
-		this.shPostType.setId(shPost.getShPostType().getId());
-		this.shPostType.setName(shPost.getShPostType().getName());
-		this.shPostType.setTitle(shPost.getShPostType().getTitle());
-	}
-
 	public String getId() {
 		return id;
 	}

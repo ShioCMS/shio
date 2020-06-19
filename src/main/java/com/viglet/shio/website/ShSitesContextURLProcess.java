@@ -29,7 +29,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerMapping;
 
 import com.viglet.shio.persistence.model.folder.ShFolder;
-import com.viglet.shio.persistence.model.object.ShObject;
+import com.viglet.shio.persistence.model.object.impl.ShObjectImpl;
 import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.persistence.repository.site.ShSiteRepository;
 import com.viglet.shio.utils.ShFolderUtils;
@@ -146,7 +146,7 @@ public class ShSitesContextURLProcess {
 			logger.info("No folder for " + shSitesContextURL.getInfo().getContextURL());
 		}
 
-		ShObject shObject = shSitesContextComponent.shObjectItemFactory(shSite, shFolder, objectName);
+		ShObjectImpl shObject = shSitesContextComponent.shObjectItemFactory(shSite, shFolder, objectName);
 		if (shObject != null) {
 			shSitesContextURL.getInfo().setObjectId(shObject.getId());
 		}

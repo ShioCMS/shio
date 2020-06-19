@@ -31,7 +31,7 @@ import com.viglet.shio.persistence.model.site.ShSite;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shio.api.ShJsonView;
 import com.viglet.shio.persistence.model.history.ShHistory;
-import com.viglet.shio.persistence.model.object.ShObject;
+import com.viglet.shio.persistence.model.object.impl.ShObjectImpl;
 import com.viglet.shio.persistence.repository.history.ShHistoryPageableRepository;
 import com.viglet.shio.persistence.repository.history.ShHistoryRepository;
 import com.viglet.shio.persistence.repository.object.ShObjectRepository;
@@ -64,7 +64,7 @@ public class ShHistoryAPI {
 	public List<ShHistory> shHistoryByObject(@PathVariable String globalId, @PathVariable int page) {
 		Pageable pageable = PageRequest.of(page, 50);
 		if (shObjectRepository.findById(globalId).isPresent()) {
-			ShObject shObject = shObjectRepository.findById(globalId).orElse(null);
+			ShObjectImpl shObject = shObjectRepository.findById(globalId).orElse(null);
 			if (shObject != null) {
 				if (shObject instanceof ShSite) {
 					ShSite shSite = (ShSite) shObject;
@@ -81,7 +81,7 @@ public class ShHistoryAPI {
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public int shHistoryByObjectCount(@PathVariable String globalId) {
 		if (shObjectRepository.findById(globalId).isPresent()) {
-			ShObject shObject = shObjectRepository.findById(globalId).orElse(null);
+			ShObjectImpl shObject = shObjectRepository.findById(globalId).orElse(null);
 			if (shObject != null) {
 				if (shObject instanceof ShSite) {
 					ShSite shSite = (ShSite) shObject;

@@ -30,6 +30,7 @@ import javax.persistence.NamedQuery;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.viglet.shio.persistence.model.object.ShObject;
+import com.viglet.shio.persistence.model.object.impl.ShObjectImpl;
 
 /**
  * The persistent class for the ShReference database table.
@@ -63,7 +64,7 @@ public class ShReference implements Serializable{
 		this.id = id;
 	}
 
-	public ShObject getShObjectFrom() {
+	public ShObjectImpl getShObjectFrom() {
 		return shObjectFrom;
 	}
 
@@ -71,7 +72,7 @@ public class ShReference implements Serializable{
 		this.shObjectFrom = shObjectFrom;
 	}
 
-	public ShObject getShObjectTo() {
+	public ShObjectImpl getShObjectTo() {
 		return shObjectTo;
 	}
 

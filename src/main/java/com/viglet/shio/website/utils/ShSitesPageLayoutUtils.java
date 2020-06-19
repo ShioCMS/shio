@@ -33,6 +33,7 @@ import com.viglet.shio.bean.ShSitePostTypeLayout;
 import com.viglet.shio.bean.ShSitePostTypeLayouts;
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.object.ShObject;
+import com.viglet.shio.persistence.model.object.impl.ShObjectImpl;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
 import com.viglet.shio.persistence.model.post.impl.ShPostAttrImpl;
@@ -135,7 +136,7 @@ public class ShSitesPageLayoutUtils {
 		return pageLayoutName;
 	}
 
-	public ShPost pageLayoutFromFolderAndFolderIndex(ShObject shObjectItem, ShSite shSite, String format) {
+	public ShPost pageLayoutFromFolderAndFolderIndex(ShObjectImpl shObjectItem, ShSite shSite, String format) {
 		ShPost shFolderPageLayout = null;
 		if (shObjectItem instanceof ShPost) {
 			shFolderPageLayout = folderIndexPageLayout(shObjectItem, format, shFolderPageLayout);
@@ -146,7 +147,7 @@ public class ShSitesPageLayoutUtils {
 		return shFolderPageLayout;
 	}
 
-	private ShPost folderIndexPageLayout(ShObject shObjectItem, String format, ShPost shFolderPageLayout) {
+	private ShPost folderIndexPageLayout(ShObjectImpl shObjectItem, String format, ShPost shFolderPageLayout) {
 
 		ShPostImpl shSelectedPost = shSitesPostUtils.getPostByStage((ShPost) shObjectItem);
 		if (shSelectedPost != null) {

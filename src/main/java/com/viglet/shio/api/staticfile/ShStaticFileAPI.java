@@ -46,7 +46,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shio.api.ShJsonView;
 import com.viglet.shio.bean.error.ShHttpMessageBean;
 import com.viglet.shio.persistence.model.folder.ShFolder;
-import com.viglet.shio.persistence.model.object.ShObject;
+import com.viglet.shio.persistence.model.object.impl.ShObjectImpl;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.site.ShSite;
@@ -122,7 +122,7 @@ public class ShStaticFileAPI {
 
 	@RequestMapping("/{id}/thumbnail")
 	public void resize(HttpServletRequest request, HttpServletResponse response, @PathVariable String id) {
-		ShObject shObject = shObjectRepository.findById(id).orElse(null);
+		ShObjectImpl shObject = shObjectRepository.findById(id).orElse(null);
 		response.setContentType(MediaType.IMAGE_PNG_VALUE);
 		if (shObject instanceof ShSite) {
 			//

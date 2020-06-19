@@ -23,7 +23,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.HandlerMapping;
 
 import com.viglet.shio.persistence.model.folder.ShFolder;
-import com.viglet.shio.persistence.model.object.ShObject;
+import com.viglet.shio.persistence.model.object.impl.ShObjectImpl;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.site.ShSite;
@@ -39,7 +39,7 @@ public class ShURLScheme {
 	@Autowired
 	private ShFolderUtils shFolderUtils;
 
-	public String get(ShObject shObject) {
+	public String get(ShObjectImpl shObject) {
 		String shXSiteName = request.getHeader("x-sh-site");
 		String url = "";
 		if (shXSiteName != null) {
