@@ -70,7 +70,7 @@ public class ShPostServiceImpl implements ShPostService {
 			ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType,
 					attrName.toUpperCase());
 			Set<ShPostAttr> shPostAttrs = Sets.newHashSet(shPostAttrRepository.findAll(
-					where(conditionParams(attrName, attrValue, condition)).and(hasShPostTypeAttr(shPostTypeAttr))));
+					where(conditionParams(attrValue, condition)).and(hasShPostTypeAttr(shPostTypeAttr))));
 
 			List<ShPost> shPosts = shPostRepository.findByShPostAttrsIn(shPostAttrs);
 

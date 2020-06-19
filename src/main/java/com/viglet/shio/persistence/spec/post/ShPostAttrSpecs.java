@@ -64,7 +64,7 @@ public class ShPostAttrSpecs {
 		};
 	}
 
-	public static Specification<ShPostAttr> conditionParams(String attrName, String attrValue, String condition) {
+	public static Specification<ShPostAttr> conditionParams(String attrValue, String condition) {
 		return new Specification<ShPostAttr>() {
 
 			private static final long serialVersionUID = 1L;

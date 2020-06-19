@@ -23,11 +23,11 @@ import com.viglet.shio.persistence.model.provider.auth.ShAuthProviderInstance;
 import com.viglet.shio.persistence.model.system.ShConfigVar;
 import com.viglet.shio.persistence.repository.provider.auth.ShAuthProviderInstanceRepository;
 import com.viglet.shio.persistence.repository.system.ShConfigVarRepository;
+import com.viglet.shio.property.ShConfigProperties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
@@ -39,10 +39,8 @@ import org.springframework.stereotype.Component;
 public class ShAuthProviderService {
 	@SuppressWarnings("unused")
 	private static final Log logger = LogFactory.getLog(ShAuthProviderService.class);
-	
-	@Value("${shio.config.provider.auth}")
-	private String providerPath ;
-	
+	@Autowired
+	private ShConfigProperties shConfigProperties;
 	@Autowired
 	private ShConfigVarRepository shConfigVarRepository;
 	@Autowired
@@ -60,7 +58,7 @@ public class ShAuthProviderService {
 			shAuthProviderInstanceBean.setVendor(shAuthProviderInstance.getVendor());
 			shAuthProviderInstanceBean.setEnabled(shAuthProviderInstance.getEnabled());
 
-			String providerInstancePath = String.format(providerPath, shAuthProviderInstance.getId());
+			String providerInstancePath = String.format(shConfigProperties.getAuth(), shAuthProviderInstance.getId());
 
 			List<ShConfigVar> shConfigVars = shConfigVarRepository.findByPath(providerInstancePath);
 

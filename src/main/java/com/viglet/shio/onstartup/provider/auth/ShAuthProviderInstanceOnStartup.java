@@ -17,7 +17,6 @@
 package com.viglet.shio.onstartup.provider.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shio.provider.auth.ShAuthSystemProviderVendor;
@@ -27,14 +26,15 @@ import com.viglet.shio.persistence.model.system.ShConfigVar;
 import com.viglet.shio.persistence.repository.provider.auth.ShAuthProviderInstanceRepository;
 import com.viglet.shio.persistence.repository.provider.auth.ShAuthProviderVendorRepository;
 import com.viglet.shio.persistence.repository.system.ShConfigVarRepository;
+import com.viglet.shio.property.ShConfigProperties;
 
 /**
  * @author Alexandre Oliveira
  */
 @Component
 public class ShAuthProviderInstanceOnStartup {
-	@Value("${shio.config.provider.auth}")
-	private String providerPath;
+	@Autowired
+	private ShConfigProperties shConfigProperties;
 	@Autowired
 	private ShConfigVarRepository shConfigVarRepository;
 	@Autowired
@@ -91,7 +91,7 @@ public class ShAuthProviderInstanceOnStartup {
 	}
 
 	private void createAttribute(String instanceId, String key, String value) {
-		String providerInstance = String.format(providerPath, instanceId);
+		String providerInstance = String.format(shConfigProperties.getAuth(), instanceId);
 		ShConfigVar shConfigVar = new ShConfigVar();
 		shConfigVar.setPath(providerInstance);
 		shConfigVar.setName(key);

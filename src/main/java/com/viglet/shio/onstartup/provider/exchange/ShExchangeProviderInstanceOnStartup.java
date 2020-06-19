@@ -25,6 +25,7 @@ import com.viglet.shio.persistence.model.system.ShConfigVar;
 import com.viglet.shio.persistence.repository.provider.exchange.ShExchangeProviderInstanceRepository;
 import com.viglet.shio.persistence.repository.provider.exchange.ShExchangeProviderVendorRepository;
 import com.viglet.shio.persistence.repository.system.ShConfigVarRepository;
+import com.viglet.shio.property.ShConfigProperties;
 import com.viglet.shio.provider.exchange.ShExchangeSystemProviderVendor;
 
 /**
@@ -32,8 +33,8 @@ import com.viglet.shio.provider.exchange.ShExchangeSystemProviderVendor;
  */
 @Component
 public class ShExchangeProviderInstanceOnStartup {
-	@Value("${shio.config.provider.exchange}")
-	private String providerPath;
+	@Autowired
+	private ShConfigProperties shConfigProperties;
 	private static final String URL = "URL";
 	private static final String USERNAME = "USERNAME";
 	private static final String PASSWORD = "PASSWORD";
@@ -63,7 +64,7 @@ public class ShExchangeProviderInstanceOnStartup {
 		
 		shExchangeProviderInstanceRepository.save(shExchangeProviderInstance);
 
-		String providerInstance = String.format(providerPath, shExchangeProviderInstance.getId());
+		String providerInstance = String.format(shConfigProperties.getExchange(), shExchangeProviderInstance.getId());
 
 		ShConfigVar shConfigVar = new ShConfigVar();
 		shConfigVar.setPath(providerInstance);
@@ -93,7 +94,7 @@ public class ShExchangeProviderInstanceOnStartup {
 		
 		shExchangeProviderInstanceRepository.save(shExchangeProviderInstance);
 
-		String providerInstance = String.format(providerPath, shExchangeProviderInstance.getId());
+		String providerInstance = String.format(shConfigProperties.getExchange(), shExchangeProviderInstance.getId());
 
 		ShConfigVar shConfigVar = new ShConfigVar();
 		shConfigVar.setPath(providerInstance);
