@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -44,7 +46,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import com.viglet.shio.persistence.model.post.ShPostAttr;
 import com.viglet.shio.persistence.model.post.ShPostDraft;
@@ -58,6 +62,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viglet.shio.api.ShJsonView;
+import com.viglet.shio.exchange.post.ShPostExport;
 import com.viglet.shio.object.ShObjectPublishStatus;
 import com.viglet.shio.persistence.model.auth.ShUser;
 import com.viglet.shio.persistence.model.object.ShObject;
@@ -131,6 +136,8 @@ public class ShPostAPI {
 	private ShObjectUtils shObjectUtils;
 	@Autowired
 	private ShHistoryUtils shHistoryUtils;
+	@Autowired
+	private ShPostExport shPostExport;
 
 	private final SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyyy");
 
@@ -254,6 +261,18 @@ public class ShPostAPI {
 			}
 		}
 		return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
+	}
+
+	@ResponseBody
+	@GetMapping(value = "/{id}/export", produces = "application/zip")
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
+	public ResponseEntity<StreamingResponseBody> shPostExport(@PathVariable String id, Principal principal,
+			HttpServletResponse response) {
+		if (shObjectUtils.canAccess(principal, id)) {
+			return new ResponseEntity<>(shPostExport.exportObject(response, id), HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+		}
 	}
 
 	private void deleteStaticFiles(ShPost shPost) {

@@ -19,23 +19,33 @@ package com.viglet.shio.exchange.post;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
+import com.viglet.shio.exchange.ShExchange;
+import com.viglet.shio.exchange.ShExchangeFilesDirs;
 import com.viglet.shio.exchange.file.ShFileExchange;
 import com.viglet.shio.exchange.relator.ShRelatorExchange;
 import com.viglet.shio.exchange.relator.ShRelatorItemExchange;
 import com.viglet.shio.exchange.relator.ShRelatorItemExchanges;
+import com.viglet.shio.exchange.utils.ShExchangeUtils;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.impl.ShPostAttrImpl;
 import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.post.relator.impl.ShRelatorItemImpl;
+
+import com.viglet.shio.persistence.repository.post.ShPostRepository;
 import com.viglet.shio.post.type.ShSystemPostType;
 import com.viglet.shio.post.type.ShSystemPostTypeAttr;
 import com.viglet.shio.utils.ShStaticFileUtils;
@@ -49,6 +59,29 @@ public class ShPostExport {
 	static final Logger logger = LogManager.getLogger(ShPostExport.class.getName());
 	@Autowired
 	private ShStaticFileUtils shStaticFileUtils;
+	@Autowired
+	private ShPostRepository shPostRepository;
+	@Autowired
+	private ShExchangeUtils shExchangeUtils;
+
+	public StreamingResponseBody exportObject(HttpServletResponse response, String id) {
+		Optional<ShPost> shPost = shPostRepository.findById(id);
+		if (shPost.isPresent()) {
+			ShExchangeFilesDirs shExchangeFilesDirs = new ShExchangeFilesDirs();
+			if (shExchangeFilesDirs.generate()) {
+
+				ShPostExchange postExchange = this.exportShPostDraft(shPost.get());
+
+				ShExchange shExchange = new ShExchange();
+
+				shExchange.setPosts(Arrays.asList(postExchange));
+
+				return shExchangeUtils.downloadZipFile(String.format("%s_post",shPost.get().getFurl()), response, shExchange, shExchangeFilesDirs);
+			}
+		}
+
+		return null;
+	}
 
 	public ShPostExchange exportShPostDraft(ShPost shPost) {
 		ShPostExchange shPostExchange = new ShPostExchange();
