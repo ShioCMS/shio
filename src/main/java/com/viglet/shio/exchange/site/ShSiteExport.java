@@ -17,22 +17,17 @@
 package com.viglet.shio.exchange.site;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,13 +35,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.viglet.shio.exchange.ShExchange;
+import com.viglet.shio.exchange.ShExchangeFilesDirs;
 import com.viglet.shio.exchange.folder.ShFolderExport;
 import com.viglet.shio.exchange.post.type.ShPostTypeExchange;
 import com.viglet.shio.exchange.post.type.ShPostTypeExport;
+import com.viglet.shio.exchange.utils.ShExchangeUtils;
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
 import com.viglet.shio.persistence.model.site.ShSite;
@@ -77,20 +73,15 @@ public class ShSiteExport {
 	private ShPostTypeExport shPostTypeExport;
 	@Autowired
 	private ShPostTypeRepository shPostTypeRepository;
+	@Autowired
+	private ShExchangeUtils shExchangeUtils;
 
 	public StreamingResponseBody exportObject(@PathVariable String id, HttpServletResponse response) {
-		String folderName = UUID.randomUUID().toString();
-		File userDir = new File(System.getProperty("user.dir"));
 		ShExchange shExchange = new ShExchange();
 		Optional<ShSite> shSiteOptional = shSiteRepository.findById(id);
-		if (shSiteOptional.isPresent() && userDir.exists() && userDir.isDirectory()) {
-			File tmpDir = new File(userDir.getAbsolutePath().concat(File.separator + "store" + File.separator + "tmp"));
-			if (!tmpDir.exists())
-				tmpDir.mkdirs();
-			File exportDir = new File(tmpDir.getAbsolutePath().concat(File.separator + folderName));
-			if (!exportDir.exists())
-				exportDir.mkdirs();
 
+		ShExchangeFilesDirs shExchangeFilesDirs = new ShExchangeFilesDirs();
+		if (shSiteOptional.isPresent() && shExchangeFilesDirs.generate()) {
 			ShSite shSite = shSiteOptional.get();
 
 			List<String> rootFoldersUUID = new ArrayList<>();
@@ -119,29 +110,9 @@ public class ShSiteExport {
 			shExchange.setFolders(shExchangeFolder.getFolders());
 			shExchange.setPosts(shExchangeFolder.getPosts());
 			shExchange.setPostTypes(exportPostTypes(shSiteExchange, shExchangeFolder));
-			exportStaticFiles(exportDir, shExchangeFolder);
-			createExportJSONFile(shExchange, exportDir);
-
-			File zipFile = compressExport(response, folderName, tmpDir, exportDir, shSite);
-
-			return new StreamingResponseBody() {
-				@Override
-				public void writeTo(java.io.OutputStream output) {
-
-					try {
-						IOUtils.copy(new FileInputStream(zipFile), output);
-
-						FileUtils.deleteDirectory(exportDir);
-						FileUtils.deleteQuietly(zipFile);
-
-					} catch (IOException ex) {
-						logger.error("exportObjectIOException", ex);
-					} catch (Exception e) {
-						logger.error("exportObjectException", e);
-					}
-				}
-			};
-
+			exportStaticFiles(shExchangeFilesDirs.getExportDir(), shExchangeFolder);
+			return shExchangeUtils.downloadZipFile(String.format("%s_site", shSite.getFurl()), response, shExchange,
+					shExchangeFilesDirs);
 		} else {
 			return null;
 		}
@@ -176,33 +147,8 @@ public class ShSiteExport {
 		return shExchangePostTypes;
 	}
 
-	private File compressExport(HttpServletResponse response, String folderName, File tmpDir, File exportDir,
-			ShSite shSite) {
-		File zipFile = new File(tmpDir.getAbsolutePath().concat(File.separator + folderName + ".zip"));
-
-		shUtils.addFilesToZip(exportDir, zipFile);
-
-		String zipFileName = String.format("%s_%s.zip", shSite.getName(),
-				new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(new Date()));
-
-		response.addHeader("Content-disposition", "attachment;filename=" + zipFileName);
-		response.setContentType("application/octet-stream");
-		response.setStatus(HttpServletResponse.SC_OK);
-		return zipFile;
-	}
-
-	private void createExportJSONFile(ShExchange shExchange, File exportDir) {
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			mapper.writerWithDefaultPrettyPrinter().writeValue(
-					new File(exportDir.getAbsolutePath().concat(File.separator + "export.json")), shExchange);
-		} catch (IOException mapperException) {
-			logger.error("exportObject, MapperObject", mapperException);
-		}
-	}
-
-	private void exportStaticFiles(File exportDir, ShExchange shExchangeFolder) {
-		shExchangeFolder.getFiles().forEach(fileExchange -> {
+	private void exportStaticFiles(File exportDir, ShExchange shExchange) {
+		shExchange.getFiles().forEach(fileExchange -> {
 			try {
 				File fileSource = fileExchange.getFile();
 				File fileDestination = new File(

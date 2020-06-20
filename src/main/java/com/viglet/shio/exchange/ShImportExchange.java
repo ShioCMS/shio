@@ -22,9 +22,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,12 +31,10 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viglet.shio.exchange.post.ShPostImport;
 import com.viglet.shio.exchange.post.type.ShPostTypeImport;
 import com.viglet.shio.exchange.site.ShSiteImport;
-import com.viglet.shio.utils.ShUtils;
-import com.viglet.shio.utils.ShUtilsException;
+import com.viglet.shio.exchange.utils.ShExchangeUtils;
 
 /**
  * @author Alexandre Oliveira
@@ -47,62 +43,31 @@ import com.viglet.shio.utils.ShUtilsException;
 public class ShImportExchange {
 	private static final Logger logger = LogManager.getLogger(ShImportExchange.class);
 	@Autowired
-	private ShUtils shUtils;
-	@Autowired
 	private ShSiteImport shSiteImport;
 	@Autowired
 	private ShPostTypeImport shPostTypeImport;
 	@Autowired
 	private ShPostImport shPostImport;
-
-	private static final String EXPORT_FILE = "export.json";
-
+	@Autowired
+	private ShExchangeUtils shExchangeUtils;
 	private Map<String, Object> shObjects = new HashMap<>();
 	private Map<String, List<String>> shChildObjects = new HashMap<>();
 
 	public ShExchange importFromMultipartFile(MultipartFile multipartFile, String username) {
 		logger.info("Unzip Package");
-		File extractFolder = null;
-		try {
-			extractFolder = this.extractZipFile(multipartFile);
-		} catch (IllegalStateException e1) {
-			logger.error(e1);
-		}
-		File parentExtractFolder = null;
+		ShExchangeFilesDirs shExchangeFilesDirs = this.extractZipFile(multipartFile);
 
-		if (extractFolder != null) {
-			// Check if export.json exists, if it is not exist try access a sub directory
-			if (!(new File(extractFolder, EXPORT_FILE).exists()) && (extractFolder.listFiles().length == 1)) {
-				for (File fileOrDirectory : extractFolder.listFiles()) {
-					if (fileOrDirectory.isDirectory() && new File(fileOrDirectory, EXPORT_FILE).exists()) {
-						parentExtractFolder = extractFolder;
-						extractFolder = fileOrDirectory;
-					}
-				}
-			}
-			ShExchange shExchange = readExportFile(extractFolder);
+		if (shExchangeFilesDirs.getExportDir() != null) {
 
-			this.importObjects(username, extractFolder, shExchange);
+			ShExchange shExchange = shExchangeFilesDirs.readExportFile();
 
-			this.deleteTempoaryFile(extractFolder, parentExtractFolder);
+			this.importObjects(username, shExchangeFilesDirs.getExportDir(), shExchange);
+
+			shExchangeFilesDirs.deleteExport();
 			return shExchange;
 		} else {
 			return null;
 		}
-	}
-
-	private ShExchange readExportFile(File extractFolder) {
-		ObjectMapper mapper = new ObjectMapper();
-
-		ShExchange shExchange = null;
-		try {
-			shExchange = mapper.readValue(
-					new FileInputStream(extractFolder.getAbsolutePath().concat(File.separator + EXPORT_FILE)),
-					ShExchange.class);
-		} catch (IOException e1) {
-			logger.error(e1);
-		}
-		return shExchange;
 	}
 
 	private void importObjects(String username, File extractFolder, ShExchange shExchange) {
@@ -120,16 +85,6 @@ public class ShImportExchange {
 		}
 	}
 
-	private void deleteTempoaryFile(File extractFolder, File parentExtractFolder) {
-		try {
-			FileUtils.deleteDirectory(extractFolder);
-			if (parentExtractFolder != null)
-				FileUtils.deleteDirectory(parentExtractFolder);
-		} catch (IOException e) {
-			logger.error(e);
-		}
-	}
-
 	public ShExchange importFromFile(File file, String username) {
 
 		MultipartFile multipartFile = null;
@@ -143,31 +98,9 @@ public class ShImportExchange {
 		return this.importFromMultipartFile(multipartFile, username);
 	}
 
-	public File extractZipFile(MultipartFile file) {
+	public ShExchangeFilesDirs extractZipFile(MultipartFile file) {
 		shObjects.clear();
 		shChildObjects.clear();
-
-		File userDir = new File(System.getProperty("user.dir"));
-		if (userDir.exists() && userDir.isDirectory()) {
-			File tmpDir = new File(userDir.getAbsolutePath().concat(File.separator + "store" + File.separator + "tmp"));
-			if (!tmpDir.exists())
-				tmpDir.mkdirs();
-
-			File zipFile = new File(tmpDir.getAbsolutePath()
-					.concat(File.separator + "imp_" + file.getOriginalFilename() + UUID.randomUUID()));
-			File extractFolder = null;
-			try {
-				file.transferTo(zipFile);
-				extractFolder = new File(tmpDir.getAbsolutePath().concat(File.separator + "imp_" + UUID.randomUUID()));
-				shUtils.unZipIt(zipFile, extractFolder);
-			} catch (IllegalStateException | IOException | ShUtilsException e) {
-				logger.error(e);
-			}
-
-			FileUtils.deleteQuietly(zipFile);
-			return extractFolder;
-		} else {
-			return null;
-		}
+		return shExchangeUtils.extractZipFile(file);
 	}
 }

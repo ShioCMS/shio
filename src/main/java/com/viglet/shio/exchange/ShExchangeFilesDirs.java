@@ -17,12 +17,15 @@
 package com.viglet.shio.exchange;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Exchange Files and Directories.
@@ -34,12 +37,15 @@ import org.apache.commons.logging.LogFactory;
 public class ShExchangeFilesDirs {
 
 	private static final Log logger = LogFactory.getLog(ShExchangeFilesDirs.class);
-	
+
+	private static final String EXPORT_FILE = "export.json";
+
 	private File exportDir;
 	private File tmpDir;
 	private File exportJsonFile;
 	private File zipFile;
-	
+	private File parentExportDir;
+
 	public boolean generate() {
 		String folderName = UUID.randomUUID().toString();
 		File userDir = new File(System.getProperty("user.dir"));
@@ -53,20 +59,28 @@ public class ShExchangeFilesDirs {
 		}
 
 		this.zipFile = new File(tmpDir.getAbsolutePath().concat(File.separator + folderName + ".zip"));
-		this.exportJsonFile = new File(this.exportDir.getAbsolutePath().concat(File.separator + "export.json"));
+		this.updateExportJsonFilePath();
 		return this.exportDir.exists();
 	}
 
 	public void deleteExport() {
 
 		try {
-			FileUtils.deleteDirectory(this.exportDir);
+			if (this.parentExportDir != null)
+				FileUtils.deleteDirectory(this.parentExportDir);
+			else
+				FileUtils.deleteDirectory(this.exportDir);
 			FileUtils.deleteQuietly(this.zipFile);
 		} catch (IOException e) {
 			logger.error(e);
 		}
 	}
-	
+
+	public File updateExportJsonFilePath() {
+		this.exportJsonFile = new File(this.exportDir.getAbsolutePath().concat(File.separator + EXPORT_FILE));
+		return this.exportJsonFile;
+	}
+
 	public File getExportDir() {
 		return exportDir;
 	}
@@ -99,4 +113,36 @@ public class ShExchangeFilesDirs {
 		this.exportJsonFile = exportJsonFile;
 	}
 
+	public File getParentExportDir() {
+		return parentExportDir;
+	}
+
+	public void setParentExportDir(File parentExportDir) {
+		this.parentExportDir = parentExportDir;
+	}
+
+	public ShExchange readExportFile() {
+		ShExchange shExchange = null;
+		if (this.getExportDir() != null) {
+			// Check if export.json exists, if it is not exist try access a sub directory
+			if (!(new File(this.getExportDir(), EXPORT_FILE).exists())
+					&& (this.getExportDir().listFiles().length == 1)) {
+				for (File fileOrDirectory : this.getExportDir().listFiles()) {
+					if (fileOrDirectory.isDirectory() && new File(fileOrDirectory, EXPORT_FILE).exists()) {
+						this.parentExportDir = this.getExportDir();
+						this.setExportDir(fileOrDirectory);
+						this.updateExportJsonFilePath();
+					}
+				}
+			}
+			ObjectMapper mapper = new ObjectMapper();
+
+			try {
+				shExchange = mapper.readValue(new FileInputStream(exportJsonFile), ShExchange.class);
+			} catch (IOException e) {
+				logger.error(e);
+			}
+		}
+		return shExchange;
+	}
 }

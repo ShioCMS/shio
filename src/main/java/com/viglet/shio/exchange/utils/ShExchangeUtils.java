@@ -25,16 +25,19 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viglet.shio.exchange.ShExchange;
 import com.viglet.shio.exchange.ShExchangeFilesDirs;
 import com.viglet.shio.utils.ShUtils;
+import com.viglet.shio.utils.ShUtilsException;
 
 /**
  * Exchange Utils.
@@ -93,6 +96,24 @@ public class ShExchangeUtils {
 		this.responseWithZipFile(suffixName, response, shExchange, shExchangeFilesDirs);
 
 		return this.responseBodyFromZipFle(shExchangeFilesDirs);
+	}
+	
+	public ShExchangeFilesDirs extractZipFile(MultipartFile file) {	
+		ShExchangeFilesDirs shExchangeFilesDirs = new ShExchangeFilesDirs();
+		if (shExchangeFilesDirs.generate()) {
+
+			try {
+				file.transferTo(shExchangeFilesDirs.getZipFile());
+				shUtils.unZipIt(shExchangeFilesDirs.getZipFile(), shExchangeFilesDirs.getExportDir());
+			} catch (IllegalStateException | IOException | ShUtilsException e) {
+				logger.error(e);
+			}
+
+			FileUtils.deleteQuietly(shExchangeFilesDirs.getZipFile());
+			return shExchangeFilesDirs;
+		} else {
+			return null;
+		}
 	}
 
 }
