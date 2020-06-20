@@ -32,6 +32,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.viglet.shio.property.ShWebsiteProperties;
 import com.viglet.shio.website.component.ShGetRelationComponent;
 import com.viglet.shio.website.component.ShNavigationComponent;
 import com.viglet.shio.website.component.ShQueryComponent;
@@ -47,8 +48,7 @@ import com.viglet.shio.website.utils.ShSitesPostUtils;
 @Configuration
 public class ShNashornEngineConfiguration {
 	private static final Log logger = LogFactory.getLog(ShNashornEngineConfiguration.class);
-	private static final Object[] NASHORN_CONFIGURATION = new Object[] {new String[] { "--persistent-code-cache",
-			"--optimistic-types=true", "-pcc", "--class-cache-size=50000" }};
+
 	@Resource
 	private ApplicationContext context;
 	@Autowired
@@ -67,18 +67,22 @@ public class ShNashornEngineConfiguration {
 	private ShSitesPostUtils shSitesPostUtils;
 	@Autowired
 	private ShGetRelationComponent shGetRelationComponent;
+	@Autowired
+	private ShWebsiteProperties shWebsiteProperties;
 
 	@Bean
 	public ScriptEngine scriptEngine() {
-
+		
 		Class<?> nashornScriptEngineFactory;
 		try {
 
 			nashornScriptEngineFactory = Class.forName("jdk.nashorn.api.scripting.NashornScriptEngineFactory");
 
 			Method getScriptEngine = nashornScriptEngineFactory.getDeclaredMethod("getScriptEngine", String[].class);
-			ScriptEngineFactory scriptEngineFactory = (ScriptEngineFactory) nashornScriptEngineFactory.getDeclaredConstructor().newInstance();
-			ScriptEngine engine = (ScriptEngine) getScriptEngine.invoke(scriptEngineFactory, NASHORN_CONFIGURATION);
+			ScriptEngineFactory scriptEngineFactory = (ScriptEngineFactory) nashornScriptEngineFactory
+					.getDeclaredConstructor().newInstance();
+			ScriptEngine engine = (ScriptEngine) getScriptEngine.invoke(scriptEngineFactory,
+					shWebsiteProperties.getNashornAsObject());
 			Bindings bindings = engine.createBindings();
 
 			bindings.put("shNavigationComponent", shNavigationComponent);
