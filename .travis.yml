@@ -3,6 +3,8 @@ os: linux
 dist: trusty
 jdk:
   - oraclejdk11
+git:
+  depth: false
 addons:
   sonarcloud:
     organization: "shiocms"
