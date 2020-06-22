@@ -27,11 +27,13 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import com.viglet.shio.bean.IShPostTypeCount;
 import com.viglet.shio.bean.ShPostTinyBean;
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
 import com.viglet.shio.persistence.model.post.type.ShPostType;
+import com.viglet.shio.persistence.model.site.ShSite;
 
 /**
  * @author Alexandre Oliveira
@@ -56,6 +58,9 @@ public interface ShPostRepository extends JpaRepository<ShPost, String>, ShPostR
 	List<ShPost> findByShFolderAndShPostType(ShFolder shFolder, ShPostType shPostType);
 	
 	List<ShPost> findByShPostType(ShPostType shPostType);
+		
+	@Query("SELECT p.shPostType AS shPostType, COUNT(p.shPostType) AS totalPostType FROM ShPost AS p WHERE p.shSite = ?1 GROUP BY p.shPostType")
+	List<IShPostTypeCount> counShPostTypeByShSite(ShSite ShShiste);
 	
 	List<ShPost> findByShSite_IdIn(Collection<String> shSiteId); //NOSONAR
 	

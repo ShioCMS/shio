@@ -94,6 +94,15 @@
 		<statistics-enabled>false</statistics-enabled>
 		<management-enabled>false</management-enabled>
 	</cache>
+	<map name="report">
+		<time-to-live-seconds>300</time-to-live-seconds>
+
+	</map>
+	<cache name="report">
+		<eviction size="200" />
+		<statistics-enabled>false</statistics-enabled>
+		<management-enabled>false</management-enabled>
+	</cache>
 	<network>
 		<join>
 			<tcp-ip enabled="false" />

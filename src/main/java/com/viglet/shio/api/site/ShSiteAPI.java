@@ -16,16 +16,24 @@
  */
 package com.viglet.shio.api.site;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -34,6 +42,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,7 +58,9 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shio.api.ShJsonView;
 import com.viglet.shio.api.folder.ShFolderList;
+import com.viglet.shio.bean.IShPostTypeCount;
 import com.viglet.shio.bean.ShFolderTinyBean;
+import com.viglet.shio.bean.ShPostTypeReport;
 import com.viglet.shio.exchange.ShCloneExchange;
 import com.viglet.shio.exchange.ShExchange;
 import com.viglet.shio.exchange.site.ShSiteExchange;
@@ -57,6 +68,7 @@ import com.viglet.shio.exchange.site.ShSiteExport;
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.persistence.repository.folder.ShFolderRepository;
+import com.viglet.shio.persistence.repository.post.ShPostRepository;
 import com.viglet.shio.persistence.repository.site.ShSiteRepository;
 import com.viglet.shio.url.ShURLFormatter;
 import com.viglet.shio.utils.ShFolderUtils;
@@ -90,6 +102,8 @@ public class ShSiteAPI {
 	private ShCloneExchange shCloneExchange;
 	@Autowired
 	private ShHistoryUtils shHistoryUtils;
+	@Autowired
+	private ShPostRepository shPostRepository;
 
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
@@ -223,6 +237,51 @@ public class ShSiteAPI {
 
 	}
 
+	@GetMapping("/{id}/type/count")
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
+	@Cacheable(value = "report", key = "#id", sync = true)
+	public List<ShPostTypeReport> shSitePostTypeCount(@PathVariable String id) {
+		ShSite shSite = shSiteRepository.findById(id).orElse(null);
+		List<IShPostTypeCount> shPostTypeCounts = shPostRepository.counShPostTypeByShSite(shSite);
+		int countFolder = shFolderRepository.countByShSite(shSite);
+
+		Map<String, Float> countTypes = new HashMap<>();
+
+		countTypes.put("Folder", (float) countFolder);
+
+		long total = countFolder;
+
+		for (IShPostTypeCount postTypeCount : shPostTypeCounts) {
+			countTypes.put(postTypeCount.getShPostType().getTitle(), postTypeCount.getTotalPostType());
+			total += postTypeCount.getTotalPostType();
+		}
+
+		// for (Entry<String, Float> types : countTypes.entrySet()) {
+		// types.setValue((types.getValue() / total) * 100.0f);
+		// }
+
+		Map<String, Float> sortedMap = countTypes.entrySet().stream()
+				.sorted(Entry.comparingByValue(Comparator.reverseOrder()))
+				.collect(Collectors.toMap(Entry::getKey, Entry::getValue, (e2, e1) -> e1, LinkedHashMap::new));
+
+		List<ShPostTypeReport> shPosTypeReports = new ArrayList<>();
+
+		for (Entry<String, Float> types : sortedMap.entrySet()) {
+			Color color = new Color((int) (Math.random() * 0x1000000));
+
+			ShPostTypeReport shPostTypeReport = new ShPostTypeReport();
+			shPostTypeReport.setName(types.getKey());
+			shPostTypeReport.setTotal(types.getValue().intValue());
+			shPostTypeReport
+					.setColor(String.format("rgb(%d,%d,%d)", color.getRed(), color.getGreen(), color.getBlue()));
+			shPostTypeReport.setPercentage(Math.round(((types.getValue() / total) * 100.0f) * 10.0f) / 10.0f);
+			shPosTypeReports.add(shPostTypeReport);
+
+		}
+		return shPosTypeReports;
+
+	}
+
 	@ResponseBody
 	@GetMapping(value = "/{id}/export", produces = "application/zip")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
@@ -245,6 +304,5 @@ public class ShSiteAPI {
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShSite shSiteStructure() {
 		return new ShSite();
-
 	}
 }
