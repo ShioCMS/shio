@@ -16,6 +16,8 @@
  */
 package com.viglet.shio.spring.security;
 
+import java.util.Arrays;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,12 +35,15 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.viglet.shio.persistence.model.provider.auth.ShAuthProviderInstance;
 import com.viglet.shio.persistence.repository.provider.auth.ShAuthProviderInstanceRepository;
@@ -50,10 +55,10 @@ import com.viglet.shio.provider.auth.ShAuthenticationProvider;
  */
 @Configuration
 @EnableWebSecurity
-@Profile("production")
+@Profile("ui-dev")
 @ComponentScan(basePackageClasses = ShCustomUserDetailsService.class)
-public class ShSecurityConfigProduction extends WebSecurityConfigurerAdapter {
-	private static final Logger logger = LogManager.getLogger(ShSecurityConfigProduction.class);
+public class ShSecurityConfigUIDev extends WebSecurityConfigurerAdapter {
+	private static final Logger logger = LogManager.getLogger(ShSecurityConfigUIDev.class);
 	@Autowired
 	private UserDetailsService userDetailsService;
 	@Autowired
@@ -94,9 +99,8 @@ public class ShSecurityConfigProduction extends WebSecurityConfigurerAdapter {
 						"/template/**", "/img/**", "/sites/**", "/__tur/**", "/swagger-resources/**", "/h2/**",
 						"/image/**", "/login-page/**", "/logout-page/**", "/graphql","/manifest.json",
 						"/*.png", "/*.ico")
-				.permitAll().anyRequest().authenticated().and()
-				.addFilterAfter(new ShCsrfHeaderFilter(), CsrfFilter.class).csrf()
-				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and().logout();
+				.permitAll().anyRequest().authenticated().and().csrf().disable().logout();
+
 	}
 
 	@Override
@@ -134,4 +138,32 @@ public class ShSecurityConfigProduction extends WebSecurityConfigurerAdapter {
 		firewall.setAllowUrlEncodedSlash(true);
 		return firewall;
 	}
+	
+	@Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
+        configuration.setAllowedMethods(Arrays.asList("*"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+
+        source.registerCorsConfiguration("/api/**", configuration);
+        return source;
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                    .allowedOrigins("*")
+                    .allowedMethods("*")
+                    .allowedHeaders("*")
+                    .allowCredentials(false)
+                    .maxAge(3600);
+            }
+        };
+    }
 }

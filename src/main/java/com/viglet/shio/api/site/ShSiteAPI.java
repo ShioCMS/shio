@@ -127,8 +127,10 @@ public class ShSiteAPI {
 		Optional<ShSite> shSiteOptional = shSiteRepository.findById(id);
 		if (shSiteOptional.isPresent()) {
 			ShSite shSiteEdit = shSiteOptional.get();
-			shSiteEdit.setDate(new Date());
+			shSiteEdit.setDate(new Date());		
 			shSiteEdit.setName(shSite.getName());
+			shSiteEdit.setDescription(shSite.getDescription());
+			shSiteEdit.setUrl(shSite.getUrl());
 			shSiteEdit.setPostTypeLayout(shSite.getPostTypeLayout());
 			shSiteEdit.setSearchablePostTypes(shSite.getSearchablePostTypes());
 			shSiteEdit.setFormSuccess(shSite.getFormSuccess());
@@ -255,10 +257,6 @@ public class ShSiteAPI {
 			countTypes.put(postTypeCount.getShPostType().getTitle(), postTypeCount.getTotalPostType());
 			total += postTypeCount.getTotalPostType();
 		}
-
-		// for (Entry<String, Float> types : countTypes.entrySet()) {
-		// types.setValue((types.getValue() / total) * 100.0f);
-		// }
 
 		Map<String, Float> sortedMap = countTypes.entrySet().stream()
 				.sorted(Entry.comparingByValue(Comparator.reverseOrder()))
