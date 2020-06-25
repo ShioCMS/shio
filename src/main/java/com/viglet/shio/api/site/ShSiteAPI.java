@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.Principal;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -31,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -127,7 +129,7 @@ public class ShSiteAPI {
 		Optional<ShSite> shSiteOptional = shSiteRepository.findById(id);
 		if (shSiteOptional.isPresent()) {
 			ShSite shSiteEdit = shSiteOptional.get();
-			shSiteEdit.setDate(new Date());		
+			shSiteEdit.setDate(new Date());
 			shSiteEdit.setName(shSite.getName());
 			shSiteEdit.setDescription(shSite.getDescription());
 			shSiteEdit.setUrl(shSite.getUrl());
@@ -264,20 +266,24 @@ public class ShSiteAPI {
 
 		List<ShPostTypeReport> shPosTypeReports = new ArrayList<>();
 
-		for (Entry<String, Float> types : sortedMap.entrySet()) {
-			Color color = new Color((int) (Math.random() * 0x1000000));
+		SecureRandom random = new SecureRandom();
 
+		for (Entry<String, Float> types : sortedMap.entrySet()) {
 			ShPostTypeReport shPostTypeReport = new ShPostTypeReport();
 			shPostTypeReport.setName(types.getKey());
 			shPostTypeReport.setTotal(types.getValue().intValue());
 			shPostTypeReport
-					.setColor(String.format("rgb(%d,%d,%d)", color.getRed(), color.getGreen(), color.getBlue()));
+					.setColor(String.format("rgb(%d,%d,%d)", randomColor(random), randomColor(random), randomColor(random)));
 			shPostTypeReport.setPercentage(Math.round(((types.getValue() / total) * 100.0f) * 10.0f) / 10.0f);
 			shPosTypeReports.add(shPostTypeReport);
 
 		}
 		return shPosTypeReports;
 
+	}
+
+	private int randomColor(SecureRandom random) {
+		return random.nextInt(256) - 1;
 	}
 
 	@ResponseBody

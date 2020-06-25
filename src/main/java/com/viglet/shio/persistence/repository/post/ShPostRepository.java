@@ -60,7 +60,7 @@ public interface ShPostRepository extends JpaRepository<ShPost, String>, ShPostR
 	List<ShPost> findByShPostType(ShPostType shPostType);
 		
 	@Query("SELECT p.shPostType AS shPostType, COUNT(p.shPostType) AS totalPostType FROM ShPost AS p WHERE p.shSite = ?1 GROUP BY p.shPostType")
-	List<IShPostTypeCount> counShPostTypeByShSite(ShSite ShShiste);
+	List<IShPostTypeCount> counShPostTypeByShSite(ShSite shSite);
 	
 	List<ShPost> findByShSite_IdIn(Collection<String> shSiteId); //NOSONAR
 	
