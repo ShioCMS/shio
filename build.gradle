@@ -218,7 +218,7 @@ dependencies {
     compile group: 'org.apache.poi', name: 'poi-ooxml', version: '4.1.0'
     
     // JSoup
-	compile group: 'org.jsoup', name: 'jsoup', version: '1.11.3'
+	compile group: 'org.jsoup', name: 'jsoup', version: '1.13.1'
 	
 	// Hibernate
 	compile group: 'org.hibernate', name: 'hibernate-search-engine', version: "${hibernateVersion}"
