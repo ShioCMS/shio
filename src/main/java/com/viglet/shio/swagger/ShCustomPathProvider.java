@@ -16,21 +16,22 @@
  */
 package com.viglet.shio.swagger;
 
-import springfox.documentation.spring.web.paths.AbstractPathProvider;
+import springfox.documentation.spring.web.paths.DefaultPathProvider;
 
 /**
  * @author Alexandre Oliveira
  */
-public class ShCustomPathProvider extends AbstractPathProvider {
-
-	@Override
-	protected String applicationPath() {
-		return "/";
-	}
+public class ShCustomPathProvider extends DefaultPathProvider {
 
 	@Override
 	protected String getDocumentationPath() {
 		return "/api/v2";
 	}
+
+	@Override
+	public String getOperationPath(String operationPath) {
+		return "/";
+	}
+
 
 }

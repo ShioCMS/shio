@@ -51,7 +51,7 @@ public class ShReportPostType {
 	private ShFolderRepository shFolderRepository;
 	@Autowired
 	private ShPostRepository shPostRepository;
-	
+
 	public List<ShPostTypeReport> postTypeCountBySite(String id) {
 		ShSite shSite = shSiteRepository.findById(id).orElse(null);
 		List<IShPostTypeCount> shPostTypeCounts = shPostRepository.counShPostTypeByShSite(shSite);
@@ -74,14 +74,11 @@ public class ShReportPostType {
 
 		List<ShPostTypeReport> shPosTypeReports = new ArrayList<>();
 
-		SecureRandom random = new SecureRandom();
-
 		for (Entry<String, Float> types : sortedMap.entrySet()) {
 			ShPostTypeReport shPostTypeReport = new ShPostTypeReport();
 			shPostTypeReport.setName(types.getKey());
 			shPostTypeReport.setTotal(types.getValue().intValue());
-			shPostTypeReport
-					.setColor(String.format("rgb(%d,%d,%d)", randomColor(random), randomColor(random), randomColor(random)));
+			shPostTypeReport.setColor(intToARGB(types.getKey().hashCode()));
 			shPostTypeReport.setPercentage(Math.round(((types.getValue() / total) * 100.0f) * 10.0f) / 10.0f);
 			shPosTypeReports.add(shPostTypeReport);
 
@@ -89,8 +86,18 @@ public class ShReportPostType {
 		return shPosTypeReports;
 	}
 
+	public String rgbRandomColor() {
+		SecureRandom random = new SecureRandom();
+		return String.format("rgb(%d,%d,%d)", randomColor(random), randomColor(random), randomColor(random));
+	}
+
 	private int randomColor(SecureRandom random) {
 		return random.nextInt(256) - 1;
+	}
+
+	public static String intToARGB(int i) {
+		return "#".concat(Integer.toHexString(((i >> 24) & 0xFF)) + Integer.toHexString(((i >> 16) & 0xFF))
+				+ Integer.toHexString(((i >> 8) & 0xFF)) + Integer.toHexString((i & 0xFF))).substring(0,7);
 	}
 
 }
