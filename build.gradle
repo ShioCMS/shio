@@ -207,7 +207,7 @@ dependencies {
     compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.4.1'
 
     // Apache Commons
-    compile group: 'org.apache.commons', name: 'commons-compress', version: '1.18'   
+    compile group: 'org.apache.commons', name: 'commons-compress', version: '1.20'   
     compile group: 'commons-io', name: 'commons-io', version:'2.7'
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
 	compile group: 'org.apache.commons', name: 'commons-text', version: '1.8'
