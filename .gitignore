@@ -24,6 +24,8 @@ hs_err_pid*
 src/main/resources/js/client-side/build
 /nashorn_code_cache
 .sts4-cache
+.metals
+.bloop
 /store.*
 /node_modules
 

@@ -265,21 +265,21 @@ dependencies {
 	implementation 'com.google.guava:guava:26.0-jre'
 	
 	// WebJars
-	compile 'org.webjars.bower:jquery:1.12.4'
+	compile 'org.webjars:jquery:1.12.4'
 	compile 'org.webjars.bower:jquery.ui:1.12.1'
 	compile 'org.webjars:bootstrap:3.3.7-1' // Content
 	compile 'org.webjars.bower:bootstrap:4.1.1' // Preview
 	compile 'org.webjars.bower:moment:2.20.1'
-	compile 'org.webjars.bower:angular:1.6.9'
+	compile 'org.webjars.npm:angular:1.8.0'
 	compile 'org.webjars.bower:ace-builds:1.3.1'
 	compile 'org.webjars.bower:tinymce:4.5.8'
 	compile 'org.webjars.bower:angular-ui-router:1.0.20'
-	compile 'org.webjars.bower:angular-translate:2.17.0'
-	compile 'org.webjars.bower:angular-resource:1.6.9'
-	compile 'org.webjars.bower:angular-animate:1.6.9'
-	compile 'org.webjars.bower:angular-sanitize:1.8.0'
+	compile 'org.webjars.bower:angular-translate:2.17.0'		
+	compile 'org.webjars.npm:angular-resource:1.8.0'
+	compile 'org.webjars.npm:angular-animate:1.8.0'
+	compile 'org.webjars.npm:angular-sanitize:1.8.0'
 	compile 'org.webjars.bower:angular-bootstrap:2.5.0'
-	compile 'org.webjars.bower:angular-cookies:1.7.7'
+	compile 'org.webjars.npm:angular-cookies:1.7.7'
 	compile 'org.webjars.bower:angular-moment:1.2.0'
 	compile 'org.webjars.bower:angular-ui-ace:0.2.3'
 	compile 'org.webjars.bower:font-awesome:4.7.0'
