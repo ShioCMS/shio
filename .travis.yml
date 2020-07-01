@@ -2,7 +2,7 @@ language: java
 os: linux
 dist: xenial
 jdk:
-  - oraclejdk11
+  - openjdk11
 git:
   depth: false
 addons:
