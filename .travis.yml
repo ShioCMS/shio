@@ -1,6 +1,6 @@
 language: java
 os: linux
-dist: trusty
+dist: xenial
 jdk:
   - oraclejdk11
 git:
