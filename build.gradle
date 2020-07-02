@@ -255,7 +255,7 @@ dependencies {
 	// GraphQL
 	implementation 'com.graphql-java:graphql-java:2020-06-30T22-36-45-ce7fd42'
 	implementation 'com.graphql-java:graphql-java-spring-webmvc:2019-06-24T11-47-27-31ab4f9'	
-	implementation 'com.graphql-java:graphql-java-extended-scalars:1.0'
+	implementation 'com.graphql-java:graphql-java-extended-scalars:1.0.1'
 	implementation 'io.projectreactor:reactor-core:3.3.7.RELEASE'
 
 	// Color Thief
