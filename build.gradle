@@ -279,7 +279,7 @@ dependencies {
 	compile 'org.webjars.npm:angular-animate:1.8.0'
 	compile 'org.webjars.npm:angular-sanitize:1.8.0'
 	compile 'org.webjars.bower:angular-bootstrap:2.5.0'
-	compile 'org.webjars.npm:angular-cookies:1.7.7'
+	compile 'org.webjars.npm:angular-cookies:1.7.9'
 	compile 'org.webjars.bower:angular-moment:1.2.0'
 	compile 'org.webjars.bower:angular-ui-ace:0.2.3'
 	compile 'org.webjars.bower:font-awesome:4.7.0'
