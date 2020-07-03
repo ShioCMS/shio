@@ -3,7 +3,7 @@ tinymce.PluginManager.add('shTinyMCE', function (editor, url) {
     editor.ui.registry.addButton('shMailTo', {
         tooltip: 'Insert e-mail link',
         //cmd: 'mceMailTo',
-        icon: 'insert-time',
+        icon: 'link',
         onAction: function () {
             // Open window
             editor.windowManager.open({
@@ -40,7 +40,7 @@ tinymce.PluginManager.add('shTinyMCE', function (editor, url) {
     // Add a button that opens a window
     editor.ui.registry.addButton('shAddImage', {
         tooltip: 'Insert Shio image',
-        icon: 'insert-time',
+        icon: 'image',
         onAction: function () {
 
             var scope = angular.element(document.getElementById('idForJS')).scope();
@@ -54,7 +54,7 @@ tinymce.PluginManager.add('shTinyMCE', function (editor, url) {
     });
     editor.ui.registry.addButton('shAddContent', {
         tooltip: 'Insert Shio content',
-        icon: 'insert-time',
+        icon: 'embed-page',
         onAction: function () {
             var linkText = editor.selection.getContent({ format: 'text' });
             var scope = angular.element(document.getElementById('idForJS')).scope();
@@ -64,26 +64,8 @@ tinymce.PluginManager.add('shTinyMCE', function (editor, url) {
                     if (linkText !== null && linkText.trim().length > 0) {
                         newText = '<a href="' + rest.url + '"/>' + linkText + '</a>';
                     }
-                    editor.execCommand('mceInsertContent', false, newText);
+                    tinymce.activeEditor.execCommand('mceInsertContent', false, newText);
                 }
-            });
-        }
-    });
-    // Adds a menu item to the tools menu
-    editor.ui.registry.addMenuItem('shAddImage', {
-        text: 'Example plugin',
-        context: 'tools',
-        onAction: function () {
-            // Open window with a specific url
-            editor.windowManager.open({
-                title: 'TinyMCE site',
-                url: 'http://www.tinymce.com',
-                width: 400,
-                height: 300,
-                buttons: [{
-                    text: 'Close',
-                    onclick: 'close'
-                }]
             });
         }
     });
