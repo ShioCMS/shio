@@ -272,7 +272,7 @@ dependencies {
 	compile 'org.webjars.bower:moment:2.20.1'
 	compile 'org.webjars.npm:angular:1.8.0'
 	compile 'org.webjars.bower:ace-builds:1.4.2'
-	compile 'org.webjars.bower:tinymce:4.5.8'
+	compile 'org.webjars.bower:tinymce:5.2.2'
 	compile 'org.webjars.bower:angular-ui-router:1.0.20'
 	compile 'org.webjars.bower:angular-translate:2.17.0'		
 	compile 'org.webjars.npm:angular-resource:1.8.0'
