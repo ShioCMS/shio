@@ -215,7 +215,7 @@ dependencies {
     
     // Apache POI
     compile group: 'org.apache.poi', name: 'poi', version: '4.1.2'
-    compile group: 'org.apache.poi', name: 'poi-ooxml', version: '4.1.0'
+    compile group: 'org.apache.poi', name: 'poi-ooxml', version: '4.1.2'
     
     // JSoup
 	compile group: 'org.jsoup', name: 'jsoup', version: '1.13.1'
