@@ -17,7 +17,7 @@ guidelines](CONTRIBUTING.md).**
 ## Download
 
 ```shell
-$ git clone --recurse-submodules https://github.com/ShioCMS/shio.git
+$ git clone https://github.com/ShioCMS/shio.git
 $ cd shio
 ```
 
