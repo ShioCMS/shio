@@ -192,7 +192,7 @@ dependencies {
 	implementation 'com.github.openturing:turing-java-sdk:0.3.3-SNAPSHOT'
 
   	// Spring
-  	compile group: 'org.springframework', name: 'spring-test', version: '5.2.7.RELEASE'
+  	compile group: 'org.springframework', name: 'spring-test', version: '5.2.8.RELEASE'
   	    
   	// Jackson
     compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.11.1'
