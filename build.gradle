@@ -210,7 +210,7 @@ dependencies {
     compile group: 'org.apache.commons', name: 'commons-compress', version: '1.20'   
     compile group: 'commons-io', name: 'commons-io', version:'2.7'
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
-	compile group: 'org.apache.commons', name: 'commons-text', version: '1.8'
+	compile group: 'org.apache.commons', name: 'commons-text', version: '1.9'
 
     
     // Apache POI
