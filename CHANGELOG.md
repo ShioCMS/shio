@@ -7,8 +7,23 @@
 ## 0.3.7 (July 28, 2020)
 
 #### NEW FEATURES
+* GraphQL
+* GraphQL Documentation
+* GraphiQL Console
+* Background Image on Login Page
+* Sidebar
+* Executable Jar
 
 #### IMPROVEMENTS
+* Site Name Unique
+* Code Smells
+* Export Site
+* Import check if package has posts.
+* Using thymeleaf versioning files
+* Log shows importing steps
+* Using turing-sdk-java
+* Spring Boot 2.3.1
+* Gradle 6.5
 
 ## 0.3.6 (March 7th, 2020)
 
