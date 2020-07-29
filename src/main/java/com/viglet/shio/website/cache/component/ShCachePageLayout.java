@@ -57,6 +57,8 @@ public class ShCachePageLayout {
 				logger.error("ShCachePageLayout Exception: ", e);
 			}
 		}
+		
+		logger.debug("Page Layout Id is null");
 		return null;
 	}
 }

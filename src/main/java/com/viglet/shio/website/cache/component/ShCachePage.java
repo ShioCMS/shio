@@ -66,20 +66,31 @@ public class ShCachePage {
 	public ShCachePageBean cache(ShSitesContextURL shSitesContextURL) {
 
 		ShCachePageBean shCachePageBean = new ShCachePageBean();
-		String mimeType = "html";
+		
 
 		if (logger.isDebugEnabled())
-			logger.debug("Creating the page cache de id: " + shSitesContextURL.getInfo().getObjectId() + " and URL "
+			logger.debug("Creating the page cache of id: " + shSitesContextURL.getInfo().getObjectId() + " and URL "
 					+ shSitesContextURL.getInfo().getContextURLOriginal());
 		shCacheObject.updateCache(shSitesContextURL.getInfo().getObjectId(), shSitesContextURL);
 
-		ShObjectImpl shObject = shObjectRepository.findById(shSitesContextURL.getInfo().getObjectId()).orElse(null);
-
-		ShSite shSite = shSiteRepository.findById(shSitesContextURL.getInfo().getSiteId()).orElse(null);
-
 		ShSitesPageLayout shSitesPageLayout = new ShSitesPageLayout();
 		shSitesPageLayout.setPageCacheKey(shSitesContextURL.getInfo().getContextURLOriginal());
+		
+		ShSite shSite = shSiteRepository.findById(shSitesContextURL.getInfo().getSiteId()).orElse(null);
+		
+		String mimeType = updatedMimeType(shSitesContextURL, shCachePageBean, shSitesPageLayout, shSite);
 
+		setContentType(shCachePageBean, mimeType);
+
+		setBody(shSitesContextURL, shCachePageBean, mimeType, shSite, shSitesPageLayout);
+		return shCachePageBean;
+	}
+
+	private String updatedMimeType(ShSitesContextURL shSitesContextURL, ShCachePageBean shCachePageBean,
+			ShSitesPageLayout shSitesPageLayout, ShSite shSite) {
+		ShObjectImpl shObject = shObjectRepository.findById(shSitesContextURL.getInfo().getObjectId()).orElse(null);
+		String mimeType = "html";
+		
 		if (shObject instanceof ShFolder) {
 			mimeType = setFolderInfo(shSitesContextURL, mimeType, shSite, shSitesPageLayout);
 
@@ -87,11 +98,7 @@ public class ShCachePage {
 
 			mimeType = setPostInfo(shSitesContextURL, shCachePageBean, mimeType, shObject, shSite, shSitesPageLayout);
 		}
-
-		setContentType(shCachePageBean, mimeType);
-
-		setBody(shSitesContextURL, shCachePageBean, mimeType, shSite, shSitesPageLayout);
-		return shCachePageBean;
+		return mimeType;
 	}
 
 	private String setPostInfo(ShSitesContextURL shSitesContextURL, ShCachePageBean shCachePageBean, String mimeType,
