@@ -36,3 +36,10 @@ src/main/resources/js/client-side/build
 /shio-stock.zip
 /shio-stock-master/
 /src/main/resources/ui/public/stock/
+
+/shio-media.zip
+/shio-media-master/
+/src/main/resources/ui/public/media/
+
+.bloop
+.metals
