@@ -139,11 +139,21 @@ public class ShSitesPageLayoutUtils {
 	public ShPost pageLayoutFromFolderAndFolderIndex(ShObjectImpl shObjectItem, ShSite shSite, String format) {
 		ShPost shFolderPageLayout = null;
 		if (shObjectItem instanceof ShPost) {
+			if (logger.isDebugEnabled())
+				logger.debug("isPost");
 			shFolderPageLayout = folderIndexPageLayout(shObjectItem, format, shFolderPageLayout);
 		} else if (shObjectItem instanceof ShFolder && shSite.getPostTypeLayout() != null) {
+			if (logger.isDebugEnabled())
+				logger.debug("isFolder");
+
 			shFolderPageLayout = this.defaultFolderPageLayout(shSite, format, shFolderPageLayout);
 
+		} else {
+			if (logger.isDebugEnabled())
+				logger.debug("Not Found Object");
+
 		}
+		
 		return shFolderPageLayout;
 	}
 
@@ -151,10 +161,16 @@ public class ShSitesPageLayoutUtils {
 
 		ShPostImpl shSelectedPost = shSitesPostUtils.getPostByStage((ShPost) shObjectItem);
 		if (shSelectedPost != null) {
+			if (logger.isDebugEnabled())
+				logger.debug("Found Post of By Stage");
 			Map<String, ShPostAttr> shFolderIndexMap = shSitesPostUtils.postToMap((ShPost) shSelectedPost);
 			String shPostFolderPageLayoutId = shFolderIndexMap.get(ShSystemPostTypeAttr.PAGE_LAYOUT).getStrValue();
 			shPostFolderPageLayoutId = pageLayoutFromFormat(format, shPostFolderPageLayoutId, shFolderIndexMap);
 			shFolderPageLayout = getFolderPageLayout(shFolderPageLayout, shPostFolderPageLayoutId);
+		}
+		else {
+			if (logger.isDebugEnabled())
+				logger.debug("Not Found Post of By Stage");
 		}
 		return shFolderPageLayout;
 	}

@@ -25,7 +25,7 @@
 * Spring Boot 2.3.1
 * Gradle 6.5
 
-## 0.3.6 (March 7th, 2020)
+## 0.3.6 (March 7, 2020)
 
 #### NEW FEATURES
 *  Product name was changed to Shio

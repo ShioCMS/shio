@@ -210,7 +210,6 @@ public class ShSitesContextComponent {
 	}
 
 	public Map<String, ShPostAttr> shFolderPageLayoutMapFactory(ShObjectImpl shObjectItem, ShSite shSite, String format) {
-
 		return shSitesPostUtils
 				.postToMap(shSitesPageLayoutUtils.pageLayoutFromFolderAndFolderIndex(shObjectItem, shSite, format));
 	}

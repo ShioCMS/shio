@@ -78,7 +78,7 @@ public class ShSitesPage {
 
 		ShPost shPostItem = shPostRepository.findById(shSitesContextURL.getInfo().getObjectId()).orElse(null);
 		if (shPostItem != null) {
-			if (shPostItem.getShPostType().getName().equals(ShSystemPostType.FOLDER_INDEX)) {
+			if (shSitesPostUtils.isFolderIndex(shPostItem)) {				
 				this.shFolderIndexPage(shSitesPageLayout, shSite, shSitesContextURL, shPostItem);
 			} else {
 				mimeType = postPage(shSitesPageLayout, shSite, shSitesContextURL, mimeType, shPostItem);
@@ -188,7 +188,10 @@ public class ShSitesPage {
 		Map<String, ShPostAttr> shFolderPageLayoutMap = shSitesContextComponent
 				.shFolderPageLayoutMapFactory(shFolderItem, shSite, shSitesContextURL.getInfo().getShFormat());
 		if (shFolderPageLayoutMap != null) {
-			shSitesPageLayout.setId(shFolderPageLayoutMap.get(ShSystemPostTypeAttr.ID).getStrValue());
+			String id = shFolderPageLayoutMap.get(ShSystemPostTypeAttr.ID).getStrValue();
+			if (logger.isDebugEnabled())
+				logger.debug("Found Folder PageLayout: " + id);
+			shSitesPageLayout.setId(id);
 			shSitesPageLayout.setHTML(shFolderPageLayoutMap.get(ShSystemPostTypeAttr.HTML).getStrValue());
 			shSitesPageLayout
 					.setJavascriptCode(shFolderPageLayoutMap.get(ShSystemPostTypeAttr.JAVASCRIPT).getStrValue());
@@ -206,6 +209,10 @@ public class ShSitesPage {
 			shFolderItemAttrs.put(SITE, shSiteUtils.toSystemMap(shSite));
 
 			shSitesPageLayout.setShContent(shFolderItemAttrs);
+		}
+		else {
+			if (logger.isDebugEnabled())
+				logger.debug("Not Found Folder PageLayout");
 		}
 	}
 }

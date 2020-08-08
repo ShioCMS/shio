@@ -92,10 +92,13 @@ public class ShCachePage {
 		String mimeType = "html";
 		
 		if (shObject instanceof ShFolder) {
+			if (logger.isDebugEnabled())
+				logger.debug("Is Folder");
 			mimeType = setFolderInfo(shSitesContextURL, mimeType, shSite, shSitesPageLayout);
 
 		} else if (shObject instanceof ShPost) {
-
+			if (logger.isDebugEnabled())
+				logger.debug("Is Post");
 			mimeType = setPostInfo(shSitesContextURL, shCachePageBean, mimeType, shObject, shSite, shSitesPageLayout);
 		}
 		return mimeType;
@@ -106,14 +109,13 @@ public class ShCachePage {
 		mimeType = shSitesPage.shPostPage(shSitesPageLayout, shSite, shSitesContextURL, mimeType);
 
 		ShPost shPost = (ShPost) shObject;
-		if (shPost.getShPostType().getName().equals(ShSystemPostType.FOLDER_INDEX)) {
+		if (shSitesPostUtils.isFolderIndex(shPost)) {		
 			String format = shSitesContextURL.getInfo().getShFormat();
 			Map<String, ShPostAttr> shFolderIndexMap = shSitesPostUtils.postToMap(shPost);
 			setExpirationDate(shCachePageBean, shFolderIndexMap);
 			mimeType = contentTypeByFormat(shSitesContextURL, mimeType, format, shFolderIndexMap);
 
 		} else {
-
 			setCustomExpirationDate(shCachePageBean, shSitesPageLayout);
 		}
 		return mimeType;

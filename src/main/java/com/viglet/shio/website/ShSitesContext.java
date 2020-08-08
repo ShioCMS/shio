@@ -234,13 +234,21 @@ public class ShSitesContext {
 	}
 
 	public void siteContext(ShSitesContextURL shSitesContextURL) {
+		if (logger.isDebugEnabled())
+			logger.debug("siteContext");
 
 		if (shSitesContextURL.getInfo().isStaticFile()) {
+			if (logger.isDebugEnabled())
+				logger.debug("isStaticFile");
 			this.requestStaticFile(shSitesContextURL);
 		} else if (shSitesContextURL.getInfo().getObjectId() != null) {
+			if (logger.isDebugEnabled())
+				logger.debug("isPage");
 			this.requestPage(shSitesContextURL);
 		} else {
 			try {
+				if (logger.isDebugEnabled())
+					logger.debug("Not Found Page");
 				shSitesContextURL.getResponse().sendError(HttpServletResponse.SC_NOT_FOUND);
 			} catch (IOException e) {
 				logger.error(e);
@@ -251,28 +259,38 @@ public class ShSitesContext {
 	private void requestPage(ShSitesContextURL shSitesContextURL) {
 		ShCachePageBean shCachePageBean = shCachePage.cache(shSitesContextURL);
 		if (shCachePageBean != null) {
-			if (shCachePageBean.getExpirationDate() != null
-					&& shCachePageBean.getExpirationDate().compareTo(new Date()) < 0) {
-				shCachePage.deleteCache(shSitesContextURL.getInfo().getObjectId(),
-						shSitesContextURL.getInfo().getContextURLOriginal());
-				shCachePageBean = shCachePage.cache(shSitesContextURL);
-				if (logger.isDebugEnabled()) {
-					logger.debug(String.format("Expired Cache for id %s and URL %s",
-							shSitesContextURL.getInfo().getObjectId(),
-							shSitesContextURL.getInfo().getContextURLOriginal()));
-				}
-
-			}
-			shSitesContextURL.getResponse().setContentType(shCachePageBean.getContentType());
-			shSitesContextURL.getResponse().setCharacterEncoding("UTF-8");
-			if (shCachePageBean.getBody() != null)
-				try {
-					shSitesContextURL.getResponse().getWriter().write(shCachePageBean.getBody());
-				} catch (IOException e) {
-					logger.error(e);
-				}
-
+			if (isCacheExpired(shCachePageBean))
+				shCachePageBean = recreateCache(shSitesContextURL);
+			renderPage(shSitesContextURL, shCachePageBean);
 		}
+	}
+
+	private void renderPage(ShSitesContextURL shSitesContextURL, ShCachePageBean shCachePageBean) {
+		shSitesContextURL.getResponse().setContentType(shCachePageBean.getContentType());
+		shSitesContextURL.getResponse().setCharacterEncoding("UTF-8");
+		if (shCachePageBean.getBody() != null)
+			try {
+				shSitesContextURL.getResponse().getWriter().write(shCachePageBean.getBody());
+			} catch (IOException e) {
+				logger.error(e);
+			}
+	}
+
+	private ShCachePageBean recreateCache(ShSitesContextURL shSitesContextURL) {
+		ShCachePageBean shCachePageBean;
+		shCachePage.deleteCache(shSitesContextURL.getInfo().getObjectId(),
+				shSitesContextURL.getInfo().getContextURLOriginal());
+		shCachePageBean = shCachePage.cache(shSitesContextURL);
+		if (logger.isDebugEnabled()) {
+			logger.debug(String.format("Expired Cache for id %s and URL %s", shSitesContextURL.getInfo().getObjectId(),
+					shSitesContextURL.getInfo().getContextURLOriginal()));
+		}
+		return shCachePageBean;
+	}
+
+	private boolean isCacheExpired(ShCachePageBean shCachePageBean) {
+		return shCachePageBean.getExpirationDate() != null
+				&& shCachePageBean.getExpirationDate().compareTo(new Date()) < 0;
 	}
 
 	private void requestStaticFile(ShSitesContextURL shSitesContextURL) {
