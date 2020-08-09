@@ -73,21 +73,14 @@ public class ShNashornEngineProcess {
 
 			}
 			ScriptContext sc = shObjectLib(ssc);
-			if (sc != null) {
-				sc.setAttribute("shContent", shContent, ScriptContext.ENGINE_SCOPE);
-				sc.setAttribute("html", html, ScriptContext.ENGINE_SCOPE);
-				sc.setAttribute("request", request, ScriptContext.ENGINE_SCOPE);
+			sc.setAttribute("shContent", shContent, ScriptContext.ENGINE_SCOPE);
+			sc.setAttribute("html", html, ScriptContext.ENGINE_SCOPE);
+			sc.setAttribute("request", request, ScriptContext.ENGINE_SCOPE);
 
-				Object render = scriptEngine.eval(javascript, sc);
-				if (logger.isDebugEnabled())
-					logger.debug("render: " + render);
-				return render;
-			} else {
-				if (logger.isDebugEnabled())
-					logger.debug("ScriptContext is null");
-
-			}
-			return null;
+			Object render = scriptEngine.eval(javascript, sc);
+			if (logger.isDebugEnabled())
+				logger.debug("render: " + render);
+			return render;
 
 		} catch (ScriptException err) {
 			regionError(labelForError, javascript, err);
