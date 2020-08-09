@@ -145,15 +145,18 @@ public class ShSitesPageLayoutUtils {
 		} else if (shObjectItem instanceof ShFolder && shSite.getPostTypeLayout() != null) {
 			if (logger.isDebugEnabled())
 				logger.debug("isFolder");
-
-			shFolderPageLayout = this.defaultFolderPageLayout(shSite, format, shFolderPageLayout);
-
+			ShPost shFolderIndex = shPostRepository.findByShFolderAndFurl((ShFolder) shObjectItem, "index");
+			if (shFolderIndex != null) {
+				shFolderPageLayout = folderIndexPageLayout(shFolderIndex, format, shFolderPageLayout);
+			} else {
+				shFolderPageLayout = this.defaultFolderPageLayout(shSite, format, shFolderPageLayout);
+			}
 		} else {
 			if (logger.isDebugEnabled())
 				logger.debug("Not Found Object");
 
 		}
-		
+
 		return shFolderPageLayout;
 	}
 
@@ -167,8 +170,7 @@ public class ShSitesPageLayoutUtils {
 			String shPostFolderPageLayoutId = shFolderIndexMap.get(ShSystemPostTypeAttr.PAGE_LAYOUT).getStrValue();
 			shPostFolderPageLayoutId = pageLayoutFromFormat(format, shPostFolderPageLayoutId, shFolderIndexMap);
 			shFolderPageLayout = getFolderPageLayout(shFolderPageLayout, shPostFolderPageLayoutId);
-		}
-		else {
+		} else {
 			if (logger.isDebugEnabled())
 				logger.debug("Not Found Post of By Stage");
 		}

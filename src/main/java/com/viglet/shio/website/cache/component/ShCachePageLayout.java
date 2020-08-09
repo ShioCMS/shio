@@ -34,7 +34,7 @@ import com.viglet.shio.website.nashorn.ShNashornEngineProcess;
  */
 @Component
 public class ShCachePageLayout {
-	static final Logger logger = LogManager.getLogger(ShCachePageLayout.class.getName());
+	static final Logger logger = LogManager.getLogger(ShCachePageLayout.class);
 	@Autowired
 	private ShSitesContextComponent shSitesContextComponent;
 	@Autowired
