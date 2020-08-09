@@ -43,8 +43,10 @@ public class ShCachePageLayout {
 	public String cache(ShSitesPageLayout shSitesPageLayout, HttpServletRequest request, ShSite shSite,
 			String mimeType) {
 		if (shSitesPageLayout.getId() != null) {
-			logger.debug(String.format("ShCachePageLayout.cache Key: %s %s", shSitesPageLayout.getId(),
-					shSitesPageLayout.getPageCacheKey()));
+			if (logger.isDebugEnabled()) {
+				logger.debug(String.format("ShCachePageLayout.cache Key: %s %s", shSitesPageLayout.getId(),
+						shSitesPageLayout.getPageCacheKey()));
+			}
 			try {
 				Object renderPageLayout = shNashornEngineProcess.render(
 						String.format("Page Layout: %s", shSitesPageLayout.getId()),
@@ -54,24 +56,21 @@ public class ShCachePageLayout {
 					Document documentRegion = shSitesContextComponent.shRegionFactory(shSitesPageLayout,
 							renderPageLayout.toString(), shSite, mimeType, request);
 					if (documentRegion != null) {
-						if (logger.isDebugEnabled())
-							logger.debug("Region is not null");
 						return documentRegion.html();
-					} else {
-						if (logger.isDebugEnabled())
-							logger.debug("Region is null");
+					} else if (logger.isDebugEnabled()) {
+						logger.debug("Region is null");
 					}
-				} else {
-					if (logger.isDebugEnabled())
-						logger.debug("Render PageLayout is null");
+				} else if (logger.isDebugEnabled()) {
+					logger.debug("Render PageLayout is null");
 				}
 
 			} catch (Exception e) {
 				logger.error("ShCachePageLayout Exception: ", e);
 			}
 		}
-
-		logger.debug("Page Layout Id is null");
+		if (logger.isDebugEnabled()) {
+			logger.debug("Page Layout Id is null");
+		}
 		return null;
 	}
 }
