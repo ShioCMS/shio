@@ -36,7 +36,6 @@ import com.viglet.shio.persistence.model.post.ShPostAttr;
 import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shio.persistence.repository.post.ShPostRepository;
-import com.viglet.shio.post.type.ShSystemPostType;
 import com.viglet.shio.post.type.ShSystemPostTypeAttr;
 import com.viglet.shio.utils.ShPostUtils;
 import com.viglet.shio.utils.ShSiteUtils;

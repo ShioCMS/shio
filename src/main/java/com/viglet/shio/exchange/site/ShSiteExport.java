@@ -22,6 +22,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 
@@ -37,6 +38,8 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.viglet.shio.bean.ShSitePostTypeLayouts;
+import com.viglet.shio.bean.ShSitePostTypeLayoutsGeneral;
 import com.viglet.shio.exchange.ShExchange;
 import com.viglet.shio.exchange.ShExchangeFilesDirs;
 import com.viglet.shio.exchange.folder.ShFolderExport;
@@ -124,9 +127,9 @@ public class ShSiteExport {
 
 		if (shUtils.isJSONValid(shSiteExchange.getPostTypeLayout())) {
 			Gson gson = new Gson();
-			Type type = new TypeToken<Set<String>>() {
+			Type type = new TypeToken<ShSitePostTypeLayoutsGeneral>() {
 			}.getType();
-			Set<String> postTypes = gson.fromJson(shSiteExchange.getPostTypeLayout(), type);
+			ShSitePostTypeLayoutsGeneral postTypes = gson.fromJson(shSiteExchange.getPostTypeLayout(), type);
 
 			Set<String> shExchangePostTypeMap = new HashSet<>();
 			if (shExchangePostTypes != null)
@@ -135,9 +138,10 @@ public class ShSiteExport {
 			else
 				shExchangePostTypes = new ArrayList<>();
 
-			for (String postType : postTypes) {
-				if (!shExchangePostTypeMap.contains(postType)) {
-					ShPostType shPostType = shPostTypeRepository.findByName(postType);
+			for (Entry<String, ShSitePostTypeLayouts> postType : postTypes.entrySet()) {
+				String postTypeName = postType.getKey();
+				if (!shExchangePostTypeMap.contains(postTypeName)) {
+					ShPostType shPostType = shPostTypeRepository.findByName(postTypeName);
 					if (shPostType != null) {
 						shExchangePostTypes.add(shPostTypeExport.exportPostType(shPostType));
 					}

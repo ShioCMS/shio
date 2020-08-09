@@ -114,7 +114,7 @@ public class ShNashornEngineProcess {
 				logger.error(e);
 			}
 			HashMap<String, ScriptContext> elementMap = new HashMap<>();
-			sc = (ScriptContext) ssc;
+			sc = ssc;
 			elementMap.put("shScript", ssc);
 			scriptContexts.set(elementMap);
 

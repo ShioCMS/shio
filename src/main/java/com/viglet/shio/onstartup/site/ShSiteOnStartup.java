@@ -49,9 +49,9 @@ public class ShSiteOnStartup {
 		if (shSiteRepository.findAll().isEmpty()) {
 
 			try {
-				this.importSite(new URL("https://github.com/ShioCMS/sample-site/archive/0.3.7.zip"),
+				this.importSite(new URL("https://github.com/ShioCMS/sample-site/archive/0.3.8.zip"),
 						"sample-site-import");
-				this.importSite(new URL("https://github.com/ShioCMS/stock-site-import/archive/0.3.7.zip"),
+				this.importSite(new URL("https://github.com/ShioCMS/stock-site-import/archive/0.3.8.zip"),
 						"stock-site-import");
 			} catch (MalformedURLException e) {
 				logger.error("siteRepository MalformedURLException", e);
