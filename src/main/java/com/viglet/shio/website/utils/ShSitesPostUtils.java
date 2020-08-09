@@ -80,9 +80,22 @@ public class ShSitesPostUtils {
 	@Autowired
 	private ShPostUtils shPostUtils;
 
+	public boolean isFolderIndex(ShPost shPost) {
+		if (shPost.getShPostType().getName().equals(ShSystemPostType.FOLDER_INDEX)) {
+			if (logger.isDebugEnabled())
+				logger.debug("Is FolderIndex Post");
+			return true;
+		} else {
+			if (logger.isDebugEnabled())
+				logger.debug("Is Not FolderIndex Post");
+			return false;
+		}
+
+	}
+
 	public ShPost getPostByStage(ShPost shPost) {
 		if (shPost != null) {
-				return shMgmtProperties.isEnabled()? this.getMgmtPost(shPost):this.getLivePost(shPost);
+			return shMgmtProperties.isEnabled() ? this.getMgmtPost(shPost) : this.getLivePost(shPost);
 		} else {
 			return null;
 		}

@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +34,7 @@ import com.viglet.shio.website.nashorn.ShNashornEngineProcess;
  */
 @Component
 public class ShCachePageLayout {
-	static final Logger logger = LogManager.getLogger(ShCachePageLayout.class.getName());
+	static final Logger logger = LogManager.getLogger(ShCachePageLayout.class);
 	@Autowired
 	private ShSitesContextComponent shSitesContextComponent;
 	@Autowired
@@ -45,19 +46,31 @@ public class ShCachePageLayout {
 			logger.debug(String.format("ShCachePageLayout.cache Key: %s %s", shSitesPageLayout.getId(),
 					shSitesPageLayout.getPageCacheKey()));
 			try {
-				Object pageLayoutResult = shNashornEngineProcess.render(
+				Object renderPageLayout = shNashornEngineProcess.render(
 						String.format("Page Layout: %s", shSitesPageLayout.getId()),
 						shSitesPageLayout.getJavascriptCode(), shSitesPageLayout.getHTML(), request,
 						shSitesPageLayout.getShContent());
+				if (renderPageLayout != null) {
+					Document documentRegion = shSitesContextComponent.shRegionFactory(shSitesPageLayout,
+							renderPageLayout.toString(), shSite, mimeType, request);
+					if (documentRegion != null) {
+						if (logger.isDebugEnabled())
+							logger.debug("Region is not null");
+						return documentRegion.html();
+					} else {
+						if (logger.isDebugEnabled())
+							logger.debug("Region is null");
+					}
+				} else {
+					if (logger.isDebugEnabled())
+						logger.debug("Render PageLayout is null");
+				}
 
-				return shSitesContextComponent
-						.shRegionFactory(shSitesPageLayout, pageLayoutResult.toString(), shSite, mimeType, request)
-						.html();
 			} catch (Exception e) {
 				logger.error("ShCachePageLayout Exception: ", e);
 			}
 		}
-		
+
 		logger.debug("Page Layout Id is null");
 		return null;
 	}

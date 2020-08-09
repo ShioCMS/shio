@@ -1,8 +1,53 @@
-## 0.3.6
+## 0.3.8
 
 #### NEW FEATURES
 
 #### IMPROVEMENTS
+
+## 0.3.7 (July 28, 2020)
+
+#### NEW FEATURES
+* GraphQL
+* GraphQL Documentation
+* GraphiQL Console
+* Background Image on Login Page
+* Sidebar
+* Executable Jar
+
+#### IMPROVEMENTS
+* Site Name Unique
+* Code Smells
+* Export Site
+* Import check if package has posts.
+* Using thymeleaf versioning files
+* Log shows importing steps
+* Using turing-sdk-java
+* Spring Boot 2.3.1
+* Gradle 6.5
+
+## 0.3.6 (March 7, 2020)
+
+#### NEW FEATURES
+*  Product name was changed to Shio
+* Git as Version Control
+* Commit Git Commit Id on Version
+* Email configuration page
+* AuthProvider using /config
+* OTDS as AuthProvider
+* ExchangeProvider using /config
+* OTCS as Exchange Provider
+* OTMM as Exchange Provider
+* Configuration Console
+* Import Dialog to use Exchange Provider
+* Page Security Configuration
+
+#### IMPROVEMENTS
+* Comment URL Formatter
+* Commit Page with links
+* Pre-Upload: Check if the file exists
+* Void duplicated static files
+* Spring Boot 2.2.5
+* Gradle 6.2.2
 
 ## 0.3.5 (November 18, 2019)
 

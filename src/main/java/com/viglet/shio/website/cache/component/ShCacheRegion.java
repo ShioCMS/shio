@@ -57,9 +57,15 @@ public class ShCacheRegion {
 		ShPost shRegion = shSitesContextComponent.getRegion(regionName, siteId);
 		if (shRegion != null) {
 			Map<String, ShPostAttr> shRegionPostMap = shSitesPostUtils.postToMap(shRegion);
-			if (shRegionPostMap.get(ShSystemPostTypeAttr.CACHED) != null)
+			if (shRegionPostMap.get(ShSystemPostTypeAttr.CACHED) != null && shRegionPostMap.get(ShSystemPostTypeAttr.CACHED).getStrValue() != null) {				
+				if (logger.isDebugEnabled()) 
+					logger.debug("Region must be cached");
 				return shRegionPostMap.get(ShSystemPostTypeAttr.CACHED).getStrValue().equals("yes");
+			}
 		}
+		if (logger.isDebugEnabled()) 
+			logger.debug("Region should not be cached");
+
 		return false;
 
 	}

@@ -49,7 +49,7 @@ public class ShSitesContextURLProcessCache {
 	public ShSitesContextURLInfo detectContextURL(ShSitesContextURL shSitesContextURL) {
 		Date now = new Date();
 		if (logger.isDebugEnabled())
-			logger.debug("detectContextURL: " + shSitesContextURL.toString());
+			logger.debug("detectContextURL Before: " + shSitesContextURL.toString());
 		shSitesContextURLProcess.detectContextURL(shSitesContextURL);
 		ShSitesContextURLInfo shSitesContextURLInfo = new ShSitesContextURLInfo();
 		shSitesContextURLInfo.setCacheEnabled(shSitesContextURL.getInfo().isCacheEnabled());
@@ -63,7 +63,7 @@ public class ShSitesContextURLProcessCache {
 		shSitesContextURLInfo.setSiteId(shSitesContextURL.getInfo().getSiteId());
 
 		if (shSitesContextURLInfo.getObjectId() != null) {
-			setContectFromObject(shSitesContextURL, shSitesContextURLInfo);
+			setContextFromObject(shSitesContextURL, shSitesContextURLInfo);
 		} else {
 			shSitesContextURLInfo.setPageAllowGuestUser(true);
 			shSitesContextURLInfo.setPageAllowRegisterUser(false);
@@ -82,7 +82,7 @@ public class ShSitesContextURLProcessCache {
 
 	}
 
-	private void setContectFromObject(ShSitesContextURL shSitesContextURL,
+	private void setContextFromObject(ShSitesContextURL shSitesContextURL,
 			ShSitesContextURLInfo shSitesContextURLInfo) {
 		shObjectRepository.findById(shSitesContextURLInfo.getObjectId()).ifPresent(shObject -> {
 			shSitesContextURLInfo.setStaticFile(isStaticFile(shSitesContextURL, shObject));

@@ -26,7 +26,7 @@ apply plugin: 'jacoco'
 
 jar {
     archiveBaseName = 'viglet-shio'
-    archiveVersion =  '0.3.7'
+    archiveVersion =  '0.3.8'
 }
 
 eclipse {

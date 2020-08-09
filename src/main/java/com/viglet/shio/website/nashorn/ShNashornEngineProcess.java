@@ -52,8 +52,13 @@ public class ShNashornEngineProcess {
 		scriptContexts.remove();
 	}
 
-	public Object render(String objectName, String javascript, String html, HttpServletRequest request,
+	public Object render(String labelForError, String javascript, String html, HttpServletRequest request,
 			Map<String, Object> shContent) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("javascript: " + javascript);
+			logger.debug("html: " + html);
+			logger.debug("shContent: " + shContent);
+		}
 		try {
 			SimpleScriptContext ssc = new SimpleScriptContext();
 			ssc.setBindings(scriptEngine.createBindings(), ScriptContext.ENGINE_SCOPE);
@@ -62,6 +67,10 @@ public class ShNashornEngineProcess {
 				for (Map.Entry<String, Object> e : b.entrySet()) {
 					ssc.setAttribute(e.getKey(), e.getValue(), ScriptContext.ENGINE_SCOPE);
 				}
+			} else {
+				if (logger.isDebugEnabled())
+					logger.debug("Bindings is null");
+
 			}
 			ScriptContext sc = shObjectLib(ssc);
 			if (sc != null) {
@@ -69,12 +78,19 @@ public class ShNashornEngineProcess {
 				sc.setAttribute("html", html, ScriptContext.ENGINE_SCOPE);
 				sc.setAttribute("request", request, ScriptContext.ENGINE_SCOPE);
 
-				return scriptEngine.eval(javascript, sc);
+				Object render = scriptEngine.eval(javascript, sc);
+				if (logger.isDebugEnabled())
+					logger.debug("render: " + render);
+				return render;
+			} else {
+				if (logger.isDebugEnabled())
+					logger.debug("ScriptContext is null");
+
 			}
 			return null;
 
 		} catch (ScriptException err) {
-			regionError(objectName, javascript, err);
+			regionError(labelForError, javascript, err);
 		}
 		return null;
 	}
@@ -98,6 +114,7 @@ public class ShNashornEngineProcess {
 				logger.error(e);
 			}
 			HashMap<String, ScriptContext> elementMap = new HashMap<>();
+			sc = (ScriptContext) ssc;
 			elementMap.put("shScript", ssc);
 			scriptContexts.set(elementMap);
 
