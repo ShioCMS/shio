@@ -271,7 +271,7 @@ dependencies {
 	compile 'org.webjars.bower:bootstrap:4.5.0' // Preview
 	compile 'org.webjars.npm:moment:2.27.0'
 	compile 'org.webjars.npm:angular:1.8.0'
-	compile 'org.webjars.bower:ace-builds:1.4.2'
+	compile 'org.webjars.bower:ace-builds:1.4.12'
 	compile 'org.webjars.bower:tinymce:5.4.1'
 	compile 'org.webjars.bower:angular-ui-router:1.0.20'
 	compile 'org.webjars.npm:angular-translate:2.18.3'		
