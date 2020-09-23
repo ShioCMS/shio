@@ -14,6 +14,15 @@ guidelines](CONTRIBUTING.md).**
 
 # Installation
 
+## Pre-reqs
+1. Install Java 11
+2. Install Git Client
+3. Install NPM
+4. Install Angular CLI
+```shell
+$ npm install -g @angular/cli
+```
+
 ## Download
 
 ```shell
