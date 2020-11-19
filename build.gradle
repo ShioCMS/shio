@@ -1,5 +1,5 @@
 buildscript {
-    ext { springBootVersion = '2.3.4.RELEASE'
+    ext { springBootVersion = '2.4.0'
 	      hibernateVersion = '5.11.5.Final'
 		  swaggerVersion = '3.0.0'
 		 }
@@ -192,7 +192,7 @@ dependencies {
 	implementation 'com.github.openturing:turing-java-sdk:0.3.3-SNAPSHOT'
 
   	// Spring
-  	compile group: 'org.springframework', name: 'spring-test', version: '5.2.8.RELEASE'
+  	compile group: 'org.springframework', name: 'spring-test', version: '5.3.1'
   	    
   	// Jackson
     compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.11.2'
