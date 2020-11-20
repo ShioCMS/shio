@@ -28,6 +28,8 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +52,7 @@ import com.viglet.shio.utils.ShUtils;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
+@TestInstance(Lifecycle.PER_CLASS)
 public class ShObjectAPITest {
 
 	@Autowired

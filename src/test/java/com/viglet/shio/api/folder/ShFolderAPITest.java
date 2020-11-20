@@ -29,6 +29,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -49,6 +51,7 @@ import com.viglet.shio.utils.ShUtils;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @TestMethodOrder (MethodOrderer.Alphanumeric.class)
+@TestInstance(Lifecycle.PER_CLASS)
 public class ShFolderAPITest {
 
 	@Autowired

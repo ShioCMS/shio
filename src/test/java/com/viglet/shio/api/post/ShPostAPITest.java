@@ -25,7 +25,9 @@ import java.security.Principal;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
@@ -58,6 +60,7 @@ import com.viglet.shio.utils.ShUtils;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @TestMethodOrder (MethodOrderer.Alphanumeric.class)
+@TestInstance(Lifecycle.PER_CLASS)
 public class ShPostAPITest {
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	@Autowired

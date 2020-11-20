@@ -12,17 +12,19 @@ buildscript {
     			  }
 }
 
+
+
+
 plugins {
+  id 'org.springframework.boot' version '2.4.0'
+  id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+  id 'java'
   id "com.eriwen.gradle.js" version "2.14.1"
   id "com.gorylenko.gradle-git-properties" version "2.2.3"
   id 'de.undercouch.download' version '4.1.1'
+  id 'eclipse'
+  id 'jacoco'
 }
-
-apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
-apply plugin: 'jacoco'
 
 jar {
     archiveBaseName = 'viglet-shio'
@@ -59,6 +61,7 @@ repositories {
 	maven { url 'https://jitpack.io' }
 }
 
+group = 'com.viglet.shio'
 sourceCompatibility = 11
 targetCompatibility = 11
 
@@ -235,24 +238,19 @@ dependencies {
 }
 
 test {
+	useJUnitPlatform()
     testLogging {
         events "passed", "skipped", "failed"
         exceptionFormat "full"
     }
     
- jacocoTestReport {
-    reports {
-        xml.enabled true
-        html.enabled false
-    }
-}
-
-bootRun {
-    if (project.hasProperty('args')) {
-        args project.args.split(',')
-    }
-}
+ 	jacocoTestReport {
+    	reports {
+        	xml.enabled true
+        	html.enabled false
+    	}
+	}
    
-check.dependsOn jacocoTestReport   
+	check.dependsOn jacocoTestReport   
 
 }

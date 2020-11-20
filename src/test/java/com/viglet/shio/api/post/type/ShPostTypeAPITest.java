@@ -29,7 +29,9 @@ import java.util.HashSet;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +57,7 @@ import com.viglet.shio.widget.ShSystemWidget;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @TestMethodOrder (MethodOrderer.Alphanumeric.class)
+@TestInstance(Lifecycle.PER_CLASS)
 public class ShPostTypeAPITest {
 
 	@Autowired
