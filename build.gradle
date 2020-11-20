@@ -97,65 +97,6 @@ task minifyAllJs(dependsOn: ':combineAllJs', type: com.eriwen.gradle.js.tasks.Mi
     }
 }
 
-// Shio Stock
-def stockZipDir = "$projectDir/shio-media-master"
-def stockZipFile = "$projectDir/shio-media.zip"
-def stockDir = "$projectDir/src/main/resources/ui/public/media/"
-
-task deleteGitStock(type: Delete) {
-    delete "$stockZipDir", "$stockZipFile"
-}
-
-task downloadStockZipFile(dependsOn: deleteGitStock, type: Download) {
-    src 'https://github.com/ShioCMS/shio-media/archive/master.zip'
-    dest stockZipFile
-}
-
-task downloadAndUnzipStockZipFile(dependsOn: downloadStockZipFile, type: Copy) {
-    from zipTree(downloadStockZipFile.dest)
-    into projectDir
-}
-
-
-task installStock(type:Exec) {
-	dependsOn "downloadAndUnzipStockZipFile"
-	workingDir "$stockZipDir"
-	inputs.dir "$stockZipDir"
-	group = BasePlugin.BUILD_GROUP
-	
-	if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
-		commandLine "npm.cmd", "install"
-	} else {
-		commandLine "npm", "install"
-	}
-}
-
-task deleteStockDir(type: Delete) {
-	dependsOn "installStock"
-    delete "$stockDir"
-}
-
-task createStockDir {
-	dependsOn "deleteStockDir"
-	doLast {
-		mkdir "$stockDir"
-	}
-}
-
-task buildStock(type:Exec) {
-	dependsOn "createStockDir"
-	workingDir "$stockZipDir"
-	inputs.dir "$stockZipDir"
-	
-	group = BasePlugin.BUILD_GROUP
-	
-	if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
-		commandLine "ng.cmd", "build", "--outputPath", "$stockDir", "--base-href", "/stock/"
-	} else {
-		commandLine "ng", "build", "--outputPath", "$stockDir", "--base-href", "/stock/"
-	}
-}
-
 task graphQLDocs(type:Exec) {
 commandLine "graphdoc","--force", "-e",  "http://localhost:2710/graphql", "-o", "./docs/graphql"
 }
@@ -163,8 +104,6 @@ commandLine "graphdoc","--force", "-e",  "http://localhost:2710/graphql", "-o", 
 task stage(dependsOn: ['build', 'clean'])
 
 compileJava.dependsOn(['minifyAllJs'])
-
-build.dependsOn(['buildStock'])
 
 build.mustRunAfter clean
 
