@@ -192,7 +192,7 @@ dependencies {
 	compile group: 'ldapsdk', name: 'ldapsdk', version: '4.1'
 	
 	// Git 
-	compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.8.1.202007141445-r'
+	compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.9.0.202009080501-r'
 		
 	// GraphQL
 	implementation 'com.graphql-java:graphql-java:2020-10-21T10-06-46-49bbbeb'
