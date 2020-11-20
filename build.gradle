@@ -262,7 +262,7 @@ dependencies {
 	compile group: 'de.androidpit', name: 'color-thief', version: '1.1.2'
 
 	// Guava
-	implementation 'com.google.guava:guava:29.0-jre'
+	implementation 'com.google.guava:guava:30.0-jre'
 	
 	// WebJars
 	compile 'org.webjars:jquery:1.12.4'
