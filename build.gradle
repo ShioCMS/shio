@@ -137,7 +137,7 @@ dependencies {
   	compile group: 'org.springframework', name: 'spring-test', version: '5.3.1'
   	    
   	// Jackson
-    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.11.2'
+    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.11.3'
    
    	// Oracle	
 	compile group: 'com.oracle.ojdbc', name: 'ojdbc8', version: '19.3.0.0'
