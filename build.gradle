@@ -168,7 +168,7 @@ dependencies {
 	
 	//Hazelcast
 	compile group: 'com.hazelcast', name: 'hazelcast', version : '4.0.1'	
-	compile group: 'com.hazelcast', name: 'hazelcast-spring', version: '4.0.2'
+	compile group: 'com.hazelcast', name: 'hazelcast-spring', version: '4.1'
 	
 	
 	// Swagger 2
