@@ -183,7 +183,7 @@ dependencies {
 	
 	// Tika
     compile group: 'org.apache.tika', name: 'tika-core', version:'1.24.1'
-    compile group: 'org.apache.tika', name: 'tika-parsers', version:'1.24.1'
+    compile group: 'org.apache.tika', name: 'tika-parsers', version:'1.25'
     
 	// Javadoc - Need this package
 	compile 'javax.interceptor:javax.interceptor-api:1.2.2'
