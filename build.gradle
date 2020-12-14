@@ -1,5 +1,5 @@
 buildscript {
-    ext { springBootVersion = '2.4.0'
+    ext { springBootVersion = '2.4.1'
 	      hibernateVersion = '5.11.7.Final'
 		  swaggerVersion = '3.0.0'
 		 }
