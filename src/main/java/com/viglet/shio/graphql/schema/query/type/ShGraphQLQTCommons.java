@@ -73,6 +73,8 @@ public class ShGraphQLQTCommons {
 		final graphql.schema.GraphQLEnumType.Builder siteEnumBuilder = newEnum()
 				.name(ShGraphQLConstants.SITES_ARG_TITLE).description("Site Names enumeration");
 
+		siteEnumBuilder.value("All", "all", "Entire sites");
+		
 		shSiteRepository.findAll()
 				.forEach(shSite -> siteEnumBuilder.value(shSite.getName(), shSite.getId(), shSite.getDescription()));
 
