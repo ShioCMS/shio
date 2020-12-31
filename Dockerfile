@@ -1,15 +1,15 @@
-FROM openjdk:8-jdk as shiobuild
+FROM openjdk:11-jdk as shiobuild
 WORKDIR /app
 COPY . .
 RUN ./gradlew build
 
-FROM openjdk:8-jre-alpine
+FROM openjdk:11-jre-slim-buster
 WORKDIR /app
 ENV JAVA_OPTS=${JAVA_OPTS:-'-Xmx512m'}
 ENV DEBUG_OPTS=${DEBUG_OPTS}
 ENV PORT=${PORT:-2710}
 
-RUN adduser -D -g '' java
+RUN useradd --system --create-home --uid 1001 --gid 0 java
 
 RUN sh -c 'mkdir -p /app/store'
 
