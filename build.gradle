@@ -72,8 +72,8 @@ repositories {
 }
 
 group = 'com.viglet.shio'
-sourceCompatibility = 14
-targetCompatibility = 14
+sourceCompatibility = 15
+targetCompatibility = 15
 
 tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
