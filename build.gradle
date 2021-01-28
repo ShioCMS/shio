@@ -216,7 +216,7 @@ dependencies {
 	implementation 'com.google.guava:guava:30.1-jre'
 	
 	// WebJars
-	compile 'org.webjars:jquery:1.12.4'
+	compile 'org.webjars:jquery:3.5.1'
 	compile 'org.webjars.bower:jquery.ui:1.12.1'
 	compile 'org.webjars:bootstrap:3.3.7-1' // Content
 	compile 'org.webjars.bower:bootstrap:4.5.3' // Preview
