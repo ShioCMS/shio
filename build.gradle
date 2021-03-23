@@ -1,5 +1,5 @@
 buildscript {
-    ext { springBootVersion = '2.4.3'
+    ext { springBootVersion = '2.4.4'
 	      hibernateVersion = '5.11.8.Final'
 		  swaggerVersion = '3.0.0'
 		 }
@@ -177,7 +177,7 @@ dependencies {
 	
 	//Hazelcast
 	compile group: 'com.hazelcast', name: 'hazelcast', version : '4.0.1'	
-	compile group: 'com.hazelcast', name: 'hazelcast-spring', version: '4.1.1'
+	compile group: 'com.hazelcast', name: 'hazelcast-spring', version: '4.1.2'
 	
 	
 	// Swagger 2
@@ -188,7 +188,7 @@ dependencies {
 	compile group: 'com.google.code.gson', name: 'gson', version: '2.8.6'
 
 	// Thumbnailator
-    compile group: 'net.coobird', name: 'thumbnailator', version: '0.4.13'
+    compile group: 'net.coobird', name: 'thumbnailator', version: '0.4.14'
 	
 	// Tika
     compile group: 'org.apache.tika', name: 'tika-core', version:'1.25'
@@ -201,7 +201,7 @@ dependencies {
 	compile group: 'ldapsdk', name: 'ldapsdk', version: '4.1'
 	
 	// Git 
-	compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.10.0.202012080955-r'
+	compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.11.0.202103091610-r'
 		
 	// GraphQL
 	implementation 'com.graphql-java:graphql-java:2021-03-19T00-06-52-e166c255'
