@@ -2,16 +2,16 @@
  * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU General License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU General License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU General License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
@@ -26,14 +26,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -48,9 +52,10 @@ import com.viglet.shio.persistence.repository.post.ShPostRepository;
 import com.viglet.shio.persistence.repository.site.ShSiteRepository;
 import com.viglet.shio.utils.ShUtils;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class ShObjectAPITest {
+@TestInstance(Lifecycle.PER_CLASS)
+class ShObjectAPITest {
 
 	@Autowired
 	private WebApplicationContext webApplicationContext;
@@ -65,8 +70,8 @@ public class ShObjectAPITest {
 	
 	private Principal mockPrincipal;
 
-	@Before
-	public void setup() {
+	@BeforeAll
+	void setup() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 		mockPrincipal = Mockito.mock(Principal.class);
 		Mockito.when(mockPrincipal.getName()).thenReturn("admin");
@@ -75,7 +80,7 @@ public class ShObjectAPITest {
 	// shObjectMoveTo
 	
 	@Test
-	public void shObjectMoveToFolder() throws Exception {
+	void shObjectMoveToFolder() throws Exception {
 
 		ShSite shSite = shSiteRepository.findByName("Viglet");
 
@@ -108,7 +113,7 @@ public class ShObjectAPITest {
 	}
 
 	@Test
-	public void shObjectMoveToSite() throws Exception {
+	void shObjectMoveToSite() throws Exception {
 		ShSite shSite = shSiteRepository.findByName("Viglet");
 		ShFolder shFolderHome = shFolderRepository.findByShSiteAndName(shSite, "Home");
 		ShFolder shParentFolder = shFolderRepository.findById(shFolderHome.getId()).get();
@@ -144,7 +149,7 @@ public class ShObjectAPITest {
 	// shObjectCopyTo
 	
 		@Test
-		public void shObjectCopyToFolder() throws Exception {
+		void shObjectCopyToFolder() throws Exception {
 			ShSite shSite = shSiteRepository.findByName("Viglet");
 			ShFolder shFolderHome = shFolderRepository.findByShSiteAndName(shSite, "Home");
 			
@@ -178,7 +183,7 @@ public class ShObjectAPITest {
 		}
 
 		@Test
-		public void shObjectCopyToSite() throws Exception {
+		void shObjectCopyToSite() throws Exception {
 			ShSite shSite = shSiteRepository.findByName("Viglet");
 			ShFolder shFolderHome = shFolderRepository.findByShSiteAndName(shSite, "Home");
 			ShFolder shParentFolder = shFolderRepository.findById(shFolderHome.getId()).get();
@@ -214,14 +219,14 @@ public class ShObjectAPITest {
 	// shObjectPreview
 
 	@Test
-	public void shObjectPreviewSite() throws Exception {
+	void shObjectPreviewSite() throws Exception {
 		ShSite shSite = shSiteRepository.findByName("Viglet");
 		mockMvc.perform(get("/api/v2/object/" + shSite.getId() + "/preview")).andExpect(status().is3xxRedirection());
 
 	}
 
 	@Test
-	public void shObjectPreviewFolder() throws Exception {
+	void shObjectPreviewFolder() throws Exception {
 		ShSite shSite = shSiteRepository.findByName("Viglet");
 		ShFolder shFolderHome = shFolderRepository.findByShSiteAndName(shSite, "Home");
 		mockMvc.perform(get("/api/v2/object/" + shFolderHome.getId() + "/preview")).andExpect(status().is3xxRedirection());
@@ -229,7 +234,7 @@ public class ShObjectAPITest {
 	}
 
 	@Test
-	public void shObjectPreviewPost() throws Exception {
+	void shObjectPreviewPost() throws Exception {
 		ShSite shSite = shSiteRepository.findByName("Viglet");
 		ShFolder shFolderHome = shFolderRepository.findByShSiteAndName(shSite, "Home");
 		ShPost shPost = shPostRepository.findByShFolderAndFurl(shFolderHome, "index");
@@ -239,16 +244,17 @@ public class ShObjectAPITest {
 
 	// shObjectListItem
 
-	@Test
-	public void shObjectListItemSite() throws Exception {
+	@ParameterizedTest
+	@ValueSource(strings = {"/list", "/list/Text", "/path"})
+	void shObjectListItemSite(String path) throws Exception {
 		ShSite shSite = shSiteRepository.findByName("Viglet");
-		mockMvc.perform(get("/api/v2/object/" + shSite.getId() + "/list")).andExpect(status().isOk())
+		mockMvc.perform(get("/api/v2/object/" + shSite.getId() + path)).andExpect(status().isOk())
 				.andExpect(content().contentType("application/json"));
 
 	}
 
 	@Test
-	public void shObjectListItemFolder() throws Exception {
+	void shObjectListItemFolder() throws Exception {
 		ShSite shSite = shSiteRepository.findByName("Viglet");
 		ShFolder shFolderHome = shFolderRepository.findByShSiteAndName(shSite, "Home");
 		mockMvc.perform(get("/api/v2/object/" + shFolderHome.getId() + "/list")).andExpect(status().isOk())
@@ -259,18 +265,9 @@ public class ShObjectAPITest {
 	// shObjectListItem
 
 	@Test
-	public void shFolderListByPostTypeSite() throws Exception {
+	void shFolderListByPostTypeSite() throws Exception {
 		ShSite shSite = shSiteRepository.findByName("Viglet");
 		mockMvc.perform(get("/api/v2/object/" + shSite.getId() + "/list/Text")).andExpect(status().isOk())
-				.andExpect(content().contentType("application/json"));
-
-	}
-
-	@Test
-	public void shFolderListByPostTypeFolder() throws Exception {
-		ShSite shSite = shSiteRepository.findByName("Viglet");
-		ShFolder shFolderHome = shFolderRepository.findByShSiteAndName(shSite, "Home");
-		mockMvc.perform(get("/api/v2/object/" + shFolderHome.getId() + "/list/Text")).andExpect(status().isOk())
 				.andExpect(content().contentType("application/json"));
 
 	}
@@ -278,7 +275,7 @@ public class ShObjectAPITest {
 	// shObjectPath
 
 	@Test
-	public void shObjectPathSite() throws Exception {
+	void shObjectPathSite() throws Exception {
 		ShSite shSite = shSiteRepository.findByName("Viglet");
 		mockMvc.perform(get("/api/v2/object/" + shSite.getId() + "/path")).andExpect(status().isOk())
 				.andExpect(content().contentType("application/json"));
@@ -286,16 +283,7 @@ public class ShObjectAPITest {
 	}
 
 	@Test
-	public void shObjectPathFolder() throws Exception {
-		ShSite shSite = shSiteRepository.findByName("Viglet");
-		ShFolder shFolderHome = shFolderRepository.findByShSiteAndName(shSite, "Home");
-		mockMvc.perform(get("/api/v2/object/" + shFolderHome.getId() + "/path")).andExpect(status().isOk())
-				.andExpect(content().contentType("application/json"));
-
-	}
-
-	@Test
-	public void shObjectPathPost() throws Exception {
+	void shObjectPathPost() throws Exception {
 		ShSite shSite = shSiteRepository.findByName("Viglet");
 		ShFolder shFolderHome = shFolderRepository.findByShSiteAndName(shSite, "Home");
 		ShPost shPost = shPostRepository.findByShFolderAndFurl(shFolderHome, "index");

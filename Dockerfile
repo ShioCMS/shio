@@ -1,15 +1,15 @@
-FROM openjdk:8-jdk as shiobuild
+FROM openjdk:11-jdk as shiobuild
 WORKDIR /app
 COPY . .
 RUN ./gradlew build
 
-FROM openjdk:8-jre-alpine
+FROM openjdk:11-jre-slim-buster
 WORKDIR /app
 ENV JAVA_OPTS=${JAVA_OPTS:-'-Xmx512m'}
 ENV DEBUG_OPTS=${DEBUG_OPTS}
 ENV PORT=${PORT:-2710}
 
-RUN adduser -D -g '' java
+RUN useradd --system --create-home --uid 1001 --gid 0 java
 
 RUN sh -c 'mkdir -p /app/store'
 
@@ -24,4 +24,12 @@ USER java
 
 EXPOSE ${PORT:-2710}
 
-CMD java ${JAVA_OPTS} ${DEBUG_OPTS} -Djava.security.egd=file:/dev/./urandom -jar /app/app.jar
+CMD java ${JAVA_OPTS} --add-modules java.se \
+  --add-exports java.base/jdk.internal.ref=ALL-UNNAMED \
+  --add-opens java.base/java.lang=ALL-UNNAMED \
+  --add-opens java.base/java.nio=ALL-UNNAMED \
+  --add-opens java.base/sun.nio.ch=ALL-UNNAMED \
+  --add-opens java.management/sun.management=ALL-UNNAMED \
+  --add-opens jdk.management/com.ibm.lang.management.internal=ALL-UNNAMED \
+  --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED \
+  ${DEBUG_OPTS} -Djava.security.egd=file:/dev/./urandom -jar /app/app.jar

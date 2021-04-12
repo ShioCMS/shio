@@ -2,16 +2,16 @@
  * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU General License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU General License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU General License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
@@ -24,16 +24,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.security.Principal;
 
-import org.junit.Before;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -46,10 +48,11 @@ import com.viglet.shio.persistence.repository.site.ShSiteRepository;
 import com.viglet.shio.utils.ShUtils;
 
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class ShFolderAPITest {
+@TestMethodOrder (MethodOrderer.Alphanumeric.class)
+@TestInstance(Lifecycle.PER_CLASS)
+class ShFolderAPITest {
 
 	@Autowired
 	private WebApplicationContext webApplicationContext;
@@ -65,27 +68,27 @@ public class ShFolderAPITest {
 	@Autowired
 	private ShSiteRepository shSiteRepository;
 
-	@Before
-	public void setup() {
+	@BeforeAll
+	void setup() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 		mockPrincipal = Mockito.mock(Principal.class);
 		Mockito.when(mockPrincipal.getName()).thenReturn("admin");
 	}
 
 	@Test
-	public void shFolderList() throws Exception {
+	void shFolderList() throws Exception {
 		mockMvc.perform(get("/api/v2/folder")).andExpect(status().isOk())
 				.andExpect(content().contentType("application/json"));
 	}
 	
 	@Test
-	public void shFolderStructure() throws Exception {
+	void shFolderStructure() throws Exception {
 		mockMvc.perform(get("/api/v2/folder/model")).andExpect(status().isOk())
 				.andExpect(content().contentType("application/json"));
 	}
 	
 	@Test
-	public void stage01ShFolderAdd() throws Exception {
+	void stage01ShFolderAdd() throws Exception {
 		ShSite shSite = new ShSite();
 		shSite.setId(newSiteId);
 		shSite.setDescription("Test Site");
@@ -117,19 +120,19 @@ public class ShFolderAPITest {
 	}
 
 	@Test
-	public void stage02ShFolderGet() throws Exception {
+	void stage02ShFolderGet() throws Exception {
 		mockMvc.perform(get("/api/v2/folder/" + newFolderId)).andExpect(status().isOk())
 		.andExpect(content().contentType("application/json"));
 	}
 	
 	@Test
-	public void stage03ShFolderPath() throws Exception {
+	void stage03ShFolderPath() throws Exception {
 		mockMvc.perform(get("/api/v2/folder/" + newFolderId + "/path")).andExpect(status().isOk())
 		.andExpect(content().contentType("application/json"));
 	}
 	
 	@Test
-	public void stage04ShFolderUpdate() throws Exception {
+	void stage04ShFolderUpdate() throws Exception {
 		ShSite shSite = shSiteRepository.findById(newSiteId).get();
 
 		ShFolder shFolder = new ShFolder();
@@ -149,7 +152,7 @@ public class ShFolderAPITest {
 	}
 
 	@Test
-	public void stage05ShFolderAddFromParentObjectSite() throws Exception{
+	void stage05ShFolderAddFromParentObjectSite() throws Exception{
 
 		ShFolder shFolder = new ShFolder();
 		shFolder.setName("Unit Test By Object Site");
@@ -164,7 +167,7 @@ public class ShFolderAPITest {
 	}
 
 	@Test
-	public void stage06ShFolderAddFromParentObjectFolder() throws Exception{
+	void stage06ShFolderAddFromParentObjectFolder() throws Exception{
 
 		ShFolder shFolder = new ShFolder();
 		shFolder.setName("Unit Test By Object Folder");
@@ -179,7 +182,7 @@ public class ShFolderAPITest {
 	}
 
 	@Test
-	public void stage07ShFolderDelete() throws Exception {
+	void stage07ShFolderDelete() throws Exception {
 		mockMvc.perform(delete("/api/v2/folder/" + newFolderId)).andExpect(status().isOk());
 	}	
 }

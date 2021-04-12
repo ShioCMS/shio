@@ -1,6 +1,6 @@
 buildscript {
-    ext { springBootVersion = '2.3.2.RELEASE'
-	      hibernateVersion = '5.11.5.Final'
+    ext { springBootVersion = '2.4.4'
+	      hibernateVersion = '5.11.8.Final'
 		  swaggerVersion = '3.0.0'
 		 }
 		repositories {
@@ -12,17 +12,28 @@ buildscript {
     			  }
 }
 
+
+
+
 plugins {
+  id 'org.springframework.boot' version '2.4.4'
+  id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+  id 'java'
   id "com.eriwen.gradle.js" version "2.14.1"
-  id "com.gorylenko.gradle-git-properties" version "2.2.3"
+//  id "com.gorylenko.gradle-git-properties" version "2.2.4"
   id 'de.undercouch.download' version '4.1.1'
+  id 'eclipse'
+  id 'jacoco'
+  id "org.sonarqube" version "3.1.1"
 }
 
-apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
-apply plugin: 'jacoco'
+sonarqube {
+  properties {
+    property "sonar.projectKey", "ShioCMS_shio"
+    property "sonar.organization", "shiocms"
+    property "sonar.host.url", "https://sonarcloud.io"
+  }
+}
 
 jar {
     archiveBaseName = 'viglet-shio'
@@ -41,26 +52,36 @@ eclipse {
 
 }
 
-gitProperties {
-    extProperty = 'gitProps' // git properties will be put in a map at project.ext.gitProps
-}
+// gitProperties {
+//    extProperty = 'gitProps' // git properties will be put in a map at project.ext.gitProps
+// }
 
 bootJar {
 	launchScript() // executable jar
-    manifest {
-    	attributes(    
-        'Implementation-Version': "${-> project.jar.version + '-' + project.ext.gitProps['git.commit.id.abbrev']}"
-    	)
-  	} 
+//    manifest {
+//    	attributes(    
+//        'Implementation-Version': "${-> project.jar.version + '-' + project.ext.gitProps['git.commit.id.abbrev']}"
+//    	)
+//  	} 
 }
 
+ bootRun {
+   jvmArgs = ["--add-modules", "java.se", 
+  "--add-exports", "java.base/jdk.internal.ref=ALL-UNNAMED",
+  "--add-opens", "java.base/java.lang=ALL-UNNAMED",
+  "--add-opens", "java.base/java.nio=ALL-UNNAMED",
+  "--add-opens", "java.base/sun.nio.ch=ALL-UNNAMED",
+  "--add-opens", "java.management/sun.management=ALL-UNNAMED",
+  "--add-opens", "jdk.management/com.sun.management.internal=ALL-UNNAMED"]
+}
 repositories {
 	mavenCentral()
 	maven { url 'https://jitpack.io' }
 }
 
-sourceCompatibility = 11
-targetCompatibility = 11
+group = 'com.viglet.shio'
+sourceCompatibility = 14
+targetCompatibility = 14
 
 tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
@@ -97,65 +118,6 @@ task minifyAllJs(dependsOn: ':combineAllJs', type: com.eriwen.gradle.js.tasks.Mi
     }
 }
 
-// Shio Stock
-def stockZipDir = "$projectDir/shio-media-master"
-def stockZipFile = "$projectDir/shio-media.zip"
-def stockDir = "$projectDir/src/main/resources/ui/public/media/"
-
-task deleteGitStock(type: Delete) {
-    delete "$stockZipDir", "$stockZipFile"
-}
-
-task downloadStockZipFile(dependsOn: deleteGitStock, type: Download) {
-    src 'https://github.com/ShioCMS/shio-media/archive/master.zip'
-    dest stockZipFile
-}
-
-task downloadAndUnzipStockZipFile(dependsOn: downloadStockZipFile, type: Copy) {
-    from zipTree(downloadStockZipFile.dest)
-    into projectDir
-}
-
-
-task installStock(type:Exec) {
-	dependsOn "downloadAndUnzipStockZipFile"
-	workingDir "$stockZipDir"
-	inputs.dir "$stockZipDir"
-	group = BasePlugin.BUILD_GROUP
-	
-	if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
-		commandLine "npm.cmd", "install"
-	} else {
-		commandLine "npm", "install"
-	}
-}
-
-task deleteStockDir(type: Delete) {
-	dependsOn "installStock"
-    delete "$stockDir"
-}
-
-task createStockDir {
-	dependsOn "deleteStockDir"
-	doLast {
-		mkdir "$stockDir"
-	}
-}
-
-task buildStock(type:Exec) {
-	dependsOn "createStockDir"
-	workingDir "$stockZipDir"
-	inputs.dir "$stockZipDir"
-	
-	group = BasePlugin.BUILD_GROUP
-	
-	if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
-		commandLine "ng.cmd", "build", "--outputPath", "$stockDir", "--base-href", "/stock/"
-	} else {
-		commandLine "ng", "build", "--outputPath", "$stockDir", "--base-href", "/stock/"
-	}
-}
-
 task graphQLDocs(type:Exec) {
 commandLine "graphdoc","--force", "-e",  "http://localhost:2710/graphql", "-o", "./docs/graphql"
 }
@@ -163,8 +125,6 @@ commandLine "graphdoc","--force", "-e",  "http://localhost:2710/graphql", "-o", 
 task stage(dependsOn: ['build', 'clean'])
 
 compileJava.dependsOn(['minifyAllJs'])
-
-build.dependsOn(['buildStock'])
 
 build.mustRunAfter clean
 
@@ -192,10 +152,10 @@ dependencies {
 	implementation 'com.github.openturing:turing-java-sdk:0.3.3-SNAPSHOT'
 
   	// Spring
-  	compile group: 'org.springframework', name: 'spring-test', version: '5.2.8.RELEASE'
+  	compile group: 'org.springframework', name: 'spring-test', version: '5.3.5'
   	    
   	// Jackson
-    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.11.2'
+    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.12.2'
    
    	// Oracle	
 	compile group: 'com.oracle.ojdbc', name: 'ojdbc8', version: '19.3.0.0'
@@ -204,18 +164,18 @@ dependencies {
     compile group: 'com.h2database', name: 'h2', version:'1.4.200'
 
 	// MariaDB
-    compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.6.2'
+    compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.7.2'
 
     // Apache Commons
     compile group: 'org.apache.commons', name: 'commons-compress', version: '1.20'   
-    compile group: 'commons-io', name: 'commons-io', version:'2.7'
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
+    compile group: 'commons-io', name: 'commons-io', version:'2.8.0'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
 	compile group: 'org.apache.commons', name: 'commons-text', version: '1.9'
 
     
     // Apache POI
-    compile group: 'org.apache.poi', name: 'poi', version: '4.1.2'
-    compile group: 'org.apache.poi', name: 'poi-ooxml', version: '4.1.2'
+    compile group: 'org.apache.poi', name: 'poi', version: '5.0.0'
+    compile group: 'org.apache.poi', name: 'poi-ooxml', version: '5.0.0'
     
     // JSoup
 	compile group: 'org.jsoup', name: 'jsoup', version: '1.13.1'
@@ -225,8 +185,8 @@ dependencies {
 	compile group: 'org.hibernate', name: 'hibernate-search-orm', version: "${hibernateVersion}"
 	
 	//Hazelcast
-	compile group: 'com.hazelcast', name: 'hazelcast', version : '4.0.1'	
-	compile group: 'com.hazelcast', name: 'hazelcast-spring', version: '4.0.2'
+	compile group: 'com.hazelcast', name: 'hazelcast-all', version : '4.0.3'	
+	compile group: 'com.hazelcast', name: 'hazelcast-spring', version: '4.0.3'
 	
 	
 	// Swagger 2
@@ -237,11 +197,11 @@ dependencies {
 	compile group: 'com.google.code.gson', name: 'gson', version: '2.8.6'
 
 	// Thumbnailator
-    compile group: 'net.coobird', name: 'thumbnailator', version: '0.4.11'
+    compile group: 'net.coobird', name: 'thumbnailator', version: '0.4.14'
 	
 	// Tika
-    compile group: 'org.apache.tika', name: 'tika-core', version:'1.24.1'
-    compile group: 'org.apache.tika', name: 'tika-parsers', version:'1.24.1'
+    compile group: 'org.apache.tika', name: 'tika-core', version:'1.25'
+    compile group: 'org.apache.tika', name: 'tika-parsers', version:'1.25'
     
 	// Javadoc - Need this package
 	compile 'javax.interceptor:javax.interceptor-api:1.2.2'
@@ -250,36 +210,36 @@ dependencies {
 	compile group: 'ldapsdk', name: 'ldapsdk', version: '4.1'
 	
 	// Git 
-	compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.8.1.202007141445-r'
+	compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.11.0.202103091610-r'
 		
 	// GraphQL
-	implementation 'com.graphql-java:graphql-java:2020-07-03T01-10-37-bb87d8f'
+	implementation 'com.graphql-java:graphql-java:2021-03-19T00-06-52-e166c255'
 	implementation 'com.graphql-java:graphql-java-spring-webmvc:2020-07-12T23-24-35-c6606f6'	
-	implementation 'com.graphql-java:graphql-java-extended-scalars:1.0.1'
-	implementation 'io.projectreactor:reactor-core:3.3.8.RELEASE'
+	implementation 'com.graphql-java:graphql-java-extended-scalars:15.0.0'
+	implementation 'io.projectreactor:reactor-core:3.4.4'
 
 	// Color Thief
 	compile group: 'de.androidpit', name: 'color-thief', version: '1.1.2'
 
 	// Guava
-	implementation 'com.google.guava:guava:29.0-jre'
+	implementation 'com.google.guava:guava:30.1.1-jre'
 	
 	// WebJars
 	compile 'org.webjars:jquery:1.12.4'
 	compile 'org.webjars.bower:jquery.ui:1.12.1'
 	compile 'org.webjars:bootstrap:3.3.7-1' // Content
-	compile 'org.webjars.bower:bootstrap:4.5.1' // Preview
-	compile 'org.webjars.npm:moment:2.27.0'
-	compile 'org.webjars.npm:angular:1.8.0'
+	compile 'org.webjars.bower:bootstrap:4.6.0' // Preview
+	compile 'org.webjars.npm:moment:2.29.1'
+	compile 'org.webjars.npm:angular:1.8.2'
+	compile 'org.webjars.npm:angular-resource:1.8.2'
+	compile 'org.webjars.npm:angular-animate:1.8.2'
+	compile 'org.webjars.npm:angular-sanitize:1.8.2'	
+	compile 'org.webjars.npm:angular-cookies:1.8.2'
 	compile 'org.webjars.bower:ace-builds:1.4.12'
-	compile 'org.webjars.bower:tinymce:5.4.1'
-	compile 'org.webjars.bower:angular-ui-router:1.0.20'
-	compile 'org.webjars.npm:angular-translate:2.18.3'		
-	compile 'org.webjars.npm:angular-resource:1.8.0'
-	compile 'org.webjars.npm:angular-animate:1.8.0'
-	compile 'org.webjars.npm:angular-sanitize:1.8.0'
+	compile 'org.webjars.bower:tinymce:5.7.0'
+	compile 'org.webjars.bower:angular-ui-router:1.0.28'
+	compile 'org.webjars.npm:angular-translate:2.18.4'		
 	compile 'org.webjars.bower:angular-bootstrap:2.5.0'
-	compile 'org.webjars.npm:angular-cookies:1.8.0'
 	compile 'org.webjars.bower:angular-moment:1.2.0'
 	compile 'org.webjars.bower:angular-ui-ace:0.2.3'
 	compile 'org.webjars.bower:font-awesome:4.7.0'
@@ -296,24 +256,19 @@ dependencies {
 }
 
 test {
+	useJUnitPlatform()
     testLogging {
         events "passed", "skipped", "failed"
         exceptionFormat "full"
     }
     
- jacocoTestReport {
-    reports {
-        xml.enabled true
-        html.enabled false
-    }
-}
-
-bootRun {
-    if (project.hasProperty('args')) {
-        args project.args.split(',')
-    }
-}
+ 	jacocoTestReport {
+    	reports {
+        	xml.enabled true
+        	html.enabled false
+    	}
+	}
    
-check.dependsOn jacocoTestReport   
+	check.dependsOn jacocoTestReport   
 
 }

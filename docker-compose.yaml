@@ -21,18 +21,7 @@ services:
       MYSQL_DATABASE: shio
       MYSQL_ROOT_PASSWORD: shio
       MYSQL_USER: shio
-      MYSQL_PASSWORD: shio    
-  shio-mongodb:
-    container_name: shio-mongodb
-    image: mongo
-    restart: always
-    ports:
-    - 27017:27017
-    volumes:
-    - ./volumes/mongodb/db:/data/db
-    - ./volumes/mongodb/configdb:/data/configdb 
-    environment:
-      MONGODB_APPLICATION_DATABASE: shio
+      MYSQL_PASSWORD: shio
   shio:
     container_name: shio
     build: .
@@ -44,11 +33,9 @@ services:
     depends_on:
       - shio-nginx
       - shio-mariadb
-      - shio-mongodb    
     environment:
       SPRING_DATASOURCE_URL: jdbc:mariadb://shio-mariadb:3306/shio
       SPRING_DATASOURCE_USERNAME: shio
       SPRING_DATASOURCE_PASSWORD: shio
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.mariadb.jdbc.Driver
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL5InnoDBDialect
-      SPRING_DATA_MONGODB_URI: mongodb://shio-mongodb:27017/shio
