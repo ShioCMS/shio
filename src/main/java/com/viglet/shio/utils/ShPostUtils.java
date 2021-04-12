@@ -200,7 +200,6 @@ public class ShPostUtils {
 		}
 	}
 
-	@Transactional
 	public void referencedPost(ShPostAttrImpl shPostAttr, ShPostImpl shPost) {
 		if (shPostAttr.getStrValue() == null) {
 			shPostAttr.setReferenceObject(null);

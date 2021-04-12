@@ -100,26 +100,17 @@ public class ShTuringContext {
 
 	private String getResults(String url) {
 		StringBuilder result = new StringBuilder();
-		CloseableHttpClient client = HttpClients.createDefault();
-		HttpGet httpGet;
-
-		httpGet = new HttpGet(url);
-
-		HttpResponse response = null;
-		try {
-			response = client.execute(httpGet);
-		} catch (IOException e1) {
-			logger.error(e1);
-		}
-		if (response != null) {
-
-			try (BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()))) {
-				String line = "";
-				while ((line = rd.readLine()) != null)
-					result.append(line);
-			} catch (IOException e) {
-				logger.error(e);
+		try (CloseableHttpClient client = HttpClients.createDefault()) {
+			HttpResponse response = client.execute(new HttpGet(url));
+			if (response != null) {
+				try (BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()))) {
+					String line = "";
+					while ((line = rd.readLine()) != null)
+						result.append(line);
+				}
 			}
+		} catch (IOException e) {
+			logger.error(e);
 		}
 		return result.toString();
 	}

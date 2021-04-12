@@ -1,4 +1,4 @@
-[![demo](https://img.shields.io/badge/demo-try%20online-FF874B.svg)](https://viglet.com/shio/demo) [![downloads](https://img.shields.io/github/downloads/ShioCMS/shio/total.svg)](https://github.com/ShioCMS/shio/releases/download/v0.3.6/viglet-shio.jar) [![Build](https://github.com/ShioCMS/shio/actions/workflows/build.yml/badge.svg)](https://github.com/ShioCMS/shio/actions/workflows/build.yml) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=ShioCMS_shio&metric=security_rating)](https://sonarcloud.io/dashboard?id=ShioCMS_shio) [![codecov](https://codecov.io/gh/ShioCMS/shio/branch/master/graph/badge.svg)](https://codecov.io/gh/ShioCMS/shio) [![Twitter](https://img.shields.io/twitter/follow/shiocms.svg?style=social&label=Follow)](https://twitter.com/intent/follow?screen_name=shiocms)
+[![downloads](https://img.shields.io/github/downloads/ShioCMS/shio/total.svg)](https://github.com/ShioCMS/shio/releases/download/v0.3.6/viglet-shio.jar) [![Build](https://github.com/ShioCMS/shio/actions/workflows/build.yml/badge.svg)](https://github.com/ShioCMS/shio/actions/workflows/build.yml) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=ShioCMS_shio&metric=security_rating)](https://sonarcloud.io/dashboard?id=ShioCMS_shio) [![codecov](https://codecov.io/gh/ShioCMS/shio/branch/master/graph/badge.svg)](https://codecov.io/gh/ShioCMS/shio) [![Twitter](https://img.shields.io/twitter/follow/shiocms.svg?style=social&label=Follow)](https://twitter.com/intent/follow?screen_name=shiocms)
 
 ![shio_banner.png](https://shiocms.github.io/shio/img/shio_banner.png) 
 ------
@@ -15,7 +15,7 @@ guidelines](CONTRIBUTING.md).**
 # Installation
 
 ## Pre-reqs
-1. Install Java 11
+1. Install Java 14
 2. Install Git Client
 3. Install NPM
 4. Install Angular CLI

@@ -115,16 +115,20 @@ public class ShGitProvider {
 		}
 	}
 
-	public void init() throws IOException {
+	public void init() {
 		File gitDirectory = new File(USER_DIR.getAbsolutePath().concat(GIT_SOURCE_BASE));
 		logger.info("Opening a git repo at '{}'", GIT_SOURCE_BASE);
-		Repository localRepo = new FileRepository(
-				new File(gitDirectory.getAbsolutePath().concat(File.separator + ".git")));
-		if (!localRepo.getDirectory().exists()) {
-			logger.info("Git repo {} does not exist, creating a new one", localRepo.getDirectory());
-			localRepo.create();
+		try (Repository localRepo = new FileRepository(
+				new File(gitDirectory.getAbsolutePath().concat(File.separator + ".git")))) {
+			if (!localRepo.getDirectory().exists()) {
+				logger.info("Git repo {} does not exist, creating a new one", localRepo.getDirectory());
+				localRepo.create();
+			}
+			git = new Git(localRepo);
 		}
-		git = new Git(localRepo);
+		catch(Exception e) {
+			logger.error(e);
+		}
 	}
 
 	public void move(String shObjectId) throws IOException {
@@ -151,7 +155,7 @@ public class ShGitProvider {
 			throw new IOException(e);
 		}
 	}
-	
+
 	public void newItem(String shObjectId) {
 		ShPost shPost = shPostUtils.getShPostFromObjectId(shObjectId);
 		File source = shStaticFileUtils.filePath(shPost);
@@ -186,8 +190,7 @@ public class ShGitProvider {
 		try {
 			git.add().addFilepattern(staticFileRelative).call();
 			git.add().addFilepattern(jsonFileRelative).call();
-			git.commit().setMessage("Added the Object " + source.getName() + " (" + shObjectId + ")")
-					.call();
+			git.commit().setMessage("Added the Object " + source.getName() + " (" + shObjectId + ")").call();
 			logger.info("Add new item '{}'", source.getAbsolutePath());
 		} catch (GitAPIException e) {
 			logger.error("Failed to add+commit {} to Git", source.getAbsolutePath(), e);

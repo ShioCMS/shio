@@ -401,7 +401,7 @@ public class ShTuringIntegration {
 	}
 
 	private void sendServer(TurSNJobItems turSNJobItems, ShSite shSite) {
-		CloseableHttpResponse response = null;
+		
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			String jsonResult = mapper.writeValueAsString(turSNJobItems);
@@ -422,32 +422,24 @@ public class ShTuringIntegration {
 
 			String jsonUTF8 = new String(outputData);
 
-			CloseableHttpClient client = HttpClients.createDefault();
-			String serviceAPI = "%s/api/sn/%s/import";
+			try (CloseableHttpClient client = HttpClients.createDefault()) {
+				String serviceAPI = "%s/api/sn/%s/import";
 
-			HttpPost httpPost = new HttpPost(String.format(serviceAPI, TURING_SERVER, shSite.getName()));
-			if (logger.isDebugEnabled())
-				logger.debug(jsonUTF8);
+				HttpPost httpPost = new HttpPost(String.format(serviceAPI, TURING_SERVER, shSite.getName()));
+				if (logger.isDebugEnabled())
+					logger.debug(jsonUTF8);
 
-			StringEntity entity = new StringEntity(jsonUTF8, StandardCharsets.UTF_8.name());
-			httpPost.setEntity(entity);
-			httpPost.setHeader("Accept", "application/json");
-			httpPost.setHeader("Content-type", "application/json");
-			httpPost.setHeader("Accept-Encoding", StandardCharsets.UTF_8.name());
+				StringEntity entity = new StringEntity(jsonUTF8, StandardCharsets.UTF_8.name());
+				httpPost.setEntity(entity);
+				httpPost.setHeader("Accept", "application/json");
+				httpPost.setHeader("Content-type", "application/json");
+				httpPost.setHeader("Accept-Encoding", StandardCharsets.UTF_8.name());
 
-			response = client.execute(httpPost);
+				try (CloseableHttpResponse response = client.execute(httpPost)){};
 
-			client.close();
+			}
 		} catch (IOException e) {
-			logger.error("sendServer: ", e);
-		} finally {
-			if (response != null)
-				try {
-					response.close();
-				} catch (IOException e) {
-					logger.error("sendServer", e);
-
-				}
+			logger.error(e);
 		}
 
 	}

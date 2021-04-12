@@ -57,7 +57,7 @@ public class ShRoleAPI {
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShRole shRoleEdit(@PathVariable String id) {
-		return shRoleRepository.findById(id).get();
+		return shRoleRepository.findById(id).orElse(null);
 	}
 
 	@PutMapping("/{id}")
