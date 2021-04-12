@@ -2,16 +2,16 @@
  * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU General License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU General License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU General License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
@@ -53,7 +53,7 @@ import com.viglet.shio.utils.ShUtils;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @TestInstance(Lifecycle.PER_CLASS)
-public class ShObjectAPITest {
+class ShObjectAPITest {
 
 	@Autowired
 	private WebApplicationContext webApplicationContext;
@@ -69,7 +69,7 @@ public class ShObjectAPITest {
 	private Principal mockPrincipal;
 
 	@BeforeAll
-	public void setup() {
+	void setup() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 		mockPrincipal = Mockito.mock(Principal.class);
 		Mockito.when(mockPrincipal.getName()).thenReturn("admin");
@@ -78,7 +78,7 @@ public class ShObjectAPITest {
 	// shObjectMoveTo
 	
 	@Test
-	public void shObjectMoveToFolder() throws Exception {
+	void shObjectMoveToFolder() throws Exception {
 
 		ShSite shSite = shSiteRepository.findByName("Viglet");
 
@@ -111,7 +111,7 @@ public class ShObjectAPITest {
 	}
 
 	@Test
-	public void shObjectMoveToSite() throws Exception {
+	void shObjectMoveToSite() throws Exception {
 		ShSite shSite = shSiteRepository.findByName("Viglet");
 		ShFolder shFolderHome = shFolderRepository.findByShSiteAndName(shSite, "Home");
 		ShFolder shParentFolder = shFolderRepository.findById(shFolderHome.getId()).get();
@@ -147,7 +147,7 @@ public class ShObjectAPITest {
 	// shObjectCopyTo
 	
 		@Test
-		public void shObjectCopyToFolder() throws Exception {
+		void shObjectCopyToFolder() throws Exception {
 			ShSite shSite = shSiteRepository.findByName("Viglet");
 			ShFolder shFolderHome = shFolderRepository.findByShSiteAndName(shSite, "Home");
 			
@@ -181,7 +181,7 @@ public class ShObjectAPITest {
 		}
 
 		@Test
-		public void shObjectCopyToSite() throws Exception {
+		void shObjectCopyToSite() throws Exception {
 			ShSite shSite = shSiteRepository.findByName("Viglet");
 			ShFolder shFolderHome = shFolderRepository.findByShSiteAndName(shSite, "Home");
 			ShFolder shParentFolder = shFolderRepository.findById(shFolderHome.getId()).get();
@@ -217,14 +217,14 @@ public class ShObjectAPITest {
 	// shObjectPreview
 
 	@Test
-	public void shObjectPreviewSite() throws Exception {
+	void shObjectPreviewSite() throws Exception {
 		ShSite shSite = shSiteRepository.findByName("Viglet");
 		mockMvc.perform(get("/api/v2/object/" + shSite.getId() + "/preview")).andExpect(status().is3xxRedirection());
 
 	}
 
 	@Test
-	public void shObjectPreviewFolder() throws Exception {
+	void shObjectPreviewFolder() throws Exception {
 		ShSite shSite = shSiteRepository.findByName("Viglet");
 		ShFolder shFolderHome = shFolderRepository.findByShSiteAndName(shSite, "Home");
 		mockMvc.perform(get("/api/v2/object/" + shFolderHome.getId() + "/preview")).andExpect(status().is3xxRedirection());
@@ -232,7 +232,7 @@ public class ShObjectAPITest {
 	}
 
 	@Test
-	public void shObjectPreviewPost() throws Exception {
+	void shObjectPreviewPost() throws Exception {
 		ShSite shSite = shSiteRepository.findByName("Viglet");
 		ShFolder shFolderHome = shFolderRepository.findByShSiteAndName(shSite, "Home");
 		ShPost shPost = shPostRepository.findByShFolderAndFurl(shFolderHome, "index");
@@ -243,7 +243,7 @@ public class ShObjectAPITest {
 	// shObjectListItem
 
 	@Test
-	public void shObjectListItemSite() throws Exception {
+	void shObjectListItemSite() throws Exception {
 		ShSite shSite = shSiteRepository.findByName("Viglet");
 		mockMvc.perform(get("/api/v2/object/" + shSite.getId() + "/list")).andExpect(status().isOk())
 				.andExpect(content().contentType("application/json"));
@@ -251,7 +251,7 @@ public class ShObjectAPITest {
 	}
 
 	@Test
-	public void shObjectListItemFolder() throws Exception {
+	void shObjectListItemFolder() throws Exception {
 		ShSite shSite = shSiteRepository.findByName("Viglet");
 		ShFolder shFolderHome = shFolderRepository.findByShSiteAndName(shSite, "Home");
 		mockMvc.perform(get("/api/v2/object/" + shFolderHome.getId() + "/list")).andExpect(status().isOk())
@@ -262,7 +262,7 @@ public class ShObjectAPITest {
 	// shObjectListItem
 
 	@Test
-	public void shFolderListByPostTypeSite() throws Exception {
+	void shFolderListByPostTypeSite() throws Exception {
 		ShSite shSite = shSiteRepository.findByName("Viglet");
 		mockMvc.perform(get("/api/v2/object/" + shSite.getId() + "/list/Text")).andExpect(status().isOk())
 				.andExpect(content().contentType("application/json"));
@@ -270,7 +270,7 @@ public class ShObjectAPITest {
 	}
 
 	@Test
-	public void shFolderListByPostTypeFolder() throws Exception {
+	void shFolderListByPostTypeFolder() throws Exception {
 		ShSite shSite = shSiteRepository.findByName("Viglet");
 		ShFolder shFolderHome = shFolderRepository.findByShSiteAndName(shSite, "Home");
 		mockMvc.perform(get("/api/v2/object/" + shFolderHome.getId() + "/list/Text")).andExpect(status().isOk())
@@ -281,7 +281,7 @@ public class ShObjectAPITest {
 	// shObjectPath
 
 	@Test
-	public void shObjectPathSite() throws Exception {
+	void shObjectPathSite() throws Exception {
 		ShSite shSite = shSiteRepository.findByName("Viglet");
 		mockMvc.perform(get("/api/v2/object/" + shSite.getId() + "/path")).andExpect(status().isOk())
 				.andExpect(content().contentType("application/json"));
@@ -289,7 +289,7 @@ public class ShObjectAPITest {
 	}
 
 	@Test
-	public void shObjectPathFolder() throws Exception {
+	void shObjectPathFolder() throws Exception {
 		ShSite shSite = shSiteRepository.findByName("Viglet");
 		ShFolder shFolderHome = shFolderRepository.findByShSiteAndName(shSite, "Home");
 		mockMvc.perform(get("/api/v2/object/" + shFolderHome.getId() + "/path")).andExpect(status().isOk())
@@ -298,7 +298,7 @@ public class ShObjectAPITest {
 	}
 
 	@Test
-	public void shObjectPathPost() throws Exception {
+	void shObjectPathPost() throws Exception {
 		ShSite shSite = shSiteRepository.findByName("Viglet");
 		ShFolder shFolderHome = shFolderRepository.findByShSiteAndName(shSite, "Home");
 		ShPost shPost = shPostRepository.findByShFolderAndFurl(shFolderHome, "index");

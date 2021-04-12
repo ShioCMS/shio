@@ -2,16 +2,16 @@
  * Copyright (C) 2016-2020 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU General License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU General License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU General License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.viglet.shio.api.post;
@@ -61,7 +61,7 @@ import com.viglet.shio.utils.ShUtils;
 @SpringBootTest
 @TestMethodOrder (MethodOrderer.Alphanumeric.class)
 @TestInstance(Lifecycle.PER_CLASS)
-public class ShPostAPITest {
+class ShPostAPITest {
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	private WebApplicationContext webApplicationContext;
@@ -83,7 +83,7 @@ public class ShPostAPITest {
 	private String newPostId = "553923c7-fda4-4a91-9700-eb9a549bb522";
 
 	@BeforeAll
-	public void setup() {
+	void setup() {
 		log.debug("PostAPITest Setup");
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 		mockPrincipal = Mockito.mock(Principal.class);
@@ -91,21 +91,21 @@ public class ShPostAPITest {
 	}
 
 	@Test
-	public void shPostList() throws Exception {
+	void shPostList() throws Exception {
 		mockMvc.perform(get("/api/v2/post")).andExpect(status().isOk())
 				.andExpect(content().contentType("application/json"));
 
 	}
 
 	@Test
-	public void shPostAttrModel() throws Exception {
+	void shPostAttrModel() throws Exception {
 		mockMvc.perform(get("/api/v2/post/attr/model")).andExpect(status().isOk())
 				.andExpect(content().contentType("application/json"));
 
 	}
 
 	@Test
-	public void stage01ShPostAdd() throws Exception {
+	void stage01ShPostAdd() throws Exception {
 		ShSite shSite = shSiteRepository.findByName("Viglet");
 		ShFolder shFolder = shFolderRepository.findByShSiteAndName(shSite, "Home");
 		ShPostType shPostType = shPostTypeRepository.findByName(ShSystemPostType.ARTICLE);
@@ -143,13 +143,13 @@ public class ShPostAPITest {
 	}
 
 	@Test
-	public void stage02ShPostEdit() throws Exception {
+	void stage02ShPostEdit() throws Exception {
 		mockMvc.perform(get("/api/v2/post/" + newPostId)).andExpect(status().isOk())
 				.andExpect(content().contentType("application/json"));
 	}
 
 	@Test
-	public void stage03ShPostUpdate() throws Exception {
+	void stage03ShPostUpdate() throws Exception {
 
 		ShPost shPost = shPostRepository.findById(newPostId).get();
 
@@ -167,7 +167,7 @@ public class ShPostAPITest {
 	}
 
 	@Test
-	public void stage04ShPostDelete() throws Exception {
+	void stage04ShPostDelete() throws Exception {
 
 		RequestBuilder folderRequestBuilder = MockMvcRequestBuilders.delete("/api/v2/post/" + newPostId)
 				.principal(mockPrincipal).accept(MediaType.APPLICATION_JSON).contentType("application/json");

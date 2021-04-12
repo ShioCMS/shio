@@ -2,16 +2,16 @@
  * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU General License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU General License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU General License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
@@ -49,7 +49,7 @@ import com.viglet.shio.utils.ShUtils;
 @SpringBootTest
 @TestMethodOrder (MethodOrderer.Alphanumeric.class)
 @TestInstance(Lifecycle.PER_CLASS)
-public class ShSiteAPITest {
+class ShSiteAPITest {
 
 	@Autowired
 	private WebApplicationContext webApplicationContext;
@@ -63,28 +63,28 @@ public class ShSiteAPITest {
 	private Principal mockPrincipal;
 	
 	@BeforeAll
-	public void setup() {
+	void setup() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 		mockPrincipal = Mockito.mock(Principal.class);
 		Mockito.when(mockPrincipal.getName()).thenReturn("admin");
 	}
 
 	@Test
-	public void shSiteList()  throws Exception {	
+	void shSiteList()  throws Exception {	
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/v2/site").principal(mockPrincipal);
 
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 	
 	@Test
-	public void shSiteStructure()  throws Exception {		
+	void shSiteStructure()  throws Exception {		
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/v2/site/model").principal(mockPrincipal);
 
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 	
 	@Test
-	public void shSiteRootFolder() throws Exception {
+	void shSiteRootFolder() throws Exception {
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/v2/site/" + sampleSiteId + "/folder").principal(mockPrincipal);
 
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
@@ -92,19 +92,19 @@ public class ShSiteAPITest {
 	}
 	
 	@Test
-	public void shSiteEdit() throws Exception {
+	void shSiteEdit() throws Exception {
 		mockMvc.perform(get("/api/v2/site/" + sampleSiteId)).andExpect(status().isOk());
 
 	}
 
 	@Test
-	public void shSiteExport() throws Exception {
+	void shSiteExport() throws Exception {
 		mockMvc.perform(get("/api/v2/site/" + sampleSiteId + "/export")).andExpect(status().isOk());
 
 	}
 
 	@Test
-	public void stage01ShSiteAdd() throws Exception {
+	void stage01ShSiteAdd() throws Exception {
 		ShSite shSite = new ShSite();
 		shSite.setId(newSiteId);
 		shSite.setDescription("Test Site");
@@ -122,7 +122,7 @@ public class ShSiteAPITest {
 	}
 
 	@Test
-	public void stage02ShSiteUpdate() throws Exception {
+	void stage02ShSiteUpdate() throws Exception {
 		ShSite shSite = new ShSite();
 		shSite.setId(newSiteId);
 		shSite.setDescription("Test Site2");
@@ -140,7 +140,7 @@ public class ShSiteAPITest {
 	}
 	
 	@Test
-	public void stage03ShSiteDelete() throws Exception {
+	void stage03ShSiteDelete() throws Exception {
 		mockMvc.perform(delete("/api/v2/site/" + newSiteId)).andExpect(status().isOk());
 
 	}

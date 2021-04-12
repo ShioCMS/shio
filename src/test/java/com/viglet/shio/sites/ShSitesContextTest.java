@@ -2,16 +2,16 @@
  * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU General License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU General License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU General License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
@@ -36,7 +36,7 @@ import org.springframework.web.context.WebApplicationContext;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @TestInstance(Lifecycle.PER_CLASS)
-public class ShSitesContextTest {
+class ShSitesContextTest {
 
 	@Autowired
 	private WebApplicationContext webApplicationContext;
@@ -44,18 +44,18 @@ public class ShSitesContextTest {
 	private MockMvc mockMvc;
 
 	@BeforeAll
-	public void setup() {
+	void setup() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 	}
 
 	@Test
-	public void sitesFullGeneric() throws Exception {
+	void sitesFullGeneric() throws Exception {
 		mockMvc.perform(get("/sites/viglet/default/en-us")).andExpect(status().isOk());
 
 	}
 
 	@Test
-	public void sitesFullGenericHeaders() throws Exception {
+	void sitesFullGenericHeaders() throws Exception {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.add("x-sh-site", "viglet");
 		httpHeaders.add("x-sh-nocache", "1");

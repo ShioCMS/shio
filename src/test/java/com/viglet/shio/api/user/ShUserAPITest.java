@@ -2,16 +2,16 @@
  * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU General License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU General License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU General License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
@@ -56,7 +56,7 @@ import com.viglet.shio.utils.ShUtils;
 @SpringBootTest
 @TestMethodOrder (MethodOrderer.Alphanumeric.class)
 @TestInstance(Lifecycle.PER_CLASS)
-public class ShUserAPITest {
+class ShUserAPITest {
 
 	@Autowired
 	private WebApplicationContext webApplicationContext;
@@ -74,14 +74,14 @@ public class ShUserAPITest {
 	SecurityContext mockSecurityContext;
 
 	@BeforeAll
-	public void setup() {
+	void setup() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 		mockPrincipal = Mockito.mock(Principal.class);
 		Mockito.when(mockPrincipal.getName()).thenReturn("admin");
 	}
 
 	@Test
-	public void shUserList() throws Exception {
+	void shUserList() throws Exception {
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/v2/user").principal(mockPrincipal)
 				.accept(MediaType.APPLICATION_JSON).contentType("application/json");
 		mockMvc.perform(requestBuilder).andExpect(status().isOk())
@@ -89,7 +89,7 @@ public class ShUserAPITest {
 	}
 
 	// @Test
-	public void shUserCurrent() throws Exception {
+	void shUserCurrent() throws Exception {
 		Authentication authentication = mock(Authentication.class);
 		SecurityContext securityContext = mock(SecurityContext.class);
 		when(securityContext.getAuthentication()).thenReturn(authentication);
@@ -103,7 +103,7 @@ public class ShUserAPITest {
 	}
 
 	@Test
-	public void shUserStructure() throws Exception {
+	void shUserStructure() throws Exception {
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/v2/user/model").principal(mockPrincipal)
 				.accept(MediaType.APPLICATION_JSON).contentType("application/json");
 
@@ -112,7 +112,7 @@ public class ShUserAPITest {
 	}
 
 	@Test
-	public void stage01ShUserAdd() throws Exception {
+	void stage01ShUserAdd() throws Exception {
 		ShUser shUser = new ShUser();
 		shUser.setUsername(newUsername);
 		shUser.setEmail("test@test.com");
@@ -132,13 +132,13 @@ public class ShUserAPITest {
 	}
 
 	@Test
-	public void stage02ShUserGet() throws Exception {
+	void stage02ShUserGet() throws Exception {
 		mockMvc.perform(get(String.format("/api/v2/user/%s", newUsername))).andExpect(status().isOk())
 				.andExpect(content().contentType("application/json"));
 	}
 
 	@Test
-	public void stage03ShUserUpdate() throws Exception {
+	void stage03ShUserUpdate() throws Exception {
 		ShUser shUser = shUserRepository.findByUsername(newUsername);
 		shUser.setFirstName("Test2");
 
@@ -152,7 +152,7 @@ public class ShUserAPITest {
 	}
 
 	@Test
-	public void stage04ShUserDelete() throws Exception {
+	void stage04ShUserDelete() throws Exception {
 		mockMvc.perform(delete("/api/v2/user/" + newUsername)).andExpect(status().isOk());
 	}
 }

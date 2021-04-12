@@ -2,16 +2,16 @@
  * Copyright (C) 2016-2018 Alexandre Oliveira <alexandre.oliveira@viglet.com> 
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU General License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU General License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU General License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
@@ -52,7 +52,7 @@ import com.viglet.shio.utils.ShUtils;
 @SpringBootTest
 @TestMethodOrder (MethodOrderer.Alphanumeric.class)
 @TestInstance(Lifecycle.PER_CLASS)
-public class ShFolderAPITest {
+class ShFolderAPITest {
 
 	@Autowired
 	private WebApplicationContext webApplicationContext;
@@ -69,26 +69,26 @@ public class ShFolderAPITest {
 	private ShSiteRepository shSiteRepository;
 
 	@BeforeAll
-	public void setup() {
+	void setup() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 		mockPrincipal = Mockito.mock(Principal.class);
 		Mockito.when(mockPrincipal.getName()).thenReturn("admin");
 	}
 
 	@Test
-	public void shFolderList() throws Exception {
+	void shFolderList() throws Exception {
 		mockMvc.perform(get("/api/v2/folder")).andExpect(status().isOk())
 				.andExpect(content().contentType("application/json"));
 	}
 	
 	@Test
-	public void shFolderStructure() throws Exception {
+	void shFolderStructure() throws Exception {
 		mockMvc.perform(get("/api/v2/folder/model")).andExpect(status().isOk())
 				.andExpect(content().contentType("application/json"));
 	}
 	
 	@Test
-	public void stage01ShFolderAdd() throws Exception {
+	void stage01ShFolderAdd() throws Exception {
 		ShSite shSite = new ShSite();
 		shSite.setId(newSiteId);
 		shSite.setDescription("Test Site");
@@ -120,19 +120,19 @@ public class ShFolderAPITest {
 	}
 
 	@Test
-	public void stage02ShFolderGet() throws Exception {
+	void stage02ShFolderGet() throws Exception {
 		mockMvc.perform(get("/api/v2/folder/" + newFolderId)).andExpect(status().isOk())
 		.andExpect(content().contentType("application/json"));
 	}
 	
 	@Test
-	public void stage03ShFolderPath() throws Exception {
+	void stage03ShFolderPath() throws Exception {
 		mockMvc.perform(get("/api/v2/folder/" + newFolderId + "/path")).andExpect(status().isOk())
 		.andExpect(content().contentType("application/json"));
 	}
 	
 	@Test
-	public void stage04ShFolderUpdate() throws Exception {
+	void stage04ShFolderUpdate() throws Exception {
 		ShSite shSite = shSiteRepository.findById(newSiteId).get();
 
 		ShFolder shFolder = new ShFolder();
@@ -152,7 +152,7 @@ public class ShFolderAPITest {
 	}
 
 	@Test
-	public void stage05ShFolderAddFromParentObjectSite() throws Exception{
+	void stage05ShFolderAddFromParentObjectSite() throws Exception{
 
 		ShFolder shFolder = new ShFolder();
 		shFolder.setName("Unit Test By Object Site");
@@ -167,7 +167,7 @@ public class ShFolderAPITest {
 	}
 
 	@Test
-	public void stage06ShFolderAddFromParentObjectFolder() throws Exception{
+	void stage06ShFolderAddFromParentObjectFolder() throws Exception{
 
 		ShFolder shFolder = new ShFolder();
 		shFolder.setName("Unit Test By Object Folder");
@@ -182,7 +182,7 @@ public class ShFolderAPITest {
 	}
 
 	@Test
-	public void stage07ShFolderDelete() throws Exception {
+	void stage07ShFolderDelete() throws Exception {
 		mockMvc.perform(delete("/api/v2/folder/" + newFolderId)).andExpect(status().isOk());
 	}	
 }
