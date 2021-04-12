@@ -28,7 +28,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
@@ -36,8 +35,10 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.viglet.shio.exchange.ShExchange;
 import com.viglet.shio.exchange.ShExchangeFilesDirs;
-import com.viglet.shio.utils.ShUtils;
-import com.viglet.shio.utils.ShUtilsException;
+
+import net.lingala.zip4j.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
+import net.lingala.zip4j.model.ZipParameters;
 
 /**
  * Exchange Utils.
@@ -49,8 +50,7 @@ import com.viglet.shio.utils.ShUtilsException;
 @Component
 public class ShExchangeUtils {
 	private static final Log logger = LogFactory.getLog(ShExchangeUtils.class);
-	@Autowired
-	private ShUtils shUtils;
+
 	public File responseWithZipFile(String suffixFileName, HttpServletResponse response, ShExchange shExchange,
 			ShExchangeFilesDirs shExchangeFilesDirs) {
 		ObjectMapper mapper = new ObjectMapper();
@@ -59,8 +59,14 @@ public class ShExchangeUtils {
 		} catch (IOException e) {
 			logger.error(e);
 		}
+		try {
+			ZipParameters zipParameters = new ZipParameters();
+			zipParameters.setIncludeRootFolder(false);		
+			new ZipFile(shExchangeFilesDirs.getZipFile()).addFolder(shExchangeFilesDirs.getExportDir(), zipParameters);
+		} catch (ZipException e) {
+			logger.error(e);
+		}
 		
-		shUtils.addFilesToZip(shExchangeFilesDirs.getExportDir(), shExchangeFilesDirs.getZipFile());
 
 		String strDate = new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(new Date());
 		String zipFileName = String.format("%s_%s.zip", suffixFileName, strDate);
@@ -97,15 +103,16 @@ public class ShExchangeUtils {
 
 		return this.responseBodyFromZipFle(shExchangeFilesDirs);
 	}
-	
-	public ShExchangeFilesDirs extractZipFile(MultipartFile file) {	
+
+	public ShExchangeFilesDirs extractZipFile(MultipartFile file) {
 		ShExchangeFilesDirs shExchangeFilesDirs = new ShExchangeFilesDirs();
 		if (shExchangeFilesDirs.generate()) {
 
 			try {
 				file.transferTo(shExchangeFilesDirs.getZipFile());
-				shUtils.unZipIt(shExchangeFilesDirs.getZipFile(), shExchangeFilesDirs.getExportDir());
-			} catch (IllegalStateException | IOException | ShUtilsException e) {
+				new ZipFile(shExchangeFilesDirs.getZipFile())
+						.extractAll(shExchangeFilesDirs.getExportDir().getAbsolutePath());
+			} catch (IllegalStateException | IOException e) {
 				logger.error(e);
 			}
 
