@@ -200,7 +200,7 @@ dependencies {
     compile group: 'net.coobird', name: 'thumbnailator', version: '0.4.14'
 	
 	// Tika
-    compile group: 'org.apache.tika', name: 'tika-core', version:'1.25'
+    compile group: 'org.apache.tika', name: 'tika-core', version:'1.26'
     compile group: 'org.apache.tika', name: 'tika-parsers', version:'1.25'
     
 	// Javadoc - Need this package
