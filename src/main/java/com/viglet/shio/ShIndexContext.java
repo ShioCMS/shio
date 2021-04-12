@@ -23,15 +23,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-
+import org.springframework.web.bind.annotation.GetMapping;
 /**
  * @author Alexandre Oliveira
  */
 @Controller
 public class ShIndexContext {
 
-	@RequestMapping("/")
+	@GetMapping("/")
 	public void index(HttpServletRequest request, HttpServletResponse response, final Principal principal)
 			throws IOException {
 		if (principal != null) {
@@ -42,17 +41,17 @@ public class ShIndexContext {
 
 	}
 
-	@RequestMapping("/content")
+	@GetMapping("/content")
 	public String content() {
 		return "content/content-index";
 	}
 
-	@RequestMapping("/welcome")
+	@GetMapping("/welcome")
 	public String welcome() {
 		return "welcome/welcome-index";
 	}
 
-	@RequestMapping("/preview")
+	@GetMapping("/preview")
 	public String preview() {
 		return "preview/preview-index";
 	}

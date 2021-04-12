@@ -36,6 +36,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -110,7 +111,7 @@ public class ShSitesContext {
 		return null;
 	}
 
-	@RequestMapping("/sites/**")
+	@GetMapping("/sites/**")
 	private void sitesFullGeneric(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 
 		ShSitesContextURL shSitesContextURL = shSitesContextURLProcess.getContextURL(request, response);
@@ -179,13 +180,13 @@ public class ShSitesContext {
 		}
 	}
 
-	@RequestMapping("/login-page")
+	@GetMapping("/login-page")
 	private String sitesLoginPage(HttpServletRequest request, HttpServletResponse response) {
 
 		return "login/login";
 	}
 
-	@RequestMapping("/logout-page")
+	@GetMapping("/logout-page")
 	private void sitesLogoutPage(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		session.removeAttribute(USERNAME_SESSION);
 		try {

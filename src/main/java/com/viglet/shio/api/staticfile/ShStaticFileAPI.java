@@ -49,7 +49,6 @@ import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.object.impl.ShObjectImpl;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
-import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shio.persistence.repository.object.ShObjectRepository;
 import com.viglet.shio.utils.ShStaticFileUtils;
@@ -76,8 +75,8 @@ public class ShStaticFileAPI {
 
 	@GetMapping("/pre-upload/{folderId}/{fileName}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ResponseEntity<ShHttpMessageBean> shStaticFilePreUpload(@PathVariable String fileName, @PathVariable String folderId)
-			throws URISyntaxException, IOException {
+	public ResponseEntity<ShHttpMessageBean> shStaticFilePreUpload(@PathVariable String fileName,
+			@PathVariable String folderId) throws URISyntaxException, IOException {
 
 		ShFolder shFolder = shFolderRepository.findById(folderId).orElse(null);
 		if (!shStaticFileUtils.fileExists(shFolder, fileName)) {
@@ -102,8 +101,8 @@ public class ShStaticFileAPI {
 	@PostMapping("/upload")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ResponseEntity<Object> shStaticFileUpload(@RequestParam("file") MultipartFile file,
-			@RequestParam("folderId") String folderId, @RequestParam("createPost") boolean createPost, Principal principal)
-			throws URISyntaxException, IOException {
+			@RequestParam("folderId") String folderId, @RequestParam("createPost") boolean createPost,
+			Principal principal) throws URISyntaxException, IOException {
 
 		ShFolder shFolder = shFolderRepository.findById(folderId).orElse(null);
 		if (!shStaticFileUtils.fileExists(shFolder, file.getOriginalFilename())) {
@@ -120,13 +119,11 @@ public class ShStaticFileAPI {
 		}
 	}
 
-	@RequestMapping("/{id}/thumbnail")
+	@GetMapping("/{id}/thumbnail")
 	public void resize(HttpServletRequest request, HttpServletResponse response, @PathVariable String id) {
 		ShObjectImpl shObject = shObjectRepository.findById(id).orElse(null);
 		response.setContentType(MediaType.IMAGE_PNG_VALUE);
-		if (shObject instanceof ShSite) {
-			//
-		} else if (shObject instanceof ShPost) {
+		if (shObject instanceof ShPost) {
 			List<String> extensions = new ArrayList<>();
 			extensions.add("png");
 			extensions.add("jpg");
@@ -152,9 +149,6 @@ public class ShStaticFileAPI {
 				}
 
 			}
-		} else if (shObject instanceof ShFolder) {
-			//
 		}
-
 	}
 }
