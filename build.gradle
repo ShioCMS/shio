@@ -155,7 +155,7 @@ dependencies {
   	compile group: 'org.springframework', name: 'spring-test', version: '5.3.5'
   	    
   	// Jackson
-    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.12.2'
+    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.12.3'
    
    	// Oracle	
 	compile group: 'com.oracle.ojdbc', name: 'ojdbc8', version: '19.3.0.0'
@@ -200,7 +200,7 @@ dependencies {
     compile group: 'net.coobird', name: 'thumbnailator', version: '0.4.14'
 	
 	// Tika
-    compile group: 'org.apache.tika', name: 'tika-core', version:'1.25'
+    compile group: 'org.apache.tika', name: 'tika-core', version:'1.26'
     compile group: 'org.apache.tika', name: 'tika-parsers', version:'1.25'
     
 	// Javadoc - Need this package
@@ -213,9 +213,9 @@ dependencies {
 	compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.11.0.202103091610-r'
 		
 	// GraphQL
-	implementation 'com.graphql-java:graphql-java:2021-03-19T00-06-52-e166c255'
+	implementation 'com.graphql-java:graphql-java:2021-04-11T23-47-53-93cc5158'
 	implementation 'com.graphql-java:graphql-java-spring-webmvc:2020-07-12T23-24-35-c6606f6'	
-	implementation 'com.graphql-java:graphql-java-extended-scalars:15.0.0'
+	implementation 'com.graphql-java:graphql-java-extended-scalars:16.0.1'
 	implementation 'io.projectreactor:reactor-core:3.4.4'
 
 	// Color Thief
