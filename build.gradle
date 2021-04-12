@@ -216,7 +216,7 @@ dependencies {
 	implementation 'com.graphql-java:graphql-java:2021-04-11T23-47-53-93cc5158'
 	implementation 'com.graphql-java:graphql-java-spring-webmvc:2021-03-29T16-31-33-ae4bd96'	
 	implementation 'com.graphql-java:graphql-java-extended-scalars:16.0.1'
-	implementation 'io.projectreactor:reactor-core:3.4.4'
+	implementation 'io.projectreactor:reactor-core:3.4.5'
 
 	// Color Thief
 	compile group: 'de.androidpit', name: 'color-thief', version: '1.1.2'
