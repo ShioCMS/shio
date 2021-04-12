@@ -301,7 +301,6 @@ public class ShPostUtils {
 		}
 	}
 
-	@Transactional
 	public void referencedPostDraft(ShPostDraftAttr shPostAttr, ShPostDraft shPost) {
 		if (shPostAttr.getStrValue() == null) {
 			shPostAttr.setReferenceObject(null);
@@ -352,7 +351,6 @@ public class ShPostUtils {
 		}
 	}
 
-	@Transactional
 	public void referencedPost(ShPostAttrImpl shPostAttrEdit, ShPostAttrImpl shPostAttr, ShPostImpl shPost) {
 		if (shPostAttr.getStrValue() == null) {
 			shPostAttr.setReferenceObject(null);

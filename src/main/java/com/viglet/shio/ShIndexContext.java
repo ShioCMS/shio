@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ShIndexContext {
 
 	@RequestMapping("/")
-	private void index(HttpServletRequest request, HttpServletResponse response, final Principal principal)
+	public void index(HttpServletRequest request, HttpServletResponse response, final Principal principal)
 			throws IOException {
 		if (principal != null) {
 			response.sendRedirect("/content");

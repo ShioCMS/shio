@@ -83,8 +83,8 @@ public class ShSitesNodeJS {
 				@Override
 				public void writeTo(java.io.OutputStream output) throws IOException {
 
-					try {
-						IOUtils.copy(new FileInputStream(siteFile), output);
+					try (FileInputStream fileInputStream = new FileInputStream(siteFile)) {
+						IOUtils.copy(fileInputStream, output);
 						FileUtils.deleteQuietly(siteFile);
 
 					} catch (IOException ex) {
