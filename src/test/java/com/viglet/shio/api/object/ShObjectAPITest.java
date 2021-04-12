@@ -31,6 +31,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -242,10 +244,11 @@ class ShObjectAPITest {
 
 	// shObjectListItem
 
-	@Test
-	void shObjectListItemSite() throws Exception {
+	@ParameterizedTest
+	@ValueSource(strings = {"/list", "/list/Text", "/path"})
+	void shObjectListItemSite(String path) throws Exception {
 		ShSite shSite = shSiteRepository.findByName("Viglet");
-		mockMvc.perform(get("/api/v2/object/" + shSite.getId() + "/list")).andExpect(status().isOk())
+		mockMvc.perform(get("/api/v2/object/" + shSite.getId() + path)).andExpect(status().isOk())
 				.andExpect(content().contentType("application/json"));
 
 	}
@@ -269,30 +272,12 @@ class ShObjectAPITest {
 
 	}
 
-	@Test
-	void shFolderListByPostTypeFolder() throws Exception {
-		ShSite shSite = shSiteRepository.findByName("Viglet");
-		ShFolder shFolderHome = shFolderRepository.findByShSiteAndName(shSite, "Home");
-		mockMvc.perform(get("/api/v2/object/" + shFolderHome.getId() + "/list/Text")).andExpect(status().isOk())
-				.andExpect(content().contentType("application/json"));
-
-	}
-
 	// shObjectPath
 
 	@Test
 	void shObjectPathSite() throws Exception {
 		ShSite shSite = shSiteRepository.findByName("Viglet");
 		mockMvc.perform(get("/api/v2/object/" + shSite.getId() + "/path")).andExpect(status().isOk())
-				.andExpect(content().contentType("application/json"));
-
-	}
-
-	@Test
-	void shObjectPathFolder() throws Exception {
-		ShSite shSite = shSiteRepository.findByName("Viglet");
-		ShFolder shFolderHome = shFolderRepository.findByShSiteAndName(shSite, "Home");
-		mockMvc.perform(get("/api/v2/object/" + shFolderHome.getId() + "/path")).andExpect(status().isOk())
 				.andExpect(content().contentType("application/json"));
 
 	}
