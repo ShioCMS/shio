@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 the original author or authors. 
+ * Copyright (C) 2016-2021 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,15 +18,17 @@ package com.viglet.shio.persistence.model.auth;
 
 import java.io.Serializable;
 
-import javax.persistence.*;
-
-import org.apache.commons.codec.digest.DigestUtils;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.NamedQuery;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  * The persistent class for the ShUser database table.
@@ -169,16 +171,7 @@ public class ShUser implements Serializable {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-
-	@JsonProperty("gravatar")
-	private String getGravatar() {
-		if (this.email != null) {
-			return "https://www.gravatar.com/avatar/" + DigestUtils.md5Hex(this.email);
-		} else {
-			return null;
-		}
-	}
-
+	
 	public int getEnabled() {
 		return enabled;
 	}
