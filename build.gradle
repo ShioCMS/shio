@@ -1,5 +1,5 @@
 buildscript {
-    ext { springBootVersion = '2.4.4'
+    ext { springBootVersion = '2.4.5'
 	      hibernateVersion = '5.11.8.Final'
 		  swaggerVersion = '3.0.0'
 		 }
@@ -16,7 +16,7 @@ buildscript {
 
 
 plugins {
-  id 'org.springframework.boot' version '2.4.4'
+  id 'org.springframework.boot' version '2.4.5'
   id 'io.spring.dependency-management' version '1.0.11.RELEASE'
   id 'java'
   id "com.eriwen.gradle.js" version "2.14.1"
@@ -215,7 +215,7 @@ dependencies {
 	compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.11.0.202103091610-r'
 		
 	// GraphQL
-	implementation 'com.graphql-java:graphql-java:2021-04-11T23-47-53-93cc5158'
+	implementation 'com.graphql-java:graphql-java:2021-04-19T03-51-46-d783ec7e'
 	implementation 'com.graphql-java:graphql-java-spring-webmvc:2021-03-29T16-31-33-ae4bd96'	
 	implementation 'com.graphql-java:graphql-java-extended-scalars:16.0.1'
 	implementation 'io.projectreactor:reactor-core:3.4.5'
