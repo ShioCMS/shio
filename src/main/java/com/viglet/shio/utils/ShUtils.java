@@ -16,24 +16,7 @@
  */
 package com.viglet.shio.utils;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Collection;
-
-import org.apache.commons.compress.archivers.ArchiveException;
-import org.apache.commons.compress.archivers.ArchiveOutputStream;
-import org.apache.commons.compress.archivers.ArchiveStreamFactory;
-import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
-import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
-import org.apache.commons.compress.utils.IOUtils;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,8 +31,6 @@ import com.viglet.shio.api.ShJsonView.ShJsonViewGenericType;
  */
 @Component
 public class ShUtils {
-	private static final Log logger = LogFactory.getLog(ShUtils.class);
-
 	public static String asJsonString(final Object obj) throws ShUtilsException {
 		try {
 			return new ObjectMapper().writeValueAsString(obj);

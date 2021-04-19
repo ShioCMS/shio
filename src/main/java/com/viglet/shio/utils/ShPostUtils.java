@@ -34,7 +34,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -200,7 +199,6 @@ public class ShPostUtils {
 		}
 	}
 
-	@Transactional
 	public void referencedPost(ShPostAttrImpl shPostAttr, ShPostImpl shPost) {
 		if (shPostAttr.getStrValue() == null) {
 			shPostAttr.setReferenceObject(null);
@@ -302,7 +300,6 @@ public class ShPostUtils {
 		}
 	}
 
-	@Transactional
 	public void referencedPostDraft(ShPostDraftAttr shPostAttr, ShPostDraft shPost) {
 		if (shPostAttr.getStrValue() == null) {
 			shPostAttr.setReferenceObject(null);
@@ -353,7 +350,6 @@ public class ShPostUtils {
 		}
 	}
 
-	@Transactional
 	public void referencedPost(ShPostAttrImpl shPostAttrEdit, ShPostAttrImpl shPostAttr, ShPostImpl shPost) {
 		if (shPostAttr.getStrValue() == null) {
 			shPostAttr.setReferenceObject(null);

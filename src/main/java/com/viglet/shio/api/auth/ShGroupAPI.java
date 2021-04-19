@@ -16,9 +16,10 @@
  */
 
 package com.viglet.shio.api.auth;
- 
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.transaction.Transactional;
@@ -64,10 +65,14 @@ public class ShGroupAPI {
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShGroup shGroupEdit(@PathVariable String id) {
-		ShGroup shGroup = shGroupRepository.findById(id).get();
-		List<ShGroup> shGroups = new ArrayList<>();
-		shGroups.add(shGroup);
-		shGroup.setShUsers(shUserRepository.findByShGroupsIn(shGroups));
+		ShGroup shGroup = null;
+		Optional<ShGroup> shGroupOptional = shGroupRepository.findById(id);
+		if (shGroupOptional.isPresent()) {
+			shGroup = shGroupOptional.get();
+			List<ShGroup> shGroups = new ArrayList<>();
+			shGroups.add(shGroup);
+			shGroup.setShUsers(shUserRepository.findByShGroupsIn(shGroups));
+		}
 		return shGroup;
 	}
 
@@ -75,20 +80,22 @@ public class ShGroupAPI {
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShGroup shGroupUpdate(@PathVariable String id, @RequestBody ShGroup shGroup) {
 		shGroupRepository.save(shGroup);
-		ShGroup shGroupRepos = shGroupRepository.findById(shGroup.getId()).get();
-		List<ShGroup> shGroups = new ArrayList<>();
-		shGroups.add(shGroup);
-		Set<ShUser> shUsers = shUserRepository.findByShGroupsIn(shGroups);
-		for (ShUser shUser : shUsers) {
-			shUser.getShGroups().remove(shGroupRepos);
-			shUserRepository.saveAndFlush(shUser);
+		Optional<ShGroup> shGroupOptional = shGroupRepository.findById(shGroup.getId());
+		if (shGroupOptional.isPresent()) {
+			ShGroup shGroupRepos = shGroupOptional.get();
+			List<ShGroup> shGroups = new ArrayList<>();
+			shGroups.add(shGroup);
+			Set<ShUser> shUsers = shUserRepository.findByShGroupsIn(shGroups);
+			for (ShUser shUser : shUsers) {
+				shUser.getShGroups().remove(shGroupRepos);
+				shUserRepository.saveAndFlush(shUser);
+			}
+			for (ShUser shUser : shGroup.getShUsers()) {
+				ShUser shUserRepos = shUserRepository.findByUsername(shUser.getUsername());
+				shUserRepos.getShGroups().add(shGroup);
+				shUserRepository.saveAndFlush(shUserRepos);
+			}
 		}
-		for (ShUser shUser : shGroup.getShUsers()) {
-			ShUser shUserRepos = shUserRepository.findByUsername(shUser.getUsername());
-			shUserRepos.getShGroups().add(shGroup);
-			shUserRepository.saveAndFlush(shUserRepos);
-		}
-
 		return shGroup;
 	}
 

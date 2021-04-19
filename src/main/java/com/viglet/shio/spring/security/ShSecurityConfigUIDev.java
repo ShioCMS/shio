@@ -45,7 +45,7 @@ public class ShSecurityConfigUIDev extends ShSecurityConfigProduction {
 						"/template/**", "/img/**", "/sites/**", "/__tur/**", "/swagger-resources/**", "/h2/**",
 						"/image/**", "/login-page/**", "/logout-page/**", "/graphql","/manifest.json",
 						"/*.png", "/*.ico")
-				.permitAll().anyRequest().authenticated().and().csrf().disable().logout();
+				.permitAll().anyRequest().authenticated().and().logout();
 
 	}
 }
