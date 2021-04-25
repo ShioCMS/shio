@@ -71,6 +71,7 @@ public class ShSitesPage {
 	private static final String POST = "post";
 	private static final String SITE = "site";
 	private static final String DEFAULT_FORMAT = "default";
+	private static final String IN_CONTEXT_EDITING = "in-context-editing";
 
 	public String shPostPage(ShSitesPageLayout shSitesPageLayout, ShSite shSite, ShSitesContextURL shSitesContextURL,
 			String mimeType) {
@@ -198,10 +199,32 @@ public class ShSitesPage {
 			String shPostThemeId = shFolderPageLayoutMap.get(ShSystemPostTypeAttr.THEME).getStrValue();
 
 			Map<String, Object> shThemeAttrs = shSitesContextComponent.shThemeFactory(shPostThemeId);
-
+			StringBuilder inContextEditing = new StringBuilder();
+			
+			inContextEditing.append("<div class=\"footer row\" style=\"height: 35px;\">");
+			inContextEditing.append("<div class=\"block\" style=\"width: calc(100% - 85px);;float: left;\">");
+			inContextEditing.append("<div class=\"row\" style=\"height: 35px;vertical-align: middle;display: table-cell;\">");
+			inContextEditing.append("<div class=\"block button\">Editing</div>");
+			inContextEditing.append("<div class=\"block button\">Page</div>");
+			inContextEditing.append("<div class=\"block button\">Design</div>");
+			inContextEditing.append("<div class=\"block button\">Site</div>");
+			inContextEditing.append("<div class=\"block button\">Task Inbox</div>");
+			inContextEditing.append("</div>");
+			inContextEditing.append("</div>");
+			inContextEditing.append("<div class=\"block\" style=\"width: 85px;float: right;\">");
+			inContextEditing.append("<div class=\"row\" style=\"height: 35px;vertical-align: middle;display: table-cell;\">");
+			inContextEditing.append("<div class=\"region-menu-item\"><img src=\"/preview/img/pencil.png\" class=\"region-menu-item-icon\"></div>");
+			inContextEditing.append("<div class=\"region-menu-item\"><img src=\"/preview/img/settings.png\" class=\"region-menu-item-icon\"></div>");
+			inContextEditing.append("</div>");
+			inContextEditing.append("</div>");
+			inContextEditing.append("</div>");
+			
 			shPostItemAttrs.put(THEME, shThemeAttrs);
-			shFolderItemAttrs.put(THEME, shThemeAttrs);
+			shPostItemAttrs.put(IN_CONTEXT_EDITING, inContextEditing.toString());
 
+			shFolderItemAttrs.put(THEME, shThemeAttrs);			
+			shFolderItemAttrs.put(IN_CONTEXT_EDITING, inContextEditing.toString());
+			
 			shFolderItemAttrs.put(POSTS, shSitesContextComponent.shPostItemsFactory(shFolderItem));
 			shFolderItemAttrs.put(FOLDERS, shSitesContextComponent.shChildFolderItemsFactory(shFolderItem));
 			shFolderItemAttrs.put(POST, shPostItemAttrs);

@@ -119,11 +119,11 @@ public class ShSitesContextComponent {
 	}
 
 	public ShPost shPostAlias(ShPost shPostItem) {
-		if (shPostItem.getShPostType().getName().equals(ShSystemPostType.ALIAS)) {		
+		if (shPostItem.getShPostType().getName().equals(ShSystemPostType.ALIAS)) {
 			for (ShPostAttrImpl shPostAttr : shPostItem.getShPostAttrs())
 				if (shPostAttr.getShPostTypeAttr().getName().equals(ShSystemPostTypeAttr.CONTENT)) {
 					shPostItem = shPostRepository.findById(shPostAttr.getStrValue()).orElse(null);
-			}
+				}
 		}
 		return shPostItem;
 	}
@@ -171,7 +171,10 @@ public class ShSitesContextComponent {
 
 		Map<String, Object> shThemeAttrs = new HashMap<>();
 		shThemeAttrs.put("javascript", shThemeMap.get(ShSystemPostTypeAttr.JAVASCRIPT).getStrValue());
-		shThemeAttrs.put("css", shThemeMap.get(ShSystemPostTypeAttr.CSS).getStrValue());
+		String inContextEditingCSS = "<link rel='stylesheet' type='text/css' href='/preview/preview.css' />";
+		String themeCSS = shThemeMap.get(ShSystemPostTypeAttr.CSS).getStrValue();
+		String cssWithInContextEditing = themeCSS != null ? themeCSS.concat(inContextEditingCSS) : inContextEditingCSS;
+		shThemeAttrs.put("css", cssWithInContextEditing);
 
 		return shThemeAttrs;
 	}
@@ -209,7 +212,8 @@ public class ShSitesContextComponent {
 		return shFolderItem;
 	}
 
-	public Map<String, ShPostAttr> shFolderPageLayoutMapFactory(ShObjectImpl shObjectItem, ShSite shSite, String format) {
+	public Map<String, ShPostAttr> shFolderPageLayoutMapFactory(ShObjectImpl shObjectItem, ShSite shSite,
+			String format) {
 		return shSitesPostUtils
 				.postToMap(shSitesPageLayoutUtils.pageLayoutFromFolderAndFolderIndex(shObjectItem, shSite, format));
 	}
@@ -271,7 +275,26 @@ public class ShSitesContextComponent {
 
 			Comment comment = new Comment(String.format(" sh-region: %s, id: %s, processed in: %s ms ", regionName,
 					shRegion.getId(), String.valueOf(timeProcess)));
-			return String.format("%s%s", comment.toString(), regionHTML);
+			StringBuilder inContentEditingBefore = new StringBuilder();
+
+			inContentEditingBefore.append("<div class=\"region\">");
+			inContentEditingBefore.append("<div style=\"float: right;display: inline-block;\" class=\"row\">");
+			inContentEditingBefore.append("<div class=\"block region-menu\">");
+			inContentEditingBefore.append("<div class=\"row region-menu-inner\">");
+			inContentEditingBefore.append(
+					"<div class=\"region-menu-item\"><img src=\"/preview/img/pencil.png\" class=\"region-menu-item-icon\"></div>");
+			inContentEditingBefore.append(
+					"<div class=\"region-menu-item\"><img src=\"/preview/img/settings.png\" class=\"region-menu-item-icon\"></div>");
+			inContentEditingBefore.append("</div>");
+			inContentEditingBefore.append("</div>");
+			inContentEditingBefore.append("</div>");
+
+			StringBuilder inContentEditingAfter = new StringBuilder();
+
+			inContentEditingAfter.append("</div>");
+
+			return String.format("%s%s%s%s", inContentEditingBefore.toString(), comment.toString(), regionHTML,
+					inContentEditingAfter.toString());
 
 		}
 		return null;
