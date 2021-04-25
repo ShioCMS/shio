@@ -71,7 +71,7 @@ public class ShGraphQLQTPlural {
 		String postTypeNamePlural = this.getPostTypeNamePlural(shPostType);
 
 		GraphQLInputObjectType.Builder postTypeWhereInputBuilder = newInputObject()
-				.name(shPostType.getName().concat(ShGraphQLConstants.WHERE_INPUT)).description("Identifies documents");
+				.name(shPostType.getName().replace("-", "_").concat(ShGraphQLConstants.WHERE_INPUT)).description("Identifies documents");
 
 		this.whereFieldsPlural(shPostType, postTypeWhereInputBuilder);
 
@@ -84,7 +84,7 @@ public class ShGraphQLQTPlural {
 
 	private void whereFieldsPlural(ShPostType shPostType, GraphQLInputObjectType.Builder postTypeWhereInputBuilder) {
 
-		String whereInputName = shPostType.getName().concat(ShGraphQLConstants.WHERE_INPUT);
+		String whereInputName = shPostType.getName().replace("-", "_").concat(ShGraphQLConstants.WHERE_INPUT);
 
 		GraphQLTypeReference whereInputRef = GraphQLTypeReference.typeRef(whereInputName);
 

@@ -68,8 +68,8 @@ public class ShGraphQLQTUnique {
 		String postTypeName = this.getPostTypeNameUnique(shPostType);
 
 		GraphQLInputObjectType.Builder postTypeWhereUniqueInputBuilder = newInputObject()
-				.name(shPostType.getName().concat(ShGraphQLConstants.WHERE_UNIQUE_INPUT))
-				.description(String.format("References %s record uniquely", shPostType.getName()));
+				.name(shPostType.getName().replace("-", "_").concat(ShGraphQLConstants.WHERE_UNIQUE_INPUT))
+				.description(String.format("References %s record uniquely", shPostType.getName().replace("-", "_")));
 
 		this.whereFieldsUnique(postTypeWhereUniqueInputBuilder);
 

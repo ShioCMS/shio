@@ -53,11 +53,12 @@ shioApp.config([
 			$stateProvider.state('content', {	
 				url : '',
 				controller : 'ShContentCtrl',
+				templateUrl : 'template/content-base.html',
 				redirectTo: 'content.home'
 			}).state('content.home', {
 				url : '/home',
-				templateUrl : 'template/content.html',
 				controller : 'ShContentHomeCtrl',
+				templateUrl : 'template/content-home.html',
 				data : {
 					pageTitle : 'Content | Viglet Shio CMS'
 				}
@@ -69,27 +70,6 @@ shioApp.config([
 				controller :'ShObjectChildrenCtrl',				
 				data : {
 					pageTitle : 'Content | Viglet Shio CMS'
-				}
-			}).state('content.ecommerce', {
-				url : '/ecommerce',
-				templateUrl : 'template/ecommerce/ecommerce.html',
-				controller :'ShECommerceCtrl',				
-				data : {
-					pageTitle : 'E-Commerce | Viglet Shio CMS'
-				}
-			}).state('content.ecommerce.payment', {
-				url : '/payment',
-				templateUrl : 'template/ecommerce/payment/ecommerce-payment.html',
-				controller :'ShECommercePaymentCtrl',				
-				data : {
-					pageTitle : 'E-Commerce Payment Types | Viglet Shio CMS'
-				}
-			}).state('content.ecommerce.payment-new', {
-				url : '/payment/new',
-				templateUrl : 'template/ecommerce/payment/ecommerce-payment-new.html',
-				controller :'ShECommercePaymentNewCtrl',				
-				data : {
-					pageTitle : 'E-Commerce Payment Types | Viglet Shio CMS'
 				}
 			}).state('content.ecommerce.setting', {
 				url : '/setting',
@@ -179,6 +159,11 @@ shioApp.config([
 				url : '/post/type/:postTypeId/post/form',
 				templateUrl : 'template/post/form.html',
 				controller : 'ShPostFormCtrl',
+				data : {}
+			}).state('post-item-modal', {
+				url : '/modal/post/type/:postTypeId/post/:postId',
+				templateUrl : 'template/post/post-modal.html',
+				controller : 'ShPostEditCtrl',
 				data : {}
 			}).state('content.folder', {
 				url : '/folder/:folderId'

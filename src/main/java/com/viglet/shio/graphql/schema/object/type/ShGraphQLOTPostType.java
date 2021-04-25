@@ -52,7 +52,7 @@ public class ShGraphQLOTPostType {
 	private ShGraphQLQTPlural shGraphQLQTPlural;
 	
 	private GraphQLObjectType createObjectType(ShPostType shPostType) {
-		Builder builder = newObject().name(shPostType.getName()).description(shPostType.getDescription());
+		Builder builder = newObject().name(shPostType.getName().replace("-", "_")).description(shPostType.getDescription());
 
 		this.createObjectTypeFields(shPostType, builder);
 
