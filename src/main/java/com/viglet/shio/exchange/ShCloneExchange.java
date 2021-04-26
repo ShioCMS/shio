@@ -102,4 +102,20 @@ public class ShCloneExchange {
 		return this.cloneFromMultipartFile(multipartFile, username, shSite);
 	}
 
+	public ShExchange cloneFromExtractedImport(File directory, String username, ShSite shSite) {
+
+		ShExchangeFilesDirs shExchangeFilesDirs = shImportExchange.getExtratedImport(directory);
+
+		if (shExchangeFilesDirs.getExportDir() != null) {
+			ShExchange shExchangeModified = null;
+
+			shExchangeModified = cloneObjects(username, shSite, shExchangeModified, shExchangeFilesDirs);
+
+			shExchangeFilesDirs.deleteExport();
+
+			return shExchangeModified;
+		} else {
+			return null;
+		}
+	}
 }

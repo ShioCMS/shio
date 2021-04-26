@@ -44,9 +44,13 @@ public class ShGraphQLUtils {
 	}
 
 	public String normalizedPostType(String postTypeName) {
-		char[] c = postTypeName.replace("-", "_").toCharArray();
-		c[0] = Character.toLowerCase(c[0]);
-		return new String(c);
+		if (postTypeName != null) {
+			char[] c = postTypeName.replace("-", "_").toCharArray();
+			c[0] = Character.toLowerCase(c[0]);
+			return new String(c);
+		} else {
+			return "";
+		}
 	}
 
 	public Map<String, String> graphQLAttrsByPost(ShPost shPost) {

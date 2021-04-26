@@ -47,13 +47,18 @@ public class ShExchangeFilesDirs {
 	private File parentExportDir;
 
 	public boolean generate() {
+		return generate(null);
+	}
+
+	public boolean generate(File exportDirCustom) {
 		String folderName = UUID.randomUUID().toString();
 		File userDir = new File(System.getProperty("user.dir"));
 		if (userDir.exists() && userDir.isDirectory()) {
 			this.tmpDir = new File(userDir.getAbsolutePath().concat(File.separator + "store" + File.separator + "tmp"));
 			if (!this.tmpDir.exists())
 				this.tmpDir.mkdirs();
-			this.exportDir = new File(tmpDir.getAbsolutePath().concat(File.separator + folderName));
+				this.exportDir = (exportDirCustom != null) ? exportDirCustom
+						: new File(tmpDir.getAbsolutePath().concat(File.separator + folderName));
 			if (!this.exportDir.exists())
 				this.exportDir.mkdirs();
 		}

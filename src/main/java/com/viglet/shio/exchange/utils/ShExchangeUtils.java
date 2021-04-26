@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 the original author or authors. 
+ * Copyright (C) 2016-2021 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,14 +59,14 @@ public class ShExchangeUtils {
 		} catch (IOException e) {
 			logger.error(e);
 		}
+
 		try {
 			ZipParameters zipParameters = new ZipParameters();
-			zipParameters.setIncludeRootFolder(false);		
+			zipParameters.setIncludeRootFolder(false);
 			new ZipFile(shExchangeFilesDirs.getZipFile()).addFolder(shExchangeFilesDirs.getExportDir(), zipParameters);
 		} catch (ZipException e) {
 			logger.error(e);
 		}
-		
 
 		String strDate = new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(new Date());
 		String zipFileName = String.format("%s_%s.zip", suffixFileName, strDate);
@@ -123,4 +123,12 @@ public class ShExchangeUtils {
 		}
 	}
 
+	public ShExchangeFilesDirs getExtratedImport(File directory) {
+		ShExchangeFilesDirs shExchangeFilesDirs = new ShExchangeFilesDirs();
+		if (shExchangeFilesDirs.generate(directory)) {
+			return shExchangeFilesDirs;
+		} else {
+			return null;
+		}
+	}
 }

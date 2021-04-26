@@ -103,4 +103,10 @@ public class ShImportExchange {
 		shChildObjects.clear();
 		return shExchangeUtils.extractZipFile(file);
 	}
+	
+	public ShExchangeFilesDirs getExtratedImport(File directory) {
+		shObjects.clear();
+		shChildObjects.clear();
+		return shExchangeUtils.getExtratedImport(directory);
+	}
 }
