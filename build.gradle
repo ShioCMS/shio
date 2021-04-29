@@ -215,7 +215,7 @@ dependencies {
 	compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.11.0.202103091610-r'
 		
 	// GraphQL
-	implementation 'com.graphql-java:graphql-java:2021-04-27T02-21-11-eb3afc27'
+	implementation 'com.graphql-java:graphql-java:2021-04-28T06-28-49-4d52fd0e'
 	implementation 'com.graphql-java:graphql-java-spring-webmvc:2021-03-29T16-31-33-ae4bd96'	
 	implementation 'com.graphql-java:graphql-java-extended-scalars:16.0.1'
 	implementation 'io.projectreactor:reactor-core:3.4.5'
