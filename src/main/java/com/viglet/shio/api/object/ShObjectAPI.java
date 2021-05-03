@@ -28,6 +28,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -471,7 +472,7 @@ public class ShObjectAPI {
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public String shObjectURL(@PathVariable String id) {
 		ShObjectImpl shObject = shObjectRepository.findById(id).orElse(null);
-		String label = "";
+		String label = StringUtils.EMPTY;
 		if (shObject instanceof ShPost) {
 			label = ((ShPostImpl) shObject).getTitle();
 		} else if (shObject instanceof ShFolder) {

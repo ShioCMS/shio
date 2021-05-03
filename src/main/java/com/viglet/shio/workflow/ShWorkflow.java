@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,7 +77,7 @@ public class ShWorkflow {
 	public String sendWorkflowEmail(ShWorkflowTask shWorkflowTask) {
 		try {
 
-			String title = "";
+			String title = StringUtils.EMPTY;
 			if (shWorkflowTask.getShObject() instanceof ShPost) {
 				ShPostImpl shPost = (ShPostImpl) shWorkflowTask.getShObject();
 				title = shPost.getTitle();

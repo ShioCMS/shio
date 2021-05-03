@@ -33,6 +33,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jgit.api.CloneCommand;
@@ -91,7 +92,7 @@ public class ShGitProvider {
 			cloneCommand = Git.cloneRepository();
 			cloneCommand.setURI(shGitProperties.getUrl());
 			cloneCommand
-					.setCredentialsProvider(new UsernamePasswordCredentialsProvider(shGitProperties.getToken(), ""));
+					.setCredentialsProvider(new UsernamePasswordCredentialsProvider(shGitProperties.getToken(), StringUtils.EMPTY));
 			cloneCommand.setDirectory(gitDirectory);
 			try {
 				cloneCommand.call();
@@ -103,7 +104,7 @@ public class ShGitProvider {
 
 	public void pushToRepo() throws IOException, JGitInternalException, InvalidRemoteException, GitAPIException {
 		PushCommand pc = git.push();
-		pc.setCredentialsProvider(new UsernamePasswordCredentialsProvider(shGitProperties.getToken(), ""))
+		pc.setCredentialsProvider(new UsernamePasswordCredentialsProvider(shGitProperties.getToken(), StringUtils.EMPTY))
 				.setForce(true).setPushAll();
 		try {
 			Iterator<PushResult> it = pc.call().iterator();

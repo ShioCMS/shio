@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 the original author or authors. 
+ * Copyright (C) 2016-2021 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@ package com.viglet.shio.url;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.HandlerMapping;
@@ -39,15 +40,16 @@ public class ShURLScheme {
 	@Autowired
 	private ShFolderUtils shFolderUtils;
 
+	final static String X_SH_SITE = "x-sh-site";
+	final static String X_SH_CONTEXT = "x-sh-context";
+
 	public String get(ShObjectImpl shObject) {
-		String shXSiteName = request.getHeader("x-sh-site");
-		String url = "";
-		if (shXSiteName != null) {
-			String shContext = request.getHeader("x-sh-context");
-			if (shContext != null) {
-				url = "/" + shContext;
-			} else {
-				url = "";
+		String shXSiteName = request.getHeader(X_SH_SITE);
+		String url = StringUtils.EMPTY;
+		if (StringUtils.isNotEmpty(shXSiteName)) {
+			var shContext = request.getHeader(X_SH_CONTEXT);
+			if (StringUtils.isNotEmpty(shContext)) {
+				url = "/".concat(shContext);
 			}
 		} else {
 			String shContext = "sites";
@@ -65,17 +67,17 @@ public class ShURLScheme {
 				ShFolder shFolder = shPost.getShFolder();
 				shSiteName = shFolderUtils.getSite(shFolder).getFurl();
 			}
-			url = "/" + shContext + "/" + shSiteName + "/" + shFormat + "/" + shLocale;
+			url = getURL(shSiteName, shContext, shFormat, shLocale);
 
 		}
 		return url;
 	}
 
 	public String get() {
-		String shSiteName = request.getHeader("x-sh-site");
+		String shSiteName = request.getHeader(X_SH_SITE);
 		String url = null;
-		if (shSiteName != null) {
-			url = "";
+		if (StringUtils.isNotEmpty(shSiteName)) {
+			url = StringUtils.EMPTY;
 		} else {
 			String contextURL = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
 			String shContext = null;
@@ -101,11 +103,13 @@ public class ShURLScheme {
 					break;
 				}
 
-				
 			}
-
-			url = "/" + shContext + "/" + shSiteName + "/" + shFormat + "/" + shLocale;
+			url = getURL(shSiteName, shContext, shFormat, shLocale);
 		}
 		return url;
+	}
+
+	private String getURL(String shSiteName, String shContext, String shFormat, String shLocale) {
+		return String.format("/%s/%s/%s/%s", shContext, shSiteName, shFormat, shLocale);
 	}
 }

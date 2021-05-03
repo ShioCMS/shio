@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 the original author or authors. 
+ * Copyright (C) 2016-2021 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@ package com.viglet.shio.graphql;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -44,12 +45,12 @@ public class ShGraphQLUtils {
 	}
 
 	public String normalizedPostType(String postTypeName) {
-		if (postTypeName != null) {
+		if (StringUtils.isNotEmpty(postTypeName)) {
 			char[] c = postTypeName.replace("-", "_").toCharArray();
 			c[0] = Character.toLowerCase(c[0]);
 			return new String(c);
 		} else {
-			return "";
+			return StringUtils.EMPTY;
 		}
 	}
 

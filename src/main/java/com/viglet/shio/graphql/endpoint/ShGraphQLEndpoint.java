@@ -70,14 +70,14 @@ public class ShGraphQLEndpoint {
 			@RequestBody(required = false) String body, WebRequest webRequest) throws IOException {
 
 		if (this.isAuthenticated(authorization)) {
-			if (body == null) {
-				body = "";
+			if (StringUtils.isEmpty(body)) {
+				body = StringUtils.EMPTY;
 			}
 			
 			if (MediaType.APPLICATION_JSON_VALUE.equals(contentType)) {
 				GraphQLRequestBody request = jsonSerializer.deserialize(body, GraphQLRequestBody.class);
-				if (request.getQuery() == null) {
-					request.setQuery("");
+				if (StringUtils.isEmpty(request.getQuery())) {
+					request.setQuery(StringUtils.EMPTY);
 				}
 				return executeRequest(request.getQuery(), request.getOperationName(), request.getVariables(),
 						webRequest);

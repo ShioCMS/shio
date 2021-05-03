@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 the original author or authors. 
+ * Copyright (C) 2016-2021 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ public class ShURLFormatter {
 		formattedURL = formattedURL.replaceAll("\\.", "-");
 		
 		// 5. Remove all characters that are not a-z or 0-9 or space or _ or hyphen
-		formattedURL = formattedURL.replaceAll("[^a-z0-9 _-]", "");
+		formattedURL = formattedURL.replaceAll("[^a-z0-9 _-]", StringUtils.EMPTY);
 		
 		// 6. Convert one or more spaces to hyphen
 		formattedURL = formattedURL.replaceAll("\\s+", "-");

@@ -23,6 +23,7 @@ import java.util.StringJoiner;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,7 @@ public class ShImageResize {
 			@PathVariable String value) {
 		try {
 			String url = ((String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE))
-					.replaceAll("^/image", "");
+					.replaceAll("^/image", StringUtils.EMPTY);
 
 			String[] contexts = url.split("/");
 			StringJoiner path = new StringJoiner("/");

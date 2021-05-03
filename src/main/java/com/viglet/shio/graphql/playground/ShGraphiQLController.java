@@ -149,7 +149,7 @@ public abstract class ShGraphiQLController {
 			return String.format("https://cdnjs.cloudflare.com/ajax/libs/codemirror/%s/theme/%s.min.css",
 					graphiQLProperties.getCodeMirror().getVersion(), theme.split("\\s")[0]);
 		}
-		return "";
+		return StringUtils.EMPTY;
 	}
 
 	private String getResourceUrl(String staticBasePath, String staticFileName, String cdnUrl) {

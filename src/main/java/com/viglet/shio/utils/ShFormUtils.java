@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 the original author or authors. 
+ * Copyright (C) 2016-2021 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,7 +75,7 @@ public class ShFormUtils {
 
 	private static final String POST_TYPE_ATTR_PARAM = "__sh-post-type-attr-";
 	private static final String POST_TYPE_PARAM = "__sh-post-type";
-	
+
 	private ShPost createPost(ShSitesContextURL shSitesContextURL, ShFormConfiguration shFormConfiguration,
 			ShPostType shPostType) {
 		Enumeration<String> parameters = shSitesContextURL.getRequest().getParameterNames();
@@ -128,7 +128,8 @@ public class ShFormUtils {
 			String paramValue = shSitesContextURL.getRequest().getParameter(param);
 
 			if (param.startsWith(POST_TYPE_ATTR_PARAM)) {
-				String attribute = param.replaceFirst(POST_TYPE_ATTR_PARAM, "").replaceAll("\\[\\]", "");
+				String attribute = param.replaceFirst(POST_TYPE_ATTR_PARAM, StringUtils.EMPTY).replaceAll("\\[\\]",
+						StringUtils.EMPTY);
 				ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType, attribute);
 
 				getWidget(shPostTypeAttr);

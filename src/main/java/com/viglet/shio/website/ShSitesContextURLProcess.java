@@ -63,7 +63,7 @@ public class ShSitesContextURLProcess {
 		shSitesContextURL.getInfo().setCacheEnabled(cacheIsEnabled(request));
 		String context = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
 		if (shXSiteName != null) {
-			String contextOriginal = context.replaceAll("^/sites", "");
+			String contextOriginal = context.replaceAll("^/sites", StringUtils.EMPTY);
 			if (request.getParameter(FORMAT_PARAM) != null) {
 				String format = request.getParameter(FORMAT_PARAM);
 				shSitesContextURL.getInfo()
@@ -71,7 +71,7 @@ public class ShSitesContextURLProcess {
 				shSitesContextURL.getInfo()
 						.setContextURLOriginal(contextOriginal.concat(String.format("?%s=%s", FORMAT_PARAM, format)));
 			} else {
-				shSitesContextURL.getInfo().setContextURLOriginal(context.replaceAll("^/sites", ""));
+				shSitesContextURL.getInfo().setContextURLOriginal(context.replaceAll("^/sites", StringUtils.EMPTY));
 				shSitesContextURL.getInfo().setContextURL(String.format("/sites/%s/default/en-us%s", shXSiteName,
 						shSitesContextURL.getInfo().getContextURLOriginal()));
 			}

@@ -23,6 +23,7 @@ import java.net.URL;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONObject;
@@ -77,7 +78,7 @@ public class ShReCaptchaWidget  extends ShDefaultWidget {
 			URL url = new URL(urlFormatada);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("GET");
-			String line = "";
+			String line = StringUtils.EMPTY;
 			StringBuilder outputString = new StringBuilder();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			while ((line = reader.readLine()) != null)

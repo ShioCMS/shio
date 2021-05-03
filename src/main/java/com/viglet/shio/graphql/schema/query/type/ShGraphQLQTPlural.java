@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -164,13 +165,13 @@ public class ShGraphQLQTPlural {
 				String field = arg;
 				String action = ShGraphQLConstants.CONDITION_EQUAL;
 				if (arg.startsWith("_")
-						&& arg.replaceFirst("_", "").contains(ShGraphQLConstants.CONDITION_SEPARATOR)) {
+						&& arg.replaceFirst("_", StringUtils.EMPTY).contains(ShGraphQLConstants.CONDITION_SEPARATOR)) {
 					field = String.format("_%s", arg.split(ShGraphQLConstants.CONDITION_SEPARATOR)[1]);
-					action = arg.replaceFirst(field.concat(ShGraphQLConstants.CONDITION_SEPARATOR), "");
+					action = arg.replaceFirst(field.concat(ShGraphQLConstants.CONDITION_SEPARATOR), StringUtils.EMPTY);
 
 				} else if (!arg.startsWith("_") && arg.contains(ShGraphQLConstants.CONDITION_SEPARATOR)) {
 					field = arg.split(ShGraphQLConstants.CONDITION_SEPARATOR)[0];
-					action = arg.replaceFirst(field.concat(ShGraphQLConstants.CONDITION_SEPARATOR), "");
+					action = arg.replaceFirst(field.concat(ShGraphQLConstants.CONDITION_SEPARATOR), StringUtils.EMPTY);
 				}
 				shGraphQLInputObjectField.fieldWhereCondition(shPostType, posts, whereArgItem, field, action,
 						siteIds);

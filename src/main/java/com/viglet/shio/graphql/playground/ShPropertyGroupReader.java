@@ -16,6 +16,7 @@
  */
 package com.viglet.shio.graphql.playground;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.core.env.Environment;
@@ -37,7 +38,7 @@ class ShPropertyGroupReader {
 
     ShPropertyGroupReader(Environment environment, String prefix) {
         this.environment = Objects.requireNonNull(environment);
-        this.prefix = Optional.ofNullable(prefix).orElse("");
+        this.prefix = Optional.ofNullable(prefix).orElse(StringUtils.EMPTY);
     }
 
     Properties load() {
@@ -67,7 +68,7 @@ class ShPropertyGroupReader {
     }
 
     private String withoutPrefix(String key) {
-        return key.replace(prefix, "");
+        return key.replace(prefix, StringUtils.EMPTY);
     }
 
     private boolean isWanted(String key) {

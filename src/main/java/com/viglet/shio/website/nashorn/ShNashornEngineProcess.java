@@ -28,6 +28,7 @@ import javax.script.ScriptException;
 import javax.script.SimpleScriptContext;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -137,7 +138,7 @@ public class ShNashornEngineProcess {
 				errorCode.append(javascriptLines[x] + "\n");
 				if (x == lineNumber - 1) {
 					String errorPos = IntStream.range(0, columnNumber).mapToObj(i -> "-")
-							.collect(Collectors.joining("")) + "^";
+							.collect(Collectors.joining(StringUtils.EMPTY)) + "^";
 					errorCode.append(errorPos + "\n");
 				}
 

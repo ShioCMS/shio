@@ -19,6 +19,7 @@ package com.viglet.shio.website.cache.component;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,7 +114,7 @@ public class ShCacheObject {
 			 * If the URL doesn't end with slash,remove the slash of contextURL
 			 */
 			if (!url.endsWith("/"))
-				contextURL = contextURL.trim().replaceFirst(".$", "");
+				contextURL = contextURL.trim().replaceFirst(".$", StringUtils.EMPTY);
 
 			shCacheURL.deleteCache(contextURL, url);
 

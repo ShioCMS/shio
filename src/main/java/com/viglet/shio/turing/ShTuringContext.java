@@ -24,6 +24,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
@@ -104,8 +105,8 @@ public class ShTuringContext {
 			HttpResponse response = client.execute(new HttpGet(url));
 			if (response != null) {
 				try (BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()))) {
-					String line = "";
-					while ((line = rd.readLine()) != null)
+					String line = StringUtils.EMPTY;
+					while (StringUtils.isNotEmpty((line = rd.readLine())))
 						result.append(line);
 				}
 			}

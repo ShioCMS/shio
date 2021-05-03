@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
@@ -232,7 +233,7 @@ public class ShSitesContextComponent {
 		StringBuilder shObjectJS = shCacheJavascript.shObjectJSFactory();
 		Document doc = null;
 		if (shSitesPageLayout.getPageCacheKey().endsWith(".json") || mimeType.equals("json") || mimeType.equals("xml"))
-			doc = Jsoup.parse(regionResult, "", Parser.xmlParser());
+			doc = Jsoup.parse(regionResult, StringUtils.EMPTY, Parser.xmlParser());
 		else
 			doc = Jsoup.parse(regionResult);
 
