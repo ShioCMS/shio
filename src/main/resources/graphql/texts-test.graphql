@@ -1,0 +1,6 @@
+query {
+  texts (sites: All) {
+    id
+    text 
+  }
+}
