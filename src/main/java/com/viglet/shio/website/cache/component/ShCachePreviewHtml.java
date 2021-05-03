@@ -17,7 +17,6 @@
 package com.viglet.shio.website.cache.component;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 the original author or authors. 
+ * Copyright (C) 2016-2021 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -41,16 +42,16 @@ import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
  * @since 0.3.0
  */
 @Component
-public class ShReCaptchaWidget  extends ShDefaultWidget {
+public class ShReCaptchaWidget extends ShDefaultWidget {
 
 	private static final Log logger = LogFactory.getLog(ShReCaptchaWidget.class);
-	
+
 	@Override
 	public void setTemplate() {
 		this.template = "widget/recaptcha/recaptcha-widget";
 
 	}
-	
+
 	@Override
 	public String render(ShPostTypeAttr shPostTypeAttr, ShObjectImpl shObject) {
 		String widgetSettings = shPostTypeAttr.getWidgetSettings();
@@ -78,15 +79,12 @@ public class ShReCaptchaWidget  extends ShDefaultWidget {
 			URL url = new URL(urlFormatada);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("GET");
-			String line = StringUtils.EMPTY;
-			StringBuilder outputString = new StringBuilder();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			while ((line = reader.readLine()) != null)
-				outputString.append(line);
-
+			String outputString = StringUtils.EMPTY;
+			try (var reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+				outputString = reader.lines().collect(Collectors.joining(StringUtils.LF));
+			}
 			// Convert response into Object
-			CaptchaResponse capRes = new Gson().fromJson(outputString.toString(), CaptchaResponse.class);
-
+			CaptchaResponse capRes = new Gson().fromJson(outputString, CaptchaResponse.class);
 			return capRes.isSuccess();
 
 		} catch (Exception e) {
@@ -99,6 +97,7 @@ public class ShReCaptchaWidget  extends ShDefaultWidget {
 		private boolean success;
 		private String[] errorCodes;
 
+		@SuppressWarnings("unused")
 		public boolean isSuccess() {
 			return success;
 		}

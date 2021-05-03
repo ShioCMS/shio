@@ -40,8 +40,8 @@ public class ShURLScheme {
 	@Autowired
 	private ShFolderUtils shFolderUtils;
 
-	final static String X_SH_SITE = "x-sh-site";
-	final static String X_SH_CONTEXT = "x-sh-context";
+	private static final String X_SH_SITE = "x-sh-site";
+	private static final String X_SH_CONTEXT = "x-sh-context";
 
 	public String get(ShObjectImpl shObject) {
 		String shXSiteName = request.getHeader(X_SH_SITE);
