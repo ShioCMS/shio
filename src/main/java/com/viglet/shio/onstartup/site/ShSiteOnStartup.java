@@ -53,6 +53,8 @@ public class ShSiteOnStartup {
 						"sample-site-import");
 				this.importSite(new URL("https://github.com/ShioCMS/stock-site-import/archive/0.3.8.zip"),
 						"stock-site-import");
+				this.importSiteFromExtractedImport(new File("D:/Git/viglet/shio/shio-wem/build/libs/store/tmp/cecdd3f5-9154-420b-a5a2-873ce86a99ca"),
+						"lai-site-import");
 			} catch (MalformedURLException e) {
 				logger.error("siteRepository MalformedURLException", e);
 
@@ -79,6 +81,16 @@ public class ShSiteOnStartup {
 			}
 
 			FileUtils.deleteQuietly(siteFile);
+		}
+	}
+	private void importSiteFromExtractedImport(File directory, String slug) {
+		File userDir = new File(System.getProperty("user.dir"));
+		if (userDir.exists() && userDir.isDirectory()) {
+			File tmpDir = new File(userDir.getAbsolutePath().concat(File.separator + "store" + File.separator + "tmp"));
+			if (!tmpDir.exists())
+				tmpDir.mkdirs();
+
+			shCloneExchange.cloneFromExtractedImport(directory, "admin", null);
 		}
 	}
 }

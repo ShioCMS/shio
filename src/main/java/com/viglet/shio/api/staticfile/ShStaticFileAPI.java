@@ -18,7 +18,6 @@ package com.viglet.shio.api.staticfile;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +75,7 @@ public class ShStaticFileAPI {
 	@GetMapping("/pre-upload/{folderId}/{fileName}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ResponseEntity<ShHttpMessageBean> shStaticFilePreUpload(@PathVariable String fileName,
-			@PathVariable String folderId) throws URISyntaxException, IOException {
+			@PathVariable String folderId) {
 
 		ShFolder shFolder = shFolderRepository.findById(folderId).orElse(null);
 		if (!shStaticFileUtils.fileExists(shFolder, fileName)) {
@@ -102,7 +101,7 @@ public class ShStaticFileAPI {
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ResponseEntity<Object> shStaticFileUpload(@RequestParam("file") MultipartFile file,
 			@RequestParam("folderId") String folderId, @RequestParam("createPost") boolean createPost,
-			Principal principal) throws URISyntaxException, IOException {
+			Principal principal) {
 
 		ShFolder shFolder = shFolderRepository.findById(folderId).orElse(null);
 		if (!shStaticFileUtils.fileExists(shFolder, file.getOriginalFilename())) {

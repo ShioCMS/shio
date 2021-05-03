@@ -82,7 +82,7 @@ public class ShGroupAPI {
 		shGroupRepository.save(shGroup);
 		Optional<ShGroup> shGroupOptional = shGroupRepository.findById(shGroup.getId());
 		if (shGroupOptional.isPresent()) {
-			ShGroup shGroupRepos = shGroupOptional.get();
+			var shGroupRepos = shGroupOptional.get();
 			List<ShGroup> shGroups = new ArrayList<>();
 			shGroups.add(shGroup);
 			Set<ShUser> shUsers = shUserRepository.findByShGroupsIn(shGroups);

@@ -401,7 +401,7 @@ public class ShTuringIntegration {
 	}
 
 	private void sendServer(TurSNJobItems turSNJobItems, ShSite shSite) {
-		
+
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			String jsonResult = mapper.writeValueAsString(turSNJobItems);
@@ -435,7 +435,10 @@ public class ShTuringIntegration {
 				httpPost.setHeader("Content-type", "application/json");
 				httpPost.setHeader("Accept-Encoding", StandardCharsets.UTF_8.name());
 
-				try (CloseableHttpResponse response = client.execute(httpPost)){};
+				try (CloseableHttpResponse response = client.execute(httpPost)) {
+					logger.debug("Closed connection");
+				}
+				;
 
 			}
 		} catch (IOException e) {

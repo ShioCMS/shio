@@ -61,7 +61,7 @@ public class ShExchangeUtils {
 		}
 
 		try {
-			ZipParameters zipParameters = new ZipParameters();
+			var zipParameters = new ZipParameters();
 			zipParameters.setIncludeRootFolder(false);
 			new ZipFile(shExchangeFilesDirs.getZipFile()).addFolder(shExchangeFilesDirs.getExportDir(), zipParameters);
 		} catch (ZipException e) {
