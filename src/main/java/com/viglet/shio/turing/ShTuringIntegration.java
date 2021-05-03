@@ -438,8 +438,6 @@ public class ShTuringIntegration {
 				try (CloseableHttpResponse response = client.execute(httpPost)) {
 					logger.debug("Closed connection");
 				}
-				;
-
 			}
 		} catch (IOException e) {
 			logger.error(e);

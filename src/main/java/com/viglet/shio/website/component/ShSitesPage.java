@@ -41,6 +41,7 @@ import com.viglet.shio.utils.ShPostUtils;
 import com.viglet.shio.utils.ShSiteUtils;
 import com.viglet.shio.website.ShSitesContextComponent;
 import com.viglet.shio.website.ShSitesContextURL;
+import com.viglet.shio.website.cache.component.ShCachePreviewHtml;
 import com.viglet.shio.website.utils.ShSitesFolderUtils;
 import com.viglet.shio.website.utils.ShSitesPostUtils;
 
@@ -64,7 +65,8 @@ public class ShSitesPage {
 	private ShSiteUtils shSiteUtils;
 	@Autowired
 	private ShSitesContextComponent shSitesContextComponent;
-
+	@Autowired
+	private ShCachePreviewHtml shCachePreviewHtml;
 	private static final String THEME = "theme";
 	private static final String POSTS = "posts";
 	private static final String FOLDERS = "folders";
@@ -199,31 +201,12 @@ public class ShSitesPage {
 			String shPostThemeId = shFolderPageLayoutMap.get(ShSystemPostTypeAttr.THEME).getStrValue();
 
 			Map<String, Object> shThemeAttrs = shSitesContextComponent.shThemeFactory(shPostThemeId);
-			StringBuilder inContextEditing = new StringBuilder();
-			
-			inContextEditing.append("<div class=\"footer row\" style=\"height: 35px;\">");
-			inContextEditing.append("<div class=\"block\" style=\"width: calc(100% - 85px);;float: left;\">");
-			inContextEditing.append("<div class=\"row\" style=\"height: 35px;vertical-align: middle;display: table-cell;\">");
-			inContextEditing.append("<div class=\"block button\">Editing</div>");
-			inContextEditing.append("<div class=\"block button\">Page</div>");
-			inContextEditing.append("<div class=\"block button\">Design</div>");
-			inContextEditing.append("<div class=\"block button\">Site</div>");
-			inContextEditing.append("<div class=\"block button\">Task Inbox</div>");
-			inContextEditing.append("</div>");
-			inContextEditing.append("</div>");
-			inContextEditing.append("<div class=\"block\" style=\"width: 85px;float: right;\">");
-			inContextEditing.append("<div class=\"row\" style=\"height: 35px;vertical-align: middle;display: table-cell;\">");
-			inContextEditing.append("<div class=\"region-menu-item\"><img src=\"/preview/img/pencil.png\" class=\"region-menu-item-icon\"></div>");
-			inContextEditing.append("<div class=\"region-menu-item\"><img src=\"/preview/img/settings.png\" class=\"region-menu-item-icon\"></div>");
-			inContextEditing.append("</div>");
-			inContextEditing.append("</div>");
-			inContextEditing.append("</div>");
 			
 			shPostItemAttrs.put(THEME, shThemeAttrs);
-			shPostItemAttrs.put(IN_CONTEXT_EDITING, inContextEditing.toString());
+			shPostItemAttrs.put(IN_CONTEXT_EDITING, shCachePreviewHtml.shPreviewMenuFactory());
 
 			shFolderItemAttrs.put(THEME, shThemeAttrs);			
-			shFolderItemAttrs.put(IN_CONTEXT_EDITING, inContextEditing.toString());
+			shFolderItemAttrs.put(IN_CONTEXT_EDITING, shCachePreviewHtml.shPreviewMenuFactory());
 			
 			shFolderItemAttrs.put(POSTS, shSitesContextComponent.shPostItemsFactory(shFolderItem));
 			shFolderItemAttrs.put(FOLDERS, shSitesContextComponent.shChildFolderItemsFactory(shFolderItem));

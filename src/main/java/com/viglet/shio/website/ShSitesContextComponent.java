@@ -55,6 +55,7 @@ import com.viglet.shio.utils.ShFolderUtils;
 import com.viglet.shio.utils.ShPostUtils;
 import com.viglet.shio.website.cache.component.ShCacheJavascript;
 import com.viglet.shio.website.cache.component.ShCachePageLayout;
+import com.viglet.shio.website.cache.component.ShCachePreviewHtml;
 import com.viglet.shio.website.cache.component.ShCacheRegion;
 import com.viglet.shio.website.component.ShSitesPageLayout;
 import com.viglet.shio.website.nashorn.ShNashornEngineProcess;
@@ -90,6 +91,8 @@ public class ShSitesContextComponent {
 	private ShNashornEngineProcess shNashornEngineProcess;
 	@Autowired
 	private ShSitesPageLayoutUtils shSitesPageLayoutUtils;
+	@Autowired
+	private ShCachePreviewHtml shCachePreviewHtml;
 	@Resource
 	private ApplicationContext context;
 	private static final String SEPARATOR = "/";
@@ -171,7 +174,7 @@ public class ShSitesContextComponent {
 
 		Map<String, Object> shThemeAttrs = new HashMap<>();
 		shThemeAttrs.put("javascript", shThemeMap.get(ShSystemPostTypeAttr.JAVASCRIPT).getStrValue());
-		String inContextEditingCSS = "<link rel='stylesheet' type='text/css' href='/preview/preview.css' />";
+		var inContextEditingCSS = "<link rel='stylesheet' type='text/css' href='/preview/preview.css' />";
 		String themeCSS = shThemeMap.get(ShSystemPostTypeAttr.CSS).getStrValue();
 		String cssWithInContextEditing = themeCSS != null ? themeCSS.concat(inContextEditingCSS) : inContextEditingCSS;
 		shThemeAttrs.put("css", cssWithInContextEditing);
@@ -275,26 +278,9 @@ public class ShSitesContextComponent {
 
 			Comment comment = new Comment(String.format(" sh-region: %s, id: %s, processed in: %s ms ", regionName,
 					shRegion.getId(), String.valueOf(timeProcess)));
-			StringBuilder inContentEditingBefore = new StringBuilder();
+			String previewRegion = shCachePreviewHtml.shPreviewRegionFactory();
 
-			inContentEditingBefore.append("<div class=\"region\">");
-			inContentEditingBefore.append("<div style=\"float: right;display: inline-block;\" class=\"row\">");
-			inContentEditingBefore.append("<div class=\"block region-menu\">");
-			inContentEditingBefore.append("<div class=\"row region-menu-inner\">");
-			inContentEditingBefore.append(
-					"<div class=\"region-menu-item\"><img src=\"/preview/img/pencil.png\" class=\"region-menu-item-icon\"></div>");
-			inContentEditingBefore.append(
-					"<div class=\"region-menu-item\"><img src=\"/preview/img/settings.png\" class=\"region-menu-item-icon\"></div>");
-			inContentEditingBefore.append("</div>");
-			inContentEditingBefore.append("</div>");
-			inContentEditingBefore.append("</div>");
-
-			StringBuilder inContentEditingAfter = new StringBuilder();
-
-			inContentEditingAfter.append("</div>");
-
-			return String.format("%s%s%s%s", inContentEditingBefore.toString(), comment.toString(), regionHTML,
-					inContentEditingAfter.toString());
+			return previewRegion.replace("{{content}}", String.format("%s%s", comment.toString(), regionHTML));
 
 		}
 		return null;

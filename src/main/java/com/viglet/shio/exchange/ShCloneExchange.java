@@ -104,7 +104,7 @@ public class ShCloneExchange {
 
 	public ShExchange cloneFromExtractedImport(File directory, String username, ShSite shSite) {
 
-		ShExchangeFilesDirs shExchangeFilesDirs = shImportExchange.getExtratedImport(directory);
+		var shExchangeFilesDirs = shImportExchange.getExtratedImport(directory);
 
 		if (shExchangeFilesDirs.getExportDir() != null) {
 			ShExchange shExchangeModified = null;

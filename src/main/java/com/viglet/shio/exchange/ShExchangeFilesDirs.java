@@ -54,18 +54,26 @@ public class ShExchangeFilesDirs {
 		String folderName = UUID.randomUUID().toString();
 		File userDir = new File(System.getProperty("user.dir"));
 		if (userDir.exists() && userDir.isDirectory()) {
-			this.tmpDir = new File(userDir.getAbsolutePath().concat(File.separator + "store" + File.separator + "tmp"));
-			if (!this.tmpDir.exists())
-				this.tmpDir.mkdirs();
-				this.exportDir = (exportDirCustom != null) ? exportDirCustom
-						: new File(tmpDir.getAbsolutePath().concat(File.separator + folderName));
-			if (!this.exportDir.exists())
-				this.exportDir.mkdirs();
+			createTmpDir(userDir);
+			createExportDir(exportDirCustom, folderName);
 		}
 
 		this.zipFile = new File(tmpDir.getAbsolutePath().concat(File.separator + folderName + ".zip"));
 		this.updateExportJsonFilePath();
 		return this.exportDir.exists();
+	}
+
+	private void createTmpDir(File userDir) {
+		this.tmpDir = new File(userDir.getAbsolutePath().concat(File.separator + "store" + File.separator + "tmp"));
+		if (!this.tmpDir.exists())
+			this.tmpDir.mkdirs();
+	}
+
+	private void createExportDir(File exportDirCustom, String folderName) {
+		this.exportDir = (exportDirCustom != null) ? exportDirCustom
+				: new File(tmpDir.getAbsolutePath().concat(File.separator + folderName));
+		if (!this.exportDir.exists())
+			this.exportDir.mkdirs();
 	}
 
 	public void deleteExport() {

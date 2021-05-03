@@ -124,7 +124,7 @@ public class ShExchangeUtils {
 	}
 
 	public ShExchangeFilesDirs getExtratedImport(File directory) {
-		ShExchangeFilesDirs shExchangeFilesDirs = new ShExchangeFilesDirs();
+		var shExchangeFilesDirs = new ShExchangeFilesDirs();
 		if (shExchangeFilesDirs.generate(directory)) {
 			return shExchangeFilesDirs;
 		} else {
