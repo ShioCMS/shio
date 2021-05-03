@@ -127,6 +127,11 @@ task stage(dependsOn: ['build', 'clean'])
 compileJava.dependsOn(['minifyAllJs'])
 
 build.mustRunAfter clean
+java {
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(14)
+  }
+}
 
 javadoc {
     source = sourceSets.main.allJava
