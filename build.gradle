@@ -80,8 +80,8 @@ repositories {
 }
 
 group = 'com.viglet.shio'
-sourceCompatibility = 14
-targetCompatibility = 14
+sourceCompatibility = 11
+targetCompatibility = 11
 
 tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
@@ -127,11 +127,6 @@ task stage(dependsOn: ['build', 'clean'])
 compileJava.dependsOn(['minifyAllJs'])
 
 build.mustRunAfter clean
-java {
-  toolchain {
-    languageVersion = JavaLanguageVersion.of(14)
-  }
-}
 
 javadoc {
     source = sourceSets.main.allJava
