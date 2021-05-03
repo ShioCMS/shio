@@ -1,9 +1,9 @@
-FROM openjdk:11-jdk as shiobuild
+FROM adoptopenjdk/openjdk14:latest as shiobuild
 WORKDIR /app
 COPY . .
 RUN ./gradlew build
 
-FROM openjdk:11-jre-slim-buster
+FROM adoptopenjdk/openjdk14:jre
 WORKDIR /app
 ENV JAVA_OPTS=${JAVA_OPTS:-'-Xmx512m'}
 ENV DEBUG_OPTS=${DEBUG_OPTS}
