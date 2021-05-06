@@ -1,6 +1,6 @@
 buildscript {
     ext { springBootVersion = '2.4.5'
-	      hibernateVersion = '5.11.8.Final'
+	      hibernateVersion = '5.11.9.Final'
 		  swaggerVersion = '3.0.0'
 		 }
 		repositories {
