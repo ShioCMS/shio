@@ -230,7 +230,7 @@ dependencies {
 	// WebJars
 	compile 'org.webjars:jquery:1.12.4'
 	compile 'org.webjars.bower:jquery.ui:1.12.1'
-	compile 'org.webjars:bootstrap:3.3.7-1' // Content
+	compile 'org.webjars:bootstrap:5.0.0' // Content
 	compile 'org.webjars.bower:bootstrap:4.6.0' // Preview
 	compile 'org.webjars.npm:moment:2.29.1'
 	compile 'org.webjars.npm:angular:1.8.2'
