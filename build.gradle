@@ -16,7 +16,7 @@ buildscript {
 
 
 plugins {
-  id 'org.springframework.boot' version '2.5.0'
+  id 'org.springframework.boot' version "${springBootVersion}"
   id 'io.spring.dependency-management' version '1.0.11.RELEASE'
   id 'java'
   id "com.eriwen.gradle.js" version "2.14.1"
@@ -223,7 +223,6 @@ dependencies {
 	implementation 'org.webjars.bower:jquery.ui:1.12.1'
 	implementation 'org.webjars:bootstrap:3.3.7-1' // Content
 	implementation 'org.webjars.bower:bootstrap:4.6.0' // Preview
-	implementation 'org.webjars.npm:moment:2.29.1'
 	implementation 'org.webjars.npm:angular:1.8.2'
 	implementation 'org.webjars.npm:angular-resource:1.8.2'
 	implementation 'org.webjars.npm:angular-animate:1.8.2'
