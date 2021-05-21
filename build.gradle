@@ -128,91 +128,82 @@ compileJava.dependsOn(['minifyAllJs'])
 
 build.mustRunAfter clean
 
-javadoc {
-    source = sourceSets.main.allJava
-    classpath = configurations.compile
-    destinationDir = file("docs/core")
-}
-
 dependencies {
     
     // Spring Boot
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: "${springBootVersion}"    
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: "${springBootVersion}"
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-parent', version:"${springBootVersion}"
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version:"${springBootVersion}"
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-activemq', version:"${springBootVersion}"   
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf', version:"${springBootVersion}"
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version:"${springBootVersion}"
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-cache', version:"${springBootVersion}"
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version:"${springBootVersion}"
-	compile group: 'org.springframework.boot', name: 'spring-boot-starter-json', version:"${springBootVersion}"
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: "${springBootVersion}"    
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: "${springBootVersion}"
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-parent', version:"${springBootVersion}"
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version:"${springBootVersion}"
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-activemq', version:"${springBootVersion}"   
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf', version:"${springBootVersion}"
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version:"${springBootVersion}"
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-cache', version:"${springBootVersion}"
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version:"${springBootVersion}"
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-json', version:"${springBootVersion}"
 
 	// Viglet Turing
 	implementation 'com.github.openturing:turing-java-sdk:0.3.3-SNAPSHOT'
 
   	// Spring
-  	compile group: 'org.springframework', name: 'spring-test', version: '5.3.7'
+  	implementation group: 'org.springframework', name: 'spring-test', version: '5.3.7'
   	    
   	// Jackson
-    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.12.3'
+    implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.12.3'
    
    	// Oracle	
-	compile group: 'com.oracle.ojdbc', name: 'ojdbc8', version: '19.3.0.0'
+	implementation group: 'com.oracle.ojdbc', name: 'ojdbc8', version: '19.3.0.0'
 	
     // H2
-    compile group: 'com.h2database', name: 'h2', version:'1.4.200'
+    implementation group: 'com.h2database', name: 'h2', version:'1.4.200'
 
 	// MariaDB
-    compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.7.3'
+    implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.7.3'
 
     // Apache Commons
-    compile group: 'org.apache.commons', name: 'commons-compress', version: '1.20'   
-    compile group: 'commons-io', name: 'commons-io', version:'2.8.0'
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
-	compile group: 'org.apache.commons', name: 'commons-text', version: '1.9'
+    implementation group: 'org.apache.commons', name: 'commons-compress', version: '1.20'   
+    implementation group: 'commons-io', name: 'commons-io', version:'2.8.0'
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
+	implementation group: 'org.apache.commons', name: 'commons-text', version: '1.9'
 	
 	//Zip4j
     implementation group: 'net.lingala.zip4j', name: 'zip4j', version: '2.7.0'
 
     // Apache POI
-    compile group: 'org.apache.poi', name: 'poi', version: '5.0.0'
-    compile group: 'org.apache.poi', name: 'poi-ooxml', version: '5.0.0'
+    implementation group: 'org.apache.poi', name: 'poi', version: '5.0.0'
+    implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.0.0'
     
     // JSoup
-	compile group: 'org.jsoup', name: 'jsoup', version: '1.13.1'
+	implementation group: 'org.jsoup', name: 'jsoup', version: '1.13.1'
 	
 	// Hibernate
-	compile group: 'org.hibernate', name: 'hibernate-search-engine', version: "${hibernateVersion}"
-	compile group: 'org.hibernate', name: 'hibernate-search-orm', version: "${hibernateVersion}"
+	implementation group: 'org.hibernate', name: 'hibernate-search-engine', version: "${hibernateVersion}"
+	implementation group: 'org.hibernate', name: 'hibernate-search-orm', version: "${hibernateVersion}"
 	
 	//Hazelcast
-	compile group: 'com.hazelcast', name: 'hazelcast-all', version : '4.0.3'	
-	compile group: 'com.hazelcast', name: 'hazelcast-spring', version: '4.0.3'
+	implementation group: 'com.hazelcast', name: 'hazelcast-all', version : '4.0.3'	
+	implementation group: 'com.hazelcast', name: 'hazelcast-spring', version: '4.0.3'
 	
 	
 	// Swagger 2
-	compile group: 'io.springfox', name: 'springfox-swagger2', version: "${swaggerVersion}"
-	compile group: 'io.springfox', name: 'springfox-swagger-ui', version: "${swaggerVersion}"
+	implementation group: 'io.springfox', name: 'springfox-swagger2', version: "${swaggerVersion}"
+	implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: "${swaggerVersion}"
 	
 	// Gson - is used by reCAPTCHA
-	compile group: 'com.google.code.gson', name: 'gson', version: '2.8.6'
+	implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.6'
 
 	// Thumbnailator
-    compile group: 'net.coobird', name: 'thumbnailator', version: '0.4.14'
+    implementation group: 'net.coobird', name: 'thumbnailator', version: '0.4.14'
 	
 	// Tika
-    compile group: 'org.apache.tika', name: 'tika-core', version:'1.26'
-    compile group: 'org.apache.tika', name: 'tika-parsers', version:'1.26'
+    implementation group: 'org.apache.tika', name: 'tika-core', version:'1.26'
+    implementation group: 'org.apache.tika', name: 'tika-parsers', version:'1.26'
     
-	// Javadoc - Need this package
-	compile 'javax.interceptor:javax.interceptor-api:1.2.2'
-	
 	// LDAP
-	compile group: 'ldapsdk', name: 'ldapsdk', version: '4.1'
+	implementation group: 'ldapsdk', name: 'ldapsdk', version: '4.1'
 	
 	// Git 
-	compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.11.1.202105131744-r'
+	implementation group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.11.1.202105131744-r'
 		
 	// GraphQL
 	implementation 'com.graphql-java:graphql-java:0.0.0-2021-05-17T23-49-29-83942204'
@@ -222,38 +213,38 @@ dependencies {
 	implementation "com.graphql-java-kickstart:graphql-webclient-spring-boot-starter:1.0.0"
 
 	// Color Thief
-	compile group: 'de.androidpit', name: 'color-thief', version: '1.1.2'
+	implementation group: 'de.androidpit', name: 'color-thief', version: '1.1.2'
 
 	// Guava
 	implementation 'com.google.guava:guava:30.1.1-jre'
 	
 	// WebJars
-	compile 'org.webjars:jquery:1.12.4'
-	compile 'org.webjars.bower:jquery.ui:1.12.1'
-	compile 'org.webjars:bootstrap:3.3.7-1' // Content
-	compile 'org.webjars.bower:bootstrap:4.6.0' // Preview
-	compile 'org.webjars.npm:moment:2.29.1'
-	compile 'org.webjars.npm:angular:1.8.2'
-	compile 'org.webjars.npm:angular-resource:1.8.2'
-	compile 'org.webjars.npm:angular-animate:1.8.2'
-	compile 'org.webjars.npm:angular-sanitize:1.8.2'	
-	compile 'org.webjars.npm:angular-cookies:1.8.2'
-	compile 'org.webjars.bower:ace-builds:1.4.12'
-	compile 'org.webjars.bower:tinymce:5.7.0'
-	compile 'org.webjars.bower:angular-ui-router:1.0.28'
-	compile 'org.webjars.npm:angular-translate:2.18.4'		
-	compile 'org.webjars.bower:angular-bootstrap:2.5.0'
-	compile 'org.webjars.bower:angular-moment:1.2.0'
-	compile 'org.webjars.bower:angular-ui-ace:0.2.3'
-	compile 'org.webjars.bower:font-awesome:4.7.0'
-	compile 'org.webjars.bower:ng-file-upload:12.2.13'
-	compile 'org.webjars.bower:angular-ui-notification:0.3.6'
-	compile 'org.webjars.bower:angular-ui-tinymce:0.0.19'
-	compile 'org.webjars.bower:angular-ui-sortable:0.19.0'
-	compile 'org.webjars.bower:angular-ui-select:0.19.8'
-	compile 'org.webjars.bower:ngInfiniteScroll:1.3.4'
-	compile 'org.webjars:angular-avatar:1.3.0'
-	compile 'org.webjars.bower:angular-bootstrap-toggle:0.4.2'
+	implementation 'org.webjars:jquery:1.12.4'
+	implementation 'org.webjars.bower:jquery.ui:1.12.1'
+	implementation 'org.webjars:bootstrap:3.3.7-1' // Content
+	implementation 'org.webjars.bower:bootstrap:4.6.0' // Preview
+	implementation 'org.webjars.npm:moment:2.29.1'
+	implementation 'org.webjars.npm:angular:1.8.2'
+	implementation 'org.webjars.npm:angular-resource:1.8.2'
+	implementation 'org.webjars.npm:angular-animate:1.8.2'
+	implementation 'org.webjars.npm:angular-sanitize:1.8.2'	
+	implementation 'org.webjars.npm:angular-cookies:1.8.2'
+	implementation 'org.webjars.bower:ace-builds:1.4.12'
+	implementation 'org.webjars.bower:tinymce:5.7.0'
+	implementation 'org.webjars.bower:angular-ui-router:1.0.28'
+	implementation 'org.webjars.npm:angular-translate:2.18.4'		
+	implementation 'org.webjars.bower:angular-bootstrap:2.5.0'
+	implementation 'org.webjars.bower:angular-moment:1.2.0'
+	implementation 'org.webjars.bower:angular-ui-ace:0.2.3'
+	implementation 'org.webjars.bower:font-awesome:4.7.0'
+	implementation 'org.webjars.bower:ng-file-upload:12.2.13'
+	implementation 'org.webjars.bower:angular-ui-notification:0.3.6'
+	implementation 'org.webjars.bower:angular-ui-tinymce:0.0.19'
+	implementation 'org.webjars.bower:angular-ui-sortable:0.19.0'
+	implementation 'org.webjars.bower:angular-ui-select:0.19.8'
+	implementation 'org.webjars.bower:ngInfiniteScroll:1.3.4'
+	implementation 'org.webjars:angular-avatar:1.3.0'
+	implementation 'org.webjars.bower:angular-bootstrap-toggle:0.4.2'
 
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
 }

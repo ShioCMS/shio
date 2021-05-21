@@ -69,18 +69,21 @@ public class ShGraphQLQTPlural {
 	public void createQueryTypePlural(Builder queryTypeBuilder,
 			graphql.schema.GraphQLCodeRegistry.Builder codeRegistryBuilder, ShPostType shPostType,
 			GraphQLObjectType graphQLObjectType) {
-		String postTypeNamePlural = this.getPostTypeNamePlural(shPostType);
+		if (!StringUtils.isBlank(shPostType.getName()) && !StringUtils.isBlank(shPostType.getNamePlural())) {
+			String postTypeNamePlural = this.getPostTypeNamePlural(shPostType);
 
-		GraphQLInputObjectType.Builder postTypeWhereInputBuilder = newInputObject()
-				.name(shPostType.getName().replace("-", "_").concat(ShGraphQLConstants.WHERE_INPUT)).description("Identifies documents");
+			GraphQLInputObjectType.Builder postTypeWhereInputBuilder = newInputObject()
+					.name(shPostType.getName().replace("-", "_").concat(ShGraphQLConstants.WHERE_INPUT))
+					.description("Identifies documents");
 
-		this.whereFieldsPlural(shPostType, postTypeWhereInputBuilder);
+			this.whereFieldsPlural(shPostType, postTypeWhereInputBuilder);
 
-		shGraphQLQTCommons.createArguments(queryTypeBuilder, graphQLObjectType, postTypeNamePlural,
-				postTypeWhereInputBuilder, true);
+			shGraphQLQTCommons.createArguments(queryTypeBuilder, graphQLObjectType, postTypeNamePlural,
+					postTypeWhereInputBuilder, true);
 
-		codeRegistryBuilder.dataFetcher(coordinates(ShGraphQLConstants.QUERY_TYPE, postTypeNamePlural),
-				this.getPostTypeAllDataFetcherPlural(shPostType));
+			codeRegistryBuilder.dataFetcher(coordinates(ShGraphQLConstants.QUERY_TYPE, postTypeNamePlural),
+					this.getPostTypeAllDataFetcherPlural(shPostType));
+		}
 	}
 
 	private void whereFieldsPlural(ShPostType shPostType, GraphQLInputObjectType.Builder postTypeWhereInputBuilder) {
@@ -173,8 +176,7 @@ public class ShGraphQLQTPlural {
 					field = arg.split(ShGraphQLConstants.CONDITION_SEPARATOR)[0];
 					action = arg.replaceFirst(field.concat(ShGraphQLConstants.CONDITION_SEPARATOR), StringUtils.EMPTY);
 				}
-				shGraphQLInputObjectField.fieldWhereCondition(shPostType, posts, whereArgItem, field, action,
-						siteIds);
+				shGraphQLInputObjectField.fieldWhereCondition(shPostType, posts, whereArgItem, field, action, siteIds);
 			}
 		});
 	}

@@ -23,6 +23,7 @@ import static graphql.schema.GraphQLList.list;
 import static graphql.schema.GraphQLNonNull.nonNull;
 import static graphql.schema.GraphqlTypeComparatorRegistry.BY_NAME_REGISTRY;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -48,25 +49,28 @@ public class ShGraphQLQTCommons {
 
 	public void createArguments(Builder queryTypeBuilder, GraphQLObjectType graphQLObjectType, String postTypeName,
 			GraphQLInputObjectType.Builder postTypeWhereInputBuilder, boolean isPlural) {
+		if (!StringUtils.isBlank(postTypeName)) {
+			GraphQLTypeReference siteArgRef = GraphQLTypeReference.typeRef(ShGraphQLConstants.SITES_ARG_TITLE);
 
-		GraphQLTypeReference siteArgRef = GraphQLTypeReference.typeRef(ShGraphQLConstants.SITES_ARG_TITLE);
+			GraphQLInputObjectType postTypeWhereInput = postTypeWhereInputBuilder.comparatorRegistry(BY_NAME_REGISTRY)
+					.build();
 
-		GraphQLInputObjectType postTypeWhereInput = postTypeWhereInputBuilder.comparatorRegistry(BY_NAME_REGISTRY)
-				.build();
-
-		queryTypeBuilder.field(newFieldDefinition().name(postTypeName)
-				.type(nonNull(isPlural ? list(nonNull(graphQLObjectType)) : graphQLObjectType))
-				.argument(newArgument().name(ShGraphQLConstants.STAGE_ARG)
-						.description("A required enumeration indicating the current content Stage (defaults to DRAFT)")
-						.type(nonNull(ShGraphQLConstants.stageEnum)).defaultValue(20))
-				.argument(newArgument().name(ShGraphQLConstants.LOCALES_ARG)
-						.description("A required array of one or more locales, defaults to the project's default.")
-						.type(nonNull(list(ShGraphQLConstants.localeEnum))).defaultValue("EN"))
-				.argument(newArgument().name(ShGraphQLConstants.SITES_ARG)
-						.description("A required array of one or more sites").type(list(siteArgRef)))
-				.argument(newArgument().name(ShGraphQLConstants.WHERE_ARG)
-						.description("An optional object type to filter the content based on a nested set of criteria.")
-						.type(postTypeWhereInput)));
+			queryTypeBuilder.field(newFieldDefinition().name(postTypeName)
+					.type(nonNull(isPlural ? list(nonNull(graphQLObjectType)) : graphQLObjectType))
+					.argument(newArgument().name(ShGraphQLConstants.STAGE_ARG)
+							.description(
+									"A required enumeration indicating the current content Stage (defaults to DRAFT)")
+							.type(nonNull(ShGraphQLConstants.stageEnum)).defaultValue(20))
+					.argument(newArgument().name(ShGraphQLConstants.LOCALES_ARG)
+							.description("A required array of one or more locales, defaults to the project's default.")
+							.type(nonNull(list(ShGraphQLConstants.localeEnum))).defaultValue("EN"))
+					.argument(newArgument().name(ShGraphQLConstants.SITES_ARG)
+							.description("A required array of one or more sites").type(list(siteArgRef)))
+					.argument(newArgument().name(ShGraphQLConstants.WHERE_ARG)
+							.description(
+									"An optional object type to filter the content based on a nested set of criteria.")
+							.type(postTypeWhereInput)));
+		}
 	}
 
 	public GraphQLEnumType createSiteEnum() {
@@ -74,7 +78,7 @@ public class ShGraphQLQTCommons {
 				.name(ShGraphQLConstants.SITES_ARG_TITLE).description("Site Names enumeration");
 
 		siteEnumBuilder.value("All", "all", "Entire sites");
-		
+
 		shSiteRepository.findAll()
 				.forEach(shSite -> siteEnumBuilder.value(shSite.getName(), shSite.getId(), shSite.getDescription()));
 
