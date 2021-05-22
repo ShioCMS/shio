@@ -29,7 +29,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shio.persistence.model.folder.ShFolder;
-import com.viglet.shio.persistence.model.object.impl.ShObjectImpl;
+import com.viglet.shio.persistence.model.object.ShObject;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.repository.object.ShObjectRepository;
 import com.viglet.shio.persistence.repository.post.ShPostRepository;
@@ -40,6 +40,8 @@ import com.viglet.shio.website.utils.ShSitesObjectUtils;
 /**
  * @author Alexandre Oliveira
  */
+
+
 @Component
 public class ShCacheObject {
 	private static final Log logger = LogFactory.getLog(ShCacheObject.class);
@@ -48,6 +50,8 @@ public class ShCacheObject {
 	@Autowired
 	ShCacheURL shCacheURL;
 	@Autowired
+	ShCacheObject shCacheObject;
+	@Autowired
 	ShObjectRepository shObjectRepository;
 	@Autowired
 	ShPostRepository shPostRepository;
@@ -55,7 +59,7 @@ public class ShCacheObject {
 	ShFolderUtils shFolderUtils;
 	@Autowired
 	ShSitesObjectUtils shSitesObjectUtils;
-
+	
 	@Cacheable(value = "shObject", key = "#id", sync = true)
 	public List<String> cache(String id) {
 		if (logger.isDebugEnabled())
@@ -65,7 +69,7 @@ public class ShCacheObject {
 
 	@CachePut(value = "shObject", key = "#id")
 	public List<String> updateCache(String id, ShSitesContextURL shSitesContextURL) {
-		List<String> urls = this.cache(id);
+		List<String> urls = shCacheObject.cache(id);
 		if (!urls.contains(shSitesContextURL.getInfo().getContextURLOriginal())) {
 			if (logger.isDebugEnabled())
 				logger.debug("Adding id: " + id + " and URL: " + shSitesContextURL.getInfo().getContextURLOriginal());
@@ -75,7 +79,7 @@ public class ShCacheObject {
 	}
 
 	public void deleteCache(String id) {
-		ShObjectImpl shObject = shObjectRepository.findById(id).orElse(null);
+		ShObject shObject = shObjectRepository.findById(id).orElse(null);
 		String objectId = id;
 		if (shObject instanceof ShFolder) {
 			ShPost shFolderIndex = shPostRepository.findByShFolderAndFurl((ShFolder) shObject, "index");
@@ -88,20 +92,19 @@ public class ShCacheObject {
 		}
 
 		this.deleteDependency(objectId);
-		this.deleteCacheSelf(objectId);
+		shCacheObject.deleteCacheSelf(objectId);
 
 	}
 
 	public void deleteDependency(String id) {
 		if (logger.isDebugEnabled())
 			logger.debug("Executing deleteDependency for id: " + id);
-		List<String> urls = this.cache(id);
+		List<String> urls = shCacheObject.cache(id);
 		for (String url : urls) {
 			if (logger.isDebugEnabled())
 				logger.debug("Deleting the page with id: " + id + " and URL: " + url);
 			shCachePage.deleteCache(id, url);
-
-			ShObjectImpl shObject = shObjectRepository.findById(id).orElse(null);
+			ShObject shObject = shObjectRepository.findById(id).orElse(null);
 			String contextURL = null;
 			if (shObject instanceof ShPost && shObject.getFurl().equals("index")) {
 				ShFolder shFolder = shFolderUtils.getParentFolder(shObject);
@@ -117,7 +120,6 @@ public class ShCacheObject {
 				contextURL = contextURL.trim().replaceFirst(".$", StringUtils.EMPTY);
 
 			shCacheURL.deleteCache(contextURL, url);
-
 		}
 
 	}

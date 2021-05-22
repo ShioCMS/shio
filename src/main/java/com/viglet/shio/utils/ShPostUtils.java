@@ -35,8 +35,10 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.viglet.shio.api.ShJsonView;
@@ -45,6 +47,7 @@ import com.viglet.shio.object.ShObjectType;
 import com.viglet.shio.persistence.model.auth.ShUser;
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.object.ShObject;
+import com.viglet.shio.persistence.model.object.ShObjectDraft;
 import com.viglet.shio.persistence.model.object.impl.ShObjectImpl;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
@@ -116,6 +119,10 @@ public class ShPostUtils {
 	private ShUserRepository shUserRepository;
 	@Autowired
 	private ShGroupRepository shGroupRepository;
+
+	@JsonTypeInfo(use = JsonTypeInfo.Id.NONE)
+	class NoTypes {
+	}
 
 	public ShPost getShPostFromObjectId(String objectId) {
 
@@ -251,6 +258,16 @@ public class ShPostUtils {
 		}
 	}
 
+	public void referencedObjectDraft(ShPostAttrImpl shPostAttr, ShPostImpl shPost) {
+		if (shPostAttr.getShPostTypeAttr().getShWidget() != null) {
+			if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.FILE)) {
+				this.referencedFileDraft(shPostAttr, shPost);
+			} else if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.CONTENT_SELECT)) {
+				this.referencedPostDraft(shPostAttr, shPost);
+			}
+		}
+	}
+
 	public void referencedObject(ShPostAttrImpl shPostAttr, ShPostImpl shPost) {
 		if (shPostAttr.getShPostTypeAttr().getShWidget() != null) {
 			if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.FILE)) {
@@ -284,23 +301,13 @@ public class ShPostUtils {
 
 	}
 
-	public void referencedObjectDraft(ShPostDraftAttr shPostAttr, ShPostDraft shPost) {
-		if (shPostAttr.getShPostTypeAttr().getShWidget() != null) {
-			if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.FILE)) {
-				this.referencedFileDraft(shPostAttr, shPost);
-			} else if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.CONTENT_SELECT)) {
-				this.referencedPostDraft(shPostAttr, shPost);
-			}
-		}
-	}
-
-	public void referencedFileDraft(ShPostDraftAttr shPostAttr, ShPostDraft shPost) {
+	public void referencedFileDraft(ShPostAttrImpl shPostAttr, ShPostImpl shPost) {
 		if (!shPost.getShPostType().getName().equals(ShSystemPostType.FILE)) {
 			this.referencedPostDraft(shPostAttr, shPost);
 		}
 	}
 
-	public void referencedPostDraft(ShPostDraftAttr shPostAttr, ShPostDraft shPost) {
+	public void referencedPostDraft(ShPostAttrImpl shPostAttr, ShPostImpl shPost) {
 		if (shPostAttr.getStrValue() == null) {
 			shPostAttr.setReferenceObject(null);
 		} else {
@@ -309,13 +316,13 @@ public class ShPostUtils {
 		}
 	}
 
-	private void createNewReferenceDraft(ShPostDraftAttr shPostAttr, ShPostDraft shPost) {
+	private void createNewReferenceDraft(ShPostAttrImpl shPostAttr, ShPostImpl shPost) {
 		try {
 			ShObject shObjectReferenced = shObjectRepository.findById(shPostAttr.getStrValue()).orElse(null);
 			// Create new reference
 			if (shPost != null && shObjectReferenced != null) {
 				ShReferenceDraft shReference = new ShReferenceDraft();
-				shReference.setShObjectFrom(shPost);
+				shReference.setShObjectFrom((ShObjectDraft) shPost);
 				shReference.setShObjectTo(shObjectReferenced);
 				shReferenceDraftRepository.saveAndFlush(shReference);
 				shPostAttr.setReferenceObject(shObjectReferenced);
@@ -326,11 +333,11 @@ public class ShPostUtils {
 		}
 	}
 
-	private void removeOldReferenceDraft(ShPostDraftAttr shPostAttr, ShPostDraft shPost) {
+	private void removeOldReferenceDraft(ShPostAttrImpl shPostAttr, ShPostImpl shPost) {
 		// Two or more attributes with FILE Widget and same file, it cannot remove
 		// a valid reference
 		// Remove old references
-		List<ShReferenceDraft> shOldReferences = shReferenceDraftRepository.findByShObjectFrom(shPost);
+		List<ShReferenceDraft> shOldReferences = shReferenceDraftRepository.findByShObjectFrom((ShObjectDraft) shPost);
 		if (!shOldReferences.isEmpty()) {
 			for (ShReferenceDraft shOldReference : shOldReferences) {
 				// Find by shPostAttr.getStrValue()
@@ -542,12 +549,15 @@ public class ShPostUtils {
 		ShPost shPost = null;
 		if (shPostDraft != null) {
 
-			ObjectMapper mapper = new ObjectMapper();
+			ObjectMapper mapper = new ObjectMapper().addMixIn(ShPostDraft.class, NoTypes.class);
+			;
 			try {
 				shPostDraft.setShPostAttrs(shPostDraftAttrRepository.findByShPostAll(shPostDraft));
 				String jsonInString = mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+						.configure(MapperFeature.USE_BASE_TYPE_AS_DEFAULT_IMPL, true)
 						.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
-						.writerWithView(ShJsonView.ShJsonViewObject.class).writeValueAsString(shPostDraft);
+						.writerWithView(ShJsonView.ShJsonViewObject.class).writeValueAsString(shPostDraft)
+						.replaceAll("\"@type\":\"ShPostDraftAttr\"", "\"@type\":\"ShPostAttr\"");
 				shPost = mapper.readValue(jsonInString, ShPost.class);
 				this.loadPostDraftAttribs((Set<ShPostAttr>) shPost.getShPostAttrs());
 
