@@ -17,6 +17,7 @@
 package com.viglet.shio.exchange.post;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -316,9 +317,15 @@ public class ShPostImport {
 						extractFolder.getAbsolutePath().concat(File.separator + shPostExchange.getId()));
 				File fileDest = new File(directoryPath.getAbsolutePath().concat(File.separator + fileName));
 				try {
-					FileUtils.copyFile(fileSource, fileDest);
+					if (fileDest.exists())
+						FileUtils.copyFile(fileSource, fileDest);
+					else {
+						logger.error(String.format("%s file not exists, creating empty file into %s.",
+								fileSource.getAbsoluteFile(), fileDest.getAbsoluteFile()));
+						fileDest.createNewFile();
+					}
 				} catch (IOException e) {
-					logger.error("createShPostException", e);
+					logger.error(e);
 				}
 			}
 		}

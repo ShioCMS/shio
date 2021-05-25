@@ -429,7 +429,7 @@ public class ShPostUtils {
 		if (shPostTypeAttr.getIsSummary() == 1) {
 			String widgetName = shPostTypeAttr.getShWidget().getName();
 			if (isReferencedWidget(shChildrenPostAttr, widgetName)) {
-				this.summaryRelator(title, summary, (ShPostImpl) shChildrenPostAttr);
+				this.summaryRelator(title, summary, (ShPostAttrImpl) shChildrenPostAttr);
 			} else if (widgetName.equals(ShSystemWidget.DATE)) {
 				this.summaryDate(shPostAttr, title, summary);
 			} else {
@@ -454,7 +454,7 @@ public class ShPostUtils {
 		summary.append(dt.format(shPostAttr.getDateValue()));
 	}
 
-	private void summaryRelator(StringBuilder title, StringBuilder summary, ShPostImpl shChildrenPostAttr) {
+	private void summaryRelator(StringBuilder title, StringBuilder summary, ShPostAttrImpl shChildrenPostAttr) {
 		ShObjectImpl shObject = ((ShPostAttr) shChildrenPostAttr).getReferenceObject();
 		if (shObject != null) {
 			if (shObject.getObjectType().equals(ShObjectType.POST)) {
@@ -489,7 +489,7 @@ public class ShPostUtils {
 			String widgetName = shPostTypeAttr.getShWidget().getName();
 
 			if (isReferencedWidget(shChildrenPostAttr, widgetName)) {
-				this.summaryRelator(title, title, (ShPostImpl) shChildrenPostAttr);
+				this.summaryRelator(title, title, (ShPostAttrImpl) shChildrenPostAttr);
 			} else if (widgetName.equals(ShSystemWidget.DATE)) {
 				this.summaryDate(shChildrenPostAttr, title, title);
 			} else {
