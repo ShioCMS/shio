@@ -317,9 +317,12 @@ public class ShPostImport {
 						extractFolder.getAbsolutePath().concat(File.separator + shPostExchange.getId()));
 				File fileDest = new File(directoryPath.getAbsolutePath().concat(File.separator + fileName));
 				try {
-					if (fileDest.exists())
+					if (!fileDest.getParentFile().exists()) {
+						fileDest.getParentFile().mkdirs();
+					}
+					if (fileDest.exists()) {
 						FileUtils.copyFile(fileSource, fileDest);
-					else {
+					} else {
 						logger.error(String.format("%s file not exists, creating empty file into %s.",
 								fileSource.getAbsoluteFile(), fileDest.getAbsoluteFile()));
 						fileDest.createNewFile();
