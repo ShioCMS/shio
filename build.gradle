@@ -1,5 +1,5 @@
 buildscript {
-    ext { springBootVersion = '2.5.0'
+    ext { springBootVersion = '2.5.1'
 	      hibernateVersion = '5.11.9.Final'
 		  swaggerVersion = '3.0.0'
 		 }
@@ -146,7 +146,7 @@ dependencies {
 	implementation 'com.github.openturing:turing-java-sdk:0.3.3'
 
   	// Spring
-  	implementation group: 'org.springframework', name: 'spring-test', version: '5.3.7'
+  	implementation group: 'org.springframework', name: 'spring-test', version: '5.3.8'
   	    
   	// Jackson
     implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.12.3'
@@ -203,7 +203,7 @@ dependencies {
 	implementation group: 'ldapsdk', name: 'ldapsdk', version: '4.1'
 	
 	// Git 
-	implementation group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.11.1.202105131744-r'
+	implementation group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.12.0.202106070339-r'
 		
 	// GraphQL
 	implementation 'com.graphql-java:graphql-java:230521-nf-execution'
