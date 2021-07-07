@@ -149,7 +149,7 @@ dependencies {
   	implementation group: 'org.springframework', name: 'spring-test', version: '5.3.8'
   	    
   	// Jackson
-    implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.12.3'
+    implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.12.4'
    
    	// Oracle	
 	implementation group: 'com.oracle.ojdbc', name: 'ojdbc8', version: '19.3.0.0'
@@ -196,8 +196,8 @@ dependencies {
     implementation group: 'net.coobird', name: 'thumbnailator', version: '0.4.14'
 	
 	// Tika
-    implementation group: 'org.apache.tika', name: 'tika-core', version:'1.26'
-    implementation group: 'org.apache.tika', name: 'tika-parsers', version:'1.26'
+    implementation group: 'org.apache.tika', name: 'tika-core', version:'1.27'
+    implementation group: 'org.apache.tika', name: 'tika-parsers', version:'1.27'
     
 	// LDAP
 	implementation group: 'ldapsdk', name: 'ldapsdk', version: '4.1'
