@@ -229,7 +229,7 @@ dependencies {
 	implementation 'org.webjars.npm:angular-sanitize:1.8.2'	
 	implementation 'org.webjars.npm:angular-cookies:1.8.2'
 	implementation 'org.webjars.bower:ace-builds:1.4.12'
-	implementation 'org.webjars.bower:tinymce:5.7.0'
+	implementation 'org.webjars.bower:tinymce:5.8.2'
 	implementation 'org.webjars.bower:angular-ui-router:1.0.28'
 	implementation 'org.webjars.npm:angular-translate:2.18.4'		
 	implementation 'org.webjars.bower:angular-bootstrap:2.5.0'
