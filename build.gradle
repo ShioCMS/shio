@@ -162,7 +162,7 @@ dependencies {
 
     // Apache Commons
     implementation group: 'org.apache.commons', name: 'commons-compress', version: '1.21'   
-    implementation group: 'commons-io', name: 'commons-io', version:'2.10.0'
+    implementation group: 'commons-io', name: 'commons-io', version:'2.11.0'
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
 	implementation group: 'org.apache.commons', name: 'commons-text', version: '1.9'
 	
@@ -209,7 +209,7 @@ dependencies {
 	implementation 'com.graphql-java:graphql-java:230521-nf-execution'
 	implementation 'com.graphql-java:graphql-java-spring-webmvc:2021-03-29T16-31-33-ae4bd96'	
 	implementation 'com.graphql-java:graphql-java-extended-scalars:16.0.1'
-	implementation 'io.projectreactor:reactor-core:3.4.7'
+	implementation 'io.projectreactor:reactor-core:3.4.8'
 	implementation "com.graphql-java-kickstart:graphql-webclient-spring-boot-starter:1.0.0"
 
 	// Color Thief
@@ -229,7 +229,7 @@ dependencies {
 	implementation 'org.webjars.npm:angular-sanitize:1.8.2'	
 	implementation 'org.webjars.npm:angular-cookies:1.8.2'
 	implementation 'org.webjars.bower:ace-builds:1.4.12'
-	implementation 'org.webjars.bower:tinymce:5.7.0'
+	implementation 'org.webjars.bower:tinymce:5.8.2'
 	implementation 'org.webjars.bower:angular-ui-router:1.0.28'
 	implementation 'org.webjars.npm:angular-translate:2.18.4'		
 	implementation 'org.webjars.bower:angular-bootstrap:2.5.0'
