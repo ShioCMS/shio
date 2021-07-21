@@ -146,7 +146,7 @@ dependencies {
 	implementation 'com.github.openturing:turing-java-sdk:0.3.3'
 
   	// Spring
-  	implementation group: 'org.springframework', name: 'spring-test', version: '5.3.8'
+  	implementation group: 'org.springframework', name: 'spring-test', version: '5.3.9'
   	    
   	// Jackson
     implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.12.4'
@@ -197,7 +197,7 @@ dependencies {
 	
 	// Tika
     implementation group: 'org.apache.tika', name: 'tika-core', version:'1.27'
-    implementation group: 'org.apache.tika', name: 'tika-parsers', version:'1.27'
+    implementation group: 'org.apache.tika', name: 'tika-parsers', version:'2.0.0'
     
 	// LDAP
 	implementation group: 'ldapsdk', name: 'ldapsdk', version: '4.1'
@@ -229,7 +229,7 @@ dependencies {
 	implementation 'org.webjars.npm:angular-sanitize:1.8.2'	
 	implementation 'org.webjars.npm:angular-cookies:1.8.2'
 	implementation 'org.webjars.bower:ace-builds:1.4.12'
-	implementation 'org.webjars.bower:tinymce:5.7.0'
+	implementation 'org.webjars.bower:tinymce:5.8.2'
 	implementation 'org.webjars.bower:angular-ui-router:1.0.28'
 	implementation 'org.webjars.npm:angular-translate:2.18.4'		
 	implementation 'org.webjars.bower:angular-bootstrap:2.5.0'
