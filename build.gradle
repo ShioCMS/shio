@@ -174,7 +174,7 @@ dependencies {
     implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.0.0'
     
     // JSoup
-	implementation group: 'org.jsoup', name: 'jsoup', version: '1.14.1'
+	implementation group: 'org.jsoup', name: 'jsoup', version: '1.14.2'
 	
 	// Hibernate
 	implementation group: 'org.hibernate', name: 'hibernate-search-engine', version: "${hibernateVersion}"
