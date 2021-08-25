@@ -196,7 +196,7 @@ dependencies {
     implementation group: 'net.coobird', name: 'thumbnailator', version: '0.4.14'
 	
 	// Tika
-    implementation group: 'org.apache.tika', name: 'tika-core', version:'2.0.0'
+    implementation group: 'org.apache.tika', name: 'tika-core', version:'2.1.0'
     implementation group: 'org.apache.tika', name: 'tika-parsers', version:'2.0.0'
     
 	// LDAP
