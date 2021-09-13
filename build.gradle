@@ -203,7 +203,7 @@ dependencies {
 	implementation group: 'ldapsdk', name: 'ldapsdk', version: '4.1'
 	
 	// Git 
-	implementation group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.12.0.202106070339-r'
+	implementation group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.13.0.202109080827-r'
 		
 	// GraphQL
 	implementation 'com.graphql-java:graphql-java:230521-nf-execution'
