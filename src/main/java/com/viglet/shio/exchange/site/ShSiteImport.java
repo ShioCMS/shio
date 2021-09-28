@@ -333,7 +333,7 @@ public class ShSiteImport {
 			if (shPostTypeAttr != null) {
 				if (isRelatorWidget(shPostTypeAttr)) {
 					setRelatorValue(shNewIds, shNewIdsReverse, shPostExchange, extractFolder, shPostField);
-				} else if (isFileWidget(shPostExchange, shPostTypeAttr)) {
+				} else if (isFilePostType(shPostExchange, shPostTypeAttr)) {
 					importStaticFile(shNewIdsReverse, shPostExchange, extractFolder);
 
 				} else if (isReferencedWidget(shPostExchange, shPostField, shPostTypeAttr)) {
@@ -349,7 +349,7 @@ public class ShSiteImport {
 
 	private void setReferenceValue(Map<String, String> shNewIds, Map<String, String> shNewIdsReverse,
 			Entry<String, Object> shPostField) {
-		if (!shNewIds.containsKey(shPostField.getValue())) {
+		if (shPostField.getValue() != null && !shNewIds.containsKey(shPostField.getValue())) {
 			String newUUID = UUID.randomUUID().toString();
 			shNewIds.put((String) shPostField.getValue(), newUUID);
 			shNewIdsReverse.put(newUUID, (String) shPostField.getValue());
@@ -383,7 +383,7 @@ public class ShSiteImport {
 		return shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.RELATOR);
 	}
 
-	private boolean isFileWidget(ShPostExchange shPostExchange, ShPostTypeAttr shPostTypeAttr) {
+	private boolean isFilePostType(ShPostExchange shPostExchange, ShPostTypeAttr shPostTypeAttr) {
 		return shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.FILE)
 				&& shPostExchange.getPostType().equals(ShSystemPostType.FILE);
 	}
