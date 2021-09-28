@@ -329,7 +329,7 @@ shioApp.config([
 				templateUrl: 'template/admin/group/group-item.html',
 				controller: 'ShGroupEditCtrl',
 				data : { pageTitle: 'Edit Group | Viglet Shio CMS' }
-			}).state('playground', {
+			}).state('content.playground', {
 				url: '/playground',
 				templateUrl: 'template/playground/playground.html',
 				controller : 'ShPlaygroundCtrl',

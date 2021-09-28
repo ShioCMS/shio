@@ -43,9 +43,10 @@
 </div>
 <div ng-if="shImport.file == null || uploadNewFile" class="row" style="margin-right:5px;">
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-		<div ngf-drop ngf-select ng-model="shImport.file" class="drop-box" ngf-drag-over-class="'dragover'"
+
+	<div ngf-drop ngf-select ng-model="shImport.file" class="drop-box" ngf-drag-over-class="'dragover'"
 			ngf-multiple="false" ngf-allow-dir="true" accept="application/zip, application/octet-stream"
-			ngf-pattern="'application/zip, application/octet-stream'" style="width: 100%">Drop the import file here or
+			style="width: 100%">Drop the import file here or
 			click to upload</div>
 		<div ngf-no-file-drop>File Drag/Drop is not supported for this
 			browser</div>

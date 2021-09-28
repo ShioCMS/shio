@@ -17,7 +17,6 @@
 package com.viglet.shio.exchange.post;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -147,7 +146,7 @@ public class ShPostImport {
 		ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType,
 				shPostField.getKey());
 		// Relator: the PostType is null
-		if (shPostTypeAttr == null) {
+		if (shPostTypeAttr == null && shParentRelatorItem != null && shPostField != null) {
 			shPostTypeAttr = shPostTypeAttrRepository.findByShParentPostTypeAttrAndName(
 					shParentRelatorItem.getShParentPostAttr().getShPostTypeAttr(), shPostField.getKey());
 		}
@@ -155,7 +154,8 @@ public class ShPostImport {
 	}
 
 	private boolean isRelator(ShPostTypeAttr shPostTypeAttr) {
-		return shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.RELATOR);
+		return shPostTypeAttr != null && shPostTypeAttr.getShWidget() != null
+				&& shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.RELATOR);
 	}
 
 	private void postAttrNonRelator(ShPost shPost, ShRelatorItemImpl shParentRelatorItem,
@@ -169,7 +169,7 @@ public class ShPostImport {
 		ShPostAttr shPostAttr = new ShPostAttr();
 		if (shPostField.getValue() instanceof ArrayList)
 			shPostAttr.setArrayValue((new HashSet<String>((ArrayList<String>) shPostField.getValue())));
-		else if (shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.DATE)) {
+		else if (shPostTypeAttr != null && shPostTypeAttr.getShWidget() != null && shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.DATE)) {
 			if (shPostField.getValue() != null) {
 				try {
 					shPostAttr.setDateValue(
@@ -304,31 +304,33 @@ public class ShPostImport {
 		for (Entry<String, Object> shPostField : shPostExchange.getFields().entrySet()) {
 			ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPost.getShPostType(),
 					shPostField.getKey());
-			if (shPostTypeAttr.getIsTitle() == (byte) 1) {
-				shPost.setTitle(StringUtils.abbreviate((String) shPostField.getValue(), 255));
-			} else if (shPostTypeAttr.getIsSummary() == (byte) 1) {
-				shPost.setSummary(StringUtils.abbreviate((String) shPostField.getValue(), 255));
-			}
-			if (shPostTypeAttr.getName().equals(ShSystemPostTypeAttr.FILE)
-					&& shPostExchange.getPostType().equals(ShSystemPostType.FILE)) {
-				String fileName = (String) shPostField.getValue();
-				File directoryPath = shStaticFileUtils.dirPath(shPost.getShFolder());
-				File fileSource = new File(
-						extractFolder.getAbsolutePath().concat(File.separator + shPostExchange.getId()));
-				File fileDest = new File(directoryPath.getAbsolutePath().concat(File.separator + fileName));
-				try {
-					if (!fileDest.getParentFile().exists()) {
-						fileDest.getParentFile().mkdirs();
+			if (shPostTypeAttr != null) {
+				if (shPostTypeAttr.getIsTitle() == (byte) 1) {
+					shPost.setTitle(StringUtils.abbreviate((String) shPostField.getValue(), 255));
+				} else if (shPostTypeAttr.getIsSummary() == (byte) 1) {
+					shPost.setSummary(StringUtils.abbreviate((String) shPostField.getValue(), 255));
+				}
+				if (shPostTypeAttr.getName().equals(ShSystemPostTypeAttr.FILE)
+						&& shPostExchange.getPostType().equals(ShSystemPostType.FILE)) {
+					String fileName = (String) shPostField.getValue();
+					File directoryPath = shStaticFileUtils.dirPath(shPost.getShFolder());
+					File fileSource = new File(
+							extractFolder.getAbsolutePath().concat(File.separator + shPostExchange.getId()));
+					File fileDest = new File(directoryPath.getAbsolutePath().concat(File.separator + fileName));
+					try {
+						if (!fileDest.getParentFile().exists()) {
+							fileDest.getParentFile().mkdirs();
+						}
+						if (fileSource.getAbsoluteFile().exists()) {
+							FileUtils.copyFile(fileSource, fileDest);
+						} else {
+							logger.error(String.format("%s file not exists, creating empty file into %s.",
+									fileSource.getAbsoluteFile(), fileDest.getAbsoluteFile()));
+							fileDest.createNewFile();
+						}
+					} catch (IOException e) {
+						logger.error(e);
 					}
-					if (fileDest.exists()) {
-						FileUtils.copyFile(fileSource, fileDest);
-					} else {
-						logger.error(String.format("%s file not exists, creating empty file into %s.",
-								fileSource.getAbsoluteFile(), fileDest.getAbsoluteFile()));
-						fileDest.createNewFile();
-					}
-				} catch (IOException e) {
-					logger.error(e);
 				}
 			}
 		}
@@ -354,20 +356,22 @@ public class ShPostImport {
 
 	private void createReferecedPosts(ShExchangeContext context, Map<String, Object> shObjects,
 			Entry<String, Object> shPostField, ShPostType shPostType, ShPostTypeAttr shPostTypeAttr) {
-		if ((shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.FILE)
-				|| shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.CONTENT_SELECT))
-				&& shPostField.getValue() != null && !shPostType.getName().equals(ShSystemPostType.FILE)) {
-			try {
-				String shReferencedPostUUID = (String) shPostField.getValue();
-				// So the referenced Post not exists, need create first
-				if (!shPostRepository.findById(shReferencedPostUUID).isPresent()
-						&& shObjects.get(shReferencedPostUUID) instanceof ShPostExchange) {
-					ShPostExchange shReferencedPostExchange = (ShPostExchange) shObjects.get(shReferencedPostUUID);
-					this.createShPost(context, shReferencedPostExchange, shObjects);
-				}
+		if (shPostTypeAttr != null && shPostTypeAttr.getShWidget() != null && shPostField != null) {
+			if ((shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.FILE)
+					|| shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.CONTENT_SELECT))
+					&& shPostField.getValue() != null && !shPostType.getName().equals(ShSystemPostType.FILE)) {
+				try {
+					String shReferencedPostUUID = (String) shPostField.getValue();
+					// So the referenced Post not exists, need create first
+					if (!shPostRepository.findById(shReferencedPostUUID).isPresent()
+							&& shObjects.get(shReferencedPostUUID) instanceof ShPostExchange) {
+						ShPostExchange shReferencedPostExchange = (ShPostExchange) shObjects.get(shReferencedPostUUID);
+						this.createShPost(context, shReferencedPostExchange, shObjects);
+					}
 
-			} catch (IllegalArgumentException iae) {
-				logger.error("createShPostAttrs", iae);
+				} catch (IllegalArgumentException iae) {
+					logger.error("createShPostAttrs", iae);
+				}
 			}
 		}
 	}

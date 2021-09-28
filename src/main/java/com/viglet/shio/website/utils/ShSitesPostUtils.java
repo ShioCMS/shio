@@ -269,7 +269,7 @@ public class ShSitesPostUtils {
 		ShFolder shFolder = shPost.getShFolder();
 		String link = null;
 		if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE)) {
-			link = shStaticFileUtils.getFileSourceBase() + "/" + shFolderUtils.getSite(shFolder).getName()
+			link = shStaticFileUtils.getFileSourceBase(true) + "/" + shFolderUtils.getSite(shFolder).getName()
 					+ shFolderUtils.folderPath(shFolder, false, true) + shPost.getTitle();
 		} else if (shSitesObjectUtils.isVisiblePage(shPost)) {
 			link = shSitesFolderUtils.generateFolderLink(shFolder);

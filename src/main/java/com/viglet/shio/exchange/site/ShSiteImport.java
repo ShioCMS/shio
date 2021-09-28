@@ -315,7 +315,6 @@ public class ShSiteImport {
 
 			shPostExchange.setId(shNewIds.get(shPostExchange.getId()));
 			shPostExchange.setFolder(shNewIds.get(shPostExchange.getFolder()));
-
 			shPostExchange.setFields(this.updateFieldRelation(shNewIds, shNewIdsReverse, shPostExchange,
 					shPostExchange.getFields(), extractFolder));
 			shPostExchangeWithNewIds.add(shPostExchange);

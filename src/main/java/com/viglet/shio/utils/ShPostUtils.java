@@ -259,7 +259,7 @@ public class ShPostUtils {
 	}
 
 	public void referencedObjectDraft(ShPostAttrImpl shPostAttr, ShPostImpl shPost) {
-		if (shPostAttr.getShPostTypeAttr().getShWidget() != null) {
+		if (shPostAttr != null && shPostAttr.getShPostTypeAttr() != null && shPostAttr.getShPostTypeAttr().getShWidget() != null) {
 			if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.FILE)) {
 				this.referencedFileDraft(shPostAttr, shPost);
 			} else if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.CONTENT_SELECT)) {
@@ -269,7 +269,8 @@ public class ShPostUtils {
 	}
 
 	public void referencedObject(ShPostAttrImpl shPostAttr, ShPostImpl shPost) {
-		if (shPostAttr.getShPostTypeAttr().getShWidget() != null) {
+		if (shPostAttr != null && shPostAttr.getShPostTypeAttr() != null
+				&& shPostAttr.getShPostTypeAttr().getShWidget() != null) {
 			if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.FILE)) {
 				this.referencedFile(shPostAttr, shPost);
 			} else if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.CONTENT_SELECT)) {
@@ -279,7 +280,8 @@ public class ShPostUtils {
 	}
 
 	public void referencedObject(ShPostAttrImpl shPostAttrEdit, ShPostAttrImpl shPostAttr, ShPostImpl shPost) {
-		if (shPostAttr.getShPostTypeAttr().getShWidget() != null) {
+		if (shPostAttr != null && shPostAttr.getShPostTypeAttr() != null
+				&& shPostAttr.getShPostTypeAttr().getShWidget() != null) {
 			if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.FILE)) {
 				this.referencedFile(shPostAttrEdit, shPostAttr, shPost);
 			} else if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.CONTENT_SELECT)) {
@@ -289,7 +291,8 @@ public class ShPostUtils {
 	}
 
 	public void referencedFile(ShPostAttrImpl shPostAttrEdit, ShPostAttrImpl shPostAttr, ShPostImpl shPost) {
-		if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE)) {
+		if (shPost != null && shPost.getShPostType() != null && shPost.getShPostType().getName() != null
+				&& shPost.getShPostType().getName().equals(ShSystemPostType.FILE)) {
 			File fileFrom = shStaticFileUtils.filePath(shPost.getShFolder(), shPostAttrEdit.getStrValue());
 			File fileTo = shStaticFileUtils.filePath(shPost.getShFolder(), shPostAttr.getStrValue());
 			if (fileFrom != null && fileTo != null && fileFrom.exists() && !fileFrom.renameTo(fileTo)) {
