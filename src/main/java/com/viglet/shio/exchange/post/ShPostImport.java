@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 the original author or authors. 
+ * Copyright (C) 2016-2021 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,6 +61,7 @@ import com.viglet.shio.url.ShURLFormatter;
 import com.viglet.shio.utils.ShFolderUtils;
 import com.viglet.shio.utils.ShPostUtils;
 import com.viglet.shio.utils.ShStaticFileUtils;
+import com.viglet.shio.utils.ShUserUtils;
 import com.viglet.shio.widget.ShSystemWidget;
 
 /**
@@ -88,9 +89,9 @@ public class ShPostImport {
 	@Autowired
 	private ShFolderUtils shFolderUtils;
 	@Autowired
-	private ShURLFormatter shURLFormatter;
-	@Autowired
 	private ShTuringIntegration shTuringIntegration;
+	@Autowired
+	private ShUserUtils shUserUtils;
 
 	private boolean turingEnabled = true;
 
@@ -118,7 +119,7 @@ public class ShPostImport {
 		if (shPostExchange.getFurl() != null) {
 			shPost.setFurl(shPostExchange.getFurl());
 		} else {
-			shPost.setFurl(shURLFormatter.format(shPost.getTitle()));
+			shPost.setFurl(ShURLFormatter.format(shPost.getTitle()));
 		}
 
 		this.getShPostAttrs(shPostExchange, shPost, shPostExchange.getFields(), null);
@@ -249,6 +250,7 @@ public class ShPostImport {
 
 	public ShPostImpl createShPost(ShExchangeContext context, ShPostExchange shPostExchange,
 			Map<String, Object> shObjects) {
+
 		ShPost shPost = null;
 		if (shPostRepository.findById(shPostExchange.getId()).isPresent()) {
 			shPost = shPostRepository.findById(shPostExchange.getId()).orElse(null);
@@ -277,14 +279,14 @@ public class ShPostImport {
 		if (shPostExchange.getOwner() != null)
 			shPost.setOwner(shPostExchange.getOwner());
 		else
-			shPost.setOwner(context.getUsername());
+			shPost.setOwner(shUserUtils.getCurrentUsername());
 
 		this.detectPostAttrs(shPostExchange, context.getExtractFolder(), shPost);
 
 		if (shPostExchange.getFurl() != null) {
 			shPost.setFurl(shPostExchange.getFurl());
 		} else {
-			shPost.setFurl(shURLFormatter.format(shPost.getTitle()));
+			shPost.setFurl(ShURLFormatter.format(shPost.getTitle()));
 		}
 
 		shPostRepository.saveAndFlush(shPost);

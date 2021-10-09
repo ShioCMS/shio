@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 the original author or authors. 
+ * Copyright (C) 2016-2021 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,9 +19,7 @@ package com.viglet.shio.exchange;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Date;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
@@ -32,6 +30,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.viglet.shio.exchange.post.type.ShPostTypeImport;
+import com.viglet.shio.exchange.site.ShSiteExchange;
 import com.viglet.shio.exchange.site.ShSiteImport;
 import com.viglet.shio.persistence.model.site.ShSite;
 
@@ -48,37 +47,59 @@ public class ShCloneExchange {
 	@Autowired
 	private ShImportExchange shImportExchange;
 
-	private Map<String, Object> shObjects = new HashMap<>();
-	private Map<String, List<String>> shChildObjects = new HashMap<>();
 
-	public ShExchange cloneFromMultipartFile(MultipartFile multipartFile, String username, ShSite shSite) {
+
+	public ShExchangeData getTemplateAsCloneFromMultipartFile(MultipartFile multipartFile, ShSite shSite) {
 		ShExchangeFilesDirs shExchangeFilesDirs = shImportExchange.extractZipFile(multipartFile);
 
 		if (shExchangeFilesDirs.getExportDir() != null) {
-			ShExchange shExchangeModified = null;
+			ShExchange shExchange = changeObjectIdsFromExportToClone(shSite, shExchangeFilesDirs);
 
-			shExchangeModified = cloneObjects(username, shSite, shExchangeModified, shExchangeFilesDirs);
-
-			shExchangeFilesDirs.deleteExport();
-
-			return shExchangeModified;
+			ShExchangeData shExchangeData = new ShExchangeData(shExchange, shExchangeFilesDirs);
+			return shExchangeData;
 		} else {
 			return null;
 		}
 	}
 
-	private ShExchange cloneObjects(String username, ShSite shSite, ShExchange shExchangeModified,
-			ShExchangeFilesDirs shExchangeFilesDirs) {
+	public boolean importExport(ShExchangeData shExchangeData) {
+		ShExchange shExchange = shExchangeData.getShExchange();
+		boolean isOk = false;
+		if (hasPostTypes(shExchange)) {
+			shPostTypeImport.importPostType(shExchange, true);
+			isOk = true;
+		}
+		if (hasSites(shExchange)) {
+			shSiteImport.cloneSite(shExchangeData);
+			isOk = true;
+		}
+		return isOk;
+	}
+
+	private ShExchange changeObjectIdsFromExportToClone(ShSite shSite, ShExchangeFilesDirs shExchangeFilesDirs) {
 
 		ShExchange shExchange = shExchangeFilesDirs.readExportFile();
-		if (hasPostTypes(shExchange))
-			shPostTypeImport.importPostType(shExchange, true);
 
-		if (hasSites(shExchange))
-			shExchangeModified = shSiteImport.cloneSite(shExchange, username, shExchangeFilesDirs.getExportDir(),
-					shObjects, shChildObjects, shSite);
+		if (hasSites(shExchange)) {
+			shExchange = shSiteImport.prepareClone(shExchange, shExchangeFilesDirs.getExportDir());
+			for (ShSiteExchange shSiteExchange : shExchange.getSites()) {
+				shSiteExchange.setDate(new Date());
+				if (shSite != null) {
 
-		return shExchangeModified;
+					if (shSite.getId() != null && shSite.getId().trim().length() > 0)
+						shSiteExchange.setId(shSite.getId());
+					shSiteExchange.setOwner(shSite.getOwner());
+					shSiteExchange.setFurl(shSite.getFurl());
+					shSiteExchange.setName(shSite.getName());
+					shSiteExchange.setDescription(shSite.getDescription());
+					shSiteExchange.setUrl(shSite.getUrl());
+				}
+
+			}
+			return shExchange;
+		}
+		else
+			return shExchange;
 	}
 
 	private boolean hasSites(ShExchange shExchange) {
@@ -89,7 +110,7 @@ public class ShCloneExchange {
 		return shExchange != null && shExchange.getPostTypes() != null && !shExchange.getPostTypes().isEmpty();
 	}
 
-	public ShExchange cloneFromFile(File file, String username, ShSite shSite) {
+	public ShExchangeData getTemplateAsCloneFromFile(File file, ShSite shSite) {
 
 		MultipartFile multipartFile = null;
 		try {
@@ -99,21 +120,19 @@ public class ShCloneExchange {
 			logger.error(e);
 		}
 
-		return this.cloneFromMultipartFile(multipartFile, username, shSite);
+		return this.getTemplateAsCloneFromMultipartFile(multipartFile, shSite);
 	}
 
-	public ShExchange cloneFromExtractedImport(File directory, String username, ShSite shSite) {
+	public ShExchange cloneFromExtractedImport(File directory, ShSite shSite) {
 
 		var shExchangeFilesDirs = shImportExchange.getExtratedImport(directory);
 
 		if (shExchangeFilesDirs.getExportDir() != null) {
-			ShExchange shExchangeModified = null;
-
-			shExchangeModified = cloneObjects(username, shSite, shExchangeModified, shExchangeFilesDirs);
+			ShExchange shExchange = changeObjectIdsFromExportToClone(shSite, shExchangeFilesDirs);
 
 			shExchangeFilesDirs.deleteExport();
 
-			return shExchangeModified;
+			return shExchange;
 		} else {
 			return null;
 		}

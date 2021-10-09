@@ -128,6 +128,10 @@ compileJava.dependsOn(['minifyAllJs'])
 
 build.mustRunAfter clean
 
+configurations {
+    all*.exclude group: 'xml-apis'
+}
+
 dependencies {
     
     // Spring Boot
@@ -217,6 +221,10 @@ dependencies {
 
 	// Guava
 	implementation 'com.google.guava:guava:31.0.1-jre'
+	
+// https://mvnrepository.com/artifact/com.rometools/rome
+implementation group: 'com.rometools', name: 'rome', version: '1.16.0'
+
 	
 	// WebJars
 	implementation 'org.webjars:jquery:1.12.4'

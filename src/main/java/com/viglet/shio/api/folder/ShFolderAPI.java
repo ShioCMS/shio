@@ -74,8 +74,6 @@ public class ShFolderAPI {
 	@Autowired
 	private ShFolderUtils shFolderUtils;
 	@Autowired
-	private ShURLFormatter shURLFormatter;
-	@Autowired
 	private ShObjectRepository shObjectRepository;
 	@Autowired
 	private ShObjectUtils shObjectUtils;
@@ -119,7 +117,7 @@ public class ShFolderAPI {
 				shFolderEdit.setName(shFolder.getName());
 				shFolderEdit.setParentFolder(shFolder.getParentFolder());
 				shFolderEdit.setShSite(shFolder.getShSite());
-				shFolderEdit.setFurl(shURLFormatter.format(shFolderEdit.getName()));
+				shFolderEdit.setFurl(ShURLFormatter.format(shFolderEdit.getName()));
 				shFolderRepository.saveAndFlush(shFolderEdit);
 
 				shTuringIntegration.indexObject(shFolderEdit);
@@ -169,7 +167,7 @@ public class ShFolderAPI {
 
 				shObjectRepository.findById(shParentObject.getId()).ifPresent(shObject -> {
 					shFolder.setDate(new Date());
-					shFolder.setFurl(shURLFormatter.format(shFolder.getName()));
+					shFolder.setFurl(ShURLFormatter.format(shFolder.getName()));
 					shFolder.setShGroups(new HashSet<>(shObject.getShGroups()));
 					shFolder.setShUsers(new HashSet<>(shObject.getShUsers()));
 					shFolderRepository.saveAndFlush(shFolder);
@@ -203,7 +201,7 @@ public class ShFolderAPI {
 				shNewFolder.setName(shFolder.getName());
 				shNewFolder.setShGroups(new HashSet<>(shObject.getShGroups()));
 				shNewFolder.setShUsers(new HashSet<>(shObject.getShUsers()));
-				shNewFolder.setFurl(shURLFormatter.format(shNewFolder.getName()));
+				shNewFolder.setFurl(ShURLFormatter.format(shNewFolder.getName()));
 
 				ShObject shParentObject = shObjectRepository.findById(objectId).orElse(null);
 				if (shParentObject instanceof ShFolder) {

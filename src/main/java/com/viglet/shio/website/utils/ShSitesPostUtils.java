@@ -200,7 +200,7 @@ public class ShSitesPostUtils {
 		shPostObject.put("link", this.generatePostLink(shPost));
 		shPostObject.put("parentFolder", shPost.getShFolder().getId());
 		for (ShPostAttrImpl shPostAttr : shPost.getShPostAttrs()) {
-			if (shPostAttr.getShPostTypeAttr().getName() != null) {
+			if (shPostAttr.getShPostTypeAttr() != null && shPostAttr.getShPostTypeAttr().getName() != null) {
 				shPostItemAttrs.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
 			}
 		}
@@ -223,7 +223,7 @@ public class ShSitesPostUtils {
 			shPostMap.put("__type__", shPostAttrType);
 			shPostMap.put("id", shPostAttrId);
 			for (ShPostAttr shPostAttr : shPostAttrList) {
-				if (shPostAttr != null)
+				if (shPostAttr != null && shPostAttr.getShPostTypeAttr() != null)
 					shPostMap.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr);
 			}
 			return shPostMap;

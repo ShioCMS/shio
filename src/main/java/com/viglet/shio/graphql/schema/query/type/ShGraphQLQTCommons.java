@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shio.graphql.ShGraphQLConstants;
+import com.viglet.shio.graphql.ShGraphQLUtils;
 import com.viglet.shio.persistence.repository.site.ShSiteRepository;
 
 import graphql.schema.GraphQLEnumType;
@@ -46,7 +47,9 @@ import graphql.schema.GraphQLObjectType.Builder;
 public class ShGraphQLQTCommons {
 	@Autowired
 	private ShSiteRepository shSiteRepository;
-
+	@Autowired
+	private ShGraphQLUtils shGraphQLUtils;
+	
 	public void createArguments(Builder queryTypeBuilder, GraphQLObjectType graphQLObjectType, String postTypeName,
 			GraphQLInputObjectType.Builder postTypeWhereInputBuilder, boolean isPlural) {
 		if (!StringUtils.isBlank(postTypeName)) {
@@ -80,7 +83,7 @@ public class ShGraphQLQTCommons {
 		siteEnumBuilder.value("All", "all", "Entire sites");
 
 		shSiteRepository.findAll()
-				.forEach(shSite -> siteEnumBuilder.value(shSite.getName(), shSite.getId(), shSite.getDescription()));
+				.forEach(shSite -> siteEnumBuilder.value(shGraphQLUtils.normalizedName(shSite.getName()), shSite.getId(), shSite.getDescription()));
 
 		return siteEnumBuilder.comparatorRegistry(BY_NAME_REGISTRY).build();
 	}

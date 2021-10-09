@@ -63,7 +63,7 @@ public class ShGraphQLQTPlural {
 	private ShGraphQLInputObjectField shGraphQLInputObjectField;
 
 	private String getPostTypeNamePlural(ShPostType shPostType) {
-		return shGraphQLUtils.normalizedPostType(shPostType.getNamePlural());
+		return shGraphQLUtils.normalizedName(shPostType.getNamePlural());
 	}
 
 	public void createQueryTypePlural(Builder queryTypeBuilder,

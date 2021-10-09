@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 the original author or authors. 
+ * Copyright (C) 2016-2021 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,14 +19,18 @@ package com.viglet.shio.exchange;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,6 +39,7 @@ import com.viglet.shio.exchange.post.ShPostImport;
 import com.viglet.shio.exchange.post.type.ShPostTypeImport;
 import com.viglet.shio.exchange.site.ShSiteImport;
 import com.viglet.shio.exchange.utils.ShExchangeUtils;
+import com.viglet.shio.persistence.model.site.ShSite;
 
 /**
  * @author Alexandre Oliveira
@@ -50,9 +55,41 @@ public class ShImportExchange {
 	private ShPostImport shPostImport;
 	@Autowired
 	private ShExchangeUtils shExchangeUtils;
+	@Autowired
+	private ResourceLoader resourceloader;
+	@Autowired
+	private ShCloneExchange shCloneExchange;
+	
 	private Map<String, Object> shObjects = new HashMap<>();
 	private Map<String, List<String>> shChildObjects = new HashMap<>();
 
+	public ShExchangeData getTemplateSite(ShSite shSite) {
+		ShExchangeData shExchangeData = null;
+		File userDir = new File(System.getProperty("user.dir"));
+		if (userDir.exists() && userDir.isDirectory()) {
+			File tmpDir = new File(userDir.getAbsolutePath().concat(File.separator + "store" + File.separator + "tmp"));
+			if (!tmpDir.exists()) {
+				tmpDir.mkdirs();
+			}
+
+			File templateSiteFile = new File(
+					tmpDir.getAbsolutePath().concat(File.separator + "template-site-" + UUID.randomUUID() + ".zip"));
+
+			try {
+				InputStream is = resourceloader.getResource("classpath:/import/bootstrap-site.zip").getInputStream();
+				FileUtils.copyInputStreamToFile(is, templateSiteFile);
+				shExchangeData = shCloneExchange.getTemplateAsCloneFromFile(templateSiteFile, shSite);
+			} catch (IllegalStateException | IOException e) {
+
+				logger.error(e);
+			}
+			shSite.setId(shExchangeData.getShExchange().getSites().get(0).getId());
+			FileUtils.deleteQuietly(templateSiteFile);
+		}
+		return shExchangeData;
+	}
+
+	
 	public ShExchange importFromMultipartFile(MultipartFile multipartFile, String username) {
 		logger.info("Unzip Package");
 		ShExchangeFilesDirs shExchangeFilesDirs = this.extractZipFile(multipartFile);
@@ -61,7 +98,7 @@ public class ShImportExchange {
 
 			ShExchange shExchange = shExchangeFilesDirs.readExportFile();
 
-			this.importObjects(username, shExchangeFilesDirs.getExportDir(), shExchange);
+			this.importObjects(shExchangeFilesDirs.getExportDir(), shExchange);
 
 			shExchangeFilesDirs.deleteExport();
 			return shExchange;
@@ -70,17 +107,17 @@ public class ShImportExchange {
 		}
 	}
 
-	private void importObjects(String username, File extractFolder, ShExchange shExchange) {
+	private void importObjects(File extractFolder, ShExchange shExchange) {
 		if (shExchange != null) {
 			if (shExchange.getPostTypes() != null && !shExchange.getPostTypes().isEmpty())
 				shPostTypeImport.importPostType(shExchange, false);
 
 			if (shExchange.getSites() != null && !shExchange.getSites().isEmpty()) {
-				shSiteImport.importSite(shExchange, username, extractFolder, shObjects, shChildObjects);
+				shSiteImport.importSite(shExchange, extractFolder);
 			} else if (shExchange.getFolders() == null && shExchange.getPosts() != null) {
 				File extractFolderInner = extractFolder;
 				shExchange.getPosts().forEach(shPostExchange -> shPostImport.createShPost(
-						new ShExchangeContext(extractFolderInner, username, false), shPostExchange, shObjects));
+						new ShExchangeContext(extractFolderInner, false), shPostExchange, shObjects));
 			}
 		}
 	}

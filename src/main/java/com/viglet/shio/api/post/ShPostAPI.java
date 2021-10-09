@@ -123,8 +123,6 @@ public class ShPostAPI {
 	@Autowired
 	private ShObjectRepository shObjectRepository;
 	@Autowired
-	private ShURLFormatter shURLFormatter;
-	@Autowired
 	private ShPostUtils shPostUtils;
 	@Autowired
 	private ShTuringIntegration shTuringIntegration;
@@ -310,7 +308,7 @@ public class ShPostAPI {
 		shPost.setModifiedDate(new Date());
 
 		if (shPost.getPublicationDate() == null)
-			shPost.setFurl(shURLFormatter.format(title.toString()));
+			shPost.setFurl(ShURLFormatter.format(title.toString()));
 
 		shPostAttrs.forEach(shPostAttr -> {
 			shPostAttr.setShPost(shPost);

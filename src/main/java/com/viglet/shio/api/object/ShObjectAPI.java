@@ -105,8 +105,6 @@ public class ShObjectAPI {
 	@Autowired
 	private ShSitesPostUtils shSitesPostUtils;
 	@Autowired
-	private ShURLFormatter shURLFormatter;
-	@Autowired
 	private ShCacheObject shCacheObject;
 	@Autowired
 	private ShSitesObjectUtils shSitesObjectUtils;
@@ -250,7 +248,7 @@ public class ShObjectAPI {
 				if (shObject instanceof ShPost) {
 					ShPost shPost = (ShPost) shObject;
 					shPost.setShFolder(shFolderDest);
-					shPost.setFurl(shURLFormatter.format(shPost.getTitle()));
+					shPost.setFurl(ShURLFormatter.format(shPost.getTitle()));
 					shPostRepository.save(shPost);
 					shObjects.add(shPost);
 				} else if (shObject instanceof ShFolder) {
@@ -258,7 +256,7 @@ public class ShObjectAPI {
 					shFolder.setParentFolder(shFolderDest);
 					shFolder.setRootFolder((byte) 0);
 					shFolder.setShSite(null);
-					shFolder.setFurl(shURLFormatter.format(shFolder.getName()));
+					shFolder.setFurl(ShURLFormatter.format(shFolder.getName()));
 					shFolderRepository.save(shFolder);
 					shObjects.add(shFolder);
 				}
@@ -268,7 +266,7 @@ public class ShObjectAPI {
 				shFolder.setParentFolder(null);
 				shFolder.setRootFolder((byte) 1);
 				shFolder.setShSite(shSiteDest);
-				shFolder.setFurl(shURLFormatter.format(shFolder.getName()));
+				shFolder.setFurl(ShURLFormatter.format(shFolder.getName()));
 				shFolderRepository.save(shFolder);
 				shObjects.add(shFolder);
 			}

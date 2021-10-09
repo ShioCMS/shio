@@ -59,7 +59,7 @@ public class ShGraphQLQTUnique {
 	private ShGraphQLInputObjectField shGraphQLInputObjectField;
 
 	private String getPostTypeNameUnique(ShPostType shPostType) {
-		return shGraphQLUtils.normalizedPostType(shPostType.getName());
+		return shGraphQLUtils.normalizedName(shPostType.getName());
 	}
 
 	public void createQueryTypeUnique(Builder queryTypeBuilder,
