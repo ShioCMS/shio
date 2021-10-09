@@ -75,7 +75,7 @@ public class ShFolderImport {
 
 				if (!importOnlyFolders && shObjects.get(objectId) instanceof ShPostExchange) {
 					ShPostExchange shPostExchange = (ShPostExchange) shObjects.get(objectId);
-					shPostImport.createShPost(shExchangeContext, shPostExchange, shObjects);
+					shPostImport.createShPost(shExchangeContext, shPostExchange, shExchangeObjectMap);
 				}
 			}
 

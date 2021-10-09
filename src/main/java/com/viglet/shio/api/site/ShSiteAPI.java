@@ -169,9 +169,9 @@ public class ShSiteAPI {
 		shSite.setOwner(principal.getName());
 		shSite.setFurl(ShURLFormatter.format(shSite.getName()));
 
-		ShExchangeData shExchangeData = shImportExchange.getTemplateSite(shSite);
+		ShExchangeData shExchangeData = shImportExchange.getDefaultTemplateToSite(shSite);
 
-		shCloneExchange.importExport(shExchangeData);
+		shCloneExchange.importFromShExchangeData(shExchangeData);
 		
 		shExchangeData.getShExchangeFilesDirs().deleteExport();
 		

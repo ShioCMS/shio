@@ -56,7 +56,7 @@ import com.viglet.shio.widget.ShSystemWidget;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-@TestMethodOrder (MethodOrderer.Alphanumeric.class)
+@TestMethodOrder (MethodOrderer.MethodName.class)
 @TestInstance(Lifecycle.PER_CLASS)
 class ShPostTypeAPITest {
 

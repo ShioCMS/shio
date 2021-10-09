@@ -16,21 +16,16 @@
  */
 package com.viglet.shio.onstartup.site;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.UUID;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
-import com.viglet.shio.exchange.ShCloneExchange;
 import com.viglet.shio.persistence.repository.site.ShSiteRepository;
+import com.viglet.shio.utils.ShSiteUtils;
 
 /**
  * @author Alexandre Oliveira
@@ -41,72 +36,23 @@ public class ShSiteOnStartup {
 	@Autowired
 	private ShSiteRepository shSiteRepository;
 	@Autowired
-	private ShCloneExchange shCloneExchange;
-	@Autowired
-	private ResourceLoader resourceloader;
-
-	private static final String COULD_NOT_CREATE_SAMPLE_SITE = "Could not create sample site";
+	private ShSiteUtils shSiteUtils;
 
 	public void createDefaultRows() {
 
 		if (shSiteRepository.findAll().isEmpty()) {
-				importSiteFromResource("/import/sample-site.zip", "sample-site-import");
-				importSiteFromResource("/import/stock-site.zip", "sample-site-import");
-		}
-	}
-
-	public void importSiteFromResource(String classpathFile, String slug) {
-
-		File userDir = new File(System.getProperty("user.dir"));
-		if (userDir.exists() && userDir.isDirectory()) {
-			File tmpDir = new File(userDir.getAbsolutePath().concat(File.separator + "store" + File.separator + "tmp"));
-			if (!tmpDir.exists())
-				tmpDir.mkdirs();
-
-			File siteFile = new File(
-					tmpDir.getAbsolutePath().concat(File.separator + slug + UUID.randomUUID() + ".zip"));
-
 			try {
-				InputStream is = resourceloader.getResource("classpath:" + classpathFile).getInputStream();
-				FileUtils.copyInputStreamToFile(is, siteFile);
-				shCloneExchange.getTemplateAsCloneFromFile(siteFile, null);
-			} catch (IllegalStateException | IOException e) {
-				logger.error(COULD_NOT_CREATE_SAMPLE_SITE, e);
+				shSiteUtils.importSiteFromResourceOrURL("/import/sample-site.zip",
+						new URL("https://github.com/ShioCMS/sample-site/archive/0.3.8.zip"), "sample-site-import");
+
+				shSiteUtils.importSiteFromResourceOrURL("/import/stock-site.zip",
+						new URL("https://github.com/ShioCMS/stock-site-import/archive/0.3.8.zip"),
+						"sample-site-import");
+			} catch (MalformedURLException e) {
+				logger.error(e.getMessage(), e);
 			}
-
-			FileUtils.deleteQuietly(siteFile);
 		}
 	}
 
-	public void importSite(URL siteRepository, String slug) {
-		File userDir = new File(System.getProperty("user.dir"));
-		if (userDir.exists() && userDir.isDirectory()) {
-			File tmpDir = new File(userDir.getAbsolutePath().concat(File.separator + "store" + File.separator + "tmp"));
-			if (!tmpDir.exists())
-				tmpDir.mkdirs();
 
-			File siteFile = new File(
-					tmpDir.getAbsolutePath().concat(File.separator + slug + UUID.randomUUID() + ".zip"));
-
-			try {
-				FileUtils.copyURLToFile(siteRepository, siteFile);
-				shCloneExchange.getTemplateAsCloneFromFile(siteFile, null);
-			} catch (IllegalStateException | IOException e) {
-				logger.error(COULD_NOT_CREATE_SAMPLE_SITE, e);
-			}
-
-			FileUtils.deleteQuietly(siteFile);
-		}
-	}
-
-	public void importSiteFromExtractedImport(File directory) {
-		var userDir = new File(System.getProperty("user.dir"));
-		if (userDir.exists() && userDir.isDirectory()) {
-			var tmpDir = new File(userDir.getAbsolutePath().concat(File.separator + "store" + File.separator + "tmp"));
-			if (!tmpDir.exists())
-				tmpDir.mkdirs();
-
-			shCloneExchange.cloneFromExtractedImport(directory, null);
-		}
-	}
 }

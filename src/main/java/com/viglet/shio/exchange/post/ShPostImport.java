@@ -38,6 +38,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.viglet.shio.exchange.ShExchangeContext;
+import com.viglet.shio.exchange.ShExchangeObjectMap;
 import com.viglet.shio.exchange.relator.ShRelatorItemExchanges;
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.post.ShPost;
@@ -249,13 +250,13 @@ public class ShPostImport {
 	}
 
 	public ShPostImpl createShPost(ShExchangeContext context, ShPostExchange shPostExchange,
-			Map<String, Object> shObjects) {
+			ShExchangeObjectMap shExchangeObjectMap) {
 
 		ShPost shPost = null;
 		if (shPostRepository.findById(shPostExchange.getId()).isPresent()) {
 			shPost = shPostRepository.findById(shPostExchange.getId()).orElse(null);
 		} else {
-			shPost = extractPostFromExchange(context, shPostExchange, shObjects);
+			shPost = extractPostFromExchange(context, shPostExchange, shExchangeObjectMap);
 		}
 
 		if (shPost != null)
@@ -264,7 +265,7 @@ public class ShPostImport {
 	}
 
 	private ShPost extractPostFromExchange(ShExchangeContext context, ShPostExchange shPostExchange,
-			Map<String, Object> shObjects) {
+			ShExchangeObjectMap shExchangeObjectMap) {
 		ShPost shPost;
 		shPost = new ShPost();
 		shPost.setId(shPostExchange.getId());
@@ -291,7 +292,7 @@ public class ShPostImport {
 
 		shPostRepository.saveAndFlush(shPost);
 
-		this.createShPostAttrs(context, shPostExchange, shPost, shPostExchange.getFields(), null, shObjects);
+		this.createShPostAttrs(context, shPostExchange, shPost, shPostExchange.getFields(), null, shExchangeObjectMap);
 
 		for (ShPostAttrImpl shPostAttr : shPostAttrRepository.findByShPost(shPost)) {
 			shPostUtils.updateRelatorInfo(shPostAttr, shPost);
@@ -339,16 +340,16 @@ public class ShPostImport {
 	}
 
 	private void createShPostAttrs(ShExchangeContext context, ShPostExchange shPostExchange, ShPost shPost,
-			Map<String, Object> shPostFields, ShRelatorItemImpl shParentRelatorItem, Map<String, Object> shObjects) {
+			Map<String, Object> shPostFields, ShRelatorItemImpl shParentRelatorItem, ShExchangeObjectMap shExchangeObjectMap) {
 		for (Entry<String, Object> shPostField : shPostFields.entrySet()) {
 			ShPostType shPostType = shPostTypeRepository.findByName(shPostExchange.getPostType());
 
 			ShPostTypeAttr shPostTypeAttr = getPostAttr(shParentRelatorItem, shPostField, shPostType);
 
-			this.createReferecedPosts(context, shObjects, shPostField, shPostType, shPostTypeAttr);
+			this.createReferecedPosts(context, shExchangeObjectMap, shPostField, shPostType, shPostTypeAttr);
 			if (isRelator(shPostTypeAttr)) {
 
-				this.detectPostAttrRelator(context, shPostExchange, shPost, shParentRelatorItem, shObjects, shPostField,
+				this.detectPostAttrRelator(context, shPostExchange, shPost, shParentRelatorItem, shExchangeObjectMap, shPostField,
 						shPostTypeAttr);
 			} else {
 				this.detectPostAttrNonRelator(shPost, shParentRelatorItem, shPostField, shPostTypeAttr);
@@ -356,8 +357,9 @@ public class ShPostImport {
 		}
 	}
 
-	private void createReferecedPosts(ShExchangeContext context, Map<String, Object> shObjects,
+	private void createReferecedPosts(ShExchangeContext context, ShExchangeObjectMap shExchangeObjectMap,
 			Entry<String, Object> shPostField, ShPostType shPostType, ShPostTypeAttr shPostTypeAttr) {
+		Map<String, Object> shObjects = shExchangeObjectMap.getShObjects();
 		if (shPostTypeAttr != null && shPostTypeAttr.getShWidget() != null && shPostField != null) {
 			if ((shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.FILE)
 					|| shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.CONTENT_SELECT))
@@ -368,7 +370,7 @@ public class ShPostImport {
 					if (!shPostRepository.findById(shReferencedPostUUID).isPresent()
 							&& shObjects.get(shReferencedPostUUID) instanceof ShPostExchange) {
 						ShPostExchange shReferencedPostExchange = (ShPostExchange) shObjects.get(shReferencedPostUUID);
-						this.createShPost(context, shReferencedPostExchange, shObjects);
+						this.createShPost(context, shReferencedPostExchange, shExchangeObjectMap);
 					}
 
 				} catch (IllegalArgumentException iae) {
@@ -389,7 +391,7 @@ public class ShPostImport {
 
 	@SuppressWarnings({ "unchecked" })
 	private void detectPostAttrRelator(ShExchangeContext context, ShPostExchange shPostExchange, ShPost shPost,
-			ShRelatorItemImpl shParentRelatorItem, Map<String, Object> shObjects, Entry<String, Object> shPostField,
+			ShRelatorItemImpl shParentRelatorItem, ShExchangeObjectMap shExchangeObjectMap, Entry<String, Object> shPostField,
 			ShPostTypeAttr shPostTypeAttr) {
 		LinkedHashMap<String, Object> relatorFields = (LinkedHashMap<String, Object>) shPostField.getValue();
 
@@ -410,11 +412,11 @@ public class ShPostImport {
 		shPostAttrRepository.save(shPostAttr);
 
 		ShRelatorItemExchanges subPosts = this.getSubPosts(relatorFields);
-		this.createRelatorFromSubPosts(context, shPostExchange, shPost, shObjects, shPostAttr, subPosts);
+		this.createRelatorFromSubPosts(context, shPostExchange, shPost, shExchangeObjectMap, shPostAttr, subPosts);
 	}
 
 	private void createRelatorFromSubPosts(ShExchangeContext context, ShPostExchange shPostExchange, ShPost shPost,
-			Map<String, Object> shObjects, ShPostAttr shPostAttr, ShRelatorItemExchanges subPosts) {
+			ShExchangeObjectMap shExchangeObjectMap, ShPostAttr shPostAttr, ShRelatorItemExchanges subPosts) {
 		if (subPosts != null) {
 			subPosts.forEach(shSubPost -> {
 				ShRelatorItem shRelatorItem = new ShRelatorItem();
@@ -423,7 +425,7 @@ public class ShPostImport {
 
 				shRelatorItemRepository.save(shRelatorItem);
 				this.createShPostAttrs(context, shPostExchange, shPost, shSubPost.getFields(), shRelatorItem,
-						shObjects);
+						shExchangeObjectMap);
 			});
 		}
 	}

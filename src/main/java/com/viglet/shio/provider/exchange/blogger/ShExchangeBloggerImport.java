@@ -81,7 +81,7 @@ public class ShExchangeBloggerImport {
 				shSite.setOwner(shUserUtils.getCurrentUsername());
 				shSite.setFurl(ShURLFormatter.format(shSite.getName()));
 
-				ShExchangeData shExchangeData = shImportExchange.getTemplateSite(shSite);
+				ShExchangeData shExchangeData = shImportExchange.getDefaultTemplateToSite(shSite);
 
 				String folderHomeId = null;
 
@@ -117,7 +117,7 @@ public class ShExchangeBloggerImport {
 				}
 
 				shExchangeData.getShExchange().setPosts(posts);
-				shCloneExchange.importExport(shExchangeData);
+				shCloneExchange.importFromShExchangeData(shExchangeData);
 
 				shExchangeData.getShExchangeFilesDirs().deleteExport();
 				return shExchangeData.getShExchange();

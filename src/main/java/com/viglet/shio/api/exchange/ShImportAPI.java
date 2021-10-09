@@ -52,7 +52,7 @@ public class ShImportAPI {
 			return shExchangeBloggerImport.shImportFromBlogger(multipartFile);
 		}
 		else {
-		return shImportExchange.importFromMultipartFile(multipartFile, principal.getName());
+			return shImportExchange.importFromMultipartFile(multipartFile);
 		}
 	}
 

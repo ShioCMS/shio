@@ -90,7 +90,8 @@ public class ShSiteImport {
 		}
 	}
 
-	public ShExchange cloneSite(ShExchangeData shExchangeData) {
+	public ShSite cloneSite(ShExchangeData shExchangeData) {
+		ShSite shSite = null;
 		ShExchange shExchange = shExchangeData.getShExchange();
 		File extractFolder = shExchangeData.getShExchangeFilesDirs().getExportDir();
 
@@ -99,7 +100,7 @@ public class ShSiteImport {
 			shSiteExchange.setDate(new Date());
 			ShExchangeObjectMap shExchangeObjectMap = shSiteImport.prepareImport(shExchange, shSiteExchange);
 			logger.info(String.format(".... %s Site (%s)", shSiteExchange.getName(), shSiteExchange.getId()));
-			this.createShSite(shSiteExchange);
+			shSite = this.createShSite(shSiteExchange);
 			// Create only Folders
 			logger.info("3 of 4 - Cloning Folders");
 			shFolderImport.shFolderImportNested(shSiteExchange.getId(), true, shExchangeObjectMap,
@@ -110,7 +111,7 @@ public class ShSiteImport {
 					new ShExchangeContext(extractFolder, true));
 		}
 
-		return shExchange;
+		return shSite;
 	}
 
 	public ShSite createShSite(ShSiteExchange shSiteExchange) {
@@ -144,16 +145,22 @@ public class ShSiteImport {
 		return shSite;
 	}
 
-	public ShExchangeObjectMap prepareImport(ShExchange shExchange, ShSiteExchange shSiteExchange) {
+	public ShExchangeObjectMap prepareImport(ShExchange shExchange, ShSiteExchange shCurrentSiteExchange) {
 		ShExchangeObjectMap shExchangeObjectMap = new ShExchangeObjectMap();
-		List<String> rootFolders = shSiteExchange.getRootFolders();
+		List<String> rootFolders = shCurrentSiteExchange.getRootFolders();
 
-		prepareSiteImport(shSiteExchange, shExchangeObjectMap);
-		prepareFolderImport(shExchange, shSiteExchange, shExchangeObjectMap, rootFolders);
+		prepareSiteImport(shCurrentSiteExchange, shExchangeObjectMap);
+		prepareFolderImport(shExchange, shCurrentSiteExchange, shExchangeObjectMap, rootFolders);
 		preparePostImport(shExchange, shExchangeObjectMap);
 		return shExchangeObjectMap;
 	}
 
+	public ShExchangeObjectMap prepareImport(ShExchange shExchange) {
+		ShExchangeObjectMap shExchangeObjectMap = new ShExchangeObjectMap();
+		prepareFolderImport(shExchange, shExchangeObjectMap);
+		preparePostImport(shExchange, shExchangeObjectMap);
+		return shExchangeObjectMap;
+	}
 	private void prepareSiteImport(ShSiteExchange shSiteExchange, ShExchangeObjectMap shExchangeObjectMap) {
 		shExchangeObjectMap.getShObjects().put(shSiteExchange.getId(), shSiteExchange);
 	}
@@ -164,13 +171,16 @@ public class ShSiteImport {
 			shExchangeObjectMap.getShObjects().put(shFolderExchange.getId(), shFolderExchange);
 			if (isParentFolder(shFolderExchange)) {
 				this.setParentFolder(shExchangeObjectMap.getShChildObjects(), shFolderExchange);
-			} else {
+			} else if (shSiteExchange != null && rootFolders != null ) {
 				this.setRootFolder(shSiteExchange, shExchangeObjectMap.getShChildObjects(), rootFolders,
 						shFolderExchange);
 			}
 		});
 	}
-
+	private void prepareFolderImport(ShExchange shExchange, 
+			ShExchangeObjectMap shExchangeObjectMap) {
+		this.prepareFolderImport(shExchange, null, shExchangeObjectMap, null);
+	}
 	private boolean isParentFolder(ShFolderExchange shFolderExchange) {
 		return shFolderExchange.getParentFolder() != null;
 	}

@@ -21,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Date;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -47,8 +48,6 @@ public class ShCloneExchange {
 	@Autowired
 	private ShImportExchange shImportExchange;
 
-
-
 	public ShExchangeData getTemplateAsCloneFromMultipartFile(MultipartFile multipartFile, ShSite shSite) {
 		ShExchangeFilesDirs shExchangeFilesDirs = shImportExchange.extractZipFile(multipartFile);
 
@@ -62,7 +61,7 @@ public class ShCloneExchange {
 		}
 	}
 
-	public boolean importExport(ShExchangeData shExchangeData) {
+	public boolean importFromShExchangeData(ShExchangeData shExchangeData) {
 		ShExchange shExchange = shExchangeData.getShExchange();
 		boolean isOk = false;
 		if (hasPostTypes(shExchange)) {
@@ -70,10 +69,19 @@ public class ShCloneExchange {
 			isOk = true;
 		}
 		if (hasSites(shExchange)) {
-			shSiteImport.cloneSite(shExchangeData);
+			importSiteFromShExchangeData(shExchangeData);
 			isOk = true;
 		}
 		return isOk;
+	}
+
+	public ShSite importSiteFromShExchangeData(ShExchangeData shExchangeData) {
+		ShSite shSite = null;
+		ShExchange shExchange = shExchangeData.getShExchange();
+		if (hasSites(shExchange)) {
+			shSite = shSiteImport.cloneSite(shExchangeData);
+		}
+		return shSite;
 	}
 
 	private ShExchange changeObjectIdsFromExportToClone(ShSite shSite, ShExchangeFilesDirs shExchangeFilesDirs) {
@@ -97,8 +105,7 @@ public class ShCloneExchange {
 
 			}
 			return shExchange;
-		}
-		else
+		} else
 			return shExchange;
 	}
 
@@ -121,6 +128,33 @@ public class ShCloneExchange {
 		}
 
 		return this.getTemplateAsCloneFromMultipartFile(multipartFile, shSite);
+	}
+
+	public boolean importTemplateAsCloneFromFile(File file, ShSite shSite) {
+
+		ShExchangeData shExchangeData = this.getTemplateAsCloneFromFile(file, shSite);
+		this.importFromShExchangeData(shExchangeData);
+
+		shExchangeData.getShExchangeFilesDirs().deleteExport();
+		FileUtils.deleteQuietly(file);
+
+		return true;
+	}
+
+	public ShSite importNewSiteFromTemplateFile(File file) {
+		ShExchangeData shExchangeData = this.getNewSiteFromTemplateFile(file);
+
+		ShSite shSite = this.importSiteFromShExchangeData(shExchangeData);
+
+		shExchangeData.getShExchangeFilesDirs().deleteExport();
+		FileUtils.deleteQuietly(file);
+
+		return shSite;
+	}
+
+	public ShExchangeData getNewSiteFromTemplateFile(File file) {
+
+		return this.getTemplateAsCloneFromFile(file, null);
 	}
 
 	public ShExchange cloneFromExtractedImport(File directory, ShSite shSite) {
