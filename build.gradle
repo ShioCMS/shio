@@ -227,7 +227,7 @@ implementation group: 'com.rometools', name: 'rome', version: '1.16.0'
 
 	
 	// WebJars
-	implementation 'org.webjars:jquery:1.12.4'
+	implementation 'org.webjars:jquery:3.6.0'
 	implementation 'org.webjars.bower:jquery.ui:1.12.1'
 	implementation 'org.webjars:bootstrap:3.3.7-1' // Content
 	implementation 'org.webjars.bower:bootstrap:4.6.0' // Preview
