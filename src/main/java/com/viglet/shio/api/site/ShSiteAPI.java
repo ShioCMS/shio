@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 the original author or authors. 
+ * Copyright (C) 2016-2021 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,20 +16,16 @@
  */
 package com.viglet.shio.api.site;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
+
 import java.security.Principal;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -53,8 +49,8 @@ import com.viglet.shio.api.folder.ShFolderList;
 import com.viglet.shio.bean.ShFolderTinyBean;
 import com.viglet.shio.bean.ShPostTypeReport;
 import com.viglet.shio.exchange.ShCloneExchange;
-import com.viglet.shio.exchange.ShExchange;
-import com.viglet.shio.exchange.site.ShSiteExchange;
+import com.viglet.shio.exchange.ShExchangeData;
+import com.viglet.shio.exchange.ShImportExchange;
 import com.viglet.shio.exchange.site.ShSiteExport;
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.site.ShSite;
@@ -88,8 +84,6 @@ public class ShSiteAPI {
 	@Autowired
 	private ShFolderUtils shFolderUtils;
 	@Autowired
-	private ShURLFormatter shURLFormatter;
-	@Autowired
 	private ShSiteExport shSiteExport;
 	@Autowired
 	private ShSitesNodeJS shSitesNodeJS;
@@ -99,7 +93,8 @@ public class ShSiteAPI {
 	private ShHistoryUtils shHistoryUtils;
 	@Autowired
 	private ShReportPostType shReportPostType;
-
+	@Autowired
+	private ShImportExchange shImportExchange;
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShSite> shSiteList(final Principal principal) {
@@ -129,7 +124,7 @@ public class ShSiteAPI {
 			shSiteEdit.setPostTypeLayout(shSite.getPostTypeLayout());
 			shSiteEdit.setSearchablePostTypes(shSite.getSearchablePostTypes());
 			shSiteEdit.setFormSuccess(shSite.getFormSuccess());
-			shSiteEdit.setFurl(shURLFormatter.format(shSite.getName()));
+			shSiteEdit.setFurl(ShURLFormatter.format(shSite.getName()));
 			shSiteRepository.save(shSiteEdit);
 
 			shHistoryUtils.commit(shSite, principal, ShHistoryUtils.UPDATE);
@@ -165,58 +160,21 @@ public class ShSiteAPI {
 		return true;
 	}
 
-	public ShExchange importTemplateSite(ShSite shSite) {
-		ShExchange shExchange = null;
-		URL templateSiteRepository = null;
-		try {
-			templateSiteRepository = new URL("https://github.com/ShioCMS/bootstrap-site/archive/0.3.7.zip");
-		} catch (MalformedURLException e) {
-			logger.error(e);
-		}
-
-		File userDir = new File(System.getProperty("user.dir"));
-		if (userDir.exists() && userDir.isDirectory()) {
-			File tmpDir = new File(userDir.getAbsolutePath().concat(File.separator + "store" + File.separator + "tmp"));
-			if (!tmpDir.exists()) {
-				tmpDir.mkdirs();
-			}
-
-			File templateSiteFile = new File(
-					tmpDir.getAbsolutePath().concat(File.separator + "template-site-" + UUID.randomUUID() + ".zip"));
-
-			try {
-				FileUtils.copyURLToFile(templateSiteRepository, templateSiteFile);
-				shExchange = shCloneExchange.cloneFromFile(templateSiteFile, "admin", shSite);
-			} catch (IllegalStateException | IOException e) {
-
-				logger.error(e);
-			}
-			FileUtils.deleteQuietly(templateSiteFile);
-
-			return shExchange;
-		} else {
-			return null;
-		}
-
-	}
-
+	
 	@PostMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShSite shSiteAdd(@RequestBody ShSite shSite, final Principal principal) {
 
 		shSite.setDate(new Date());
 		shSite.setOwner(principal.getName());
-		shSite.setFurl(shURLFormatter.format(shSite.getName()));
+		shSite.setFurl(ShURLFormatter.format(shSite.getName()));
 
-		ShExchange shExchange;
-		try {
-			shExchange = this.importTemplateSite(shSite);
-			ShSiteExchange shSiteExchange = shExchange.getSites().get(0);
-			shSite.setId(shSiteExchange.getId());
-		} catch (IllegalStateException e) {
-			logger.error("shSiteAdd IllegalStateException: ", e);
-		}
+		ShExchangeData shExchangeData = shImportExchange.getDefaultTemplateToSite(shSite);
 
+		shCloneExchange.importFromShExchangeData(shExchangeData);
+		
+		shExchangeData.getShExchangeFilesDirs().deleteExport();
+		
 		shHistoryUtils.commit(shSite, principal, ShHistoryUtils.CREATE);
 
 		return shSite;
@@ -265,4 +223,5 @@ public class ShSiteAPI {
 	public ShSite shSiteStructure() {
 		return new ShSite();
 	}
+
 }

@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shio.api.ShJsonView;
 import com.viglet.shio.exchange.ShImportExchange;
+import com.viglet.shio.provider.exchange.blogger.ShExchangeBloggerImport;
 import com.viglet.shio.exchange.ShExchange;
 
 import io.swagger.annotations.Api;
@@ -42,11 +43,17 @@ public class ShImportAPI {
 
 	@Autowired
 	private ShImportExchange shImportExchange;
-
+	@Autowired
+	private ShExchangeBloggerImport shExchangeBloggerImport;
 	@PostMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShExchange shImport(@RequestParam("file") MultipartFile multipartFile, final Principal principal) {
-		return shImportExchange.importFromMultipartFile(multipartFile, principal.getName());
+		if (multipartFile.getOriginalFilename().endsWith("xml")) {
+			return shExchangeBloggerImport.shImportFromBlogger(multipartFile);
+		}
+		else {
+			return shImportExchange.importFromMultipartFile(multipartFile);
+		}
 	}
 
 }

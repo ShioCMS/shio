@@ -16,13 +16,24 @@
  */
 package com.viglet.shio.utils;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
+import com.viglet.shio.exchange.ShCloneExchange;
 import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.url.ShURLScheme;
 
@@ -31,9 +42,39 @@ import com.viglet.shio.url.ShURLScheme;
  */
 @Component
 public class ShSiteUtils {
+	private static final Log logger = LogFactory.getLog(ShSiteUtils.class);
 	@Autowired
 	ShURLScheme shURLScheme;
+	@Autowired
+	private ShCloneExchange shCloneExchange;
+	@Autowired
+	private ResourceLoader resourceloader;
+	@Autowired
+	private ShStaticFileUtils shStaticFileUtils;
+	
+	private static final String COULD_NOT_CREATE_SAMPLE_SITE = "Could not create sample site";
+	
+	public ShSite importSiteFromResourceOrURL(String classpathFile, URL url, String slug) {
+		try {
+			Resource resource = resourceloader.getResource("classpath:" + classpathFile);
 
+			File siteFile = new File(shStaticFileUtils.getTmpDir().getAbsolutePath()
+					.concat(File.separator + slug + UUID.randomUUID() + ".zip"));
+			if (resource.exists()) {
+				InputStream is = resource.getInputStream();
+				FileUtils.copyInputStreamToFile(is, siteFile);
+
+			} else {
+				FileUtils.copyURLToFile(url, siteFile);
+			}
+			return shCloneExchange.importNewSiteFromTemplateFile(siteFile);
+		} catch (IllegalStateException | IOException e) {
+			logger.error(COULD_NOT_CREATE_SAMPLE_SITE, e);
+		}
+		
+		return null;
+
+	}
 	public Map<String, Object> toSystemMap(ShSite shSite) {
 		Map<String, Object> shSiteItemSystemAttrs = new HashMap<>();
 		shSiteItemSystemAttrs.put("id", shSite.getId());

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 the original author or authors. 
+ * Copyright (C) 2016-2021 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
 package com.viglet.shio.exchange.folder;
 
 import java.io.File;
-import java.util.List;
-import java.util.Map;
+
+import com.viglet.shio.exchange.ShExchangeObjectMap;
 
 /**
  * Folder Exchange Context
@@ -33,8 +33,8 @@ public class ShFolderExchangeContext {
 	String username;
 	private String shObject;
 	private boolean importOnlyFolders;
-	private Map<String, Object> shObjects;
-	private Map<String, List<String>> shChildObjects;
+	private ShExchangeObjectMap shExchangeObjectMap;
+
 	private boolean isCloned;
 
 	public ShFolderExchange getShFolderExchange() {
@@ -77,28 +77,20 @@ public class ShFolderExchangeContext {
 		this.importOnlyFolders = importOnlyFolders;
 	}
 
-	public Map<String, Object> getShObjects() {
-		return shObjects;
-	}
-
-	public void setShObjects(Map<String, Object> shObjects) {
-		this.shObjects = shObjects;
-	}
-
-	public Map<String, List<String>> getShChildObjects() {
-		return shChildObjects;
-	}
-
-	public void setShChildObjects(Map<String, List<String>> shChildObjects) {
-		this.shChildObjects = shChildObjects;
-	}
-
 	public boolean isCloned() {
 		return isCloned;
 	}
 
 	public void setCloned(boolean isCloned) {
 		this.isCloned = isCloned;
+	}
+
+	public ShExchangeObjectMap getShExchangeObjectMap() {
+		return shExchangeObjectMap;
+	}
+
+	public void setShExchangeObjectMap(ShExchangeObjectMap shExchangeObjectMap) {
+		this.shExchangeObjectMap = shExchangeObjectMap;
 	}
 
 }

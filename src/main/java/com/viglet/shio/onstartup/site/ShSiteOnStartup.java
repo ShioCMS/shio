@@ -16,20 +16,16 @@
  */
 package com.viglet.shio.onstartup.site;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.UUID;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.viglet.shio.exchange.ShCloneExchange;
 import com.viglet.shio.persistence.repository.site.ShSiteRepository;
+import com.viglet.shio.utils.ShSiteUtils;
 
 /**
  * @author Alexandre Oliveira
@@ -40,55 +36,23 @@ public class ShSiteOnStartup {
 	@Autowired
 	private ShSiteRepository shSiteRepository;
 	@Autowired
-	private ShCloneExchange shCloneExchange;
-
-	private static final String COULD_NOT_CREATE_SAMPLE_SITE = "Could not create sample site";
+	private ShSiteUtils shSiteUtils;
 
 	public void createDefaultRows() {
 
 		if (shSiteRepository.findAll().isEmpty()) {
-
 			try {
-				this.importSite(new URL("https://github.com/ShioCMS/sample-site/archive/0.3.8.zip"),
+				shSiteUtils.importSiteFromResourceOrURL("/import/sample-site.zip",
+						new URL("https://github.com/ShioCMS/sample-site/archive/0.3.8.zip"), "sample-site-import");
+
+				shSiteUtils.importSiteFromResourceOrURL("/import/stock-site.zip",
+						new URL("https://github.com/ShioCMS/stock-site-import/archive/0.3.8.zip"),
 						"sample-site-import");
-				this.importSite(new URL("https://github.com/ShioCMS/stock-site-import/archive/0.3.8.zip"),
-						"stock-site-import");
 			} catch (MalformedURLException e) {
-				logger.error("siteRepository MalformedURLException", e);
-
+				logger.error(e.getMessage(), e);
 			}
-
 		}
 	}
 
-	private void importSite(URL siteRepository, String slug) {
-		File userDir = new File(System.getProperty("user.dir"));
-		if (userDir.exists() && userDir.isDirectory()) {
-			File tmpDir = new File(userDir.getAbsolutePath().concat(File.separator + "store" + File.separator + "tmp"));
-			if (!tmpDir.exists())
-				tmpDir.mkdirs();
 
-			File siteFile = new File(
-					tmpDir.getAbsolutePath().concat(File.separator + slug + UUID.randomUUID() + ".zip"));
-
-			try {
-				FileUtils.copyURLToFile(siteRepository, siteFile);
-				shCloneExchange.cloneFromFile(siteFile, "admin", null);
-			} catch (IllegalStateException | IOException e) {
-				logger.error(COULD_NOT_CREATE_SAMPLE_SITE, e);
-			}
-
-			FileUtils.deleteQuietly(siteFile);
-		}
-	}
-	public void importSiteFromExtractedImport(File directory) {
-		var userDir = new File(System.getProperty("user.dir"));
-		if (userDir.exists() && userDir.isDirectory()) {
-			var tmpDir = new File(userDir.getAbsolutePath().concat(File.separator + "store" + File.separator + "tmp"));
-			if (!tmpDir.exists())
-				tmpDir.mkdirs();
-
-			shCloneExchange.cloneFromExtractedImport(directory, "admin", null);
-		}
-	}
 }

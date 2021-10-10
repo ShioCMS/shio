@@ -93,7 +93,7 @@ public class ShSecurityConfigProduction extends WebSecurityConfigurerAdapter {
 				.antMatchers("/index.html", "/welcome/**", "/", "/store/**", "/thirdparty/**", "/js/**", "/css/**",
 						"/template/**", "/img/**", "/sites/**", "/__tur/**", "/swagger-resources/**", "/h2/**",
 						"/image/**", "/login-page/**", "/logout-page/**", "/graphql","/manifest.json",
-						"/*.png", "/*.ico")
+						"/*.png", "/*.ico", "/browserconfig.xml")
 				.permitAll().anyRequest().authenticated().and()
 				.addFilterAfter(new ShCsrfHeaderFilter(), CsrfFilter.class).csrf()
 				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and().logout();

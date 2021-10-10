@@ -100,7 +100,7 @@ public class ShGraphQLQTObjectFromURL {
 
 				if (shObject.get() instanceof ShPost) {
 					ShPost shPost = (ShPost) shObject.get(); // NOSONAR
-					type = shGraphQLUtils.normalizedPostType(shPost.getShPostType().getName());
+					type = shGraphQLUtils.normalizedName(shPost.getShPostType().getName());
 
 				} else if (shObject.get() instanceof ShFolder) {
 					type = "folder";

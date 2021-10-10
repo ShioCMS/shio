@@ -16,38 +16,37 @@
  */
 package com.viglet.shio.exchange;
 
-import java.io.File;
-
 /**
- * Post Exchange Context
+ * Export Data includes Export and Info about Directory where is the static
+ * files.
  * 
  * @author Alexandre Oliveira
- * @since 0.3.7
+ * @since 0.3.4
  * 
  */
-public class ShExchangeContext {
-	private File extractFolder;
-	private boolean isCloned;
+public class ShExchangeData {
+	private ShExchange shExchange;
+	private ShExchangeFilesDirs shExchangeFilesDirs;
 
-	public ShExchangeContext(File extractFolder, boolean isCloned) {
-		this.extractFolder = extractFolder;
-		this.isCloned = isCloned;
+	ShExchangeData(ShExchange shExchange, ShExchangeFilesDirs shExchangeFilesDirs) {
+		this.shExchange = shExchange;
+		this.shExchangeFilesDirs = shExchangeFilesDirs;
 	}
 
-	public File getExtractFolder() {
-		return extractFolder;
+	public ShExchange getShExchange() {
+		return shExchange;
 	}
 
-	public void setExtractFolder(File extractFolder) {
-		this.extractFolder = extractFolder;
+	public void setShExchange(ShExchange shExchange) {
+		this.shExchange = shExchange;
 	}
 
-	public boolean isCloned() {
-		return isCloned;
+	public ShExchangeFilesDirs getShExchangeFilesDirs() {
+		return shExchangeFilesDirs;
 	}
 
-	public void setCloned(boolean isCloned) {
-		this.isCloned = isCloned;
+	public void setShExchangeFilesDirs(ShExchangeFilesDirs shExchangeFilesDirs) {
+		this.shExchangeFilesDirs = shExchangeFilesDirs;
 	}
 
 }

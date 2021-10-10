@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 the original author or authors. 
+ * Copyright (C) 2016-2021 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.viglet.shio.exchange.ShExchangeContext;
+import com.viglet.shio.exchange.ShExchangeObjectMap;
 import com.viglet.shio.exchange.relator.ShRelatorItemExchanges;
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.post.ShPost;
@@ -61,6 +62,7 @@ import com.viglet.shio.url.ShURLFormatter;
 import com.viglet.shio.utils.ShFolderUtils;
 import com.viglet.shio.utils.ShPostUtils;
 import com.viglet.shio.utils.ShStaticFileUtils;
+import com.viglet.shio.utils.ShUserUtils;
 import com.viglet.shio.widget.ShSystemWidget;
 
 /**
@@ -88,9 +90,9 @@ public class ShPostImport {
 	@Autowired
 	private ShFolderUtils shFolderUtils;
 	@Autowired
-	private ShURLFormatter shURLFormatter;
-	@Autowired
 	private ShTuringIntegration shTuringIntegration;
+	@Autowired
+	private ShUserUtils shUserUtils;
 
 	private boolean turingEnabled = true;
 
@@ -118,7 +120,7 @@ public class ShPostImport {
 		if (shPostExchange.getFurl() != null) {
 			shPost.setFurl(shPostExchange.getFurl());
 		} else {
-			shPost.setFurl(shURLFormatter.format(shPost.getTitle()));
+			shPost.setFurl(ShURLFormatter.format(shPost.getTitle()));
 		}
 
 		this.getShPostAttrs(shPostExchange, shPost, shPostExchange.getFields(), null);
@@ -146,7 +148,7 @@ public class ShPostImport {
 		ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType,
 				shPostField.getKey());
 		// Relator: the PostType is null
-		if (shPostTypeAttr == null) {
+		if (shPostTypeAttr == null && shParentRelatorItem != null && shPostField != null) {
 			shPostTypeAttr = shPostTypeAttrRepository.findByShParentPostTypeAttrAndName(
 					shParentRelatorItem.getShParentPostAttr().getShPostTypeAttr(), shPostField.getKey());
 		}
@@ -154,7 +156,8 @@ public class ShPostImport {
 	}
 
 	private boolean isRelator(ShPostTypeAttr shPostTypeAttr) {
-		return shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.RELATOR);
+		return shPostTypeAttr != null && shPostTypeAttr.getShWidget() != null
+				&& shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.RELATOR);
 	}
 
 	private void postAttrNonRelator(ShPost shPost, ShRelatorItemImpl shParentRelatorItem,
@@ -168,7 +171,7 @@ public class ShPostImport {
 		ShPostAttr shPostAttr = new ShPostAttr();
 		if (shPostField.getValue() instanceof ArrayList)
 			shPostAttr.setArrayValue((new HashSet<String>((ArrayList<String>) shPostField.getValue())));
-		else if (shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.DATE)) {
+		else if (shPostTypeAttr != null && shPostTypeAttr.getShWidget() != null && shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.DATE)) {
 			if (shPostField.getValue() != null) {
 				try {
 					shPostAttr.setDateValue(
@@ -247,12 +250,13 @@ public class ShPostImport {
 	}
 
 	public ShPostImpl createShPost(ShExchangeContext context, ShPostExchange shPostExchange,
-			Map<String, Object> shObjects) {
+			ShExchangeObjectMap shExchangeObjectMap) {
+
 		ShPost shPost = null;
 		if (shPostRepository.findById(shPostExchange.getId()).isPresent()) {
 			shPost = shPostRepository.findById(shPostExchange.getId()).orElse(null);
 		} else {
-			shPost = extractPostFromExchange(context, shPostExchange, shObjects);
+			shPost = extractPostFromExchange(context, shPostExchange, shExchangeObjectMap);
 		}
 
 		if (shPost != null)
@@ -261,7 +265,7 @@ public class ShPostImport {
 	}
 
 	private ShPost extractPostFromExchange(ShExchangeContext context, ShPostExchange shPostExchange,
-			Map<String, Object> shObjects) {
+			ShExchangeObjectMap shExchangeObjectMap) {
 		ShPost shPost;
 		shPost = new ShPost();
 		shPost.setId(shPostExchange.getId());
@@ -276,19 +280,19 @@ public class ShPostImport {
 		if (shPostExchange.getOwner() != null)
 			shPost.setOwner(shPostExchange.getOwner());
 		else
-			shPost.setOwner(context.getUsername());
+			shPost.setOwner(shUserUtils.getCurrentUsername());
 
 		this.detectPostAttrs(shPostExchange, context.getExtractFolder(), shPost);
 
 		if (shPostExchange.getFurl() != null) {
 			shPost.setFurl(shPostExchange.getFurl());
 		} else {
-			shPost.setFurl(shURLFormatter.format(shPost.getTitle()));
+			shPost.setFurl(ShURLFormatter.format(shPost.getTitle()));
 		}
 
 		shPostRepository.saveAndFlush(shPost);
 
-		this.createShPostAttrs(context, shPostExchange, shPost, shPostExchange.getFields(), null, shObjects);
+		this.createShPostAttrs(context, shPostExchange, shPost, shPostExchange.getFields(), null, shExchangeObjectMap);
 
 		for (ShPostAttrImpl shPostAttr : shPostAttrRepository.findByShPost(shPost)) {
 			shPostUtils.updateRelatorInfo(shPostAttr, shPost);
@@ -303,38 +307,49 @@ public class ShPostImport {
 		for (Entry<String, Object> shPostField : shPostExchange.getFields().entrySet()) {
 			ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPost.getShPostType(),
 					shPostField.getKey());
-			if (shPostTypeAttr.getIsTitle() == (byte) 1) {
-				shPost.setTitle(StringUtils.abbreviate((String) shPostField.getValue(), 255));
-			} else if (shPostTypeAttr.getIsSummary() == (byte) 1) {
-				shPost.setSummary(StringUtils.abbreviate((String) shPostField.getValue(), 255));
-			}
-			if (shPostTypeAttr.getName().equals(ShSystemPostTypeAttr.FILE)
-					&& shPostExchange.getPostType().equals(ShSystemPostType.FILE)) {
-				String fileName = (String) shPostField.getValue();
-				File directoryPath = shStaticFileUtils.dirPath(shPost.getShFolder());
-				File fileSource = new File(
-						extractFolder.getAbsolutePath().concat(File.separator + shPostExchange.getId()));
-				File fileDest = new File(directoryPath.getAbsolutePath().concat(File.separator + fileName));
-				try {
-					FileUtils.copyFile(fileSource, fileDest);
-				} catch (IOException e) {
-					logger.error("createShPostException", e);
+			if (shPostTypeAttr != null) {
+				if (shPostTypeAttr.getIsTitle() == (byte) 1) {
+					shPost.setTitle(StringUtils.abbreviate((String) shPostField.getValue(), 255));
+				} else if (shPostTypeAttr.getIsSummary() == (byte) 1) {
+					shPost.setSummary(StringUtils.abbreviate((String) shPostField.getValue(), 255));
+				}
+				if (shPostTypeAttr.getName().equals(ShSystemPostTypeAttr.FILE)
+						&& shPostExchange.getPostType().equals(ShSystemPostType.FILE)) {
+					String fileName = (String) shPostField.getValue();
+					File directoryPath = shStaticFileUtils.dirPath(shPost.getShFolder());
+					File fileSource = new File(
+							extractFolder.getAbsolutePath().concat(File.separator + shPostExchange.getId()));
+					File fileDest = new File(directoryPath.getAbsolutePath().concat(File.separator + fileName));
+					try {
+						if (!fileDest.getParentFile().exists()) {
+							fileDest.getParentFile().mkdirs();
+						}
+						if (fileSource.getAbsoluteFile().exists()) {
+							FileUtils.copyFile(fileSource, fileDest);
+						} else {
+							logger.error(String.format("%s file not exists, creating empty file into %s.",
+									fileSource.getAbsoluteFile(), fileDest.getAbsoluteFile()));
+							fileDest.createNewFile();
+						}
+					} catch (IOException e) {
+						logger.error(e);
+					}
 				}
 			}
 		}
 	}
 
 	private void createShPostAttrs(ShExchangeContext context, ShPostExchange shPostExchange, ShPost shPost,
-			Map<String, Object> shPostFields, ShRelatorItemImpl shParentRelatorItem, Map<String, Object> shObjects) {
+			Map<String, Object> shPostFields, ShRelatorItemImpl shParentRelatorItem, ShExchangeObjectMap shExchangeObjectMap) {
 		for (Entry<String, Object> shPostField : shPostFields.entrySet()) {
 			ShPostType shPostType = shPostTypeRepository.findByName(shPostExchange.getPostType());
 
 			ShPostTypeAttr shPostTypeAttr = getPostAttr(shParentRelatorItem, shPostField, shPostType);
 
-			this.createReferecedPosts(context, shObjects, shPostField, shPostType, shPostTypeAttr);
+			this.createReferecedPosts(context, shExchangeObjectMap, shPostField, shPostType, shPostTypeAttr);
 			if (isRelator(shPostTypeAttr)) {
 
-				this.detectPostAttrRelator(context, shPostExchange, shPost, shParentRelatorItem, shObjects, shPostField,
+				this.detectPostAttrRelator(context, shPostExchange, shPost, shParentRelatorItem, shExchangeObjectMap, shPostField,
 						shPostTypeAttr);
 			} else {
 				this.detectPostAttrNonRelator(shPost, shParentRelatorItem, shPostField, shPostTypeAttr);
@@ -342,22 +357,25 @@ public class ShPostImport {
 		}
 	}
 
-	private void createReferecedPosts(ShExchangeContext context, Map<String, Object> shObjects,
+	private void createReferecedPosts(ShExchangeContext context, ShExchangeObjectMap shExchangeObjectMap,
 			Entry<String, Object> shPostField, ShPostType shPostType, ShPostTypeAttr shPostTypeAttr) {
-		if ((shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.FILE)
-				|| shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.CONTENT_SELECT))
-				&& shPostField.getValue() != null && !shPostType.getName().equals(ShSystemPostType.FILE)) {
-			try {
-				String shReferencedPostUUID = (String) shPostField.getValue();
-				// So the referenced Post not exists, need create first
-				if (!shPostRepository.findById(shReferencedPostUUID).isPresent()
-						&& shObjects.get(shReferencedPostUUID) instanceof ShPostExchange) {
-					ShPostExchange shReferencedPostExchange = (ShPostExchange) shObjects.get(shReferencedPostUUID);
-					this.createShPost(context, shReferencedPostExchange, shObjects);
-				}
+		Map<String, Object> shObjects = shExchangeObjectMap.getShObjects();
+		if (shPostTypeAttr != null && shPostTypeAttr.getShWidget() != null && shPostField != null) {
+			if ((shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.FILE)
+					|| shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.CONTENT_SELECT))
+					&& shPostField.getValue() != null && !shPostType.getName().equals(ShSystemPostType.FILE)) {
+				try {
+					String shReferencedPostUUID = (String) shPostField.getValue();
+					// So the referenced Post not exists, need create first
+					if (!shPostRepository.findById(shReferencedPostUUID).isPresent()
+							&& shObjects.get(shReferencedPostUUID) instanceof ShPostExchange) {
+						ShPostExchange shReferencedPostExchange = (ShPostExchange) shObjects.get(shReferencedPostUUID);
+						this.createShPost(context, shReferencedPostExchange, shExchangeObjectMap);
+					}
 
-			} catch (IllegalArgumentException iae) {
-				logger.error("createShPostAttrs", iae);
+				} catch (IllegalArgumentException iae) {
+					logger.error("createShPostAttrs", iae);
+				}
 			}
 		}
 	}
@@ -373,7 +391,7 @@ public class ShPostImport {
 
 	@SuppressWarnings({ "unchecked" })
 	private void detectPostAttrRelator(ShExchangeContext context, ShPostExchange shPostExchange, ShPost shPost,
-			ShRelatorItemImpl shParentRelatorItem, Map<String, Object> shObjects, Entry<String, Object> shPostField,
+			ShRelatorItemImpl shParentRelatorItem, ShExchangeObjectMap shExchangeObjectMap, Entry<String, Object> shPostField,
 			ShPostTypeAttr shPostTypeAttr) {
 		LinkedHashMap<String, Object> relatorFields = (LinkedHashMap<String, Object>) shPostField.getValue();
 
@@ -394,11 +412,11 @@ public class ShPostImport {
 		shPostAttrRepository.save(shPostAttr);
 
 		ShRelatorItemExchanges subPosts = this.getSubPosts(relatorFields);
-		this.createRelatorFromSubPosts(context, shPostExchange, shPost, shObjects, shPostAttr, subPosts);
+		this.createRelatorFromSubPosts(context, shPostExchange, shPost, shExchangeObjectMap, shPostAttr, subPosts);
 	}
 
 	private void createRelatorFromSubPosts(ShExchangeContext context, ShPostExchange shPostExchange, ShPost shPost,
-			Map<String, Object> shObjects, ShPostAttr shPostAttr, ShRelatorItemExchanges subPosts) {
+			ShExchangeObjectMap shExchangeObjectMap, ShPostAttr shPostAttr, ShRelatorItemExchanges subPosts) {
 		if (subPosts != null) {
 			subPosts.forEach(shSubPost -> {
 				ShRelatorItem shRelatorItem = new ShRelatorItem();
@@ -407,7 +425,7 @@ public class ShPostImport {
 
 				shRelatorItemRepository.save(shRelatorItem);
 				this.createShPostAttrs(context, shPostExchange, shPost, shSubPost.getFields(), shRelatorItem,
-						shObjects);
+						shExchangeObjectMap);
 			});
 		}
 	}

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 the original author or authors. 
+ * Copyright (C) 2016-2021 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,24 +17,35 @@
 package com.viglet.shio.exchange.folder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import com.viglet.shio.exchange.ShExchange;
+import com.viglet.shio.exchange.ShExchangeFilesDirs;
 import com.viglet.shio.exchange.file.ShFileExchange;
 import com.viglet.shio.exchange.post.ShPostExchange;
 import com.viglet.shio.exchange.post.ShPostExport;
 import com.viglet.shio.exchange.post.type.ShPostTypeExchange;
 import com.viglet.shio.exchange.post.type.ShPostTypeExport;
+import com.viglet.shio.exchange.site.ShSiteExchange;
+import com.viglet.shio.exchange.utils.ShExchangeUtils;
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.post.ShPost;
+import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shio.persistence.repository.post.ShPostRepository;
+import com.viglet.shio.utils.ShFolderUtils;
 
 /**
  * @author Alexandre Oliveira
@@ -49,6 +60,10 @@ public class ShFolderExport {
 	private ShPostExport shPostExport;
 	@Autowired
 	private ShPostTypeExport shPostTypeExport;
+	@Autowired
+	private ShExchangeUtils shExchangeUtils;
+	@Autowired
+	private ShFolderUtils shFolderUtils;
 
 	public ShExchange shFolderExchangeIterate(Set<ShFolder> shFolders) {
 		ShExchange shExchange = new ShExchange();
@@ -70,7 +85,7 @@ public class ShFolderExport {
 			shFolderExchangeChild.setOwner(shFolder.getOwner());
 			shFolderExchangeChild.setFurl(shFolder.getFurl());
 			shFolderExchangeChild.setPosition(shFolder.getPosition());
-
+			
 			if (shFolder.getParentFolder() != null) {
 				shFolderExchangeChild.setParentFolder(shFolder.getParentFolder().getId());
 			}
@@ -120,5 +135,41 @@ public class ShFolderExport {
 	public ShExchange shFolderExchangeNested(ShFolder shFolder) {
 		Set<ShFolder> childFolders = shFolderRepository.findByParentFolder(shFolder);
 		return this.shFolderExchangeIterate(childFolders);
+	}
+
+	public StreamingResponseBody exportObject(HttpServletResponse response, String id) {
+		Optional<ShFolder> shFolder = shFolderRepository.findById(id);
+		if (shFolder.isPresent()) {
+			
+			ShExchangeFilesDirs shExchangeFilesDirs = new ShExchangeFilesDirs();
+			if (shExchangeFilesDirs.generate()) {
+				Set<ShFolder> folders = new HashSet<>();
+				folders.add(shFolder.get());
+				ShExchange shExchange = this.shFolderExchangeIterate(folders);
+				if (shFolder.get().getParentFolder() == null) {
+					ShSite shSite = shFolderUtils.getSite(shFolder.get());
+					ShSiteExchange shSiteExchange = new ShSiteExchange();
+					shSiteExchange.setId(shSite.getId());
+					shSiteExchange.setName(shSite.getName());
+					shSiteExchange.setUrl(shSite.getUrl());
+					shSiteExchange.setDescription(shSite.getDescription());
+					shSiteExchange.setPostTypeLayout(shSite.getPostTypeLayout());
+					shSiteExchange.setSearchablePostTypes(shSite.getSearchablePostTypes());
+					shSiteExchange.setDate(shSite.getDate());
+					shSiteExchange.setRootFolders(Arrays.asList(shFolder.get().getId()));
+					shSiteExchange.setOwner(shSite.getOwner());
+					shSiteExchange.setFurl(shSite.getFurl());
+
+					List<ShSiteExchange> shSiteExchanges = new ArrayList<>();
+					shSiteExchanges.add(shSiteExchange);
+					shExchange.setSites(shSiteExchanges);
+				}
+				
+				return shExchangeUtils.downloadZipFile(String.format("%s_folder", shFolder.get().getFurl()), response,
+						shExchange, shExchangeFilesDirs);
+			}
+		}
+
+		return null;
 	}
 }

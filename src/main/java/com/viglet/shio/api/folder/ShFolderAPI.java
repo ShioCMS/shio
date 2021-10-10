@@ -39,10 +39,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shio.api.ShJsonView;
+import com.viglet.shio.exchange.folder.ShFolderExport;
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.object.ShObject;
 import com.viglet.shio.persistence.model.site.ShSite;
@@ -71,8 +74,6 @@ public class ShFolderAPI {
 	@Autowired
 	private ShFolderUtils shFolderUtils;
 	@Autowired
-	private ShURLFormatter shURLFormatter;
-	@Autowired
 	private ShObjectRepository shObjectRepository;
 	@Autowired
 	private ShObjectUtils shObjectUtils;
@@ -82,7 +83,9 @@ public class ShFolderAPI {
 	private ShSpreadsheet shSpreadsheet;
 	@Autowired
 	private ShHistoryUtils shHistoryUtils;
-
+	@Autowired
+	private ShFolderExport shFolderExport;
+	
 	@ApiOperation(value = "Folder list")
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
@@ -114,7 +117,7 @@ public class ShFolderAPI {
 				shFolderEdit.setName(shFolder.getName());
 				shFolderEdit.setParentFolder(shFolder.getParentFolder());
 				shFolderEdit.setShSite(shFolder.getShSite());
-				shFolderEdit.setFurl(shURLFormatter.format(shFolderEdit.getName()));
+				shFolderEdit.setFurl(ShURLFormatter.format(shFolderEdit.getName()));
 				shFolderRepository.saveAndFlush(shFolderEdit);
 
 				shTuringIntegration.indexObject(shFolderEdit);
@@ -164,7 +167,7 @@ public class ShFolderAPI {
 
 				shObjectRepository.findById(shParentObject.getId()).ifPresent(shObject -> {
 					shFolder.setDate(new Date());
-					shFolder.setFurl(shURLFormatter.format(shFolder.getName()));
+					shFolder.setFurl(ShURLFormatter.format(shFolder.getName()));
 					shFolder.setShGroups(new HashSet<>(shObject.getShGroups()));
 					shFolder.setShUsers(new HashSet<>(shObject.getShUsers()));
 					shFolderRepository.saveAndFlush(shFolder);
@@ -198,7 +201,7 @@ public class ShFolderAPI {
 				shNewFolder.setName(shFolder.getName());
 				shNewFolder.setShGroups(new HashSet<>(shObject.getShGroups()));
 				shNewFolder.setShUsers(new HashSet<>(shObject.getShUsers()));
-				shNewFolder.setFurl(shURLFormatter.format(shNewFolder.getName()));
+				shNewFolder.setFurl(ShURLFormatter.format(shNewFolder.getName()));
 
 				ShObject shParentObject = shObjectRepository.findById(objectId).orElse(null);
 				if (shParentObject instanceof ShFolder) {
@@ -247,5 +250,16 @@ public class ShFolderAPI {
 		ShFolder shFolder = shFolderRepository.findById(id).orElse(null);
 		if (shFolder != null)
 			shSpreadsheet.generate(shFolder, response);
+	}
+	@ResponseBody
+	@GetMapping(value = "/{id}/export", produces = "application/zip")
+	@JsonView({ ShJsonView.ShJsonViewObject.class })
+	public ResponseEntity<StreamingResponseBody> shPostExport(@PathVariable String id, Principal principal,
+			HttpServletResponse response) {
+		if (shObjectUtils.canAccess(principal, id)) {
+			return new ResponseEntity<>(shFolderExport.exportObject(response, id), HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+		}	
 	}
 }

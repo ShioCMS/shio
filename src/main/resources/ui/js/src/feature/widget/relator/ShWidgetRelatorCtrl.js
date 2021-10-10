@@ -34,6 +34,7 @@ shioApp.controller('ShWidgetRelatorCtrl', [
 					}
 					
 					var shChildRelatorItem = {};
+					shChildRelatorItem["@type"] = "ShRelatorItem";
 					shChildRelatorItem.id = null;
 					shChildRelatorItem.title = transferData.title;
 					shChildRelatorItem.summary = transferData.summary;

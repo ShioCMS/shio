@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 the original author or authors. 
+ * Copyright (C) 2016-2021 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,6 @@
  */
 package com.viglet.shio.exchange.folder;
 
-import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.viglet.shio.exchange.ShExchangeContext;
+import com.viglet.shio.exchange.ShExchangeObjectMap;
 import com.viglet.shio.exchange.post.ShPostExchange;
 import com.viglet.shio.exchange.post.ShPostImport;
 import com.viglet.shio.exchange.site.ShSiteExchange;
@@ -36,6 +36,7 @@ import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shio.persistence.repository.site.ShSiteRepository;
 import com.viglet.shio.url.ShURLFormatter;
+import com.viglet.shio.utils.ShUserUtils;
 
 /**
  * @author Alexandre Oliveira
@@ -48,31 +49,33 @@ public class ShFolderImport {
 	@Autowired
 	private ShFolderRepository shFolderRepository;
 	@Autowired
-	private ShURLFormatter shURLFormatter;
-	@Autowired
 	private ShPostImport shPostImport;
+	@Autowired
+	private ShUserUtils shUserUtils;
 
-	public void shFolderImportNested(String shObject, File extractFolder, String username, boolean importOnlyFolders,
-			Map<String, Object> shObjects, Map<String, List<String>> shChildObjects, boolean isCloned) {
+	public void shFolderImportNested(String shObject, boolean importOnlyFolders,
+			ShExchangeObjectMap shExchangeObjectMap, ShExchangeContext shExchangeContext) {
+		String username = shUserUtils.getCurrentUsername();
+		Map<String, List<String>> shChildObjects = shExchangeObjectMap.getShChildObjects();
+		Map<String, Object> shObjects = shExchangeObjectMap.getShObjects();
 		if (shChildObjects.containsKey(shObject)) {
 			for (String objectId : shChildObjects.get(shObject)) {
-				if (shObjects.get(objectId) instanceof ShFolderExchange) {					
-					ShFolderExchange shFolderExchange = (ShFolderExchange) shObjects.get(objectId);	
-					ShFolderExchangeContext context = new ShFolderExchangeContext(); 
-					context.setCloned(isCloned);
-					context.setExtractFolder(extractFolder);
+				if (shObjects.get(objectId) instanceof ShFolderExchange) {
+					ShFolderExchange shFolderExchange = (ShFolderExchange) shObjects.get(objectId);
+					ShFolderExchangeContext context = new ShFolderExchangeContext();
+					context.setCloned(shExchangeContext.isCloned());
+					context.setExtractFolder(shExchangeContext.getExtractFolder());
 					context.setImportOnlyFolders(importOnlyFolders);
-					context.setShChildObjects(shChildObjects);
+					context.setShExchangeObjectMap(shExchangeObjectMap);
 					context.setShFolderExchange(shFolderExchange);
 					context.setShObject(shObject);
-					context.setShObjects(shObjects);
 					context.setUsername(username);
 					this.createShFolder(context);
 				}
 
 				if (!importOnlyFolders && shObjects.get(objectId) instanceof ShPostExchange) {
-					ShPostExchange shPostExchange = (ShPostExchange) shObjects.get(objectId);					
-					shPostImport.createShPost(new ShExchangeContext(extractFolder, username, isCloned), shPostExchange, shObjects);
+					ShPostExchange shPostExchange = (ShPostExchange) shObjects.get(objectId);
+					shPostImport.createShPost(shExchangeContext, shPostExchange, shExchangeObjectMap);
 				}
 			}
 
@@ -85,11 +88,12 @@ public class ShFolderImport {
 		if (shFolderOptional.isPresent()) {
 			shFolderChild = shFolderOptional.get();
 		} else {
-			shFolderChild = this.createFolderObject(context.getShFolderExchange(), context.getUsername(), context.getShObject(), context.getShObjects(), context.isCloned());
+			shFolderChild = this.createFolderObject(context.getShFolderExchange(), context.getUsername(),
+					context.getShObject(),context.getShExchangeObjectMap().getShObjects(), context.isCloned());
 		}
 
-		this.shFolderImportNested(shFolderChild.getId(), context.getExtractFolder(), context.getUsername(), context.isImportOnlyFolders(), context.getShObjects(),
-				context.getShChildObjects(), context.isCloned());
+		this.shFolderImportNested(shFolderChild.getId(), context.isImportOnlyFolders(), context.getShExchangeObjectMap(),
+				new ShExchangeContext(context.getExtractFolder(), context.isCloned()));
 
 		return shFolderChild;
 	}
@@ -99,7 +103,7 @@ public class ShFolderImport {
 		ShFolder shFolderChild;
 		shFolderChild = new ShFolder();
 		shFolderChild.setId(shFolderExchange.getId());
-		shFolderChild.setDate(isCloned? new Date(): shFolderExchange.getDate());
+		shFolderChild.setDate(isCloned ? new Date() : shFolderExchange.getDate());
 		shFolderChild.setName(shFolderExchange.getName());
 		if (shFolderExchange.getPosition() > 0) {
 			shFolderChild.setPosition(shFolderExchange.getPosition());
@@ -112,7 +116,7 @@ public class ShFolderImport {
 		if (shFolderExchange.getFurl() != null) {
 			shFolderChild.setFurl(shFolderExchange.getFurl());
 		} else {
-			shFolderChild.setFurl(shURLFormatter.format(shFolderExchange.getName()));
+			shFolderChild.setFurl(ShURLFormatter.format(shFolderExchange.getName()));
 		}
 		this.rootFolderSettings(shFolderExchange, shObject, shObjects, shFolderChild);
 		logger.info(String.format("...... %s Folder (%s)", shFolderChild.getName(), shFolderChild.getId()));

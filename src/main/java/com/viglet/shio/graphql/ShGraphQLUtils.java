@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -44,11 +45,11 @@ public class ShGraphQLUtils {
 		return CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, object.toLowerCase().replace("-", "_"));
 	}
 
-	public String normalizedPostType(String postTypeName) {
-		if (StringUtils.isNotEmpty(postTypeName)) {
-			char[] c = postTypeName.replace("-", "_").toCharArray();
+	public String normalizedName(String name) {
+		if (StringUtils.isNotEmpty(name)) {
+			char[] c = name.replace(" ","_").replace("-", "_").toCharArray();
 			c[0] = Character.toLowerCase(c[0]);
-			return new String(c);
+			return  StringUtils.remove(WordUtils.capitalizeFully(new String(c), '_'), "_");
 		} else {
 			return StringUtils.EMPTY;
 		}

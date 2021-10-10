@@ -142,7 +142,7 @@ public class ShSitesPageLayoutUtils {
 			if (logger.isDebugEnabled())
 				logger.debug("isPost");
 			shFolderPageLayout = folderIndexPageLayout(shObjectItem, format, shFolderPageLayout);
-		} else if (shObjectItem instanceof ShFolder && shSite.getPostTypeLayout() != null) {
+		} else if (shObjectItem instanceof ShFolder) {
 			if (logger.isDebugEnabled())
 				logger.debug("isFolder");
 			ShPost shFolderIndex = shPostRepository.findByShFolderAndFurl((ShFolder) shObjectItem, "index");
@@ -152,9 +152,8 @@ public class ShSitesPageLayoutUtils {
 				shFolderPageLayout = this.defaultFolderPageLayout(shSite, format, shFolderPageLayout);
 			}
 		} else {
-			if (logger.isDebugEnabled())
-				logger.debug("Not Found Object");
-
+			logger.debug(String.format("Object not found because shObjectItem %s, Site Id: %s, Page Layout: %s",
+					shObjectItem, shObjectItem.getId(), shSite.getPostTypeLayout()));
 		}
 
 		return shFolderPageLayout;

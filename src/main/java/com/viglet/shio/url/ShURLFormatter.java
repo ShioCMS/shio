@@ -17,15 +17,14 @@
 package com.viglet.shio.url;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Component;
 
 /**
  * @author Alexandre Oliveira
  */
-@Component
+
 public class ShURLFormatter {
 
-	public String format(String url) {
+	public static String format(String url) {
 
 		// 1. Covert to Lowercase
 		String formattedURL = url.toLowerCase();		

@@ -61,6 +61,8 @@ public class ShStaticFileUtils {
 	private ShHistoryUtils shHistoryUtils;
 
 	private static final String FILE_SOURCE_BASE = File.separator + "store" + File.separator + "file_source";
+	private static final String TEMP_DIR = File.separator + "store" + File.separator + "tmp";
+	private static final String FILE_SOURCE_BASE_AS_LINK = "/store/file_source";
 	private static final String USER_DIR = "user.dir";
 	private File userDir = new File(System.getProperty(USER_DIR));
 
@@ -119,8 +121,19 @@ public class ShStaticFileUtils {
 		return file;
 	}
 
-	public String getFileSourceBase() {
-		return FILE_SOURCE_BASE;
+	public File getTmpDir() {
+		File file = null;
+
+		if (userDir.exists() && userDir.isDirectory()) {
+			String fileSource = userDir.getAbsolutePath().concat(TEMP_DIR);
+			file = new File(fileSource);
+		}
+		return file;
+
+	}
+	
+	public String getFileSourceBase(boolean isLink) {
+		return isLink ? FILE_SOURCE_BASE_AS_LINK : FILE_SOURCE_BASE;
 	}
 
 	public ShPost createFilePost(MultipartFile file, String fileName, ShFolder shFolder, Principal principal,

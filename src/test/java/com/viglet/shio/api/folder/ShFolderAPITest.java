@@ -50,7 +50,7 @@ import com.viglet.shio.utils.ShUtils;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-@TestMethodOrder (MethodOrderer.Alphanumeric.class)
+@TestMethodOrder (MethodOrderer.MethodName.class)
 @TestInstance(Lifecycle.PER_CLASS)
 class ShFolderAPITest {
 

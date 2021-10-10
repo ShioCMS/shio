@@ -33,10 +33,10 @@ public class HazelcastCacheConfig {
 		Config config = new Config();
 		config.setInstanceName("hazelcast-cache");
 
-		MapConfig shobject = new MapConfig();
-		shobject.setTimeToLiveSeconds(86400);
-		shobject.setEvictionConfig(evictionConfig);
-		config.getMapConfigs().put("shobject", shobject);
+		MapConfig shObject = new MapConfig();
+		shObject.setTimeToLiveSeconds(86400);
+		shObject.setEvictionConfig(evictionConfig);
+		config.getMapConfigs().put("shObject", shObject);
 
 		MapConfig page = new MapConfig();
 		page.setTimeToLiveSeconds(86400);

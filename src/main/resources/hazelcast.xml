@@ -23,12 +23,12 @@
 		<merge-policy batch-size="100">com.hazelcast.spi.merge.PutIfAbsentMergePolicy</merge-policy>
 	</queue>
 
-	<map name="shobject">
+	<map name="shObject">
 		<time-to-live-seconds>86400</time-to-live-seconds>
 
 	</map>
 
-	<cache name="shobject">
+	<cache name="shObject">
 		<eviction size="200" />
 
 		<statistics-enabled>false</statistics-enabled>

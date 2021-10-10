@@ -16,38 +16,34 @@
  */
 package com.viglet.shio.exchange;
 
-import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
- * Post Exchange Context
- * 
+ * Objects used during import.
+ *
  * @author Alexandre Oliveira
- * @since 0.3.7
- * 
+ * @since 0.3.4
  */
-public class ShExchangeContext {
-	private File extractFolder;
-	private boolean isCloned;
+public class ShExchangeObjectMap {
+	private Map<String, Object> shObjects = new HashMap<>();
+	private Map<String, List<String>> shChildObjects = new HashMap<>();
 
-	public ShExchangeContext(File extractFolder, boolean isCloned) {
-		this.extractFolder = extractFolder;
-		this.isCloned = isCloned;
+	public Map<String, Object> getShObjects() {
+		return shObjects;
 	}
 
-	public File getExtractFolder() {
-		return extractFolder;
+	public void setShObjects(Map<String, Object> shObjects) {
+		this.shObjects = shObjects;
 	}
 
-	public void setExtractFolder(File extractFolder) {
-		this.extractFolder = extractFolder;
+	public Map<String, List<String>> getShChildObjects() {
+		return shChildObjects;
 	}
 
-	public boolean isCloned() {
-		return isCloned;
-	}
-
-	public void setCloned(boolean isCloned) {
-		this.isCloned = isCloned;
+	public void setShChildObjects(Map<String, List<String>> shChildObjects) {
+		this.shChildObjects = shChildObjects;
 	}
 
 }
