@@ -37,7 +37,7 @@ sonarqube {
 
 jar {
     archiveBaseName = 'viglet-shio'
-    archiveVersion =  '0.3.8'
+    archiveVersion =  '0.3.9'
 }
 
 eclipse {
@@ -222,8 +222,8 @@ dependencies {
 	// Guava
 	implementation 'com.google.guava:guava:31.0.1-jre'
 	
-// https://mvnrepository.com/artifact/com.rometools/rome
-implementation group: 'com.rometools', name: 'rome', version: '1.16.0'
+	// Rome
+	implementation group: 'com.rometools', name: 'rome', version: '1.16.0'
 
 	
 	// WebJars

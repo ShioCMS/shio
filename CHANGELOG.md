@@ -1,8 +1,22 @@
-## 0.3.8
+## 0.3.8 (Oct 10, 2021)
 
 #### NEW FEATURES
+* Blogger Importer.
+* Export Folder.
+* Using Github Actions.
+* Hazelcache Module Parameters.
 
 #### IMPROVEMENTS
+* Nashorn improvements.
+* ShCachePageLayout improvements.
+* JUnit: @ParameterizedTest.
+* Using zip4j.
+* Code Smell and Bugs were fixed.
+* Cache, Update Draft Content, Logs.
+* Latest releases of libraries.
+* JDK 14.
+* Spring Boot 2.5.5.
+* Gradle 7.0.2.
 
 ## 0.3.7 (July 28, 2020)
 
