@@ -213,7 +213,7 @@ dependencies {
 	implementation 'com.graphql-java:graphql-java:230521-nf-execution'
 	implementation 'com.graphql-java:graphql-java-spring-webmvc:2021-03-29T16-31-33-ae4bd96'	
 	implementation 'com.graphql-java:graphql-java-extended-scalars:17.0'
-	implementation 'io.projectreactor:reactor-core:3.4.10'
+	implementation 'io.projectreactor:reactor-core:3.4.11'
 	implementation "com.graphql-java-kickstart:graphql-webclient-spring-boot-starter:1.0.0"
 
 	// Color Thief
