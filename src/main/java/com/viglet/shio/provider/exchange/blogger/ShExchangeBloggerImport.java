@@ -17,12 +17,15 @@
 package com.viglet.shio.provider.exchange.blogger;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.tika.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,6 +43,7 @@ import com.viglet.shio.exchange.ShImportExchange;
 import com.viglet.shio.exchange.folder.ShFolderExchange;
 import com.viglet.shio.exchange.post.ShPostExchange;
 import com.viglet.shio.persistence.model.site.ShSite;
+import com.viglet.shio.plugin.ShImporterPlugin;
 import com.viglet.shio.post.type.ShArticlePostType;
 import com.viglet.shio.url.ShURLFormatter;
 import com.viglet.shio.utils.ShUserUtils;
@@ -66,7 +70,22 @@ public class ShExchangeBloggerImport {
 
 	private static final String SCHEMA_POST = "http://schemas.google.com/blogger/2008/kind#post";
 
+	@Value("${shio.plugin.blogger}")
+	private String customClass;
+	private boolean hasPlugin = false;
+
 	public ShExchange shImportFromBlogger(MultipartFile multipartFile) {
+		ShImporterPlugin shImporterPlugin = null;
+		if (!StringUtils.isEmpty(customClass)) {
+
+			try {
+				shImporterPlugin = (ShImporterPlugin) Class.forName(customClass).getDeclaredConstructor().newInstance();
+				hasPlugin = true;
+			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException
+					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
+				logger.error(e.getMessage(), e);
+			}
+		}
 		ShExchangeFilesDirs shExchangeFilesDirs = new ShExchangeFilesDirs();
 		if (shExchangeFilesDirs.generate()) {
 
@@ -110,8 +129,11 @@ public class ShExchangeBloggerImport {
 							syndEntry.getContents().forEach(content -> {
 								article.setText(content.getValue().trim());
 							});
-							posts.add(article.getShPostExchange());
-
+							if (hasPlugin) {
+								posts.add(shImporterPlugin.process(article.getShPostExchange()));
+							} else {
+								posts.add(article.getShPostExchange());
+							}
 						}
 					}
 				}
