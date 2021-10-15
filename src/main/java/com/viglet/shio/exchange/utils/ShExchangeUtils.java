@@ -37,7 +37,6 @@ import com.viglet.shio.exchange.ShExchange;
 import com.viglet.shio.exchange.ShExchangeFilesDirs;
 
 import net.lingala.zip4j.ZipFile;
-import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.ZipParameters;
 
 /**
@@ -59,12 +58,12 @@ public class ShExchangeUtils {
 		} catch (IOException e) {
 			logger.error(e);
 		}
+		var zipParameters = new ZipParameters();
+		zipParameters.setIncludeRootFolder(false);
+		try (ZipFile zipFile = new ZipFile(shExchangeFilesDirs.getZipFile())) {
 
-		try {
-			var zipParameters = new ZipParameters();
-			zipParameters.setIncludeRootFolder(false);
-			new ZipFile(shExchangeFilesDirs.getZipFile()).addFolder(shExchangeFilesDirs.getExportDir(), zipParameters);
-		} catch (ZipException e) {
+			zipFile.addFolder(shExchangeFilesDirs.getExportDir(), zipParameters);
+		} catch (IOException e) {
 			logger.error(e);
 		}
 
@@ -108,10 +107,9 @@ public class ShExchangeUtils {
 		ShExchangeFilesDirs shExchangeFilesDirs = new ShExchangeFilesDirs();
 		if (shExchangeFilesDirs.generate()) {
 
-			try {
+			try (ZipFile zipFile = new ZipFile(shExchangeFilesDirs.getZipFile())) {
 				file.transferTo(shExchangeFilesDirs.getZipFile());
-				new ZipFile(shExchangeFilesDirs.getZipFile())
-						.extractAll(shExchangeFilesDirs.getExportDir().getAbsolutePath());
+				zipFile.extractAll(shExchangeFilesDirs.getExportDir().getAbsolutePath());
 			} catch (IllegalStateException | IOException e) {
 				logger.error(e);
 			}
