@@ -150,7 +150,7 @@ dependencies {
 	implementation 'com.github.openturing:turing-java-sdk:0.3.3'
 
   	// Spring
-  	implementation group: 'org.springframework', name: 'spring-test', version: '5.3.10'
+  	implementation group: 'org.springframework', name: 'spring-test', version: '5.3.11'
   	    
   	// Jackson
     implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.13.0'
