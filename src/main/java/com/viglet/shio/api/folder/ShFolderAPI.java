@@ -58,15 +58,15 @@ import com.viglet.shio.utils.ShFolderUtils;
 import com.viglet.shio.utils.ShHistoryUtils;
 import com.viglet.shio.utils.ShObjectUtils;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author Alexandre Oliveira
  */
 @RestController
 @RequestMapping("/api/v2/folder")
-@Api(tags = "Folder", description = "Folder API")
+@Tag( name = "Folder", description = "Search API")
 public class ShFolderAPI {
 	private static final Logger logger = LogManager.getLogger(ShFolderAPI.class);
 	@Autowired
@@ -86,14 +86,14 @@ public class ShFolderAPI {
 	@Autowired
 	private ShFolderExport shFolderExport;
 	
-	@ApiOperation(value = "Folder list")
+	@Operation(summary = "Folder list")
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShFolder> shFolderList() {
 		return shFolderRepository.findAll();
 	}
 
-	@ApiOperation(value = "Show a folder")
+	@Operation(summary = "Show a folder")
 	@GetMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ResponseEntity<ShFolder> shFolderGet(@PathVariable String id, Principal principal) {
@@ -103,7 +103,7 @@ public class ShFolderAPI {
 		return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
 	}
 
-	@ApiOperation(value = "Update a folder")
+	@Operation(summary = "Update a folder")
 	@PutMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ResponseEntity<ShFolder> shFolderUpdate(@PathVariable String id, @RequestBody ShFolder shFolder,
@@ -132,7 +132,7 @@ public class ShFolderAPI {
 	}
 
 	@Transactional
-	@ApiOperation(value = "Delete a folder")
+	@Operation(summary = "Delete a folder")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Boolean> shFolderDelete(@PathVariable String id, Principal principal) {
 		if (shObjectUtils.canAccess(principal, id)) {
@@ -150,7 +150,7 @@ public class ShFolderAPI {
 		return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
 	}
 
-	@ApiOperation(value = "Create a folder")
+	@Operation(summary = "Create a folder")
 	@PostMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ResponseEntity<ShFolder> shFolderAdd(@RequestBody ShFolder shFolder, Principal principal) {
@@ -185,7 +185,7 @@ public class ShFolderAPI {
 
 	}
 
-	@ApiOperation(value = "Create a folder from Parent Object")
+	@Operation(summary = "Create a folder from Parent Object")
 	@PostMapping("/object/{objectId}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ResponseEntity<ShFolder> shFolderAddFromParentObject(@RequestBody ShFolder shFolder,
@@ -224,18 +224,17 @@ public class ShFolderAPI {
 
 			return new ResponseEntity<>(shFolder, HttpStatus.OK);
 		}
-
-		return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 	}
 
-	@ApiOperation(value = "Folder path")
+	@Operation(summary = "Folder path")
 	@GetMapping("/{id}/path")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShFolderPath shFolderPath(@PathVariable String id) {
 		return shObjectUtils.objectPath(id);
 	}
 
-	@ApiOperation(value = "Folder model")
+	@Operation(summary = "Folder model")
 	@GetMapping("/model")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShFolder shFolderStructure() {
@@ -243,7 +242,7 @@ public class ShFolderAPI {
 
 	}
 
-	@ApiOperation(value = "Export SpreadSheet from Folder")
+	@Operation(summary = "Export SpreadSheet from Folder")
 	@GetMapping("/{id}/spreadsheet")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public void shFolderSpreadSheet(@PathVariable String id, HttpServletResponse response) {
@@ -259,7 +258,7 @@ public class ShFolderAPI {
 		if (shObjectUtils.canAccess(principal, id)) {
 			return new ResponseEntity<>(shFolderExport.exportObject(response, id), HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 		}	
 	}
 }

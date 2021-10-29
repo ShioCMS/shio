@@ -52,7 +52,7 @@ import com.viglet.shio.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shio.persistence.repository.object.ShObjectRepository;
 import com.viglet.shio.utils.ShStaticFileUtils;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import net.coobird.thumbnailator.Thumbnails;
 
 /**
@@ -60,7 +60,7 @@ import net.coobird.thumbnailator.Thumbnails;
  */
 @RestController
 @RequestMapping("/api/v2/staticfile")
-@Api(tags = "Static File", description = "Static File API")
+@Tag( name = "Static File", description = "Static File API")
 public class ShStaticFileAPI {
 	static final Logger logger = LogManager.getLogger(ShStaticFileAPI.class.getName());
 	@Autowired

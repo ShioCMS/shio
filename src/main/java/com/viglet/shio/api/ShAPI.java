@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 the original author or authors. 
+ * Copyright (C) 2016-2021 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author Alexandre Oliveira
@@ -29,7 +29,7 @@ import io.swagger.annotations.Api;
  */
 @RestController
 @RequestMapping("/api/v2")
-@Api(value = "/", tags = "Heartbeat", description = "Heartbeat")
+@Tag( name = "Heartbeat", description = "Heartbeat")
 public class ShAPI {
 
 	@Autowired

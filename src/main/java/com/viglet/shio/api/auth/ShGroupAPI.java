@@ -41,14 +41,14 @@ import com.viglet.shio.persistence.model.auth.ShUser;
 import com.viglet.shio.persistence.repository.auth.ShGroupRepository;
 import com.viglet.shio.persistence.repository.auth.ShUserRepository;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author Alexandre Oliveira
  */
 @RestController
 @RequestMapping("/api/v2/group")
-@Api(tags = "Group", description = "Group API")
+@Tag( name = "Group", description = "Group API")
 public class ShGroupAPI {
 
 	@Autowired

@@ -46,15 +46,15 @@ import com.viglet.shio.persistence.repository.system.ShConfigVarRepository;
 import com.viglet.shio.property.ShConfigProperties;
 import com.viglet.shio.provider.auth.ShAuthProviderService;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author Alexandre Oliveira
  */
 @RestController
 @RequestMapping("/api/v2/provider/auth")
-@Api(tags = "Auth Provider", description = "Auth Provider API")
+@Tag( name = "Auth Provider", description = "Auth Provider API")
 public class ShAuthProviderAPI {
 	@SuppressWarnings("unused")
 	private static final Log logger = LogFactory.getLog(ShAuthProviderAPI.class);
@@ -177,7 +177,7 @@ public class ShAuthProviderAPI {
 
 	}
 
-	@ApiOperation(value = "Sort Auth Provider")
+	@Operation(summary = "Sort Auth Provider")
 	@PutMapping("/sort")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public Map<String, Integer> shAuthProviderInstanceSort(@RequestBody Map<String, Integer> objectOrder) {

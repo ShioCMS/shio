@@ -33,14 +33,14 @@ import com.viglet.shio.persistence.repository.auth.ShUserRepository;
 import com.viglet.shio.persistence.repository.post.ShPostRepository;
 import com.viglet.shio.persistence.repository.workflow.ShWorkflowTaskRepository;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author Alexandre Oliveira
  */
 @RestController
 @RequestMapping("/api/v2/workflow")
-@Api(tags = "Workflow", description = "Workflow API")
+@Tag( name = "Workflow", description = "Workflow API")
 public class ShWorkflowAPI {
 
 	@Autowired

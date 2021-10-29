@@ -76,15 +76,15 @@ import com.viglet.shio.website.utils.ShSitesObjectUtils;
 import com.viglet.shio.website.utils.ShSitesPostUtils;
 import com.viglet.shio.workflow.ShWorkflow;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author Alexandre Oliveira
  */
 @RestController
 @RequestMapping("/api/v2/object")
-@Api(tags = "Object", description = "Object API")
+@Tag( name = "Object", description = "Object API")
 public class ShObjectAPI {
 	@Autowired
 	private ShFolderRepository shFolderRepository;
@@ -187,7 +187,7 @@ public class ShObjectAPI {
 		return shObject;
 	}
 
-	@ApiOperation(value = "Show object users and groups")
+	@Operation(summary = "Show object users and groups")
 	@GetMapping("/{id}/security")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShSecurityBean shObjectGroupsGet(@PathVariable String id) {
@@ -213,7 +213,7 @@ public class ShObjectAPI {
 
 	}
 
-	@ApiOperation(value = "Update object users and groups")
+	@Operation(summary = "Update object users and groups")
 	@PutMapping("/{id}/security")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShSecurityBean shObjectGroupsUpdate(@PathVariable String id, @RequestBody ShSecurityBean shSecurityBean) {
@@ -465,7 +465,7 @@ public class ShObjectAPI {
 		}
 	}
 
-	@ApiOperation(value = "Object URL")
+	@Operation(summary = "Object URL")
 	@GetMapping("/{id}/url")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public String shObjectURL(@PathVariable String id) {
@@ -483,14 +483,14 @@ public class ShObjectAPI {
 				label);
 	}
 
-	@ApiOperation(value = "Object path")
+	@Operation(summary = "Object path")
 	@GetMapping("/{id}/path")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShFolderPath shObjectPath(@PathVariable String id) {
 		return shObjectUtils.objectPath(id);
 	}
 
-	@ApiOperation(value = "Sort Object")
+	@Operation(summary = "Sort Object")
 	@PutMapping("/sort")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public Map<String, Integer> shObjectSort(@RequestBody Map<String, Integer> objectOrder) {

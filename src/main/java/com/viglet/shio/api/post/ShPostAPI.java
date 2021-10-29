@@ -87,7 +87,7 @@ import com.viglet.shio.utils.ShStaticFileUtils;
 import com.viglet.shio.website.cache.component.ShCacheObject;
 import com.viglet.shio.widget.ShSystemWidget;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Post API.
@@ -97,7 +97,7 @@ import io.swagger.annotations.Api;
  */
 @RestController
 @RequestMapping("/api/v2/post")
-@Api(tags = "Post", description = "Post API")
+@Tag( name = "Post", description = "Post API")
 public class ShPostAPI {
 
 	private static final Log logger = LogFactory.getLog(ShPostAPI.class);

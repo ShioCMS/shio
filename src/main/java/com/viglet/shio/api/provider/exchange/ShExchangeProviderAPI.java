@@ -65,15 +65,15 @@ import com.viglet.shio.provider.exchange.ShExchangeProviderPost;
 import com.viglet.shio.utils.ShConfigVarUtils;
 import com.viglet.shio.utils.ShStaticFileUtils;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author Alexandre Oliveira
  */
 @RestController
 @RequestMapping("/api/v2/provider/exchange")
-@Api(tags = "Exchange Provider", description = "Exchange Provider API")
+@Tag( name = "Exchange Provider", description = "Exchange Provider API")
 public class ShExchangeProviderAPI {
 	private static final Log logger = LogFactory.getLog(ShExchangeProviderAPI.class);
 
@@ -229,7 +229,7 @@ public class ShExchangeProviderAPI {
 
 	}
 
-	@ApiOperation(value = "Sort Exchange Provider")
+	@Operation(summary = "Sort Exchange Provider")
 	@PutMapping("/sort")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public Map<String, Integer> shExchangeProviderInstanceSort(@RequestBody Map<String, Integer> objectOrder) {
