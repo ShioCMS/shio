@@ -70,7 +70,7 @@ public class ShExchangeBloggerImport {
 
 	private static final String SCHEMA_POST = "http://schemas.google.com/blogger/2008/kind#post";
 
-	@Value("${shio.plugin.blogger}")
+	@Value("${shio.plugin.blogger:}")
 	private String customClass;
 	private boolean hasPlugin = false;
 
@@ -122,7 +122,7 @@ public class ShExchangeBloggerImport {
 							article.setDate(syndEntry.getPublishedDate());
 							article.setFurl(syndEntry.getTitle().trim());
 							article.setFolder(folderHomeId);
-							article.setTitle(syndEntry.getTitle());
+							article.setTitle(syndEntry.getTitle().trim());
 							if (syndEntry.getDescription() != null) {
 								article.setDescription(syndEntry.getDescription().getValue().trim());
 							}

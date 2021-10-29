@@ -42,7 +42,7 @@ public class ShGraphQLUtils {
 	private ShObjectUtils shObjectUtils;
 
 	public String normalizedField(String object) {
-		return CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, object.toLowerCase().replace("-", "_"));
+		return CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, object.toLowerCase().replace(" ", "_").replace("-", "_"));
 	}
 
 	public String normalizedName(String name) {
