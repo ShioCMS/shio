@@ -17,6 +17,7 @@
 package com.viglet.shio.spring;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.web.servlet.DispatcherServletAutoConfiguration;
 import org.springframework.context.annotation.Configuration;
@@ -38,6 +39,8 @@ public class ShStaticResourceConfiguration implements WebMvcConfigurer {
 	private static final String THIRDPARTY_FOLDER = "/thirdparty/**";
 	@Autowired
 	private ShStaticFileUtils shStaticFileUtils;
+	@Value("${shio.allowedOrigins:localhost}")
+	private String allowedOrigins;
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -48,16 +51,16 @@ public class ShStaticResourceConfiguration implements WebMvcConfigurer {
 				.setCachePeriod(3600 * 24);
 
 		if (!registry.hasMappingForPattern(THIRDPARTY_FOLDER)) {
-			registry.addResourceHandler(THIRDPARTY_FOLDER).addResourceLocations("classpath:/META-INF/resources/webjars/")
-					.setCachePeriod(3600 * 24);
+			registry.addResourceHandler(THIRDPARTY_FOLDER)
+					.addResourceLocations("classpath:/META-INF/resources/webjars/").setCachePeriod(3600 * 24);
 		}
 	}
 
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
-		registry.addMapping(THIRDPARTY_FOLDER).allowedOrigins("*").allowedMethods("PUT", "DELETE", "GET", "POST")
-				.allowCredentials(false).maxAge(3600);
-		registry.addMapping("/api/**").allowedOrigins("*").allowedMethods("PUT", "DELETE", "GET", "POST")
+		registry.addMapping(THIRDPARTY_FOLDER).allowedOrigins(allowedOrigins)
+				.allowedMethods("PUT", "DELETE", "GET", "POST").allowCredentials(false).maxAge(3600);
+		registry.addMapping("/api/**").allowedOrigins(allowedOrigins).allowedMethods("PUT", "DELETE", "GET", "POST")
 				.allowCredentials(false).maxAge(3600);
 	}
 
@@ -72,9 +75,9 @@ public class ShStaticResourceConfiguration implements WebMvcConfigurer {
 		registry.addViewController("/media").setViewName("forward:/media/index.html");
 		registry.addViewController("/media/").setViewName("forward:/media/index.html");
 	}
-	
+
 	@Override
 	public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
-		configurer.setDefaultTimeout(-1);	
+		configurer.setDefaultTimeout(-1);
 	}
 }
