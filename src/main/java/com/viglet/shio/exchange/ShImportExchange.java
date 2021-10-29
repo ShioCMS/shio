@@ -62,7 +62,6 @@ public class ShImportExchange {
 	@Autowired
 	private ShStaticFileUtils shStaticFileUtils;
 
-
 	public ShExchangeData getDefaultTemplateToSite(ShSite shSite) {
 
 		ShExchangeData shExchangeData = null;
@@ -85,7 +84,10 @@ public class ShImportExchange {
 
 			logger.error(e);
 		}
-		shSite.setId(shExchangeData.getShExchange().getSites().get(0).getId());
+		if (shExchangeData != null && shExchangeData.getShExchange() != null
+				&& shExchangeData.getShExchange().getSites() != null) {
+			shSite.setId(shExchangeData.getShExchange().getSites().get(0).getId());
+		}
 		FileUtils.deleteQuietly(templateSiteFile);
 
 		return shExchangeData;
@@ -94,7 +96,7 @@ public class ShImportExchange {
 	public ShExchange importFromMultipartFile(MultipartFile multipartFile) {
 		logger.info("Unzip Package");
 		ShExchangeFilesDirs shExchangeFilesDirs = this.extractZipFile(multipartFile);
-		
+
 		if (shExchangeFilesDirs.getExportDir() != null) {
 			ShExchange shExchange = shExchangeFilesDirs.readExportFile();
 			this.importObjects(new ShExchangeData(shExchange, shExchangeFilesDirs));
@@ -109,7 +111,7 @@ public class ShImportExchange {
 	private void importObjects(ShExchangeData shExchangeData) {
 		ShExchange shExchange = shExchangeData.getShExchange();
 		File extractFolder = shExchangeData.getShExchangeFilesDirs().getExportDir();
-		
+
 		if (shExchange != null) {
 			if (shExchange.getPostTypes() != null && !shExchange.getPostTypes().isEmpty())
 				shPostTypeImport.importPostType(shExchange, false);
@@ -119,8 +121,8 @@ public class ShImportExchange {
 			} else if (shExchange.getFolders() == null && shExchange.getPosts() != null) {
 				ShExchangeObjectMap shExchangeObjectMap = shSiteImport.prepareImport(shExchange);
 				File extractFolderInner = extractFolder;
-				shExchange.getPosts().forEach(shPostExchange -> shPostImport
-						.createShPost(new ShExchangeContext(extractFolderInner, false), shPostExchange, shExchangeObjectMap));
+				shExchange.getPosts().forEach(shPostExchange -> shPostImport.createShPost(
+						new ShExchangeContext(extractFolderInner, false), shPostExchange, shExchangeObjectMap));
 			}
 		}
 	}

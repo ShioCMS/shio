@@ -70,13 +70,11 @@ public class ShSiteImport {
 	private ShPostTypeRepository shPostTypeRepository;
 	@Autowired
 	private ShUserUtils shUserUtils;
-	@Autowired
-	private ShSiteImport shSiteImport;
 
 	public void importSite(ShExchange shExchange, File extractFolder) {
 		logger.info("2 of 4 - Importing Sites");
 		for (ShSiteExchange shSiteExchange : shExchange.getSites()) {
-			ShExchangeObjectMap shExchangeObjectMap = shSiteImport.prepareImport(shExchange, shSiteExchange);
+			ShExchangeObjectMap shExchangeObjectMap = prepareImport(shExchange, shSiteExchange);
 			logger.info(String.format(".... %s Site (%s)", shSiteExchange.getName(), shSiteExchange.getId()));
 			this.createShSite(shSiteExchange);
 			// Create only Folders
@@ -98,7 +96,7 @@ public class ShSiteImport {
 		logger.info("2 of 4 - Cloning Sites");
 		for (ShSiteExchange shSiteExchange : shExchange.getSites()) {
 			shSiteExchange.setDate(new Date());
-			ShExchangeObjectMap shExchangeObjectMap = shSiteImport.prepareImport(shExchange, shSiteExchange);
+			ShExchangeObjectMap shExchangeObjectMap = prepareImport(shExchange, shSiteExchange);
 			logger.info(String.format(".... %s Site (%s)", shSiteExchange.getName(), shSiteExchange.getId()));
 			shSite = this.createShSite(shSiteExchange);
 			// Create only Folders
