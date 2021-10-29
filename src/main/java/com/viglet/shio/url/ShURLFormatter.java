@@ -36,7 +36,7 @@ public class ShURLFormatter {
 		formattedURL = StringUtils.stripAccents(formattedURL);
 		
 		// 4. Convert dot to hyphen
-		formattedURL = formattedURL.replaceAll("\\.", "-");
+		formattedURL = formattedURL.replace("\\.", "-");
 		
 		// 5. Remove all characters that are not a-z or 0-9 or space or _ or hyphen
 		formattedURL = formattedURL.replaceAll("[^a-z0-9 _-]", StringUtils.EMPTY);

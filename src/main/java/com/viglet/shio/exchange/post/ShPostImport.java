@@ -165,37 +165,13 @@ public class ShPostImport {
 		importPostAttr(shPost, shParentRelatorItem, shPostField, shPostTypeAttr);
 	}
 
-	@SuppressWarnings({ "unchecked" })
 	private ShPostAttr importPostAttr(ShPost shPost, ShRelatorItemImpl shParentRelatorItem,
 			Entry<String, Object> shPostField, ShPostTypeAttr shPostTypeAttr) {
 		ShPostAttr shPostAttr = new ShPostAttr();
-		if (shPostField.getValue() instanceof ArrayList)
-			shPostAttr.setArrayValue((new HashSet<String>((ArrayList<String>) shPostField.getValue())));
-		else if (shPostTypeAttr != null && shPostTypeAttr.getShWidget() != null
-				&& shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.DATE)) {
-			if (shPostField.getValue() != null) {
-				try {
-					shPostAttr.setDateValue(
-							new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'").parse((String) shPostField.getValue()));
-				} catch (ParseException e) {
-					logger.error("createShPostAttrs Error:", e);
-				}
-			}
-		} else {
-			shPostAttr.setStrValue((String) shPostField.getValue());
-		}
+		setPostAttrValue(shPostField, shPostTypeAttr, shPostAttr);
 
 		if (shParentRelatorItem != null) {
-			shPostAttr.setShPost(null);
-			shPostAttr.setShParentRelatorItem(shParentRelatorItem);
-			if (shPostTypeAttr != null) {
-				if (shPostTypeAttr.getIsTitle() == 1) {
-					shParentRelatorItem.setTitle("Parent" + shPostAttr.getStrValue());
-				}
-				if (shPostTypeAttr.getIsSummary() == 1) {
-					shParentRelatorItem.setSummary(shPostAttr.getStrValue());
-				}
-			}
+			setTittleAndSummaryFromRelator(shParentRelatorItem, shPostTypeAttr, shPostAttr);
 		} else {
 			shPostAttr.setShPost(shPost);
 			shPost.addShPostAttr(shPostAttr);
@@ -204,6 +180,44 @@ public class ShPostImport {
 		shPostAttr.setShPostTypeAttr(shPostTypeAttr);
 		shPostAttr.setType(1);
 		return shPostAttr;
+	}
+
+	@SuppressWarnings("unchecked")
+	private void setPostAttrValue(Entry<String, Object> shPostField, ShPostTypeAttr shPostTypeAttr,
+			ShPostAttr shPostAttr) {
+		if (shPostField.getValue() instanceof ArrayList)
+			shPostAttr.setArrayValue((new HashSet<String>((ArrayList<String>) shPostField.getValue())));
+		else if (shPostTypeAttr != null && shPostTypeAttr.getShWidget() != null
+				&& shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.DATE)) {
+			setDateAttr(shPostField, shPostAttr);
+		} else {
+			shPostAttr.setStrValue((String) shPostField.getValue());
+		}
+	}
+
+	private void setDateAttr(Entry<String, Object> shPostField, ShPostAttr shPostAttr) {
+		if (shPostField.getValue() != null) {
+			try {
+				shPostAttr.setDateValue(
+						new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'").parse((String) shPostField.getValue()));
+			} catch (ParseException e) {
+				logger.error("createShPostAttrs Error:", e);
+			}
+		}
+	}
+
+	private void setTittleAndSummaryFromRelator(ShRelatorItemImpl shParentRelatorItem, ShPostTypeAttr shPostTypeAttr,
+			ShPostAttr shPostAttr) {
+		shPostAttr.setShPost(null);
+		shPostAttr.setShParentRelatorItem(shParentRelatorItem);
+		if (shPostTypeAttr != null) {
+			if (shPostTypeAttr.getIsTitle() == 1) {
+				shParentRelatorItem.setTitle("Parent" + shPostAttr.getStrValue());
+			}
+			if (shPostTypeAttr.getIsSummary() == 1) {
+				shParentRelatorItem.setSummary(shPostAttr.getStrValue());
+			}
+		}
 	}
 
 	@SuppressWarnings({ "unchecked" })
@@ -263,7 +277,7 @@ public class ShPostImport {
 		}
 
 		if (shPost != null)
-			logger.info(String.format("........ %s Post (%s)", shPost.getTitle(), shPost.getId()));
+			logger.info("........ {} Post ({})", shPost.getTitle(), shPost.getId());
 		return shPost;
 	}
 
@@ -311,38 +325,47 @@ public class ShPostImport {
 			ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPost.getShPostType(),
 					shPostField.getKey());
 			if (shPostTypeAttr != null) {
-				if (shPostTypeAttr.getIsTitle() == (byte) 1) {
-					shPost.setTitle(StringUtils.abbreviate((String) shPostField.getValue(), 255));
-				} else if (shPostTypeAttr.getIsSummary() == (byte) 1) {
-					shPost.setSummary(StringUtils.abbreviate((String) shPostField.getValue(), 255));
+				setTitleAndSummaryFromPost(shPost, shPostField, shPostTypeAttr);
+				importStaticFiles(shPostExchange, extractFolder, shPost, shPostField, shPostTypeAttr);
+			}
+		}
+	}
+
+	private void setTitleAndSummaryFromPost(ShPostImpl shPost, Entry<String, Object> shPostField,
+			ShPostTypeAttr shPostTypeAttr) {
+		if (shPostTypeAttr.getIsTitle() == (byte) 1) {
+			shPost.setTitle(StringUtils.abbreviate((String) shPostField.getValue(), 255));
+		} else if (shPostTypeAttr.getIsSummary() == (byte) 1) {
+			shPost.setSummary(StringUtils.abbreviate((String) shPostField.getValue(), 255));
+		}
+	}
+
+	private void importStaticFiles(ShPostExchange shPostExchange, File extractFolder, ShPostImpl shPost,
+			Entry<String, Object> shPostField, ShPostTypeAttr shPostTypeAttr) {
+		if (shPostTypeAttr.getName().equals(ShSystemPostTypeAttr.FILE)
+				&& shPostExchange.getPostType().equals(ShSystemPostType.FILE)) {
+			String fileName = (String) shPostField.getValue();
+			File directoryPath = shStaticFileUtils.dirPath(shPost.getShFolder());
+			File fileSource = new File(
+					extractFolder.getAbsolutePath().concat(File.separator + shPostExchange.getId()));
+			File fileDest = new File(directoryPath.getAbsolutePath().concat(File.separator + fileName));
+			try {
+				if (!fileDest.getParentFile().exists()) {
+					fileDest.getParentFile().mkdirs();
 				}
-				if (shPostTypeAttr.getName().equals(ShSystemPostTypeAttr.FILE)
-						&& shPostExchange.getPostType().equals(ShSystemPostType.FILE)) {
-					String fileName = (String) shPostField.getValue();
-					File directoryPath = shStaticFileUtils.dirPath(shPost.getShFolder());
-					File fileSource = new File(
-							extractFolder.getAbsolutePath().concat(File.separator + shPostExchange.getId()));
-					File fileDest = new File(directoryPath.getAbsolutePath().concat(File.separator + fileName));
-					try {
-						if (!fileDest.getParentFile().exists()) {
-							fileDest.getParentFile().mkdirs();
-						}
-						if (fileSource.getAbsoluteFile().exists()) {
-							FileUtils.copyFile(fileSource, fileDest);
-						} else {
-							if (fileDest.createNewFile()) {
-								logger.error(String.format("%s file not exists, created empty file into %s.",
-										fileSource.getAbsoluteFile(), fileDest.getAbsoluteFile()));
-							} else {
-								logger.error(
-										String.format("%s file not exists, but it cannot to create empty file into %s.",
-												fileSource.getAbsoluteFile(), fileDest.getAbsoluteFile()));
-							}
-						}
-					} catch (IOException e) {
-						logger.error(e);
+				if (fileSource.getAbsoluteFile().exists()) {
+					FileUtils.copyFile(fileSource, fileDest);
+				} else {
+					if (fileDest.createNewFile()) {
+						logger.error("{} file not exists, created empty file into {}.",
+								fileSource.getAbsoluteFile(), fileDest.getAbsoluteFile());
+					} else {
+						logger.error("{} file not exists, but it cannot to create empty file into {}.",
+										fileSource.getAbsoluteFile(), fileDest.getAbsoluteFile());
 					}
 				}
+			} catch (IOException e) {
+				logger.error(e);
 			}
 		}
 	}

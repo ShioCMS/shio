@@ -42,7 +42,7 @@ public class ShJacksonJsonSerializer implements JsonSerializer {
         try {
             return objectMapper.writeValueAsString(object);
         } catch (IOException e) {
-        	logger.error("Error serializing object to JSON: " + e.getMessage(), e);
+        	logger.error("Error serializing object to JSON: {}", e.getMessage(), e);
         }
 		return null;
     }
@@ -52,7 +52,7 @@ public class ShJacksonJsonSerializer implements JsonSerializer {
         try {
             return objectMapper.readValue(json, requiredType);
         } catch (IOException e) {
-        	logger.error("Error deserializing object from JSON: " + e.getMessage(), e);
+        	logger.error("Error deserializing object from JSON: {}", e.getMessage(), e);
         }
 		return null;
     }
