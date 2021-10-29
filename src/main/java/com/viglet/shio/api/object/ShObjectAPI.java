@@ -142,7 +142,7 @@ public class ShObjectAPI {
 				headers.add("Location",
 						new String(redirect.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1));
 
-				return new ResponseEntity<>(null, headers, HttpStatus.FOUND);
+				return ResponseEntity.status(HttpStatus.FOUND).headers(headers).build();
 			}
 		}
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -336,7 +336,7 @@ public class ShObjectAPI {
 				}
 			}
 		}
-		return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 	}
 
 	private Set<ShFolderTinyBean> allowedFolders(ShUser shUser, ShObjectImpl shObject) {

@@ -80,6 +80,6 @@ public class ShPostXPAPI {
 			shPostXP.setAllowPublish(shPostUtils.allowPublish(shPost.getShPostType(), principal));
 			return new ResponseEntity<>(shPostXP, HttpStatus.OK);
 		}
-		return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 	}
 }
