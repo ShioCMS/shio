@@ -48,7 +48,7 @@ public class ShPostTypeImport {
 		logger.info("1 of 4 - Importing Post Types");
 		for (ShPostTypeExchange shPostTypeExchange : shExchange.getPostTypes()) {
 			if (shPostTypeRepository.findByName(shPostTypeExchange.getName()) == null) {
-				logger.info(String.format(".. %s Post Type (%s)", shPostTypeExchange.getName(), shPostTypeExchange.getId()));
+				logger.info(".. {} Post Type ({})", shPostTypeExchange.getName(), shPostTypeExchange.getId());
 				ShPostType shPostType = new ShPostType();
 				shPostType.setId(shPostTypeExchange.getId());
 				shPostType.setTitle(shPostTypeExchange.getLabel());

@@ -152,8 +152,8 @@ public class ShSitesPageLayoutUtils {
 				shFolderPageLayout = this.defaultFolderPageLayout(shSite, format, shFolderPageLayout);
 			}
 		} else {
-			logger.debug(String.format("Object not found because shObjectItem %s, Site Id: %s, Page Layout: %s",
-					shObjectItem, shObjectItem.getId(), shSite.getPostTypeLayout()));
+			logger.debug("Object not found because shObjectItem {}, Site Id: {}, Page Layout: {}",
+					shObjectItem, shObjectItem.getId(), shSite.getPostTypeLayout());
 		}
 
 		return shFolderPageLayout;
