@@ -259,7 +259,8 @@ public class ShPostUtils {
 	}
 
 	public void referencedObjectDraft(ShPostAttrImpl shPostAttr, ShPostImpl shPost) {
-		if (shPostAttr != null && shPostAttr.getShPostTypeAttr() != null && shPostAttr.getShPostTypeAttr().getShWidget() != null) {
+		if (shPostAttr != null && shPostAttr.getShPostTypeAttr() != null
+				&& shPostAttr.getShPostTypeAttr().getShWidget() != null) {
 			if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.FILE)) {
 				this.referencedFileDraft(shPostAttr, shPost);
 			} else if (shPostAttr.getShPostTypeAttr().getShWidget().getName().equals(ShSystemWidget.CONTENT_SELECT)) {
@@ -432,7 +433,7 @@ public class ShPostUtils {
 		if (shPostTypeAttr.getIsSummary() == 1) {
 			String widgetName = shPostTypeAttr.getShWidget().getName();
 			if (isReferencedWidget(shChildrenPostAttr, widgetName)) {
-				this.summaryRelator(title, summary, (ShPostAttrImpl) shChildrenPostAttr);
+				this.summaryRelator(title, summary, shChildrenPostAttr);
 			} else if (widgetName.equals(ShSystemWidget.DATE)) {
 				this.summaryDate(shPostAttr, title, summary);
 			} else {
@@ -492,7 +493,7 @@ public class ShPostUtils {
 			String widgetName = shPostTypeAttr.getShWidget().getName();
 
 			if (isReferencedWidget(shChildrenPostAttr, widgetName)) {
-				this.summaryRelator(title, title, (ShPostAttrImpl) shChildrenPostAttr);
+				this.summaryRelator(title, title, shChildrenPostAttr);
 			} else if (widgetName.equals(ShSystemWidget.DATE)) {
 				this.summaryDate(shChildrenPostAttr, title, title);
 			} else {
@@ -553,14 +554,14 @@ public class ShPostUtils {
 		if (shPostDraft != null) {
 
 			ObjectMapper mapper = new ObjectMapper().addMixIn(ShPostDraft.class, NoTypes.class);
-			;
+
 			try {
 				shPostDraft.setShPostAttrs(shPostDraftAttrRepository.findByShPostAll(shPostDraft));
 				String jsonInString = mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 						.configure(MapperFeature.USE_BASE_TYPE_AS_DEFAULT_IMPL, true)
 						.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
 						.writerWithView(ShJsonView.ShJsonViewObject.class).writeValueAsString(shPostDraft)
-						.replaceAll("\"@type\":\"ShPostDraftAttr\"", "\"@type\":\"ShPostAttr\"");
+						.replace("\"@type\":\"ShPostDraftAttr\"", "\"@type\":\"ShPostAttr\"");
 				shPost = mapper.readValue(jsonInString, ShPost.class);
 				this.loadPostDraftAttribs((Set<ShPostAttr>) shPost.getShPostAttrs());
 

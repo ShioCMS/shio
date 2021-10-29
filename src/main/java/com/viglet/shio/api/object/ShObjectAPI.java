@@ -332,7 +332,7 @@ public class ShObjectAPI {
 					shFolderList.setShSite(shSite);
 					return new ResponseEntity<>(shFolderList, HttpStatus.OK);
 				} else {
-					return new ResponseEntity<>(null, HttpStatus.OK);
+					return ResponseEntity.status(HttpStatus.OK).build();
 				}
 			}
 		}

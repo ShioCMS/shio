@@ -91,7 +91,7 @@ public class ShSitesContext {
 	private ShUserUtils shUserUtils;
 
 	@PostMapping("/sites/**")
-	private ModelAndView sitesPostForm(HttpServletRequest request, HttpServletResponse response) {
+	public ModelAndView sitesPostForm(HttpServletRequest request, HttpServletResponse response) {
 		ShSitesContextURL shSitesContextURL = shSitesContextURLProcess.getContextURL(request, response);
 
 		shFormUtils.execute(shSitesContextURL);
@@ -111,7 +111,7 @@ public class ShSitesContext {
 	}
 
 	@GetMapping("/sites/**")
-	private void sitesFullGeneric(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+	public void sitesFullGeneric(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 
 		ShSitesContextURL shSitesContextURL = shSitesContextURLProcess.getContextURL(request, response);
 
@@ -180,13 +180,13 @@ public class ShSitesContext {
 	}
 
 	@GetMapping("/login-page")
-	private String sitesLoginPage(HttpServletRequest request, HttpServletResponse response) {
+	public String sitesLoginPage(HttpServletRequest request, HttpServletResponse response) {
 
 		return "login/login";
 	}
 
 	@GetMapping("/logout-page")
-	private void sitesLogoutPage(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+	public void sitesLogoutPage(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		session.removeAttribute(USERNAME_SESSION);
 		try {
 			response.sendRedirect(LOGIN_PAGE);
@@ -196,7 +196,7 @@ public class ShSitesContext {
 	}
 
 	@PostMapping("/login-page")
-	private void sitesLoginPagePost(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+	public void sitesLoginPagePost(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		try {
 			String username = request.getParameter("username");
 			String password = request.getParameter("password");

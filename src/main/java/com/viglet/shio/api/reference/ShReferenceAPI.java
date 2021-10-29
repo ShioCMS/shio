@@ -32,7 +32,6 @@ import com.viglet.shio.api.ShJsonView;
 import com.viglet.shio.persistence.model.object.ShObject;
 import com.viglet.shio.persistence.model.object.impl.ShObjectImpl;
 import com.viglet.shio.persistence.model.post.ShPost;
-import com.viglet.shio.persistence.model.post.ShPostAttr;
 import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.reference.ShReference;
 import com.viglet.shio.persistence.repository.object.ShObjectRepository;
@@ -108,7 +107,7 @@ public class ShReferenceAPI {
 				ShObject shObjectReference = shPostAttr.getReferenceObject();
 				if (shObject.getId() != null && shObjectReference.getId().equals(shObject.getId())) {
 					shPostAttr.setReferenceObject(shObjectOther);
-					shPostAttrRepository.saveAndFlush((ShPostAttr) shPostAttr);
+					shPostAttrRepository.saveAndFlush(shPostAttr);
 				}
 			});
 		}

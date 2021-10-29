@@ -51,7 +51,7 @@ public class ShUtils {
 	}
 
 	public boolean isJSONValid(String json) {
-		if (StringUtils.isBlank(json) || json == null) {
+		if (StringUtils.isBlank(json)) {
 			return false;
 		} else {
 			try {

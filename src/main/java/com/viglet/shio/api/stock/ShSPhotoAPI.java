@@ -25,7 +25,6 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONException;
@@ -63,7 +62,7 @@ public class ShSPhotoAPI {
 	private ShSitesPostUtils shSitesPostUtils;
 
 	@GetMapping
-	public List<ShSPhotoBean> getPhotos() throws ClientProtocolException {
+	public List<ShSPhotoBean> getPhotos(){
 		List<ShSPhotoBean> shSPhotoBeans = new ArrayList<>();
 		shFolderRepository.findById("39cef32e-e754-4f1a-991c-c45a1ecebe7c")
 				.ifPresent(shFolder -> shPostRepository.findByShFolderTiny(shFolder.getId()).forEach(
@@ -79,7 +78,7 @@ public class ShSPhotoAPI {
 								String rgb = String.format("rgb(%d,%d,%d)", rgbArray[0], rgbArray[1], rgbArray[2]);
 
 								if (logger.isDebugEnabled())
-									logger.debug(imageURL + " " + rgb);
+									logger.debug(String.format("%s %s", imageURL, rgb));
 
 								ShSPhotoBean shSPhotoBean = new ShSPhotoBean();
 

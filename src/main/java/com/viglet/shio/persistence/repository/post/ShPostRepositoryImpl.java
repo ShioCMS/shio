@@ -29,7 +29,6 @@ import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
 
-import com.viglet.shio.exchange.site.ShSiteImport;
 import com.viglet.shio.persistence.model.post.ShPost;
 
 /**
@@ -39,7 +38,7 @@ import com.viglet.shio.persistence.model.post.ShPost;
  * @since 0.3.0
  */
 public class ShPostRepositoryImpl implements ShPostRepositoryCustom {
-	private static final Log logger = LogFactory.getLog(ShSiteImport.class);
+	private static final Log logger = LogFactory.getLog(ShPostRepositoryImpl.class);
 	@PersistenceContext
 	private EntityManager em;
 

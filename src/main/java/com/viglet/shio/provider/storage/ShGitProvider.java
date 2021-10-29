@@ -102,7 +102,7 @@ public class ShGitProvider {
 		}
 	}
 
-	public void pushToRepo() throws IOException, JGitInternalException, InvalidRemoteException, GitAPIException {
+	public void pushToRepo() throws JGitInternalException, GitAPIException {
 		PushCommand pc = git.push();
 		pc.setCredentialsProvider(
 				new UsernamePasswordCredentialsProvider(shGitProperties.getToken(), StringUtils.EMPTY)).setForce(true)
@@ -198,7 +198,7 @@ public class ShGitProvider {
 		}
 	}
 
-	public String checkpoint(String commitMessage) throws IOException {
+	public String checkpoint(String commitMessage) {
 		String shObjectFileName = "store/file_source/Viglet/_static_files/css/viglet.css";
 		try {
 			List<DiffEntry> gitDiff = git.diff().call();
@@ -247,7 +247,7 @@ public class ShGitProvider {
 		return null;
 	}
 
-	public List<String> revisionHistory() throws IOException {
+	public List<String> revisionHistory() {
 		List<String> history = Lists.newArrayList();
 		String shObjectFileName = "<<DEFINE>>";
 		logger.debug("Listing history for {}:", shObjectFileName);

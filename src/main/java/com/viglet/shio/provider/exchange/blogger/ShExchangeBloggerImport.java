@@ -153,9 +153,7 @@ public class ShExchangeBloggerImport {
 			if (syndEntry.getDescription() != null) {
 				article.setDescription(syndEntry.getDescription().getValue().trim());
 			}
-			syndEntry.getContents().forEach(content -> {
-				article.setText(content.getValue().trim());
-			});
+			syndEntry.getContents().forEach(content -> article.setText(content.getValue().trim()));
 			if (hasPlugin) {
 				posts.add(shImporterPlugin.process(article.getShPostExchange()));
 			} else {

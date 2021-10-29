@@ -28,10 +28,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
@@ -61,7 +61,7 @@ public class ShGraphQLEndpoint {
 	@Autowired
 	private ShUserUtils shUserUtils;
 
-	@RequestMapping(value = "graphql", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "graphql", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Object graphqlPOST(@RequestHeader(value = HttpHeaders.CONTENT_TYPE, required = false) String contentType,
 			@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
 			@RequestParam(value = "query", required = false) String query,
@@ -108,7 +108,7 @@ public class ShGraphQLEndpoint {
 		return authenticated;
 	}
 
-	@RequestMapping(value = "graphql", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "graphql", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Object graphqlGET(@RequestParam("query") String query,
 			@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
 			@RequestParam(value = "operationName", required = false) String operationName,
