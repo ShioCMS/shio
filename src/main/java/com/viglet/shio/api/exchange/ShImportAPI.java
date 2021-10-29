@@ -18,6 +18,8 @@ package com.viglet.shio.api.exchange;
 
 import java.security.Principal;
 
+import javax.annotation.Nonnull;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,9 +50,8 @@ public class ShImportAPI {
 
 	@PostMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShExchange shImport(@RequestParam("file") MultipartFile multipartFile, final Principal principal) {
-		if (multipartFile != null && multipartFile.getOriginalFilename() != null
-				&& multipartFile.getOriginalFilename().endsWith("xml")) {
+	public ShExchange shImport(@RequestParam("file") @Nonnull MultipartFile multipartFile, final Principal principal) {
+		if (multipartFile.getOriginalFilename() != null && multipartFile.getOriginalFilename().endsWith("xml")) {
 			return shExchangeBloggerImport.shImportFromBlogger(multipartFile);
 		} else {
 			return shImportExchange.importFromMultipartFile(multipartFile);
