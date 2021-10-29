@@ -362,10 +362,8 @@ public class ShPostImport {
 	private void createReferecedPosts(ShExchangeContext context, ShExchangeObjectMap shExchangeObjectMap,
 			Entry<String, Object> shPostField, ShPostType shPostType, ShPostTypeAttr shPostTypeAttr) {
 		Map<String, Object> shObjects = shExchangeObjectMap.getShObjects();
-		if ((shPostTypeAttr != null && shPostTypeAttr.getShWidget() != null 
-				&& shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.FILE)
-				|| shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.CONTENT_SELECT))
-				&& shPostField != null && shPostField.getValue() != null && !shPostType.getName().equals(ShSystemPostType.FILE)) {
+		if (isReferencedPostTypeAttr(shPostType, shPostTypeAttr) && shPostField != null
+				&& shPostField.getValue() != null) {
 			try {
 				String shReferencedPostUUID = (String) shPostField.getValue();
 				// So the referenced Post not exists, need create first
@@ -379,6 +377,20 @@ public class ShPostImport {
 				logger.error("createShPostAttrs", iae);
 			}
 		}
+	}
+
+	private boolean isReferencedPostTypeAttr(ShPostType shPostType, ShPostTypeAttr shPostTypeAttr) {
+		return useReferencedWidget(shPostTypeAttr) && !isFilePostType(shPostType);
+	}
+
+	private boolean isFilePostType(ShPostType shPostType) {
+		return shPostType != null && shPostType.getName() != null && shPostType.getName().equals(ShSystemPostType.FILE);
+	}
+
+	private boolean useReferencedWidget(ShPostTypeAttr shPostTypeAttr) {
+		return ((shPostTypeAttr != null && shPostTypeAttr.getShWidget() != null)
+				&& (shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.FILE)
+						|| shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.CONTENT_SELECT)));
 	}
 
 	private void detectPostAttrNonRelator(ShPost shPost, ShRelatorItemImpl shParentRelatorItem,

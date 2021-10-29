@@ -126,8 +126,7 @@ public class ShExchangeBloggerImport {
 		shSite.setOwner(shUserUtils.getCurrentUsername());
 		shSite.setFurl(ShURLFormatter.format(shSite.getName()));
 
-		ShExchangeData shExchangeData = shImportExchange.getDefaultTemplateToSite(shSite);
-		return shExchangeData;
+		return shImportExchange.getDefaultTemplateToSite(shSite);
 	}
 
 	private List<ShPostExchange> createPosts(ShImporterPlugin shImporterPlugin, ShExchangeData shExchangeData,
