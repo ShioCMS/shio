@@ -31,7 +31,6 @@ import org.springframework.web.context.request.WebRequest;
 
 import com.viglet.shio.graphql.schema.ShGraphQLSchema;
 
-import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 
 @Component
@@ -60,15 +59,8 @@ public class ShDefaultGraphQLInvocation implements GraphQLInvocation {
 		ExecutionInput executionInput = executionInputBuilder.build();
 		CompletableFuture<ExecutionInput> customizedExecutionInput = executionInputCustomizer
 				.customizeExecutionInput(executionInput, webRequest);
-
-		try {
-			shGraphQLSchema.init();
-			return customizedExecutionInput.thenCompose(shGraphQLSchema.graphQL()::executeAsync);
-		} catch (IOException e) {
-			logger.error("invoke", e);
-		}
-
-		return customizedExecutionInput.thenCompose(graphQL::executeAsync);
+		shGraphQLSchema.init();
+		return customizedExecutionInput.thenCompose(shGraphQLSchema.graphQL()::executeAsync);
 
 	}
 

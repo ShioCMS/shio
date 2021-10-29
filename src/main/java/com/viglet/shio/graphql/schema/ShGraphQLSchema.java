@@ -36,7 +36,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
 
 import static graphql.schema.GraphQLObjectType.newObject;
 import static graphql.schema.GraphQLCodeRegistry.newCodeRegistry;
@@ -90,7 +89,7 @@ public class ShGraphQLSchema {
 	}
 
 	@PostConstruct
-	public void init() throws IOException {
+	public void init() {
 		GraphQLSchema graphQLSchema = this.loadSchema();
 		this.graphQL = GraphQL.newGraphQL(graphQLSchema).build();
 	}

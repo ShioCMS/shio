@@ -62,7 +62,7 @@ public class ShSitesContent {
 	private static final String POST = "post";
 	private static final String SITE = "site";
 	private static final String DEFAULT_FORMAT = "default";
-	
+
 	@Autowired
 	private ShSitesFolderUtils shSitesFolderUtils;
 	@Autowired
@@ -99,7 +99,7 @@ public class ShSitesContent {
 			return isFolderIndex(shPost) ? this.fromFolderIndex(shSite, shPost, shSitesContextURL)
 					: this.fromPost(shSite, shPost, shSitesContextURL);
 		}
-		return null;
+		return new ShContent();
 	}
 
 	private boolean isFolderIndex(ShPost shPost) {
@@ -139,7 +139,7 @@ public class ShSitesContent {
 
 		if (shSite.getPostTypeLayout() != null)
 			postTypeLayout = new JSONObject(shSite.getPostTypeLayout());
-	
+
 		ObjectMapper mapper = new ObjectMapper();
 		ShSitePostTypeLayouts shSitePostTypeLayouts = null;
 
@@ -163,7 +163,7 @@ public class ShSitesContent {
 
 		Map<String, ShPostAttr> shPostPageLayoutMap = null;
 
-		if (shPostPageLayouts != null) {			
+		if (shPostPageLayouts != null) {
 			for (ShPost shPostPageLayout : shPostPageLayouts) {
 				if (shPostUtils.getSite(shPostPageLayout).getId().equals(shSite.getId()))
 					shPostPageLayoutMap = shSitesPostUtils.postToMap(shPostPageLayout);

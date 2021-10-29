@@ -16,6 +16,7 @@
  */
 package com.viglet.shio.website.utils;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,7 +72,7 @@ public class ShSitesFolderUtils {
 		Optional<ShFolder> shFolder = shFolderRepository.findById(shFolderId);
 		if (shFolder.isPresent())
 			return this.toMap(shFolder.get());
-		return null;
+		return Collections.emptyMap();
 	}
 
 	public ShContent toSystemMap(ShFolder shFolder) {

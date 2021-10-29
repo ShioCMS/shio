@@ -128,7 +128,7 @@ public class ShFormUtils {
 			String paramValue = shSitesContextURL.getRequest().getParameter(param);
 
 			if (param.startsWith(POST_TYPE_ATTR_PARAM)) {
-				String attribute = param.replaceFirst(POST_TYPE_ATTR_PARAM, StringUtils.EMPTY).replaceAll("\\[\\]",
+				String attribute = param.replaceFirst(POST_TYPE_ATTR_PARAM, StringUtils.EMPTY).replace("\\[\\]",
 						StringUtils.EMPTY);
 				ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType, attribute);
 

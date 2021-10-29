@@ -50,8 +50,6 @@ public class ShCacheObject {
 	@Autowired
 	ShCacheURL shCacheURL;
 	@Autowired
-	ShCacheObject shCacheObject;
-	@Autowired
 	ShObjectRepository shObjectRepository;
 	@Autowired
 	ShPostRepository shPostRepository;
@@ -69,7 +67,7 @@ public class ShCacheObject {
 
 	@CachePut(value = "shObject", key = "#id")
 	public List<String> updateCache(String id, ShSitesContextURL shSitesContextURL) {
-		List<String> urls = shCacheObject.cache(id);
+		List<String> urls = cache(id);
 		if (!urls.contains(shSitesContextURL.getInfo().getContextURLOriginal())) {
 			if (logger.isDebugEnabled())
 				logger.debug("Adding id: " + id + " and URL: " + shSitesContextURL.getInfo().getContextURLOriginal());
@@ -92,14 +90,14 @@ public class ShCacheObject {
 		}
 
 		this.deleteDependency(objectId);
-		shCacheObject.deleteCacheSelf(objectId);
+		deleteCacheSelf(objectId);
 
 	}
 
 	public void deleteDependency(String id) {
 		if (logger.isDebugEnabled())
 			logger.debug("Executing deleteDependency for id: " + id);
-		List<String> urls = shCacheObject.cache(id);
+		List<String> urls = cache(id);
 		for (String url : urls) {
 			if (logger.isDebugEnabled())
 				logger.debug("Deleting the page with id: " + id + " and URL: " + url);

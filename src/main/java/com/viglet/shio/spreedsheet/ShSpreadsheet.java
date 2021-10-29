@@ -202,12 +202,12 @@ public class ShSpreadsheet {
 
 	private void createdDateCell(ShPost shPost, CellStyle cellDateStyle, XSSFRow row) {
 		Cell cellDate = row.createCell(0);
-		cellDate.setCellValue((Date) shPost.getDate());
+		cellDate.setCellValue(shPost.getDate());
 		cellDate.setCellStyle(cellDateStyle);
 	}
 
 	private void dateCell(CellStyle cellDateStyle, ShPostAttrImpl shPostAttr, XSSFCell cell) {
-		cell.setCellValue((Date) shPostAttr.getDateValue());
+		cell.setCellValue(shPostAttr.getDateValue());
 		cell.setCellStyle(cellDateStyle);
 	}
 
@@ -219,12 +219,12 @@ public class ShSpreadsheet {
 				msItems.add(shPostMultSelect.get().getTitle());
 			}
 		}
-		cell.setCellValue((String) String.join(", ", msItems));
+		cell.setCellValue(String.join(", ", msItems));
 		cell.setCellStyle(cellTextAreaStyle);
 	}
 
 	private void textAreaCell(CellStyle cellTextAreaStyle, ShPostAttrImpl shPostAttr, XSSFCell cell) {
-		cell.setCellValue((String) shPostAttr.getStrValue());
+		cell.setCellValue(shPostAttr.getStrValue());
 		cell.setCellStyle(cellTextAreaStyle);
 	}
 
@@ -243,7 +243,7 @@ public class ShSpreadsheet {
 				value = ((ShSite) shObject).getName();
 			}
 		}
-		cell.setCellValue((String) value);
+		cell.setCellValue(value);
 		cell.setCellStyle(cellTextStyle);
 	}
 

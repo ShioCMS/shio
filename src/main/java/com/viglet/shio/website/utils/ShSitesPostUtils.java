@@ -228,7 +228,7 @@ public class ShSitesPostUtils {
 			}
 			return shPostMap;
 		} else {
-			return null;
+			return Collections.emptyMap();
 		}
 
 	}

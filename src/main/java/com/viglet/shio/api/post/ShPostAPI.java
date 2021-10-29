@@ -168,8 +168,7 @@ public class ShPostAPI {
 
 			return new ResponseEntity<>(shPost, HttpStatus.OK);
 		}
-
-		return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 	}
 
 	@GetMapping("/attr/model")
@@ -221,7 +220,7 @@ public class ShPostAPI {
 
 				return this.shPostEdit(shPost.getId(), principal);
 			} else {
-				new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 			}
 		}
 		return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -448,9 +447,8 @@ public class ShPostAPI {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			String jsonInString = mapper.writeValueAsString(shPost)
-					.replaceAll("\"@type\":\"ShPost\"", "\"@type\":\"ShPostDraft\"")
-					.replaceAll("\"@type\":\"ShPostAttr\"", "\"@type\":\"ShPostDraftAttr\"");
-			//System.out.println(jsonInString);
+					.replace("\"@type\":\"ShPost\"", "\"@type\":\"ShPostDraft\"")
+					.replace("\"@type\":\"ShPostAttr\"", "\"@type\":\"ShPostDraftAttr\"");
 			shPostDraft = mapper.readValue(jsonInString, ShPostDraft.class);
 
 		} catch (JsonProcessingException e) {
@@ -478,8 +476,8 @@ public class ShPostAPI {
 			shReferenceRepository.deleteAllInBatch(shOldReferences);
 
 			shPost.getShPostAttrs().forEach(shPostAttr -> {
-				shPostUtils.referencedObject((ShPostAttrImpl) shPostAttr, shPost);
-				this.nestedReferenceSave((ShPostAttrImpl) shPostAttr, shPost);
+				shPostUtils.referencedObject(shPostAttr, shPost);
+				this.nestedReferenceSave(shPostAttr, shPost);
 			});
 		} else {
 			List<ShReferenceDraft> shOldReferences = shReferenceDraftRepository
@@ -487,13 +485,13 @@ public class ShPostAPI {
 			shReferenceDraftRepository.deleteAllInBatch(shOldReferences);
 
 			shPost.getShPostAttrs().forEach(shPostAttr -> {
-				shPostUtils.referencedObjectDraft((ShPostAttrImpl) shPostAttr, shPost);
-				this.nestedReferenceSaveDraft((ShPostAttrImpl) shPostAttr, shPost);
+				shPostUtils.referencedObjectDraft(shPostAttr, shPost);
+				this.nestedReferenceSaveDraft(shPostAttr, shPost);
 			});
 
 		}
 		shPost.getShPostAttrs()
-				.forEach(shPostAttr -> shPostUtils.updateRelatorInfo((ShPostAttrImpl) shPostAttr, shPost));
+				.forEach(shPostAttr -> shPostUtils.updateRelatorInfo(shPostAttr, shPost));
 
 		if (shPost instanceof ShPost) {
 			shPostRepository.saveAndFlush((ShPost) shPost);
@@ -506,7 +504,7 @@ public class ShPostAPI {
 		shPostAttr.getShChildrenRelatorItems()
 				.forEach(shRelatorItem -> shRelatorItem.getShChildrenPostAttrs().forEach(shChildrenPostAttr -> {
 					shPostUtils.referencedObject(shChildrenPostAttr, shPost);
-					this.nestedReferenceSave((ShPostAttr) shChildrenPostAttr, shPost);
+					this.nestedReferenceSave(shChildrenPostAttr, shPost);
 				}));
 	}
 
@@ -514,7 +512,7 @@ public class ShPostAPI {
 		shPostAttr.getShChildrenRelatorItems()
 				.forEach(shRelatorItem -> shRelatorItem.getShChildrenPostAttrs().forEach(shChildrenPostAttr -> {
 					shPostUtils.referencedObjectDraft(shChildrenPostAttr, shPost);
-					this.nestedReferenceSaveDraft((ShPostAttr) shChildrenPostAttr, shPost);
+					this.nestedReferenceSaveDraft(shChildrenPostAttr, shPost);
 				}));
 	}
 }

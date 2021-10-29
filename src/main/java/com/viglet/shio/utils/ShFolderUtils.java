@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.apache.http.client.ClientProtocolException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -230,7 +229,7 @@ public class ShFolderUtils {
 	}
 
 	@Transactional
-	public boolean deleteFolder(ShFolder shFolder) throws ClientProtocolException, IOException {
+	public boolean deleteFolder(ShFolder shFolder) throws IOException {
 		shTuringIntegration.deindexObject(shFolder);
 
 		for (ShPost shPost : shPostRepository.findByShFolder(shFolder)) {
