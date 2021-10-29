@@ -39,7 +39,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.viglet.shio.utils.ShUserUtils;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Collections;
@@ -67,7 +66,7 @@ public class ShGraphQLEndpoint {
 			@RequestParam(value = "query", required = false) String query,
 			@RequestParam(value = "operationName", required = false) String operationName,
 			@RequestParam(value = "variables", required = false) String variablesJson,
-			@RequestBody(required = false) String body, WebRequest webRequest) throws IOException {
+			@RequestBody(required = false) String body, WebRequest webRequest) {
 
 		if (this.isAuthenticated(authorization)) {
 			if (StringUtils.isEmpty(body)) {

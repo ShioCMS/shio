@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 the original author or authors. 
+ * Copyright (C) 2016-2021 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,20 +27,9 @@ import javax.script.ScriptEngineFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import com.viglet.shio.property.ShWebsiteProperties;
-import com.viglet.shio.website.component.ShGetRelationComponent;
-import com.viglet.shio.website.component.ShNavigationComponent;
-import com.viglet.shio.website.component.ShQueryComponent;
-import com.viglet.shio.website.component.ShSearchComponent;
-import com.viglet.shio.website.component.form.ShFormComponent;
-import com.viglet.shio.website.utils.ShSitesFolderUtils;
-import com.viglet.shio.website.utils.ShSitesObjectUtils;
-import com.viglet.shio.website.utils.ShSitesPostUtils;
 
 /**
  * @author Alexandre Oliveira
@@ -51,28 +40,10 @@ public class ShNashornEngineConfiguration {
 
 	@Resource
 	private ApplicationContext context;
-	@Autowired
-	private ShNavigationComponent shNavigationComponent;
-	@Autowired
-	private ShQueryComponent shQueryComponent;
-	@Autowired
-	private ShSearchComponent shSearchComponent;
-	@Autowired
-	private ShFormComponent shFormComponent;
-	@Autowired
-	private ShSitesFolderUtils shSitesFolderUtils;
-	@Autowired
-	private ShSitesObjectUtils shSitesObjectUtils;
-	@Autowired
-	private ShSitesPostUtils shSitesPostUtils;
-	@Autowired
-	private ShGetRelationComponent shGetRelationComponent;
-	@Autowired
-	private ShWebsiteProperties shWebsiteProperties;
 
 	@Bean
-	public ScriptEngine scriptEngine() {
-		
+	public ScriptEngine scriptEngine(ShNashornEngineBindings shBindings) {
+
 		Class<?> nashornScriptEngineFactory;
 		try {
 
@@ -82,17 +53,17 @@ public class ShNashornEngineConfiguration {
 			ScriptEngineFactory scriptEngineFactory = (ScriptEngineFactory) nashornScriptEngineFactory
 					.getDeclaredConstructor().newInstance();
 			ScriptEngine engine = (ScriptEngine) getScriptEngine.invoke(scriptEngineFactory,
-					shWebsiteProperties.getNashornAsObject());
+					shBindings.getShWebsiteProperties().getNashornAsObject());
 			Bindings bindings = engine.createBindings();
 
-			bindings.put("shNavigationComponent", shNavigationComponent);
-			bindings.put("shQueryComponent", shQueryComponent);
-			bindings.put("shSearchComponent", shSearchComponent);
-			bindings.put("shFormComponent", shFormComponent);
-			bindings.put("shGetRelationComponent", shGetRelationComponent);
-			bindings.put("shSitesFolderUtils", shSitesFolderUtils);
-			bindings.put("shSitesObjectUtils", shSitesObjectUtils);
-			bindings.put("shSitesPostUtils", shSitesPostUtils);
+			bindings.put("shNavigationComponent", shBindings.getShNavigationComponent());
+			bindings.put("shQueryComponent", shBindings.getShQueryComponent());
+			bindings.put("shSearchComponent", shBindings.getShSearchComponent());
+			bindings.put("shFormComponent", shBindings.getShFormComponent());
+			bindings.put("shGetRelationComponent", shBindings.getShGetRelationComponent());
+			bindings.put("shSitesFolderUtils", shBindings.getShSitesFolderUtils());
+			bindings.put("shSitesObjectUtils", shBindings.getShSitesObjectUtils());
+			bindings.put("shSitesPostUtils", shBindings.getShSitesPostUtils());
 
 			engine.setBindings(bindings, ScriptContext.GLOBAL_SCOPE);
 
