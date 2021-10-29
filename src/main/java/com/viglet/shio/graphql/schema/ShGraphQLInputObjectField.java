@@ -62,48 +62,58 @@ public class ShGraphQLInputObjectField {
 		GraphQLScalarType scalarType = null;
 
 		if (type.equals(ShGraphQLConstants.FIELD_TYPE_GRAPHQL_DATE_TIME)) {
-			scalarType = ExtendedScalars.DateTime;
-			
-			this.createInputObjectFieldCondition(builder, name, null, scalarType, description);
-			this.createInputObjectFieldCondition(builder, name, ShGraphQLConstants.CONDITION_NOT, scalarType,
-					"All values that are not equal to given value.");
-			this.createInputObjectFieldCondition(builder, name, ShGraphQLConstants.CONDITION_IN, scalarType,
-					"All values that are not contained in given list.");
-			this.createInputObjectFieldCondition(builder, name, ShGraphQLConstants.CONDITION_LT, scalarType,
-					"All values less than the given value.");
-			this.createInputObjectFieldCondition(builder, name, ShGraphQLConstants.CONDITION_LTE, scalarType,
-					"All values less than or equal the given value.");
-			this.createInputObjectFieldCondition(builder, name, ShGraphQLConstants.CONDITION_GT, scalarType,
-					"All values greater than the given value.");
-			this.createInputObjectFieldCondition(builder, name, ShGraphQLConstants.CONDITION_GTE, scalarType,
-					"All values greater than the given value.");
+			conditionForDate(builder, name, description);
 		} else if (type.equals(ShGraphQLConstants.FIELD_TYPE_GRAPHQL_STRING)
 				|| type.equals(ShGraphQLConstants.FIELD_TYPE_GRAPHQL_ID)) {
-			if (type.equals(ShGraphQLConstants.FIELD_TYPE_GRAPHQL_STRING))
-				scalarType = GraphQLString;
-			else if (type.equals(ShGraphQLConstants.FIELD_TYPE_GRAPHQL_ID))
-				scalarType = GraphQLID;
-
-			this.createInputObjectFieldCondition(builder, name, null, scalarType, description);
-			this.createInputObjectFieldCondition(builder, name, ShGraphQLConstants.CONDITION_NOT, scalarType,
-					"All values that are not equal to given value.");
-			this.createInputObjectFieldCondition(builder, name, ShGraphQLConstants.CONDITION_IN, scalarType,
-					"All values that are contained in given list.");
-			this.createInputObjectFieldCondition(builder, name, ShGraphQLConstants.CONDITION_NOT_IN, scalarType,
-					"All values that are not contained in given list.");
-			this.createInputObjectFieldCondition(builder, name, ShGraphQLConstants.CONDITION_CONTAINS, scalarType,
-					"All values containing the given string.");
-			this.createInputObjectFieldCondition(builder, name, ShGraphQLConstants.CONDITION_NOT_CONTAINS, scalarType,
-					"All values not containing the given string.");
-			this.createInputObjectFieldCondition(builder, name, ShGraphQLConstants.CONDITION_STARTS_WITH, scalarType,
-					"All values starting with the given string.");
-			this.createInputObjectFieldCondition(builder, name, ShGraphQLConstants.CONDITION_NOT_STARTS_WITH,
-					scalarType, "All values not starting with the given string.");
-			this.createInputObjectFieldCondition(builder, name, ShGraphQLConstants.CONDITION_ENDS_WITH, scalarType,
-					"All values ending with the given string.");
-			this.createInputObjectFieldCondition(builder, name, ShGraphQLConstants.CONDITION_NOT_ENDS_WITH, scalarType,
-					"All values not ending with the given string");
+			conditionForStringAndID(builder, name, type, description, scalarType);
 		}
+	}
+
+	private void conditionForStringAndID(GraphQLInputObjectType.Builder builder, String name, String type,
+			String description, GraphQLScalarType scalarType) {
+		if (type.equals(ShGraphQLConstants.FIELD_TYPE_GRAPHQL_STRING))
+			scalarType = GraphQLString;
+		else if (type.equals(ShGraphQLConstants.FIELD_TYPE_GRAPHQL_ID))
+			scalarType = GraphQLID;
+
+		this.createInputObjectFieldCondition(builder, name, null, scalarType, description);
+		this.createInputObjectFieldCondition(builder, name, ShGraphQLConstants.CONDITION_NOT, scalarType,
+				"All values that are not equal to given value.");
+		this.createInputObjectFieldCondition(builder, name, ShGraphQLConstants.CONDITION_IN, scalarType,
+				"All values that are contained in given list.");
+		this.createInputObjectFieldCondition(builder, name, ShGraphQLConstants.CONDITION_NOT_IN, scalarType,
+				"All values that are not contained in given list.");
+		this.createInputObjectFieldCondition(builder, name, ShGraphQLConstants.CONDITION_CONTAINS, scalarType,
+				"All values containing the given string.");
+		this.createInputObjectFieldCondition(builder, name, ShGraphQLConstants.CONDITION_NOT_CONTAINS, scalarType,
+				"All values not containing the given string.");
+		this.createInputObjectFieldCondition(builder, name, ShGraphQLConstants.CONDITION_STARTS_WITH, scalarType,
+				"All values starting with the given string.");
+		this.createInputObjectFieldCondition(builder, name, ShGraphQLConstants.CONDITION_NOT_STARTS_WITH,
+				scalarType, "All values not starting with the given string.");
+		this.createInputObjectFieldCondition(builder, name, ShGraphQLConstants.CONDITION_ENDS_WITH, scalarType,
+				"All values ending with the given string.");
+		this.createInputObjectFieldCondition(builder, name, ShGraphQLConstants.CONDITION_NOT_ENDS_WITH, scalarType,
+				"All values not ending with the given string");
+	}
+
+	private void conditionForDate(GraphQLInputObjectType.Builder builder, String name, String description) {
+		GraphQLScalarType scalarType;
+		scalarType = ExtendedScalars.DateTime;
+		
+		this.createInputObjectFieldCondition(builder, name, null, scalarType, description);
+		this.createInputObjectFieldCondition(builder, name, ShGraphQLConstants.CONDITION_NOT, scalarType,
+				"All values that are not equal to given value.");
+		this.createInputObjectFieldCondition(builder, name, ShGraphQLConstants.CONDITION_IN, scalarType,
+				"All values that are not contained in given list.");
+		this.createInputObjectFieldCondition(builder, name, ShGraphQLConstants.CONDITION_LT, scalarType,
+				"All values less than the given value.");
+		this.createInputObjectFieldCondition(builder, name, ShGraphQLConstants.CONDITION_LTE, scalarType,
+				"All values less than or equal the given value.");
+		this.createInputObjectFieldCondition(builder, name, ShGraphQLConstants.CONDITION_GT, scalarType,
+				"All values greater than the given value.");
+		this.createInputObjectFieldCondition(builder, name, ShGraphQLConstants.CONDITION_GTE, scalarType,
+				"All values greater than the given value.");
 	}
 
 	public void createInputObjectFieldCondition(GraphQLInputObjectType.Builder builder, String name, String condition,

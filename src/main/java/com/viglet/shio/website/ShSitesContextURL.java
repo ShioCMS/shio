@@ -28,8 +28,8 @@ public class ShSitesContextURL implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private HttpServletRequest request = null;
-	private HttpServletResponse response = null;
+	private transient HttpServletRequest request = null;
+	private transient HttpServletResponse response = null;
 	private ShSitesContextURLInfo info = new ShSitesContextURLInfo();
 
 	public String toString() {

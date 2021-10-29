@@ -106,7 +106,7 @@ public class ShTuringIntegration {
 			String objectTypeName = getObjectTypeName(shObject);
 			String objectName = getObjectName(shObject);
 
-			logger.info(String.format("Preparing to index %s...", objectName));
+			logger.info("Preparing to index {}...", objectName);
 
 			this.sendServerToIndex(shObject, objectName, objectTypeName, shSite);
 
@@ -150,7 +150,7 @@ public class ShTuringIntegration {
 			}
 
 			this.sendServer(turSNJobItems, shSite);
-			logger.info(String.format("Sent to index queue: %s", objectName));
+			logger.info("Sent to index queue: {}", objectName);
 		}
 	}
 
