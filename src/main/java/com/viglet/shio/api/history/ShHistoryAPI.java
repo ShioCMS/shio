@@ -36,14 +36,14 @@ import com.viglet.shio.persistence.repository.history.ShHistoryPageableRepositor
 import com.viglet.shio.persistence.repository.history.ShHistoryRepository;
 import com.viglet.shio.persistence.repository.object.ShObjectRepository;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author Alexandre Oliveira
  */
 @RestController
 @RequestMapping("/api/v2/history")
-@Api(tags = "History", description = "History API")
+@Tag( name = "History", description = "History API")
 public class ShHistoryAPI {
 
 	@Autowired

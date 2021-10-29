@@ -42,7 +42,7 @@ import com.viglet.shio.utils.ShStaticFileUtils;
 import com.viglet.shio.website.utils.ShSitesPostUtils;
 
 import de.androidpit.colorthief.ColorThief;
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author Alexandre Oliveira
@@ -50,7 +50,7 @@ import io.swagger.annotations.Api;
  */
 @RestController
 @RequestMapping("/api/v2/stock/photos")
-@Api(value = "/photos", tags = "Photos", description = "Photos")
+@Tag( name = "Photos", description = "Photos")
 public class ShSPhotoAPI {
 	private static final Logger logger = LogManager.getLogger(ShSPhotoAPI.class);
 	@Autowired

@@ -91,8 +91,8 @@ public class ShGitProvider {
 
 			cloneCommand = Git.cloneRepository();
 			cloneCommand.setURI(shGitProperties.getUrl());
-			cloneCommand
-					.setCredentialsProvider(new UsernamePasswordCredentialsProvider(shGitProperties.getToken(), StringUtils.EMPTY));
+			cloneCommand.setCredentialsProvider(
+					new UsernamePasswordCredentialsProvider(shGitProperties.getToken(), StringUtils.EMPTY));
 			cloneCommand.setDirectory(gitDirectory);
 			try {
 				cloneCommand.call();
@@ -104,8 +104,9 @@ public class ShGitProvider {
 
 	public void pushToRepo() throws IOException, JGitInternalException, InvalidRemoteException, GitAPIException {
 		PushCommand pc = git.push();
-		pc.setCredentialsProvider(new UsernamePasswordCredentialsProvider(shGitProperties.getToken(), StringUtils.EMPTY))
-				.setForce(true).setPushAll();
+		pc.setCredentialsProvider(
+				new UsernamePasswordCredentialsProvider(shGitProperties.getToken(), StringUtils.EMPTY)).setForce(true)
+				.setPushAll();
 		try {
 			Iterator<PushResult> it = pc.call().iterator();
 
@@ -126,8 +127,7 @@ public class ShGitProvider {
 				localRepo.create();
 			}
 			git = new Git(localRepo);
-		}
-		catch(Exception e) {
+		} catch (Exception e) {
 			logger.error(e);
 		}
 	}
@@ -231,7 +231,9 @@ public class ShGitProvider {
 			}
 			ObjectId head = git.getRepository().resolve(Constants.HEAD);
 			git.checkout().setStartPoint(revId).addPath(shObjectFileName).call();
-			git.checkout().setStartPoint(head.getName()).addPath(shObjectFileName).call();
+			if (head != null) {
+				git.checkout().setStartPoint(head.getName()).addPath(shObjectFileName).call();
+			}
 			if (modified && stash != null) {
 				ObjectId applied = git.stashApply().setStashRef(stash.getName()).call();
 				ObjectId dropped = git.stashDrop().setStashRef(0).call();

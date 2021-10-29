@@ -35,14 +35,14 @@ import com.viglet.shio.exchange.ShImportExchange;
 import com.viglet.shio.provider.exchange.blogger.ShExchangeBloggerImport;
 import com.viglet.shio.exchange.ShExchange;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author Alexandre Oliveira
  */
 @RestController
 @RequestMapping("/api/v2/import")
-@Api(tags = "Import", description = "Import objects into Viglet Shio CMS")
+@Tag( name = "Import", description = "Import objects into Viglet Shio CMS")
 public class ShImportAPI {
 	private static final Log logger = LogFactory.getLog(ShImportAPI.class);
 	@Autowired

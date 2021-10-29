@@ -188,11 +188,13 @@ public class ShPostImport {
 		if (shParentRelatorItem != null) {
 			shPostAttr.setShPost(null);
 			shPostAttr.setShParentRelatorItem(shParentRelatorItem);
-			if (shPostTypeAttr.getIsTitle() == 1) {
-				shParentRelatorItem.setTitle("Parent" + shPostAttr.getStrValue());
-			}
-			if (shPostTypeAttr.getIsSummary() == 1) {
-				shParentRelatorItem.setSummary(shPostAttr.getStrValue());
+			if (shPostTypeAttr != null) {
+				if (shPostTypeAttr.getIsTitle() == 1) {
+					shParentRelatorItem.setTitle("Parent" + shPostAttr.getStrValue());
+				}
+				if (shPostTypeAttr.getIsSummary() == 1) {
+					shParentRelatorItem.setSummary(shPostAttr.getStrValue());
+				}
 			}
 		} else {
 			shPostAttr.setShPost(shPost);
@@ -328,9 +330,14 @@ public class ShPostImport {
 						if (fileSource.getAbsoluteFile().exists()) {
 							FileUtils.copyFile(fileSource, fileDest);
 						} else {
-							logger.error(String.format("%s file not exists, creating empty file into %s.",
-									fileSource.getAbsoluteFile(), fileDest.getAbsoluteFile()));
-							fileDest.createNewFile();
+							if (fileDest.createNewFile()) {
+								logger.error(String.format("%s file not exists, created empty file into %s.",
+										fileSource.getAbsoluteFile(), fileDest.getAbsoluteFile()));
+							} else {
+								logger.error(
+										String.format("%s file not exists, but it cannot to create empty file into %s.",
+												fileSource.getAbsoluteFile(), fileDest.getAbsoluteFile()));
+							}
 						}
 					} catch (IOException e) {
 						logger.error(e);

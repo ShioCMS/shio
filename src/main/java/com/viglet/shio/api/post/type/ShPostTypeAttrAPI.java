@@ -35,14 +35,14 @@ import com.viglet.shio.persistence.model.post.type.ShPostTypeAttr;
 import com.viglet.shio.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shio.persistence.repository.post.type.ShPostTypeAttrRepository;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author Alexandre Oliveira
  */
 @RestController
 @RequestMapping("/api/v2/post/type/attr")
-@Api(tags = "Post Type Attribute", description = "Post Type Attribute API")
+@Tag( name = "Post Type Attribute", description = "Post Type Attribute API")
 public class ShPostTypeAttrAPI {
 	@Autowired
 	private ShPostTypeAttrRepository shPostTypeAttrRepository;

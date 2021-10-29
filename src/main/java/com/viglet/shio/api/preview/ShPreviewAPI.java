@@ -34,22 +34,22 @@ import com.viglet.shio.persistence.repository.object.ShObjectRepository;
 import com.viglet.shio.website.ShSitesContextURL;
 import com.viglet.shio.website.ShSitesContextURLProcess;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author Alexandre Oliveira
  */
 @RestController
 @RequestMapping("/api/v2/preview")
-@Api(tags = "Preview", description = "Preview API")
+@Tag( name = "Preview", description = "Preview API")
 public class ShPreviewAPI {
 	@Autowired
 	ShSitesContextURLProcess shSitesContextURLProcess;
 	@Autowired
 	private ShObjectRepository shObjectRepository;
 
-	@ApiOperation(value = "Detect URL")
+	@Operation(summary = "Detect URL")
 	@PostMapping("/detect-url")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShObjectImpl shPreviewDetectURL(HttpServletRequest request, HttpServletResponse response)

@@ -35,14 +35,14 @@ import com.viglet.shio.api.ShJsonView;
 import com.viglet.shio.persistence.model.auth.ShRole;
 import com.viglet.shio.persistence.repository.auth.ShRoleRepository;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author Alexandre Oliveira
  */
 @RestController
 @RequestMapping("/api/v2/role")
-@Api(tags = "Role", description = "Role API")
+@Tag( name = "Role", description = "Role API")
 public class ShRoleAPI {
 
 	@Autowired

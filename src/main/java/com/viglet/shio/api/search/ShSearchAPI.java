@@ -45,15 +45,15 @@ import com.viglet.shio.turing.ShTuringIntegration;
 import com.viglet.shio.utils.ShFolderUtils;
 import com.viglet.shio.utils.ShPostUtils;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author Alexandre Oliveira
  */
 @RestController
 @RequestMapping("/api/v2/search")
-@Api(tags = "Search", description = "Search for Shio Objects")
+@Tag( name = "Search", description = "Search for Shio Objects")
 public class ShSearchAPI {
 	private static final Log logger = LogFactory.getLog(ShSearchAPI.class);
 	@Autowired
@@ -71,7 +71,7 @@ public class ShSearchAPI {
 	@Autowired
 	private ShTuringIntegration shTuringIntegration;
 
-	@ApiOperation(value = "Search for Shio Objects")
+	@Operation(summary = "Search for Shio Objects")
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public List<ShPostWithBreadcrumb> shSearch(@RequestParam(value = "q") String q) {
@@ -110,7 +110,7 @@ public class ShSearchAPI {
 		return searchResults;
 	}
 
-	@ApiOperation(value = "Indexing by Post Type")
+	@Operation(summary = "Indexing by Post Type")
 	@GetMapping("/indexing/{siteName}/{objectName}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public boolean shSearchIndexing(@PathVariable String siteName, @PathVariable String objectName) {

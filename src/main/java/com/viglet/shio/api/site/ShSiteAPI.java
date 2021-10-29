@@ -62,7 +62,7 @@ import com.viglet.shio.utils.ShFolderUtils;
 import com.viglet.shio.utils.ShHistoryUtils;
 import com.viglet.shio.website.nodejs.ShSitesNodeJS;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Site Rest API
@@ -73,7 +73,7 @@ import io.swagger.annotations.Api;
  */
 @RestController
 @RequestMapping("/api/v2/site")
-@Api(tags = "Site", description = "Site API")
+@Tag( name = "Site", description = "Site API")
 public class ShSiteAPI {
 	static final Logger logger = LogManager.getLogger(ShSiteAPI.class);
 

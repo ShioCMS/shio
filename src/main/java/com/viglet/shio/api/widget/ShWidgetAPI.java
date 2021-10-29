@@ -34,14 +34,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.viglet.shio.persistence.model.widget.ShWidget;
 import com.viglet.shio.persistence.repository.widget.ShWidgetRepository;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author Alexandre Oliveira
  */
 @RestController
 @RequestMapping("/api/v2/widget")
-@Api(tags = "Widget", description = "Widget API")
+@Tag( name = "Widget", description = "Widget API")
 public class ShWidgetAPI {
 
 	@Autowired

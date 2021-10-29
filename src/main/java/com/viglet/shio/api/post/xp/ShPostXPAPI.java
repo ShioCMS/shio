@@ -37,7 +37,7 @@ import com.viglet.shio.property.ShMgmtProperties;
 import com.viglet.shio.utils.ShObjectUtils;
 import com.viglet.shio.utils.ShPostUtils;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Post API.
@@ -47,7 +47,7 @@ import io.swagger.annotations.Api;
  */
 @RestController
 @RequestMapping("/api/v2/post/xp")
-@Api(tags = "Post XP", description = "Post XP API")
+@Tag( name = "Post XP", description = "Post XP API")
 public class ShPostXPAPI {
 	private static final Log logger = LogFactory.getLog(ShPostXPAPI.class);
 

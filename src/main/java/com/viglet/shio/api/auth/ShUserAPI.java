@@ -52,14 +52,14 @@ import com.viglet.shio.persistence.repository.provider.auth.ShAuthProviderInstan
 import com.viglet.shio.provider.auth.ShAuthSystemProviderVendor;
 import com.viglet.shio.provider.auth.ShAuthenticationProvider;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author Alexandre Oliveira
  */
 @RestController
 @RequestMapping("/api/v2/user")
-@Api(tags = "User", description = "User API")
+@Tag( name = "User", description = "User API")
 public class ShUserAPI {
 	private static final Log logger = LogFactory.getLog(ShUserAPI.class);
 	@Autowired

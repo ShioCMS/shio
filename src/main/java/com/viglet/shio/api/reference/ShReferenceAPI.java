@@ -39,14 +39,14 @@ import com.viglet.shio.persistence.repository.object.ShObjectRepository;
 import com.viglet.shio.persistence.repository.post.ShPostAttrRepository;
 import com.viglet.shio.persistence.repository.reference.ShReferenceRepository;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author Alexandre Oliveira
  */
 @RestController
 @RequestMapping("/api/v2/reference")
-@Api(tags = "Reference", description = "Reference API")
+@Tag( name = "Reference", description = "Reference API")
 public class ShReferenceAPI {
 
 	@Autowired
