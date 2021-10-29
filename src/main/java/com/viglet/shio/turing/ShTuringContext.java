@@ -80,7 +80,7 @@ public class ShTuringContext {
 			logger.error(e);
 
 		}
-		return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	}
 
 	@GetMapping("/ac")
@@ -96,7 +96,7 @@ public class ShTuringContext {
 			logger.error(e);
 		}
 
-		return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	}
 
 	private String getResults(String url) {

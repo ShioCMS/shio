@@ -192,7 +192,7 @@ public class ShPostAPI {
 
 			return this.shPostEdit(shPost.getId(), principal);
 		}
-		return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 
 	}
 
@@ -224,7 +224,7 @@ public class ShPostAPI {
 				new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
 			}
 		}
-		return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 	}
 
 	@Transactional
@@ -269,7 +269,7 @@ public class ShPostAPI {
 		if (shObjectUtils.canAccess(principal, id)) {
 			return new ResponseEntity<>(shPostExport.exportObject(response, id), HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 		}
 	}
 

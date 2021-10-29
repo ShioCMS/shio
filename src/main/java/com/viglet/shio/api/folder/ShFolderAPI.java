@@ -100,7 +100,7 @@ public class ShFolderAPI {
 		if (shObjectUtils.canAccess(principal, id)) {
 			return new ResponseEntity<>(shFolderRepository.findById(id).orElse(null), HttpStatus.OK);
 		}
-		return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 	}
 
 	@Operation(summary = "Update a folder")
@@ -127,7 +127,7 @@ public class ShFolderAPI {
 				return new ResponseEntity<>(shFolderEdit, HttpStatus.OK);
 			}
 		}
-		return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 
 	}
 
@@ -147,7 +147,7 @@ public class ShFolderAPI {
 
 			return new ResponseEntity<>(true, HttpStatus.OK);
 		}
-		return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 	}
 
 	@Operation(summary = "Create a folder")
@@ -181,7 +181,7 @@ public class ShFolderAPI {
 
 			}
 		}
-		return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 
 	}
 
