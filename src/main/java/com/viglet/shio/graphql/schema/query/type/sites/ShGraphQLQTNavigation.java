@@ -23,7 +23,7 @@ import static graphql.schema.FieldCoordinates.coordinates;
 import static graphql.schema.GraphQLArgument.newArgument;
 import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
 import static graphql.schema.GraphQLNonNull.nonNull;
-
+import graphql.language.BooleanValue;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,7 +71,7 @@ public class ShGraphQLQTNavigation {
 				.argument(newArgument().name(SITE_NAME).description("Site Name").type(GraphQLString))
 				.argument(newArgument().name(FOLDER_ID).description("Folder ID").type(GraphQLID))
 				.argument(newArgument().name(IS_HOME).description("Show Home Folder").type(nonNull(GraphQLBoolean))
-						.defaultValue(true)));
+						.defaultValueLiteral(new BooleanValue(true))));
 
 	}
 

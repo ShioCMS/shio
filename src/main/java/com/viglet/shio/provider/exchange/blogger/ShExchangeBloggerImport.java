@@ -17,12 +17,15 @@
 package com.viglet.shio.provider.exchange.blogger;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.tika.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,6 +43,7 @@ import com.viglet.shio.exchange.ShImportExchange;
 import com.viglet.shio.exchange.folder.ShFolderExchange;
 import com.viglet.shio.exchange.post.ShPostExchange;
 import com.viglet.shio.persistence.model.site.ShSite;
+import com.viglet.shio.plugin.ShImporterPlugin;
 import com.viglet.shio.post.type.ShArticlePostType;
 import com.viglet.shio.url.ShURLFormatter;
 import com.viglet.shio.utils.ShUserUtils;
@@ -66,22 +70,30 @@ public class ShExchangeBloggerImport {
 
 	private static final String SCHEMA_POST = "http://schemas.google.com/blogger/2008/kind#post";
 
+	@Value("${shio.plugin.blogger:}")
+	private String customClass;
+	private boolean hasPlugin = false;
+
 	public ShExchange shImportFromBlogger(MultipartFile multipartFile) {
+		ShImporterPlugin shImporterPlugin = null;
+		if (!StringUtils.isEmpty(customClass)) {
+
+			try {
+				shImporterPlugin = (ShImporterPlugin) Class.forName(customClass).getDeclaredConstructor().newInstance();
+				hasPlugin = true;
+			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException
+					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
+				logger.error(e.getMessage(), e);
+			}
+		}
 		ShExchangeFilesDirs shExchangeFilesDirs = new ShExchangeFilesDirs();
 		if (shExchangeFilesDirs.generate()) {
 
 			try {
 				multipartFile.transferTo(shExchangeFilesDirs.getExportJsonFile());
 
-				SyndFeedInput input = new SyndFeedInput();
-				SyndFeed feed = input.build(new XmlReader(shExchangeFilesDirs.getExportJsonFile()));
-				ShSite shSite = new ShSite();
-				shSite.setName(feed.getTitle().trim());
-				shSite.setDate(feed.getPublishedDate());
-				shSite.setOwner(shUserUtils.getCurrentUsername());
-				shSite.setFurl(ShURLFormatter.format(shSite.getName()));
-
-				ShExchangeData shExchangeData = shImportExchange.getDefaultTemplateToSite(shSite);
+				SyndFeed feed = new SyndFeedInput().build(new XmlReader(shExchangeFilesDirs.getExportJsonFile()));
+				ShExchangeData shExchangeData = createExchangeData(feed);
 
 				String folderHomeId = null;
 
@@ -93,28 +105,7 @@ public class ShExchangeBloggerImport {
 
 				List<SyndEntry> entries = feed.getEntries();
 
-				List<ShPostExchange> posts = shExchangeData.getShExchange().getPosts();
-				for (SyndEntry syndEntry : entries) {
-					for (SyndCategory category : syndEntry.getCategories()) {
-						if (category.getName().equals(SCHEMA_POST)) {
-							ShArticlePostType article = new ShArticlePostType();
-							article.setId(UUID.randomUUID().toString());
-							article.setOwner(syndEntry.getAuthor().trim());
-							article.setDate(syndEntry.getPublishedDate());
-							article.setFurl(syndEntry.getTitle().trim());
-							article.setFolder(folderHomeId);
-							article.setTitle(syndEntry.getTitle());
-							if (syndEntry.getDescription() != null) {
-								article.setDescription(syndEntry.getDescription().getValue().trim());
-							}
-							syndEntry.getContents().forEach(content -> {
-								article.setText(content.getValue().trim());
-							});
-							posts.add(article.getShPostExchange());
-
-						}
-					}
-				}
+				List<ShPostExchange> posts = createPosts(shImporterPlugin, shExchangeData, folderHomeId, entries);
 
 				shExchangeData.getShExchange().setPosts(posts);
 				shCloneExchange.importFromShExchangeData(shExchangeData);
@@ -126,5 +117,51 @@ public class ShExchangeBloggerImport {
 			}
 		}
 		return new ShExchange();
+	}
+
+	private ShExchangeData createExchangeData(SyndFeed feed) {
+		ShSite shSite = new ShSite();
+		shSite.setName(feed.getTitle().trim());
+		shSite.setDate(feed.getPublishedDate());
+		shSite.setOwner(shUserUtils.getCurrentUsername());
+		shSite.setFurl(ShURLFormatter.format(shSite.getName()));
+
+		ShExchangeData shExchangeData = shImportExchange.getDefaultTemplateToSite(shSite);
+		return shExchangeData;
+	}
+
+	private List<ShPostExchange> createPosts(ShImporterPlugin shImporterPlugin, ShExchangeData shExchangeData,
+			String folderHomeId, List<SyndEntry> entries) {
+		List<ShPostExchange> posts = shExchangeData.getShExchange().getPosts();
+		for (SyndEntry syndEntry : entries) {
+			for (SyndCategory category : syndEntry.getCategories()) {
+				createPost(shImporterPlugin, folderHomeId, posts, syndEntry, category);
+			}
+		}
+		return posts;
+	}
+
+	private void createPost(ShImporterPlugin shImporterPlugin, String folderHomeId, List<ShPostExchange> posts,
+			SyndEntry syndEntry, SyndCategory category) {
+		if (category.getName().equals(SCHEMA_POST)) {
+			ShArticlePostType article = new ShArticlePostType();
+			article.setId(UUID.randomUUID().toString());
+			article.setOwner(syndEntry.getAuthor().trim());
+			article.setDate(syndEntry.getPublishedDate());
+			article.setFurl(syndEntry.getTitle().trim());
+			article.setFolder(folderHomeId);
+			article.setTitle(syndEntry.getTitle().trim());
+			if (syndEntry.getDescription() != null) {
+				article.setDescription(syndEntry.getDescription().getValue().trim());
+			}
+			syndEntry.getContents().forEach(content -> {
+				article.setText(content.getValue().trim());
+			});
+			if (hasPlugin) {
+				posts.add(shImporterPlugin.process(article.getShPostExchange()));
+			} else {
+				posts.add(article.getShPostExchange());
+			}
+		}
 	}
 }

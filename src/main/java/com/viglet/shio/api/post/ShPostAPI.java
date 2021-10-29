@@ -243,13 +243,13 @@ public class ShPostAPI {
 
 				this.deleteStaticFiles(shPost);
 
-				shPostAttrRepository.deleteInBatch(shPostAttrs);
+				shPostAttrRepository.deleteAllInBatch(shPostAttrs);
 
-				shReferenceRepository.deleteInBatch(shReferenceRepository.findByShObjectFrom(shPost));
+				shReferenceRepository.deleteAllInBatch(shReferenceRepository.findByShObjectFrom(shPost));
 
-				shReferenceRepository.deleteInBatch(shReferenceRepository.findByShObjectTo(shPost));
+				shReferenceRepository.deleteAllInBatch(shReferenceRepository.findByShObjectTo(shPost));
 
-				shReferenceDraftRepository.deleteInBatch(shReferenceDraftRepository.findByShObjectTo(shPost));
+				shReferenceDraftRepository.deleteAllInBatch(shReferenceDraftRepository.findByShObjectTo(shPost));
 
 				shHistoryUtils.commit(shPost, principal, ShHistoryUtils.DELETE);
 
@@ -385,7 +385,7 @@ public class ShPostAPI {
 
 		this.postDraftDelete(shPost.getId());
 
-		shWorkflowTaskRepository.deleteInBatch(shWorkflowTaskRepository.findByShObject(shPost));
+		shWorkflowTaskRepository.deleteAllInBatch(shWorkflowTaskRepository.findByShObject(shPost));
 
 		shTuringIntegration.indexObject(shPost);
 
@@ -400,7 +400,7 @@ public class ShPostAPI {
 
 		this.postDraftDelete(shPost.getId());
 
-		shWorkflowTaskRepository.deleteInBatch(shWorkflowTaskRepository.findByShObject(shPost));
+		shWorkflowTaskRepository.deleteAllInBatch(shWorkflowTaskRepository.findByShObject(shPost));
 
 		shTuringIntegration.deindexObject(shPost);
 	}
@@ -413,9 +413,9 @@ public class ShPostAPI {
 
 			Set<ShPostDraftAttr> shPostAttrs = shPostDraftAttrRepository.findByShPost(shPost);
 
-			shPostDraftAttrRepository.deleteInBatch(shPostAttrs);
+			shPostDraftAttrRepository.deleteAllInBatch(shPostAttrs);
 
-			shReferenceDraftRepository.deleteInBatch(shReferenceDraftRepository.findByShObjectFrom(shPost));
+			shReferenceDraftRepository.deleteAllInBatch(shReferenceDraftRepository.findByShObjectFrom(shPost));
 
 			shPostDraftRepository.delete(id);
 		}
@@ -475,7 +475,7 @@ public class ShPostAPI {
 		// Delete all old references to recreate in next step
 		if (shPost instanceof ShPost) {
 			List<ShReference> shOldReferences = shReferenceRepository.findByShObjectFrom((ShPost) shPost);
-			shReferenceRepository.deleteInBatch(shOldReferences);
+			shReferenceRepository.deleteAllInBatch(shOldReferences);
 
 			shPost.getShPostAttrs().forEach(shPostAttr -> {
 				shPostUtils.referencedObject((ShPostAttrImpl) shPostAttr, shPost);
@@ -484,7 +484,7 @@ public class ShPostAPI {
 		} else {
 			List<ShReferenceDraft> shOldReferences = shReferenceDraftRepository
 					.findByShObjectFrom((ShPostDraft) shPost);
-			shReferenceDraftRepository.deleteInBatch(shOldReferences);
+			shReferenceDraftRepository.deleteAllInBatch(shOldReferences);
 
 			shPost.getShPostAttrs().forEach(shPostAttr -> {
 				shPostUtils.referencedObjectDraft((ShPostAttrImpl) shPostAttr, shPost);

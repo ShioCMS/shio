@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 the original author or authors. 
+ * Copyright (C) 2016-2021 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
 import static graphql.schema.GraphQLList.list;
 import static graphql.schema.GraphQLNonNull.nonNull;
 import static graphql.schema.GraphqlTypeComparatorRegistry.BY_NAME_REGISTRY;
+import static graphql.language.EnumValue.newEnumValue;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,16 +58,16 @@ public class ShGraphQLQTCommons {
 
 			GraphQLInputObjectType postTypeWhereInput = postTypeWhereInputBuilder.comparatorRegistry(BY_NAME_REGISTRY)
 					.build();
-
+			
 			queryTypeBuilder.field(newFieldDefinition().name(postTypeName)
 					.type(nonNull(isPlural ? list(nonNull(graphQLObjectType)) : graphQLObjectType))
 					.argument(newArgument().name(ShGraphQLConstants.STAGE_ARG)
 							.description(
 									"A required enumeration indicating the current content Stage (defaults to DRAFT)")
-							.type(nonNull(ShGraphQLConstants.stageEnum)).defaultValue(20))
+							.type(nonNull(ShGraphQLConstants.stageEnum)).defaultValueLiteral(newEnumValue("DRAFT").build()))
 					.argument(newArgument().name(ShGraphQLConstants.LOCALES_ARG)
 							.description("A required array of one or more locales, defaults to the project's default.")
-							.type(nonNull(list(ShGraphQLConstants.localeEnum))).defaultValue("EN"))
+							.type(nonNull(list(ShGraphQLConstants.localeEnum))).defaultValueLiteral(newEnumValue("en").build()))
 					.argument(newArgument().name(ShGraphQLConstants.SITES_ARG)
 							.description("A required array of one or more sites").type(list(siteArgRef)))
 					.argument(newArgument().name(ShGraphQLConstants.WHERE_ARG)

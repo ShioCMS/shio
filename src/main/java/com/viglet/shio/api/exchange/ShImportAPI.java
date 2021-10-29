@@ -45,13 +45,14 @@ public class ShImportAPI {
 	private ShImportExchange shImportExchange;
 	@Autowired
 	private ShExchangeBloggerImport shExchangeBloggerImport;
+
 	@PostMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShExchange shImport(@RequestParam("file") MultipartFile multipartFile, final Principal principal) {
-		if (multipartFile.getOriginalFilename().endsWith("xml")) {
+		if (multipartFile != null && multipartFile.getOriginalFilename() != null
+				&& multipartFile.getOriginalFilename().endsWith("xml")) {
 			return shExchangeBloggerImport.shImportFromBlogger(multipartFile);
-		}
-		else {
+		} else {
 			return shImportExchange.importFromMultipartFile(multipartFile);
 		}
 	}

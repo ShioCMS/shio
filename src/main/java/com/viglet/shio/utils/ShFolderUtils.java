@@ -236,16 +236,16 @@ public class ShFolderUtils {
 		for (ShPost shPost : shPostRepository.findByShFolder(shFolder)) {
 			List<ShReference> shGlobalFromId = shReferenceRepository.findByShObjectFrom(shPost);
 			List<ShReference> shGlobalToId = shReferenceRepository.findByShObjectTo(shPost);
-			shReferenceRepository.deleteInBatch(shGlobalFromId);
-			shReferenceRepository.deleteInBatch(shGlobalToId);
+			shReferenceRepository.deleteAllInBatch(shGlobalFromId);
+			shReferenceRepository.deleteAllInBatch(shGlobalToId);
 		}
 
 		for (ShPostImpl shPost : shPostRepository.findByShFolder(shFolder)) {
 			Set<ShPostAttr> shPostAttrs = shPostAttrRepository.findByShPost(shPost);
-			shPostAttrRepository.deleteInBatch(shPostAttrs);
+			shPostAttrRepository.deleteAllInBatch(shPostAttrs);
 		}
 
-		shPostRepository.deleteInBatch(shPostRepository.findByShFolder(shFolder));
+		shPostRepository.deleteAllInBatch(shPostRepository.findByShFolder(shFolder));
 
 		for (ShFolder shFolderChild : shFolderRepository.findByParentFolder(shFolder)) {
 			this.deleteFolder(shFolderChild);

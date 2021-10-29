@@ -53,9 +53,7 @@ public class ShCloneExchange {
 
 		if (shExchangeFilesDirs.getExportDir() != null) {
 			ShExchange shExchange = changeObjectIdsFromExportToClone(shSite, shExchangeFilesDirs);
-
-			ShExchangeData shExchangeData = new ShExchangeData(shExchange, shExchangeFilesDirs);
-			return shExchangeData;
+			return new ShExchangeData(shExchange, shExchangeFilesDirs);
 		} else {
 			return null;
 		}

@@ -148,7 +148,7 @@ public class ShPostImport {
 		ShPostTypeAttr shPostTypeAttr = shPostTypeAttrRepository.findByShPostTypeAndName(shPostType,
 				shPostField.getKey());
 		// Relator: the PostType is null
-		if (shPostTypeAttr == null && shParentRelatorItem != null && shPostField != null) {
+		if (shPostTypeAttr == null && shParentRelatorItem != null) {
 			shPostTypeAttr = shPostTypeAttrRepository.findByShParentPostTypeAttrAndName(
 					shParentRelatorItem.getShParentPostAttr().getShPostTypeAttr(), shPostField.getKey());
 		}
@@ -171,7 +171,8 @@ public class ShPostImport {
 		ShPostAttr shPostAttr = new ShPostAttr();
 		if (shPostField.getValue() instanceof ArrayList)
 			shPostAttr.setArrayValue((new HashSet<String>((ArrayList<String>) shPostField.getValue())));
-		else if (shPostTypeAttr != null && shPostTypeAttr.getShWidget() != null && shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.DATE)) {
+		else if (shPostTypeAttr != null && shPostTypeAttr.getShWidget() != null
+				&& shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.DATE)) {
 			if (shPostField.getValue() != null) {
 				try {
 					shPostAttr.setDateValue(
@@ -340,7 +341,8 @@ public class ShPostImport {
 	}
 
 	private void createShPostAttrs(ShExchangeContext context, ShPostExchange shPostExchange, ShPost shPost,
-			Map<String, Object> shPostFields, ShRelatorItemImpl shParentRelatorItem, ShExchangeObjectMap shExchangeObjectMap) {
+			Map<String, Object> shPostFields, ShRelatorItemImpl shParentRelatorItem,
+			ShExchangeObjectMap shExchangeObjectMap) {
 		for (Entry<String, Object> shPostField : shPostFields.entrySet()) {
 			ShPostType shPostType = shPostTypeRepository.findByName(shPostExchange.getPostType());
 
@@ -349,8 +351,8 @@ public class ShPostImport {
 			this.createReferecedPosts(context, shExchangeObjectMap, shPostField, shPostType, shPostTypeAttr);
 			if (isRelator(shPostTypeAttr)) {
 
-				this.detectPostAttrRelator(context, shPostExchange, shPost, shParentRelatorItem, shExchangeObjectMap, shPostField,
-						shPostTypeAttr);
+				this.detectPostAttrRelator(context, shPostExchange, shPost, shParentRelatorItem, shExchangeObjectMap,
+						shPostField, shPostTypeAttr);
 			} else {
 				this.detectPostAttrNonRelator(shPost, shParentRelatorItem, shPostField, shPostTypeAttr);
 			}
@@ -360,22 +362,21 @@ public class ShPostImport {
 	private void createReferecedPosts(ShExchangeContext context, ShExchangeObjectMap shExchangeObjectMap,
 			Entry<String, Object> shPostField, ShPostType shPostType, ShPostTypeAttr shPostTypeAttr) {
 		Map<String, Object> shObjects = shExchangeObjectMap.getShObjects();
-		if (shPostTypeAttr != null && shPostTypeAttr.getShWidget() != null && shPostField != null) {
-			if ((shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.FILE)
-					|| shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.CONTENT_SELECT))
-					&& shPostField.getValue() != null && !shPostType.getName().equals(ShSystemPostType.FILE)) {
-				try {
-					String shReferencedPostUUID = (String) shPostField.getValue();
-					// So the referenced Post not exists, need create first
-					if (!shPostRepository.findById(shReferencedPostUUID).isPresent()
-							&& shObjects.get(shReferencedPostUUID) instanceof ShPostExchange) {
-						ShPostExchange shReferencedPostExchange = (ShPostExchange) shObjects.get(shReferencedPostUUID);
-						this.createShPost(context, shReferencedPostExchange, shExchangeObjectMap);
-					}
-
-				} catch (IllegalArgumentException iae) {
-					logger.error("createShPostAttrs", iae);
+		if ((shPostTypeAttr != null && shPostTypeAttr.getShWidget() != null 
+				&& shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.FILE)
+				|| shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.CONTENT_SELECT))
+				&& shPostField != null && shPostField.getValue() != null && !shPostType.getName().equals(ShSystemPostType.FILE)) {
+			try {
+				String shReferencedPostUUID = (String) shPostField.getValue();
+				// So the referenced Post not exists, need create first
+				if (!shPostRepository.findById(shReferencedPostUUID).isPresent()
+						&& shObjects.get(shReferencedPostUUID) instanceof ShPostExchange) {
+					ShPostExchange shReferencedPostExchange = (ShPostExchange) shObjects.get(shReferencedPostUUID);
+					this.createShPost(context, shReferencedPostExchange, shExchangeObjectMap);
 				}
+
+			} catch (IllegalArgumentException iae) {
+				logger.error("createShPostAttrs", iae);
 			}
 		}
 	}
@@ -391,8 +392,8 @@ public class ShPostImport {
 
 	@SuppressWarnings({ "unchecked" })
 	private void detectPostAttrRelator(ShExchangeContext context, ShPostExchange shPostExchange, ShPost shPost,
-			ShRelatorItemImpl shParentRelatorItem, ShExchangeObjectMap shExchangeObjectMap, Entry<String, Object> shPostField,
-			ShPostTypeAttr shPostTypeAttr) {
+			ShRelatorItemImpl shParentRelatorItem, ShExchangeObjectMap shExchangeObjectMap,
+			Entry<String, Object> shPostField, ShPostTypeAttr shPostTypeAttr) {
 		LinkedHashMap<String, Object> relatorFields = (LinkedHashMap<String, Object>) shPostField.getValue();
 
 		ShPostAttr shPostAttr = new ShPostAttr();
