@@ -20,6 +20,8 @@ import java.security.Principal;
 
 import javax.annotation.Nonnull;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,7 +44,7 @@ import io.swagger.annotations.Api;
 @RequestMapping("/api/v2/import")
 @Api(tags = "Import", description = "Import objects into Viglet Shio CMS")
 public class ShImportAPI {
-
+	private static final Log logger = LogFactory.getLog(ShImportAPI.class);
 	@Autowired
 	private ShImportExchange shImportExchange;
 	@Autowired
@@ -51,10 +53,15 @@ public class ShImportAPI {
 	@PostMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ShExchange shImport(@RequestParam("file") @Nonnull MultipartFile multipartFile, final Principal principal) {
-		if (multipartFile.getOriginalFilename() != null && multipartFile.getOriginalFilename().endsWith("xml")) {
-			return shExchangeBloggerImport.shImportFromBlogger(multipartFile);
-		} else {
-			return shImportExchange.importFromMultipartFile(multipartFile);
+		try {
+			if (multipartFile.getOriginalFilename() != null && multipartFile.getOriginalFilename().endsWith("xml")) {
+				return shExchangeBloggerImport.shImportFromBlogger(multipartFile);
+			} else {
+				return shImportExchange.importFromMultipartFile(multipartFile);
+			}
+		} catch (NullPointerException e) {
+			logger.error(e.getMessage(), e);
+			return new ShExchange();
 		}
 	}
 
