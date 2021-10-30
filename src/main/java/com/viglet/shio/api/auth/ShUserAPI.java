@@ -51,6 +51,7 @@ import com.viglet.shio.persistence.repository.auth.ShUserRepository;
 import com.viglet.shio.persistence.repository.provider.auth.ShAuthProviderInstanceRepository;
 import com.viglet.shio.provider.auth.ShAuthSystemProviderVendor;
 import com.viglet.shio.provider.auth.ShAuthenticationProvider;
+import com.viglet.shio.utils.ShUserUtils;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -59,7 +60,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping("/api/v2/user")
-@Tag( name = "User", description = "User API")
+@Tag(name = "User", description = "User API")
 public class ShUserAPI {
 	private static final Log logger = LogFactory.getLog(ShUserAPI.class);
 	@Autowired
@@ -72,6 +73,8 @@ public class ShUserAPI {
 	private ShAuthProviderInstanceRepository shAuthProviderInstanceRepository;
 	@Autowired
 	private ApplicationContext context;
+	@Autowired
+	private ShUserUtils shUserUtils;
 
 	@GetMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
@@ -84,7 +87,7 @@ public class ShUserAPI {
 	public ShCurrentUser shUserCurrent(HttpSession session) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (!(authentication instanceof AnonymousAuthenticationToken)) {
-			String currentUserName = authentication.getName();
+			String currentUserName = shUserUtils.getCurrentUsername();
 			ShAuthProviderInstance instance = this.getProviderInstance(session);
 			ShUser shUser = this.getUserFromAuth(currentUserName, instance);
 			boolean isAdmin = this.isAdminFromNative(shUser, instance);

@@ -38,12 +38,13 @@ public class ShUserUtils {
 	@Autowired
 	private IShAuthenticationFacade authenticationFacade;
 
-	private static final String DEFAULT_ADMIN_USER = "admin";
+	private static final String DEFAULT_ANONYMOUS_USER = "anonymous";
 
 	public String getCurrentUsername() {
 		Authentication authentication = authenticationFacade.getAuthentication();
-		return authentication != null && authentication.getName() != null ? authentication.getName()
-				: DEFAULT_ADMIN_USER;
+		return authentication != null && authentication.getName().replaceAll("[\n\r\t]", "_") != null
+				? authentication.getName()
+				: DEFAULT_ANONYMOUS_USER;
 
 	}
 
