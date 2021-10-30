@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.viglet.shio.api.ShJsonView;
+import com.viglet.shio.persistence.dto.auth.ShGroupDTO;
 import com.viglet.shio.persistence.model.auth.ShGroup;
 import com.viglet.shio.persistence.model.auth.ShUser;
 import com.viglet.shio.persistence.repository.auth.ShGroupRepository;
@@ -78,7 +79,8 @@ public class ShGroupAPI {
 
 	@PutMapping("/{id}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShGroup shGroupUpdate(@PathVariable String id, @RequestBody ShGroup shGroup) {
+	public ShGroupDTO shGroupUpdate(@PathVariable String id, @RequestBody ShGroupDTO shGroupDTO) {
+		ShGroup shGroup = shGroupDTO.toEntity();
 		shGroupRepository.save(shGroup);
 		Optional<ShGroup> shGroupOptional = shGroupRepository.findById(shGroup.getId());
 		if (shGroupOptional.isPresent()) {
@@ -96,7 +98,7 @@ public class ShGroupAPI {
 				shUserRepository.saveAndFlush(shUserRepos);
 			}
 		}
-		return shGroup;
+		return shGroupDTO;
 	}
 
 	@Transactional
@@ -108,11 +110,11 @@ public class ShGroupAPI {
 
 	@PostMapping
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
-	public ShGroup shGroupAdd(@RequestBody ShGroup shGroup) {
+	public ShGroupDTO shGroupAdd(@RequestBody ShGroupDTO shGroupDTO) {
 
-		shGroupRepository.save(shGroup);
-
-		return shGroup;
+		ShGroup shGroup = shGroupRepository.save(shGroupDTO.toEntity());
+		shGroupDTO.setId(shGroup.getId());
+		return shGroupDTO;
 	}
 
 	@GetMapping("/model")
