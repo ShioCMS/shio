@@ -35,7 +35,7 @@ public class ShURLFormatter {
 
 		// 2. Convert HTML Symbol Entities to space, for examples: "Ampersand" euro or
 		// Ampersand Hash Tag 174
-		formattedURL = formattedURL.replaceAll("&.+?;", " ");
+		formattedURL = formattedURL.replaceAll("&.+;", " ");
 
 		// 3. Remove accents
 		formattedURL = StringUtils.stripAccents(formattedURL);
