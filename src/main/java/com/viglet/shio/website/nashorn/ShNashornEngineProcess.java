@@ -117,8 +117,7 @@ public class ShNashornEngineProcess {
 	}
 
 	public void regionError(String regionAttr, String javascript, Throwable err) {
-		if (err instanceof ScriptException) {
-			ScriptException exc = ((ScriptException) err);
+		if (err instanceof ScriptException exc) {
 			String scriptStack = ExceptionUtils.getStackTrace(exc);
 			int columnNumber = exc.getColumnNumber();
 			int lineNumber = exc.getLineNumber();

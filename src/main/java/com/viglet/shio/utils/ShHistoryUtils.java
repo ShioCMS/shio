@@ -25,7 +25,6 @@ import org.springframework.stereotype.Component;
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.history.ShHistory;
 import com.viglet.shio.persistence.model.object.impl.ShObjectImpl;
-import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.persistence.repository.history.ShHistoryRepository;
@@ -65,16 +64,14 @@ public class ShHistoryUtils {
 			String description = null;
 			ShSite shSite = null;
 
-			if (shObject instanceof ShPost) {
-				ShPostImpl shPost = (ShPostImpl) shObject;
-				description = String.format(message, shPost.getTitle(), "Post");
-				shSite = shPostUtils.getSite(shPost);
-			} else if (shObject instanceof ShFolder) {
-				ShFolder shFolder = (ShFolder) shObject;
+			if (shObject instanceof ShPostImpl shPostImpl) {
+				description = String.format(message, shPostImpl.getTitle(), "Post");
+				shSite = shPostUtils.getSite(shPostImpl);
+			} else if (shObject instanceof ShFolder shFolder) {
 				description = String.format(message, shFolder.getName(), "Folder");
 				shSite = shFolderUtils.getSite(shFolder);
-			} else if (shObject instanceof ShSite) {
-				shSite = (ShSite) shObject;
+			} else if (shObject instanceof ShSite shSiteInst) {
+				shSite = shSiteInst;
 				description = String.format(message, shSite.getName(), "Site");
 			}
 			shHistory.setDescription(description);

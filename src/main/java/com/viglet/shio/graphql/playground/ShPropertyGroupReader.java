@@ -57,8 +57,8 @@ class ShPropertyGroupReader {
     }
 
     private Stream<EnumerablePropertySource<?>> streamOfPropertySources() {
-        if (environment instanceof ConfigurableEnvironment) {
-            Iterator<PropertySource<?>> iterator = ((ConfigurableEnvironment) environment).getPropertySources().iterator();
+        if (environment instanceof ConfigurableEnvironment configurableEnvironment) {
+            Iterator<PropertySource<?>> iterator = configurableEnvironment.getPropertySources().iterator();
             Iterable<PropertySource<?>> iterable = () -> iterator;
             return StreamSupport.stream(iterable.spliterator(), false)
                     .filter(EnumerablePropertySource.class::isInstance)

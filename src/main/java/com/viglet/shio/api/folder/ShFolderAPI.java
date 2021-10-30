@@ -204,14 +204,12 @@ public class ShFolderAPI {
 				shNewFolder.setFurl(ShURLFormatter.format(shNewFolder.getName()));
 
 				ShObject shParentObject = shObjectRepository.findById(objectId).orElse(null);
-				if (shParentObject instanceof ShFolder) {
-					ShFolder shParentFolder = (ShFolder) shParentObject;
+				if (shParentObject instanceof ShFolder shParentFolder) {	
 					shNewFolder.setParentFolder(shParentFolder);
 					shNewFolder.setRootFolder((byte) 0);
 					shNewFolder.setShSite(null);
 
-				} else if (shParentObject instanceof ShSite) {
-					ShSite shSite = (ShSite) shParentObject;
+				} else if (shParentObject instanceof ShSite shSite) {
 					shNewFolder.setParentFolder(null);
 					shNewFolder.setRootFolder((byte) 1);
 					shNewFolder.setShSite(shSite);

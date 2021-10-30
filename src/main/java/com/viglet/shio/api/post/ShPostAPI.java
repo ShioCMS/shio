@@ -97,7 +97,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping("/api/v2/post")
-@Tag( name = "Post", description = "Post API")
+@Tag(name = "Post", description = "Post API")
 public class ShPostAPI {
 
 	private static final Log logger = LogFactory.getLog(ShPostAPI.class);
@@ -468,35 +468,33 @@ public class ShPostAPI {
 		});
 	}
 
-	private void postReferenceSave(ShPostImpl shPost) {
+	private void postReferenceSave(ShPostImpl shPostImpl) {
 
 		// Delete all old references to recreate in next step
-		if (shPost instanceof ShPost) {
-			List<ShReference> shOldReferences = shReferenceRepository.findByShObjectFrom((ShPost) shPost);
+		if (shPostImpl instanceof ShPost shPost) {
+			List<ShReference> shOldReferences = shReferenceRepository.findByShObjectFrom(shPost);
 			shReferenceRepository.deleteAllInBatch(shOldReferences);
 
-			shPost.getShPostAttrs().forEach(shPostAttr -> {
-				shPostUtils.referencedObject(shPostAttr, shPost);
-				this.nestedReferenceSave(shPostAttr, shPost);
+			shPostImpl.getShPostAttrs().forEach(shPostAttr -> {
+				shPostUtils.referencedObject(shPostAttr, shPostImpl);
+				this.nestedReferenceSave(shPostAttr, shPostImpl);
 			});
-		} else {
-			List<ShReferenceDraft> shOldReferences = shReferenceDraftRepository
-					.findByShObjectFrom((ShPostDraft) shPost);
+		} else if (shPostImpl instanceof ShPostDraft shPostDraft) {
+			List<ShReferenceDraft> shOldReferences = shReferenceDraftRepository.findByShObjectFrom(shPostDraft);
 			shReferenceDraftRepository.deleteAllInBatch(shOldReferences);
 
-			shPost.getShPostAttrs().forEach(shPostAttr -> {
-				shPostUtils.referencedObjectDraft(shPostAttr, shPost);
-				this.nestedReferenceSaveDraft(shPostAttr, shPost);
+			shPostImpl.getShPostAttrs().forEach(shPostAttr -> {
+				shPostUtils.referencedObjectDraft(shPostAttr, shPostImpl);
+				this.nestedReferenceSaveDraft(shPostAttr, shPostImpl);
 			});
 
 		}
-		shPost.getShPostAttrs()
-				.forEach(shPostAttr -> shPostUtils.updateRelatorInfo(shPostAttr, shPost));
+		shPostImpl.getShPostAttrs().forEach(shPostAttr -> shPostUtils.updateRelatorInfo(shPostAttr, shPostImpl));
 
-		if (shPost instanceof ShPost) {
-			shPostRepository.saveAndFlush((ShPost) shPost);
-		} else {
-			shPostDraftRepository.saveAndFlush((ShPostDraft) shPost);
+		if (shPostImpl instanceof ShPost shPost) {
+			shPostRepository.saveAndFlush(shPost);
+		} else if (shPostImpl instanceof ShPostDraft shPostDraft) {
+			shPostDraftRepository.saveAndFlush(shPostDraft);
 		}
 	}
 

@@ -36,6 +36,7 @@ import com.viglet.shio.persistence.model.post.ShPostAttr;
 import com.viglet.shio.persistence.model.post.ShPostDraft;
 import com.viglet.shio.persistence.model.post.ShPostDraftAttr;
 import com.viglet.shio.persistence.model.post.impl.ShPostAttrImpl;
+import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.post.relator.ShRelatorItem;
 import com.viglet.shio.persistence.model.post.relator.impl.ShRelatorItemImpl;
 import com.viglet.shio.persistence.repository.post.ShPostAttrRepository;
@@ -189,17 +190,17 @@ public class ShSitesPostUtils {
 		return new JSONObject(this.toSystemMap(shPost));
 	}
 
-	public ShContent toSystemMap(ShPost shPost) {
+	public ShContent toSystemMap(ShPostImpl shPostImpl) {
 		ShContent shPostItemAttrs = new ShContent();
 
 		Map<String, Object> shPostObject = new HashMap<>();
-		shPostObject.put("id", shPost.getId());
-		shPostObject.put("postTypeName", shPost.getShPostType().getName());
-		shPostObject.put("title", shPost.getTitle());
-		shPostObject.put("summary", shPost.getSummary());
-		shPostObject.put("link", this.generatePostLink(shPost));
-		shPostObject.put("parentFolder", shPost.getShFolder().getId());
-		for (ShPostAttrImpl shPostAttr : shPost.getShPostAttrs()) {
+		shPostObject.put("id", shPostImpl.getId());
+		shPostObject.put("postTypeName", shPostImpl.getShPostType().getName());
+		shPostObject.put("title", shPostImpl.getTitle());
+		shPostObject.put("summary", shPostImpl.getSummary());
+		shPostObject.put("link", this.generatePostLink(shPostImpl));
+		shPostObject.put("parentFolder", shPostImpl.getShFolder().getId());
+		for (ShPostAttrImpl shPostAttr : shPostImpl.getShPostAttrs()) {
 			if (shPostAttr.getShPostTypeAttr() != null && shPostAttr.getShPostTypeAttr().getName() != null) {
 				shPostItemAttrs.put(shPostAttr.getShPostTypeAttr().getName(), shPostAttr.getStrValue());
 			}
@@ -265,15 +266,15 @@ public class ShSitesPostUtils {
 
 	}
 
-	public String generatePostLink(ShPost shPost) {
-		ShFolder shFolder = shPost.getShFolder();
+	public String generatePostLink(ShPostImpl shPostImpl) {
+		ShFolder shFolder = shPostImpl.getShFolder();
 		String link = null;
-		if (shPost.getShPostType().getName().equals(ShSystemPostType.FILE)) {
+		if (shPostImpl.getShPostType().getName().equals(ShSystemPostType.FILE)) {
 			link = shStaticFileUtils.getFileSourceBase(true) + "/" + shFolderUtils.getSite(shFolder).getName()
-					+ shFolderUtils.folderPath(shFolder, false, true) + shPost.getTitle();
-		} else if (shSitesObjectUtils.isVisiblePage(shPost)) {
+					+ shFolderUtils.folderPath(shFolder, false, true) + shPostImpl.getTitle();
+		} else if (shSitesObjectUtils.isVisiblePage(shPostImpl)) {
 			link = shSitesFolderUtils.generateFolderLink(shFolder);
-			link = link + shPost.getFurl();
+			link = link + shPostImpl.getFurl();
 		}
 		return link;
 	}

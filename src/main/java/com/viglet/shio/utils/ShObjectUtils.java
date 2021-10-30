@@ -32,7 +32,6 @@ import com.viglet.shio.persistence.model.auth.ShUser;
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.object.ShObject;
 import com.viglet.shio.persistence.model.object.impl.ShObjectImpl;
-import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.persistence.repository.auth.ShUserRepository;
@@ -53,10 +52,10 @@ public class ShObjectUtils {
 	private ShPostUtils shPostUtils;
 
 	public ShSite getSite(ShObjectImpl shObject) {
-		if (shObject instanceof ShPost) {
-			return shPostUtils.getSite((ShPostImpl) shObject);
-		} else if (shObject instanceof ShFolder) {
-			return shFolderUtils.getSite((ShFolder) shObject);
+		if (shObject instanceof ShPostImpl shPostImpl) {
+			return shPostUtils.getSite(shPostImpl);
+		} else if (shObject instanceof ShFolder shFolder) {
+			return shFolderUtils.getSite(shFolder);
 		} else {
 			return null;
 		}
@@ -110,16 +109,14 @@ public class ShObjectUtils {
 	public ShFolderPath objectPath(@PathVariable String id) {
 		Optional<ShObject> shObject = shObjectRepository.findById(id);
 		if (shObject.isPresent()) {
-			if (shObject.get() instanceof ShSite) {
-				ShSite shSite = (ShSite) shObject.get();
+			if (shObject.get() instanceof ShSite shSite) {
 				ShFolderPath shFolderPath = new ShFolderPath();
 				shFolderPath.setFolderPath(null);
 				shFolderPath.setCurrentFolder(null);
 				shFolderPath.setBreadcrumb(null);
 				shFolderPath.setShSite(shSite);
 				return shFolderPath;
-			} else if (shObject.get() instanceof ShFolder) {
-				ShFolder shFolder = (ShFolder) shObject.get();
+			} else if (shObject.get() instanceof ShFolder shFolder) {
 				ShFolderPath shFolderPath = new ShFolderPath();
 				String folderPath = shFolderUtils.folderPath(shFolder, true, false);
 				List<ShFolder> breadcrumb = shFolderUtils.breadcrumb(shFolder);
@@ -129,7 +126,7 @@ public class ShObjectUtils {
 				shFolderPath.setBreadcrumb(breadcrumb);
 				shFolderPath.setShSite(shSite);
 				return shFolderPath;
-			} else if (shObject.get() instanceof ShPost) {
+			} else if (shObject.get() instanceof ShPostImpl shPostInst) {
 				ShPostImpl shPost = shPostUtils.loadLazyPost(shObject.get().getId(), false);
 				ShFolder shFolder = shPost.getShFolder();
 				ShFolderPath shFolderPath = new ShFolderPath();

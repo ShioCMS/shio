@@ -66,8 +66,7 @@ public class ShHistoryAPI {
 		if (shObjectRepository.findById(globalId).isPresent()) {
 			ShObjectImpl shObject = shObjectRepository.findById(globalId).orElse(null);
 			if (shObject != null) {
-				if (shObject instanceof ShSite) {
-					ShSite shSite = (ShSite) shObject;
+				if (shObject instanceof ShSite shSite) {
 					return shHistoryPageableRepository.findByShSiteOrderByDateDesc(shSite.getId(), pageable);
 				} else {
 					return shHistoryPageableRepository.findByShObjectOrderByDateDesc(shObject.getId(), pageable);
@@ -83,8 +82,7 @@ public class ShHistoryAPI {
 		if (shObjectRepository.findById(globalId).isPresent()) {
 			ShObjectImpl shObject = shObjectRepository.findById(globalId).orElse(null);
 			if (shObject != null) {
-				if (shObject instanceof ShSite) {
-					ShSite shSite = (ShSite) shObject;
+				if (shObject instanceof ShSite shSite) {
 					return shHistoryRepository.countByShSite(shSite.getId());
 				} else {
 					return shHistoryRepository.countByShObject(shObject.getId());

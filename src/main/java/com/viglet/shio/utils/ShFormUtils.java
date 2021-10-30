@@ -88,8 +88,8 @@ public class ShFormUtils {
 			if (shFormConfiguration != null && StringUtils.isNotBlank(shFormConfiguration.getFolder().toString())) {
 				shFolder = shFolderRepository.findById(shFormConfiguration.getFolder().toString()).orElse(null);
 			} else {
-				if (shObject instanceof ShFolder) {
-					shFolder = (ShFolder) shObject;
+				if (shObject instanceof ShFolder shFolderInst) {
+					shFolder = shFolderInst;
 				} else {
 					if (shObject != null)
 						shFolder = ((ShPostImpl) shObject).getShFolder();

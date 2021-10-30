@@ -25,7 +25,6 @@ import org.springframework.web.servlet.HandlerMapping;
 
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.object.impl.ShObjectImpl;
-import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.utils.ShFolderUtils;
@@ -56,15 +55,12 @@ public class ShURLScheme {
 			String shFormat = "default";
 			String shLocale = "en-us";
 			String shSiteName = null;
-			if (shObject instanceof ShSite) {
-				ShSite shSite = (ShSite) shObject;
+			if (shObject instanceof ShSite shSite) {
 				shSiteName = shSite.getFurl();
-			} else if (shObject instanceof ShFolder) {
-				ShFolder shFolder = (ShFolder) shObject;
+			} else if (shObject instanceof ShFolder shFolder) {
 				shSiteName = shFolderUtils.getSite(shFolder).getFurl();
-			} else if (shObject instanceof ShPost) {
-				ShPostImpl shPost = (ShPostImpl) shObject;
-				ShFolder shFolder = shPost.getShFolder();
+			} else if (shObject instanceof ShPostImpl shPostImpl) {
+				ShFolder shFolder = shPostImpl.getShFolder();
 				shSiteName = shFolderUtils.getSite(shFolder).getFurl();
 			}
 			url = getURL(shSiteName, shContext, shFormat, shLocale);
