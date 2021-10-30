@@ -34,7 +34,6 @@ import com.viglet.shio.persistence.model.auth.ShGroup;
 import com.viglet.shio.persistence.model.auth.ShUser;
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.object.ShObject;
-import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.workflow.ShWorkflowTask;
 import com.viglet.shio.persistence.repository.auth.ShGroupRepository;

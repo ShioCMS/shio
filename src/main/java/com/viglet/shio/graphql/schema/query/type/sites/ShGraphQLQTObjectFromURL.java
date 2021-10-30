@@ -100,9 +100,9 @@ public class ShGraphQLQTObjectFromURL {
 
 				if (shObject.get() instanceof ShPost shPost) {
 					type = shGraphQLUtils.normalizedName(shPost.getShPostType().getName());
-				} else if (shObject.get() instanceof ShFolder shFolder) {
+				} else if (shObject.get() instanceof ShFolder) {
 					type = "folder";
-				} else if (shObject.get() instanceof ShSite shSite) {
+				} else if (shObject.get() instanceof ShSite) {
 					type = "site";
 				}
 

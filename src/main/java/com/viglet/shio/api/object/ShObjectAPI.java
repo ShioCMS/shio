@@ -153,8 +153,8 @@ public class ShObjectAPI {
 			RedirectAttributes attributes) {
 		String redirect = null;
 		ShObjectImpl shObject = shObjectRepository.findById(id).orElse(null);
-		if (shObject instanceof ShSite) {
-			redirect = shSiteUtils.generatePostLink((ShSite) shObject);
+		if (shObject instanceof ShSite shSite) {
+			redirect = shSiteUtils.generatePostLink(shSite);
 		} else if (shObject instanceof ShPost shPost) {
 			redirect = shSitesPostUtils.generatePostLink(shPost);
 		} else if (shObject instanceof ShFolder shFolder) {

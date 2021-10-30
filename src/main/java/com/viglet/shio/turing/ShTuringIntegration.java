@@ -126,7 +126,7 @@ public class ShTuringIntegration {
 		String objectTypeName = null;
 		if (shObject instanceof ShPostImpl shPostImpl)
 			objectTypeName = shPostImpl.getShPostType().getName();
-		else if (shObject instanceof ShFolder shFolder)
+		else if (shObject instanceof ShFolder)
 			objectTypeName = ShObjectType.FOLDER;
 		return objectTypeName;
 	}
