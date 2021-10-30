@@ -32,6 +32,7 @@ sonarqube {
     property "sonar.projectKey", "ShioCMS_shio"
     property "sonar.organization", "shiocms"
     property "sonar.host.url", "https://sonarcloud.io"
+    property "sonar.cpd.exclusions", "com/viglet/shio/persistence/dto/**,com/viglet/shio/persistence/model/**"
   }
 }
 
