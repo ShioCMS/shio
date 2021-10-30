@@ -126,7 +126,7 @@ public class ShObjectUtils {
 				shFolderPath.setBreadcrumb(breadcrumb);
 				shFolderPath.setShSite(shSite);
 				return shFolderPath;
-			} else if (shObject.get() instanceof ShPostImpl shPostInst) {
+			} else if (shObject.get() instanceof ShPostImpl) {
 				ShPostImpl shPost = shPostUtils.loadLazyPost(shObject.get().getId(), false);
 				ShFolder shFolder = shPost.getShFolder();
 				ShFolderPath shFolderPath = new ShFolderPath();

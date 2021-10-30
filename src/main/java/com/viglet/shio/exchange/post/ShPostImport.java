@@ -398,9 +398,8 @@ public class ShPostImport {
 				String shReferencedPostUUID = (String) shPostField.getValue();
 				// So the referenced Post not exists, need create first
 				if (!shPostRepository.findById(shReferencedPostUUID).isPresent()
-						&& shObjects.get(shReferencedPostUUID) instanceof ShPostExchange) {
-					ShPostExchange shReferencedPostExchange = (ShPostExchange) shObjects.get(shReferencedPostUUID);
-					this.createShPost(context, shReferencedPostExchange, shExchangeObjectMap);
+						&& shObjects.get(shReferencedPostUUID) instanceof ShPostExchange shPostExchange) {
+					this.createShPost(context, shPostExchange, shExchangeObjectMap);
 				}
 
 			} catch (IllegalArgumentException iae) {
