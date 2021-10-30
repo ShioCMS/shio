@@ -64,7 +64,7 @@ public class ShImportAPI {
 			} catch (NullPointerException e) {
 				logger.error(e.getMessage(), e);
 			} finally {
-				if (fileName.endsWith("xml")) {
+				if (fileName.endsWith("xml")) { //NOSONAR
 					importType = BLOGGER_IMPORT;
 				}
 			}
