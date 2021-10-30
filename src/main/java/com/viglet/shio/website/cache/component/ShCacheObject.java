@@ -42,7 +42,6 @@ import com.viglet.shio.website.utils.ShSitesObjectUtils;
  * @author Alexandre Oliveira
  */
 
-
 @Component
 public class ShCacheObject {
 	private static final Log logger = LogFactory.getLog(ShCacheObject.class);
@@ -58,11 +57,13 @@ public class ShCacheObject {
 	ShFolderUtils shFolderUtils;
 	@Autowired
 	ShSitesObjectUtils shSitesObjectUtils;
-	
+
 	@Cacheable(value = "shObject", key = "#id", sync = true)
 	public List<String> cache(String id) {
-		if (logger.isDebugEnabled())
-			logger.debug("Creating the shObject Cache id " + id);
+		if (logger.isDebugEnabled()) {
+			String sanitizedId = id.replaceAll("[\n\r\t]", "_");
+			logger.debug("Creating the shObject Cache id " + sanitizedId);
+		}
 		return new ArrayList<>();
 	}
 
@@ -96,12 +97,13 @@ public class ShCacheObject {
 	}
 
 	public void deleteDependency(String id) {
+		String sanitizedId = id.replaceAll("[\n\r\t]", "_");
 		if (logger.isDebugEnabled())
-			logger.debug("Executing deleteDependency for id: " + id);
+			logger.debug("Executing deleteDependency for id: " + sanitizedId);
 		List<String> urls = cache(id);
 		for (String url : urls) {
 			if (logger.isDebugEnabled())
-				logger.debug("Deleting the page with id: " + id + " and URL: " + url);
+				logger.debug("Deleting the page with id: " + sanitizedId + " and URL: " + url);
 			shCachePage.deleteCache(id, url);
 			ShObject shObject = shObjectRepository.findById(id).orElse(null);
 			String contextURL = null;
@@ -125,7 +127,9 @@ public class ShCacheObject {
 
 	@CacheEvict(value = "shObject", key = "#id")
 	public void deleteCacheSelf(String id) {
-		if (logger.isDebugEnabled())
-			logger.debug("Deleted Cache: ".concat(id));
+		if (logger.isDebugEnabled()) {
+			String sanitizedId = id.replaceAll("[\n\r\t]", "_");
+			logger.debug("Deleted Cache: ".concat(sanitizedId));
+		}
 	}
 }
