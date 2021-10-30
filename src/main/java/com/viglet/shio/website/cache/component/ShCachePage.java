@@ -191,7 +191,9 @@ public class ShCachePage {
 
 	@CacheEvict(value = "page", key = "{#id, #url}")
 	public void deleteCache(String id, String url) {
-		if (logger.isDebugEnabled())
-			logger.debug(String.format("Deleted cache of id %s, %s", id, url));
+		if (logger.isDebugEnabled()) {
+			String sanitizedId = id.replaceAll("[\n\r\t]", "_");
+			logger.debug(String.format("Deleted cache of id %s, %s", sanitizedId, url));
+		}
 	}
 }
