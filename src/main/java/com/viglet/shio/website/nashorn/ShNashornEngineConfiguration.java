@@ -47,7 +47,7 @@ public class ShNashornEngineConfiguration {
 		Class<?> nashornScriptEngineFactory;
 		try {
 
-			nashornScriptEngineFactory = Class.forName("jdk.nashorn.api.scripting.NashornScriptEngineFactory");
+			nashornScriptEngineFactory = Class.forName("org.openjdk.nashorn.api.scripting.NashornScriptEngineFactory");
 
 			Method getScriptEngine = nashornScriptEngineFactory.getDeclaredMethod("getScriptEngine", String[].class);
 			ScriptEngineFactory scriptEngineFactory = (ScriptEngineFactory) nashornScriptEngineFactory

@@ -80,8 +80,8 @@ repositories {
 }
 
 group = 'com.viglet.shio'
-sourceCompatibility = 14
-targetCompatibility = 14
+sourceCompatibility = 16
+targetCompatibility = 16
 
 tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
@@ -252,6 +252,8 @@ dependencies {
 	implementation 'org.webjars.bower:ngInfiniteScroll:1.3.4'
 	implementation 'org.webjars:angular-avatar:1.3.0'
 	implementation 'org.webjars.bower:angular-bootstrap-toggle:0.4.2'
+
+	implementation group: 'org.openjdk.nashorn', name: 'nashorn-core', version: '15.3'
 
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
 }
