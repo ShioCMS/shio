@@ -51,6 +51,7 @@ import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.repository.folder.ShFolderRepository;
 import com.viglet.shio.persistence.repository.object.ShObjectRepository;
 import com.viglet.shio.utils.ShStaticFileUtils;
+import com.viglet.shio.utils.ShUtils;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import net.coobird.thumbnailator.Thumbnails;
@@ -71,7 +72,9 @@ public class ShStaticFileAPI {
 	private ShObjectRepository shObjectRepository;
 	@Autowired
 	private ResourceLoader resourceloader;
-
+	@Autowired
+	private ShUtils shUtils;
+	
 	@GetMapping("/pre-upload/{folderId}/{fileName}")
 	@JsonView({ ShJsonView.ShJsonViewObject.class })
 	public ResponseEntity<ShHttpMessageBean> shStaticFilePreUpload(@PathVariable String fileName,
@@ -106,7 +109,7 @@ public class ShStaticFileAPI {
 		ShFolder shFolder = shFolderRepository.findById(folderId).orElse(null);
 		if (!shStaticFileUtils.fileExists(shFolder, file.getOriginalFilename())) {
 			return new ResponseEntity<>(
-					shStaticFileUtils.createFilePost(file, file.getOriginalFilename(), shFolder, principal, createPost),
+					shStaticFileUtils.createFilePost(file, shUtils.sanitizedString(file.getOriginalFilename()), shFolder, principal, createPost),
 					HttpStatus.OK);
 		} else {
 
