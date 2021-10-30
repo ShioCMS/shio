@@ -60,8 +60,7 @@ public class ShFolderImport {
 		Map<String, Object> shObjects = shExchangeObjectMap.getShObjects();
 		if (shChildObjects.containsKey(shObject)) {
 			for (String objectId : shChildObjects.get(shObject)) {
-				if (shObjects.get(objectId) instanceof ShFolderExchange) {
-					ShFolderExchange shFolderExchange = (ShFolderExchange) shObjects.get(objectId);
+				if (shObjects.get(objectId)instanceof ShFolderExchange shFolderExchange) {
 					ShFolderExchangeContext context = new ShFolderExchangeContext();
 					context.setCloned(shExchangeContext.isCloned());
 					context.setExtractFolder(shExchangeContext.getExtractFolder());
@@ -73,8 +72,7 @@ public class ShFolderImport {
 					this.createShFolder(context);
 				}
 
-				if (!importOnlyFolders && shObjects.get(objectId) instanceof ShPostExchange) {
-					ShPostExchange shPostExchange = (ShPostExchange) shObjects.get(objectId);
+				if (!importOnlyFolders && shObjects.get(objectId)instanceof ShPostExchange shPostExchange) {
 					shPostImport.createShPost(shExchangeContext, shPostExchange, shExchangeObjectMap);
 				}
 			}
@@ -89,10 +87,11 @@ public class ShFolderImport {
 			shFolderChild = shFolderOptional.get();
 		} else {
 			shFolderChild = this.createFolderObject(context.getShFolderExchange(), context.getUsername(),
-					context.getShObject(),context.getShExchangeObjectMap().getShObjects(), context.isCloned());
+					context.getShObject(), context.getShExchangeObjectMap().getShObjects(), context.isCloned());
 		}
 
-		this.shFolderImportNested(shFolderChild.getId(), context.isImportOnlyFolders(), context.getShExchangeObjectMap(),
+		this.shFolderImportNested(shFolderChild.getId(), context.isImportOnlyFolders(),
+				context.getShExchangeObjectMap(),
 				new ShExchangeContext(context.getExtractFolder(), context.isCloned()));
 
 		return shFolderChild;
@@ -131,13 +130,11 @@ public class ShFolderImport {
 			shFolderChild.setParentFolder(parentFolder);
 			shFolderChild.setRootFolder((byte) 0);
 		} else {
-			if (shObjects.get(shObject) instanceof ShSiteExchange) {
-				ShSiteExchange shSiteExchange = (ShSiteExchange) shObjects.get(shObject);
-				if (shSiteExchange.getRootFolders().contains(shFolderExchange.getId())) {
-					shFolderChild.setRootFolder((byte) 1);
-					ShSite parentSite = shSiteRepository.findById(shSiteExchange.getId()).orElse(null);
-					shFolderChild.setShSite(parentSite);
-				}
+			if (shObjects.get(shObject)instanceof ShSiteExchange shSiteExchange
+					&& shSiteExchange.getRootFolders().contains(shFolderExchange.getId())) {
+				shFolderChild.setRootFolder((byte) 1);
+				ShSite parentSite = shSiteRepository.findById(shSiteExchange.getId()).orElse(null);
+				shFolderChild.setShSite(parentSite);
 			}
 		}
 	}

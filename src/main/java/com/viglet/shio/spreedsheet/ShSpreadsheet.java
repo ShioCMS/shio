@@ -235,12 +235,12 @@ public class ShSpreadsheet {
 		} else {
 			ShObjectImpl shObject = shPostAttr.getReferenceObject();
 
-			if (shObject instanceof ShFolder) {
-				value = ((ShFolder) shObject).getName();
-			} else if (shObject instanceof ShPost) {
-				value = ((ShPostImpl) shObject).getTitle();
-			} else if (shObject instanceof ShSite) {
-				value = ((ShSite) shObject).getName();
+			if (shObject instanceof ShFolder shFolder) {
+				value = shFolder.getName();
+			} else if (shObject instanceof ShPostImpl shPostImpl) {
+				value = shPostImpl.getTitle();
+			} else if (shObject instanceof ShSite shSite) {
+				value = shSite.getName();
 			}
 		}
 		cell.setCellValue(value);

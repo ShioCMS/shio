@@ -124,19 +124,19 @@ public class ShTuringIntegration {
 
 	private String getObjectTypeName(ShObjectImpl shObject) {
 		String objectTypeName = null;
-		if (shObject instanceof ShPost)
-			objectTypeName = ((ShPostImpl) shObject).getShPostType().getName();
-		else if (shObject instanceof ShFolder)
+		if (shObject instanceof ShPostImpl shPostImpl)
+			objectTypeName = shPostImpl.getShPostType().getName();
+		else if (shObject instanceof ShFolder shFolder)
 			objectTypeName = ShObjectType.FOLDER;
 		return objectTypeName;
 	}
 
 	private String getObjectName(ShObjectImpl shObject) {
 		String objectName = null;
-		if (shObject instanceof ShPost)
-			objectName = ((ShPostImpl) shObject).getTitle();
-		else if (shObject instanceof ShFolder)
-			objectName = ((ShFolder) shObject).getName();
+		if (shObject instanceof ShPostImpl shPostImpl)
+			objectName = shPostImpl.getTitle();
+		else if (shObject instanceof ShFolder shFolder)
+			objectName = shFolder.getName();
 		return objectName;
 	}
 
@@ -201,10 +201,10 @@ public class ShTuringIntegration {
 
 			addGenericAttributes(shObject, attributes);
 
-			if (shObject instanceof ShPost)
-				addPost(shObject, attributes);
-			else if (shObject instanceof ShFolder)
-				addFolder(shObject, attributes);
+			if (shObject instanceof ShPost shPost)
+				addPost(shPost, attributes);
+			else if (shObject instanceof ShFolder shFolder)
+				addFolder(shFolder, attributes);
 
 			// If URL is null, is a invisible page
 			if (attributes.get("url") != null) {
@@ -221,8 +221,7 @@ public class ShTuringIntegration {
 	}
 
 	private void addPost(ShObjectImpl shObject, Map<String, Object> attributes) {
-		if (shObject instanceof ShPost) {
-			ShPost shPost = (ShPost) shObject;
+		if (shObject instanceof ShPost shPost) {
 			shPostTypeRepository.findById(shPost.getShPostType().getId()).ifPresent(shPostType -> {
 				addDefaultAttributes(attributes, shPost);
 				addAssociationAttributes(attributes, shPost, shPostType);

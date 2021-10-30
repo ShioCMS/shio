@@ -185,8 +185,8 @@ public class ShPostImport {
 	@SuppressWarnings("unchecked")
 	private void setPostAttrValue(Entry<String, Object> shPostField, ShPostTypeAttr shPostTypeAttr,
 			ShPostAttr shPostAttr) {
-		if (shPostField.getValue() instanceof ArrayList)
-			shPostAttr.setArrayValue((new HashSet<String>((ArrayList<String>) shPostField.getValue())));
+		if (shPostField.getValue() instanceof ArrayList<?> arrayListValue)
+			shPostAttr.setArrayValue((new HashSet<String>((ArrayList<String>) arrayListValue)));
 		else if (shPostTypeAttr != null && shPostTypeAttr.getShWidget() != null
 				&& shPostTypeAttr.getShWidget().getName().equals(ShSystemWidget.DATE)) {
 			setDateAttr(shPostField, shPostAttr);

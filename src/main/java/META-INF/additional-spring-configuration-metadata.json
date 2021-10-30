@@ -33,5 +33,10 @@
     "name": "shio.website.nashorn",
     "type": "java.lang.String",
     "description": "A description for 'shio.website.nashorn'"
+  },
+  {
+    "name": "shio.mgmt.enabled",
+    "type": "java.lang.String",
+    "description": "A description for 'shio.mgmt.enabled'"
   }
 ]}

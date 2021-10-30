@@ -63,11 +63,9 @@ public class ShFolderUtils {
 	}
 
 	public ShFolder getParentFolder(ShObjectImpl shObject) {
-		if (shObject instanceof ShPost) {
-			ShPostImpl shPost = (ShPostImpl) shObject;
-			return shPost.getShFolder();
-		} else if (shObject instanceof ShFolder) {
-			ShFolder shFolder = (ShFolder) shObject;
+		if (shObject instanceof ShPostImpl shPostImpl) {
+			return shPostImpl.getShFolder();
+		} else if (shObject instanceof ShFolder shFolder) {
 			return shFolder.getParentFolder();
 		}
 		return null;
@@ -257,13 +255,11 @@ public class ShFolderUtils {
 
 	public ShFolder copy(ShFolder shFolder, ShObjectImpl shObjectDest) {
 		ShFolder shFolderCopy = new ShFolder();
-		if (shObjectDest instanceof ShFolder) {
-			ShFolder shFolderDest = (ShFolder) shObjectDest;
+		if (shObjectDest instanceof ShFolder shFolderDest) {
 			shFolderCopy.setParentFolder(shFolderDest);
 			shFolderCopy.setShSite(null);
 			shFolderCopy.setRootFolder((byte) 0);
-		} else if (shObjectDest instanceof ShSite) {
-			ShSite shSiteDest = (ShSite) shObjectDest;
+		} else if (shObjectDest instanceof ShSite shSiteDest) {
 			shFolderCopy.setParentFolder(null);
 			shFolderCopy.setShSite(shSiteDest);
 			shFolderCopy.setRootFolder((byte) 1);

@@ -58,14 +58,13 @@ public class ShWorkflow {
 	private ShGroupRepository shGroupRepository;
 
 	public void requestWorkFlow(ShObject shObject, Principal principal) {
-		if (shObject instanceof ShPost && shWorkflowTaskRepository.countByShObject(shObject) == 0) {
+		if (shObject instanceof ShPostImpl shPostImpl && shWorkflowTaskRepository.countByShObject(shObject) == 0) {
 			ShWorkflowTask shWorkflowTask = new ShWorkflowTask();
 			shWorkflowTask.setDate(new Date());
 			shWorkflowTask.setTitle("Request to Publish");
 			shWorkflowTask.setShObject(shObject);
 			shWorkflowTask.setRequester(principal.getName());
-			ShPostImpl shPost = (ShPostImpl) shObject;
-			shWorkflowTask.setRequested(shPost.getShPostType().getWorkflowPublishEntity());
+			shWorkflowTask.setRequested(shPostImpl.getShPostType().getWorkflowPublishEntity());
 
 			shWorkflowTaskRepository.save(shWorkflowTask);
 
@@ -78,11 +77,9 @@ public class ShWorkflow {
 		try {
 
 			String title = StringUtils.EMPTY;
-			if (shWorkflowTask.getShObject() instanceof ShPost) {
-				ShPostImpl shPost = (ShPostImpl) shWorkflowTask.getShObject();
-				title = shPost.getTitle();
-			} else if (shWorkflowTask.getShObject() instanceof ShFolder) {
-				ShFolder shFolder = (ShFolder) shWorkflowTask.getShObject();
+			if (shWorkflowTask.getShObject() instanceof ShPostImpl shPostImpl) {
+				title = shPostImpl.getTitle();
+			} else if (shWorkflowTask.getShObject() instanceof ShFolder shFolder) {
 				title = shFolder.getName();
 			}
 

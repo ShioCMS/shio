@@ -52,8 +52,8 @@ public class ShSitesObjectUtils {
 
 	public boolean isVisiblePage(ShObjectImpl shObject) {
 		ShFolder shFolder = null;
-		if (shObject instanceof ShFolder) {
-			shFolder = (ShFolder) shObject;
+		if (shObject instanceof ShFolder shFolderInst) {
+			shFolder = shFolderInst;
 			ShPost shFolderIndexPost = shSitesFolderUtils.getFolderIndex(shFolder);
 			if (shFolderIndexPost != null) {
 				Map<String, ShPostAttr> shFolderIndexPostMap = shSitesPostUtils.postToMap(shFolderIndexPost);
@@ -83,10 +83,10 @@ public class ShSitesObjectUtils {
 			Optional<ShObject> shObjectOptional = shObjectRepository.findById(objectId);
 			if (shObjectOptional.isPresent()) {
 				ShObjectImpl shObject = shObjectOptional.get();
-				if (shObject instanceof ShPost) {
-					return shSitesPostUtils.generatePostLink((ShPost) shObject);
-				} else if (shObject instanceof ShFolder) {
-					return shSitesFolderUtils.generateFolderLink((ShFolder) shObject);
+				if (shObject instanceof ShPostImpl shPostImpl) {
+					return shSitesPostUtils.generatePostLink(shPostImpl);
+				} else if (shObject instanceof ShFolder shFolder) {
+					return shSitesFolderUtils.generateFolderLink(shFolder);
 				}
 			}
 
@@ -99,11 +99,11 @@ public class ShSitesObjectUtils {
 			Optional<ShObject> shObjectOptional = shObjectRepository.findById(objectId);
 			if (shObjectOptional.isPresent()) {
 				ShObjectImpl shObject = shObjectOptional.get();
-				if (shObject instanceof ShPost) {
+				if (shObject instanceof ShPostImpl shPostImpl) {
 					if (scale == 1) {
-						return shSitesPostUtils.generatePostLink((ShPost) shObject);
+						return shSitesPostUtils.generatePostLink(shPostImpl);
 					} else {
-						return shSitesPostUtils.generatePostLink((ShPost) shObject).replaceAll("^/store/file_source",
+						return shSitesPostUtils.generatePostLink(shPostImpl).replaceAll("^/store/file_source",
 								String.format("/image/scale/%d", scale));
 					}
 				} else {

@@ -31,6 +31,7 @@ import org.springframework.stereotype.Component;
 import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.object.ShObject;
 import com.viglet.shio.persistence.model.post.ShPost;
+import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.repository.object.ShObjectRepository;
 import com.viglet.shio.persistence.repository.post.ShPostRepository;
 import com.viglet.shio.utils.ShFolderUtils;
@@ -79,13 +80,13 @@ public class ShCacheObject {
 	public void deleteCache(String id) {
 		ShObject shObject = shObjectRepository.findById(id).orElse(null);
 		String objectId = id;
-		if (shObject instanceof ShFolder) {
-			ShPost shFolderIndex = shPostRepository.findByShFolderAndFurl((ShFolder) shObject, "index");
+		if (shObject instanceof ShFolder shFolder) {
+			ShPost shFolderIndex = shPostRepository.findByShFolderAndFurl(shFolder, "index");
 			if (shFolderIndex != null) {
 				objectId = shFolderIndex.getId();
 			}
-		} else if (shObject instanceof ShPost) {
-			ShFolder shFolder = shFolderUtils.getParentFolder(shObject);
+		} else if (shObject instanceof ShPostImpl shPostImpl) {
+			ShFolder shFolder = shFolderUtils.getParentFolder(shPostImpl);
 			this.deleteCache(shFolder.getId());
 		}
 

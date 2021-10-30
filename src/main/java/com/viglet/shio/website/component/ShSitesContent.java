@@ -35,6 +35,7 @@ import com.viglet.shio.persistence.model.folder.ShFolder;
 import com.viglet.shio.persistence.model.object.impl.ShObjectImpl;
 import com.viglet.shio.persistence.model.post.ShPost;
 import com.viglet.shio.persistence.model.post.ShPostAttr;
+import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.persistence.repository.object.ShObjectRepository;
 import com.viglet.shio.persistence.repository.post.ShPostRepository;
@@ -91,29 +92,27 @@ public class ShSitesContent {
 
 		ShSite shSite = shSiteRepository.findById(shSitesContextURL.getInfo().getSiteId()).orElse(null);
 
-		if (shObject instanceof ShFolder) {
-			ShFolder shFolder = (ShFolder) shObject;
+		if (shObject instanceof ShFolder shFolder) {
 			return this.fromFolder(shSite, shFolder, shSitesContextURL);
-		} else if (shObject instanceof ShPost) {
-			ShPost shPost = (ShPost) shObject;
-			return isFolderIndex(shPost) ? this.fromFolderIndex(shSite, shPost, shSitesContextURL)
-					: this.fromPost(shSite, shPost, shSitesContextURL);
+		} else if (shObject instanceof ShPostImpl shPostImpl) {
+			return isFolderIndex(shPostImpl) ? this.fromFolderIndex(shSite, shPostImpl, shSitesContextURL)
+					: this.fromPost(shSite, shPostImpl, shSitesContextURL);
 		}
 		return new ShContent();
 	}
 
-	private boolean isFolderIndex(ShPost shPost) {
-		return shPost.getShPostType().getName().equals(ShSystemPostType.FOLDER_INDEX);
+	private boolean isFolderIndex(ShPostImpl shPostImpl) {
+		return shPostImpl.getShPostType().getName().equals(ShSystemPostType.FOLDER_INDEX);
 	}
 
-	private ShContent fromFolderIndex(ShSite shSite, ShPost shPost, ShSitesContextURL shSitesContextURL) {
+	private ShContent fromFolderIndex(ShSite shSite, ShPostImpl shPostImpl, ShSitesContextURL shSitesContextURL) {
 
 		Map<String, Object> shPostItemAttrs = new HashMap<>();
 
-		Map<String, ShPostAttr> shFolderPageLayoutMap = shSitesContextComponent.shFolderPageLayoutMapFactory(shPost,
+		Map<String, ShPostAttr> shFolderPageLayoutMap = shSitesContextComponent.shFolderPageLayoutMapFactory(shPostImpl,
 				shSite, shSitesContextURL.getInfo().getShFormat());
 
-		ShFolder shFolderItem = shSitesContextComponent.shFolderItemFactory(shPost);
+		ShFolder shFolderItem = shSitesContextComponent.shFolderItemFactory(shPostImpl);
 
 		ShContent shFolderItemAttrs = shSitesFolderUtils.toSystemMap(shFolderItem);
 		if (shFolderPageLayoutMap != null) {
@@ -130,11 +129,11 @@ public class ShSitesContent {
 		return shFolderItemAttrs;
 	}
 
-	private ShContent fromPost(ShSite shSite, ShPost shPost, ShSitesContextURL shSitesContextURL) {
+	private ShContent fromPost(ShSite shSite, ShPostImpl shPostImpl, ShSitesContextURL shSitesContextURL) {
 
 		Map<String, Object> shSiteItemAttrs = shSiteUtils.toSystemMap(shSite);
 
-		ShContent shPostItemAttrs = shSitesPostUtils.toSystemMap(shPost);
+		ShContent shPostItemAttrs = shSitesPostUtils.toSystemMap(shPostImpl);
 		JSONObject postTypeLayout = new JSONObject();
 
 		if (shSite.getPostTypeLayout() != null)
@@ -144,7 +143,7 @@ public class ShSitesContent {
 		ShSitePostTypeLayouts shSitePostTypeLayouts = null;
 
 		try {
-			shSitePostTypeLayouts = mapper.readValue(postTypeLayout.get(shPost.getShPostType().getName()).toString(),
+			shSitePostTypeLayouts = mapper.readValue(postTypeLayout.get(shPostImpl.getShPostType().getName()).toString(),
 					ShSitePostTypeLayouts.class);
 		} catch (JsonProcessingException | JSONException e) {
 			logger.error("fromPost Error: ", e);

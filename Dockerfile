@@ -3,7 +3,7 @@ WORKDIR /app
 COPY . .
 RUN ./gradlew build
 
-FROM adoptopenjdk/openjdk14:jre
+FROM adoptopenjdk/openjdk16:jre
 WORKDIR /app
 ENV JAVA_OPTS=${JAVA_OPTS:-'-Xmx512m'}
 ENV DEBUG_OPTS=${DEBUG_OPTS}

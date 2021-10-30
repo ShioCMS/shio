@@ -98,13 +98,11 @@ public class ShGraphQLQTObjectFromURL {
 				String siteName = site.getJSONObject(SYSTEM_ATTR).getString("title");
 				String type = null;
 
-				if (shObject.get() instanceof ShPost) {
-					ShPost shPost = (ShPost) shObject.get(); // NOSONAR
+				if (shObject.get() instanceof ShPost shPost) {
 					type = shGraphQLUtils.normalizedName(shPost.getShPostType().getName());
-
-				} else if (shObject.get() instanceof ShFolder) {
+				} else if (shObject.get() instanceof ShFolder shFolder) {
 					type = "folder";
-				} else if (shObject.get() instanceof ShSite) {
+				} else if (shObject.get() instanceof ShSite shSite) {
 					type = "site";
 				}
 

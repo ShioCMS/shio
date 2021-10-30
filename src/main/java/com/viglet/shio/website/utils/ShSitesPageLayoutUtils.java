@@ -83,15 +83,13 @@ public class ShSitesPageLayoutUtils {
 		String format = shSitesContextURL.getInfo().getShFormat();
 
 		if (shObject.isPresent() && shSite.isPresent()) {
-			if (shObject.get() instanceof ShFolder) {
-				ShFolder shFolder = (ShFolder) shObject.get();
+			if (shObject.get() instanceof ShFolder shFolder) {
 				return this.pageLayoutFromFolderAndFolderIndex(shFolder, shSite.get(), format);
-			} else if (shObject.get() instanceof ShPost) {
-				ShPost shPost = (ShPost) shObject.get();
-				if (shPost.getShPostType().getName().equals(ShSystemPostType.FOLDER_INDEX)) {
-					return this.pageLayoutFromFolderAndFolderIndex(shPost, shSite.get(), format);
+			} else if (shObject.get() instanceof ShPostImpl shPostImpl) {
+				if (shPostImpl.getShPostType().getName().equals(ShSystemPostType.FOLDER_INDEX)) {
+					return this.pageLayoutFromFolderAndFolderIndex(shPostImpl, shSite.get(), format);
 				} else {
-					return this.pageLayoutFromPost(shPost, shSite.get(), format);
+					return this.pageLayoutFromPost(shPostImpl, shSite.get(), format);
 				}
 
 			}
@@ -138,14 +136,14 @@ public class ShSitesPageLayoutUtils {
 
 	public ShPost pageLayoutFromFolderAndFolderIndex(ShObjectImpl shObjectItem, ShSite shSite, String format) {
 		ShPost shFolderPageLayout = null;
-		if (shObjectItem instanceof ShPost) {
+		if (shObjectItem instanceof ShPostImpl shPostImpl) {
 			if (logger.isDebugEnabled())
 				logger.debug("isPost");
-			shFolderPageLayout = folderIndexPageLayout(shObjectItem, format, shFolderPageLayout);
-		} else if (shObjectItem instanceof ShFolder) {
+			shFolderPageLayout = folderIndexPageLayout(shPostImpl, format, shFolderPageLayout);
+		} else if (shObjectItem instanceof ShFolder shFolder) {
 			if (logger.isDebugEnabled())
 				logger.debug("isFolder");
-			ShPost shFolderIndex = shPostRepository.findByShFolderAndFurl((ShFolder) shObjectItem, "index");
+			ShPost shFolderIndex = shPostRepository.findByShFolderAndFurl(shFolder, "index");
 			if (shFolderIndex != null) {
 				shFolderPageLayout = folderIndexPageLayout(shFolderIndex, format, shFolderPageLayout);
 			} else {
