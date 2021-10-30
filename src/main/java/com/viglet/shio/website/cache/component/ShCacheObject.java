@@ -35,6 +35,7 @@ import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.repository.object.ShObjectRepository;
 import com.viglet.shio.persistence.repository.post.ShPostRepository;
 import com.viglet.shio.utils.ShFolderUtils;
+import com.viglet.shio.utils.ShUtils;
 import com.viglet.shio.website.ShSitesContextURL;
 import com.viglet.shio.website.utils.ShSitesObjectUtils;
 
@@ -46,22 +47,24 @@ import com.viglet.shio.website.utils.ShSitesObjectUtils;
 public class ShCacheObject {
 	private static final Log logger = LogFactory.getLog(ShCacheObject.class);
 	@Autowired
-	ShCachePage shCachePage;
+	private ShCachePage shCachePage;
 	@Autowired
-	ShCacheURL shCacheURL;
+	private ShCacheURL shCacheURL;
 	@Autowired
-	ShObjectRepository shObjectRepository;
+	private ShObjectRepository shObjectRepository;
 	@Autowired
-	ShPostRepository shPostRepository;
+	private ShPostRepository shPostRepository;
 	@Autowired
-	ShFolderUtils shFolderUtils;
+	private ShFolderUtils shFolderUtils;
 	@Autowired
-	ShSitesObjectUtils shSitesObjectUtils;
+	private  ShUtils shUtils;
+	@Autowired
+	private ShSitesObjectUtils shSitesObjectUtils;
 
 	@Cacheable(value = "shObject", key = "#id", sync = true)
 	public List<String> cache(String id) {
 		if (logger.isDebugEnabled()) {
-			String sanitizedId = id.replaceAll("[\n\r\t]", "_");
+			String sanitizedId = shUtils.sanitizedString(id);
 			logger.debug("Creating the shObject Cache id " + sanitizedId);
 		}
 		return new ArrayList<>();
@@ -97,7 +100,7 @@ public class ShCacheObject {
 	}
 
 	public void deleteDependency(String id) {
-		String sanitizedId = id.replaceAll("[\n\r\t]", "_");
+		String sanitizedId = shUtils.sanitizedString(id);
 		if (logger.isDebugEnabled())
 			logger.debug("Executing deleteDependency for id: " + sanitizedId);
 		List<String> urls = cache(id);
@@ -128,7 +131,7 @@ public class ShCacheObject {
 	@CacheEvict(value = "shObject", key = "#id")
 	public void deleteCacheSelf(String id) {
 		if (logger.isDebugEnabled()) {
-			String sanitizedId = id.replaceAll("[\n\r\t]", "_");
+			String sanitizedId = shUtils.sanitizedString(id);
 			logger.debug("Deleted Cache: ".concat(sanitizedId));
 		}
 	}

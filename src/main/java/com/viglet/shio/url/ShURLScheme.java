@@ -28,6 +28,7 @@ import com.viglet.shio.persistence.model.object.impl.ShObjectImpl;
 import com.viglet.shio.persistence.model.post.impl.ShPostImpl;
 import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.utils.ShFolderUtils;
+import com.viglet.shio.utils.ShUtils;
 
 /**
  * @author Alexandre Oliveira
@@ -38,6 +39,8 @@ public class ShURLScheme {
 	private HttpServletRequest request;
 	@Autowired
 	private ShFolderUtils shFolderUtils;
+	@Autowired
+	private ShUtils shUtils;
 
 	private static final String X_SH_SITE = "x-sh-site";
 	private static final String X_SH_CONTEXT = "x-sh-context";
@@ -46,7 +49,7 @@ public class ShURLScheme {
 		String shXSiteName = request.getHeader(X_SH_SITE);
 		String url = StringUtils.EMPTY;
 		if (StringUtils.isNotEmpty(shXSiteName)) {
-			var shContext = request.getHeader(X_SH_CONTEXT).replaceAll("[\n\r\t]", "_");
+			var shContext = shUtils.sanitizedString(request.getHeader(X_SH_CONTEXT));
 			if (StringUtils.isNotEmpty(shContext)) {
 				url = "/".concat(shContext);
 			}
@@ -70,7 +73,7 @@ public class ShURLScheme {
 	}
 
 	public String get() {
-		String shSiteName = request.getHeader(X_SH_SITE);
+		String shSiteName = shUtils.sanitizedString(request.getHeader(X_SH_SITE));
 		String url = null;
 		if (StringUtils.isNotEmpty(shSiteName)) {
 			url = StringUtils.EMPTY;

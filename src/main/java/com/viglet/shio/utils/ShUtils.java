@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2020 the original author or authors. 
+ * Copyright (C) 2016-2021 the original author or authors. 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,11 @@ import com.viglet.shio.api.ShJsonView.ShJsonViewGenericType;
  */
 @Component
 public class ShUtils {
+
+	public String sanitizedString(String string) {
+		return (string != null) ? string.replaceAll("[\n\r\t]", "_") : null;
+	}
+
 	public static String asJsonString(final Object obj) throws ShUtilsException {
 		try {
 			return new ObjectMapper().writeValueAsString(obj);

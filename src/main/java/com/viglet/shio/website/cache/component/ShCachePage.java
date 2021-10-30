@@ -36,6 +36,7 @@ import com.viglet.shio.persistence.model.post.impl.ShPostAttrImpl;
 import com.viglet.shio.persistence.model.site.ShSite;
 import com.viglet.shio.persistence.repository.object.ShObjectRepository;
 import com.viglet.shio.persistence.repository.site.ShSiteRepository;
+import com.viglet.shio.utils.ShUtils;
 import com.viglet.shio.website.ShSitesContextComponent;
 import com.viglet.shio.website.ShSitesContextURL;
 import com.viglet.shio.website.component.ShSitesPage;
@@ -60,7 +61,9 @@ public class ShCachePage {
 	private ShCacheObject shCacheObject;
 	@Autowired
 	private ShSitesPostUtils shSitesPostUtils;
-
+	@Autowired
+	private ShUtils shUtils;
+	
 	@Cacheable(value = "page", key = "{#shSitesContextURL.getInfo().getObjectId(), #shSitesContextURL.getInfo().getContextURLOriginal()}", sync = true)
 	public ShCachePageBean cache(ShSitesContextURL shSitesContextURL) {
 
@@ -192,7 +195,7 @@ public class ShCachePage {
 	@CacheEvict(value = "page", key = "{#id, #url}")
 	public void deleteCache(String id, String url) {
 		if (logger.isDebugEnabled()) {
-			String sanitizedId = id.replaceAll("[\n\r\t]", "_");
+			String sanitizedId = shUtils.sanitizedString(id);
 			logger.debug(String.format("Deleted cache of id %s, %s", sanitizedId, url));
 		}
 	}
