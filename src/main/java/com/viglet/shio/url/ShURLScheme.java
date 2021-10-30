@@ -46,7 +46,7 @@ public class ShURLScheme {
 		String shXSiteName = request.getHeader(X_SH_SITE);
 		String url = StringUtils.EMPTY;
 		if (StringUtils.isNotEmpty(shXSiteName)) {
-			var shContext = request.getHeader(X_SH_CONTEXT);
+			var shContext = request.getHeader(X_SH_CONTEXT).replaceAll("[\n\r\t]", "_");
 			if (StringUtils.isNotEmpty(shContext)) {
 				url = "/".concat(shContext);
 			}
