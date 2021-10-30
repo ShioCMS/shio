@@ -33,7 +33,7 @@ import com.viglet.shio.api.ShJsonView.ShJsonViewGenericType;
 public class ShUtils {
 
 	public String sanitizedString(String string) {
-		return string.replaceAll("[\n\r\t]", "_");
+		return (string != null) ? string.replaceAll("[\n\r\t]", "_") : null;
 	}
 
 	public static String asJsonString(final Object obj) throws ShUtilsException {
