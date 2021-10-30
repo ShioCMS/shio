@@ -1,9 +1,9 @@
-FROM adoptopenjdk/openjdk14:latest as shiobuild
+FROM eclipse-temurin:17-jdk-centos7 as shiobuild
 WORKDIR /app
 COPY . .
 RUN ./gradlew build
 
-FROM adoptopenjdk/openjdk16:jre
+FROM eclipse-temurin:17-jdk-centos7
 WORKDIR /app
 ENV JAVA_OPTS=${JAVA_OPTS:-'-Xmx512m'}
 ENV DEBUG_OPTS=${DEBUG_OPTS}
