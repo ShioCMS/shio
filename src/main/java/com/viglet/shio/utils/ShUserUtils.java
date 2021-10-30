@@ -37,13 +37,15 @@ public class ShUserUtils {
 	private ShUserRepository shUserRepository;
 	@Autowired
 	private IShAuthenticationFacade authenticationFacade;
-
+	@Autowired
+	private ShUtils shUtils;
+	
 	private static final String DEFAULT_ANONYMOUS_USER = "anonymous";
 
 	public String getCurrentUsername() {
 		Authentication authentication = authenticationFacade.getAuthentication();
-		return authentication != null && authentication.getName().replaceAll("[\n\r\t]", "_") != null
-				? authentication.getName()
+		return authentication != null && authentication.getName() != null
+				? shUtils.sanitizedString(authentication.getName())
 				: DEFAULT_ANONYMOUS_USER;
 
 	}
