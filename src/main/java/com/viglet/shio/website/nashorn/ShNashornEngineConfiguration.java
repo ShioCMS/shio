@@ -27,6 +27,7 @@ import javax.script.ScriptEngineFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,22 +39,22 @@ import org.springframework.context.annotation.Configuration;
 public class ShNashornEngineConfiguration {
 	private static final Log logger = LogFactory.getLog(ShNashornEngineConfiguration.class);
 
+	private static final String NASHORN_CLASS = "org.openjdk.nashorn.api.scripting.NashornScriptEngineFactory";
+	private static final String RHINO_CLASS = "org.openjdk.nashorn.api.scripting.NashornScriptEngineFactory";
+	private static final String NASHORN_ENGINE = "nashorn";
+
+	@Value("${shio.website.javascript.engine:nashorn}")
+	private String defaultEngine;
+
 	@Resource
 	private ApplicationContext context;
 
 	@Bean
 	public ScriptEngine scriptEngine(ShNashornEngineBindings shBindings) {
 
-		Class<?> nashornScriptEngineFactory;
 		try {
+			ScriptEngine engine = defaultEngine.equals(NASHORN_ENGINE) ? nashornEngine(shBindings) : rhinoEngine();
 
-			nashornScriptEngineFactory = Class.forName("org.openjdk.nashorn.api.scripting.NashornScriptEngineFactory");
-
-			Method getScriptEngine = nashornScriptEngineFactory.getDeclaredMethod("getScriptEngine", String[].class);
-			ScriptEngineFactory scriptEngineFactory = (ScriptEngineFactory) nashornScriptEngineFactory
-					.getDeclaredConstructor().newInstance();
-			ScriptEngine engine = (ScriptEngine) getScriptEngine.invoke(scriptEngineFactory,
-					shBindings.getShWebsiteProperties().getNashornAsObject());
 			Bindings bindings = engine.createBindings();
 
 			bindings.put("shNavigationComponent", shBindings.getShNavigationComponent());
@@ -73,6 +74,29 @@ public class ShNashornEngineConfiguration {
 			logger.error("ShNashornEngineConfiguration Error:", e);
 		}
 		return null;
+	}
+
+	private ScriptEngine rhinoEngine() throws ClassNotFoundException, NoSuchMethodException, InstantiationException,
+			IllegalAccessException, InvocationTargetException {
+		ScriptEngine engine;
+		Class<?> rhinoScriptEngineFactory = Class.forName(RHINO_CLASS);
+		Method getScriptEngine = rhinoScriptEngineFactory.getDeclaredMethod("getScriptEngine");
+		ScriptEngineFactory scriptEngineFactory = (ScriptEngineFactory) rhinoScriptEngineFactory
+				.getDeclaredConstructor().newInstance();
+		engine = (ScriptEngine) getScriptEngine.invoke(scriptEngineFactory);
+		return engine;
+	}
+
+	private ScriptEngine nashornEngine(ShNashornEngineBindings shBindings) throws ClassNotFoundException,
+			NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+		ScriptEngine engine;
+		Class<?> nashornScriptEngineFactory = Class.forName(NASHORN_CLASS);
+		Method getScriptEngine = nashornScriptEngineFactory.getDeclaredMethod("getScriptEngine", String[].class);
+		ScriptEngineFactory scriptEngineFactory = (ScriptEngineFactory) nashornScriptEngineFactory
+				.getDeclaredConstructor().newInstance();
+		engine = (ScriptEngine) getScriptEngine.invoke(scriptEngineFactory,
+				shBindings.getShWebsiteProperties().getNashornAsObject());
+		return engine;
 	}
 
 }
