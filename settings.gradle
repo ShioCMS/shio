@@ -1,1 +1,3 @@
 rootProject.name = 'viglet-shio'
+include ':shio-app'
+include ':shio-ui'

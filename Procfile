@@ -1,1 +1,1 @@
-web: java -jar build/libs/viglet-shio.jar
+web: java -jar shio-app/build/libs/viglet-shio.jar

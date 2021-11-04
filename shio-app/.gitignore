@@ -1,0 +1,35 @@
+*.class
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.war
+*.ear
+/.classpath
+/.vscode
+/.settings
+/.project
+/volumes
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+/bin/
+/target/
+/store/
+/.gradle/
+/logs/
+/build/
+/backup/
+src/main/resources/js/client-side/build
+/nashorn_code_cache
+.sts4-cache
+.metals
+.bloop
+/store.*/
+/node_modules
+
+# Shio Stock
+/shio-media.zip
+/shio-media-master/
+/src/main/resources/ui/public/media/
