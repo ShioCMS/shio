@@ -13,7 +13,7 @@ RUN useradd --system --create-home --uid 1001 --gid 0 java
 
 RUN sh -c 'mkdir -p /app/store'
 
-COPY --from=shiobuild  /app/build/libs/viglet-shio.jar /app/app.jar
+COPY --from=shiobuild  /app/shio-app/build/libs/shio-app.jar /app/app.jar
 RUN sh -c 'touch /app/app.jar'
 RUN sh -c 'chown -R java /app'
 
