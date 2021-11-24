@@ -16,7 +16,7 @@ guidelines](CONTRIBUTING.md).**
 # Installation
 
 ## Pre-reqs
-1. Install Java 14
+1. Install Java 17
 2. Install Git Client
 3. Install NPM
 4. Install Angular CLI
