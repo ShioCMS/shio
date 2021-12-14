@@ -30,7 +30,7 @@
     "@fortawesome/fontawesome-common-types": "^0.2.36",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
-    "@primer/css": "^16.3.0",
+    "@primer/css": "^19.1.0",
     "@primer/octicons": "*",
     "@primer/styled-octicons": "^13.0.0",
     "@tinymce/tinymce-angular": "^4.2.2",
