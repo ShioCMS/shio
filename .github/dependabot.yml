@@ -11,7 +11,7 @@ updates:
       interval: "daily"
     target-branch: "0.3.9"
     open-pull-requests-limit: 15
-  - package-ecosystem: "gradle" # See documentation for possible values
+  - package-ecosystem: "npm" # See documentation for possible values
     directory: "/shio-ui" # Location of package manifests
     schedule:
       interval: "daily"
