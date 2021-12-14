@@ -34,7 +34,7 @@
     "@primer/octicons": "*",
     "@primer/styled-octicons": "^13.0.0",
     "@tinymce/tinymce-angular": "^4.2.2",
-    "ace-builds": "1.4.12",
+    "ace-builds": "1.4.13",
     "ace-editor-ng9": "^9.1.11",
     "angular-notifier": "*",
     "brace": "0.11.1",
