@@ -47,7 +47,7 @@
     "num2fraction": "^1.2.2",
     "rxjs": "^6.6.3",
     "tinymce": "^5.6.2",
-    "tslib": "^2.1.0"
+    "tslib": "^2.3.1"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.1102.11",
