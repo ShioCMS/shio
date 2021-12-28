@@ -224,7 +224,7 @@ dependencies {
 	implementation 'com.google.guava:guava:31.0.1-jre'
 	
 	// Rome
-	implementation group: 'com.rometools', name: 'rome', version: '1.16.0'
+	implementation group: 'com.rometools', name: 'rome', version: '1.17.0'
 
 	
 	// WebJars
