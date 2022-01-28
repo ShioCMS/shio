@@ -163,7 +163,7 @@ dependencies {
     implementation group: 'com.h2database', name: 'h2', version:'2.0.204'
 
 	// MariaDB
-    implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.7.5'
+    implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '3.0.3'
 
     // Apache Commons
     implementation group: 'org.apache.commons', name: 'commons-compress', version: '1.21'   
