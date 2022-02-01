@@ -160,7 +160,7 @@ dependencies {
 	implementation group: 'com.oracle.ojdbc', name: 'ojdbc8', version: '19.3.0.0'
 	
     // H2
-    implementation group: 'com.h2database', name: 'h2', version:'1.4.200'
+    implementation group: 'com.h2database', name: 'h2', version:'2.1.210'
 
 	// MariaDB
     implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '3.0.3'
