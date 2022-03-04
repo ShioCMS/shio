@@ -175,7 +175,7 @@ dependencies {
     implementation group: 'net.lingala.zip4j', name: 'zip4j', version: '2.9.1'
 
     // Apache POI
-    implementation group: 'org.apache.poi', name: 'poi', version: '5.2.0'
+    implementation group: 'org.apache.poi', name: 'poi', version: '5.2.1'
     implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.2.1'
     
     // JSoup
