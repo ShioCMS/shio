@@ -154,7 +154,7 @@ dependencies {
   	implementation group: 'org.springframework', name: 'spring-test', version: '5.3.16'
   	    
   	// Jackson
-    implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.13.1'
+    implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.13.2'
    
    	// Oracle	
 	implementation group: 'com.oracle.ojdbc', name: 'ojdbc8', version: '19.3.0.0'
