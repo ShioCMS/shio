@@ -202,7 +202,7 @@ dependencies {
 	
 	// Tika
     implementation group: 'org.apache.tika', name: 'tika-core', version:'2.4.0'
-    implementation group: 'org.apache.tika', name: 'tika-parsers', version:'2.3.0'
+    implementation group: 'org.apache.tika', name: 'tika-parsers', version:'2.4.0'
     
 	// LDAP
 	implementation group: 'ldapsdk', name: 'ldapsdk', version: '4.1'
