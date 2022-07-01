@@ -248,7 +248,7 @@ dependencies {
 	implementation 'org.webjars.bower:ng-file-upload:12.2.13'
 	implementation 'org.webjars.bower:angular-ui-notification:0.3.6'
 	implementation 'org.webjars.bower:angular-ui-tinymce:0.0.19'
-	implementation 'org.webjars.bower:angular-ui-sortable:0.14.3'
+	implementation 'org.webjars.bower:angular-ui-sortable:0.19.0'
 	implementation 'org.webjars.bower:angular-ui-select:0.19.8'
 	implementation 'org.webjars.bower:ngInfiniteScroll:1.3.4'
 	implementation 'org.webjars:angular-avatar:1.3.0'
