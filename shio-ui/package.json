@@ -27,7 +27,7 @@
     "@ckeditor/ckeditor5-angular": "^4.0.0",
     "@ckeditor/ckeditor5-build-classic": "^34.1.0",
     "@fortawesome/angular-fontawesome": "^0.11.0",
-    "@fortawesome/fontawesome-common-types": "^6.1.1",
+    "@fortawesome/fontawesome-common-types": "^6.2.0",
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
     "@primer/css": "^20.2.3",
