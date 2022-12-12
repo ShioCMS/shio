@@ -46,7 +46,7 @@
     "ngx-smart-modal": "^7.4.1",
     "num2fraction": "^1.2.2",
     "rxjs": "^6.6.3",
-    "tinymce": "^6.0.3",
+    "tinymce": "^6.3.1",
     "tslib": "^2.4.0"
   },
   "devDependencies": {
