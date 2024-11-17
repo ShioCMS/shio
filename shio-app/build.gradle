@@ -213,7 +213,7 @@ dependencies {
 	// GraphQL
 	implementation 'com.graphql-java:graphql-java:230521-nf-execution'
 	implementation 'com.graphql-java:graphql-java-spring-webmvc:2021-10-25T04-50-54-fbc162f'	
-	implementation 'com.graphql-java:graphql-java-extended-scalars:18.1'
+	implementation 'com.graphql-java:graphql-java-extended-scalars:22.0'
 	implementation 'io.projectreactor:reactor-core:3.5.3'
 	implementation "com.graphql-java-kickstart:graphql-webclient-spring-boot-starter:1.0.0"
 
