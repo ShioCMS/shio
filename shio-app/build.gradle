@@ -195,7 +195,7 @@ dependencies {
 	implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: "${swaggerVersion}"
 	
 	// Gson - is used by reCAPTCHA
-	implementation group: 'com.google.code.gson', name: 'gson', version: '2.10.1'
+	implementation group: 'com.google.code.gson', name: 'gson', version: '2.11.0'
 
 	// Thumbnailator
     implementation group: 'net.coobird', name: 'thumbnailator', version: '0.4.20'
