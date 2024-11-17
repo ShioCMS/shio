@@ -256,7 +256,7 @@ dependencies {
 
 	implementation group: 'org.openjdk.nashorn', name: 'nashorn-core', version: '15.4'
 
-	implementation group: 'org.mozilla', name: 'rhino-engine', version: '1.7.14'
+	implementation group: 'org.mozilla', name: 'rhino-engine', version: '1.7.15'
 
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
 }
