@@ -1,19 +1,34 @@
 # To get started with Dependabot version updates, you'll need to specify which
-# package ecosystems to update and where the package manifests are located.
+# Package ecosystems to update and where the package manifests are located.
 # Please see the documentation for all configuration options:
 # https://help.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
 
 version: 2
 updates:
-  - package-ecosystem: "gradle" # See documentation for possible values
-    directory: "/shio-app" # Location of package manifests
+  - package-ecosystem: "maven" # See documentation for possible values
+    directory: "/" # Location of package manifests
     schedule:
-      interval: "daily"
+      interval: "weekly"
     target-branch: "0.3.9"
     open-pull-requests-limit: 15
-  - package-ecosystem: "gradle" # See documentation for possible values
+    ignore:
+      - dependency-name: "org.apache.nutch:nutch"
+    groups:
+      java:
+        applies-to: version-updates
+        patterns:
+          - "*"
+
+  - package-ecosystem: "npm" # See documentation for possible values
     directory: "/shio-ui" # Location of package manifests
     schedule:
       interval: "weekly"
     target-branch: "0.3.9"
     open-pull-requests-limit: 15
+    ignore:
+      - dependency-name: "typescript"
+    groups:
+      angular:
+        applies-to: version-updates
+        patterns:
+          - "*"
