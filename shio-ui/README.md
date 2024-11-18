@@ -46,13 +46,13 @@ Start Shio CMS following the procedure described in https://github.com/ShioCMS/s
 
 ```shell
 export SPRING_PROFILES_ACTIVE=ui-dev
-$ ./gradlew bootrun
+$ ./mvnw spring-boot:run
 ```
 #### Windows
 
 ```shell
 set SPRING_PROFILES_ACTIVE=ui-dev
-gradlew bootrun
+mvnw spring-boot:run
 ```
 
 

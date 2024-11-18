@@ -1,7 +1,7 @@
 FROM eclipse-temurin:17-jdk-centos7 as shiobuild
 WORKDIR /app
 COPY . .
-RUN ./gradlew shio-app:build
+RUN ./mvnw shio-app:build
 
 FROM eclipse-temurin:17-jdk-centos7
 WORKDIR /app

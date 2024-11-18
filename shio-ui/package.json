@@ -1,6 +1,6 @@
 {
-  "name": "shio-ui-primer",
-  "version": "0.3.7",
+  "name": "shio-ui",
+  "version": "0.3.9",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
