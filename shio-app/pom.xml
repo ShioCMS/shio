@@ -15,7 +15,7 @@
     <url>https://github.com/openshio/shio</url>
     <packaging>jar</packaging>
     <properties>
-        <spring-boot.version>3.3.5</spring-boot.version>
+        <spring-boot.version>3.4.0</spring-boot.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>21</maven.compiler.source>
@@ -39,7 +39,7 @@
         <dependency>
             <groupId>co.elastic.clients</groupId>
             <artifactId>elasticsearch-java</artifactId>
-            <version>8.16.0</version>
+            <version>8.16.1</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -124,7 +124,7 @@
         <dependency>
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>
-            <version>3.5.0</version>
+            <version>3.5.1</version>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
@@ -199,7 +199,7 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.6.0</version>
+            <version>2.7.0</version>
         </dependency>
         <dependency>
             <groupId>com.squins.google.fork.schema-org-client</groupId>
@@ -257,7 +257,7 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
-            <version>6.3.4</version>
+            <version>6.4.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
